@@ -1,0 +1,22 @@
+gradle-local.properties
+gpg/
+.gradle/
+build/
+*.class
+*.log
+*.settings.xml
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# IDEA
+*.iml
+*.ipr
+*.iws
+/.idea/*
+!/.idea/runConfigurations
+out/
+workspace.xml
