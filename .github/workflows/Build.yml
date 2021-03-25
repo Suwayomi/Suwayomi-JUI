@@ -14,17 +14,10 @@ jobs:
     name: Build application packages
     strategy:
       matrix:
-        runtime: [ linux-x64, linux-x86, osx-x64, win-x64, win-x86 ]
+        runtime: [ linux-x64, osx-x64, win-x64 ]
         include:
         - runtime: linux-x64
           arch: x64
-          os: ubuntu-latest
-          shell: bash
-          buildPackage: ./scripts/BuildLinuxDeb.sh
-          buildJar: ./scripts/BuildUnixJar.sh
-
-        - runtime: linux-x86
-          arch: x86
           os: ubuntu-latest
           shell: bash
           buildPackage: ./scripts/BuildLinuxDeb.sh
@@ -39,13 +32,6 @@ jobs:
 
         - runtime: win-x64
           arch: x64
-          os: windows-latest
-          shell: powershell
-          buildPackage: ./scripts/BuildWindowsMsi.ps1
-          buildJar: ./scripts/BuildWindowsJar.ps1
-
-        - runtime: win-x86
-          arch: x86
           os: windows-latest
           shell: powershell
           buildPackage: ./scripts/BuildWindowsMsi.ps1
