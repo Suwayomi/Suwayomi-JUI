@@ -11,4 +11,5 @@ else
     &"./scripts/SetupWindows.ps1"
 }
 
+Write-Output "Building Msi package"
 &"./gradlew" packageMsi

@@ -11,5 +11,5 @@ else
     &"./scripts/SetupWindows.ps1"
 }
 
-Write-Output "Building Exe package"
-&"./gradlew" packageExe
+Write-Output "Building Jar package"
+&"./gradlew" packageUberJarForCurrentOS

@@ -10,6 +10,5 @@ else
     scripts/SetupUnix.sh
 fi
 
-
-echo "Building Pkg package"
-./gradlew packagePkg
+echo "Building Jar package"
+./gradlew packageUberJarForCurrentOS
