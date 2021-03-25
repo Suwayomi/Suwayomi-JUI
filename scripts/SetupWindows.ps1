@@ -6,7 +6,7 @@ Remove-Item -Recurse -Force "tmp" -ErrorAction SilentlyContinue | Out-Null
 New-Item -ItemType Directory -Force -Path "tmp"
 
 Write-Output "Getting latest Tachidesk build files"
-$zipball = (Invoke-WebRequest -Uri "https://api.github.com/repos/Suwayomi/Tachidesk/releases/latest").content | Select-String -Pattern 'https[\.:\/A-Za-z0-9]*zipball\/[a-zA-Z0-9.]*' -CaseSensitive
+$zipball = (Invoke-WebRequest -Uri "https://api.github.com/repos/Syer10/Tachidesk/releases/latest").content | Select-String -Pattern 'https[\.:\/A-Za-z0-9]*zipball\/[a-zA-Z0-9.]*' -CaseSensitive
 
 Invoke-WebRequest -Uri $zipball.Matches.Value -OutFile tmp/Tachidesk.zip
 
