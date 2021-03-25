@@ -19,37 +19,37 @@ jobs:
         - runtime: linux-x64
           arch: x64
           os: ubuntu-latest
-          shell: bash
           buildPackage: ./scripts/BuildLinuxDeb.sh
           buildJar: ./scripts/BuildUnixJar.sh
+          scriptShell: bash
 
         - runtime: linux-x86
           arch: x86
           os: ubuntu-latest
-          shell: bash
           buildPackage: ./scripts/BuildLinuxDeb.sh
           buildJar: ./scripts/BuildUnixJar.sh
+          scriptShell: bash
 
         - runtime: osx-x64
           arch: x64
           os: macOS-latest
-          shell: bash
           buildPackage: ./scripts/BuildMacPkg.sh
           buildJar: ./scripts/BuildUnixJar.sh
+          scriptShell: bash
 
         - runtime: win-x64
           arch: x64
           os: windows-latest
-          shell: powershell
           buildPackage: ./scripts/BuildWindowsMsi.ps1
           buildJar: ./scripts/BuildWindowsJar.ps1
+          scriptShell: powershell
 
         - runtime: win-x86
           arch: x86
           os: windows-latest
-          shell: powershell
           buildPackage: ./scripts/BuildWindowsMsi.ps1
           buildJar: ./scripts/BuildWindowsJar.ps1
+          scriptShell: powershell
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -62,11 +62,11 @@ jobs:
 
     - name: Build Package
       run: ${{ matrix.buildPackage }}
-      shell: ${{ matrix.shell }}
+      shell: ${{ matrix.scriptShell }}
 
     - name: Build Jar
       run: ${{ matrix.buildJar }}
-      shell: ${{ matrix.shell }}
+      shell: ${{ matrix.scriptShell }}
 
     # Upload runner package tar.gz/zip as artifact
     - name: Publish Artifact
