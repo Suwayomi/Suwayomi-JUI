@@ -22,18 +22,31 @@ import ca.gosyer.ui.extensions.openExtensionsMenu
 import ca.gosyer.ui.library.openLibraryMenu
 import ca.gosyer.ui.sources.openSourcesMenu
 import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.util.system.userDataDir
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.koin.core.context.startKoin
 import kotlin.concurrent.thread
+import java.io.File
 
 fun main() {
     GlobalScope.launch {
         val logger = KotlinLogging.logger("Server")
         val runtime = Runtime.getRuntime()
 
-        val process = runtime.exec("java -jar resources/Tachidesk.jar")
+        val jarFile = File(userDataDir,"Tachidesk.jar")
+        if (!jarFile.exists()) {
+            logger.info { "Copying server to resources" }
+            javaClass.getResourceAsStream("/Tachidesk.jar").buffered().use { input ->
+                jarFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }
+
+        logger.info { "Starting server" }
+        val process = runtime.exec("""java -jar "${jarFile.absolutePath}"""")
         runtime.addShutdownHook(thread(start = false) {
             process?.destroy()
         })

@@ -42,6 +42,9 @@ dependencies {
     //implementation("org.fusesource.jansi:jansi:1.18")
     implementation("io.github.microutils:kotlin-logging:2.0.5")
 
+    // User storage
+    implementation("net.harawata:appdirs:1.2.1")
+
     // Preferences
     val multiplatformSettingsVersion = "0.7.4"
     implementation("com.russhwolf:multiplatform-settings-jvm:$multiplatformSettingsVersion")
