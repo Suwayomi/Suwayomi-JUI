@@ -4,13 +4,11 @@ name: CI
 
 on:
   push:
-    branches:
-      - master
     tags:
       - v*
 
 jobs:
-  build:
+  BuildBinaries:
     name: Build application packages
     strategy:
       matrix:
@@ -61,3 +59,16 @@ jobs:
       with:
         name: runner-package-${{ matrix.runtime }}
         path: build/compose
+  ReleaseBinaries:
+    name: Make a release
+    needs: [BuildBinaries]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*/binaries/*.*,*/jars/*.*"
+          draft: true
+          token: ${{ secrets.GITHUB_TOKEN }}
