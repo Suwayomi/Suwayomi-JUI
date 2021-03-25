@@ -14,7 +14,7 @@ jobs:
     name: Build application packages
     strategy:
       matrix:
-        runtime: [ linux-x64, linux-x86, osx-x64, osx-x86, win-x64, win-x86 ]
+        runtime: [ linux-x64, linux-x86, osx-x64, win-x64, win-x86 ]
         include:
         - runtime: linux-x64
           arch: x64
@@ -30,12 +30,6 @@ jobs:
 
         - runtime: osx-x64
           arch: x64
-          os: macOS-latest
-          buildPackage: ./scripts/BuildMacPkg.sh
-          buildJar: ./scripts/BuildUnixJar.sh
-          
-        - runtime: osx-x86
-          arch: x86
           os: macOS-latest
           buildPackage: ./scripts/BuildMacPkg.sh
           buildJar: ./scripts/BuildUnixJar.sh
