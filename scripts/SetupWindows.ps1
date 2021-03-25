@@ -2,7 +2,7 @@ if ($(Split-Path -Path (Get-Location) -Leaf) -eq "scripts" ) {
   Set-Location ..
 }
 
-Remove-Item -Recurse -Force "tmp" | Out-Null
+Remove-Item -Recurse -Force "tmp" -ErrorAction SilentlyContinue | Out-Null
 New-Item -ItemType Directory -Force -Path "tmp"
 
 Write-Output "Getting latest Tachidesk build files"
