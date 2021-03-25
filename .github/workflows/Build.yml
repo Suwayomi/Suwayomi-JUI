@@ -62,11 +62,9 @@ jobs:
 
     - name: Build Package
       run: ${{ matrix.buildPackage }}
-      shell: ${{ matrix.shell }}
 
     - name: Build Jar
       run: ${{ matrix.buildJar }}
-      shell: ${{ matrix.shell }} 
 
     # Upload runner package tar.gz/zip as artifact
     - name: Publish Artifact
