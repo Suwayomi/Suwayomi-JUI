@@ -81,7 +81,17 @@ compose.desktop {
     application {
         mainClass = "ca.gosyer.ui.main.MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(
+                // Windows
+                TargetFormat.Msi,
+                TargetFormat.Exe,
+                // Linux
+                TargetFormat.Deb,
+                TargetFormat.Rpm,
+                // MacOS
+                TargetFormat.Pkg
+            )
+
             packageName = "TachideskJUI"
         }
     }

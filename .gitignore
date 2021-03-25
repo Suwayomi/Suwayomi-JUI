@@ -5,6 +5,8 @@ build/
 *.class
 *.log
 *.settings.xml
+tmp/
+Tachidesk.jar
 
 # Eclipse
 .classpath
