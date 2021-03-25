@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 if [ "$(basename "$(pwd)")" = "scripts" ]; then
   cd ..
