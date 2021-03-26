@@ -69,6 +69,6 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "*/binaries/*.*,*/jars/*.*"
+          artifacts: "*/binaries/main/*/*.*,*/jars/*.*"
           draft: true
           token: ${{ secrets.GITHUB_TOKEN }}
