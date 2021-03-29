@@ -101,6 +101,8 @@ compose.desktop {
             )
 
             packageName = "TachideskJUI"
+            description = "TachideskJUI is a Jvm client for a Tachidesk Server"
+            copyright = "Mozilla Public License v2.0"
         }
     }
 }
