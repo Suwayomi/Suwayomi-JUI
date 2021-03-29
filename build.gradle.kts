@@ -91,6 +91,14 @@ compose.desktop {
                 // MacOS
                 TargetFormat.Pkg
             )
+            modules(
+                "java.instrument",
+                "java.management",
+                "java.naming",
+                "java.prefs",
+                "java.sql",
+                "jdk.unsupported"
+            )
 
             packageName = "TachideskJUI"
         }
