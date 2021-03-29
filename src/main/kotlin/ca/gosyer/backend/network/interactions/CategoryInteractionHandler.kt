@@ -18,7 +18,6 @@ import ca.gosyer.backend.network.requests.getMangaCategoriesQuery
 import ca.gosyer.backend.network.requests.getMangaInCategoryQuery
 import ca.gosyer.backend.network.requests.removeMangaFromCategoryRequest
 import io.ktor.client.HttpClient
-import io.ktor.client.request.forms.formData
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
@@ -33,17 +32,25 @@ class CategoryInteractionHandler(private val client: HttpClient): BaseInteractio
         )
     }
 
+    suspend fun getMangaCategories(manga: Manga) = getMangaCategories(manga.id)
+
     suspend fun addMangaToCategory(mangaId: Long, categoryId: Long) = withContext(Dispatchers.IO) {
         client.getRepeat<HttpResponse>(
             serverUrl + addMangaToCategoryQuery(mangaId, categoryId)
         )
     }
+    suspend fun addMangaToCategory(manga: Manga, category: Category) = addMangaToCategory(manga.id, category.id)
+    suspend fun addMangaToCategory(manga: Manga, categoryId: Long) = addMangaToCategory(manga.id, categoryId)
+    suspend fun addMangaToCategory(mangaId: Long, category: Category) = addMangaToCategory(mangaId, category.id)
 
     suspend fun removeMangaFromCategory(mangaId: Long, categoryId: Long) = withContext(Dispatchers.IO) {
         client.deleteRepeat<HttpResponse>(
             serverUrl + removeMangaFromCategoryRequest(mangaId, categoryId)
         )
     }
+    suspend fun removeMangaFromCategory(manga: Manga, category: Category) = removeMangaFromCategory(manga.id, category.id)
+    suspend fun removeMangaFromCategory(manga: Manga, categoryId: Long) = removeMangaFromCategory(manga.id, categoryId)
+    suspend fun removeMangaFromCategory(mangaId: Long, category: Category) = removeMangaFromCategory(mangaId, category.id)
 
     suspend fun getCategories() = withContext(Dispatchers.IO) {
         client.getRepeat<List<Category>>(
@@ -73,16 +80,9 @@ class CategoryInteractionHandler(private val client: HttpClient): BaseInteractio
             }
         ) {
             method = HttpMethod.Patch
-            formData {
-                if (name != null) {
-                    append("name", name)
-                }
-                if (isLanding != null) {
-                    append("isLanding", isLanding.toString())
-                }
-            }
         }
     }
+    suspend fun modifyCategory(category: Category, name: String? = null, isLanding: Boolean? = null) = modifyCategory(category.id, name, isLanding)
 
     suspend fun reorderCategory(categoryId: Long, to: Int, from: Int) = withContext(Dispatchers.IO) {
         client.submitFormRepeat<HttpResponse>(
@@ -95,16 +95,19 @@ class CategoryInteractionHandler(private val client: HttpClient): BaseInteractio
             method = HttpMethod.Patch
         }
     }
+    suspend fun reorderCategory(category: Category, to: Int, from: Int) = reorderCategory(category.id, to, from)
 
     suspend fun deleteCategory(categoryId: Long) = withContext(Dispatchers.IO) {
         client.deleteRepeat<HttpResponse>(
             serverUrl + categoryDeleteRequest(categoryId)
         )
     }
+    suspend fun deleteCategory(category: Category) = deleteCategory(category.id)
 
     suspend fun getMangaFromCategory(categoryId: Long) = withContext(Dispatchers.IO) {
         client.getRepeat<List<Manga>>(
             serverUrl + getMangaInCategoryQuery(categoryId)
         )
     }
+    suspend fun getMangaFromCategory(category: Category) = getMangaFromCategory(category.id)
 }

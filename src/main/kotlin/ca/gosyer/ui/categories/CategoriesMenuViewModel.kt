@@ -63,17 +63,17 @@ class CategoriesMenuViewModel : ViewModel() {
             originalCategories.forEach { originalCategory ->
                 val category = categories.find { it.id == originalCategory.id }
                 if (category == null) {
-                    CategoryInteractionHandler(httpClient).deleteCategory(originalCategory.id)
+                    CategoryInteractionHandler(httpClient).deleteCategory(originalCategory)
                 } else if (category.name != originalCategory.name) {
-                    CategoryInteractionHandler(httpClient).modifyCategory(originalCategory.id, category.name)
+                    CategoryInteractionHandler(httpClient).modifyCategory(originalCategory, category.name)
                 }
             }
             val updatedCategories = CategoryInteractionHandler(httpClient).getCategories()
             updatedCategories.forEach { updatedCategory ->
                 val category = categories.find { it.id == updatedCategory.id || it.name == updatedCategory.name } ?: return@forEach
                 if (category.order != updatedCategory.order) {
-                    logger.debug { category.order.toString() + " to " + updatedCategory.order.toString() }
-                    CategoryInteractionHandler(httpClient).reorderCategory(updatedCategory.id, category.order, updatedCategory.order)
+                    logger.debug { "${category.order} to ${updatedCategory.order}" }
+                    CategoryInteractionHandler(httpClient).reorderCategory(updatedCategory, category.order, updatedCategory.order)
                 }
             }
 
@@ -92,7 +92,7 @@ class CategoriesMenuViewModel : ViewModel() {
     }
 
     fun createCategory(name: String) {
-        _categories.value += MenuCategory(order = categories.value.size, name = name, landing = false)
+        _categories.value += MenuCategory(order = categories.value.size + 1, name = name, landing = false)
     }
 
     fun moveUp(category: MenuCategory) {

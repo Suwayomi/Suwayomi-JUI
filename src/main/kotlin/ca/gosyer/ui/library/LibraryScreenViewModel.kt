@@ -63,7 +63,7 @@ class LibraryScreenViewModel: ViewModel() {
                     library.categories.value = listOf(defaultCategory) + categories.sortedBy { it.order }
                     categories.map {
                         async {
-                            library.mangaMap.setManga(it.order, CategoryInteractionHandler(httpClient).getMangaFromCategory(it.id))
+                            library.mangaMap.setManga(it.order, CategoryInteractionHandler(httpClient).getMangaFromCategory(it))
                         }
                     }.awaitAll()
                     val mangaInCategories = library.mangaMap.flatMap { it.value.value }.map { it.id }.distinct()
