@@ -14,8 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import ca.gosyer.backend.models.Source
-import ca.gosyer.ui.base.vm.composeViewModel
+import ca.gosyer.data.models.Source
+import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.components.SourceHomeScreen
 import ca.gosyer.ui.sources.components.SourceScreen
 import ca.gosyer.ui.sources.components.SourceTopBar
@@ -29,7 +29,7 @@ fun openSourcesMenu() {
 
 @Composable
 fun SourcesMenu() {
-    val vm = composeViewModel<SourcesMenuViewModel>()
+    val vm = viewModel<SourcesMenuViewModel>()
     val isLoading by vm.isLoading.collectAsState()
     val sources by vm.sources.collectAsState()
     val sourceTabs by vm.sourceTabs.collectAsState()

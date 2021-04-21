@@ -6,24 +6,28 @@
 
 package ca.gosyer.ui.sources
 
-import ca.gosyer.backend.models.Source
-import ca.gosyer.backend.network.interactions.SourceInteractionHandler
-import ca.gosyer.backend.preferences.PreferenceHelper
+import ca.gosyer.data.catalog.CatalogPreferences
+import ca.gosyer.data.models.Source
+import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.inject
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import javax.inject.Inject
 
-class SourcesMenuViewModel: ViewModel() {
-    private val preferences: PreferenceHelper by inject()
-    private val httpClient: HttpClient by inject()
+class SourcesMenuViewModel @Inject constructor(
+    private val sourceHandler: SourceInteractionHandler,
+    serverPreferences: ServerPreferences,
+    catalogPreferences: CatalogPreferences
+): ViewModel() {
     private val logger = KotlinLogging.logger {}
 
-    val serverUrl = preferences.serverUrl.asStateFlow(scope)
+    val serverUrl = serverPreferences.server().stateIn(scope)
+
+    private val languages = catalogPreferences.languages().stateIn(scope)
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
@@ -44,9 +48,9 @@ class SourcesMenuViewModel: ViewModel() {
     private fun getSources() {
         scope.launch {
             try {
-                val sources = SourceInteractionHandler(httpClient).getSourceList()
+                val sources = sourceHandler.getSourceList()
                 logger.info { sources }
-                _sources.value = sources//.filter { it.lang in Preferences.enabledLangs }
+                _sources.value = sources.filter { it.lang in languages.value }
                 logger.info { _sources.value }
             } catch (e: Exception) {
                 if (e is CancellationException) throw e

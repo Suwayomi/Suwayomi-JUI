@@ -6,11 +6,9 @@
 
 package ca.gosyer.ui.categories
 
-import ca.gosyer.backend.models.Category
-import ca.gosyer.backend.network.interactions.CategoryInteractionHandler
+import ca.gosyer.data.models.Category
+import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.inject
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.GlobalScope
@@ -18,9 +16,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import javax.inject.Inject
 
-class CategoriesMenuViewModel : ViewModel() {
-    private val httpClient: HttpClient by inject()
+class CategoriesMenuViewModel @Inject constructor(
+    private val categoryHandler: CategoryInteractionHandler
+) : ViewModel() {
     private val logger = KotlinLogging.logger {}
     private var originalCategories = emptyList<Category>()
     private val _categories = MutableStateFlow(emptyList<MenuCategory>())
@@ -38,7 +38,7 @@ class CategoriesMenuViewModel : ViewModel() {
             _categories.value = emptyList()
             _isLoading.value = true
             try {
-                _categories.value = CategoryInteractionHandler(httpClient).getCategories()
+                _categories.value = categoryHandler.getCategories()
                     .sortedBy { it.order }
                     .also { originalCategories = it }
                     .map { it.toMenuCategory() }
@@ -58,22 +58,22 @@ class CategoriesMenuViewModel : ViewModel() {
             val categories = _categories.value
             val newCategories = categories.filter { it.id == null }
             newCategories.forEach {
-                CategoryInteractionHandler(httpClient).createCategory(it.name)
+                categoryHandler.createCategory(it.name)
             }
             originalCategories.forEach { originalCategory ->
                 val category = categories.find { it.id == originalCategory.id }
                 if (category == null) {
-                    CategoryInteractionHandler(httpClient).deleteCategory(originalCategory)
+                    categoryHandler.deleteCategory(originalCategory)
                 } else if (category.name != originalCategory.name) {
-                    CategoryInteractionHandler(httpClient).modifyCategory(originalCategory, category.name)
+                    categoryHandler.modifyCategory(originalCategory, category.name)
                 }
             }
-            val updatedCategories = CategoryInteractionHandler(httpClient).getCategories()
+            val updatedCategories = categoryHandler.getCategories()
             updatedCategories.forEach { updatedCategory ->
                 val category = categories.find { it.id == updatedCategory.id || it.name == updatedCategory.name } ?: return@forEach
                 if (category.order != updatedCategory.order) {
                     logger.debug { "${category.order} to ${updatedCategory.order}" }
-                    CategoryInteractionHandler(httpClient).reorderCategory(updatedCategory, category.order, updatedCategory.order)
+                    categoryHandler.reorderCategory(updatedCategory, category.order, updatedCategory.order)
                 }
             }
 

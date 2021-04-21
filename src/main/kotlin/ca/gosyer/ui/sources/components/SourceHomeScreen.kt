@@ -29,10 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ca.gosyer.backend.models.Source
+import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
-import ca.gosyer.util.system.get
 
 @Composable
 fun SourceHomeScreen(
@@ -110,7 +109,7 @@ fun SourceItem(
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        KtorImage(get(), source.iconUrl(serverUrl), Modifier.size(96.dp))
+        KtorImage(source.iconUrl(serverUrl), Modifier.size(96.dp))
         Spacer(Modifier.height(4.dp))
         Text("${source.name} (${source.lang})", color = MaterialTheme.colors.onBackground)
     }

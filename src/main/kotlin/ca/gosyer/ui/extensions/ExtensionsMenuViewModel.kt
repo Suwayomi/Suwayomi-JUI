@@ -6,24 +6,26 @@
 
 package ca.gosyer.ui.extensions
 
-import ca.gosyer.backend.models.Extension
-import ca.gosyer.backend.network.interactions.ExtensionInteractionHandler
-import ca.gosyer.backend.preferences.PreferenceHelper
+import ca.gosyer.data.extension.ExtensionPreferences
+import ca.gosyer.data.models.Extension
+import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.inject
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import javax.inject.Inject
 
-class ExtensionsMenuViewModel: ViewModel() {
-    private val preferences: PreferenceHelper by inject()
-    private val httpClient: HttpClient by inject()
+class ExtensionsMenuViewModel @Inject constructor(
+    private val extensionHandler: ExtensionInteractionHandler,
+    serverPreferences: ServerPreferences,
+    private val extensionPreferences: ExtensionPreferences
+): ViewModel() {
     private val logger = KotlinLogging.logger {}
 
-    val serverUrl = preferences.serverUrl.asStateFlow(scope)
+    val serverUrl = serverPreferences.server().stateIn(scope)
 
     private val _extensions = MutableStateFlow(emptyList<Extension>())
     val extensions = _extensions.asStateFlow()
@@ -41,8 +43,8 @@ class ExtensionsMenuViewModel: ViewModel() {
     private suspend fun getExtensions() {
         try {
             _isLoading.value = true
-            val enabledLangs = preferences.enabledLangs.get()
-            val extensions = ExtensionInteractionHandler(httpClient).getExtensionList()
+            val enabledLangs = extensionPreferences.languages().get()
+            val extensions = extensionHandler.getExtensionList()
             _extensions.value = extensions.filter { it.lang in enabledLangs }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
         } catch (e: Exception) {
             if (e is CancellationException) throw e
@@ -55,7 +57,7 @@ class ExtensionsMenuViewModel: ViewModel() {
         logger.info { "Install clicked" }
         scope.launch {
             try {
-                ExtensionInteractionHandler(httpClient).installExtension(extension)
+                extensionHandler.installExtension(extension)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
             }
@@ -67,7 +69,7 @@ class ExtensionsMenuViewModel: ViewModel() {
         logger.info { "Uninstall clicked" }
         scope.launch {
             try {
-                ExtensionInteractionHandler(httpClient).uninstallExtension(extension)
+                extensionHandler.uninstallExtension(extension)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
             }

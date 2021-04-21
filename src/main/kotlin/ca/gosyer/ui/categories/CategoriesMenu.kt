@@ -39,7 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ca.gosyer.ui.base.vm.composeViewModel
+import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 
 fun openCategoriesMenu() {
@@ -51,7 +51,7 @@ fun openCategoriesMenu() {
 
 @Composable
 fun CategoriesMenu(windowEvents: WindowEvents) {
-    val vm = composeViewModel<CategoriesMenuViewModel>()
+    val vm = viewModel<CategoriesMenuViewModel>()
     val categories by vm.categories.collectAsState()
     remember {
         windowEvents.onClose = { vm.updateCategories() }

@@ -23,15 +23,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import ca.gosyer.backend.models.Category
-import ca.gosyer.backend.models.Manga
+import ca.gosyer.data.library.model.DisplayMode
+import ca.gosyer.data.models.Category
+import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Pager
 import ca.gosyer.ui.base.components.PagerState
-import ca.gosyer.ui.base.vm.composeViewModel
+import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
-import kotlinx.serialization.Serializable
 
 fun openLibraryMenu() {
     ThemedWindow {
@@ -42,7 +42,7 @@ fun openLibraryMenu() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LibraryScreen() {
-    val vm = composeViewModel<LibraryScreenViewModel>()
+    val vm = viewModel<LibraryScreenViewModel>()
     val categories by vm.categories.collectAsState()
     val selectedCategoryIndex by vm.selectedCategoryIndex.collectAsState()
     val displayMode by vm.displayMode.collectAsState()
@@ -169,14 +169,4 @@ private fun LibraryPager(
             else -> Box {}
         }
     }
-}
-
-@Serializable
-sealed class DisplayMode {
-    @Serializable
-    object List : DisplayMode()
-    @Serializable
-    object CompactGrid : DisplayMode()
-    @Serializable
-    object ComfortableGrid : DisplayMode()
 }

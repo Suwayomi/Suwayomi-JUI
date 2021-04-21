@@ -7,18 +7,45 @@
 package ca.gosyer.ui.base.vm
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import org.koin.core.context.GlobalContext
+import ca.gosyer.common.di.AppScope
+import toothpick.Toothpick
+import toothpick.ktp.binding.module
+import toothpick.ktp.extension.getInstance
 
 @Composable
-inline fun <reified VM : ViewModel> composeViewModel(): VM {
+inline fun <reified VM : ViewModel> viewModel(): VM {
     val viewModel = remember {
-        GlobalContext.get().get<VM>()
+        AppScope.getInstance<VM>()
     }
     DisposableEffect(viewModel) {
         onDispose {
             viewModel.destroy()
+        }
+    }
+    return viewModel
+}
+
+@Composable
+inline fun <reified VM : ViewModel> viewModel(
+    crossinline binding: @DisallowComposableCalls () -> Any,
+): VM {
+    val (viewModel, submodule) = remember {
+        val submodule = module {
+            binding().let { bind(it.javaClass).toInstance(it) }
+        }
+        val subscope = AppScope.subscope(submodule).also {
+            it.installModules(submodule)
+        }
+        val viewModel = subscope.getInstance<VM>()
+        Pair(viewModel, submodule)
+    }
+    DisposableEffect(viewModel) {
+        onDispose {
+            viewModel.destroy()
+            Toothpick.closeScope(submodule)
         }
     }
     return viewModel

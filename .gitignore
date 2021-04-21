@@ -19,6 +19,6 @@ bin/
 *.ipr
 *.iws
 /.idea/*
-!/.idea/runConfigurations
+!/.idea/runConfigurations/
 out/
 workspace.xml

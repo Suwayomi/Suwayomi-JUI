@@ -8,7 +8,7 @@ package ca.gosyer.util.compose
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import io.ktor.client.HttpClient
+import ca.gosyer.data.server.Http
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readBytes
@@ -19,6 +19,6 @@ fun imageFromFile(file: File): ImageBitmap {
     return Image.makeFromEncoded(file.readBytes()).asImageBitmap()
 }
 
-suspend fun imageFromUrl(client: HttpClient, url: String): ImageBitmap {
+suspend fun imageFromUrl(client: Http, url: String): ImageBitmap {
     return Image.makeFromEncoded(client.get<HttpResponse>(url).readBytes()).asImageBitmap()
 }

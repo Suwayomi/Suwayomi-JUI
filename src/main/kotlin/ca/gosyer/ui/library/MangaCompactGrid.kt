@@ -32,9 +32,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.backend.models.Manga
+import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.KtorImage
-import ca.gosyer.util.system.get
 
 @Composable
 fun LibraryMangaCompactGrid(
@@ -78,7 +77,7 @@ private fun LibraryMangaCompactGridItem(
         .clickable(onClick = onClick)
     ) {
         if (cover != null) {
-            KtorImage(get(), cover, contentScale = ContentScale.Crop)
+            KtorImage(cover, contentScale = ContentScale.Crop)
         }
         Box(modifier = Modifier.fillMaxSize().then(shadowGradient))
         Text(

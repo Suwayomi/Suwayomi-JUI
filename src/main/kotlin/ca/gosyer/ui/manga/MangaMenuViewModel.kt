@@ -6,15 +6,13 @@
 
 package ca.gosyer.ui.manga
 
-import ca.gosyer.backend.models.Chapter
-import ca.gosyer.backend.models.Manga
-import ca.gosyer.backend.network.interactions.ChapterInteractionHandler
-import ca.gosyer.backend.network.interactions.LibraryInteractionHandler
-import ca.gosyer.backend.network.interactions.MangaInteractionHandler
-import ca.gosyer.backend.preferences.PreferenceHelper
+import ca.gosyer.data.models.Chapter
+import ca.gosyer.data.models.Manga
+import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.data.server.interactions.ChapterInteractionHandler
+import ca.gosyer.data.server.interactions.LibraryInteractionHandler
+import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.inject
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -22,12 +20,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MangaMenuViewModel : ViewModel() {
-    private val preferences: PreferenceHelper by inject()
-    private val httpClient: HttpClient by inject()
-
-    val serverUrl = preferences.serverUrl.asStateFlow(scope)
+class MangaMenuViewModel @Inject constructor(
+    private val mangaHandler: MangaInteractionHandler,
+    private val chapterHandler: ChapterInteractionHandler,
+    private val libraryHandler: LibraryInteractionHandler,
+    serverPreferences: ServerPreferences
+) : ViewModel() {
+    val serverUrl = serverPreferences.server().stateIn(scope)
 
     private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()
@@ -53,7 +54,7 @@ class MangaMenuViewModel : ViewModel() {
     private suspend fun refreshMangaAsync(mangaId: Long) = withContext(Dispatchers.IO) {
         async {
             try {
-                _manga.value = MangaInteractionHandler(httpClient).getManga(mangaId)
+                _manga.value = mangaHandler.getManga(mangaId)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
             }
@@ -63,7 +64,7 @@ class MangaMenuViewModel : ViewModel() {
     suspend fun refreshChaptersAsync(mangaId: Long) = withContext(Dispatchers.IO) {
         async {
             try {
-                _chapters.value = ChapterInteractionHandler(httpClient).getChapters(mangaId)
+                _chapters.value = chapterHandler.getChapters(mangaId)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
             }
@@ -74,9 +75,9 @@ class MangaMenuViewModel : ViewModel() {
         scope.launch {
             manga.value?.let {
                 if (it.inLibrary) {
-                    LibraryInteractionHandler(httpClient).removeMangaFromLibrary(it)
+                    libraryHandler.removeMangaFromLibrary(it)
                 } else {
-                    LibraryInteractionHandler(httpClient).addMangaToLibrary(it)
+                    libraryHandler.addMangaToLibrary(it)
                 }
 
                 refreshMangaAsync(it.id).await()

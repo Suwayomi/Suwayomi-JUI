@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
@@ -22,7 +23,8 @@ import kotlin.random.Random
 fun ErrorScreen(errorMessage: String? = null) {
     Box(Modifier.fillMaxSize()) {
         Column(modifier = Modifier.align(Alignment.Center)) {
-            Text(getRandomErrorFace(), fontSize = 36.sp, color = MaterialTheme.colors.onBackground)
+            val errorFace = remember { getRandomErrorFace() }
+            Text(errorFace, fontSize = 36.sp, color = MaterialTheme.colors.onBackground)
             if (errorMessage != null) {
                 Text(errorMessage, color = MaterialTheme.colors.onBackground)
             }

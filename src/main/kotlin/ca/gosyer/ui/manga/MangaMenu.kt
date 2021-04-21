@@ -39,14 +39,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.backend.models.Chapter
-import ca.gosyer.backend.models.Manga
+import ca.gosyer.data.models.Chapter
+import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.mangaAspectRatio
-import ca.gosyer.ui.base.vm.composeViewModel
+import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
-import ca.gosyer.util.system.get
 
 fun openMangaMenu(mangaId: Long) {
     ThemedWindow("TachideskJUI") {
@@ -62,7 +61,7 @@ fun openMangaMenu(manga: Manga) {
 
 @Composable
 fun MangaMenu(mangaId: Long) {
-    val vm = composeViewModel<MangaMenuViewModel>()
+    val vm = viewModel<MangaMenuViewModel>()
     remember(mangaId) {
         vm.init(mangaId)
     }
@@ -71,7 +70,7 @@ fun MangaMenu(mangaId: Long) {
 
 @Composable
 fun MangaMenu(manga: Manga) {
-    val vm = composeViewModel<MangaMenuViewModel>()
+    val vm = viewModel<MangaMenuViewModel>()
     remember(manga) {
         vm.init(manga)
     }
@@ -161,7 +160,7 @@ private fun Cover(manga: Manga, serverUrl: String, modifier: Modifier = Modifier
         Box(modifier = Modifier.fillMaxSize()) {
             manga.cover(serverUrl).let {
                 if (it != null) {
-                    KtorImage(get(), it)
+                    KtorImage(it)
                 }
             }
         }

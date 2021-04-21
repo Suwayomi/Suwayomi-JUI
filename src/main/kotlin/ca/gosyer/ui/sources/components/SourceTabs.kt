@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import ca.gosyer.backend.models.Source
+import ca.gosyer.data.models.Source
 
 @Composable
 fun SourceTopBar(

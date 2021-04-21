@@ -6,20 +6,20 @@
 
 package ca.gosyer.ui.library
 
-import ca.gosyer.backend.models.Category
-import ca.gosyer.backend.models.Manga
-import ca.gosyer.backend.network.interactions.CategoryInteractionHandler
-import ca.gosyer.backend.network.interactions.LibraryInteractionHandler
-import ca.gosyer.backend.preferences.PreferenceHelper
+import ca.gosyer.data.library.LibraryPreferences
+import ca.gosyer.data.models.Category
+import ca.gosyer.data.models.Manga
+import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.data.server.interactions.CategoryInteractionHandler
+import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.inject
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private typealias LibraryMap = MutableMap<Int, MutableStateFlow<List<Manga>>>
 private data class Library(val categories: MutableStateFlow<List<Category>>, val mangaMap: LibraryMap)
@@ -30,11 +30,13 @@ private fun LibraryMap.setManga(order: Int, manga: List<Manga>) {
     getManga(order).value = manga
 }
 
-class LibraryScreenViewModel: ViewModel() {
-    private val preferences: PreferenceHelper by inject()
-    private val httpClient: HttpClient by inject()
-
-    val serverUrl = preferences.serverUrl.asStateFlow(scope)
+class LibraryScreenViewModel @Inject constructor(
+    private val libraryHandler: LibraryInteractionHandler,
+    private val categoryHandler: CategoryInteractionHandler,
+    libraryPreferences: LibraryPreferences,
+    serverPreferences: ServerPreferences,
+): ViewModel() {
+    val serverUrl = serverPreferences.server().stateIn(scope)
 
     private val library = Library(MutableStateFlow(emptyList()), mutableMapOf())
     val categories = library.categories.asStateFlow()
@@ -42,7 +44,7 @@ class LibraryScreenViewModel: ViewModel() {
     private val _selectedCategoryIndex = MutableStateFlow(0)
     val selectedCategoryIndex = _selectedCategoryIndex.asStateFlow()
 
-    val displayMode = preferences.libraryDisplay.asStateFlow(scope)
+    val displayMode = libraryPreferences.displayMode().stateIn(scope)
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
@@ -55,19 +57,19 @@ class LibraryScreenViewModel: ViewModel() {
         scope.launch {
             _isLoading.value = true
             try {
-                val categories = CategoryInteractionHandler(httpClient).getCategories()
+                val categories = categoryHandler.getCategories()
                 if (categories.isEmpty()) {
                     library.categories.value = listOf(defaultCategory)
-                    library.mangaMap.setManga(defaultCategory.order, LibraryInteractionHandler(httpClient).getLibraryManga())
+                    library.mangaMap.setManga(defaultCategory.order, libraryHandler.getLibraryManga())
                 } else {
                     library.categories.value = listOf(defaultCategory) + categories.sortedBy { it.order }
                     categories.map {
                         async {
-                            library.mangaMap.setManga(it.order, CategoryInteractionHandler(httpClient).getMangaFromCategory(it))
+                            library.mangaMap.setManga(it.order, categoryHandler.getMangaFromCategory(it))
                         }
                     }.awaitAll()
                     val mangaInCategories = library.mangaMap.flatMap { it.value.value }.map { it.id }.distinct()
-                    library.mangaMap.setManga(defaultCategory.order, LibraryInteractionHandler(httpClient).getLibraryManga().filterNot { it.id in mangaInCategories })
+                    library.mangaMap.setManga(defaultCategory.order, libraryHandler.getLibraryManga().filterNot { it.id in mangaInCategories })
                 }
             } catch (e: Exception) {
             } finally {

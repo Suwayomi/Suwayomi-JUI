@@ -13,8 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.window.MenuBar
-import ca.gosyer.backend.preferences.PreferenceHelper
-import ca.gosyer.util.system.get
 import java.awt.image.BufferedImage
 
 fun ThemedWindow(
@@ -31,7 +29,7 @@ fun ThemedWindow(
     content: @Composable () -> Unit = { }
 ) {
     Window(title, size, location, centered, icon, menuBar, undecorated, resizable, events, onDismissRequest) {
-        DesktopMaterialTheme(get<PreferenceHelper>().getTheme()) {
+        DesktopMaterialTheme {
             content()
         }
     }

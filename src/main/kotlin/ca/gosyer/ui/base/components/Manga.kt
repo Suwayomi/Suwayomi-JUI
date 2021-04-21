@@ -30,7 +30,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.util.system.get
 
 @Composable
 fun MangaGridItem(
@@ -53,7 +52,7 @@ fun MangaGridItem(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             if (cover != null) {
-                KtorImage(get(), cover, contentScale = ContentScale.Crop)
+                KtorImage(cover, contentScale = ContentScale.Crop)
             }
             Box(modifier = Modifier.fillMaxSize().then(shadowGradient))
             Text(

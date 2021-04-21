@@ -7,5 +7,6 @@
 package ca.gosyer.ui.main
 
 import ca.gosyer.ui.base.vm.ViewModel
+import javax.inject.Inject
 
-class MainViewModel : ViewModel()
+class MainViewModel @Inject constructor(): ViewModel()

@@ -40,12 +40,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.backend.models.Extension
+import ca.gosyer.data.models.Extension
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
-import ca.gosyer.ui.base.vm.composeViewModel
+import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
-import ca.gosyer.util.system.get
 
 fun openExtensionsMenu() {
     ThemedWindow(title = "TachideskJUI - Extensions", size = IntSize(550, 700)) {
@@ -56,7 +55,7 @@ fun openExtensionsMenu() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExtensionsMenu() {
-    val vm = composeViewModel<ExtensionsMenuViewModel>()
+    val vm = viewModel<ExtensionsMenuViewModel>()
     val extensions by vm.extensions.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
@@ -107,7 +106,7 @@ fun ExtensionItem(
     Box(modifier = Modifier.fillMaxWidth().height(64.dp).background(MaterialTheme.colors.background)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(Modifier.width(4.dp))
-            KtorImage(get(), extension.iconUrl(serverUrl), Modifier.size(60.dp))
+            KtorImage(extension.iconUrl(serverUrl), Modifier.size(60.dp))
             Spacer(Modifier.width(8.dp))
             Column {
                 val title = buildAnnotatedString {

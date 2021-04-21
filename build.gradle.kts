@@ -3,16 +3,17 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.31"
-    kotlin("plugin.serialization") version "1.4.31"
-    id("org.jetbrains.compose") version "0.4.0-build177"
+    kotlin("jvm") version "1.4.32"
+    kotlin("kapt") version "1.4.32"
+    kotlin("plugin.serialization") version "1.4.32"
+    id("org.jetbrains.compose") version "0.4.0-build184"
+    id("de.fuerstenau.buildconfig") version "1.1.8"
 }
 
 group = "ca.gosyer"
 version = "1.0.0"
 
 repositories {
-    jcenter()
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
 }
@@ -28,7 +29,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 
     // Dependency Injection
-    implementation("io.insert-koin:koin-core-ext:3.0.1-beta-1")
+    implementation("com.github.stephanenicolas.toothpick:ktp:3.1.0")
+    kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:3.1.0")
 
     // Http client
     val ktorVersion = "1.5.2"
@@ -38,8 +40,10 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
 
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.2.3")
-    //implementation("org.fusesource.jansi:jansi:1.18")
+    val log4jVersion = "2.14.1"
+    implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
+    implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
     implementation("io.github.microutils:kotlin-logging:2.0.5")
 
     // User storage
@@ -105,4 +109,14 @@ compose.desktop {
             copyright = "Mozilla Public License v2.0"
         }
     }
+}
+
+buildConfig {
+    appName = project.name
+    version = project.version.toString()
+
+    clsName = "BuildConfig"
+    packageName = project.group.toString()
+
+    buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
 }

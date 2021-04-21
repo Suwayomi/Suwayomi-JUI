@@ -21,18 +21,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ca.gosyer.backend.models.Manga
-import ca.gosyer.backend.models.Source
+import ca.gosyer.data.models.Manga
+import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.MangaGridItem
-import ca.gosyer.ui.base.vm.composeViewModel
+import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 
 @Composable
 fun SourceScreen(
     source: Source
 ) {
-    val vm = composeViewModel<SourceScreenViewModel>()
+    val vm = viewModel<SourceScreenViewModel>()
     remember(source) {
         vm.init(source)
     }

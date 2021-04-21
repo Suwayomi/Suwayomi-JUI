@@ -6,26 +6,24 @@
 
 package ca.gosyer.ui.sources.components
 
-import ca.gosyer.backend.models.Manga
-import ca.gosyer.backend.models.MangaPage
-import ca.gosyer.backend.models.Source
-import ca.gosyer.backend.network.interactions.SourceInteractionHandler
-import ca.gosyer.backend.preferences.PreferenceHelper
+import ca.gosyer.data.models.Manga
+import ca.gosyer.data.models.MangaPage
+import ca.gosyer.data.models.Source
+import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.asStateFlow
-import ca.gosyer.util.system.inject
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SourceScreenViewModel: ViewModel() {
+class SourceScreenViewModel @Inject constructor(
+    private val sourceHandler: SourceInteractionHandler,
+    serverPreferences: ServerPreferences
+): ViewModel() {
     private lateinit var source: Source
-    private val preferences: PreferenceHelper by inject()
-    private val httpClient: HttpClient by inject()
 
-    val serverUrl = preferences.serverUrl.asFLow()
-        .asStateFlow(preferences.serverUrl.get(),scope, true)
+    val serverUrl = serverPreferences.server().stateIn(scope)
 
     private val _mangas = MutableStateFlow(emptyList<Manga>())
     val mangas = _mangas.asStateFlow()
@@ -49,6 +47,7 @@ class SourceScreenViewModel: ViewModel() {
             _mangas.value = emptyList()
             _hasNextPage.value = false
             _pageNum.value = 1
+            _isLatest.value = source.supportsLatest
             val page = getPage()
             _mangas.value += page.mangaList
             _hasNextPage.value = page.hasNextPage
@@ -76,9 +75,9 @@ class SourceScreenViewModel: ViewModel() {
 
     private suspend fun getPage(): MangaPage {
         return if (isLatest.value) {
-            SourceInteractionHandler(httpClient).getLatestManga(source, pageNum.value)
+            sourceHandler.getLatestManga(source, pageNum.value)
         } else {
-            SourceInteractionHandler(httpClient).getPopularManga(source, pageNum.value)
+            sourceHandler.getPopularManga(source, pageNum.value)
         }
     }
 }

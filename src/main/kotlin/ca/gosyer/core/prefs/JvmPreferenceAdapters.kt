@@ -1,0 +1,107 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+package ca.gosyer.core.prefs
+
+import com.russhwolf.settings.ObservableSettings
+import com.russhwolf.settings.serialization.decodeValue
+import com.russhwolf.settings.serialization.encodeValue
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.SetSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.modules.EmptySerializersModule
+import kotlinx.serialization.modules.SerializersModule
+
+internal object StringAdapter : JvmPreference.Adapter<String> {
+    override fun get(key: String, preferences: ObservableSettings): String {
+        return preferences.getString(key) // Not called unless key is present.
+    }
+
+    override fun set(key: String, value: String, editor: ObservableSettings) {
+        editor.putString(key, value)
+    }
+}
+
+internal object LongAdapter : JvmPreference.Adapter<Long> {
+    override fun get(key: String, preferences: ObservableSettings): Long {
+        return preferences.getLong(key, 0)
+    }
+
+    override fun set(key: String, value: Long, editor: ObservableSettings) {
+        editor.putLong(key, value)
+    }
+}
+
+internal object IntAdapter : JvmPreference.Adapter<Int> {
+    override fun get(key: String, preferences: ObservableSettings): Int {
+        return preferences.getInt(key, 0)
+    }
+
+    override fun set(key: String, value: Int, editor: ObservableSettings) {
+        editor.putInt(key, value)
+    }
+}
+
+internal object FloatAdapter : JvmPreference.Adapter<Float> {
+    override fun get(key: String, preferences: ObservableSettings): Float {
+        return preferences.getFloat(key, 0f)
+    }
+
+    override fun set(key: String, value: Float, editor: ObservableSettings) {
+        editor.putFloat(key, value)
+    }
+}
+
+internal object BooleanAdapter : JvmPreference.Adapter<Boolean> {
+    override fun get(key: String, preferences: ObservableSettings): Boolean {
+        return preferences.getBoolean(key, false)
+    }
+
+    override fun set(key: String, value: Boolean, editor: ObservableSettings) {
+        editor.putBoolean(key, value)
+    }
+}
+
+internal object StringSetAdapter : JvmPreference.Adapter<Set<String>> {
+    override fun get(key: String, preferences: ObservableSettings): Set<String> {
+        return preferences.decodeValue(SetSerializer(String.serializer()), key, emptySet()) // Not called unless key is present.
+    }
+
+    override fun set(key: String, value: Set<String>, editor: ObservableSettings) {
+        editor.encodeValue(SetSerializer(String.serializer()), key, value)
+    }
+}
+
+internal class ObjectAdapter<T>(
+    private val serializer: (T) -> String,
+    private val deserializer: (String) -> T
+) : JvmPreference.Adapter<T> {
+
+    override fun get(key: String, preferences: ObservableSettings): T {
+        return deserializer(preferences.getString(key)) // Not called unless key is present.
+    }
+
+    override fun set(key: String, value: T, editor: ObservableSettings) {
+        editor.putString(key, serializer(value))
+    }
+
+}
+
+internal class JsonObjectAdapter<T>(
+    private val defaultValue: T,
+    private val serializer: KSerializer<T>,
+    private val serializersModule: SerializersModule = EmptySerializersModule
+) : JvmPreference.Adapter<T> {
+
+    override fun get(key: String, preferences: ObservableSettings): T {
+        return preferences.decodeValue(serializer, key, defaultValue, serializersModule) // Not called unless key is present.
+    }
+
+    override fun set(key: String, value: T, editor: ObservableSettings) {
+        editor.encodeValue(serializer, key, value, serializersModule)
+    }
+
+}
