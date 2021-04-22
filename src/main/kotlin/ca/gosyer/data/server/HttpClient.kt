@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.server
 
+import ca.gosyer.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.features.json.JsonFeature
@@ -20,8 +21,10 @@ internal class HttpProvider @Inject constructor() : Provider<Http> {
     override fun get(): Http {
         return HttpClient(OkHttp) {
             install(JsonFeature)
-            install(Logging) {
-                level = LogLevel.INFO
+            if (BuildConfig.DEBUG) {
+                install(Logging) {
+                    level = LogLevel.HEADERS
+                }
             }
         }
     }
