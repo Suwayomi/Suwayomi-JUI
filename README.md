@@ -21,12 +21,12 @@ Here is a list of current features for interaction with Tachidesk:
 ### All Operating Systems (Java Not Included)
 You should have The [Java Runtime Environment(JRE) 15](https://jdk.java.net/15/) or newer.
 
-Download the latest jar release for your OS from [the releases section](https://github.com/Suwayomi/Tachidesk/releases).
+Download the latest jar release for your OS from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
 Double-click on the jar file or run `java -jar TachideskJUI-os-arch-X.Y.Z.jar` from a Terminal/Command Prompt window to run the app.
 
 ### Windows (Java Included)
-Download the latest exe or msi release from [the releases section](https://github.com/Suwayomi/Tachidesk/releases).
+Download the latest exe or msi release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
 ### MacOS (Java Included)
 Download the latest pkg release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
