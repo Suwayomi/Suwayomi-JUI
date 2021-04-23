@@ -43,9 +43,12 @@ import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.vm.viewModel
+import ca.gosyer.ui.main.Routing
 import ca.gosyer.util.compose.ThemedWindow
+import com.github.zsoltk.compose.router.BackStack
 
 fun openMangaMenu(mangaId: Long) {
     ThemedWindow("TachideskJUI") {
@@ -53,38 +56,21 @@ fun openMangaMenu(mangaId: Long) {
     }
 }
 
-fun openMangaMenu(manga: Manga) {
-    ThemedWindow("TachideskJUI - ${manga.title}") {
-        MangaMenu(manga)
-    }
-}
-
 @Composable
-fun MangaMenu(mangaId: Long) {
-    val vm = viewModel<MangaMenuViewModel>()
-    remember(mangaId) {
-        vm.init(mangaId)
+fun MangaMenu(mangaId: Long, backStack: BackStack<Routing>? = null) {
+    val vm = viewModel<MangaMenuViewModel> {
+        MangaMenuViewModel.Params(mangaId)
     }
-    MangaMenu(vm)
-}
-
-@Composable
-fun MangaMenu(manga: Manga) {
-    val vm = viewModel<MangaMenuViewModel>()
-    remember(manga) {
-        vm.init(manga)
-    }
-    MangaMenu(vm)
-}
-
-@Composable
-fun MangaMenu(vm: MangaMenuViewModel) {
     val manga by vm.manga.collectAsState()
     val chapters by vm.chapters.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
 
     Column(Modifier.background(MaterialTheme.colors.background)) {
+        if (backStack != null) {
+            Toolbar(backStack, "Manga", true)
+        }
+
         Surface(Modifier.height(40.dp).fillMaxWidth()) {
             Row {
                 Button(onClick = vm::toggleFavorite) {
@@ -96,9 +82,10 @@ fun MangaMenu(vm: MangaMenuViewModel) {
             Box {
                 val state = rememberLazyListState()
                 LazyColumn(state = state) {
-                    items(
+                    val items = remember(manga, chapters) {
                         listOf(MangaMenu.MangaMenuManga(manga)) + chapters.map { MangaMenu.MangaMenuChapter(it) }
-                    ) {
+                    }
+                    items(items) {
                         when (it) {
                             is MangaMenu.MangaMenuManga -> MangaItem(it.manga, serverUrl)
                             is MangaMenu.MangaMenuChapter -> ChapterItem(it.chapter)
@@ -158,19 +145,17 @@ private fun Cover(manga: Manga, serverUrl: String, modifier: Modifier = Modifier
         shape = RoundedCornerShape(4.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            manga.cover(serverUrl).let {
-                if (it != null) {
-                    KtorImage(it)
-                }
+            manga.cover(serverUrl)?.let {
+                KtorImage(it)
             }
         }
     }
 }
 
 sealed class MangaMenu {
-    data class MangaMenuManga(val manga: Manga)
+    data class MangaMenuManga(val manga: Manga): MangaMenu()
 
-    data class MangaMenuChapter(val chapter: Chapter)
+    data class MangaMenuChapter(val chapter: Chapter): MangaMenu()
 }
 
 @Composable

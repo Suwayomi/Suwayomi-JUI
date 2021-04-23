@@ -23,6 +23,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MangaMenuViewModel @Inject constructor(
+    private val params: Params,
     private val mangaHandler: MangaInteractionHandler,
     private val chapterHandler: ChapterInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
@@ -39,14 +40,9 @@ class MangaMenuViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    fun init(manga: Manga) {
-        _manga.value = manga
-        init(manga.id)
-    }
-
-    fun init(mangaId: Long) {
+    init {
         scope.launch {
-            refreshMangaAsync(mangaId).await() to refreshChaptersAsync(mangaId).await()
+            refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
             _isLoading.value = false
         }
     }
@@ -85,4 +81,6 @@ class MangaMenuViewModel @Inject constructor(
         }
 
     }
+
+    data class Params(val mangaId: Long)
 }

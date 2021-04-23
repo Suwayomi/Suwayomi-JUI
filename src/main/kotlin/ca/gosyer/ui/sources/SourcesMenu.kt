@@ -14,8 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.vm.viewModel
+import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.ui.sources.components.SourceHomeScreen
 import ca.gosyer.ui.sources.components.SourceScreen
 import ca.gosyer.ui.sources.components.SourceTopBar
@@ -23,12 +25,14 @@ import ca.gosyer.util.compose.ThemedWindow
 
 fun openSourcesMenu() {
     ThemedWindow(title = "TachideskJUI - Sources") {
-        SourcesMenu()
+        SourcesMenu {
+            openMangaMenu(it)
+        }
     }
 }
 
 @Composable
-fun SourcesMenu() {
+fun SourcesMenu(onMangaClick: (Long) -> Unit) {
     val vm = viewModel<SourcesMenuViewModel>()
     val isLoading by vm.isLoading.collectAsState()
     val sources by vm.sources.collectAsState()
@@ -49,7 +53,7 @@ fun SourcesMenu() {
 
         val selectedSource: Source? = selectedSourceTab
         if (selectedSource != null) {
-            SourceScreen(selectedSource)
+            SourceScreen(selectedSource, onMangaClick)
         } else {
             SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
         }

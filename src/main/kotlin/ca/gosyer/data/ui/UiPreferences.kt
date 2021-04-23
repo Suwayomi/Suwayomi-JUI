@@ -8,13 +8,13 @@ package ca.gosyer.data.ui
 
 import ca.gosyer.common.prefs.Preference
 import ca.gosyer.common.prefs.PreferenceStore
-import ca.gosyer.common.prefs.getEnum
+import ca.gosyer.data.ui.model.Screen
 import ca.gosyer.data.ui.model.ThemeMode
 
 class UiPreferences(private val preferenceStore: PreferenceStore) {
 
     fun themeMode(): Preference<ThemeMode> {
-        return preferenceStore.getEnum("theme_mode", ThemeMode.System)
+        return preferenceStore.getJsonObject("theme_mode", ThemeMode.System, ThemeMode.serializer())
     }
 
     fun lightTheme(): Preference<Int> {
@@ -47,6 +47,10 @@ class UiPreferences(private val preferenceStore: PreferenceStore) {
 
     fun colorBarsDark(): Preference<Int> {
         return preferenceStore.getInt("color_bar_dark", 0)
+    }
+
+    fun startScreen(): Preference<Screen> {
+        return preferenceStore.getJsonObject("start_screen", Screen.Library, Screen.serializer())
     }
 
     fun confirmExit(): Preference<Boolean> {

@@ -26,11 +26,11 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.MangaGridItem
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.manga.openMangaMenu
 
 @Composable
 fun SourceScreen(
-    source: Source
+    source: Source,
+    onMangaClick: (Long) -> Unit
 ) {
     val vm = viewModel<SourceScreenViewModel>()
     remember(source) {
@@ -49,7 +49,7 @@ fun SourceScreen(
         isLatest,
         serverUrl,
         onLoadNextPage = vm::loadNextPage,
-        onClickManga = ::openMangaMenu,
+        onMangaClick = onMangaClick,
         onClickMode = vm::setMode
     )
 }
@@ -62,7 +62,7 @@ private fun MangaTable(
     isLatest: Boolean,
     serverUrl: String,
     onLoadNextPage: () -> Unit,
-    onClickManga: (Manga) -> Unit,
+    onMangaClick: (Long) -> Unit,
     onClickMode: (Boolean) -> Unit
 ) {
     if (mangas.isEmpty()) {
@@ -93,7 +93,9 @@ private fun MangaTable(
                     MangaGridItem(
                         title = manga.title,
                         cover = manga.cover(serverUrl),
-                        onClick = { onClickManga(manga) }
+                        onClick = {
+                            onMangaClick(manga.id)
+                        }
                     )
                 }
             }

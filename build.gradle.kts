@@ -15,12 +15,16 @@ version = "1.0.0"
 
 repositories {
     mavenCentral()
+
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
     // UI (Compose)
     implementation(compose.desktop.currentOs)
+    implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:0.2.0")
+    implementation("com.github.Syer10:compose-router:45a8c4fe83")
 
     // Threading
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")

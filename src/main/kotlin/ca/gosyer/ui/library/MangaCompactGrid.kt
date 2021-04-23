@@ -39,7 +39,7 @@ import ca.gosyer.ui.base.components.KtorImage
 fun LibraryMangaCompactGrid(
     library: List<Manga>,
     serverUrl: String,
-    onClickManga: (Manga) -> Unit = {}
+    onClickManga: (Long) -> Unit = {}
 ) {
     LazyVerticalGrid(
         cells = GridCells.Adaptive(160.dp),
@@ -51,7 +51,7 @@ fun LibraryMangaCompactGrid(
                 unread = null, // TODO
                 downloaded = null, // TODO
                 serverUrl = serverUrl,
-                onClick = { onClickManga(manga) }
+                onClick = { onClickManga(manga.id) }
             )
         }
     }

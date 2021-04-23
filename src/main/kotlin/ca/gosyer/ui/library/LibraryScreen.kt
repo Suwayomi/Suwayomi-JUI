@@ -30,8 +30,10 @@ import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Pager
 import ca.gosyer.ui.base.components.PagerState
 import ca.gosyer.ui.base.vm.viewModel
+import ca.gosyer.ui.main.Routing
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
+import com.github.zsoltk.compose.router.BackStack
 
 fun openLibraryMenu() {
     ThemedWindow {
@@ -41,7 +43,7 @@ fun openLibraryMenu() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LibraryScreen() {
+fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
     val vm = viewModel<LibraryScreenViewModel>()
     val categories by vm.categories.collectAsState()
     val selectedCategoryIndex by vm.selectedCategoryIndex.collectAsState()
@@ -87,7 +89,7 @@ fun LibraryScreen() {
                 serverUrl = serverUrl,
                 getLibraryForPage = { vm.getLibraryForCategoryIndex(it).collectAsState() },
                 onPageChanged = { vm.setSelectedPage(it) },
-                onClickManga = ::openMangaMenu
+                onClickManga = onClickManga
             )
         }
         // }
@@ -134,7 +136,7 @@ private fun LibraryPager(
     serverUrl: String,
     getLibraryForPage: @Composable (Int) -> State<List<Manga>>,
     onPageChanged: (Int) -> Unit,
-    onClickManga: (Manga) -> Unit
+    onClickManga: (Long) -> Unit
 ) {
     if (categories.isEmpty()) return
 

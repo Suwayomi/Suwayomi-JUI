@@ -6,22 +6,22 @@
 
 package ca.gosyer.ui.main
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.ui.Modifier
+import androidx.compose.desktop.AppWindow
+import androidx.compose.desktop.DesktopMaterialTheme
+import androidx.compose.desktop.WindowEvents
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.input.key.Key
 import ca.gosyer.BuildConfig
 import ca.gosyer.data.DataModule
-import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.categories.openCategoriesMenu
-import ca.gosyer.ui.extensions.openExtensionsMenu
-import ca.gosyer.ui.library.openLibraryMenu
-import ca.gosyer.ui.sources.openSourcesMenu
+import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.system.userDataDir
+import com.github.zsoltk.compose.backpress.BackPressHandler
+import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.apache.logging.log4j.core.config.Configurator
@@ -29,6 +29,7 @@ import toothpick.configuration.Configuration
 import toothpick.ktp.KTP
 import java.io.BufferedReader
 import java.io.File
+import javax.swing.SwingUtilities
 import kotlin.concurrent.thread
 
 fun main() {
@@ -38,6 +39,7 @@ fun main() {
         clazz.classLoader,
         clazz.getResource("log4j2.xml")?.toURI()
     )
+    val serverInitialized = MutableStateFlow(false)
 
     GlobalScope.launch {
         val logger = KotlinLogging.logger("Server")
@@ -73,6 +75,9 @@ fun main() {
         logger.info { "Server started successfully" }
         var line: String?
         while (reader.readLine().also { line = it } != null) {
+            if (!serverInitialized.value && line?.contains("Javalin started") == true) {
+                serverInitialized.value = true
+            }
             logger.info { line }
         }
         logger.info { "Server closed" }
@@ -97,30 +102,26 @@ fun main() {
             DataModule
         )
 
+    SwingUtilities.invokeLater {
+        val window = AppWindow(
+            title = BuildConfig.NAME
+        )
+        val backPressHandler = BackPressHandler()
+        window.keyboard.setShortcut(Key.Home) {
+            backPressHandler.handle()
+        }
 
-    ThemedWindow(title = "TachideskJUI") {
-        val vm = viewModel<MainViewModel>()
-        Surface {
-            Column(Modifier.fillMaxSize()) {
-                Button(
-                    onClick = ::openExtensionsMenu
+        window.show {
+            DesktopMaterialTheme {
+                CompositionLocalProvider(
+                    LocalBackPressHandler provides backPressHandler
                 ) {
-                    Text("Extensions")
-                }
-                Button(
-                    onClick = ::openSourcesMenu
-                ) {
-                    Text("Sources")
-                }
-                Button(
-                    onClick = ::openLibraryMenu
-                ) {
-                    Text("Library")
-                }
-                Button(
-                    onClick = ::openCategoriesMenu
-                ) {
-                    Text("Categories")
+                    val initialized by serverInitialized.collectAsState()
+                    if (initialized) {
+                        MainMenu()
+                    } else {
+                        LoadingScreen()
+                    }
                 }
             }
         }
