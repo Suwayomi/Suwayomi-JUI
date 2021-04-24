@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
@@ -69,9 +71,9 @@ fun WindowDialog(
     window.show {
         MaterialTheme {
             Surface {
-                Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxSize()) {
-                    Row(content = row, modifier = Modifier.fillMaxSize().weight(1F))
-                    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxSize().weight(2F)) {
+                Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxSize(),) {
+                    Row(content = row, modifier = Modifier.fillMaxWidth())
+                    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End, modifier = Modifier.requiredHeight(70.dp).fillMaxWidth()) {
                         if (showNegativeButton) {
                             OutlinedButton(onNegativeButton.plusClose(), modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)) {
                                 Text(negativeButtonText)
