@@ -67,9 +67,7 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Routing>? = null) {
     val serverUrl by vm.serverUrl.collectAsState()
 
     Column(Modifier.background(MaterialTheme.colors.background)) {
-        if (backStack != null) {
-            Toolbar(backStack, "Manga", true)
-        }
+        Toolbar("Manga", backStack, backStack != null)
 
         Surface(Modifier.height(40.dp).fillMaxWidth()) {
             Row {
@@ -81,10 +79,10 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Routing>? = null) {
         manga?.let { manga ->
             Box {
                 val state = rememberLazyListState()
+                val items = remember(manga, chapters) {
+                    listOf(MangaMenu.MangaMenuManga(manga)) + chapters.map { MangaMenu.MangaMenuChapter(it) }
+                }
                 LazyColumn(state = state) {
-                    val items = remember(manga, chapters) {
-                        listOf(MangaMenu.MangaMenuManga(manga)) + chapters.map { MangaMenu.MangaMenuChapter(it) }
-                    }
                     items(items) {
                         when (it) {
                             is MangaMenu.MangaMenuManga -> MangaItem(it.manga, serverUrl)

@@ -6,22 +6,34 @@
 
 package ca.gosyer.ui.sources
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import ca.gosyer.data.models.Manga
+import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
+import ca.gosyer.ui.base.components.KtorImage
+import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.ui.sources.components.SourceHomeScreen
 import ca.gosyer.ui.sources.components.SourceScreen
-import ca.gosyer.ui.sources.components.SourceTopBar
 import ca.gosyer.util.compose.ThemedWindow
+import com.github.zsoltk.compose.savedinstancestate.BundleScope
 
 fun openSourcesMenu() {
     ThemedWindow(title = "TachideskJUI - Sources") {
@@ -40,22 +52,38 @@ fun SourcesMenu(onMangaClick: (Long) -> Unit) {
     val selectedSourceTab by vm.selectedSourceTab.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
-        SourceTopBar(
-            openHome = {
-                vm.selectTab(null)
-            },
-            sources = sourceTabs,
-            tabSelected = selectedSourceTab,
-            onTabSelected = vm::selectTab,
-            onTabClosed = vm::closeTab
-        )
+    Surface {
+        Column {
+            Toolbar(selectedSourceTab?.name ?: "Sources", closable = false)
+            Row {
+                LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
+                    items(sourceTabs) { source ->
+                        Card(
+                            Modifier
+                                .clickable {
+                                    vm.selectTab(source)
+                                }
+                                .requiredHeight(64.dp)
+                                .requiredWidth(64.dp),
+                        ) {
+                            if (source != null) {
+                                KtorImage(source.iconUrl(serverUrl),)
+                            } else {
+                                Icon(Icons.Default.Home, "Home")
+                            }
+                        }
+                    }
+                }
 
-        val selectedSource: Source? = selectedSourceTab
-        if (selectedSource != null) {
-            SourceScreen(selectedSource, onMangaClick)
-        } else {
-            SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
+                val selectedSource: Source? = selectedSourceTab
+                BundleScope(selectedSource?.name ?: "home") {
+                    if (selectedSource != null) {
+                        SourceScreen(selectedSource, onMangaClick)
+                    } else {
+                        SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
+                    }
+                }
+            }
         }
     }
 }

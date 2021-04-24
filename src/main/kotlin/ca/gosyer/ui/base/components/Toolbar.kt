@@ -23,13 +23,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ca.gosyer.ui.main.Routing
 import com.github.zsoltk.compose.router.BackStack
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.regular.WindowClose
 
 @Composable
-fun <T> Toolbar(router: BackStack<T>, name: String, closable: Boolean, search: ((String) -> Unit)? = null) {
+fun Toolbar(
+    name: String,
+    router: BackStack<Routing>? = null,
+    closable: Boolean,
+    search: ((String) -> Unit)? = null
+) {
     val searchText = remember { mutableStateOf("") }
     Surface(Modifier.fillMaxWidth().height(32.dp), elevation = 2.dp) {
         Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -46,7 +52,7 @@ fun <T> Toolbar(router: BackStack<T>, name: String, closable: Boolean, search: (
             if (closable) {
                 IconButton(
                     onClick = {
-                        router.pop()
+                        router?.pop()
                     }
                 ) {
                     Icon(FontAwesomeIcons.Regular.WindowClose, "close", Modifier.size(32.dp))
@@ -54,5 +60,4 @@ fun <T> Toolbar(router: BackStack<T>, name: String, closable: Boolean, search: (
             }
         }
     }
-
 }

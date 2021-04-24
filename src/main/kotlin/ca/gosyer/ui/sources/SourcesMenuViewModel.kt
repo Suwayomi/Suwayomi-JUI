@@ -35,7 +35,7 @@ class SourcesMenuViewModel @Inject constructor(
     private val _sources = MutableStateFlow(emptyList<Source>())
     val sources = _sources.asStateFlow()
 
-    private val _sourceTabs = MutableStateFlow(mapOf<Long?, Source?>(null to null))
+    private val _sourceTabs = MutableStateFlow<List<Source?>>(listOf(null))
     val sourceTabs = _sourceTabs.asStateFlow()
 
     private val _selectedSourceTab = MutableStateFlow<Source?>(null)
@@ -65,12 +65,14 @@ class SourcesMenuViewModel @Inject constructor(
     }
 
     fun addTab(source: Source) {
-        _sourceTabs.value += source.id to source
+        if (source !in _sourceTabs.value) {
+            _sourceTabs.value += source
+        }
         selectTab(source)
     }
 
     fun closeTab(source: Source) {
-        _sourceTabs.value -= source.id
+        _sourceTabs.value -= source
         if (selectedSourceTab.value?.id == source.id) {
             _selectedSourceTab.value = null
         }

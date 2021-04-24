@@ -20,7 +20,6 @@ import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.data.ui.UiPreferences
-import io.ktor.client.HttpClient
 import toothpick.ktp.binding.bind
 import toothpick.ktp.binding.module
 

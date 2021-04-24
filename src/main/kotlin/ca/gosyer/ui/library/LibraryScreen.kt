@@ -30,10 +30,8 @@ import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Pager
 import ca.gosyer.ui.base.components.PagerState
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Routing
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
-import com.github.zsoltk.compose.router.BackStack
 
 fun openLibraryMenu() {
     ThemedWindow {

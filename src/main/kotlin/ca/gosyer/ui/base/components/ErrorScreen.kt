@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import kotlin.random.Random
 
-
 @Composable
 fun ErrorScreen(errorMessage: String? = null) {
     Box(Modifier.fillMaxSize()) {
