@@ -7,6 +7,7 @@
 package ca.gosyer.ui.main
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,14 +19,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
-import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,14 +31,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.BuildConfig
-import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.extensions.ExtensionsMenu
 import ca.gosyer.ui.library.LibraryScreen
 import ca.gosyer.ui.manga.MangaMenu
 import ca.gosyer.ui.sources.SourcesMenu
-import com.github.zsoltk.compose.backpress.BackPressHandler
-import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.github.zsoltk.compose.router.Router
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
@@ -52,7 +46,6 @@ import compose.icons.fontawesomeicons.regular.Map
 @Composable
 fun MainMenu() {
     val vm = viewModel<MainViewModel>()
-    val menu by vm.menu.collectAsState()
     Surface {
 
         Router<Routing>("TopLevel", Routing.LibraryMenu) { backStack ->
@@ -111,6 +104,7 @@ fun MainMenu() {
 @Composable
 fun MainMenuItem(menu: TopLevelMenus, selected: Boolean, onClick: (Routing) -> Unit) {
     Card(
+        Modifier.clickable { onClick(menu.menu) }.fillMaxWidth().height(40.dp),
         backgroundColor = if (!selected) {
             Color.Transparent
         } else {
@@ -119,15 +113,11 @@ fun MainMenuItem(menu: TopLevelMenus, selected: Boolean, onClick: (Routing) -> U
         contentColor = Color.Transparent,
         elevation = 0.dp
     ) {
-        TextButton(
-            onClick = { onClick(menu.menu) },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row {
-                Image(menu.icon, menu.text, modifier = Modifier.size(20.dp))
-                Spacer(Modifier.width(8.dp))
-                Text(menu.text)
-            }
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
+            Spacer(Modifier.width(16.dp))
+            Image(menu.icon, menu.text, modifier = Modifier.size(20.dp))
+            Spacer(Modifier.width(16.dp))
+            Text(menu.text)
         }
     }
 }
