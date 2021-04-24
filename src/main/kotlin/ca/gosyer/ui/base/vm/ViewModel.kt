@@ -6,8 +6,15 @@
 
 package ca.gosyer.ui.base.vm
 
+import ca.gosyer.common.prefs.Preference
+import ca.gosyer.ui.base.prefs.PreferenceMutableStateFlow
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 abstract class ViewModel {
 
@@ -19,4 +26,14 @@ abstract class ViewModel {
     }
 
     open fun onDestroy() {}
+
+    fun <T> Preference<T>.asStateFlow() = PreferenceMutableStateFlow(this, scope)
+
+    fun <T> Flow<T>.asStateFlow(initialValue: T): StateFlow<T> {
+        val state = MutableStateFlow(initialValue)
+        scope.launch {
+            collect { state.value = it }
+        }
+        return state
+    }
 }

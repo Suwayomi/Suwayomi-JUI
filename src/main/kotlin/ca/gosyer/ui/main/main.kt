@@ -8,7 +8,6 @@ package ca.gosyer.ui.main
 
 import androidx.compose.desktop.AppWindow
 import androidx.compose.desktop.DesktopMaterialTheme
-import androidx.compose.desktop.WindowEvents
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,7 +15,7 @@ import androidx.compose.ui.input.key.Key
 import ca.gosyer.BuildConfig
 import ca.gosyer.data.DataModule
 import ca.gosyer.ui.base.components.LoadingScreen
-import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.system.userDataDir
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
@@ -112,7 +111,7 @@ fun main() {
         }
 
         window.show {
-            DesktopMaterialTheme {
+            AppTheme {
                 CompositionLocalProvider(
                     LocalBackPressHandler provides backPressHandler
                 ) {

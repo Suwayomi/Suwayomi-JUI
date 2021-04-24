@@ -89,3 +89,44 @@ fun WindowDialog(
         }
     }
 }
+
+fun WindowDialog(
+    title: String = "Dialog",
+    size: IntSize = IntSize(400, 200),
+    onDismissRequest: (() -> Unit)? = null,
+    forceFocus: Boolean = true,
+    buttons: @Composable (AppWindow) -> Unit,
+    content: @Composable (AppWindow) -> Unit
+) = SwingUtilities.invokeLater {
+    val window = AppWindow(
+        title = title,
+        size = size,
+        location = IntOffset.Zero,
+        centered = true,
+        icon = null,
+        menuBar = null,
+        undecorated = false,
+        events = WindowEvents(),
+        onDismissRequest = onDismissRequest
+    )
+
+    if (forceFocus) {
+        window.events.onFocusLost = {
+            window.window.requestFocus()
+        }
+    }
+
+    window.show {
+        MaterialTheme {
+            Surface {
+                Column(
+                    verticalArrangement = Arrangement.Bottom,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    content(window)
+                    buttons(window)
+                }
+            }
+        }
+    }
+}

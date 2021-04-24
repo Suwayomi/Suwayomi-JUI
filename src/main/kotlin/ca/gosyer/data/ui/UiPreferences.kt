@@ -14,7 +14,7 @@ import ca.gosyer.data.ui.model.ThemeMode
 class UiPreferences(private val preferenceStore: PreferenceStore) {
 
     fun themeMode(): Preference<ThemeMode> {
-        return preferenceStore.getJsonObject("theme_mode", ThemeMode.System, ThemeMode.serializer())
+        return preferenceStore.getJsonObject("theme_mode", ThemeMode.Light, ThemeMode.serializer())
     }
 
     fun lightTheme(): Preference<Int> {
@@ -39,14 +39,6 @@ class UiPreferences(private val preferenceStore: PreferenceStore) {
 
     fun colorSecondaryDark(): Preference<Int> {
         return preferenceStore.getInt("color_secondary_dark", 0)
-    }
-
-    fun colorBarsLight(): Preference<Int> {
-        return preferenceStore.getInt("color_bar_light", 0)
-    }
-
-    fun colorBarsDark(): Preference<Int> {
-        return preferenceStore.getInt("color_bar_dark", 0)
     }
 
     fun startScreen(): Preference<Screen> {
