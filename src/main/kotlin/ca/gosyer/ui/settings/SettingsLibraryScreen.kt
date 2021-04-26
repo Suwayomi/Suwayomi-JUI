@@ -4,20 +4,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
 package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.prefs.PreferencesScrollableColumn
-import ca.gosyer.ui.base.prefs.SwitchPref
+import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
@@ -37,8 +31,10 @@ fun SettingsLibraryScreen(navController: BackStack<Route>) {
 
     Column {
         Toolbar("Library Settings", navController, true)
-        PreferencesScrollableColumn {
-            SwitchPref(preference = vm.showAllCategory, title = "Show all category")
+        LazyColumn {
+            item {
+                SwitchPreference(preference = vm.showAllCategory, title = "Show all category")
+            }
         }
     }
 }

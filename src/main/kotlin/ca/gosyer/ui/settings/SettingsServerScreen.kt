@@ -7,13 +7,13 @@
 package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.prefs.EditTextPref
-import ca.gosyer.ui.base.prefs.PreferencesScrollableColumn
-import ca.gosyer.ui.base.prefs.SwitchPref
+import ca.gosyer.ui.base.prefs.EditTextPreference
+import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
@@ -33,9 +33,11 @@ fun SettingsServerScreen(navController: BackStack<Route>) {
     val vm = viewModel<SettingsServerViewModel>()
     Column {
         Toolbar("Server Settings", navController, true)
-        SwitchPref(preference = vm.host, title = "Host server inside TachideskJUI")
-        PreferencesScrollableColumn {
-            EditTextPref(vm.serverUrl, "Server Url", subtitle = vm.serverUrl.collectAsState().value)
+        SwitchPreference(preference = vm.host, title = "Host server inside TachideskJUI")
+        LazyColumn {
+            item {
+                EditTextPreference(vm.serverUrl, "Server Url", subtitle = vm.serverUrl.collectAsState().value)
+            }
         }
     }
 }

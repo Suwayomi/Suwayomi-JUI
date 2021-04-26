@@ -7,9 +7,9 @@
 package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.prefs.PreferencesScrollableColumn
 import ca.gosyer.ui.main.Route
 import com.github.zsoltk.compose.router.BackStack
 
@@ -17,7 +17,7 @@ import com.github.zsoltk.compose.router.BackStack
 fun SettingsBackupScreen(navController: BackStack<Route>) {
     Column {
         Toolbar("Backup Settings", navController, true)
-        PreferencesScrollableColumn {
+        LazyColumn {
         }
     }
 }

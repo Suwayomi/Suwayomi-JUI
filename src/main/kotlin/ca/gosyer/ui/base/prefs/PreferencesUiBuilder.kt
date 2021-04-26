@@ -48,120 +48,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.ColorPickerDialog
-import ca.gosyer.ui.base.components.ScrollableColumn
 
 @Composable
-fun PreferencesScrollableColumn(
-    modifier: Modifier = Modifier,
-    content: @Composable PreferenceScope.() -> Unit
-) {
-    Box {
-        ScrollableColumn(modifier) {
-            val scope = PreferenceScope()
-            scope.content()
-        }
-    }
-}
-
-class PreferenceScope {
-    @Composable
-    fun <Key> ChoicePref(
-        preference: PreferenceMutableStateFlow<Key>,
-        choices: Map<Key, String>,
-        title: String,
-        subtitle: String? = null
-    ) {
-        val prefValue by preference.collectAsState()
-        Pref(
-            title = title,
-            subtitle = if (subtitle == null) choices[prefValue] else null,
-            onClick = {
-                ChoiceDialog(
-                    items = choices.toList(),
-                    selected = prefValue,
-                    title = title,
-                    onSelected = { selected ->
-                        preference.value = selected
-                    }
-                )
-            }
-        )
-    }
-
-    @Composable
-    fun ColorPref(
-        preference: PreferenceMutableStateFlow<Color>,
-        title: String,
-        subtitle: String? = null,
-        unsetColor: Color = Color.Unspecified
-    ) {
-        val initialColor = preference.value.takeOrElse { unsetColor }
-        Pref(
-            title = title,
-            subtitle = subtitle,
-            onClick = {
-                    ColorPickerDialog(
-                        title = title,
-                        onSelected = {
-                            preference.value = it
-                        },
-                        initialColor = initialColor
-                    )
-            },
-            onLongClick = { preference.value = Color.Unspecified },
-            action = {
-                val prefValue by preference.collectAsState()
-                if (prefValue != Color.Unspecified || unsetColor != Color.Unspecified) {
-                    val borderColor = MaterialTheme.colors.onBackground.copy(alpha = 0.54f)
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(color = initialColor)
-                            .border(BorderStroke(1.dp, borderColor), CircleShape)
-                    )
-                }
-            }
-        )
-    }
-
-    private fun <T> ChoiceDialog(
-        items: List<Pair<T, String>>,
-        selected: T?,
-        onDismissRequest: () -> Unit = {},
-        onSelected: (T) -> Unit,
-        title: String,
-        buttons: @Composable (AppWindow) -> Unit = {  }
-    ) {
-        WindowDialog(onDismissRequest = onDismissRequest, buttons = buttons, title = title, content = {
-            LazyColumn {
-                items(items) { (value, text) ->
-                    Row(
-                        modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
-                            onClick = {
-                                onSelected(value)
-                                it.close()
-                            }),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = value == selected,
-                            onClick = {
-                                onSelected(value)
-                                it.close()
-                            },
-                        )
-                        Text(text = text, modifier = Modifier.padding(start = 24.dp))
-                    }
-                }
-            }
-        })
-    }
-}
-
-@Composable
-fun Pref(
+fun PreferenceRow(
     title: String,
     icon: ImageVector? = null,
     onClick: () -> Unit = {},
@@ -213,13 +102,13 @@ fun Pref(
 }
 
 @Composable
-fun SwitchPref(
+fun SwitchPreference(
     preference: PreferenceMutableStateFlow<Boolean>,
     title: String,
     subtitle: String? = null,
     icon: ImageVector? = null,
 ) {
-    Pref(
+    PreferenceRow(
         title = title,
         subtitle = subtitle,
         icon = icon,
@@ -232,14 +121,14 @@ fun SwitchPref(
 }
 
 @Composable
-fun EditTextPref(
+fun EditTextPreference(
     preference: PreferenceMutableStateFlow<String>,
     title: String,
     subtitle: String? = null,
     icon: ImageVector? = null
 ) {
     var editText by remember { mutableStateOf(TextFieldValue(preference.value)) }
-    Pref(
+    PreferenceRow(
         title = title,
         subtitle = subtitle,
         icon = icon,
@@ -253,6 +142,101 @@ fun EditTextPref(
                 OutlinedTextField(editText, onValueChange = {
                     editText = it
                 })
+            }
+        }
+    )
+}
+
+@Composable
+fun <Key> ChoicePreference(
+    preference: PreferenceMutableStateFlow<Key>,
+    choices: Map<Key, String>,
+    title: String,
+    subtitle: String? = null
+) {
+    val prefValue by preference.collectAsState()
+    PreferenceRow(
+        title = title,
+        subtitle = if (subtitle == null) choices[prefValue] else null,
+        onClick = {
+            ChoiceDialog(
+                items = choices.toList(),
+                selected = prefValue,
+                title = title,
+                onSelected = { selected ->
+                    preference.value = selected
+                }
+            )
+        }
+    )
+}
+
+private fun <T> ChoiceDialog(
+    items: List<Pair<T, String>>,
+    selected: T?,
+    onDismissRequest: () -> Unit = {},
+    onSelected: (T) -> Unit,
+    title: String,
+    buttons: @Composable (AppWindow) -> Unit = {  }
+) {
+    WindowDialog(onDismissRequest = onDismissRequest, buttons = buttons, title = title, content = {
+        LazyColumn {
+            items(items) { (value, text) ->
+                Row(
+                    modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
+                        onClick = {
+                            onSelected(value)
+                            it.close()
+                        }),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = value == selected,
+                        onClick = {
+                            onSelected(value)
+                            it.close()
+                        },
+                    )
+                    Text(text = text, modifier = Modifier.padding(start = 24.dp))
+                }
+            }
+        }
+    })
+}
+
+@Composable
+fun ColorPreference(
+    preference: PreferenceMutableStateFlow<Color>,
+    title: String,
+    subtitle: String? = null,
+    unsetColor: Color = Color.Unspecified
+) {
+    val initialColor = preference.value.takeOrElse { unsetColor }
+    PreferenceRow(
+        title = title,
+        subtitle = subtitle,
+        onClick = {
+            ColorPickerDialog(
+                title = title,
+                onSelected = {
+                    preference.value = it
+                },
+                initialColor = initialColor
+            )
+        },
+        onLongClick = { preference.value = Color.Unspecified },
+        action = {
+            val prefValue by preference.collectAsState()
+            if (prefValue != Color.Unspecified || unsetColor != Color.Unspecified) {
+                val borderColor = MaterialTheme.colors.onBackground.copy(alpha = 0.54f)
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(color = initialColor)
+                        .border(BorderStroke(1.dp, borderColor), CircleShape)
+                )
             }
         }
     )

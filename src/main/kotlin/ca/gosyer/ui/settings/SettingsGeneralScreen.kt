@@ -4,22 +4,17 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
 package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.prefs.PreferencesScrollableColumn
-import ca.gosyer.ui.base.prefs.SwitchPref
+import ca.gosyer.ui.base.prefs.ChoicePreference
+import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
@@ -73,28 +68,38 @@ fun SettingsGeneralScreen(navController: BackStack<Route>) {
     val vm = viewModel<SettingsGeneralViewModel>()
     Column {
         Toolbar("General Settings", navController, true)
-        PreferencesScrollableColumn {
-            ChoicePref(
-                preference = vm.startScreen,
-                title = "Start Screen",
-                choices = mapOf(
-                    StartScreen.Library to "Library",
-                    StartScreen.Sources to "Sources",
-                    StartScreen.Extensions to "Extensions",
+        LazyColumn {
+            item {
+                ChoicePreference(
+                    preference = vm.startScreen,
+                    title = "Start Screen",
+                    choices = mapOf(
+                        StartScreen.Library to "Library",
+                        StartScreen.Sources to "Sources",
+                        StartScreen.Extensions to "Extensions",
+                    )
                 )
-            )
-            SwitchPref(preference = vm.confirmExit, title = "Confirm Exit")
-            Divider()
-            ChoicePref(
-                preference = vm.language,
-                title = "Language",
-                choices = vm.getLanguageChoices(),
-            )
-            ChoicePref(
-                preference = vm.dateFormat,
-                title = "Date Format",
-                choices = vm.getDateChoices()
-            )
+            }
+            item {
+                SwitchPreference(preference = vm.confirmExit, title = "Confirm Exit")
+            }
+            item {
+                Divider()
+            }
+            item {
+                ChoicePreference(
+                    preference = vm.language,
+                    title = "Language",
+                    choices = vm.getLanguageChoices(),
+                )
+            }
+            item {
+                ChoicePreference(
+                    preference = vm.dateFormat,
+                    title = "Date Format",
+                    choices = vm.getDateChoices()
+                )
+            }
         }
     }
 }

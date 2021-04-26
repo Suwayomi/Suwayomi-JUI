@@ -4,12 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
 package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.border
@@ -20,6 +14,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
@@ -38,7 +33,8 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.prefs.PreferencesScrollableColumn
+import ca.gosyer.ui.base.prefs.ChoicePreference
+import ca.gosyer.ui.base.prefs.ColorPreference
 import ca.gosyer.ui.base.theme.AppColorsPreferenceState
 import ca.gosyer.ui.base.theme.Theme
 import ca.gosyer.ui.base.theme.asStateFlow
@@ -79,39 +75,47 @@ fun SettingsAppearance(navController: BackStack<Route>) {
 
     Column {
         Toolbar("Appearance Settings", navController, true)
-        PreferencesScrollableColumn {
-            ChoicePref(
-                preference = vm.themeMode,
-                choices = mapOf(
-                    //ThemeMode.System to R.string.follow_system_settings,
-                    ThemeMode.Light to "Light",
-                    ThemeMode.Dark to "Dark"
-                ),
-                title = "Theme"
-            )
-            Text(
-                "Preset themes",
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
-            )
-            LazyRow(modifier = Modifier.padding(horizontal = 8.dp)) {
-                items(themesForCurrentMode) { theme ->
-                    ThemeItem(theme, onClick = {
-                        (if (isLight) vm.lightTheme else vm.darkTheme).value = it.id
-                        activeColors.primaryStateFlow.value = it.colors.primary
-                        activeColors.secondaryStateFlow.value = it.colors.secondary
-                    })
+        LazyColumn {
+            item {
+                ChoicePreference(
+                    preference = vm.themeMode,
+                    choices = mapOf(
+                        //ThemeMode.System to R.string.follow_system_settings,
+                        ThemeMode.Light to "Light",
+                        ThemeMode.Dark to "Dark"
+                    ),
+                    title = "Theme"
+                )
+            }
+            item {
+                Text(
+                    "Preset themes",
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
+                )
+                LazyRow(modifier = Modifier.padding(horizontal = 8.dp)) {
+                    items(themesForCurrentMode) { theme ->
+                        ThemeItem(theme, onClick = {
+                            (if (isLight) vm.lightTheme else vm.darkTheme).value = it.id
+                            activeColors.primaryStateFlow.value = it.colors.primary
+                            activeColors.secondaryStateFlow.value = it.colors.secondary
+                        })
+                    }
                 }
             }
-            ColorPref(
-                preference = activeColors.primaryStateFlow, title = "Color primary",
-                subtitle = "Displayed most frequently across your app",
-                unsetColor = MaterialTheme.colors.primary
-            )
-            ColorPref(
-                preference = activeColors.secondaryStateFlow, title = "Color secondary",
-                subtitle = "Accents select parts of the UI",
-                unsetColor = MaterialTheme.colors.secondary
-            )
+            item {
+                ColorPreference(
+                    preference = activeColors.primaryStateFlow, title = "Color primary",
+                    subtitle = "Displayed most frequently across your app",
+                    unsetColor = MaterialTheme.colors.primary
+                )
+            }
+            item {
+                ColorPreference(
+                    preference = activeColors.secondaryStateFlow, title = "Color secondary",
+                    subtitle = "Accents select parts of the UI",
+                    unsetColor = MaterialTheme.colors.secondary
+                )
+            }
         }
     }
 }
