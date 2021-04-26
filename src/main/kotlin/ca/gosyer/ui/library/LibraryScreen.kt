@@ -12,6 +12,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
@@ -22,6 +23,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.models.Category
@@ -58,7 +60,7 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
         sheetState = sheetState,
         sheetContent = { *//*LibrarySheet()*//* }
     ) {*/
-        Column {
+        Column(Modifier.fillMaxWidth()) {
             /*Toolbar(
                 title = {
                     val text = if (vm.showCategoryTabs) {

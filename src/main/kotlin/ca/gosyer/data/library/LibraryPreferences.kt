@@ -15,4 +15,8 @@ class LibraryPreferences(private val preferenceStore: PreferenceStore) {
     fun displayMode(): Preference<DisplayMode> {
         return preferenceStore.getJsonObject("display_mode", DisplayMode.CompactGrid, DisplayMode.serializer())
     }
+
+    fun showAllCategory(): Preference<Boolean> {
+        return preferenceStore.getBoolean("show_all_category", false)
+    }
 }

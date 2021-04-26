@@ -9,7 +9,9 @@ package ca.gosyer.ui.base.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,13 +21,20 @@ import androidx.compose.ui.unit.sp
 import kotlin.random.Random
 
 @Composable
-fun ErrorScreen(errorMessage: String? = null) {
-    Box(Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.align(Alignment.Center)) {
-            val errorFace = remember { getRandomErrorFace() }
-            Text(errorFace, fontSize = 36.sp, color = MaterialTheme.colors.onBackground)
-            if (errorMessage != null) {
-                Text(errorMessage, color = MaterialTheme.colors.onBackground)
+fun ErrorScreen(errorMessage: String? = null, retry: (() -> Unit)? = null) {
+    Surface {
+        Box(Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.align(Alignment.Center)) {
+                val errorFace = remember { getRandomErrorFace() }
+                Text(errorFace, fontSize = 36.sp, color = MaterialTheme.colors.onBackground)
+                if (errorMessage != null) {
+                    Text(errorMessage, color = MaterialTheme.colors.onBackground)
+                }
+                if (retry != null) {
+                    Button(retry) {
+                        Text("Retry")
+                    }
+                }
             }
         }
     }

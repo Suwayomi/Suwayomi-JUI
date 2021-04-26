@@ -9,9 +9,10 @@ package ca.gosyer.ui.base.theme
 import androidx.compose.ui.graphics.Color
 import ca.gosyer.common.prefs.Preference
 import ca.gosyer.data.ui.UiPreferences
+import ca.gosyer.ui.base.prefs.PreferenceMutableStateFlow
 import ca.gosyer.ui.base.prefs.asColor
+import ca.gosyer.ui.base.prefs.asStateIn
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.StateFlow
 
 data class AppColorsPreference(
     val primary: Preference<Color>,
@@ -19,8 +20,8 @@ data class AppColorsPreference(
 )
 
 class AppColorsPreferenceState(
-    val primaryStateFlow: StateFlow<Color>,
-    val secondaryStateFlow: StateFlow<Color>
+    val primaryStateFlow: PreferenceMutableStateFlow<Color>,
+    val secondaryStateFlow: PreferenceMutableStateFlow<Color>
 )
 
 fun UiPreferences.getLightColors(): AppColorsPreference {
@@ -37,9 +38,9 @@ fun UiPreferences.getDarkColors(): AppColorsPreference {
     )
 }
 
-fun AppColorsPreference.asState(scope: CoroutineScope): AppColorsPreferenceState {
+fun AppColorsPreference.asStateFlow(scope: CoroutineScope): AppColorsPreferenceState {
     return AppColorsPreferenceState(
-        primary.stateIn(scope),
-        secondary.stateIn(scope)
+        primary.asStateIn(scope),
+        secondary.asStateIn(scope)
     )
 }

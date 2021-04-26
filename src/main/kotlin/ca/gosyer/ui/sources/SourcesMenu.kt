@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
@@ -33,6 +32,7 @@ import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.ui.sources.components.SourceHomeScreen
 import ca.gosyer.ui.sources.components.SourceScreen
 import ca.gosyer.util.compose.ThemedWindow
+import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
 
 fun openSourcesMenu() {
@@ -43,9 +43,20 @@ fun openSourcesMenu() {
     }
 }
 
+private const val SOURCE_MENU_KEY = "source_menu"
+
 @Composable
 fun SourcesMenu(onMangaClick: (Long) -> Unit) {
-    val vm = viewModel<SourcesMenuViewModel>()
+    BundleScope(SOURCE_MENU_KEY, autoDispose = false) {
+        SourcesMenu(it, onMangaClick)
+    }
+}
+
+@Composable
+fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
+    val vm = viewModel<SourcesMenuViewModel> {
+        bundle
+    }
     val isLoading by vm.isLoading.collectAsState()
     val sources by vm.sources.collectAsState()
     val sourceTabs by vm.sourceTabs.collectAsState()
@@ -56,27 +67,28 @@ fun SourcesMenu(onMangaClick: (Long) -> Unit) {
         Column {
             Toolbar(selectedSourceTab?.name ?: "Sources", closable = false)
             Row {
-                LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
-                    items(sourceTabs) { source ->
-                        Card(
-                            Modifier
+                Surface(elevation = 1.dp) {
+                    LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
+                        items(sourceTabs) { source ->
+                            val modifier = Modifier
                                 .clickable {
                                     vm.selectTab(source)
                                 }
                                 .requiredHeight(64.dp)
-                                .requiredWidth(64.dp),
-                        ) {
+                                .requiredWidth(64.dp)
+
                             if (source != null) {
-                                KtorImage(source.iconUrl(serverUrl),)
+                                KtorImage(source.iconUrl(serverUrl), imageModifier = modifier)
                             } else {
-                                Icon(Icons.Default.Home, "Home")
+                                Icon(Icons.Default.Home, "Home", modifier = modifier)
                             }
                         }
                     }
                 }
 
+
                 val selectedSource: Source? = selectedSourceTab
-                BundleScope(selectedSource?.name ?: "home") {
+                BundleScope("Sources") {
                     if (selectedSource != null) {
                         SourceScreen(selectedSource, onMangaClick)
                     } else {

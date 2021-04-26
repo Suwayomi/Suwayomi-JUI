@@ -11,7 +11,7 @@ package ca.gosyer.data.ui.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class Screen {
+enum class StartScreen {
   Library,
 //  Updates,
 //  History,

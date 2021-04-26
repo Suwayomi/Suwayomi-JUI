@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -27,6 +26,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import ca.gosyer.ui.base.theme.AppTheme
 import javax.swing.SwingUtilities
 
 @Suppress("FunctionName")
@@ -69,7 +69,7 @@ fun WindowDialog(
     window.keyboard.setShortcut(Key.Escape, onNegativeButton.plusClose())
 
     window.show {
-        MaterialTheme {
+        AppTheme {
             Surface {
                 Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxSize(),) {
                     Row(content = row, modifier = Modifier.fillMaxWidth())
@@ -117,10 +117,9 @@ fun WindowDialog(
     }
 
     window.show {
-        MaterialTheme {
+        AppTheme {
             Surface {
                 Column(
-                    verticalArrangement = Arrangement.Bottom,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     content(window)

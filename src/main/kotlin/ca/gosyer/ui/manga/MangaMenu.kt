@@ -46,9 +46,10 @@ import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Routing
+import ca.gosyer.ui.main.Route
 import ca.gosyer.util.compose.ThemedWindow
 import com.github.zsoltk.compose.router.BackStack
+import java.util.Date
 
 fun openMangaMenu(mangaId: Long) {
     ThemedWindow("TachideskJUI") {
@@ -57,7 +58,7 @@ fun openMangaMenu(mangaId: Long) {
 }
 
 @Composable
-fun MangaMenu(mangaId: Long, backStack: BackStack<Routing>? = null) {
+fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
     val vm = viewModel<MangaMenuViewModel> {
         MangaMenuViewModel.Params(mangaId)
     }
@@ -65,6 +66,7 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Routing>? = null) {
     val chapters by vm.chapters.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
+    val dateFormat by vm.dateFormat.collectAsState()
 
     Column(Modifier.background(MaterialTheme.colors.background)) {
         Toolbar("Manga", backStack, backStack != null)
@@ -86,7 +88,7 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Routing>? = null) {
                     items(items) {
                         when (it) {
                             is MangaMenu.MangaMenuManga -> MangaItem(it.manga, serverUrl)
-                            is MangaMenu.MangaMenuChapter -> ChapterItem(it.chapter)
+                            is MangaMenu.MangaMenuChapter -> ChapterItem(it.chapter, dateFormat::format)
                         }
                     }
                 }
@@ -176,20 +178,20 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ChapterItem(chapter: Chapter) {
-    Surface(modifier = Modifier.fillMaxWidth().height(70.dp).padding(4.dp), elevation = 2.dp) {
+fun ChapterItem(chapter: Chapter, format: (Date) -> String) {
+    Surface(modifier = Modifier.fillMaxWidth().height(70.dp).padding(4.dp), elevation = 1.dp) {
         Column(Modifier.padding(4.dp)) {
-            Text(chapter.name, fontSize = 20.sp)
+            Text(chapter.name, fontSize = 20.sp, maxLines = 1)
             val description = mutableListOf<String>()
             if (chapter.dateUpload != 0L) {
-                description += chapter.dateUpload.toString()
+                description += format(Date(chapter.dateUpload))
             }
             if (!chapter.scanlator.isNullOrEmpty()) {
                 description += chapter.scanlator
             }
             if (description.isNotEmpty()) {
                 Spacer(Modifier.height(2.dp))
-                Text(description.joinToString(" - "))
+                Text(description.joinToString(" - "), maxLines = 1)
             }
         }
     }

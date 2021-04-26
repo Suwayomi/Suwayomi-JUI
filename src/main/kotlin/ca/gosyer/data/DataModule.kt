@@ -13,6 +13,7 @@ import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.HttpProvider
 import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
@@ -63,4 +64,8 @@ val DataModule = module {
         .toClass<MangaInteractionHandler>()
     bind<SourceInteractionHandler>()
         .toClass<SourceInteractionHandler>()
+
+    bind<ServerService>()
+        .toClass<ServerService>()
+        .singleton()
 }

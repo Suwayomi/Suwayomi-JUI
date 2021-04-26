@@ -26,15 +26,23 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.MangaGridItem
 import ca.gosyer.ui.base.vm.viewModel
+import com.github.zsoltk.compose.savedinstancestate.Bundle
+import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
 
 @Composable
 fun SourceScreen(
     source: Source,
     onMangaClick: (Long) -> Unit
 ) {
+    val upstream = LocalSavedInstanceState.current
+
     val vm = viewModel<SourceScreenViewModel>()
-    remember(source) {
-        vm.init(source)
+    val bundle = remember(source.id) {
+        upstream.getBundle(source.id.toString())
+            ?: Bundle().also { upstream.putBundle(source.id.toString(), it) }
+    }
+    remember(source.id) {
+        vm.init(source, bundle)
     }
     val mangas by vm.mangas.collectAsState()
     val hasNextPage by vm.hasNextPage.collectAsState()

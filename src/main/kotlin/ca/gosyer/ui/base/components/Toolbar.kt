@@ -6,24 +6,24 @@
 
 package ca.gosyer.ui.base.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import ca.gosyer.ui.main.Routing
+import ca.gosyer.ui.main.Route
 import com.github.zsoltk.compose.router.BackStack
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
@@ -32,13 +32,39 @@ import compose.icons.fontawesomeicons.regular.WindowClose
 @Composable
 fun Toolbar(
     name: String,
-    router: BackStack<Routing>? = null,
+    router: BackStack<Route>? = null,
     closable: Boolean,
+    modifier: Modifier = Modifier,
+    actions: @Composable RowScope.() -> Unit = {},
+    backgroundColor: Color = MaterialTheme.colors.primary, //CustomColors.current.bars,
+    contentColor: Color = MaterialTheme.colors.onPrimary, //CustomColors.current.onBars,
+    elevation: Dp = AppBarDefaults.TopAppBarElevation,
     search: ((String) -> Unit)? = null
 ) {
     val searchText = remember { mutableStateOf("") }
     Surface(Modifier.fillMaxWidth().height(32.dp), elevation = 2.dp) {
-        Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween) {
+        TopAppBar(
+            {
+                Text(name)
+            },
+            modifier,
+            actions = @Composable {
+                actions()
+                if (closable) {
+                    IconButton(
+                        onClick = {
+                            router?.pop()
+                        }
+                    ) {
+                        Icon(FontAwesomeIcons.Regular.WindowClose, "close")
+                    }
+                }
+            },
+            backgroundColor = backgroundColor,
+            contentColor = contentColor,
+            elevation = elevation
+        )
+        /*Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(name, fontSize = 24.sp)
             if (search != null) {
                 BasicTextField(
@@ -58,6 +84,6 @@ fun Toolbar(
                     Icon(FontAwesomeIcons.Regular.WindowClose, "close", Modifier.size(32.dp))
                 }
             }
-        }
+        }*/
     }
 }

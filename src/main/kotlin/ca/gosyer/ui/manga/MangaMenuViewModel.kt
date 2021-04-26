@@ -12,18 +12,24 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
+import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.ui.base.vm.ViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 class MangaMenuViewModel @Inject constructor(
     private val params: Params,
+    private val uiPreferences: UiPreferences,
     private val mangaHandler: MangaInteractionHandler,
     private val chapterHandler: ChapterInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
@@ -39,6 +45,12 @@ class MangaMenuViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
+
+    val dateFormat = uiPreferences.dateFormat().changes()
+        .map {
+            getDateFormat(it)
+        }
+        .asStateFlow(getDateFormat(uiPreferences.dateFormat().get()))
 
     init {
         scope.launch {
@@ -80,6 +92,11 @@ class MangaMenuViewModel @Inject constructor(
             }
         }
 
+    }
+
+    private fun getDateFormat(format: String): DateFormat = when (format) {
+        "" -> DateFormat.getDateInstance(DateFormat.SHORT)
+        else -> SimpleDateFormat(format, Locale.getDefault())
     }
 
     data class Params(val mangaId: Long)

@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -79,6 +78,7 @@ fun ColorPickerDialog(
 
     WindowDialog(
         onDismissRequest = onDismissRequest,
+        size = IntSize(300, 520),
         title = title,
         content = {
             val showPresetsState by showPresets.collectAsState()
@@ -157,7 +157,7 @@ private fun ColorPresets(
                 .background(MaterialTheme.colors.onBackground.copy(alpha = 0.2f))
         )
 
-        LazyRow {
+        LazyVerticalGrid(cells = GridCells.Fixed(5)) {
             items(shades) { color ->
                 ColorPresetItem(
                     color = color,

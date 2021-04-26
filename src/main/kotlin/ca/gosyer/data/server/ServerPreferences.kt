@@ -10,6 +10,11 @@ import ca.gosyer.common.prefs.Preference
 import ca.gosyer.common.prefs.PreferenceStore
 
 class ServerPreferences(private val preferenceStore: PreferenceStore) {
+
+    fun host(): Preference<Boolean> {
+        return preferenceStore.getBoolean("host", true)
+    }
+
     fun server(): Preference<String> {
         return preferenceStore.getString("server_url", "http://localhost:4567")
     }

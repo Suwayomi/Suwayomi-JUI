@@ -59,9 +59,9 @@ private class AppThemeViewModel @Inject constructor(
             baseThemeJob.cancelChildren()
 
             if (baseTheme.colors.isLight) {
-                uiPreferences.getLightColors().asState(baseThemeScope)
+                uiPreferences.getLightColors().asStateFlow(baseThemeScope)
             } else {
-                uiPreferences.getDarkColors().asState(baseThemeScope)
+                uiPreferences.getDarkColors().asStateFlow(baseThemeScope)
             }
         }
 

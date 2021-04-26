@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,14 +23,16 @@ fun LoadingScreen(
     modifier: Modifier = Modifier.fillMaxSize(),
     errorMessage: String? = null
 ) {
-    BoxWithConstraints(modifier) {
-        if (isLoading) {
-            val size = remember(maxHeight, maxWidth) {
-                min(maxHeight, maxWidth) / 2
+    Surface(modifier) {
+        BoxWithConstraints {
+            if (isLoading) {
+                val size = remember(maxHeight, maxWidth) {
+                    min(maxHeight, maxWidth) / 2
+                }
+                CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
+            } else {
+                ErrorScreen(errorMessage)
             }
-            CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
-        } else {
-            ErrorScreen(errorMessage)
         }
     }
 }

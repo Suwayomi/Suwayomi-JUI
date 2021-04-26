@@ -45,7 +45,7 @@ fun MangaGridItem(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(mangaAspectRatio)
-            .padding(4.dp)
+            .padding(8.dp)
             .clickable(onClick = onClick),
         elevation = 4.dp,
         shape = RoundedCornerShape(4.dp)

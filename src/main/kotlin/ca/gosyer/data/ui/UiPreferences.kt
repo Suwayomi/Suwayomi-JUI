@@ -8,7 +8,7 @@ package ca.gosyer.data.ui
 
 import ca.gosyer.common.prefs.Preference
 import ca.gosyer.common.prefs.PreferenceStore
-import ca.gosyer.data.ui.model.Screen
+import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.data.ui.model.ThemeMode
 
 class UiPreferences(private val preferenceStore: PreferenceStore) {
@@ -41,8 +41,8 @@ class UiPreferences(private val preferenceStore: PreferenceStore) {
         return preferenceStore.getInt("color_secondary_dark", 0)
     }
 
-    fun startScreen(): Preference<Screen> {
-        return preferenceStore.getJsonObject("start_screen", Screen.Library, Screen.serializer())
+    fun startScreen(): Preference<StartScreen> {
+        return preferenceStore.getJsonObject("start_screen", StartScreen.Library, StartScreen.serializer())
     }
 
     fun confirmExit(): Preference<Boolean> {

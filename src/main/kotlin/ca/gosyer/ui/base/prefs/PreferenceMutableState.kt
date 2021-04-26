@@ -20,7 +20,7 @@ class PreferenceMutableStateFlow<T>(
 
     init {
         preference.changes()
-            .onEach { value = it }
+            .onEach { state.value = it }
             .launchIn(scope)
     }
 

@@ -27,16 +27,23 @@ import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.WindowDialog
@@ -64,13 +71,14 @@ class PreferenceScope {
         title: String,
         subtitle: String? = null
     ) {
+        val prefValue by preference.collectAsState()
         Pref(
             title = title,
-            subtitle = if (subtitle == null) choices[preference.value] else null,
+            subtitle = if (subtitle == null) choices[prefValue] else null,
             onClick = {
                 ChoiceDialog(
                     items = choices.toList(),
-                    selected = preference.value,
+                    selected = prefValue,
                     title = title,
                     onSelected = { selected ->
                         preference.value = selected
@@ -102,7 +110,8 @@ class PreferenceScope {
             },
             onLongClick = { preference.value = Color.Unspecified },
             action = {
-                if (preference.value != Color.Unspecified || unsetColor != Color.Unspecified) {
+                val prefValue by preference.collectAsState()
+                if (prefValue != Color.Unspecified || unsetColor != Color.Unspecified) {
                     val borderColor = MaterialTheme.colors.onBackground.copy(alpha = 0.54f)
                     Box(
                         modifier = Modifier
@@ -214,8 +223,37 @@ fun SwitchPref(
         title = title,
         subtitle = subtitle,
         icon = icon,
-        action = { Switch(checked = preference.value, onCheckedChange = null) },
+        action = {
+            val prefValue by preference.collectAsState()
+            Switch(checked = prefValue, onCheckedChange = null)
+        },
         onClick = { preference.value = !preference.value }
     )
 }
 
+@Composable
+fun EditTextPref(
+    preference: PreferenceMutableStateFlow<String>,
+    title: String,
+    subtitle: String? = null,
+    icon: ImageVector? = null
+) {
+    var editText by remember { mutableStateOf(TextFieldValue(preference.value)) }
+    Pref(
+        title = title,
+        subtitle = subtitle,
+        icon = icon,
+        onClick = {
+            WindowDialog(
+                title,
+                onPositiveButton = {
+                    preference.value = editText.text
+                }
+            ) {
+                OutlinedTextField(editText, onValueChange = {
+                    editText = it
+                })
+            }
+        }
+    )
+}
