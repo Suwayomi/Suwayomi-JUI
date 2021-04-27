@@ -28,7 +28,7 @@ class SourceScreenViewModel @Inject constructor(
     private val sourceHandler: SourceInteractionHandler,
     private val mangaHandler: MangaInteractionHandler,
     serverPreferences: ServerPreferences
-): ViewModel() {
+) : ViewModel() {
     private lateinit var source: Source
     private lateinit var bundle: Bundle
 
@@ -99,7 +99,7 @@ class SourceScreenViewModel @Inject constructor(
     }
 
     fun setMode(toLatest: Boolean) {
-        if (isLatest.value != toLatest){
+        if (isLatest.value != toLatest) {
             _isLatest.value = toLatest
             bundle.remove(MANGAS_KEY)
             bundle.remove(NEXT_PAGE_KEY)

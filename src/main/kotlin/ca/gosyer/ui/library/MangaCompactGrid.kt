@@ -70,11 +70,12 @@ private fun LibraryMangaCompactGridItem(
         TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
     )
 
-    Box(modifier = Modifier.padding(4.dp)
-        .fillMaxWidth()
-        .aspectRatio(3f / 4f)
-        .clip(MaterialTheme.shapes.medium)
-        .clickable(onClick = onClick)
+    Box(
+        modifier = Modifier.padding(4.dp)
+            .fillMaxWidth()
+            .aspectRatio(3f / 4f)
+            .clip(MaterialTheme.shapes.medium)
+            .clickable(onClick = onClick)
     ) {
         if (cover != null) {
             KtorImage(cover, contentScale = ContentScale.Crop)

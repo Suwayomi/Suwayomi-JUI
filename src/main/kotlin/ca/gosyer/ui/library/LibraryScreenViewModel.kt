@@ -35,7 +35,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val categoryHandler: CategoryInteractionHandler,
     libraryPreferences: LibraryPreferences,
     serverPreferences: ServerPreferences,
-): ViewModel() {
+) : ViewModel() {
     val serverUrl = serverPreferences.server().stateIn(scope)
 
     private val library = Library(MutableStateFlow(emptyList()), mutableMapOf())
@@ -78,7 +78,6 @@ class LibraryScreenViewModel @Inject constructor(
         }
     }
 
-
     fun setSelectedPage(page: Int) {
         _selectedCategoryIndex.value = page
     }
@@ -88,8 +87,6 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     companion object {
-        val defaultCategory = Category(0, 0, "Default",true)
+        val defaultCategory = Category(0, 0, "Default", true)
     }
 }
-
-

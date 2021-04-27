@@ -45,7 +45,7 @@ class ServerService @Inject constructor(
                 val logger = KotlinLogging.logger("Server")
                 val runtime = Runtime.getRuntime()
 
-                val jarFile = File(userDataDir,"Tachidesk.jar")
+                val jarFile = File(userDataDir, "Tachidesk.jar")
                 if (!jarFile.exists()) {
                     logger.info { "Copying server to resources" }
                     javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
@@ -59,7 +59,7 @@ class ServerService @Inject constructor(
                 val javaExeFile = File(javaLibraryPath, "java.exe")
                 val javaUnixFile = File(javaLibraryPath, "java")
                 val javaExePath = when {
-                    javaExeFile.exists() ->'"' + javaExeFile.absolutePath + '"'
+                    javaExeFile.exists() -> '"' + javaExeFile.absolutePath + '"'
                     javaUnixFile.exists() -> '"' + javaUnixFile.absolutePath + '"'
                     else -> "java"
                 }
@@ -69,9 +69,11 @@ class ServerService @Inject constructor(
                 process = runtime.exec("""$javaExePath -jar "${jarFile.absolutePath}"""").also {
                     reader = it.inputStream.bufferedReader()
                 }
-                runtime.addShutdownHook(thread(start = false) {
-                    process?.destroy()
-                })
+                runtime.addShutdownHook(
+                    thread(start = false) {
+                        process?.destroy()
+                    }
+                )
                 logger.info { "Server started successfully" }
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
@@ -87,7 +89,6 @@ class ServerService @Inject constructor(
                 logger.info { "Server closed" }
                 val exitVal = process?.waitFor()
                 logger.info { "Process exitValue: $exitVal" }
-
             }
         }.launchIn(GlobalScope)
     }

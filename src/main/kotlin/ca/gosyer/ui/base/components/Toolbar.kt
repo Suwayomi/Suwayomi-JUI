@@ -36,8 +36,8 @@ fun Toolbar(
     closable: Boolean,
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
-    backgroundColor: Color = MaterialTheme.colors.primary, //CustomColors.current.bars,
-    contentColor: Color = MaterialTheme.colors.onPrimary, //CustomColors.current.onBars,
+    backgroundColor: Color = MaterialTheme.colors.primary, // CustomColors.current.bars,
+    contentColor: Color = MaterialTheme.colors.onPrimary, // CustomColors.current.onBars,
     elevation: Dp = AppBarDefaults.TopAppBarElevation,
     search: ((String) -> Unit)? = null
 ) {

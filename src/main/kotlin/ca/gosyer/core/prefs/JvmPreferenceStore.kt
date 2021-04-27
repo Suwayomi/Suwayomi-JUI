@@ -82,5 +82,4 @@ class JvmPreferenceStore(private val preferences: ObservableSettings) : Preferen
         val adapter = JsonObjectAdapter(defaultValue, serializer, serializersModule)
         return JvmPreference(preferences, key, defaultValue, adapter)
     }
-
 }

@@ -21,7 +21,7 @@ import javax.inject.Inject
 class ExtensionInteractionHandler @Inject constructor(
     client: Http,
     serverPreferences: ServerPreferences
-): BaseInteractionHandler(client, serverPreferences) {
+) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getExtensionList() = withContext(Dispatchers.IO) {
         client.getRepeat<List<Extension>>(

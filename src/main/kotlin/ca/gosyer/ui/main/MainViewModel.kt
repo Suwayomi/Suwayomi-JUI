@@ -12,6 +12,6 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     uiPreferences: UiPreferences
-): ViewModel() {
+) : ViewModel() {
     val startScreen = uiPreferences.startScreen().get()
 }

@@ -27,7 +27,7 @@ class SourcesMenuViewModel @Inject constructor(
     private val sourceHandler: SourceInteractionHandler,
     serverPreferences: ServerPreferences,
     catalogPreferences: CatalogPreferences
-): ViewModel() {
+) : ViewModel() {
     private val logger = KotlinLogging.logger {}
 
     val serverUrl = serverPreferences.server().stateIn(scope)

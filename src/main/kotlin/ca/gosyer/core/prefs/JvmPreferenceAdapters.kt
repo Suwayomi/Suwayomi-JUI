@@ -87,7 +87,6 @@ internal class ObjectAdapter<T>(
     override fun set(key: String, value: T, editor: ObservableSettings) {
         editor.putString(key, serializer(value))
     }
-
 }
 
 internal class JsonObjectAdapter<T>(
@@ -103,5 +102,4 @@ internal class JsonObjectAdapter<T>(
     override fun set(key: String, value: T, editor: ObservableSettings) {
         editor.encodeValue(serializer, key, value, serializersModule)
     }
-
 }

@@ -86,7 +86,6 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                     }
                 }
 
-
                 val selectedSource: Source? = selectedSourceTab
                 BundleScope("Sources") {
                     if (selectedSource != null) {

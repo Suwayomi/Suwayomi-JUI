@@ -20,7 +20,7 @@ import javax.inject.Inject
 class LibraryInteractionHandler @Inject constructor(
     client: Http,
     serverPreferences: ServerPreferences
-): BaseInteractionHandler(client, serverPreferences) {
+) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getLibraryManga() = withContext(Dispatchers.IO) {
         client.getRepeat<List<Manga>>(

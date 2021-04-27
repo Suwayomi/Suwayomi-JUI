@@ -25,7 +25,7 @@ import javax.inject.Inject
 class SourceInteractionHandler @Inject constructor(
     client: Http,
     serverPreferences: ServerPreferences
-): BaseInteractionHandler(client, serverPreferences) {
+) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getSourceList() = withContext(Dispatchers.IO) {
         client.getRepeat<List<Source>>(
@@ -48,7 +48,8 @@ class SourceInteractionHandler @Inject constructor(
     }
 
     suspend fun getPopularManga(source: Source, pageNum: Int) = getPopularManga(
-        source.id, pageNum
+        source.id,
+        pageNum
     )
 
     suspend fun getLatestManga(sourceId: Long, pageNum: Int) = withContext(Dispatchers.IO) {
@@ -58,7 +59,8 @@ class SourceInteractionHandler @Inject constructor(
     }
 
     suspend fun getLatestManga(source: Source, pageNum: Int) = getLatestManga(
-        source.id, pageNum
+        source.id,
+        pageNum
     )
 
     // TODO: 2021-03-14
@@ -75,7 +77,9 @@ class SourceInteractionHandler @Inject constructor(
     }
 
     suspend fun getSearchResults(source: Source, searchTerm: String, pageNum: Int) = getSearchResults(
-        source.id, searchTerm, pageNum
+        source.id,
+        searchTerm,
+        pageNum
     )
 
     // TODO: 2021-03-14  

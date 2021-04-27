@@ -57,7 +57,6 @@ interface PreferenceStore {
         deserializer: (String) -> T
     ): Preference<T>
 
-
     /**
      * Returns preference of type [T] for this [key]. The [serializer] must be provided.
      */
@@ -67,7 +66,6 @@ interface PreferenceStore {
         serializer: KSerializer<T>,
         serializersModule: SerializersModule = EmptySerializersModule
     ): Preference<T>
-
 }
 
 /**
@@ -77,11 +75,16 @@ inline fun <reified T : Enum<T>> PreferenceStore.getEnum(
     key: String,
     defaultValue: T
 ): Preference<T> {
-    return getObject(key, defaultValue, { it.name }, {
-        try {
-            enumValueOf(it)
-        } catch (e: IllegalArgumentException) {
-            defaultValue
+    return getObject(
+        key,
+        defaultValue,
+        { it.name },
+        {
+            try {
+                enumValueOf(it)
+            } catch (e: IllegalArgumentException) {
+                defaultValue
+            }
         }
-    })
+    )
 }

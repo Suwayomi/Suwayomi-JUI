@@ -142,12 +142,16 @@ private fun CategoryRow(
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     IconButton(onClick = onRename) {
-                        Icon(imageVector = Icons.Default.Edit,
-                            contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = null
+                        )
                     }
                     IconButton(onClick = onDelete) {
-                        Icon(imageVector = Icons.Default.Delete,
-                            contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null
+                        )
                     }
                 }
             }

@@ -29,7 +29,7 @@ import javax.inject.Inject
 class CategoryInteractionHandler @Inject constructor(
     client: Http,
     serverPreferences: ServerPreferences
-): BaseInteractionHandler(client, serverPreferences) {
+) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getMangaCategories(mangaId: Long) = withContext(Dispatchers.IO) {
         client.getRepeat<List<Category>>(
@@ -75,13 +75,13 @@ class CategoryInteractionHandler @Inject constructor(
     suspend fun modifyCategory(categoryId: Long, name: String? = null, isLanding: Boolean? = null) = withContext(Dispatchers.IO) {
         client.submitFormRepeat<HttpResponse>(
             serverUrl + categoryModifyRequest(categoryId),
-                formParameters = Parameters.build {
-                    if (name != null) {
-                        append("name", name)
-                    }
-                    if (isLanding != null) {
-                        append("isLanding", isLanding.toString())
-                    }
+            formParameters = Parameters.build {
+                if (name != null) {
+                    append("name", name)
+                }
+                if (isLanding != null) {
+                    append("isLanding", isLanding.toString())
+                }
             }
         ) {
             method = HttpMethod.Patch

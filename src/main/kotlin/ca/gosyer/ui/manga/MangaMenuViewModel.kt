@@ -91,7 +91,6 @@ class MangaMenuViewModel @Inject constructor(
                 refreshMangaAsync(it.id).await()
             }
         }
-
     }
 
     private fun getDateFormat(format: String): DateFormat = when (format) {

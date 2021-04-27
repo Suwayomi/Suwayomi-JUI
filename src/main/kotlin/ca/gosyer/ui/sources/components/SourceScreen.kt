@@ -95,7 +95,6 @@ private fun MangaTable(
                 }
             }
 
-
             LazyVerticalGrid(GridCells.Adaptive(160.dp)) {
                 items(mangas) { manga ->
                     MangaGridItem(

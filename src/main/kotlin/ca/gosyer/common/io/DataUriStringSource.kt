@@ -50,5 +50,4 @@ class DataUriStringSource(private val data: String) : Source {
 
     override fun close() {
     }
-
 }

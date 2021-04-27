@@ -19,11 +19,13 @@ data class Theme(
 val themes = listOf(
     // Pure white
     Theme(
-        1, lightColors()
+        1,
+        lightColors()
     ),
     // Tachiyomi 0.x default colors
     Theme(
-        2, lightColors(
+        2,
+        lightColors(
             primary = Color(0xFF2979FF),
             primaryVariant = Color(0xFF2979FF),
             onPrimary = Color.White,
@@ -34,11 +36,13 @@ val themes = listOf(
     ),
     // Tachiyomi 0.x dark theme
     Theme(
-        3, darkColors()
+        3,
+        darkColors()
     ),
     // AMOLED theme
     Theme(
-        4, darkColors(
+        4,
+        darkColors(
             primary = Color.Black,
             onPrimary = Color.White,
             background = Color.Black

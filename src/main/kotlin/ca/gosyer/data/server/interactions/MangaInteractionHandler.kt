@@ -18,7 +18,7 @@ import javax.inject.Inject
 class MangaInteractionHandler @Inject constructor(
     client: Http,
     serverPreferences: ServerPreferences
-): BaseInteractionHandler(client, serverPreferences) {
+) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getManga(mangaId: Long) = withContext(Dispatchers.IO) {
         client.getRepeat<Manga>(
@@ -32,5 +32,4 @@ class MangaInteractionHandler @Inject constructor(
             serverUrl + mangaThumbnailQuery(mangaId)
         )
     }
-
 }

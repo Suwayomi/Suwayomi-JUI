@@ -58,7 +58,6 @@ import compose.icons.fontawesomeicons.regular.Map
 fun MainMenu() {
     val vm = viewModel<MainViewModel>()
     Surface {
-
         Router<Route>("TopLevel", Route.Library) { backStack ->
             Row {
                 Surface(elevation = 2.dp) {
@@ -124,7 +123,6 @@ fun MainMenu() {
                 }
             }
         }
-
     }
 }
 
@@ -135,7 +133,7 @@ fun MainMenuItem(menu: TopLevelMenus, selected: Boolean, onClick: (Route) -> Uni
         backgroundColor = if (!selected) {
             Color.Transparent
         } else {
-           MaterialTheme.colors.primary.copy(0.30F)
+            MaterialTheme.colors.primary.copy(0.30F)
         },
         contentColor = Color.Transparent,
         elevation = 0.dp
@@ -160,18 +158,20 @@ sealed class Route {
     object Library : Route()
     object Sources : Route()
     object Extensions : Route()
-    data class Manga(val mangaId: Long): Route()
+    data class Manga(val mangaId: Long) : Route()
 
     object Settings : Route()
     object SettingsGeneral : Route()
     object SettingsAppearance : Route()
     object SettingsLibrary : Route()
     object SettingsReader : Route()
+
     /*object SettingsDownloads : Route()
     object SettingsTracking : Route()*/
     object SettingsBrowse : Route()
     object SettingsBackup : Route()
     object SettingsServer : Route()
+
     /*object SettingsSecurity : Route()
     object SettingsParentalControls : Route()*/
     object SettingsAdvanced : Route()

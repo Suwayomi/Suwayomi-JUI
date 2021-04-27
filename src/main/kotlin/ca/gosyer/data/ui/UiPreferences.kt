@@ -56,5 +56,4 @@ class UiPreferences(private val preferenceStore: PreferenceStore) {
     fun dateFormat(): Preference<String> {
         return preferenceStore.getString("date_format", "")
     }
-
 }

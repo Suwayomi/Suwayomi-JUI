@@ -153,9 +153,9 @@ private fun Cover(manga: Manga, serverUrl: String, modifier: Modifier = Modifier
 }
 
 sealed class MangaMenu {
-    data class MangaMenuManga(val manga: Manga): MangaMenu()
+    data class MangaMenuManga(val manga: Manga) : MangaMenu()
 
-    data class MangaMenuChapter(val chapter: Chapter): MangaMenu()
+    data class MangaMenuChapter(val chapter: Chapter) : MangaMenu()
 }
 
 @Composable

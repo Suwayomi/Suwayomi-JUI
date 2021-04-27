@@ -50,12 +50,11 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
     val displayMode by vm.displayMode.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
-    //val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    // val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
     if (categories.isEmpty()) {
         LoadingScreen(isLoading)
     } else {
-
         /*ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = { *//*LibrarySheet()*//* }
@@ -77,7 +76,7 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
                 }
             )*/
             LibraryTabs(
-                visible = true, //vm.showCategoryTabs,
+                visible = true, // vm.showCategoryTabs,
                 categories = categories,
                 selectedPage = selectedCategoryIndex,
                 onPageChanged = vm::setSelectedPage

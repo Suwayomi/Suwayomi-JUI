@@ -20,7 +20,7 @@ import javax.inject.Inject
 class ChapterInteractionHandler @Inject constructor(
     client: Http,
     serverPreferences: ServerPreferences
-): BaseInteractionHandler(client, serverPreferences) {
+) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getChapters(mangaId: Long) = withContext(Dispatchers.IO) {
         client.getRepeat<List<Chapter>>(

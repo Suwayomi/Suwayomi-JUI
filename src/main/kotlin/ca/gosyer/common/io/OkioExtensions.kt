@@ -6,7 +6,6 @@
 
 package ca.gosyer.common.io
 
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.BufferedSink

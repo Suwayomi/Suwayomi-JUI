@@ -22,7 +22,7 @@ class ExtensionsMenuViewModel @Inject constructor(
     private val extensionHandler: ExtensionInteractionHandler,
     serverPreferences: ServerPreferences,
     private val extensionPreferences: ExtensionPreferences
-): ViewModel() {
+) : ViewModel() {
     private val logger = KotlinLogging.logger {}
 
     val serverUrl = serverPreferences.server().stateIn(scope)
@@ -32,7 +32,6 @@ class ExtensionsMenuViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
-
 
     init {
         scope.launch {

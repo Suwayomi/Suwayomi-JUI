@@ -139,9 +139,12 @@ fun EditTextPreference(
                     preference.value = editText.text
                 }
             ) {
-                OutlinedTextField(editText, onValueChange = {
-                    editText = it
-                })
+                OutlinedTextField(
+                    editText,
+                    onValueChange = {
+                        editText = it
+                    }
+                )
             }
         }
     )
@@ -177,31 +180,37 @@ private fun <T> ChoiceDialog(
     onDismissRequest: () -> Unit = {},
     onSelected: (T) -> Unit,
     title: String,
-    buttons: @Composable (AppWindow) -> Unit = {  }
+    buttons: @Composable (AppWindow) -> Unit = { }
 ) {
-    WindowDialog(onDismissRequest = onDismissRequest, buttons = buttons, title = title, content = {
-        LazyColumn {
-            items(items) { (value, text) ->
-                Row(
-                    modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
-                        onClick = {
-                            onSelected(value)
-                            it.close()
-                        }),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = value == selected,
-                        onClick = {
-                            onSelected(value)
-                            it.close()
-                        },
-                    )
-                    Text(text = text, modifier = Modifier.padding(start = 24.dp))
+    WindowDialog(
+        onDismissRequest = onDismissRequest,
+        buttons = buttons,
+        title = title,
+        content = {
+            LazyColumn {
+                items(items) { (value, text) ->
+                    Row(
+                        modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
+                            onClick = {
+                                onSelected(value)
+                                it.close()
+                            }
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = value == selected,
+                            onClick = {
+                                onSelected(value)
+                                it.close()
+                            },
+                        )
+                        Text(text = text, modifier = Modifier.padding(start = 24.dp))
+                    }
                 }
             }
         }
-    })
+    )
 }
 
 @Composable

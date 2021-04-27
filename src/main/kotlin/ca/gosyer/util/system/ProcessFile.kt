@@ -13,7 +13,7 @@ fun processFile() {
     val strTmp = System.getProperty("java.io.tmpdir")
     val file = File("$strTmp/TachideskJUI.pid")
 
-    //backup deletion
+    // backup deletion
     if (file.exists()) {
         file.delete()
     }

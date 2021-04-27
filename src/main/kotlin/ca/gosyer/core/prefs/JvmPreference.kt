@@ -95,5 +95,4 @@ internal class JvmPreference<T>(
     override fun stateIn(scope: CoroutineScope): StateFlow<T> {
         return changes().stateIn(scope, SharingStarted.Eagerly, get())
     }
-
 }

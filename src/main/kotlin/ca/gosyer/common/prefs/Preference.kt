@@ -6,7 +6,6 @@
 
 package ca.gosyer.common.prefs
 
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,5 +56,4 @@ interface Preference<T> {
      * current value and receive preference updates.
      */
     fun stateIn(scope: CoroutineScope): StateFlow<T>
-
 }

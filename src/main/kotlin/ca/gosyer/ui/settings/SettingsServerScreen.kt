@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class SettingsServerViewModel @Inject constructor(
     private val serverPreferences: ServerPreferences
-): ViewModel() {
+) : ViewModel() {
     val host = serverPreferences.host().asStateIn(scope)
     val serverUrl = serverPreferences.server().asStateIn(scope)
 }

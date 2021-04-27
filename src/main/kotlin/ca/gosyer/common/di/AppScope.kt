@@ -27,5 +27,4 @@ object AppScope : Scope by KTP.openRootScope() {
     inline fun <reified T> getInstance(): T {
         return getInstance(T::class.java)
     }
-
 }

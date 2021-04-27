@@ -80,7 +80,7 @@ fun SettingsAppearance(navController: BackStack<Route>) {
                 ChoicePreference(
                     preference = vm.themeMode,
                     choices = mapOf(
-                        //ThemeMode.System to R.string.follow_system_settings,
+                        // ThemeMode.System to R.string.follow_system_settings,
                         ThemeMode.Light to "Light",
                         ThemeMode.Dark to "Dark"
                     ),
@@ -94,24 +94,29 @@ fun SettingsAppearance(navController: BackStack<Route>) {
                 )
                 LazyRow(modifier = Modifier.padding(horizontal = 8.dp)) {
                     items(themesForCurrentMode) { theme ->
-                        ThemeItem(theme, onClick = {
-                            (if (isLight) vm.lightTheme else vm.darkTheme).value = it.id
-                            activeColors.primaryStateFlow.value = it.colors.primary
-                            activeColors.secondaryStateFlow.value = it.colors.secondary
-                        })
+                        ThemeItem(
+                            theme,
+                            onClick = {
+                                (if (isLight) vm.lightTheme else vm.darkTheme).value = it.id
+                                activeColors.primaryStateFlow.value = it.colors.primary
+                                activeColors.secondaryStateFlow.value = it.colors.secondary
+                            }
+                        )
                     }
                 }
             }
             item {
                 ColorPreference(
-                    preference = activeColors.primaryStateFlow, title = "Color primary",
+                    preference = activeColors.primaryStateFlow,
+                    title = "Color primary",
                     subtitle = "Displayed most frequently across your app",
                     unsetColor = MaterialTheme.colors.primary
                 )
             }
             item {
                 ColorPreference(
-                    preference = activeColors.secondaryStateFlow, title = "Color secondary",
+                    preference = activeColors.secondaryStateFlow,
+                    title = "Color secondary",
                     subtitle = "Accents select parts of the UI",
                     unsetColor = MaterialTheme.colors.secondary
                 )
@@ -132,7 +137,9 @@ private fun ThemeItem(
         Color.White.copy(alpha = 0.15f)
     }
     Surface(
-        elevation = 4.dp, color = theme.colors.background, shape = borders,
+        elevation = 4.dp,
+        color = theme.colors.background,
+        shape = borders,
         modifier = Modifier
             .size(100.dp, 160.dp)
             .padding(8.dp)
@@ -159,9 +166,10 @@ private fun ThemeItem(
                         disabledBackgroundColor = theme.colors.primary
                     )
                 )
-                Surface(Modifier
-                    .size(24.dp)
-                    .align(Alignment.BottomEnd),
+                Surface(
+                    Modifier
+                        .size(24.dp)
+                        .align(Alignment.BottomEnd),
                     shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
                     color = theme.colors.secondary,
                     elevation = 6.dp,

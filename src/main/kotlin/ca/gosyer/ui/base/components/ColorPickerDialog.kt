@@ -99,16 +99,20 @@ fun ColorPickerDialog(
             val showPresetsState by showPresets.collectAsState()
             val currentColorState by currentColor.collectAsState()
             Row(Modifier.fillMaxWidth().padding(8.dp)) {
-                TextButton(onClick = {
-                    showPresets.value = !showPresetsState
-                }) {
+                TextButton(
+                    onClick = {
+                        showPresets.value = !showPresetsState
+                    }
+                ) {
                     Text(if (showPresetsState) "Custom" else "Presets")
                 }
                 Spacer(Modifier.weight(1f))
-                TextButton(onClick = {
-                    onSelected(currentColorState)
-                    it.close()
-                }) {
+                TextButton(
+                    onClick = {
+                        onSelected(currentColorState)
+                        it.close()
+                    }
+                ) {
                     Text("Select")
                 }
             }
@@ -181,7 +185,8 @@ private fun ColorPresetItem(
     onClick: () -> Unit
 ) {
     Box(
-        contentAlignment = Alignment.Center, modifier = Modifier
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
             .size(48.dp)
@@ -241,13 +246,15 @@ fun ColorPalette(
     val saturationGradient = remember(hue, matrixSize) {
         Brush.linearGradient(
             colors = listOf(Color.White, hueToColor(hue)),
-            start = Offset(0f, 0f), end = Offset(matrixSize.width.toFloat(), 0f)
+            start = Offset(0f, 0f),
+            end = Offset(matrixSize.width.toFloat(), 0f)
         )
     }
     val valueGradient = remember(matrixSize) {
         Brush.linearGradient(
             colors = listOf(Color.White, Color.Black),
-            start = Offset(0f, 0f), end = Offset(0f, matrixSize.height.toFloat())
+            start = Offset(0f, 0f),
+            end = Offset(0f, matrixSize.height.toFloat())
         )
     }
 
@@ -270,80 +277,82 @@ fun ColorPalette(
     Column {
         Text("") // TODO workaround: without this text, the color picker doesn't render correctly
         Row(Modifier.height(IntrinsicSize.Max)) {
-            Box(Modifier
-                .aspectRatio(1f)
-                .weight(1f)
-                .onSizeChanged {
-                    matrixSize = it
-                    val hsv = selectedColor.toHsv()
-                    matrixCursor = satValToCoordinates(hsv[1], hsv[2], it)
-                    hueCursor = hueToCoordinate(hue, it)
-                }
-                .drawWithContent {
-                    drawRect(brush = valueGradient)
-                    drawRect(brush = saturationGradient, blendMode = BlendMode.Multiply)
-                    drawRect(Color.LightGray, size = size, style = borderStroke)
-                    drawCircle(
-                        Color.Black,
-                        radius = 8f,
-                        center = matrixCursor,
-                        style = cursorStroke
-                    )
-                    drawCircle(
-                        Color.LightGray,
-                        radius = 12f,
-                        center = matrixCursor,
-                        style = cursorStroke
-                    )
-                }
-                .pointerInput(Unit) {
-                    detectMove { offset ->
-                        val safeOffset = offset.copy(
-                            x = offset.x.coerceIn(0f, matrixSize.width.toFloat()),
-                            y = offset.y.coerceIn(0f, matrixSize.height.toFloat())
-                        )
-                        matrixCursor = safeOffset
-                        val newColor = matrixCoordinatesToColor(hue, safeOffset, matrixSize)
-                        setSelectedColor(newColor)
+            Box(
+                Modifier
+                    .aspectRatio(1f)
+                    .weight(1f)
+                    .onSizeChanged {
+                        matrixSize = it
+                        val hsv = selectedColor.toHsv()
+                        matrixCursor = satValToCoordinates(hsv[1], hsv[2], it)
+                        hueCursor = hueToCoordinate(hue, it)
                     }
-                }
-            )
-            Box(Modifier
-                .fillMaxHeight()
-                .requiredWidth(48.dp)
-                .padding(start = 8.dp)
-                .drawWithCache {
-                    var h = 360f
-                    val colors = MutableList(size.height.toInt()) {
-                        hueToColor(h).also {
-                            h -= 360f / size.height
-                        }
-                    }
-                    val cursorSize = Size(size.width, 10f)
-                    val cursorTopLeft = Offset(0f, hueCursor - (cursorSize.height / 2))
-                    onDrawBehind {
-                        colors.forEachIndexed { i, color ->
-                            val pos = i.toFloat()
-                            drawLine(color, Offset(0f, pos), Offset(size.width, pos))
-                        }
+                    .drawWithContent {
+                        drawRect(brush = valueGradient)
+                        drawRect(brush = saturationGradient, blendMode = BlendMode.Multiply)
                         drawRect(Color.LightGray, size = size, style = borderStroke)
-                        drawRect(
-                            cursorColor,
-                            topLeft = cursorTopLeft,
-                            size = cursorSize,
+                        drawCircle(
+                            Color.Black,
+                            radius = 8f,
+                            center = matrixCursor,
+                            style = cursorStroke
+                        )
+                        drawCircle(
+                            Color.LightGray,
+                            radius = 12f,
+                            center = matrixCursor,
                             style = cursorStroke
                         )
                     }
-                }
-                .pointerInput(Unit) {
-                    detectMove { offset ->
-                        val safeY = offset.y.coerceIn(0f, matrixSize.height.toFloat())
-                        hueCursor = safeY
-                        hue = hueCoordinatesToHue(safeY, matrixSize)
-                        val newColor = matrixCoordinatesToColor(hue, matrixCursor, matrixSize)
-                        setSelectedColor(newColor)
+                    .pointerInput(Unit) {
+                        detectMove { offset ->
+                            val safeOffset = offset.copy(
+                                x = offset.x.coerceIn(0f, matrixSize.width.toFloat()),
+                                y = offset.y.coerceIn(0f, matrixSize.height.toFloat())
+                            )
+                            matrixCursor = safeOffset
+                            val newColor = matrixCoordinatesToColor(hue, safeOffset, matrixSize)
+                            setSelectedColor(newColor)
+                        }
                     }
-                }
+            )
+            Box(
+                Modifier
+                    .fillMaxHeight()
+                    .requiredWidth(48.dp)
+                    .padding(start = 8.dp)
+                    .drawWithCache {
+                        var h = 360f
+                        val colors = MutableList(size.height.toInt()) {
+                            hueToColor(h).also {
+                                h -= 360f / size.height
+                            }
+                        }
+                        val cursorSize = Size(size.width, 10f)
+                        val cursorTopLeft = Offset(0f, hueCursor - (cursorSize.height / 2))
+                        onDrawBehind {
+                            colors.forEachIndexed { i, color ->
+                                val pos = i.toFloat()
+                                drawLine(color, Offset(0f, pos), Offset(size.width, pos))
+                            }
+                            drawRect(Color.LightGray, size = size, style = borderStroke)
+                            drawRect(
+                                cursorColor,
+                                topLeft = cursorTopLeft,
+                                size = cursorSize,
+                                style = cursorStroke
+                            )
+                        }
+                    }
+                    .pointerInput(Unit) {
+                        detectMove { offset ->
+                            val safeY = offset.y.coerceIn(0f, matrixSize.height.toFloat())
+                            hueCursor = safeY
+                            hue = hueCoordinatesToHue(safeY, matrixSize)
+                            val newColor = matrixCoordinatesToColor(hue, matrixCursor, matrixSize)
+                            setSelectedColor(newColor)
+                        }
+                    }
             )
         }
         Row(Modifier.padding(top = 8.dp), verticalAlignment = Alignment.Bottom) {
@@ -451,4 +460,3 @@ private val presetColors = listOf(
     Color(0xFF607D8B), // BLUE GREY 500
     Color(0xFF9E9E9E), // GREY 500
 )
-

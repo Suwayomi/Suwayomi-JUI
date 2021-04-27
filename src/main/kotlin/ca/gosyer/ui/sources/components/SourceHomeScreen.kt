@@ -95,7 +95,6 @@ fun SourceCategory(
     }
 }
 
-
 @Composable
 fun SourceItem(
     source: Source,

@@ -1,6 +1,8 @@
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jmailen.gradle.kotlinter.tasks.FormatTask
+import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 plugins {
     kotlin("jvm") version "1.4.32"
@@ -8,6 +10,7 @@ plugins {
     kotlin("plugin.serialization") version "1.4.32"
     id("org.jetbrains.compose") version "0.4.0-build184"
     id("de.fuerstenau.buildconfig") version "1.1.8"
+    id("org.jmailen.kotlinter") version "3.4.0"
 }
 
 group = "ca.gosyer"
@@ -82,6 +85,19 @@ tasks {
     test {
         useJUnit()
     }
+
+    withType<LintTask> {
+        source(files("src"))
+        reports.set(mapOf(
+            "plain" to file("build/lint-report.txt"),
+            "json" to file("build/lint-report.json")
+        ))
+    }
+
+    withType<FormatTask> {
+        source(files("src"))
+        report.set(file("build/format-report.txt"))
+    }
 }
 
 
@@ -123,4 +139,9 @@ buildConfig {
     packageName = project.group.toString()
 
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
+}
+
+kotlinter {
+    experimentalRules = true
+    disabledRules = arrayOf("experimental:argument-list-wrapping")
 }
