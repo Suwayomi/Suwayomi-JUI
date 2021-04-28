@@ -34,28 +34,28 @@ class ChapterInteractionHandler @Inject constructor(
         )
     }
 
-    suspend fun getChapter(mangaId: Long, chapterId: Long) = withContext(Dispatchers.IO) {
+    suspend fun getChapter(mangaId: Long, chapterIndex: Int) = withContext(Dispatchers.IO) {
         client.getRepeat<Chapter>(
-            serverUrl + getChapterQuery(mangaId, chapterId)
+            serverUrl + getChapterQuery(mangaId, chapterIndex)
         )
     }
 
-    suspend fun getChapter(chapter: Chapter) = getChapter(chapter.mangaId, chapter.id)
+    suspend fun getChapter(chapter: Chapter) = getChapter(chapter.mangaId, chapter.chapterIndex)
 
-    suspend fun getChapter(manga: Manga, chapterId: Long) = getChapter(manga.id, chapterId)
+    suspend fun getChapter(manga: Manga, chapterIndex: Int) = getChapter(manga.id, chapterIndex)
 
-    suspend fun getChapter(manga: Manga, chapter: Chapter) = getChapter(manga.id, chapter.id)
+    suspend fun getChapter(manga: Manga, chapter: Chapter) = getChapter(manga.id, chapter.chapterIndex)
 
-    suspend fun getPage(mangaId: Long, chapterId: Long, pageNum: Int) = withContext(Dispatchers.IO) {
+    suspend fun getPage(mangaId: Long, chapterIndex: Int, pageNum: Int) = withContext(Dispatchers.IO) {
         imageFromUrl(
             client,
-            serverUrl + getPageQuery(mangaId, chapterId, pageNum)
+            serverUrl + getPageQuery(mangaId, chapterIndex, pageNum)
         )
     }
 
-    suspend fun getPage(chapter: Chapter, pageNum: Int) = getPage(chapter.mangaId, chapter.id, pageNum)
+    suspend fun getPage(chapter: Chapter, pageNum: Int) = getPage(chapter.mangaId, chapter.chapterIndex, pageNum)
 
-    suspend fun getPage(manga: Manga, chapterId: Long, pageNum: Int) = getPage(manga.id, chapterId, pageNum)
+    suspend fun getPage(manga: Manga, chapterIndex: Int, pageNum: Int) = getPage(manga.id, chapterIndex, pageNum)
 
-    suspend fun getPage(manga: Manga, chapter: Chapter, pageNum: Int) = getPage(manga.id, chapter.id, pageNum)
+    suspend fun getPage(manga: Manga, chapter: Chapter, pageNum: Int) = getPage(manga.id, chapter.chapterIndex, pageNum)
 }

@@ -11,9 +11,9 @@ fun getMangaChaptersQuery(mangaId: Long) =
     "/api/v1/manga/$mangaId/chapters"
 
 @Get
-fun getChapterQuery(mangaId: Long, chapterId: Long) =
-    "/api/v1/manga/$mangaId/chapter/$chapterId"
+fun getChapterQuery(mangaId: Long, chapterIndex: Int) =
+    "/api/v1/manga/$mangaId/chapter/$chapterIndex"
 
 @Get
-fun getPageQuery(mangaId: Long, chapterId: Long, index: Int) =
-    "/api/v1/manga/$mangaId/chapter/$chapterId/page/$index"
+fun getPageQuery(mangaId: Long, chapterIndex: Int, index: Int) =
+    "/api/v1/manga/$mangaId/chapter/$chapterIndex/page/$index"
