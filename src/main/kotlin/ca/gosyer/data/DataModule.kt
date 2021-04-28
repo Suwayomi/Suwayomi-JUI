@@ -10,6 +10,7 @@ import ca.gosyer.core.prefs.PreferenceStoreFactory
 import ca.gosyer.data.catalog.CatalogPreferences
 import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.library.LibraryPreferences
+import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.HttpProvider
 import ca.gosyer.data.server.ServerPreferences
@@ -42,6 +43,10 @@ val DataModule = module {
 
     bind<LibraryPreferences>()
         .toProviderInstance { LibraryPreferences(preferenceFactory.create("library")) }
+        .providesSingleton()
+
+    bind<ReaderPreferences>()
+        .toProviderInstance { ReaderPreferences(preferenceFactory.create("reader")) { name -> preferenceFactory.create("reader", name) } }
         .providesSingleton()
 
     bind<UiPreferences>()

@@ -8,6 +8,7 @@ package ca.gosyer.ui.manga
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +47,7 @@ import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.util.compose.ThemedWindow
 import com.github.zsoltk.compose.router.BackStack
 import java.util.Date
@@ -81,14 +82,13 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
         manga?.let { manga ->
             Box {
                 val state = rememberLazyListState()
-                val items = remember(manga, chapters) {
-                    listOf(MangaMenu.MangaMenuManga(manga)) + chapters.map { MangaMenu.MangaMenuChapter(it) }
-                }
                 LazyColumn(state = state) {
-                    items(items) {
-                        when (it) {
-                            is MangaMenu.MangaMenuManga -> MangaItem(it.manga, serverUrl)
-                            is MangaMenu.MangaMenuChapter -> ChapterItem(it.chapter, dateFormat::format)
+                    item {
+                        MangaItem(manga, serverUrl)
+                    }
+                    items(chapters) { chapter ->
+                        ChapterItem(chapter, dateFormat::format) {
+                            openReaderMenu(it, manga.id)
                         }
                     }
                 }
@@ -178,8 +178,8 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ChapterItem(chapter: Chapter, format: (Date) -> String) {
-    Surface(modifier = Modifier.fillMaxWidth().height(70.dp).padding(4.dp), elevation = 1.dp) {
+fun ChapterItem(chapter: Chapter, format: (Date) -> String, onClick: (Int) -> Unit) {
+    Surface(modifier = Modifier.fillMaxWidth().clickable { onClick(chapter.chapterIndex) }.height(70.dp).padding(4.dp), elevation = 1.dp) {
         Column(Modifier.padding(4.dp)) {
             Text(chapter.name, fontSize = 20.sp, maxLines = 1)
             val description = mutableListOf<String>()

@@ -12,13 +12,11 @@ import java.util.prefs.Preferences
 
 class PreferenceStoreFactory {
 
-    fun create(name: String? = null): PreferenceStore {
-        val userPreferences: Preferences = Preferences.userRoot()
-        val jvmPreferences = if (!name.isNullOrBlank()) {
-            JvmPreferencesSettings(userPreferences.node(name))
-        } else {
-            JvmPreferencesSettings(userPreferences)
+    fun create(vararg names: String): PreferenceStore {
+        var preferences: Preferences = Preferences.userRoot()
+        names.forEach {
+            preferences = preferences.node(it)
         }
-        return JvmPreferenceStore(jvmPreferences)
+        return JvmPreferenceStore(JvmPreferencesSettings(preferences))
     }
 }

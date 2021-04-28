@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.sp
 import kotlin.random.Random
 
 @Composable
-fun ErrorScreen(errorMessage: String? = null, retry: (() -> Unit)? = null) {
-    Surface {
+fun ErrorScreen(errorMessage: String? = null, modifier: Modifier = Modifier, retry: (() -> Unit)? = null) {
+    Surface(modifier) {
         Box(Modifier.fillMaxSize()) {
             Column(modifier = Modifier.align(Alignment.Center)) {
                 val errorFace = remember { getRandomErrorFace() }

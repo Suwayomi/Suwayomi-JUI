@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.min
 fun LoadingScreen(
     isLoading: Boolean = true,
     modifier: Modifier = Modifier.fillMaxSize(),
-    errorMessage: String? = null
+    errorMessage: String? = null,
+    retry: (() -> Unit)? = null
 ) {
     Surface(modifier) {
         BoxWithConstraints {
@@ -31,7 +32,7 @@ fun LoadingScreen(
                 }
                 CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
             } else {
-                ErrorScreen(errorMessage)
+                ErrorScreen(errorMessage, modifier, retry)
             }
         }
     }
