@@ -77,12 +77,8 @@ fun ReaderImage(
     imageModifier: Modifier = Modifier.fillMaxSize(),
     loadingModifier: Modifier = imageModifier,
     contentScale: ContentScale = ContentScale.Fit,
-    onImage: (Int) -> Unit,
     retry: (Int) -> Unit
 ) {
-    SideEffect {
-        onImage(imageIndex)
-    }
 
     if (drawable != null) {
         Image(
@@ -102,7 +98,7 @@ fun PagerReader(readerVM: ReaderMenuViewModel, chapter: Chapter, currentPage: In
         PagerState(
             currentPage = currentPage,
             minPage = 1,
-            maxPage = chapter.pageCount
+            maxPage = chapter.pageCount - 1
         )
     }
     LaunchedEffect(state.currentPage) {
@@ -111,14 +107,13 @@ fun PagerReader(readerVM: ReaderMenuViewModel, chapter: Chapter, currentPage: In
         }
     }
     Pager(state) {
-        val image = pages[this.currentPage - 1]
+        val image = pages[page - 1]
         ReaderImage(
             image.index,
             image.bitmap.collectAsState().value,
             image.loading.collectAsState().value,
             image.error.collectAsState().value,
             loadingModifier = pageModifier,
-            onImage = readerVM::progress,
             retry = readerVM::retry
         )
     }
@@ -128,13 +123,15 @@ fun PagerReader(readerVM: ReaderMenuViewModel, chapter: Chapter, currentPage: In
 fun ContinuesReader(readerVM: ReaderMenuViewModel, pages: List<ReaderImage>, pageModifier: Modifier) {
     LazyColumn {
         items(pages) { image ->
+            LaunchedEffect(image.index) {
+                readerVM.progress(image.index)
+            }
             ReaderImage(
                 image.index,
                 image.bitmap.collectAsState().value,
                 image.loading.collectAsState().value,
                 image.error.collectAsState().value,
                 loadingModifier = pageModifier,
-                onImage = readerVM::progress,
                 retry = readerVM::retry
             )
         }

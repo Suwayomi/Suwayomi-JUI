@@ -50,8 +50,6 @@ class ReaderMenuViewModel @Inject constructor(
         scope.launch(Dispatchers.Default) {
             val chapter: Chapter
             _chapter.value = chapterHandler.getChapter(params.mangaId, params.chapterIndex).also { chapter = it }
-            _isLoading.value = false
-
             val pageRange = 1..(chapter.pageCount ?: 1)
             _pages.value = listOf(
                 *pageRange.map {
@@ -63,6 +61,8 @@ class ReaderMenuViewModel @Inject constructor(
                     )
                 }.toTypedArray()
             )
+            _isLoading.value = false
+
             val semaphore = Semaphore(3)
             pageRange.map {
                 async {
