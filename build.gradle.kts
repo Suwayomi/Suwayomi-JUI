@@ -51,7 +51,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
-    implementation("io.github.microutils:kotlin-logging:2.0.5")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.5")
 
     // User storage
     implementation("net.harawata:appdirs:1.2.1")
@@ -69,6 +69,7 @@ dependencies {
 
 tasks {
     withType<KotlinCompile> {
+        dependsOn(formatKotlin)
         kotlinOptions {
             jvmTarget = "15"
             freeCompilerArgs = listOf(
@@ -144,4 +145,8 @@ buildConfig {
 kotlinter {
     experimentalRules = true
     disabledRules = arrayOf("experimental:argument-list-wrapping")
+}
+
+kapt {
+    includeCompileClasspath = false
 }
