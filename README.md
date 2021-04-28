@@ -56,7 +56,7 @@ Join Tachidesk's [discord server](https://discord.gg/wgPyb7hE5d) to hang out wit
 #### Linux
 Run `./scripts/SetupUnix.sh` in bash from project's root directory to download and rebuild the Tachidesk jar without the WebUI.
 #### Windows
-Run `&"./scripts/SetupWindows.sh"` in powershell from project's root directory to download and rebuild the Tachidesk jar without the WebUI.
+Run `&"./scripts/SetupWindows.ps1"` in powershell from project's root directory to download and rebuild the Tachidesk jar without the WebUI.
 ### Prerequisite: Software dependencies
 You need this software packages installed in order to build this project:
 - Java Development Kit and Java Runtime Environment version 15, this can be handled by IntelliJ
