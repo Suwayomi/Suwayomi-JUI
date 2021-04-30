@@ -8,25 +8,20 @@ package ca.gosyer.ui.reader
 
 import androidx.compose.ui.graphics.ImageBitmap
 import ca.gosyer.data.models.Chapter
-import ca.gosyer.data.reader.ReaderModePreferences
+import ca.gosyer.data.reader.ReaderModeWatch
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import javax.inject.Inject
 
-@OptIn(ExperimentalStdlibApi::class)
 class ReaderMenuViewModel @Inject constructor(
     params: Params,
     readerPreferences: ReaderPreferences,
@@ -51,16 +46,15 @@ class ReaderMenuViewModel @Inject constructor(
             val chapter: Chapter
             _chapter.value = chapterHandler.getChapter(params.mangaId, params.chapterIndex).also { chapter = it }
             val pageRange = 1..(chapter.pageCount ?: 1)
-            _pages.value = listOf(
-                *pageRange.map {
-                    ReaderImage(
-                        it,
-                        MutableStateFlow(null),
-                        MutableStateFlow(true),
-                        MutableStateFlow(null)
-                    )
-                }.toTypedArray()
-            )
+            _pages.value = pageRange.map {
+                ReaderImage(
+                    it,
+                    MutableStateFlow(null),
+                    MutableStateFlow(true),
+                    MutableStateFlow(null)
+                )
+            }
+
             _isLoading.value = false
 
             val semaphore = Semaphore(3)
@@ -99,50 +93,3 @@ data class ReaderImage(
     val loading: MutableStateFlow<Boolean>,
     val error: MutableStateFlow<String?>
 )
-
-class ReaderModeWatch(
-    private val readerPreferences: ReaderPreferences,
-    private val scope: CoroutineScope,
-    initialPreferences: ReaderModePreferences = readerPreferences.getMode(
-        readerPreferences.mode().get()
-    )
-) {
-    private val preferenceJobs = mutableListOf<Job>()
-    val direction = MutableStateFlow(initialPreferences.direction().get())
-    val continuous = MutableStateFlow(initialPreferences.continuous().get())
-    val padding = MutableStateFlow(initialPreferences.padding().get())
-
-    val mode = readerPreferences.mode().stateIn(scope)
-
-    init {
-        setupJobs(mode.value)
-        mode
-            .onEach { mode ->
-                setupJobs(mode)
-            }
-            .launchIn(scope)
-    }
-
-    private fun setupJobs(mode: String) {
-        preferenceJobs.forEach {
-            it.cancel()
-        }
-        preferenceJobs.clear()
-        val preferences = readerPreferences.getMode(mode)
-        preferenceJobs += preferences.direction().changes()
-            .onEach {
-                direction.value = it
-            }
-            .launchIn(scope)
-        preferenceJobs += preferences.continuous().changes()
-            .onEach {
-                continuous.value = it
-            }
-            .launchIn(scope)
-        preferenceJobs += preferences.padding().changes()
-            .onEach {
-                padding.value = it
-            }
-            .launchIn(scope)
-    }
-}

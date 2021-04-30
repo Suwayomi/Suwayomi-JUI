@@ -160,7 +160,7 @@ fun <Key> ChoicePreference(
     val prefValue by preference.collectAsState()
     PreferenceRow(
         title = title,
-        subtitle = if (subtitle == null) choices[prefValue] else null,
+        subtitle = subtitle ?: choices[prefValue],
         onClick = {
             ChoiceDialog(
                 items = choices.toList(),

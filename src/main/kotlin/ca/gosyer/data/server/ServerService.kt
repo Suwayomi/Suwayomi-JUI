@@ -72,6 +72,7 @@ class ServerService @Inject constructor(
                 runtime.addShutdownHook(
                     thread(start = false) {
                         process?.destroy()
+                        process = null
                     }
                 )
                 logger.info { "Server started successfully" }
@@ -89,6 +90,7 @@ class ServerService @Inject constructor(
                 logger.info { "Server closed" }
                 val exitVal = process?.waitFor()
                 logger.info { "Process exitValue: $exitVal" }
+                process = null
             }
         }.launchIn(GlobalScope)
     }

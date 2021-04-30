@@ -8,6 +8,7 @@ package ca.gosyer.data.reader
 
 import ca.gosyer.common.prefs.Preference
 import ca.gosyer.common.prefs.PreferenceStore
+import ca.gosyer.data.reader.model.DefaultReaderMode
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 
@@ -16,7 +17,7 @@ class ReaderPreferences(private val preferenceStore: PreferenceStore, val factor
     fun modes(): Preference<List<String>> {
         return preferenceStore.getJsonObject(
             "modes",
-            listOf("RTL", "LTR", "Vertical", "Continues Vertical", "Long Strip"),
+            DefaultReaderMode.values().map { it.res },
             ListSerializer(String.serializer())
         )
     }

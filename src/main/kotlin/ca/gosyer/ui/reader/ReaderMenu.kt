@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -46,6 +45,8 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long) {
     val chapter by vm.chapter.collectAsState()
     val pages by vm.pages.collectAsState()
     val continuous by vm.readerModeSettings.continuous.collectAsState()
+    val direction by vm.readerModeSettings.direction.collectAsState()
+    val padding by vm.readerModeSettings.padding.collectAsState()
     val currentPage by vm.currentPage.collectAsState()
 
     Surface {
@@ -79,7 +80,6 @@ fun ReaderImage(
     contentScale: ContentScale = ContentScale.Fit,
     retry: (Int) -> Unit
 ) {
-
     if (drawable != null) {
         Image(
             drawable,

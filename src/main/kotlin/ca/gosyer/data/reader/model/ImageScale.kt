@@ -9,9 +9,11 @@ package ca.gosyer.data.reader.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class Direction(val res: String) {
-    Down("Down"),
-    Left("RTL"),
-    Right("LTR"),
-    Up("Up")
+enum class ImageScale(val res: String) {
+    FitScreen("Fit Screen"),
+    Stretch("Strech"),
+    FitWidth("Fit Width"),
+    FitHeight("Fit Height"),
+    OriginalSize("Original Size"),
+    SmartFit("Smart Fit"),
 }
