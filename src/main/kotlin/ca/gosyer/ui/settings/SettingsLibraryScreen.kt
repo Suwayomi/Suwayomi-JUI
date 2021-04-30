@@ -9,20 +9,40 @@ package ca.gosyer.ui.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import ca.gosyer.data.library.LibraryPreferences
+import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.ui.base.components.Toolbar
+import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
+import ca.gosyer.ui.categories.openCategoriesMenu
 import ca.gosyer.ui.main.Route
 import com.github.zsoltk.compose.router.BackStack
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SettingsLibraryViewModel @Inject constructor(
-    libraryPreferences: LibraryPreferences
+    libraryPreferences: LibraryPreferences,
+    private val categoryHandler: CategoryInteractionHandler
 ) : ViewModel() {
 
     val showAllCategory = libraryPreferences.showAllCategory().asStateFlow()
+    private val _categories = MutableStateFlow(0)
+    val categories = _categories.asStateFlow()
+
+    init {
+        refreshCategoryCount()
+    }
+
+    fun refreshCategoryCount() {
+        scope.launch {
+            _categories.value = categoryHandler.getCategories().size
+        }
+    }
 }
 
 @Composable
@@ -34,6 +54,13 @@ fun SettingsLibraryScreen(navController: BackStack<Route>) {
         LazyColumn {
             item {
                 SwitchPreference(preference = vm.showAllCategory, title = "Show all category")
+            }
+            item {
+                PreferenceRow(
+                    "Categories",
+                    onClick = { openCategoriesMenu(vm::refreshCategoryCount) },
+                    subtitle = vm.categories.collectAsState().value.toString()
+                )
             }
         }
     }

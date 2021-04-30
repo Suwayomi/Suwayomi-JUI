@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -23,6 +25,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,53 +45,61 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 
-fun openCategoriesMenu() {
+fun openCategoriesMenu(notifyFinished: (() -> Unit)? = null) {
     val windowEvents = WindowEvents()
     ThemedWindow("TachideskJUI - Categories", events = windowEvents) {
-        CategoriesMenu(windowEvents)
+        CategoriesMenu(notifyFinished, windowEvents)
     }
 }
 
 @Composable
-fun CategoriesMenu(windowEvents: WindowEvents) {
+fun CategoriesMenu(notifyFinished: (() -> Unit)? = null, windowEvents: WindowEvents) {
     val vm = viewModel<CategoriesMenuViewModel>()
     val categories by vm.categories.collectAsState()
     remember {
-        windowEvents.onClose = { vm.updateCategories() }
+        windowEvents.onClose = {
+            vm.updateCategories()
+            notifyFinished?.invoke()
+        }
     }
 
-    Box {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            itemsIndexed(categories) { i, category ->
-                CategoryRow(
-                    category = category,
-                    moveUpEnabled = i != 0,
-                    moveDownEnabled = i != categories.lastIndex,
-                    onMoveUp = { vm.moveUp(category) },
-                    onMoveDown = { vm.moveDown(category) },
-                    onRename = {
-                        openRenameDialog(category) {
-                            vm.renameCategory(category, it)
-                        }
-                    },
-                    onDelete = {
-                        openDeleteDialog(category) {
-                            vm.deleteCategory(category)
-                        }
-                    },
-                )
-            }
-        }
-        ExtendedFloatingActionButton(
-            text = { Text(text = "Add") },
-            icon = { Icon(imageVector = Icons.Default.Add, contentDescription = null) },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            onClick = {
-                openCreateDialog {
-                    vm.createCategory(it)
+    Surface {
+        Box {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                itemsIndexed(categories) { i, category ->
+                    CategoryRow(
+                        category = category,
+                        moveUpEnabled = i != 0,
+                        moveDownEnabled = i != categories.lastIndex,
+                        onMoveUp = { vm.moveUp(category) },
+                        onMoveDown = { vm.moveDown(category) },
+                        onRename = {
+                            openRenameDialog(category) {
+                                vm.renameCategory(category, it)
+                            }
+                        },
+                        onDelete = {
+                            openDeleteDialog(category) {
+                                vm.deleteCategory(category)
+                            }
+                        },
+                    )
+                }
+                item {
+                    Spacer(Modifier.height(80.dp).fillMaxWidth())
                 }
             }
-        )
+            ExtendedFloatingActionButton(
+                text = { Text(text = "Add") },
+                icon = { Icon(imageVector = Icons.Default.Add, contentDescription = null) },
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                onClick = {
+                    openCreateDialog {
+                        vm.createCategory(it)
+                    }
+                }
+            )
+        }
     }
 }
 
