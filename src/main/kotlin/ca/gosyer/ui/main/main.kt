@@ -11,10 +11,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.unit.IntOffset
 import ca.gosyer.BuildConfig
 import ca.gosyer.data.DataModule
 import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.ServerService.ServerResult
+import ca.gosyer.data.ui.UiPreferences
+import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.theme.AppTheme
@@ -53,13 +56,31 @@ fun main() {
 
     val serverService = scope.getInstance<ServerService>()
 
+    val windowSettings = scope.getInstance<UiPreferences>().window()
+    val (offset, size) = windowSettings.get().get()
+
     SwingUtilities.invokeLater {
         val window = AppWindow(
-            title = BuildConfig.NAME
+            title = BuildConfig.NAME,
+            size = size,
+            location = offset,
+            centered = offset == IntOffset.Zero
         )
+
         val backPressHandler = BackPressHandler()
         window.keyboard.setShortcut(Key.Home) {
             backPressHandler.handle()
+        }
+
+        window.events.onClose = {
+            windowSettings.set(
+                WindowSettings(
+                    window.x,
+                    window.y,
+                    window.width,
+                    window.height
+                )
+            )
         }
 
         window.show {

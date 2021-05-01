@@ -102,4 +102,12 @@ internal class JsonObjectAdapter<T>(
     override fun set(key: String, value: T, editor: ObservableSettings) {
         editor.encodeValue(serializer, key, value, serializersModule)
     }
+
+    /**
+     *  Encoding a structure makes keys start with the [key] and adds extensions for values,
+     *  for a pair it would be like [key].first [key].second.
+     */
+    override fun isSet(keys: Set<String>, key: String): Boolean {
+        return keys.any { it.startsWith(key) }
+    }
 }

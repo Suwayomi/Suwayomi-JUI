@@ -28,6 +28,8 @@ internal class JvmPreference<T>(
         fun get(key: String, preferences: ObservableSettings): T
 
         fun set(key: String, value: T, editor: ObservableSettings)
+
+        fun isSet(keys: Set<String>, key: String): Boolean = key in keys
     }
 
     /**
@@ -41,10 +43,10 @@ internal class JvmPreference<T>(
      * Returns the current value of this preference.
      */
     override fun get(): T {
-        return if (!preferences.contains(key)) {
-            defaultValue
-        } else {
+        return if (isSet()) {
             adapter.get(key, preferences)
+        } else {
+            defaultValue
         }
     }
 
@@ -59,7 +61,7 @@ internal class JvmPreference<T>(
      * Returns whether there's an existing entry for this preference.
      */
     override fun isSet(): Boolean {
-        return preferences.contains(key)
+        return adapter.isSet(preferences.keys, key)
     }
 
     /**
