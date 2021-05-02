@@ -17,12 +17,19 @@ import ca.gosyer.data.DataModule
 import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.ServerService.ServerResult
 import ca.gosyer.data.ui.UiPreferences
+import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.theme.AppTheme
+import ca.gosyer.util.system.getAsFlow
+import com.github.weisj.darklaf.LafManager
+import com.github.weisj.darklaf.theme.DarculaTheme
+import com.github.weisj.darklaf.theme.IntelliJTheme
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.launchIn
 import org.apache.logging.log4j.core.config.Configurator
 import toothpick.configuration.Configuration
 import toothpick.ktp.KTP
@@ -55,6 +62,16 @@ fun main() {
         )
 
     val serverService = scope.getInstance<ServerService>()
+
+    scope.getInstance<UiPreferences>().themeMode()
+        .getAsFlow {
+            val theme = when (it) {
+                ThemeMode.Light -> IntelliJTheme()
+                ThemeMode.Dark -> DarculaTheme()
+            }
+            LafManager.install(theme)
+        }
+        .launchIn(GlobalScope)
 
     val windowSettings = scope.getInstance<UiPreferences>().window()
     val (offset, size) = windowSettings.get().get()

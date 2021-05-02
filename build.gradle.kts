@@ -29,6 +29,9 @@ dependencies {
     implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:0.2.0")
     implementation("com.github.Syer10:compose-router:45a8c4fe83")
 
+    // UI (Swing)
+    implementation("com.github.weisj:darklaf-core:2.5.5")
+
     // Threading
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
 
