@@ -69,7 +69,10 @@ fun main() {
                 ThemeMode.Light -> IntelliJTheme()
                 ThemeMode.Dark -> DarculaTheme()
             }
-            LafManager.install(theme)
+            LafManager.enableLogging(BuildConfig.DEBUG)
+            SwingUtilities.invokeLater {
+                LafManager.install(theme)
+            }
         }
         .launchIn(GlobalScope)
 
