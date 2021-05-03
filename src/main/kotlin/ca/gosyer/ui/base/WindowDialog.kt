@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeysSet
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,7 @@ fun WindowDialog(
     onNegativeButton: (() -> Unit)? = null,
     positiveButtonText: String = "OK",
     onPositiveButton: (() -> Unit)? = null,
+    keyboardShortcuts: List<KeyboardShortcut> = emptyList(),
     row: @Composable (RowScope.() -> Unit)
 ) = SwingUtilities.invokeLater {
     val window = AppWindow(
@@ -68,6 +70,10 @@ fun WindowDialog(
     window.keyboard.setShortcut(Key.Enter, onPositiveButton.plusClose())
     window.keyboard.setShortcut(Key.Escape, onNegativeButton.plusClose())
 
+    keyboardShortcuts.forEach {
+        window.keyboard.setShortcut(it.key) { it.shortcut(window) }
+    }
+
     window.show {
         AppTheme {
             Surface {
@@ -95,6 +101,7 @@ fun WindowDialog(
     size: IntSize = IntSize(400, 200),
     onDismissRequest: (() -> Unit)? = null,
     forceFocus: Boolean = true,
+    keyboardShortcuts: List<KeyboardShortcut> = emptyList(),
     buttons: @Composable (AppWindow) -> Unit,
     content: @Composable (AppWindow) -> Unit
 ) = SwingUtilities.invokeLater {
@@ -116,6 +123,10 @@ fun WindowDialog(
         }
     }
 
+    keyboardShortcuts.forEach {
+        window.keyboard.setShortcut(it.key) { it.shortcut(window) }
+    }
+
     window.show {
         AppTheme {
             Surface {
@@ -128,4 +139,9 @@ fun WindowDialog(
             }
         }
     }
+}
+
+data class KeyboardShortcut(val key: KeysSet, val shortcut: (AppWindow) -> Unit) {
+    constructor(key: Key, shortcut: (AppWindow) -> Unit) :
+        this(KeysSet(key), shortcut)
 }
