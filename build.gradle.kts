@@ -8,7 +8,7 @@ plugins {
     kotlin("jvm") version "1.4.32"
     kotlin("kapt") version "1.4.32"
     kotlin("plugin.serialization") version "1.4.32"
-    id("org.jetbrains.compose") version "0.4.0-build184"
+    id("org.jetbrains.compose") version "0.4.0-build185"
     id("de.fuerstenau.buildconfig") version "1.1.8"
     id("org.jmailen.kotlinter") version "3.4.0"
 }
@@ -131,6 +131,14 @@ compose.desktop {
             packageName = "TachideskJUI"
             description = "TachideskJUI is a Jvm client for a Tachidesk Server"
             copyright = "Mozilla Public License v2.0"
+            windows {
+                dirChooser = true
+                upgradeUuid = "B2ED947E-81E4-4258-8388-2B1EDF5E0A30"
+            }
+            macOS {
+                bundleID = "ca.gosyer.tachideskjui"
+                packageName = rootProject.name
+            }
         }
     }
 }
