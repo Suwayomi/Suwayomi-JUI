@@ -6,6 +6,7 @@
 
 package ca.gosyer.util.system
 
+import ca.gosyer.BuildConfig
 import net.harawata.appdirs.AppDirs
 import net.harawata.appdirs.AppDirsFactory
 import java.io.File
@@ -15,7 +16,7 @@ val appDirs: AppDirs by lazy {
 }
 
 val userDataDir: File by lazy {
-    File(appDirs.getUserDataDir("TachideskJUI", null, null)).also {
+    File(appDirs.getUserDataDir(BuildConfig.NAME, null, null)).also {
         if (!it.exists()) it.mkdirs()
     }
 }

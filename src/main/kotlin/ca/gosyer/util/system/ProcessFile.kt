@@ -6,12 +6,13 @@
 
 package ca.gosyer.util.system
 
+import ca.gosyer.BuildConfig
 import java.io.File
 
 fun processFile() {
     val pidFile = ProcessHandle.current().pid()
     val strTmp = System.getProperty("java.io.tmpdir")
-    val file = File("$strTmp/TachideskJUI.pid")
+    val file = File("$strTmp/${BuildConfig.NAME}.pid")
 
     // backup deletion
     if (file.exists()) {
