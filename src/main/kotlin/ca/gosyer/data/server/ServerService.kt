@@ -6,15 +6,20 @@
 
 package ca.gosyer.data.server
 
+import ca.gosyer.BuildConfig
 import ca.gosyer.util.system.userDataDir
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import java.io.BufferedReader
 import java.io.File
+import java.io.IOException
+import java.util.jar.JarInputStream
 import javax.inject.Inject
 import kotlin.concurrent.thread
 
@@ -31,6 +36,14 @@ class ServerService @Inject constructor(
     )
     var process: Process? = null
 
+    private fun copyJar(jarFile: File) {
+        javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
+            jarFile.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+    }
+
     init {
         host.onEach {
             process?.destroy()
@@ -41,16 +54,40 @@ class ServerService @Inject constructor(
                 return@onEach
             }
             GlobalScope.launch {
-
                 val logger = KotlinLogging.logger("Server")
                 val runtime = Runtime.getRuntime()
 
                 val jarFile = File(userDataDir, "Tachidesk.jar")
                 if (!jarFile.exists()) {
                     logger.info { "Copying server to resources" }
-                    javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
-                        jarFile.outputStream().use { output ->
-                            input.copyTo(output)
+                    copyJar(jarFile)
+                } else {
+                    try {
+                        val jarVersion = withContext(Dispatchers.IO) {
+                            JarInputStream(jarFile.inputStream()).use { jar ->
+                                JarVersion(
+                                    jar.manifest?.mainAttributes?.getValue("Specification-Version"),
+                                    jar.manifest?.mainAttributes?.getValue("Implementation-Version")
+                                )
+                            }
+                        }
+                        // TODO remove 1.0 version check when we move onto 0.3.0 of Tachidesk
+                        if (
+                            jarVersion.specification != null &&
+                            jarVersion.implementation != null &&
+                            jarVersion.implementation != "1.0"
+                        ) {
+                            if (
+                                jarVersion.specification != BuildConfig.TACHIDESK_SP_VERSION ||
+                                jarVersion.implementation != BuildConfig.TACHIDESK_IM_VERSION
+                            ) {
+                                logger.info { "Updating server file from resources" }
+                                copyJar(jarFile)
+                            }
+                        }
+                    } catch (e: IOException) {
+                        logger.error(e) {
+                            "Error accessing server jar, cannot update server, ${BuildConfig.NAME} may not work properly"
                         }
                     }
                 }
@@ -101,4 +138,6 @@ class ServerService @Inject constructor(
         STARTED,
         FAILED;
     }
+
+    data class JarVersion(val specification: String?, val implementation: String?)
 }
