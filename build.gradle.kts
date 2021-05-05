@@ -28,6 +28,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:0.2.0")
     implementation("com.github.Syer10:compose-router:45a8c4fe83")
+    implementation("ca.gosyer:accompanist-pager:0.8.1")
 
     // UI (Swing)
     implementation("com.github.weisj:darklaf-core:2.5.5")
@@ -82,7 +83,9 @@ tasks {
                 "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
                 "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
                 "-Xopt-in=com.russhwolf.settings.ExperimentalSettingsApi",
-                "-Xopt-in=com.russhwolf.settings.ExperimentalSettingsImplementation"
+                "-Xopt-in=com.russhwolf.settings.ExperimentalSettingsImplementation",
+                "-Xopt-in=com.google.accompanist.pager.ExperimentalPagerApi",
+                "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi"
             )
         }
     }

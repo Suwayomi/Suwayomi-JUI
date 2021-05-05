@@ -25,15 +25,12 @@ open class BaseInteractionHandler(
     private val _serverUrl = serverPreferences.server()
     val serverUrl get() = _serverUrl.get()
 
-    protected suspend inline fun <reified T> Http.getRepeat(
-        urlString: String,
-        block: HttpRequestBuilder.() -> Unit = {}
-    ): T {
+    protected inline fun <T> repeat(block: () -> T): T {
         var attempt = 1
         var lastException: Exception
         do {
             try {
-                return get(urlString, block)
+                return block()
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 lastException = e
@@ -41,60 +38,42 @@ open class BaseInteractionHandler(
             attempt++
         } while (attempt <= 3)
         throw lastException
+    }
+
+    protected suspend inline fun <reified T> Http.getRepeat(
+        urlString: String,
+        noinline block: HttpRequestBuilder.() -> Unit = {}
+    ): T {
+        return repeat {
+            get(urlString, block)
+        }
     }
 
     protected suspend inline fun <reified T> Http.deleteRepeat(
         urlString: String,
-        block: HttpRequestBuilder.() -> Unit = {}
+        noinline block: HttpRequestBuilder.() -> Unit = {}
     ): T {
-        var attempt = 1
-        var lastException: Exception
-        do {
-            try {
-                return delete(urlString, block)
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                lastException = e
-            }
-            attempt++
-        } while (attempt <= 3)
-        throw lastException
+        return repeat {
+            delete(urlString, block)
+        }
     }
 
     protected suspend inline fun <reified T> Http.patchRepeat(
         urlString: String,
-        block: HttpRequestBuilder.() -> Unit = {}
+        noinline block: HttpRequestBuilder.() -> Unit = {}
     ): T {
-        var attempt = 1
-        var lastException: Exception
-        do {
-            try {
-                return patch(urlString, block)
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                lastException = e
-            }
-            attempt++
-        } while (attempt <= 3)
-        throw lastException
+        return repeat {
+            patch(urlString, block)
+        }
     }
 
     protected suspend inline fun <reified T> Http.postRepeat(
         urlString: String,
-        block: HttpRequestBuilder.() -> Unit = {}
+        noinline block: HttpRequestBuilder.() -> Unit = {}
     ): T {
-        var attempt = 1
-        var lastException: Exception
-        do {
-            try {
-                return post(urlString, block)
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                lastException = e
-            }
-            attempt++
-        } while (attempt <= 3)
-        throw lastException
+        return repeat {
+            post(urlString, block)
+        }
     }
 
     protected suspend inline fun <reified T> Http.submitFormRepeat(
@@ -103,32 +82,14 @@ open class BaseInteractionHandler(
         encodeInQuery: Boolean = false,
         block: HttpRequestBuilder.() -> Unit = {}
     ): T {
-        var attempt = 1
-        var lastException: Exception
-        do {
-            try {
-                return submitForm(urlString, formParameters, encodeInQuery, block)
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                lastException = e
-            }
-            attempt++
-        } while (attempt <= 3)
-        throw lastException
+        return repeat {
+            submitForm(urlString, formParameters, encodeInQuery, block)
+        }
     }
 
     suspend fun imageFromUrl(client: Http, imageUrl: String): ImageBitmap {
-        var attempt = 1
-        var lastException: Exception
-        do {
-            try {
-                return ca.gosyer.util.compose.imageFromUrl(client, imageUrl)
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                lastException = e
-            }
-            attempt++
-        } while (attempt <= 3)
-        throw lastException
+        return repeat {
+            ca.gosyer.util.compose.imageFromUrl(client, imageUrl)
+        }
     }
 }

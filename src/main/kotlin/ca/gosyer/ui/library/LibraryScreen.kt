@@ -7,13 +7,11 @@
 package ca.gosyer.ui.library
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material.Text
@@ -29,11 +27,11 @@ import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.LoadingScreen
-import ca.gosyer.ui.base.components.Pager
-import ca.gosyer.ui.base.components.PagerState
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 
 fun openLibraryMenu() {
     ThemedWindow {
@@ -41,7 +39,6 @@ fun openLibraryMenu() {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
     val vm = viewModel<LibraryScreenViewModel>()
@@ -95,7 +92,6 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun LibraryTabs(
     visible: Boolean,
@@ -142,8 +138,7 @@ private fun LibraryPager(
     val state = remember(categories.size, selectedPage) {
         PagerState(
             currentPage = selectedPage,
-            minPage = 0,
-            maxPage = categories.lastIndex
+            pageCount = categories.lastIndex
         )
     }
     LaunchedEffect(state.currentPage) {
@@ -151,8 +146,8 @@ private fun LibraryPager(
             onPageChanged(state.currentPage)
         }
     }
-    Pager(state = state, offscreenLimit = 1) {
-        val library by getLibraryForPage(page)
+    HorizontalPager(state = state, offscreenLimit = 1) {
+        val library by getLibraryForPage(it)
         when (displayMode) {
             DisplayMode.CompactGrid -> LibraryMangaCompactGrid(
                 library = library,

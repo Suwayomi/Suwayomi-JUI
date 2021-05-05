@@ -21,7 +21,11 @@ import androidx.compose.ui.unit.sp
 import kotlin.random.Random
 
 @Composable
-fun ErrorScreen(errorMessage: String? = null, modifier: Modifier = Modifier, retry: (() -> Unit)? = null) {
+fun ErrorScreen(
+    errorMessage: String? = null,
+    modifier: Modifier = Modifier,
+    retry: (() -> Unit)? = null
+) {
     Surface(modifier) {
         Box(Modifier.fillMaxSize()) {
             Column(modifier = Modifier.align(Alignment.Center)) {
