@@ -10,6 +10,7 @@ import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
+import io.github.kerubistan.kroki.coroutines.priorityChannel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -17,10 +18,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
-import java.util.concurrent.PriorityBlockingQueue
+import mu.KotlinLogging
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
@@ -30,12 +29,22 @@ class TachideskPageLoader(
     readerPreferences: ReaderPreferences,
     chapterHandler: ChapterInteractionHandler
 ) : PageLoader() {
-    /**
-     * A queue used to manage requests one by one while allowing priorities.
-     */
-    private val queue = PriorityBlockingQueue<PriorityPage>()
     val scope = CoroutineScope(SupervisorJob() + context)
+    val logger = KotlinLogging.logger {}
+
+    /**
+     * A channel used to manage requests one by one while allowing priorities.
+     */
+    private val channel = priorityChannel<PriorityPage>()
+
+    /**
+     * The amount of pages to preload before stopping
+     */
     private val preloadSize = 3
+
+    /**
+     * The pages stateflow
+     */
     private val pagesFlow by lazy {
         MutableStateFlow<List<ReaderPage>>(emptyList())
     }
@@ -45,17 +54,20 @@ class TachideskPageLoader(
             scope.launch {
                 while (true) {
                     try {
-                        val page = queue.take().page
-                        if (page.status.value == ReaderPage.Status.QUEUE) {
-                            try {
-                                page.bitmap.value = chapterHandler.getPage(chapter.chapter, page.index)
-                                page.status.value = ReaderPage.Status.READY
-                                page.error.value = null
-                            } catch (e: Exception) {
-                                if (e is CancellationException) throw e
-                                page.bitmap.value = null
-                                page.status.value = ReaderPage.Status.ERROR
-                                page.error.value = e.message
+                        for (priorityPage in channel) {
+                            val page = priorityPage.page
+                            logger.debug { "Loading page ${page.index}" }
+                            if (page.status.value == ReaderPage.Status.QUEUE) {
+                                try {
+                                    page.bitmap.value = chapterHandler.getPage(chapter.chapter, page.index)
+                                    page.status.value = ReaderPage.Status.READY
+                                    page.error.value = null
+                                } catch (e: Exception) {
+                                    if (e is CancellationException) throw e
+                                    page.bitmap.value = null
+                                    page.status.value = ReaderPage.Status.ERROR
+                                    page.error.value = e.message
+                                }
                             }
                         }
                     } catch (e: Exception) {
@@ -68,7 +80,7 @@ class TachideskPageLoader(
 
     /**
      * Preloads the given [amount] of pages after the [currentPage] with a lower priority.
-     * @return a list of [PriorityPage] that were added to the [queue]
+     * @return a list of [PriorityPage] that were added to the [channel]
      */
     private fun preloadNextPages(currentPage: ReaderPage, amount: Int): List<PriorityPage> {
         val pageIndex = currentPage.index
@@ -79,7 +91,11 @@ class TachideskPageLoader(
             .subList(pageIndex + 1, (pageIndex + 1 + amount).coerceAtMost(pages.value.size))
             .mapNotNull {
                 if (it.status.value == ReaderPage.Status.QUEUE) {
-                    PriorityPage(it, 0).apply { queue.offer(this) }
+                    PriorityPage(it, 0).apply {
+                        scope.launch {
+                            channel.send(this@apply)
+                        }
+                    }
                 } else null
             }
     }
@@ -109,17 +125,11 @@ class TachideskPageLoader(
 
             val queuedPages = mutableListOf<PriorityPage>()
             if (page.status.value == ReaderPage.Status.QUEUE) {
-                queuedPages += PriorityPage(page, 1).also { queue.offer(it) }
+                queuedPages += PriorityPage(page, 1).also {
+                    scope.launch { channel.send(it) }
+                }
             }
             queuedPages += preloadNextPages(page, preloadSize)
-
-            page.status.onCompletion {
-                queuedPages.forEach {
-                    if (it.page.status.value == ReaderPage.Status.QUEUE) {
-                        queue.remove(it)
-                    }
-                }
-            }.launchIn(scope)
         }
     }
 
@@ -130,7 +140,9 @@ class TachideskPageLoader(
         if (page.status.value == ReaderPage.Status.ERROR) {
             page.status.value = ReaderPage.Status.QUEUE
         }
-        queue.offer(PriorityPage(page, 2))
+        scope.launch {
+            channel.send(PriorityPage(page, 2))
+        }
     }
 
     /**
@@ -155,6 +167,6 @@ class TachideskPageLoader(
     override fun recycle() {
         super.recycle()
         scope.cancel()
-        queue.clear()
+        channel.close()
     }
 }

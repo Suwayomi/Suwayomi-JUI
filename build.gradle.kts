@@ -66,6 +66,9 @@ dependencies {
     implementation("com.russhwolf:multiplatform-settings-serialization-jvm:$multiplatformSettingsVersion")
     implementation("com.russhwolf:multiplatform-settings-coroutines-jvm:$multiplatformSettingsVersion")
 
+    // Utility
+    implementation("io.github.kerubistan.kroki:kroki-coroutines:1.21")
+
     // Testing
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
