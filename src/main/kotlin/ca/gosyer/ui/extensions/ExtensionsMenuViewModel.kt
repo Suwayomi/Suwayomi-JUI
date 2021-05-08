@@ -27,6 +27,8 @@ class ExtensionsMenuViewModel @Inject constructor(
 
     val serverUrl = serverPreferences.server().stateIn(scope)
 
+    private lateinit var extensionList: List<Extension>
+
     private val _extensions = MutableStateFlow(emptyList<Extension>())
     val extensions = _extensions.asStateFlow()
 
@@ -43,8 +45,8 @@ class ExtensionsMenuViewModel @Inject constructor(
         try {
             _isLoading.value = true
             val enabledLangs = extensionPreferences.languages().get()
-            val extensions = extensionHandler.getExtensionList()
-            _extensions.value = extensions.filter { it.lang in enabledLangs }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
+            extensionList = extensionHandler.getExtensionList()
+            _extensions.value = extensionList.filter { it.lang in enabledLangs }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
         } catch (e: Exception) {
             if (e is CancellationException) throw e
         } finally {
@@ -73,6 +75,19 @@ class ExtensionsMenuViewModel @Inject constructor(
                 if (e is CancellationException) throw e
             }
             getExtensions()
+        }
+    }
+
+    fun search(searchQuery: String) {
+        if (searchQuery.isBlank()) {
+            _extensions.value = extensionList
+        } else {
+            val queries = searchQuery.split(" ")
+            val extensions = extensionList.toMutableList()
+            queries.forEach { query ->
+                extensions.removeIf { !it.name.contains(query, true) }
+            }
+            _extensions.value = extensions.toList()
         }
     }
 }

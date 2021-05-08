@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Extension
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 
@@ -61,7 +62,7 @@ fun ExtensionsMenu() {
     val serverUrl by vm.serverUrl.collectAsState()
 
     Box(Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
-        if (extensions.isEmpty()) {
+        if (isLoading) {
             LoadingScreen(isLoading)
         } else {
             val state = rememberLazyListState()
@@ -69,6 +70,15 @@ fun ExtensionsMenu() {
 
             Box(Modifier.fillMaxSize()) {
                 LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state) {
+                    item {
+                        Toolbar(
+                            "Extensions",
+                            closable = false,
+                            search = {
+                                vm.search(it)
+                            }
+                        )
+                    }
                     items(extensions) { extension ->
                         ExtensionItem(
                             extension,
@@ -87,7 +97,7 @@ fun ExtensionsMenu() {
                     modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
                     adapter = rememberScrollbarAdapter(
                         scrollState = state,
-                        itemCount = itemCount,
+                        itemCount = itemCount + 1, // Plus toolbar,
                         averageItemSize = 37.dp // TextBox height + Spacer height
                     )
                 )
