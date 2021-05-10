@@ -30,7 +30,7 @@ class TachideskPageLoader(
     chapterHandler: ChapterInteractionHandler
 ) : PageLoader() {
     val scope = CoroutineScope(SupervisorJob() + context)
-    val logger = KotlinLogging.logger {}
+    private val logger = KotlinLogging.logger {}
 
     /**
      * A channel used to manage requests one by one while allowing priorities.
@@ -40,7 +40,7 @@ class TachideskPageLoader(
     /**
      * The amount of pages to preload before stopping
      */
-    private val preloadSize = 3
+    private val preloadSize = readerPreferences.preload().stateIn(scope)
 
     /**
      * The pages stateflow
@@ -50,7 +50,7 @@ class TachideskPageLoader(
     }
 
     init {
-        repeat(3) {
+        repeat(readerPreferences.threads().get()) {
             scope.launch {
                 while (true) {
                     try {
@@ -129,7 +129,7 @@ class TachideskPageLoader(
                     scope.launch { channel.send(it) }
                 }
             }
-            queuedPages += preloadNextPages(page, preloadSize)
+            queuedPages += preloadNextPages(page, preloadSize.value)
         }
     }
 

@@ -14,6 +14,14 @@ import kotlinx.serialization.builtins.serializer
 
 class ReaderPreferences(private val preferenceStore: PreferenceStore, val factory: (String) -> PreferenceStore) {
 
+    fun preload(): Preference<Int> {
+        return preferenceStore.getInt("preload", 3)
+    }
+
+    fun threads(): Preference<Int> {
+        return preferenceStore.getInt("threads", 3)
+    }
+
     fun modes(): Preference<List<String>> {
         return preferenceStore.getJsonObject(
             "modes",
