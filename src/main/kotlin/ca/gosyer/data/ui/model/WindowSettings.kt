@@ -15,15 +15,26 @@ data class WindowSettings(
     val x: Int? = null,
     val y: Int? = null,
     val width: Int? = null,
-    val height: Int? = null
+    val height: Int? = null,
+    val maximized: Boolean? = null
 ) {
-    fun get(): Pair<IntOffset, IntSize> {
+    fun get(): WindowGet {
         val offset = if (x != null && y != null) {
             IntOffset(x, y)
         } else {
             IntOffset.Zero
         }
         val size = IntSize(width ?: 800, height ?: 600)
-        return offset to size
+        return WindowGet(
+            offset,
+            size,
+            maximized ?: false
+        )
     }
+
+    data class WindowGet(
+        val offset: IntOffset,
+        val size: IntSize,
+        val maximized: Boolean
+    )
 }

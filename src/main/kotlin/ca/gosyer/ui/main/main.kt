@@ -77,7 +77,11 @@ fun main() {
         .launchIn(GlobalScope)
 
     val windowSettings = scope.getInstance<UiPreferences>().window()
-    val (offset, size) = windowSettings.get().get()
+    val (
+        offset,
+        size,
+        maximized
+    ) = windowSettings.get().get()
 
     SwingUtilities.invokeLater {
         val window = AppWindow(
@@ -86,6 +90,10 @@ fun main() {
             location = offset,
             centered = offset == IntOffset.Zero
         )
+
+        if (maximized) {
+            window.maximize()
+        }
 
         val backPressHandler = BackPressHandler()
         window.keyboard.setShortcut(Key.Home) {
@@ -98,7 +106,8 @@ fun main() {
                     window.x,
                     window.y,
                     window.width,
-                    window.height
+                    window.height,
+                    window.isMaximized
                 )
             )
         }

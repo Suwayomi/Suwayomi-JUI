@@ -30,8 +30,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeysSet
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.reader.model.Direction
+import ca.gosyer.data.ui.UiPreferences
+import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.KeyboardShortcut
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
@@ -41,21 +45,48 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerScope
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
+import toothpick.ktp.extension.getInstance
 import javax.swing.SwingUtilities
 
 fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
+    val windowSettings = AppScope.getInstance<UiPreferences>()
+        .readerWindow()
+    val (
+        offset,
+        size,
+        maximized
+    ) = windowSettings.get().get()
+
     SwingUtilities.invokeLater {
         val window = AppWindow(
-            "TachideskJUI - Reader"
+            "TachideskJUI - Reader",
+            size = size,
+            location = offset,
+            centered = offset == IntOffset.Zero
         )
+
+        if (maximized) {
+            window.maximize()
+        }
 
         val setHotkeys: (List<KeyboardShortcut>) -> Unit = { shortcuts ->
             shortcuts.forEach {
                 window.keyboard.setShortcut(it.key) { it.shortcut(window) }
             }
+        }
+
+        window.events.onClose = {
+            windowSettings.set(
+                WindowSettings(
+                    window.x,
+                    window.y,
+                    window.width,
+                    window.height,
+                    window.isMaximized
+                )
+            )
         }
 
         window.show {
@@ -203,7 +234,7 @@ fun PagerReader(
 }
 
 @Composable
-fun PagerScope.HandlePager(
+fun HandlePager(
     pages: List<ReaderPage>,
     page: Int,
     previousChapter: ReaderChapter?,
