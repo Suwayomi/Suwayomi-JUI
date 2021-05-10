@@ -18,6 +18,10 @@ class ReaderModePreferences(private val mode: String, private val preferenceStor
 
     private val defaultMode by lazy { DefaultReaderMode.values().find { it.res == mode } }
 
+    fun default(): Preference<Boolean> {
+        return preferenceStore.getBoolean("default", defaultMode != null)
+    }
+
     fun continuous(): Preference<Boolean> {
         return preferenceStore.getBoolean("continuous", defaultMode?.continuous ?: false)
     }

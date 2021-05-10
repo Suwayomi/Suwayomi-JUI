@@ -6,6 +6,19 @@
 
 package ca.gosyer.ui.base.prefs
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.desktop.AppWindow
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -14,6 +27,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,8 +43,11 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
+import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,10 +57,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.WindowDialog
@@ -56,16 +75,20 @@ fun PreferenceRow(
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
     subtitle: String? = null,
+    enabled: Boolean = true,
     action: @Composable (() -> Unit)? = null,
 ) {
     val height = if (subtitle != null) 72.dp else 56.dp
 
+    var modifier = Modifier.fillMaxWidth().requiredHeight(height)
+    if (enabled) {
+        modifier = modifier.combinedClickable(
+            onLongClick = onLongClick,
+            onClick = onClick
+        )
+    }
     Row(
-        modifier = Modifier.fillMaxWidth().requiredHeight(height)
-            .combinedClickable(
-                onLongClick = onLongClick,
-                onClick = onClick
-            ),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (icon != null) {
@@ -82,13 +105,22 @@ fun PreferenceRow(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
                 style = MaterialTheme.typography.subtitle1,
+                color = if (enabled) {
+                    LocalContentColor.current
+                } else {
+                    LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+                }
             )
             if (subtitle != null) {
                 Text(
                     text = subtitle,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
+                    color = if (enabled) {
+                        LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+                    } else {
+                        LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+                    },
                     style = MaterialTheme.typography.subtitle1
                 )
             }
@@ -107,6 +139,7 @@ fun SwitchPreference(
     title: String,
     subtitle: String? = null,
     icon: ImageVector? = null,
+    enabled: Boolean = true
 ) {
     PreferenceRow(
         title = title,
@@ -114,9 +147,10 @@ fun SwitchPreference(
         icon = icon,
         action = {
             val prefValue by preference.collectAsState()
-            Switch(checked = prefValue, onCheckedChange = null)
+            Switch(checked = prefValue, onCheckedChange = null, enabled = enabled)
         },
-        onClick = { preference.value = !preference.value }
+        onClick = { preference.value = !preference.value },
+        enabled = enabled
     )
 }
 
@@ -125,7 +159,8 @@ fun EditTextPreference(
     preference: PreferenceMutableStateFlow<String>,
     title: String,
     subtitle: String? = null,
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
+    enabled: Boolean = true
 ) {
     var editText by remember { mutableStateOf(TextFieldValue(preference.value)) }
     PreferenceRow(
@@ -146,7 +181,8 @@ fun EditTextPreference(
                     }
                 )
             }
-        }
+        },
+        enabled = enabled
     )
 }
 
@@ -155,7 +191,8 @@ fun <Key> ChoicePreference(
     preference: PreferenceMutableStateFlow<Key>,
     choices: Map<Key, String>,
     title: String,
-    subtitle: String? = null
+    subtitle: String? = null,
+    enabled: Boolean = true
 ) {
     val prefValue by preference.collectAsState()
     PreferenceRow(
@@ -170,7 +207,8 @@ fun <Key> ChoicePreference(
                     preference.value = selected
                 }
             )
-        }
+        },
+        enabled = enabled
     )
 }
 
@@ -218,6 +256,7 @@ fun ColorPreference(
     preference: PreferenceMutableStateFlow<Color>,
     title: String,
     subtitle: String? = null,
+    enabled: Boolean = true,
     unsetColor: Color = Color.Unspecified
 ) {
     val initialColor = preference.value.takeOrElse { unsetColor }
@@ -247,6 +286,106 @@ fun ColorPreference(
                         .border(BorderStroke(1.dp, borderColor), CircleShape)
                 )
             }
-        }
+        },
+        enabled = enabled
     )
+}
+
+const val EXPAND_ANIMATION_DURATION = 300
+const val COLLAPSE_ANIMATION_DURATION = 300
+const val FADE_IN_ANIMATION_DURATION = 350
+const val FADE_OUT_ANIMATION_DURATION = 300
+
+@Composable
+fun ExpandablePreference(
+    title: String,
+    expandedContent: @Composable ColumnScope.() -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val transitionState = remember {
+        MutableTransitionState(expanded).apply {
+            targetState = !expanded
+        }
+    }
+    val transition = updateTransition(transitionState)
+    val elevation by transition.animateDp({
+        tween(durationMillis = EXPAND_ANIMATION_DURATION)
+    }) {
+        if (expanded) 2.dp else 0.dp
+    }
+    val arrowRotationDegree by transition.animateFloat({
+        tween(durationMillis = EXPAND_ANIMATION_DURATION)
+    }) {
+        if (expanded) 0f else 180f
+    }
+
+    Surface(
+        elevation = elevation,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column {
+            Box(Modifier.clickable { expanded = !expanded }) {
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = "Expandable Arrow",
+                    modifier = Modifier.rotate(arrowRotationDegree)
+                        .align(Alignment.CenterStart),
+                )
+                Text(
+                    text = title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    textAlign = TextAlign.Center,
+                )
+            }
+            ExpandableContent(
+                visible = expanded,
+                initiallyVisible = expanded,
+                expandedContent = expandedContent
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExpandableContent(
+    visible: Boolean = true,
+    initiallyVisible: Boolean = false,
+    expandedContent: @Composable ColumnScope.() -> Unit
+) {
+    val enterFadeIn = remember {
+        fadeIn(
+            animationSpec = TweenSpec(
+                durationMillis = FADE_IN_ANIMATION_DURATION,
+                easing = FastOutLinearInEasing
+            )
+        )
+    }
+    val enterExpand = remember {
+        expandVertically(animationSpec = tween(EXPAND_ANIMATION_DURATION))
+    }
+    val exitFadeOut = remember {
+        fadeOut(
+            animationSpec = TweenSpec(
+                durationMillis = FADE_OUT_ANIMATION_DURATION,
+                easing = LinearOutSlowInEasing
+            )
+        )
+    }
+    val exitCollapse = remember {
+        shrinkVertically(animationSpec = tween(COLLAPSE_ANIMATION_DURATION))
+    }
+    AnimatedVisibility(
+        visible = visible,
+        initiallyVisible = initiallyVisible,
+        enter = enterExpand + enterFadeIn,
+        exit = exitCollapse + exitFadeOut
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            content = expandedContent
+        )
+    }
 }

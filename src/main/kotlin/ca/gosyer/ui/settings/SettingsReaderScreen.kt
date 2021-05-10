@@ -18,8 +18,8 @@ import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
+import ca.gosyer.ui.base.prefs.ExpandablePreference
 import ca.gosyer.ui.base.prefs.PreferenceMutableStateFlow
-import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.vm.ViewModel
@@ -30,7 +30,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
@@ -78,7 +77,9 @@ class SettingsReaderViewModel @Inject constructor(
 }
 
 data class ReaderModePreference(
+    val scope: CoroutineScope,
     val mode: String,
+    val defaultMode: Boolean,
     val continuous: PreferenceMutableStateFlow<Boolean>,
     val direction: PreferenceMutableStateFlow<Direction>,
     val padding: PreferenceMutableStateFlow<Float>,
@@ -86,12 +87,22 @@ data class ReaderModePreference(
 ) {
     constructor(scope: CoroutineScope, mode: String, readerPreferences: ReaderModePreferences) :
         this(
+            scope,
             mode,
+            readerPreferences.default().get(),
             readerPreferences.continuous().asStateIn(scope),
             readerPreferences.direction().asStateIn(scope),
             readerPreferences.padding().asStateIn(scope),
             readerPreferences.imageScale().asStateIn(scope)
         )
+
+    init {
+        continuous
+            .onEach {
+                padding.value = 0.0F
+            }
+            .launchIn(scope)
+    }
 }
 
 @Composable
@@ -113,34 +124,32 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
             }
             modeSettings.forEach {
                 item {
-                    PreferenceRow(it.mode)
-                }
-                item {
-                    ChoicePreference(
-                        it.direction,
-                        vm.getDirectionChoices(),
-                        "Direction"
-                    )
-                }
-                item {
-                    SwitchPreference(it.continuous, "Continuous", "If the reader is a pager or a scrolling window")
-                }
-                item {
-                    val continuous by it.continuous.collectAsState()
-                    ChoicePreference(
-                        it.padding,
-                        vm.getPaddingChoices(continuous),
-                        if (continuous) "Page Padding" else "Border Padding"
-                    )
-                }
-                item {
-                    val continuous by it.continuous.collectAsState()
-                    if (!continuous) {
+                    ExpandablePreference(it.mode) {
                         ChoicePreference(
-                            it.imageScale,
-                            vm.getImageScaleChoices(),
-                            "Image Scale"
+                            it.direction,
+                            vm.getDirectionChoices(),
+                            "Direction",
+                            enabled = !it.defaultMode
                         )
+                        SwitchPreference(
+                            it.continuous,
+                            "Continuous",
+                            "If the reader is a pager or a scrolling window",
+                            enabled = !it.defaultMode
+                        )
+                        val continuous by it.continuous.collectAsState()
+                        ChoicePreference(
+                            it.padding,
+                            vm.getPaddingChoices(continuous),
+                            if (continuous) "Page Padding" else "Border Padding"
+                        )
+                        if (!continuous) {
+                            ChoicePreference(
+                                it.imageScale,
+                                vm.getImageScaleChoices(),
+                                "Image Scale"
+                            )
+                        }
                     }
                 }
                 item {
