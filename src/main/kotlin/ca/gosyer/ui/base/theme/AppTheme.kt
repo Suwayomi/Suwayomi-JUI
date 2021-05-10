@@ -68,8 +68,7 @@ private class AppThemeViewModel @Inject constructor(
         val primary by colors.primaryStateFlow.collectAsState()
         val secondary by colors.secondaryStateFlow.collectAsState()
 
-        val material = getMaterialColors(baseTheme.colors, primary, secondary)
-        return material
+        return getMaterialColors(baseTheme.colors, primary, secondary)
     }
 
     @Composable

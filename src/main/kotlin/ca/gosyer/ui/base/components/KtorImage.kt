@@ -39,9 +39,8 @@ fun KtorImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
     retries: Int = 3,
-    httpClient: Http? = null
+    client: Http = remember { AppScope.getInstance() }
 ) {
-    val client = remember { httpClient ?: AppScope.getInstance() }
     BoxWithConstraints {
         val drawable: MutableState<ImageBitmap?> = remember { mutableStateOf(null) }
         val loading: MutableState<Boolean> = remember { mutableStateOf(true) }
