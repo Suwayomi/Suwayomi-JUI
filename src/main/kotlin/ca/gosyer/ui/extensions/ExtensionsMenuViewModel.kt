@@ -35,6 +35,8 @@ class ExtensionsMenuViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
+    var searchQuery = MutableStateFlow<String?>(null)
+
     init {
         scope.launch {
             getExtensions()
@@ -46,7 +48,9 @@ class ExtensionsMenuViewModel @Inject constructor(
             _isLoading.value = true
             val enabledLangs = extensionPreferences.languages().get()
             extensionList = extensionHandler.getExtensionList()
-            _extensions.value = extensionList.filter { it.lang in enabledLangs }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
+                .filter { it.lang in enabledLangs }
+                .sortedWith(compareBy({ it.lang }, { it.pkgName }))
+            search(searchQuery.value.orEmpty())
         } catch (e: Exception) {
             if (e is CancellationException) throw e
         } finally {
@@ -79,6 +83,7 @@ class ExtensionsMenuViewModel @Inject constructor(
     }
 
     fun search(searchQuery: String) {
+        this.searchQuery.value = searchQuery.takeUnless { it.isBlank() }
         if (searchQuery.isBlank()) {
             _extensions.value = extensionList
         } else {

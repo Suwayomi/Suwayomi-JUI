@@ -60,6 +60,7 @@ fun ExtensionsMenu() {
     val extensions by vm.extensions.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
+    val search by vm.searchQuery.collectAsState()
 
     Box(Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
         if (isLoading) {
@@ -74,6 +75,7 @@ fun ExtensionsMenu() {
                         Toolbar(
                             "Extensions",
                             closable = false,
+                            searchText = search,
                             search = {
                                 vm.search(it)
                             }

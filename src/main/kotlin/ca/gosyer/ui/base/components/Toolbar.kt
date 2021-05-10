@@ -29,8 +29,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,9 +54,9 @@ fun Toolbar(
     backgroundColor: Color = MaterialTheme.colors.surface, // CustomColors.current.bars,
     contentColor: Color = contentColorFor(backgroundColor), // CustomColors.current.onBars,
     elevation: Dp = AppBarDefaults.TopAppBarElevation,
+    searchText: String? = null,
     search: ((String) -> Unit)? = null
 ) {
-    val searchText = remember { mutableStateOf("") }
     Surface(
         modifier = modifier,
         elevation = elevation,
@@ -83,11 +81,8 @@ fun Toolbar(
                 ) {
                     Box(Modifier.fillMaxSize().padding(8.dp), Alignment.CenterStart) {
                         BasicTextField(
-                            searchText.value,
-                            onValueChange = {
-                                searchText.value = it
-                                search(it)
-                            },
+                            searchText.orEmpty(),
+                            onValueChange = search,
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
                             textStyle = TextStyle(contentColor, 18.sp),
