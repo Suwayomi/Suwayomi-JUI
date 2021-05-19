@@ -10,8 +10,6 @@ import ca.gosyer.data.models.Category
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -50,36 +48,31 @@ class CategoriesMenuViewModel @Inject constructor(
         }
     }
 
-    fun updateCategories(manualUpdate: Boolean = false) {
-        val handler = CoroutineExceptionHandler { _, throwable ->
-            logger.debug { throwable }
+    suspend fun updateRemoteCategories(manualUpdate: Boolean = false) {
+        val categories = _categories.value
+        val newCategories = categories.filter { it.id == null }
+        newCategories.forEach {
+            categoryHandler.createCategory(it.name)
         }
-        GlobalScope.launch(handler) {
-            val categories = _categories.value
-            val newCategories = categories.filter { it.id == null }
-            newCategories.forEach {
-                categoryHandler.createCategory(it.name)
+        originalCategories.forEach { originalCategory ->
+            val category = categories.find { it.id == originalCategory.id }
+            if (category == null) {
+                categoryHandler.deleteCategory(originalCategory)
+            } else if (category.name != originalCategory.name) {
+                categoryHandler.modifyCategory(originalCategory, category.name)
             }
-            originalCategories.forEach { originalCategory ->
-                val category = categories.find { it.id == originalCategory.id }
-                if (category == null) {
-                    categoryHandler.deleteCategory(originalCategory)
-                } else if (category.name != originalCategory.name) {
-                    categoryHandler.modifyCategory(originalCategory, category.name)
-                }
+        }
+        val updatedCategories = categoryHandler.getCategories()
+        updatedCategories.forEach { updatedCategory ->
+            val category = categories.find { it.id == updatedCategory.id || it.name == updatedCategory.name } ?: return@forEach
+            if (category.order != updatedCategory.order) {
+                logger.debug { "${category.order} to ${updatedCategory.order}" }
+                categoryHandler.reorderCategory(updatedCategory, category.order, updatedCategory.order)
             }
-            val updatedCategories = categoryHandler.getCategories()
-            updatedCategories.forEach { updatedCategory ->
-                val category = categories.find { it.id == updatedCategory.id || it.name == updatedCategory.name } ?: return@forEach
-                if (category.order != updatedCategory.order) {
-                    logger.debug { "${category.order} to ${updatedCategory.order}" }
-                    categoryHandler.reorderCategory(updatedCategory, category.order, updatedCategory.order)
-                }
-            }
+        }
 
-            if (manualUpdate) {
-                getCategories()
-            }
+        if (manualUpdate) {
+            getCategories()
         }
     }
 

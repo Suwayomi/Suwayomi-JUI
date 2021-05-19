@@ -7,7 +7,6 @@
 package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -137,6 +136,7 @@ private fun ThemeItem(
         Color.White.copy(alpha = 0.15f)
     }
     Surface(
+        onClick = { onClick(theme) },
         elevation = 4.dp,
         color = theme.colors.background,
         shape = borders,
@@ -144,7 +144,6 @@ private fun ThemeItem(
             .size(100.dp, 160.dp)
             .padding(8.dp)
             .border(1.dp, borderColor, borders)
-            .clickable(onClick = { onClick(theme) })
     ) {
         Column {
             Box(

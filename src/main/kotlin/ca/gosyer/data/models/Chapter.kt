@@ -6,21 +6,20 @@
 
 package ca.gosyer.data.models
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Chapter(
-    val id: Long,
     val url: String,
     val name: String,
-    @SerialName("date_upload")
-    val dateUpload: Long,
-    @SerialName("chapter_number")
+    val uploadDate: Long,
     val chapterNumber: Float,
     val scanlator: String?,
     val mangaId: Long,
-    val pageCount: Int? = null,
-    val chapterIndex: Int,
-    val chapterCount: Int
+    val read: Boolean,
+    val bookmarked: Boolean,
+    val lastPageRead: Int,
+    val index: Int,
+    val chapterCount: Int?,
+    val pageCount: Int?,
 )

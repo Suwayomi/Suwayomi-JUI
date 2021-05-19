@@ -378,8 +378,9 @@ private fun ExpandableContent(
         shrinkVertically(animationSpec = tween(COLLAPSE_ANIMATION_DURATION))
     }
     AnimatedVisibility(
-        visible = visible,
-        initiallyVisible = initiallyVisible,
+        remember { MutableTransitionState(initialState = initiallyVisible) }
+            .apply { targetState = visible },
+        modifier = Modifier,
         enter = enterExpand + enterFadeIn,
         exit = exitCollapse + exitFadeOut
     ) {

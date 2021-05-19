@@ -14,15 +14,16 @@ data class Manga(
     val sourceId: Long,
     val url: String,
     val title: String,
-    val thumbnailUrl: String? = null,
-    val initialized: Boolean = false,
-    val artist: String? = null,
-    val author: String? = null,
-    val description: String? = null,
-    val genre: String? = null,
+    val thumbnailUrl: String?,
+    val initialized: Boolean,
+    val artist: String?,
+    val author: String?,
+    val description: String?,
+    val genre: String?,
     val status: String,
-    val inLibrary: Boolean = false,
-    val source: Source?
+    val inLibrary: Boolean,
+    val source: Source?,
+    val freshData: Boolean
 ) {
     fun cover(serverUrl: String) = thumbnailUrl?.let { serverUrl + it }
 }

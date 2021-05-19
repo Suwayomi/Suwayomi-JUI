@@ -34,6 +34,7 @@ class ServerService @Inject constructor(
             ServerResult.UNUSED
         }
     )
+    private val runtime = Runtime.getRuntime()
     var process: Process? = null
 
     private fun copyJar(jarFile: File) {
@@ -45,6 +46,12 @@ class ServerService @Inject constructor(
     }
 
     init {
+        runtime.addShutdownHook(
+            thread(start = false) {
+                process?.destroy()
+                process = null
+            }
+        )
         host.onEach {
             process?.destroy()
             initialized.value = if (host.value) {
@@ -55,7 +62,6 @@ class ServerService @Inject constructor(
             }
             GlobalScope.launch {
                 val logger = KotlinLogging.logger("Server")
-                val runtime = Runtime.getRuntime()
 
                 val jarFile = File(userDataDir, "Tachidesk.jar")
                 if (!jarFile.exists()) {
@@ -71,19 +77,13 @@ class ServerService @Inject constructor(
                                 )
                             }
                         }
-                        // TODO remove 1.0 version check when we move onto 0.3.0 of Tachidesk
+
                         if (
-                            jarVersion.specification != null &&
-                            jarVersion.implementation != null &&
-                            jarVersion.implementation != "1.0"
+                            jarVersion.specification != BuildConfig.TACHIDESK_SP_VERSION ||
+                            jarVersion.implementation != BuildConfig.TACHIDESK_IM_VERSION
                         ) {
-                            if (
-                                jarVersion.specification != BuildConfig.TACHIDESK_SP_VERSION ||
-                                jarVersion.implementation != BuildConfig.TACHIDESK_IM_VERSION
-                            ) {
-                                logger.info { "Updating server file from resources" }
-                                copyJar(jarFile)
-                            }
+                            logger.info { "Updating server file from resources" }
+                            copyJar(jarFile)
                         }
                     } catch (e: IOException) {
                         logger.error(e) {
@@ -106,12 +106,6 @@ class ServerService @Inject constructor(
                 process = runtime.exec("""$javaExePath -jar "${jarFile.absolutePath}"""").also {
                     reader = it.inputStream.bufferedReader()
                 }
-                runtime.addShutdownHook(
-                    thread(start = false) {
-                        process?.destroy()
-                        process = null
-                    }
-                )
                 logger.info { "Server started successfully" }
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
@@ -123,6 +117,9 @@ class ServerService @Inject constructor(
                         }
                     }
                     logger.info { line }
+                }
+                if (initialized.value == ServerResult.STARTING) {
+                    initialized.value = ServerResult.FAILED
                 }
                 logger.info { "Server closed" }
                 val exitVal = process?.waitFor()

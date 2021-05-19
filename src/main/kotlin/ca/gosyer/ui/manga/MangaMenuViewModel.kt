@@ -69,7 +69,7 @@ class MangaMenuViewModel @Inject constructor(
         }
     }
 
-    suspend fun refreshChaptersAsync(mangaId: Long) = withContext(Dispatchers.IO) {
+    private suspend fun refreshChaptersAsync(mangaId: Long) = withContext(Dispatchers.IO) {
         async {
             try {
                 _chapters.value = chapterHandler.getChapters(mangaId)
@@ -96,6 +96,33 @@ class MangaMenuViewModel @Inject constructor(
     private fun getDateFormat(format: String): DateFormat = when (format) {
         "" -> DateFormat.getDateInstance(DateFormat.SHORT)
         else -> SimpleDateFormat(format, Locale.getDefault())
+    }
+
+    fun toggleRead(index: Int) {
+        scope.launch {
+            manga.value?.let { manga ->
+                chapterHandler.updateChapter(manga, index, read = !_chapters.value.first { it.index == index }.read)
+                _chapters.value = chapterHandler.getChapters(manga)
+            }
+        }
+    }
+
+    fun toggleBookmarked(index: Int) {
+        scope.launch {
+            manga.value?.let { manga ->
+                chapterHandler.updateChapter(manga, index, bookmarked = !_chapters.value.first { it.index == index }.bookmarked)
+                _chapters.value = chapterHandler.getChapters(manga)
+            }
+        }
+    }
+
+    fun markPreviousRead(index: Int) {
+        scope.launch {
+            manga.value?.let { manga ->
+                chapterHandler.updateChapter(manga, index, markPreviousRead = true)
+                _chapters.value = chapterHandler.getChapters(manga)
+            }
+        }
     }
 
     data class Params(val mangaId: Long)

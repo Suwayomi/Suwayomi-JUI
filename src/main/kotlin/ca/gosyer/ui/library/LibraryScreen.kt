@@ -138,7 +138,7 @@ private fun LibraryPager(
     val state = remember(categories.size, selectedPage) {
         PagerState(
             currentPage = selectedPage,
-            pageCount = categories.lastIndex
+            pageCount = categories.size
         )
     }
     LaunchedEffect(state.currentPage) {
@@ -146,7 +146,7 @@ private fun LibraryPager(
             onPageChanged(state.currentPage)
         }
     }
-    HorizontalPager(state = state, offscreenLimit = 1) {
+    HorizontalPager(state = state) {
         val library by getLibraryForPage(it)
         when (displayMode) {
             DisplayMode.CompactGrid -> LibraryMangaCompactGrid(

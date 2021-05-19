@@ -11,12 +11,16 @@ fun extensionListQuery() =
     "/api/v1/extension/list"
 
 @Get
-fun apkInstallQuery(apkName: String) =
-    "/api/v1/extension/install/$apkName"
+fun apkInstallQuery(pkgName: String) =
+    "/api/v1/extension/install/$pkgName"
 
 @Get
-fun apkUninstallQuery(apkName: String) =
-    "/api/v1/extension/uninstall/$apkName"
+fun apkUpdateQuery(pkgName: String) =
+    "/api/v1/extension/update/$pkgName"
+
+@Get
+fun apkUninstallQuery(pkgName: String) =
+    "/api/v1/extension/uninstall/$pkgName"
 
 @Get
 fun apkIconQuery(apkName: String) =

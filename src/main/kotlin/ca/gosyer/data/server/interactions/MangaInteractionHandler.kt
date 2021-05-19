@@ -11,6 +11,7 @@ import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.mangaQuery
 import ca.gosyer.data.server.requests.mangaThumbnailQuery
+import io.ktor.client.request.parameter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,11 +21,19 @@ class MangaInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getManga(mangaId: Long) = withContext(Dispatchers.IO) {
+    suspend fun getManga(mangaId: Long, refresh: Boolean = false) = withContext(Dispatchers.IO) {
         client.getRepeat<Manga>(
             serverUrl + mangaQuery(mangaId)
-        )
+        ) {
+            url {
+                if (refresh) {
+                    parameter("onlineFetch", true)
+                }
+            }
+        }
     }
+
+    suspend fun getManga(manga: Manga, refresh: Boolean = false) = getManga(manga.id, refresh)
 
     suspend fun getMangaThumbnail(mangaId: Long) = withContext(Dispatchers.IO) {
         imageFromUrl(

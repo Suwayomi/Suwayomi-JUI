@@ -18,7 +18,8 @@ data class Extension(
     val apkName: String,
     val iconUrl: String,
     val installed: Boolean,
-    val classFQName: String,
+    val hasUpdate: Boolean,
+    val obsolete: Boolean,
     val nsfw: Boolean
 ) {
     fun iconUrl(serverUrl: String) = serverUrl + iconUrl

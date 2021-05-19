@@ -42,12 +42,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ca.gosyer.BuildConfig
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import mu.KotlinLogging
 
 fun openCategoriesMenu(notifyFinished: (() -> Unit)? = null) {
     val windowEvents = WindowEvents()
-    ThemedWindow("TachideskJUI - Categories", events = windowEvents) {
+    ThemedWindow("${BuildConfig.NAME} - Categories", events = windowEvents) {
         CategoriesMenu(notifyFinished, windowEvents)
     }
 }
@@ -58,8 +63,14 @@ fun CategoriesMenu(notifyFinished: (() -> Unit)? = null, windowEvents: WindowEve
     val categories by vm.categories.collectAsState()
     remember {
         windowEvents.onClose = {
-            vm.updateCategories()
-            notifyFinished?.invoke()
+            val logger = KotlinLogging.logger {}
+            val handler = CoroutineExceptionHandler { _, throwable ->
+                logger.debug { throwable }
+            }
+            GlobalScope.launch(handler) {
+                vm.updateRemoteCategories()
+                notifyFinished?.invoke()
+            }
         }
     }
 

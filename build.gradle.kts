@@ -8,7 +8,7 @@ plugins {
     kotlin("jvm") version "1.4.32"
     kotlin("kapt") version "1.4.32"
     kotlin("plugin.serialization") version "1.4.32"
-    id("org.jetbrains.compose") version "0.4.0-build185"
+    id("org.jetbrains.compose") version "0.4.0-build198"
     id("de.fuerstenau.buildconfig") version "1.1.8"
     id("org.jmailen.kotlinter") version "3.4.0"
 }
@@ -27,8 +27,8 @@ dependencies {
     // UI (Compose)
     implementation(compose.desktop.currentOs)
     implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:0.2.0")
-    implementation("com.github.Syer10:compose-router:45a8c4fe83")
-    implementation("ca.gosyer:accompanist-pager:0.8.1")
+    implementation("ca.gosyer:compose-router:0.24.2-jetbrains-2")
+    implementation("ca.gosyer:accompanist-pager:0.9.1")
 
     // UI (Swing)
     implementation("com.github.weisj:darklaf-core:2.5.5")
@@ -76,7 +76,7 @@ dependencies {
 
 tasks {
     withType<KotlinCompile> {
-        dependsOn(formatKotlin)
+        dependsOn(formatKotlinMain)
         kotlinOptions {
             jvmTarget = "15"
             freeCompilerArgs = listOf(
@@ -88,7 +88,8 @@ tasks {
                 "-Xopt-in=com.russhwolf.settings.ExperimentalSettingsApi",
                 "-Xopt-in=com.russhwolf.settings.ExperimentalSettingsImplementation",
                 "-Xopt-in=com.google.accompanist.pager.ExperimentalPagerApi",
-                "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi"
+                "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
+                "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi"
             )
         }
     }
@@ -157,8 +158,8 @@ buildConfig {
     packageName = project.group.toString()
 
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
-    buildConfigField("String", "TACHIDESK_SP_VERSION", "0.2.7")
-    buildConfigField("String", "TACHIDESK_IM_VERSION", "0")
+    buildConfigField("String", "TACHIDESK_SP_VERSION", "v0.3.7")
+    buildConfigField("String", "TACHIDESK_IM_VERSION", "r66")
 }
 
 kotlinter {

@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.base.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,11 +41,11 @@ fun MangaGridItem(
     )
 
     Surface(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(mangaAspectRatio)
-            .padding(8.dp)
-            .clickable(onClick = onClick),
+            .padding(8.dp),
         elevation = 4.dp,
         shape = RoundedCornerShape(4.dp)
     ) {

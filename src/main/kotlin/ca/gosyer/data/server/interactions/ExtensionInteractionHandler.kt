@@ -12,6 +12,7 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.apkIconQuery
 import ca.gosyer.data.server.requests.apkInstallQuery
 import ca.gosyer.data.server.requests.apkUninstallQuery
+import ca.gosyer.data.server.requests.apkUpdateQuery
 import ca.gosyer.data.server.requests.extensionListQuery
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.Dispatchers
@@ -31,13 +32,19 @@ class ExtensionInteractionHandler @Inject constructor(
 
     suspend fun installExtension(extension: Extension) = withContext(Dispatchers.IO) {
         client.getRepeat<HttpResponse>(
-            serverUrl + apkInstallQuery(extension.apkName)
+            serverUrl + apkInstallQuery(extension.pkgName)
+        )
+    }
+
+    suspend fun updateExtension(extension: Extension) = withContext(Dispatchers.IO) {
+        client.getRepeat<HttpResponse>(
+            serverUrl + apkUpdateQuery(extension.pkgName)
         )
     }
 
     suspend fun uninstallExtension(extension: Extension) = withContext(Dispatchers.IO) {
         client.getRepeat<HttpResponse>(
-            serverUrl + apkUninstallQuery(extension.apkName)
+            serverUrl + apkUninstallQuery(extension.pkgName)
         )
     }
 

@@ -6,13 +6,15 @@ Remove-Item -Recurse -Force "tmp" -ErrorAction SilentlyContinue | Out-Null
 New-Item -ItemType Directory -Force -Path "tmp"
 
 Write-Output "Getting latest Tachidesk build files"
-$zipball = (Invoke-WebRequest -Uri "https://api.github.com/repos/Suwayomi/Tachidesk/releases/latest" -UseBasicParsing).content | Select-String -Pattern 'https[\.:\/A-Za-z0-9]*zipball\/[a-zA-Z0-9.]*' -CaseSensitive
+#$zipball = (Invoke-WebRequest -Uri "https://api.github.com/repos/Suwayomi/Tachidesk/releases/latest" -UseBasicParsing).content | Select-String -Pattern 'https[\.:\/A-Za-z0-9]*zipball\/[a-zA-Z0-9.]*' -CaseSensitive
 
-Invoke-WebRequest -Uri $zipball.Matches.Value -OutFile tmp/Tachidesk.zip -UseBasicParsing
+#Invoke-WebRequest -Uri $zipball.Matches.Value -OutFile tmp/Tachidesk.zip -UseBasicParsing
+
+Invoke-WebRequest -Uri "https://github.com/Suwayomi/Tachidesk/archive/refs/tags/v0.3.7.zip" -OutFile tmp/Tachidesk.zip -UseBasicParsing
 
 Expand-Archive -Path "tmp/Tachidesk.zip" -DestinationPath "tmp"
 
-$tachidesk_folder = Get-ChildItem -Path "tmp" | Where-Object {$_.Name -match ".*Tachidesk-[a-z0-9]*"} | Select-Object FullName
+$tachidesk_folder = Get-ChildItem -Path "tmp" | Where-Object {$_.Name -match ".*Tachidesk-[a-z0-9\.]*"} | Select-Object FullName
 
 Push-Location $tachidesk_folder.FullName
 
@@ -27,7 +29,7 @@ $tachidesk_jar = $(Get-ChildItem "server/build" | Where-Object { $_.Name -match 
 Pop-Location
 
 Write-Output "Copying Tachidesk.jar to resources folder..."
-Move-Item -Force $tachidesk_jar "src/main/resources/Tachidesk.jar"
+Move-Item -Force $tachidesk_jar "src/main/resources/Tachidesk.jar" -ErrorAction SilentlyContinue
 
 Write-Output "Cleaning up..."
 Remove-Item -Recurse -Force "tmp" | Out-Null

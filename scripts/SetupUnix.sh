@@ -7,13 +7,14 @@ fi
 mkdir -p "tmp"
 
 echo "Getting latest Tachidesk build files"
-TARBALL_LINK="$(curl -s "https://api.github.com/repos/Suwayomi/Tachidesk/releases/latest" | grep -o "https.*tarball\/[a-zA-Z0-9.]*")"
+#TARBALL_LINK="$(curl -s "https://api.github.com/repos/Suwayomi/Tachidesk/releases/latest" | grep -o "https.*tarball\/[a-zA-Z0-9.]*")"
 
-curl -L "$TARBALL_LINK" -o tmp/Tachidesk.tar
+#curl -L "$TARBALL_LINK" -o tmp/Tachidesk.tar
+curl -L "https://github.com/Suwayomi/Tachidesk/archive/refs/tags/v0.3.7.tar.gz" -o tmp/Tachidesk.tar.gz
 
-tar -xvf tmp/Tachidesk.tar -C tmp
+tar -xvf tmp/Tachidesk.tar.gz -C tmp
 
-TACHIDESK_FOLDER=$(find tmp -type d -regex ".*Tachidesk-[a-z0-9]*")
+TACHIDESK_FOLDER=$(find tmp -type d -regex ".*Tachidesk-[a-z0-9\.]*")
 
 pushd "$TACHIDESK_FOLDER" || exit
 

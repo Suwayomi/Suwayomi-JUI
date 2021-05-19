@@ -14,6 +14,10 @@ fun getMangaChaptersQuery(mangaId: Long) =
 fun getChapterQuery(mangaId: Long, chapterIndex: Int) =
     "/api/v1/manga/$mangaId/chapter/$chapterIndex"
 
+@Patch
+fun updateChapterRequest(mangaId: Long, chapterIndex: Int) =
+    "/api/v1/manga/$mangaId/chapter/$chapterIndex"
+
 @Get
 fun getPageQuery(mangaId: Long, chapterIndex: Int, index: Int) =
     "/api/v1/manga/$mangaId/chapter/$chapterIndex/page/$index"

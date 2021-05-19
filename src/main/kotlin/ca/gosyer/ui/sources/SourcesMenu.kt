@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
@@ -33,7 +34,7 @@ import ca.gosyer.ui.sources.components.SourceHomeScreen
 import ca.gosyer.ui.sources.components.SourceScreen
 import ca.gosyer.util.compose.ThemedWindow
 import com.github.zsoltk.compose.savedinstancestate.Bundle
-import com.github.zsoltk.compose.savedinstancestate.BundleScope
+import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
 
 fun openSourcesMenu() {
     ThemedWindow(title = "TachideskJUI - Sources") {
@@ -47,9 +48,7 @@ private const val SOURCE_MENU_KEY = "source_menu"
 
 @Composable
 fun SourcesMenu(onMangaClick: (Long) -> Unit) {
-    BundleScope(SOURCE_MENU_KEY, autoDispose = false) {
-        SourcesMenu(it, onMangaClick)
-    }
+    SourcesMenu(LocalSavedInstanceState.current, onMangaClick)
 }
 
 @Composable
@@ -87,12 +86,10 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                 }
 
                 val selectedSource: Source? = selectedSourceTab
-                BundleScope("Sources") {
-                    if (selectedSource != null) {
-                        SourceScreen(selectedSource, onMangaClick)
-                    } else {
-                        SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
-                    }
+                if (selectedSource != null) {
+                    SourceScreen(selectedSource, onMangaClick)
+                } else {
+                    SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
                 }
             }
         }

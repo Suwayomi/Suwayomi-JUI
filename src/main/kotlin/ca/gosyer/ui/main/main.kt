@@ -28,6 +28,7 @@ import com.github.weisj.darklaf.theme.DarculaTheme
 import com.github.weisj.darklaf.theme.IntelliJTheme
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
+import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import org.apache.logging.log4j.core.config.Configurator
@@ -112,6 +113,7 @@ fun main() {
             )
         }
 
+        val rootBundle = Bundle()
         window.show {
             AppTheme {
                 CompositionLocalProvider(
@@ -119,7 +121,7 @@ fun main() {
                 ) {
                     val initialized by serverService.initialized.collectAsState()
                     if (initialized == ServerResult.STARTED || initialized == ServerResult.UNUSED) {
-                        MainMenu()
+                        MainMenu(rootBundle)
                     } else if (initialized == ServerResult.STARTING) {
                         LoadingScreen()
                     } else if (initialized == ServerResult.FAILED) {

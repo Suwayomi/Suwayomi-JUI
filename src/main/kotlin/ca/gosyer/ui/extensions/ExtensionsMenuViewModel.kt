@@ -70,6 +70,18 @@ class ExtensionsMenuViewModel @Inject constructor(
         }
     }
 
+    fun update(extension: Extension) {
+        logger.info { "Update clicked" }
+        scope.launch {
+            try {
+                extensionHandler.updateExtension(extension)
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+            }
+            getExtensions()
+        }
+    }
+
     fun uninstall(extension: Extension) {
         logger.info { "Uninstall clicked" }
         scope.launch {

@@ -7,7 +7,6 @@
 package ca.gosyer.ui.main
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,11 +17,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.BuildConfig
+import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.extensions.ExtensionsMenu
 import ca.gosyer.ui.library.LibraryScreen
@@ -47,78 +49,72 @@ import ca.gosyer.ui.settings.SettingsScreen
 import ca.gosyer.ui.settings.SettingsServerScreen
 import ca.gosyer.ui.sources.SourcesMenu
 import com.github.zsoltk.compose.router.Router
+import com.github.zsoltk.compose.savedinstancestate.Bundle
+import com.github.zsoltk.compose.savedinstancestate.BundleScope
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.regular.Bookmark
 import compose.icons.fontawesomeicons.regular.Compass
 import compose.icons.fontawesomeicons.regular.Edit
 import compose.icons.fontawesomeicons.regular.Map
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import mu.KotlinLogging
+import kotlin.time.seconds
 
 @Composable
-fun MainMenu() {
+fun MainMenu(rootBundle: Bundle) {
     val vm = viewModel<MainViewModel>()
     Surface {
-        Router<Route>("TopLevel", Route.Library) { backStack ->
+        Router("TopLevel", vm.startScreen.toRoute()) { backStack ->
             Row {
                 Surface(elevation = 2.dp) {
                     Column(Modifier.width(200.dp).fillMaxHeight(),) {
                         Box(Modifier.fillMaxWidth().height(60.dp)) {
-                            Text(BuildConfig.NAME, fontSize = 30.sp, modifier = Modifier.align(Alignment.Center))
+                            Text(
+                                BuildConfig.NAME,
+                                fontSize = 30.sp,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
                         }
                         Spacer(Modifier.height(20.dp))
                         remember { TopLevelMenus.values() }.forEach { topLevelMenu ->
-                            MainMenuItem(topLevelMenu, backStack.elements.first() == topLevelMenu.menu) {
+                            MainMenuItem(
+                                topLevelMenu,
+                                backStack.elements.first() == topLevelMenu.menu
+                            ) {
                                 backStack.newRoot(it)
                             }
                         }
-
-                        /*Button(
-                            onClick = ::openExtensionsMenu
-                        ) {
-                            Text("Extensions")
-                        }
-                        Button(
-                            onClick = ::openSourcesMenu
-                        ) {
-                            Text("Sources")
-                        }
-                        Button(
-                            onClick = ::openLibraryMenu
-                        ) {
-                            Text("Library")
-                        }
-                        Button(
-                            onClick = ::openCategoriesMenu
-                        ) {
-                            Text("Categories")
-                        }*/
                     }
                 }
-
                 Column(Modifier.fillMaxSize()) {
-                    when (val routing = backStack.last()) {
-                        is Route.Library -> LibraryScreen {
-                            backStack.push(Route.Manga(it))
-                        }
-                        is Route.Sources -> SourcesMenu {
-                            backStack.push(Route.Manga(it))
-                        }
-                        is Route.Extensions -> ExtensionsMenu()
-                        is Route.Manga -> MangaMenu(routing.mangaId, backStack)
+                    BundleScope("K${backStack.lastIndex}", rootBundle, false) {
+                        when (val routing = backStack.last()) {
+                            is Route.Library -> LibraryScreen {
+                                backStack.push(Route.Manga(it))
+                            }
+                            is Route.Sources -> SourcesMenu {
+                                backStack.push(Route.Manga(it))
+                            }
+                            is Route.Extensions -> ExtensionsMenu()
+                            is Route.Manga -> MangaMenu(routing.mangaId, backStack)
 
-                        is Route.Settings -> SettingsScreen(backStack)
-                        is Route.SettingsGeneral -> SettingsGeneralScreen(backStack)
-                        is Route.SettingsAppearance -> SettingsAppearance(backStack)
-                        is Route.SettingsServer -> SettingsServerScreen(backStack)
-                        is Route.SettingsLibrary -> SettingsLibraryScreen(backStack)
-                        is Route.SettingsReader -> SettingsReaderScreen(backStack)
-                        /*is Route.SettingsDownloads -> SettingsDownloadsScreen(backStack)
-                        is Route.SettingsTracking -> SettingsTrackingScreen(backStack)*/
-                        is Route.SettingsBrowse -> SettingsBrowseScreen(backStack)
-                        is Route.SettingsBackup -> SettingsBackupScreen(backStack)
-                        /*is Route.SettingsSecurity -> SettingsSecurityScreen(backStack)
-                        is Route.SettingsParentalControls -> SettingsParentalControlsScreen(backStack)*/
-                        is Route.SettingsAdvanced -> SettingsAdvancedScreen(backStack)
+                            is Route.Settings -> SettingsScreen(backStack)
+                            is Route.SettingsGeneral -> SettingsGeneralScreen(backStack)
+                            is Route.SettingsAppearance -> SettingsAppearance(backStack)
+                            is Route.SettingsServer -> SettingsServerScreen(backStack)
+                            is Route.SettingsLibrary -> SettingsLibraryScreen(backStack)
+                            is Route.SettingsReader -> SettingsReaderScreen(backStack)
+                            /*is Route.SettingsDownloads -> SettingsDownloadsScreen(backStack)
+                            is Route.SettingsTracking -> SettingsTrackingScreen(backStack)*/
+                            is Route.SettingsBrowse -> SettingsBrowseScreen(backStack)
+                            is Route.SettingsBackup -> SettingsBackupScreen(backStack)
+                            /*is Route.SettingsSecurity -> SettingsSecurityScreen(backStack)
+                            is Route.SettingsParentalControls -> SettingsParentalControlsScreen(backStack)*/
+                            is Route.SettingsAdvanced -> SettingsAdvancedScreen(backStack)
+                        }
                     }
                 }
             }
@@ -129,14 +125,16 @@ fun MainMenu() {
 @Composable
 fun MainMenuItem(menu: TopLevelMenus, selected: Boolean, onClick: (Route) -> Unit) {
     Card(
-        Modifier.clickable { onClick(menu.menu) }.fillMaxWidth().height(40.dp),
+        { onClick(menu.menu) },
+        Modifier.fillMaxWidth().height(40.dp),
         backgroundColor = if (!selected) {
             Color.Transparent
         } else {
             MaterialTheme.colors.primary.copy(0.30F)
         },
         contentColor = Color.Transparent,
-        elevation = 0.dp
+        elevation = 0.dp,
+        shape = RoundedCornerShape(8.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
             Spacer(Modifier.width(16.dp))
@@ -145,6 +143,12 @@ fun MainMenuItem(menu: TopLevelMenus, selected: Boolean, onClick: (Route) -> Uni
             Text(menu.text, color = MaterialTheme.colors.onSurface)
         }
     }
+}
+
+fun StartScreen.toRoute() = when (this) {
+    StartScreen.Library -> Route.Library
+    StartScreen.Sources -> Route.Sources
+    StartScreen.Extensions -> Route.Extensions
 }
 
 enum class TopLevelMenus(val text: String, val icon: ImageVector, val menu: Route) {

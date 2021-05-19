@@ -13,6 +13,11 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.getChapterQuery
 import ca.gosyer.data.server.requests.getMangaChaptersQuery
 import ca.gosyer.data.server.requests.getPageQuery
+import ca.gosyer.data.server.requests.updateChapterRequest
+import io.ktor.client.request.parameter
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpMethod
+import io.ktor.http.Parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,17 +27,19 @@ class ChapterInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getChapters(mangaId: Long) = withContext(Dispatchers.IO) {
+    suspend fun getChapters(mangaId: Long, refresh: Boolean = false) = withContext(Dispatchers.IO) {
         client.getRepeat<List<Chapter>>(
             serverUrl + getMangaChaptersQuery(mangaId)
-        )
+        ) {
+            url {
+                if (refresh) {
+                    parameter("onlineFetch", true)
+                }
+            }
+        }
     }
 
-    suspend fun getChapters(manga: Manga) = withContext(Dispatchers.IO) {
-        client.getRepeat<Chapter>(
-            serverUrl + getMangaChaptersQuery(manga.id)
-        )
-    }
+    suspend fun getChapters(manga: Manga, refresh: Boolean = false) = getChapters(manga.id, refresh)
 
     suspend fun getChapter(mangaId: Long, chapterIndex: Int) = withContext(Dispatchers.IO) {
         client.getRepeat<Chapter>(
@@ -40,11 +47,72 @@ class ChapterInteractionHandler @Inject constructor(
         )
     }
 
-    suspend fun getChapter(chapter: Chapter) = getChapter(chapter.mangaId, chapter.chapterIndex)
+    suspend fun getChapter(chapter: Chapter) = getChapter(chapter.mangaId, chapter.index)
 
     suspend fun getChapter(manga: Manga, chapterIndex: Int) = getChapter(manga.id, chapterIndex)
 
-    suspend fun getChapter(manga: Manga, chapter: Chapter) = getChapter(manga.id, chapter.chapterIndex)
+    suspend fun getChapter(manga: Manga, chapter: Chapter) = getChapter(manga.id, chapter.index)
+
+    suspend fun updateChapter(
+        mangaId: Long,
+        chapterIndex: Int,
+        read: Boolean? = null,
+        bookmarked: Boolean? = null,
+        lastPageRead: Int? = null,
+        markPreviousRead: Boolean? = null
+    ) = withContext(Dispatchers.IO) {
+        client.submitFormRepeat<HttpResponse>(
+            serverUrl + updateChapterRequest(mangaId, chapterIndex),
+            formParameters = Parameters.build {
+                if (read != null) {
+                    append("read", read.toString())
+                }
+                if (bookmarked != null) {
+                    append("bookmarked", bookmarked.toString())
+                }
+                if (lastPageRead != null) {
+                    append("lastPageRead", lastPageRead.toString())
+                }
+                if (markPreviousRead != null) {
+                    append("markPrevRead", markPreviousRead.toString())
+                }
+            }
+        ) {
+            method = HttpMethod.Patch
+        }
+    }
+
+    suspend fun updateChapter(
+        manga: Manga,
+        chapterIndex: Int,
+        read: Boolean? = null,
+        bookmarked: Boolean? = null,
+        lastPageRead: Int? = null,
+        markPreviousRead: Boolean? = null
+    ) = updateChapter(
+        manga.id,
+        chapterIndex,
+        read,
+        bookmarked,
+        lastPageRead,
+        markPreviousRead
+    )
+
+    suspend fun updateChapter(
+        manga: Manga,
+        chapter: Chapter,
+        read: Boolean? = null,
+        bookmarked: Boolean? = null,
+        lastPageRead: Int? = null,
+        markPreviousRead: Boolean? = null
+    ) = updateChapter(
+        manga.id,
+        chapter.index,
+        read,
+        bookmarked,
+        lastPageRead,
+        markPreviousRead
+    )
 
     suspend fun getPage(mangaId: Long, chapterIndex: Int, pageNum: Int) = withContext(Dispatchers.IO) {
         imageFromUrl(
@@ -53,9 +121,9 @@ class ChapterInteractionHandler @Inject constructor(
         )
     }
 
-    suspend fun getPage(chapter: Chapter, pageNum: Int) = getPage(chapter.mangaId, chapter.chapterIndex, pageNum)
+    suspend fun getPage(chapter: Chapter, pageNum: Int) = getPage(chapter.mangaId, chapter.index, pageNum)
 
     suspend fun getPage(manga: Manga, chapterIndex: Int, pageNum: Int) = getPage(manga.id, chapterIndex, pageNum)
 
-    suspend fun getPage(manga: Manga, chapter: Chapter, pageNum: Int) = getPage(manga.id, chapter.chapterIndex, pageNum)
+    suspend fun getPage(manga: Manga, chapter: Chapter, pageNum: Int) = getPage(manga.id, chapter.index, pageNum)
 }

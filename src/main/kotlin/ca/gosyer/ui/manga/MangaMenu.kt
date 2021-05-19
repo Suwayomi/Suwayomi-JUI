@@ -8,7 +8,6 @@ package ca.gosyer.ui.manga
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -28,6 +27,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -39,21 +40,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ca.gosyer.BuildConfig
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
+import ca.gosyer.ui.base.components.combinedMouseClickable
 import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
 import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.util.compose.contextMenu
 import com.github.zsoltk.compose.router.BackStack
 import java.util.Date
 
 fun openMangaMenu(mangaId: Long) {
-    ThemedWindow("TachideskJUI") {
+    ThemedWindow(BuildConfig.NAME) {
         MangaMenu(mangaId)
     }
 }
@@ -87,9 +91,14 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
                         MangaItem(manga, serverUrl)
                     }
                     items(chapters) { chapter ->
-                        ChapterItem(chapter, dateFormat::format) {
-                            openReaderMenu(it, manga.id)
-                        }
+                        ChapterItem(
+                            chapter,
+                            dateFormat::format,
+                            onClick = { openReaderMenu(it, manga.id) },
+                            toggleRead = vm::toggleRead,
+                            toggleBookmarked = vm::toggleBookmarked,
+                            markPreviousAsRead = vm::markPreviousRead
+                        )
                     }
                 }
                 VerticalScrollbar(
@@ -178,20 +187,61 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ChapterItem(chapter: Chapter, format: (Date) -> String, onClick: (Int) -> Unit) {
-    Surface(modifier = Modifier.fillMaxWidth().clickable { onClick(chapter.chapterIndex) }.height(70.dp).padding(4.dp), elevation = 1.dp) {
-        Column(Modifier.padding(4.dp)) {
-            Text(chapter.name, fontSize = 20.sp, maxLines = 1)
+fun ChapterItem(
+    chapter: Chapter,
+    format: (Date) -> String,
+    onClick: (Int) -> Unit,
+    toggleRead: (Int) -> Unit,
+    toggleBookmarked: (Int) -> Unit,
+    markPreviousAsRead: (Int) -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth().height(70.dp).padding(4.dp),
+        elevation = 1.dp
+    ) {
+        Column(
+            Modifier.padding(4.dp)
+                .combinedMouseClickable(
+                    onClick = {
+                        onClick(chapter.index)
+                    },
+                    onRightClick = {
+                        contextMenu(
+                            it
+                        ) {
+                            menuItem("Toggle read") { toggleRead(chapter.index) }
+                            menuItem("Mark previous as read") { markPreviousAsRead(chapter.index) }
+                            separator()
+                            menuItem("Toggle bookmarked") { toggleBookmarked(chapter.index) }
+                        }
+                    }
+                )
+        ) {
+            Text(
+                chapter.name, fontSize = 20.sp, maxLines = 1,
+                color = if (!chapter.read) {
+                    LocalContentColor.current
+                } else {
+                    LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+                }
+            )
             val description = mutableListOf<String>()
-            if (chapter.dateUpload != 0L) {
-                description += format(Date(chapter.dateUpload))
+            if (chapter.uploadDate != 0L) {
+                description += format(Date(chapter.uploadDate))
             }
             if (!chapter.scanlator.isNullOrEmpty()) {
                 description += chapter.scanlator
             }
             if (description.isNotEmpty()) {
                 Spacer(Modifier.height(2.dp))
-                Text(description.joinToString(" - "), maxLines = 1)
+                Text(
+                    description.joinToString(" - "), maxLines = 1,
+                    color = if (!chapter.read) {
+                        LocalContentColor.current
+                    } else {
+                        LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+                    }
+                )
             }
         }
     }

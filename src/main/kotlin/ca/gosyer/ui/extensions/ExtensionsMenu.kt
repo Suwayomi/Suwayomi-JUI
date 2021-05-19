@@ -85,12 +85,9 @@ fun ExtensionsMenu() {
                         ExtensionItem(
                             extension,
                             serverUrl,
-                            onInstallClicked = {
-                                vm.install(it)
-                            },
-                            onUninstallClicked = {
-                                vm.uninstall(it)
-                            }
+                            onInstallClicked = vm::install,
+                            onUpdateClicked = vm::update,
+                            onUninstallClicked = vm::uninstall
                         )
                         Spacer(Modifier.height(8.dp))
                     }
@@ -113,6 +110,7 @@ fun ExtensionItem(
     extension: Extension,
     serverUrl: String,
     onInstallClicked: (Extension) -> Unit,
+    onUpdateClicked: (Extension) -> Unit,
     onUninstallClicked: (Extension) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth().height(64.dp).background(MaterialTheme.colors.background)) {
@@ -133,16 +131,30 @@ fun ExtensionItem(
                         Spacer(Modifier.width(4.dp))
                         Text("18+", fontSize = 14.sp, color = Color.Red)
                     }
+                    if (extension.obsolete) {
+                        Spacer(Modifier.width(4.dp))
+                        Text("Obsolete", fontSize = 14.sp, color = Color.Red)
+                    }
                 }
             }
         }
         Button(
             {
-                if (extension.installed) onUninstallClicked(extension) else onInstallClicked(extension)
+                when {
+                    extension.hasUpdate -> onUpdateClicked(extension)
+                    extension.installed -> onUninstallClicked(extension)
+                    else -> onInstallClicked(extension)
+                }
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
-            Text(if (extension.installed) "Uninstall" else "Install")
+            Text(
+                when {
+                    extension.hasUpdate -> "Update"
+                    extension.installed -> "Uninstall"
+                    else -> "Install"
+                }
+            )
         }
     }
 }
