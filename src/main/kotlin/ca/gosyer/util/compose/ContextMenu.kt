@@ -7,14 +7,12 @@
 package ca.gosyer.util.compose
 
 import androidx.compose.ui.unit.IntOffset
-import mu.KotlinLogging
 import javax.swing.Icon
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 import javax.swing.JSeparator
 
 class ContextMenu internal constructor() {
-    val logger = KotlinLogging.logger {}
     internal val list = mutableListOf<Pair<Any, (() -> Unit)?>>()
 
     internal fun popupMenu() = JPopupMenu().apply {
@@ -26,8 +24,6 @@ class ContextMenu internal constructor() {
             when (item) {
                 is JMenuItem -> add(item).apply {
                     addActionListener {
-                        logger.info { it.actionCommand }
-                        logger.info { it.modifiers }
                         block.andClose()
                     }
                 }

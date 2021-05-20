@@ -11,13 +11,13 @@ import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.reader.loader.TachideskPageLoader
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
+import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
-import mu.KotlinLogging
 import kotlin.coroutines.CoroutineContext
 
 class ChapterLoader(
@@ -25,14 +25,12 @@ class ChapterLoader(
     private val readerPreferences: ReaderPreferences,
     private val chapterHandler: ChapterInteractionHandler
 ) {
-    private val logger = KotlinLogging.logger {}
-
     fun loadChapter(chapter: ReaderChapter): StateFlow<List<ReaderPage>> {
         if (chapterIsReady(chapter)) {
             return (chapter.state as ReaderChapter.State.Loaded).pages
         } else {
             chapter.state = ReaderChapter.State.Loading
-            logger.debug { "Loading pages for ${chapter.chapter.name}" }
+            debug { "Loading pages for ${chapter.chapter.name}" }
 
             val loader = TachideskPageLoader(context + Dispatchers.Default, chapter, readerPreferences, chapterHandler)
 
@@ -56,4 +54,6 @@ class ChapterLoader(
     private fun chapterIsReady(chapter: ReaderChapter): Boolean {
         return chapter.state is ReaderChapter.State.Loaded && chapter.pageLoader != null
     }
+
+    private companion object : CKLogger({})
 }

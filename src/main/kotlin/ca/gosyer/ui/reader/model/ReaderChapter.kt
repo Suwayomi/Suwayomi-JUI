@@ -8,18 +8,16 @@ package ca.gosyer.ui.reader.model
 
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.ui.reader.loader.PageLoader
+import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import mu.KotlinLogging
 import kotlin.coroutines.CoroutineContext
 
 data class ReaderChapter(val context: CoroutineContext, val chapter: Chapter) {
-    private val logger = KotlinLogging.logger {}
-
     var scope = CoroutineScope(context + Job())
         private set
 
@@ -43,7 +41,7 @@ data class ReaderChapter(val context: CoroutineContext, val chapter: Chapter) {
 
     fun recycle() {
         if (pageLoader != null) {
-            logger.debug { "Recycling chapter ${chapter.name}" }
+            debug { "Recycling chapter ${chapter.name}" }
         }
         pageLoader?.recycle()
         pageLoader = null
@@ -58,4 +56,6 @@ data class ReaderChapter(val context: CoroutineContext, val chapter: Chapter) {
         class Error(val error: Throwable) : State()
         class Loaded(val pages: StateFlow<List<ReaderPage>>) : State()
     }
+
+    private companion object : CKLogger({})
 }

@@ -10,6 +10,7 @@ import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
+import ca.gosyer.util.system.CKLogger
 import io.github.kerubistan.kroki.coroutines.priorityChannel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import mu.KotlinLogging
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
@@ -30,7 +30,6 @@ class TachideskPageLoader(
     chapterHandler: ChapterInteractionHandler
 ) : PageLoader() {
     val scope = CoroutineScope(SupervisorJob() + context)
-    private val logger = KotlinLogging.logger {}
 
     /**
      * A channel used to manage requests one by one while allowing priorities.
@@ -56,7 +55,7 @@ class TachideskPageLoader(
                     try {
                         for (priorityPage in channel) {
                             val page = priorityPage.page
-                            logger.debug { "Loading page ${page.index}" }
+                            debug { "Loading page ${page.index}" }
                             if (page.status.value == ReaderPage.Status.QUEUE) {
                                 try {
                                     page.bitmap.value = chapterHandler.getPage(chapter.chapter, page.index)
@@ -169,4 +168,6 @@ class TachideskPageLoader(
         scope.cancel()
         channel.close()
     }
+
+    private companion object : CKLogger({})
 }

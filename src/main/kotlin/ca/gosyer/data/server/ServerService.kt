@@ -7,6 +7,7 @@
 package ca.gosyer.data.server
 
 import ca.gosyer.BuildConfig
+import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.userDataDir
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -65,11 +66,10 @@ class ServerService @Inject constructor(
                 return@onEach
             }
             GlobalScope.launch {
-                val logger = KotlinLogging.logger("Server")
 
                 val jarFile = File(userDataDir, "Tachidesk.jar")
                 if (!jarFile.exists()) {
-                    logger.info { "Copying server to resources" }
+                    info { "Copying server to resources" }
                     copyJar(jarFile)
                 } else {
                     try {
@@ -86,11 +86,11 @@ class ServerService @Inject constructor(
                             jarVersion.specification != BuildConfig.TACHIDESK_SP_VERSION ||
                             jarVersion.implementation != BuildConfig.TACHIDESK_IM_VERSION
                         ) {
-                            logger.info { "Updating server file from resources" }
+                            info { "Updating server file from resources" }
                             copyJar(jarFile)
                         }
                     } catch (e: IOException) {
-                        logger.error(e) {
+                        error(e) {
                             "Error accessing server jar, cannot update server, ${BuildConfig.NAME} may not work properly"
                         }
                     }
@@ -105,12 +105,13 @@ class ServerService @Inject constructor(
                     else -> "java"
                 }
 
-                logger.info { "Starting server with $javaExePath" }
+                info { "Starting server with $javaExePath" }
                 val reader: BufferedReader
                 process = runtime.exec("""$javaExePath -jar "${jarFile.absolutePath}"""").also {
                     reader = it.inputStream.bufferedReader()
                 }
-                logger.info { "Server started successfully" }
+                info { "Server started successfully" }
+                val logger = KotlinLogging.logger("Server")
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
                     if (initialized.value == ServerResult.STARTING) {
@@ -125,9 +126,9 @@ class ServerService @Inject constructor(
                 if (initialized.value == ServerResult.STARTING) {
                     initialized.value = ServerResult.FAILED
                 }
-                logger.info { "Server closed" }
+                info { "Server closed" }
                 val exitVal = process?.waitFor()
-                logger.info { "Process exitValue: $exitVal" }
+                info { "Process exitValue: $exitVal" }
                 process = null
             }
         }.launchIn(GlobalScope)
@@ -141,4 +142,6 @@ class ServerService @Inject constructor(
     }
 
     data class JarVersion(val specification: String?, val implementation: String?)
+
+    private companion object : CKLogger({})
 }

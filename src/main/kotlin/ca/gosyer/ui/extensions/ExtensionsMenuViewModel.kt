@@ -11,11 +11,11 @@ import ca.gosyer.data.models.Extension
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import mu.KotlinLogging
 import javax.inject.Inject
 
 class ExtensionsMenuViewModel @Inject constructor(
@@ -23,8 +23,6 @@ class ExtensionsMenuViewModel @Inject constructor(
     serverPreferences: ServerPreferences,
     private val extensionPreferences: ExtensionPreferences
 ) : ViewModel() {
-    private val logger = KotlinLogging.logger {}
-
     val serverUrl = serverPreferences.server().stateIn(scope)
 
     private lateinit var extensionList: List<Extension>
@@ -59,7 +57,7 @@ class ExtensionsMenuViewModel @Inject constructor(
     }
 
     fun install(extension: Extension) {
-        logger.info { "Install clicked" }
+        info { "Install clicked" }
         scope.launch {
             try {
                 extensionHandler.installExtension(extension)
@@ -71,7 +69,7 @@ class ExtensionsMenuViewModel @Inject constructor(
     }
 
     fun update(extension: Extension) {
-        logger.info { "Update clicked" }
+        info { "Update clicked" }
         scope.launch {
             try {
                 extensionHandler.updateExtension(extension)
@@ -83,7 +81,7 @@ class ExtensionsMenuViewModel @Inject constructor(
     }
 
     fun uninstall(extension: Extension) {
-        logger.info { "Uninstall clicked" }
+        info { "Uninstall clicked" }
         scope.launch {
             try {
                 extensionHandler.uninstallExtension(extension)
@@ -107,4 +105,6 @@ class ExtensionsMenuViewModel @Inject constructor(
             _extensions.value = extensions.toList()
         }
     }
+
+    private companion object : CKLogger({})
 }

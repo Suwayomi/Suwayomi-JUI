@@ -11,6 +11,7 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.system.CKLogger
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import mu.KotlinLogging
 import javax.inject.Inject
 
 class SourcesMenuViewModel @Inject constructor(
@@ -28,8 +28,6 @@ class SourcesMenuViewModel @Inject constructor(
     serverPreferences: ServerPreferences,
     catalogPreferences: CatalogPreferences
 ) : ViewModel() {
-    private val logger = KotlinLogging.logger {}
-
     val serverUrl = serverPreferences.server().stateIn(scope)
 
     private val languages = catalogPreferences.languages().stateIn(scope)
@@ -70,9 +68,9 @@ class SourcesMenuViewModel @Inject constructor(
         scope.launch {
             try {
                 val sources = sourceHandler.getSourceList()
-                logger.info { sources }
+                info { sources }
                 _sources.value = sources.filter { it.lang in languages.value }
-                logger.info { _sources.value }
+                info { _sources.value }
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
             } finally {
@@ -111,7 +109,7 @@ class SourcesMenuViewModel @Inject constructor(
         }
     }
 
-    companion object {
+    private companion object : CKLogger({}) {
         const val SOURCE_TABS_KEY = "source_tabs"
         const val SELECTED_SOURCE_TAB = "selected_tab"
     }

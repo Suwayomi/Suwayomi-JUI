@@ -9,17 +9,16 @@ package ca.gosyer.ui.categories
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import mu.KotlinLogging
 import javax.inject.Inject
 
 class CategoriesMenuViewModel @Inject constructor(
     private val categoryHandler: CategoryInteractionHandler
 ) : ViewModel() {
-    private val logger = KotlinLogging.logger {}
     private var originalCategories = emptyList<Category>()
     private val _categories = MutableStateFlow(emptyList<MenuCategory>())
     val categories = _categories.asStateFlow()
@@ -66,7 +65,7 @@ class CategoriesMenuViewModel @Inject constructor(
         updatedCategories.forEach { updatedCategory ->
             val category = categories.find { it.id == updatedCategory.id || it.name == updatedCategory.name } ?: return@forEach
             if (category.order != updatedCategory.order) {
-                logger.debug { "${category.order} to ${updatedCategory.order}" }
+                debug { "${category.order} to ${updatedCategory.order}" }
                 categoryHandler.reorderCategory(updatedCategory, category.order, updatedCategory.order)
             }
         }
@@ -109,4 +108,6 @@ class CategoriesMenuViewModel @Inject constructor(
     fun Category.toMenuCategory() = MenuCategory(id, order, name, landing)
 
     data class MenuCategory(val id: Long? = null, var order: Int, val name: String, val landing: Boolean = false)
+
+    private companion object : CKLogger({})
 }

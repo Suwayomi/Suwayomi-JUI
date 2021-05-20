@@ -28,21 +28,19 @@ import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
+import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.filePicker
 import ca.gosyer.util.system.fileSaver
 import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import mu.KotlinLogging
 import java.io.File
 import javax.inject.Inject
 
 class SettingsBackupViewModel @Inject constructor(
     private val backupHandler: BackupInteractionHandler
 ) : ViewModel() {
-    private val logger = KotlinLogging.logger {}
-
     private val _restoring = MutableStateFlow(false)
     val restoring = _restoring.asStateFlow()
     private val _restoreError = MutableStateFlow(false)
@@ -56,14 +54,14 @@ class SettingsBackupViewModel @Inject constructor(
     fun restoreFile(file: File?) {
         scope.launch {
             if (file == null || !file.exists()) {
-                logger.info { "Invalid file ${file?.absolutePath}" }
+                info { "Invalid file ${file?.absolutePath}" }
             } else {
                 _restoreError.value = false
                 _restoring.value = true
                 try {
                     backupHandler.importBackupFile(file)
                 } catch (e: Exception) {
-                    logger.info(e) { "Error importing backup" }
+                    info(e) { "Error importing backup" }
                     _restoreError.value = true
                 } finally {
                     _restoring.value = false
@@ -75,7 +73,7 @@ class SettingsBackupViewModel @Inject constructor(
     fun createFile(file: File?) {
         scope.launch {
             if (file == null) {
-                logger.info { "Invalid file ${file?.absolutePath}" }
+                info { "Invalid file ${file?.absolutePath}" }
             } else {
                 if (file.exists()) file.delete()
                 _creatingError.value = false
@@ -83,7 +81,7 @@ class SettingsBackupViewModel @Inject constructor(
                 try {
                     val backup = backupHandler.exportBackupFile()
                 } catch (e: Exception) {
-                    logger.info(e) { "Error importing backup" }
+                    info(e) { "Error exporting backup" }
                     _creatingError.value = true
                 } finally {
                     _creating.value = false
@@ -91,6 +89,8 @@ class SettingsBackupViewModel @Inject constructor(
             }
         }
     }
+
+    private companion object : CKLogger({})
 }
 
 @Composable
