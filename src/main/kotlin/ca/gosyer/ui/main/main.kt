@@ -19,7 +19,6 @@ import ca.gosyer.data.server.ServerService.ServerResult
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.data.ui.model.WindowSettings
-import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.system.getAsFlow
@@ -122,10 +121,13 @@ fun main() {
                     val initialized by serverService.initialized.collectAsState()
                     if (initialized == ServerResult.STARTED || initialized == ServerResult.UNUSED) {
                         MainMenu(rootBundle)
-                    } else if (initialized == ServerResult.STARTING) {
-                        LoadingScreen()
-                    } else if (initialized == ServerResult.FAILED) {
-                        ErrorScreen("Unable to start server")
+                    } else if (initialized == ServerResult.STARTING || initialized == ServerResult.FAILED) {
+                        LoadingScreen(
+                            initialized == ServerResult.STARTING,
+                            errorMessage = "Unable to start server",
+                            retryMessage = "Start anyway",
+                            retry = serverService::startAnyway
+                        )
                     }
                 }
             }

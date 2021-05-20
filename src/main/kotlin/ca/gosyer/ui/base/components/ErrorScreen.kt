@@ -24,11 +24,12 @@ import kotlin.random.Random
 fun ErrorScreen(
     errorMessage: String? = null,
     modifier: Modifier = Modifier,
+    retryMessage: String = "Retry",
     retry: (() -> Unit)? = null
 ) {
     Surface(modifier) {
         Box(Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.align(Alignment.Center)) {
+            Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
                 val errorFace = remember { getRandomErrorFace() }
                 Text(errorFace, fontSize = 36.sp, color = MaterialTheme.colors.onBackground)
                 if (errorMessage != null) {
@@ -36,7 +37,7 @@ fun ErrorScreen(
                 }
                 if (retry != null) {
                     Button(retry) {
-                        Text("Retry")
+                        Text(retryMessage)
                     }
                 }
             }

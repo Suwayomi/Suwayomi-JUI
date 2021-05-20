@@ -22,6 +22,7 @@ fun LoadingScreen(
     isLoading: Boolean = true,
     modifier: Modifier = Modifier.fillMaxSize(),
     errorMessage: String? = null,
+    retryMessage: String = "Retry",
     retry: (() -> Unit)? = null
 ) {
     Surface(modifier) {
@@ -32,7 +33,7 @@ fun LoadingScreen(
                 }
                 CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
             } else {
-                ErrorScreen(errorMessage, modifier, retry)
+                ErrorScreen(errorMessage, modifier, retryMessage, retry)
             }
         }
     }

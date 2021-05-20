@@ -37,6 +37,10 @@ class ServerService @Inject constructor(
     private val runtime = Runtime.getRuntime()
     var process: Process? = null
 
+    fun startAnyway() {
+        initialized.value = ServerResult.UNUSED
+    }
+
     private fun copyJar(jarFile: File) {
         javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
             jarFile.outputStream().use { output ->

@@ -23,7 +23,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,11 +56,6 @@ import compose.icons.fontawesomeicons.regular.Bookmark
 import compose.icons.fontawesomeicons.regular.Compass
 import compose.icons.fontawesomeicons.regular.Edit
 import compose.icons.fontawesomeicons.regular.Map
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import mu.KotlinLogging
-import kotlin.time.seconds
 
 @Composable
 fun MainMenu(rootBundle: Bundle) {

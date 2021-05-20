@@ -17,7 +17,7 @@ class ContextMenu internal constructor() {
     val logger = KotlinLogging.logger {}
     internal val list = mutableListOf<Pair<Any, (() -> Unit)?>>()
 
-    fun popupMenu() = JPopupMenu().apply {
+    internal fun popupMenu() = JPopupMenu().apply {
         fun (() -> Unit)?.andClose() {
             isVisible = false
             this?.invoke()
