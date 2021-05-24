@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
+import java.util.Locale
 
 @Composable
 fun SourceHomeScreen(
@@ -80,7 +81,7 @@ fun SourceCategory(
 ) {
     Column {
         Surface(elevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
-            Text(lang.toUpperCase(), modifier = Modifier.align(Alignment.CenterHorizontally), color = MaterialTheme.colors.onBackground)
+            Text(lang.uppercase(Locale.getDefault()), modifier = Modifier.align(Alignment.CenterHorizontally), color = MaterialTheme.colors.onBackground)
         }
         LazyVerticalGrid(GridCells.Adaptive(120.dp), state = state) {
             items(sources) { source ->

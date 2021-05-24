@@ -46,6 +46,7 @@ import ca.gosyer.BuildConfig
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
@@ -57,6 +58,7 @@ fun openCategoriesMenu(notifyFinished: (() -> Unit)? = null) {
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun CategoriesMenu(notifyFinished: (() -> Unit)? = null, windowEvents: WindowEvents) {
     val vm = viewModel<CategoriesMenuViewModel>()

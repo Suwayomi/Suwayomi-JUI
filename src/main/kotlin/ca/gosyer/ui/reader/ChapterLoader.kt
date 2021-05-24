@@ -36,8 +36,8 @@ class ChapterLoader(
 
             val pages = loader.getPages()
 
-            pages.drop(1).take(1).onEach { pages ->
-                if (pages.isEmpty()) {
+            pages.drop(1).take(1).onEach { newPages ->
+                if (newPages.isEmpty()) {
                     chapter.state = ReaderChapter.State.Error(Exception("No pages found"))
                 }
             }.launchIn(chapter.scope)

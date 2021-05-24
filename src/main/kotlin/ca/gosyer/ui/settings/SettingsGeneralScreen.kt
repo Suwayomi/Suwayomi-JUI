@@ -18,6 +18,7 @@ import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
+import ca.gosyer.util.lang.capitalize
 import com.github.zsoltk.compose.router.BackStack
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -39,7 +40,9 @@ class SettingsGeneralViewModel @Inject constructor(
     @Composable
     fun getLanguageChoices(): Map<String, String> {
         val currentLocaleDisplayName =
-            Locale.getDefault().let { it.getDisplayName(it).capitalize() }
+            Locale.getDefault().let { locale ->
+                locale.getDisplayName(locale).capitalize()
+            }
         return mapOf(
             "" to "System Default ($currentLocaleDisplayName)"
         )

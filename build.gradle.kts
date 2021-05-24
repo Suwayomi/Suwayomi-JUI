@@ -5,12 +5,13 @@ import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 plugins {
-    kotlin("jvm") version "1.4.32"
-    kotlin("kapt") version "1.4.32"
-    kotlin("plugin.serialization") version "1.4.32"
-    id("org.jetbrains.compose") version "0.4.0-build198"
+    kotlin("jvm") version "1.5.0"
+    kotlin("kapt") version "1.5.0"
+    kotlin("plugin.serialization") version "1.5.0"
+    id("org.jetbrains.compose") version "0.4.0-build209"
     id("de.fuerstenau.buildconfig") version "1.1.8"
-    id("org.jmailen.kotlinter") version "3.4.0"
+    id("org.jmailen.kotlinter") version "3.4.4"
+    id("com.github.ben-manes.versions") version "0.38.0"
 }
 
 group = "ca.gosyer"
@@ -20,7 +21,6 @@ repositories {
     mavenCentral()
 
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
-    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -34,17 +34,17 @@ dependencies {
     implementation("com.github.weisj:darklaf-core:2.5.5")
 
     // Threading
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
 
     // Json
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
     // Dependency Injection
     implementation("com.github.stephanenicolas.toothpick:ktp:3.1.0")
     kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:3.1.0")
 
     // Http client
-    val ktorVersion = "1.5.2"
+    val ktorVersion = "1.5.4"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
@@ -55,13 +55,13 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.5")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.6")
 
     // User storage
     implementation("net.harawata:appdirs:1.2.1")
 
     // Preferences
-    val multiplatformSettingsVersion = "0.7.4"
+    val multiplatformSettingsVersion = "0.7.7"
     implementation("com.russhwolf:multiplatform-settings-jvm:$multiplatformSettingsVersion")
     implementation("com.russhwolf:multiplatform-settings-serialization-jvm:$multiplatformSettingsVersion")
     implementation("com.russhwolf:multiplatform-settings-coroutines-jvm:$multiplatformSettingsVersion")
@@ -71,7 +71,7 @@ dependencies {
 
     // Testing
     testImplementation(kotlin("test-junit5"))
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0")
 }
 
 tasks {
@@ -131,6 +131,8 @@ compose.desktop {
                 "java.management",
                 "java.naming",
                 "java.prefs",
+                "java.rmi",
+                "java.scripting",
                 "java.sql",
                 "jdk.unsupported"
             )

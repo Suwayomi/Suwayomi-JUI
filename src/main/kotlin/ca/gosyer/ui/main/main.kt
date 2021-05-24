@@ -28,6 +28,7 @@ import com.github.weisj.darklaf.theme.IntelliJTheme
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.github.zsoltk.compose.savedinstancestate.Bundle
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import org.apache.logging.log4j.core.config.Configurator
@@ -36,6 +37,7 @@ import toothpick.ktp.KTP
 import toothpick.ktp.extension.getInstance
 import javax.swing.SwingUtilities
 
+@OptIn(DelicateCoroutinesApi::class)
 fun main() {
     val clazz = MainViewModel::class.java
     Configurator.initialize(

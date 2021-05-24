@@ -46,6 +46,7 @@ import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
+import java.util.Locale
 
 fun openExtensionsMenu() {
     ThemedWindow(title = "TachideskJUI - Extensions", size = IntSize(550, 700)) {
@@ -126,7 +127,7 @@ fun ExtensionItem(
                 }
                 Text(title, fontSize = 26.sp, color = MaterialTheme.colors.onBackground)
                 Row {
-                    Text(extension.lang.toUpperCase(), fontSize = 14.sp, color = MaterialTheme.colors.onBackground)
+                    Text(extension.lang.uppercase(Locale.getDefault()), fontSize = 14.sp, color = MaterialTheme.colors.onBackground)
                     if (extension.nsfw) {
                         Spacer(Modifier.width(4.dp))
                         Text("18+", fontSize = 14.sp, color = Color.Red)

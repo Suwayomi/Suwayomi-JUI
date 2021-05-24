@@ -13,14 +13,14 @@ import javax.swing.JPopupMenu
 import javax.swing.JSeparator
 
 class ContextMenu internal constructor() {
-    internal val list = mutableListOf<Pair<Any, (() -> Unit)?>>()
+    internal val items = mutableListOf<Pair<Any, (() -> Unit)?>>()
 
     internal fun popupMenu() = JPopupMenu().apply {
         fun (() -> Unit)?.andClose() {
             isVisible = false
             this?.invoke()
         }
-        list.forEach { (item, block) ->
+        items.forEach { (item, block) ->
             when (item) {
                 is JMenuItem -> add(item).apply {
                     addActionListener {
@@ -33,10 +33,10 @@ class ContextMenu internal constructor() {
     }
 
     fun menuItem(name: String, icon: Icon? = null, builder: JMenuItem.() -> Unit = {}, action: () -> Unit) {
-        list += JMenuItem(name, icon).apply(builder) to action
+        items += JMenuItem(name, icon).apply(builder) to action
     }
     fun separator() {
-        list += JSeparator() to null
+        items += JSeparator() to null
     }
 }
 

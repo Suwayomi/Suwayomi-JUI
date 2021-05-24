@@ -84,7 +84,7 @@ internal class JvmPreference<T>(
     override fun changes(): Flow<T> {
         return callbackFlow {
             val listener = preferences.addListener(key) {
-                offer(get())
+                trySend(get())
             }
             awaitClose { listener.deactivate() }
         }

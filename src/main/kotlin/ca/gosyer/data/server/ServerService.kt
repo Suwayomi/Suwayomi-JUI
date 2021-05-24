@@ -9,6 +9,7 @@ package ca.gosyer.data.server
 import ca.gosyer.BuildConfig
 import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.userDataDir
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,7 @@ import java.util.jar.JarInputStream
 import javax.inject.Inject
 import kotlin.concurrent.thread
 
+@OptIn(DelicateCoroutinesApi::class)
 class ServerService @Inject constructor(
     val serverPreferences: ServerPreferences
 ) {

@@ -25,9 +25,11 @@ import ca.gosyer.data.server.Http
 import ca.gosyer.util.compose.imageFromUrl
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun KtorImage(
     imageUrl: String,
