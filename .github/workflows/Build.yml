@@ -20,6 +20,13 @@ jobs:
           shell: bash
           buildPackage: ./scripts/BuildLinuxDeb.sh
           buildJar: ./scripts/BuildUnixJar.sh
+          
+        - runtime: linux-centos-x64
+          arch: x64
+          os: ubuntu-latest
+          shell: bash
+          buildPackage: ./scripts/BuildLinuxRpm.sh
+          buildJar: ./scripts/BuildUnixJar.sh
 
         - runtime: osx-x64
           arch: x64
@@ -43,15 +50,24 @@ jobs:
     - uses: actions/checkout@v2
 
     - uses: actions/setup-java@v1
+      if: ${{ matrix.runtime != 'linux-centos-x64' }}
       with:
         java-version: '15'
         architecture: ${{ matrix.arch }}
 
     - name: Build Package
+      if: ${{ matrix.runtime != 'linux-centos-x64' }}
       run: ${{ matrix.buildPackage }}
 
     - name: Build Jar
+      if: ${{ matrix.runtime != 'linux-centos-x64' }}
       run: ${{ matrix.buildJar }}
+
+    - name: Build rpm Package
+      if: ${{ matrix.runtime == 'linux-centos-x64' }}
+      uses: Syer10/CentOS-Java15-Action@v1
+      with:
+        command: ${{ matrix.buildPackage }}
 
     # Upload runner package tar.gz/zip as artifact
     - name: Publish Artifact
