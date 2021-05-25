@@ -74,7 +74,9 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: runner-package-${{ matrix.runtime }}
-        path: build/compose
+        path: |
+          build/compose/binaries/main/*/*.*
+          build/compose/jars/*.jar
   ReleaseBinaries:
     name: Make a release
     needs: [BuildBinaries]
@@ -85,6 +87,6 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "*/binaries/main/*/*.*,*/jars/*.*"
+          artifacts: "*/*.*,*.jar"
           draft: true
           token: ${{ secrets.GITHUB_TOKEN }}
