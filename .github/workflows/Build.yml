@@ -75,8 +75,9 @@ jobs:
       with:
         name: runner-package-${{ matrix.runtime }}
         path: |
-          build/compose/binaries/main/*/*
-          build/compose/jars/*.jar
+          build/compose/binaries/main/*/
+          build/compose/jars/
+          !build/compose/binaries/main/*/app
   ReleaseBinaries:
     name: Make a release
     needs: [BuildBinaries]
