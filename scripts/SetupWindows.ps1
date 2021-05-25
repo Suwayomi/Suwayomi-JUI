@@ -32,6 +32,6 @@ Write-Output "Copying Tachidesk.jar to resources folder..."
 Move-Item -Force $tachidesk_jar "src/main/resources/Tachidesk.jar" -ErrorAction SilentlyContinue
 
 Write-Output "Cleaning up..."
-Remove-Item -Recurse -Force "tmp" | Out-Null
+Remove-Item -Recurse -Force "tmp" -ErrorAction SilentlyContinue | Out-Null
 
 Write-Output "Done!"
