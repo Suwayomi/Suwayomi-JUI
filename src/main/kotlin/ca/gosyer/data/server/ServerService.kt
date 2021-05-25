@@ -77,17 +77,11 @@ class ServerService @Inject constructor(
                     try {
                         val jarVersion = withContext(Dispatchers.IO) {
                             JarInputStream(jarFile.inputStream()).use { jar ->
-                                JarVersion(
-                                    jar.manifest?.mainAttributes?.getValue("Specification-Version"),
-                                    jar.manifest?.mainAttributes?.getValue("Implementation-Version")
-                                )
+                                jar.manifest?.mainAttributes?.getValue("Specification-Version")
                             }
                         }
 
-                        if (
-                            jarVersion.specification != BuildConfig.TACHIDESK_SP_VERSION ||
-                            jarVersion.implementation != BuildConfig.TACHIDESK_IM_VERSION
-                        ) {
+                        if (jarVersion != BuildConfig.TACHIDESK_SP_VERSION) {
                             info { "Updating server file from resources" }
                             copyJar(jarFile)
                         }
@@ -142,8 +136,6 @@ class ServerService @Inject constructor(
         STARTED,
         FAILED;
     }
-
-    data class JarVersion(val specification: String?, val implementation: String?)
 
     private companion object : CKLogger({})
 }
