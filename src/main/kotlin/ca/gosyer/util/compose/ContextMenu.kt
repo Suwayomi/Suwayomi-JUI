@@ -6,20 +6,46 @@
 
 package ca.gosyer.util.compose
 
+import androidx.compose.desktop.AppManager
 import androidx.compose.ui.unit.IntOffset
+import com.github.weisj.darklaf.listener.MouseClickListener
 import javax.swing.Icon
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 import javax.swing.JSeparator
+import javax.swing.SwingUtilities
 
 class ContextMenu internal constructor() {
     internal val items = mutableListOf<Pair<Any, (() -> Unit)?>>()
 
     internal fun popupMenu() = JPopupMenu().apply {
-        fun (() -> Unit)?.andClose() {
+        val window = AppManager.focusedWindow
+        var mouseListener: MouseClickListener? = null
+        fun close() {
             isVisible = false
-            this?.invoke()
+            mouseListener?.let { window?.removeMouseListener(it) }
         }
+        fun (() -> Unit)?.andClose() {
+            SwingUtilities.invokeLater {
+                close()
+                this?.invoke()
+            }
+        }
+
+        mouseListener = MouseClickListener {
+            SwingUtilities.invokeLater {
+                close()
+            }
+        }
+        window?.addMouseListener(mouseListener)
+        window?.events?.let {
+            val oldFocusLost = it.onFocusLost
+            it.onFocusLost = {
+                it.onFocusLost.andClose()
+                it.onFocusLost = oldFocusLost
+            }
+        }
+
         items.forEach { (item, block) ->
             when (item) {
                 is JMenuItem -> add(item).apply {
