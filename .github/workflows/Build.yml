@@ -77,7 +77,7 @@ jobs:
         path: |
           build/compose/binaries/main/*/
           build/compose/jars/
-          !build/compose/binaries/main/*/app/
+          !build/compose/binaries/main/app/
   ReleaseBinaries:
     name: Make a release
     needs: [BuildBinaries]
