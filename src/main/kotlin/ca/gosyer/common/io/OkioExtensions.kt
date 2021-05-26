@@ -6,8 +6,7 @@
 
 package ca.gosyer.common.io
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import ca.gosyer.util.lang.withIOContext
 import okio.BufferedSink
 import okio.Source
 import okio.buffer
@@ -15,7 +14,7 @@ import okio.sink
 import java.io.File
 
 suspend fun Source.saveTo(file: File) {
-    withContext(Dispatchers.IO) {
+    withIOContext {
         use { source ->
             file.sink().buffer().use { it.writeAll(source) }
         }
@@ -23,7 +22,7 @@ suspend fun Source.saveTo(file: File) {
 }
 
 suspend fun Source.copyTo(sink: BufferedSink) {
-    withContext(Dispatchers.IO) {
+    withIOContext {
         use { source ->
             sink.use { it.writeAll(source) }
         }

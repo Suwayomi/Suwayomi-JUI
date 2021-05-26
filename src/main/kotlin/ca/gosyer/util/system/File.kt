@@ -7,11 +7,12 @@
 package ca.gosyer.util.system
 
 import ca.gosyer.BuildConfig
+import ca.gosyer.util.lang.launchUI
+import kotlinx.coroutines.DelicateCoroutinesApi
 import net.harawata.appdirs.AppDirs
 import net.harawata.appdirs.AppDirsFactory
 import java.io.File
 import javax.swing.JFileChooser
-import javax.swing.SwingUtilities
 import javax.swing.filechooser.FileNameExtensionFilter
 
 val appDirs: AppDirs by lazy {
@@ -58,6 +59,7 @@ fun fileSaver(
  * @param onError the listener that is called when picking a file exited with a error
  * @param onApprove the listener that is called when picking a file is completed
  */
+@OptIn(DelicateCoroutinesApi::class)
 private fun fileChooser(
     saving: Boolean = false,
     builder: JFileChooser.() -> Unit = {},
@@ -66,7 +68,7 @@ private fun fileChooser(
     onApprove: (JFileChooser) -> Unit,
     extension: String? = null,
     defaultFileName: String = ""
-) = SwingUtilities.invokeLater {
+) = launchUI {
     val fileChooser = JFileChooser()
         .apply {
             val details = actionMap.get("viewTypeDetails")

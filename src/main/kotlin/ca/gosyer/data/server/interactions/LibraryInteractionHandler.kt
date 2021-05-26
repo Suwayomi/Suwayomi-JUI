@@ -12,9 +12,8 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.addMangaToLibraryQuery
 import ca.gosyer.data.server.requests.getLibraryQuery
 import ca.gosyer.data.server.requests.removeMangaFromLibraryRequest
+import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.statement.HttpResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LibraryInteractionHandler @Inject constructor(
@@ -22,13 +21,13 @@ class LibraryInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getLibraryManga() = withContext(Dispatchers.IO) {
+    suspend fun getLibraryManga() = withIOContext {
         client.getRepeat<List<Manga>>(
             serverUrl + getLibraryQuery()
         )
     }
 
-    suspend fun addMangaToLibrary(mangaId: Long) = withContext(Dispatchers.IO) {
+    suspend fun addMangaToLibrary(mangaId: Long) = withIOContext {
         client.getRepeat<HttpResponse>(
             serverUrl + addMangaToLibraryQuery(mangaId)
         )
@@ -36,7 +35,7 @@ class LibraryInteractionHandler @Inject constructor(
 
     suspend fun addMangaToLibrary(manga: Manga) = addMangaToLibrary(manga.id)
 
-    suspend fun removeMangaFromLibrary(mangaId: Long) = withContext(Dispatchers.IO) {
+    suspend fun removeMangaFromLibrary(mangaId: Long) = withIOContext {
         client.deleteRepeat<HttpResponse>(
             serverUrl + removeMangaFromLibraryRequest(mangaId)
         )

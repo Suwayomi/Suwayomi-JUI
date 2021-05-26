@@ -7,16 +7,15 @@
 package ca.gosyer.data.server
 
 import ca.gosyer.BuildConfig
+import ca.gosyer.util.lang.withIOContext
 import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.userDataDir
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import java.io.BufferedReader
 import java.io.File
@@ -75,7 +74,7 @@ class ServerService @Inject constructor(
                     copyJar(jarFile)
                 } else {
                     try {
-                        val jarVersion = withContext(Dispatchers.IO) {
+                        val jarVersion = withIOContext {
                             JarInputStream(jarFile.inputStream()).use { jar ->
                                 jar.manifest?.mainAttributes?.getValue("Specification-Version")
                             }

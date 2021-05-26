@@ -44,12 +44,13 @@ import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
+import ca.gosyer.util.lang.launchUI
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
-import toothpick.ktp.extension.getInstance
-import javax.swing.SwingUtilities
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@OptIn(DelicateCoroutinesApi::class)
 fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
     val windowSettings = AppScope.getInstance<UiPreferences>()
         .readerWindow()
@@ -59,7 +60,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
         maximized
     ) = windowSettings.get().get()
 
-    SwingUtilities.invokeLater {
+    launchUI {
         val window = AppWindow(
             "TachideskJUI - Reader",
             size = size,

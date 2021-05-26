@@ -14,12 +14,11 @@ import ca.gosyer.data.server.requests.getChapterQuery
 import ca.gosyer.data.server.requests.getMangaChaptersQuery
 import ca.gosyer.data.server.requests.getPageQuery
 import ca.gosyer.data.server.requests.updateChapterRequest
+import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ChapterInteractionHandler @Inject constructor(
@@ -27,7 +26,7 @@ class ChapterInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getChapters(mangaId: Long, refresh: Boolean = false) = withContext(Dispatchers.IO) {
+    suspend fun getChapters(mangaId: Long, refresh: Boolean = false) = withIOContext {
         client.getRepeat<List<Chapter>>(
             serverUrl + getMangaChaptersQuery(mangaId)
         ) {
@@ -41,7 +40,7 @@ class ChapterInteractionHandler @Inject constructor(
 
     suspend fun getChapters(manga: Manga, refresh: Boolean = false) = getChapters(manga.id, refresh)
 
-    suspend fun getChapter(mangaId: Long, chapterIndex: Int) = withContext(Dispatchers.IO) {
+    suspend fun getChapter(mangaId: Long, chapterIndex: Int) = withIOContext {
         client.getRepeat<Chapter>(
             serverUrl + getChapterQuery(mangaId, chapterIndex)
         )
@@ -60,7 +59,7 @@ class ChapterInteractionHandler @Inject constructor(
         bookmarked: Boolean? = null,
         lastPageRead: Int? = null,
         markPreviousRead: Boolean? = null
-    ) = withContext(Dispatchers.IO) {
+    ) = withIOContext {
         client.submitFormRepeat<HttpResponse>(
             serverUrl + updateChapterRequest(mangaId, chapterIndex),
             formParameters = Parameters.build {
@@ -114,7 +113,7 @@ class ChapterInteractionHandler @Inject constructor(
         markPreviousRead
     )
 
-    suspend fun getPage(mangaId: Long, chapterIndex: Int, pageNum: Int) = withContext(Dispatchers.IO) {
+    suspend fun getPage(mangaId: Long, chapterIndex: Int, pageNum: Int) = withIOContext {
         imageFromUrl(
             client,
             serverUrl + getPageQuery(mangaId, chapterIndex, pageNum)

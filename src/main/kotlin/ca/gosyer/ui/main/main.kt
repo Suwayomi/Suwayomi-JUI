@@ -21,6 +21,8 @@ import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.theme.AppTheme
+import ca.gosyer.util.lang.launchUI
+import ca.gosyer.util.lang.withUIContext
 import ca.gosyer.util.system.getAsFlow
 import com.github.weisj.darklaf.LafManager
 import com.github.weisj.darklaf.theme.DarculaTheme
@@ -35,7 +37,6 @@ import org.apache.logging.log4j.core.config.Configurator
 import toothpick.configuration.Configuration
 import toothpick.ktp.KTP
 import toothpick.ktp.extension.getInstance
-import javax.swing.SwingUtilities
 
 @OptIn(DelicateCoroutinesApi::class)
 fun main() {
@@ -72,7 +73,7 @@ fun main() {
                 ThemeMode.Dark -> DarculaTheme()
             }
             LafManager.enableLogging(BuildConfig.DEBUG)
-            SwingUtilities.invokeLater {
+            withUIContext {
                 LafManager.install(theme)
             }
         }
@@ -85,7 +86,7 @@ fun main() {
         maximized
     ) = windowSettings.get().get()
 
-    SwingUtilities.invokeLater {
+    launchUI {
         val window = AppWindow(
             title = BuildConfig.NAME,
             size = size,

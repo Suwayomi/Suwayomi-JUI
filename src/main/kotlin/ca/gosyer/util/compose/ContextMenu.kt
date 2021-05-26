@@ -8,16 +8,18 @@ package ca.gosyer.util.compose
 
 import androidx.compose.desktop.AppManager
 import androidx.compose.ui.unit.IntOffset
+import ca.gosyer.util.lang.launchUI
 import com.github.weisj.darklaf.listener.MouseClickListener
+import kotlinx.coroutines.DelicateCoroutinesApi
 import javax.swing.Icon
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 import javax.swing.JSeparator
-import javax.swing.SwingUtilities
 
 class ContextMenu internal constructor() {
     internal val items = mutableListOf<Pair<Any, (() -> Unit)?>>()
 
+    @OptIn(DelicateCoroutinesApi::class)
     internal fun popupMenu() = JPopupMenu().apply {
         val window = AppManager.focusedWindow
         var mouseListener: MouseClickListener? = null
@@ -26,14 +28,14 @@ class ContextMenu internal constructor() {
             mouseListener?.let { window?.removeMouseListener(it) }
         }
         fun (() -> Unit)?.andClose() {
-            SwingUtilities.invokeLater {
+            launchUI {
                 close()
-                this?.invoke()
+                this@andClose?.invoke()
             }
         }
 
         mouseListener = MouseClickListener {
-            SwingUtilities.invokeLater {
+            launchUI {
                 close()
             }
         }

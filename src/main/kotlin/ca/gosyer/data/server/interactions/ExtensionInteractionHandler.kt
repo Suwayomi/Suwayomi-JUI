@@ -14,9 +14,8 @@ import ca.gosyer.data.server.requests.apkInstallQuery
 import ca.gosyer.data.server.requests.apkUninstallQuery
 import ca.gosyer.data.server.requests.apkUpdateQuery
 import ca.gosyer.data.server.requests.extensionListQuery
+import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.statement.HttpResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ExtensionInteractionHandler @Inject constructor(
@@ -24,31 +23,31 @@ class ExtensionInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getExtensionList() = withContext(Dispatchers.IO) {
+    suspend fun getExtensionList() = withIOContext {
         client.getRepeat<List<Extension>>(
             serverUrl + extensionListQuery()
         )
     }
 
-    suspend fun installExtension(extension: Extension) = withContext(Dispatchers.IO) {
+    suspend fun installExtension(extension: Extension) = withIOContext {
         client.getRepeat<HttpResponse>(
             serverUrl + apkInstallQuery(extension.pkgName)
         )
     }
 
-    suspend fun updateExtension(extension: Extension) = withContext(Dispatchers.IO) {
+    suspend fun updateExtension(extension: Extension) = withIOContext {
         client.getRepeat<HttpResponse>(
             serverUrl + apkUpdateQuery(extension.pkgName)
         )
     }
 
-    suspend fun uninstallExtension(extension: Extension) = withContext(Dispatchers.IO) {
+    suspend fun uninstallExtension(extension: Extension) = withIOContext {
         client.getRepeat<HttpResponse>(
             serverUrl + apkUninstallQuery(extension.pkgName)
         )
     }
 
-    suspend fun getApkIcon(extension: Extension) = withContext(Dispatchers.IO) {
+    suspend fun getApkIcon(extension: Extension) = withIOContext {
         imageFromUrl(
             client,
             serverUrl + apkIconQuery(extension.apkName)

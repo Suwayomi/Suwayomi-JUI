@@ -34,7 +34,9 @@ dependencies {
     implementation("com.github.weisj:darklaf-core:2.5.5")
 
     // Threading
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    val coroutinesVersion = "1.5.0"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
 
     // Json
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
@@ -71,7 +73,7 @@ dependencies {
 
     // Testing
     testImplementation(kotlin("test-junit5"))
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 }
 
 tasks {

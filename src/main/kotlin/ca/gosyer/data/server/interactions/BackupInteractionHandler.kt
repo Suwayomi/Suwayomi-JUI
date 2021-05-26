@@ -13,6 +13,7 @@ import ca.gosyer.data.server.requests.backupExportRequest
 import ca.gosyer.data.server.requests.backupFileExportRequest
 import ca.gosyer.data.server.requests.backupFileImportRequest
 import ca.gosyer.data.server.requests.backupImportRequest
+import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.statement.HttpResponse
@@ -21,8 +22,6 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.content.MultiPartData
 import io.ktor.http.contentType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -31,7 +30,7 @@ class BackupInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun importBackupFile(file: File) = withContext(Dispatchers.IO) {
+    suspend fun importBackupFile(file: File) = withIOContext {
         client.submitFormWithBinaryData<HttpResponse>(
             serverUrl + backupFileImportRequest(),
             formData = formData {
@@ -46,7 +45,7 @@ class BackupInteractionHandler @Inject constructor(
         )
     }
 
-    suspend fun importBackup(backup: Backup) = withContext(Dispatchers.IO) {
+    suspend fun importBackup(backup: Backup) = withIOContext {
         client.postRepeat<HttpResponse>(
             serverUrl + backupImportRequest()
         ) {
@@ -55,13 +54,13 @@ class BackupInteractionHandler @Inject constructor(
         }
     }
 
-    suspend fun exportBackupFile() = withContext(Dispatchers.IO) {
+    suspend fun exportBackupFile() = withIOContext {
         client.getRepeat<MultiPartData>(
             serverUrl + backupFileExportRequest()
         )
     }
 
-    suspend fun exportBackup() = withContext(Dispatchers.IO) {
+    suspend fun exportBackup() = withIOContext {
         client.getRepeat<Backup>(
             serverUrl + backupExportRequest()
         )

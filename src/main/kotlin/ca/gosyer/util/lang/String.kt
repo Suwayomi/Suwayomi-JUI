@@ -8,4 +8,5 @@ package ca.gosyer.util.lang
 
 import java.util.Locale
 
-fun String.capitalize() = replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+fun String.capitalize(locale: Locale = Locale.getDefault()) =
+    replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }

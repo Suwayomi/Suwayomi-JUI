@@ -14,14 +14,13 @@ import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.lang.withIOContext
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -59,7 +58,7 @@ class MangaMenuViewModel @Inject constructor(
         }
     }
 
-    private suspend fun refreshMangaAsync(mangaId: Long) = withContext(Dispatchers.IO) {
+    private suspend fun refreshMangaAsync(mangaId: Long) = withIOContext {
         async {
             try {
                 _manga.value = mangaHandler.getManga(mangaId)
@@ -69,7 +68,7 @@ class MangaMenuViewModel @Inject constructor(
         }
     }
 
-    private suspend fun refreshChaptersAsync(mangaId: Long) = withContext(Dispatchers.IO) {
+    private suspend fun refreshChaptersAsync(mangaId: Long) = withIOContext {
         async {
             try {
                 _chapters.value = chapterHandler.getChapters(mangaId)

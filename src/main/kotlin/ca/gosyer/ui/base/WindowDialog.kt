@@ -28,8 +28,10 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.theme.AppTheme
-import javax.swing.SwingUtilities
+import ca.gosyer.util.lang.launchUI
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@OptIn(DelicateCoroutinesApi::class)
 @Suppress("FunctionName")
 fun WindowDialog(
     title: String = "Dialog",
@@ -43,7 +45,7 @@ fun WindowDialog(
     onPositiveButton: (() -> Unit)? = null,
     keyboardShortcuts: List<KeyboardShortcut> = emptyList(),
     row: @Composable (RowScope.() -> Unit)
-) = SwingUtilities.invokeLater {
+) = launchUI {
     val window = AppWindow(
         title = title,
         size = size,
@@ -96,6 +98,7 @@ fun WindowDialog(
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 fun WindowDialog(
     title: String = "Dialog",
     size: IntSize = IntSize(400, 200),
@@ -104,7 +107,7 @@ fun WindowDialog(
     keyboardShortcuts: List<KeyboardShortcut> = emptyList(),
     buttons: @Composable (AppWindow) -> Unit,
     content: @Composable (AppWindow) -> Unit
-) = SwingUtilities.invokeLater {
+) = launchUI {
     val window = AppWindow(
         title = title,
         size = size,

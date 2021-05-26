@@ -19,11 +19,10 @@ import ca.gosyer.data.server.requests.getCategoriesQuery
 import ca.gosyer.data.server.requests.getMangaCategoriesQuery
 import ca.gosyer.data.server.requests.getMangaInCategoryQuery
 import ca.gosyer.data.server.requests.removeMangaFromCategoryRequest
+import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CategoryInteractionHandler @Inject constructor(
@@ -31,7 +30,7 @@ class CategoryInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getMangaCategories(mangaId: Long) = withContext(Dispatchers.IO) {
+    suspend fun getMangaCategories(mangaId: Long) = withIOContext {
         client.getRepeat<List<Category>>(
             serverUrl + getMangaCategoriesQuery(mangaId)
         )
@@ -39,7 +38,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     suspend fun getMangaCategories(manga: Manga) = getMangaCategories(manga.id)
 
-    suspend fun addMangaToCategory(mangaId: Long, categoryId: Long) = withContext(Dispatchers.IO) {
+    suspend fun addMangaToCategory(mangaId: Long, categoryId: Long) = withIOContext {
         client.getRepeat<HttpResponse>(
             serverUrl + addMangaToCategoryQuery(mangaId, categoryId)
         )
@@ -48,7 +47,7 @@ class CategoryInteractionHandler @Inject constructor(
     suspend fun addMangaToCategory(manga: Manga, categoryId: Long) = addMangaToCategory(manga.id, categoryId)
     suspend fun addMangaToCategory(mangaId: Long, category: Category) = addMangaToCategory(mangaId, category.id)
 
-    suspend fun removeMangaFromCategory(mangaId: Long, categoryId: Long) = withContext(Dispatchers.IO) {
+    suspend fun removeMangaFromCategory(mangaId: Long, categoryId: Long) = withIOContext {
         client.deleteRepeat<HttpResponse>(
             serverUrl + removeMangaFromCategoryRequest(mangaId, categoryId)
         )
@@ -57,13 +56,13 @@ class CategoryInteractionHandler @Inject constructor(
     suspend fun removeMangaFromCategory(manga: Manga, categoryId: Long) = removeMangaFromCategory(manga.id, categoryId)
     suspend fun removeMangaFromCategory(mangaId: Long, category: Category) = removeMangaFromCategory(mangaId, category.id)
 
-    suspend fun getCategories() = withContext(Dispatchers.IO) {
+    suspend fun getCategories() = withIOContext {
         client.getRepeat<List<Category>>(
             serverUrl + getCategoriesQuery()
         )
     }
 
-    suspend fun createCategory(name: String) = withContext(Dispatchers.IO) {
+    suspend fun createCategory(name: String) = withIOContext {
         client.submitFormRepeat<HttpResponse>(
             serverUrl + createCategoryRequest(),
             formParameters = Parameters.build {
@@ -72,7 +71,7 @@ class CategoryInteractionHandler @Inject constructor(
         )
     }
 
-    suspend fun modifyCategory(categoryId: Long, name: String? = null, isLanding: Boolean? = null) = withContext(Dispatchers.IO) {
+    suspend fun modifyCategory(categoryId: Long, name: String? = null, isLanding: Boolean? = null) = withIOContext {
         client.submitFormRepeat<HttpResponse>(
             serverUrl + categoryModifyRequest(categoryId),
             formParameters = Parameters.build {
@@ -89,7 +88,7 @@ class CategoryInteractionHandler @Inject constructor(
     }
     suspend fun modifyCategory(category: Category, name: String? = null, isLanding: Boolean? = null) = modifyCategory(category.id, name, isLanding)
 
-    suspend fun reorderCategory(categoryId: Long, to: Int, from: Int) = withContext(Dispatchers.IO) {
+    suspend fun reorderCategory(categoryId: Long, to: Int, from: Int) = withIOContext {
         client.submitFormRepeat<HttpResponse>(
             serverUrl + categoryReorderRequest(categoryId),
             formParameters = Parameters.build {
@@ -102,14 +101,14 @@ class CategoryInteractionHandler @Inject constructor(
     }
     suspend fun reorderCategory(category: Category, to: Int, from: Int) = reorderCategory(category.id, to, from)
 
-    suspend fun deleteCategory(categoryId: Long) = withContext(Dispatchers.IO) {
+    suspend fun deleteCategory(categoryId: Long) = withIOContext {
         client.deleteRepeat<HttpResponse>(
             serverUrl + categoryDeleteRequest(categoryId)
         )
     }
     suspend fun deleteCategory(category: Category) = deleteCategory(category.id)
 
-    suspend fun getMangaFromCategory(categoryId: Long) = withContext(Dispatchers.IO) {
+    suspend fun getMangaFromCategory(categoryId: Long) = withIOContext {
         client.getRepeat<List<Manga>>(
             serverUrl + getMangaInCategoryQuery(categoryId)
         )
