@@ -19,6 +19,14 @@ data class WindowSettings(
     val maximized: Boolean? = null
 ) {
     fun get(): WindowGet {
+        if (maximized == true) {
+            // Maximize messes with the other parameters so set them to default
+            return WindowGet(
+                IntOffset.Zero,
+                IntSize(800, 600),
+                true
+            )
+        }
         val offset = if (x != null && y != null) {
             IntOffset(x, y)
         } else {
