@@ -15,20 +15,16 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeysSet
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -42,12 +38,12 @@ import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.base.vm.viewModel
+import ca.gosyer.ui.reader.model.MoveTo
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
+import ca.gosyer.ui.reader.viewer.ContinuousReader
+import ca.gosyer.ui.reader.viewer.PagerReader
 import ca.gosyer.util.lang.launchUI
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.VerticalPager
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -113,14 +109,52 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
     val direction by vm.readerModeSettings.direction.collectAsState()
     val padding by vm.readerModeSettings.padding.collectAsState()
     val currentPage by vm.currentPage.collectAsState()
-    remember {
+    LaunchedEffect(Unit) {
         setHotkeys(
             listOf(
-                KeyboardShortcut(KeysSet(setOf(Key.W, Key.DirectionUp))) {
-                    vm.progress(currentPage + 1)
+                KeyboardShortcut(Key.W) {
+                    vm.moveDirection(MoveTo.Previous)
                 },
-                KeyboardShortcut(KeysSet(setOf(Key.S, Key.DirectionDown))) {
-                    vm.progress(currentPage - 1)
+                KeyboardShortcut(Key.DirectionUp) {
+                    vm.moveDirection(MoveTo.Previous)
+                },
+                KeyboardShortcut(Key.S) {
+                    vm.moveDirection(MoveTo.Next)
+                },
+                KeyboardShortcut(Key.DirectionDown) {
+                    vm.moveDirection(MoveTo.Next)
+                },
+                KeyboardShortcut(Key.A) {
+                    vm.moveDirection(
+                        when (direction) {
+                            Direction.Left -> MoveTo.Next
+                            else -> MoveTo.Previous
+                        }
+                    )
+                },
+                KeyboardShortcut(Key.DirectionLeft) {
+                    vm.moveDirection(
+                        when (direction) {
+                            Direction.Left -> MoveTo.Next
+                            else -> MoveTo.Previous
+                        }
+                    )
+                },
+                KeyboardShortcut(Key.D) {
+                    vm.moveDirection(
+                        when (direction) {
+                            Direction.Left -> MoveTo.Previous
+                            else -> MoveTo.Next
+                        }
+                    )
+                },
+                KeyboardShortcut(Key.DirectionRight) {
+                    vm.moveDirection(
+                        when (direction) {
+                            Direction.Left -> MoveTo.Previous
+                            else -> MoveTo.Next
+                        }
+                    )
                 }
             )
         )
@@ -132,9 +166,13 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                 val pageModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
                 if (pages.isNotEmpty()) {
                     if (continuous) {
-                        ContinuesReader(
+                        ContinuousReader(
                             pages,
+                            previousChapter,
+                            chapter,
+                            nextChapter,
                             pageModifier,
+                            vm.pageEmitter,
                             vm::retry,
                             vm::progress
                         )
@@ -147,6 +185,7 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                             chapter,
                             nextChapter,
                             pageModifier,
+                            vm.pageEmitter,
                             vm::retry,
                             vm::progress
                         )
@@ -188,87 +227,11 @@ fun ReaderImage(
 }
 
 @Composable
-fun PagerReader(
-    direction: Direction,
-    currentPage: Int,
-    pages: List<ReaderPage>,
-    previousChapter: ReaderChapter?,
-    currentChapter: ReaderChapter,
-    nextChapter: ReaderChapter?,
-    pageModifier: Modifier,
-    retry: (ReaderPage) -> Unit,
-    progress: (Int) -> Unit
-) {
-    val state = rememberPagerState(pages.size + 1, initialPage = currentPage)
-
-    LaunchedEffect(state.currentPage) {
-        if (state.currentPage != currentPage) {
-            progress(state.currentPage)
-        }
-    }
-
-    if (direction == Direction.Down || direction == Direction.Up) {
-        VerticalPager(state, reverseLayout = direction == Direction.Up) {
-            HandlePager(
-                pages,
-                it,
-                previousChapter,
-                currentChapter,
-                nextChapter,
-                pageModifier,
-                retry
-            )
-        }
-    } else {
-        HorizontalPager(state, reverseLayout = direction == Direction.Left) {
-            HandlePager(
-                pages,
-                it,
-                previousChapter,
-                currentChapter,
-                nextChapter,
-                pageModifier,
-                retry
-            )
-        }
-    }
-}
-
-@Composable
-fun HandlePager(
-    pages: List<ReaderPage>,
-    page: Int,
-    previousChapter: ReaderChapter?,
-    currentChapter: ReaderChapter,
-    nextChapter: ReaderChapter?,
-    pageModifier: Modifier,
-    retry: (ReaderPage) -> Unit,
-) {
-    when (page) {
-        0 -> ChapterSeperator(previousChapter, currentChapter)
-        pages.size -> ChapterSeperator(currentChapter, nextChapter)
-        else -> {
-            val image = pages[page - 1]
-            ReaderImage(
-                image.index,
-                image.bitmap.collectAsState().value,
-                image.status.collectAsState().value,
-                image.error.collectAsState().value,
-                loadingModifier = pageModifier,
-                retry = { pageIndex ->
-                    pages.find { it.index == pageIndex }?.let { retry(it) }
-                }
-            )
-        }
-    }
-}
-
-@Composable
 fun ChapterSeperator(
     previousChapter: ReaderChapter?,
     nextChapter: ReaderChapter?
 ) {
-    Box(contentAlignment = Alignment.Center) {
+    Box(Modifier.fillMaxWidth().height(350.dp), contentAlignment = Alignment.Center) {
         Column {
             when {
                 previousChapter == null && nextChapter != null -> {
@@ -283,32 +246,6 @@ fun ChapterSeperator(
                     Text("There is no next chapter")
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ContinuesReader(
-    pages: List<ReaderPage>,
-    pageModifier: Modifier,
-    retry: (ReaderPage) -> Unit,
-    progress: (Int) -> Unit
-) {
-    LazyColumn {
-        items(pages) { image ->
-            LaunchedEffect(image.index) {
-                progress(image.index)
-            }
-            ReaderImage(
-                image.index,
-                image.bitmap.collectAsState().value,
-                image.status.collectAsState().value,
-                image.error.collectAsState().value,
-                loadingModifier = pageModifier,
-                retry = { pageIndex ->
-                    pages.find { it.index == pageIndex }?.let { retry(it) }
-                }
-            )
         }
     }
 }

@@ -10,14 +10,15 @@ import ca.gosyer.data.reader.ReaderModeWatch
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.ui.reader.model.MoveTo
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.ui.reader.model.ViewerChapters
 import ca.gosyer.util.lang.throwIfCancellation
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -47,6 +48,9 @@ class ReaderMenuViewModel @Inject constructor(
     private val _currentPage = MutableStateFlow(1)
     val currentPage = _currentPage.asStateFlow()
 
+    private val _pageEmitter = MutableSharedFlow<Pair<MoveTo, Int>>()
+    val pageEmitter = _pageEmitter.asSharedFlow()
+
     val readerModeSettings = ReaderModeWatch(readerPreferences, scope)
 
     private val loader = ChapterLoader(scope.coroutineContext, readerPreferences, chapterHandler)
@@ -54,6 +58,12 @@ class ReaderMenuViewModel @Inject constructor(
     init {
         scope.launch(Dispatchers.Default) {
             init(params.mangaId, params.chapterIndex)
+        }
+    }
+
+    fun moveDirection(direction: MoveTo) {
+        scope.launch {
+            _pageEmitter.emit(direction to currentPage.value)
         }
     }
 
@@ -76,46 +86,68 @@ class ReaderMenuViewModel @Inject constructor(
         resetValues()
         val chapter = ReaderChapter(
             scope.coroutineContext + Dispatchers.Default,
-            chapterHandler.getChapter(mangaId, chapterIndex)
+            try {
+                chapterHandler.getChapter(mangaId, chapterIndex)
+            } catch (e: Exception) {
+                e.throwIfCancellation()
+                _state.value = ReaderChapter.State.Error(e)
+                throw e
+            }
         )
         val pages = loader.loadChapter(chapter)
         viewerChapters.currChapter.value = chapter
         scope.launch(Dispatchers.Default) {
-            listOf(
-                async {
-                    try {
-                        viewerChapters.nextChapter.value = ReaderChapter(
-                            scope.coroutineContext + Dispatchers.Default,
-                            chapterHandler.getChapter(mangaId, chapterIndex + 1)
-                        )
-                    } catch (e: Exception) {
-                        e.throwIfCancellation()
-                    }
-                },
-                async {
-                    if (chapterIndex != 0) {
-                        try {
-                            viewerChapters.prevChapter.value = ReaderChapter(
-                                scope.coroutineContext + Dispatchers.Default,
-                                chapterHandler.getChapter(mangaId, chapterIndex - 1)
-                            )
-                        } catch (e: Exception) {
-                            e.throwIfCancellation()
-                        }
-                    }
-                }
-            ).awaitAll()
+            val chapters = try {
+                chapterHandler.getChapters(mangaId)
+            } catch (e: Exception) {
+                e.throwIfCancellation()
+                emptyList()
+            }
+            val nextChapter = chapters.find { it.index == chapterIndex + 1 }
+            if (nextChapter != null) {
+                viewerChapters.nextChapter.value = ReaderChapter(
+                    scope.coroutineContext + Dispatchers.Default,
+                    nextChapter
+                )
+            }
+            val prevChapter = chapters.find { it.index == chapterIndex - 1 }
+            if (prevChapter != null) {
+                viewerChapters.prevChapter.value = ReaderChapter(
+                    scope.coroutineContext + Dispatchers.Default,
+                    prevChapter
+                )
+            }
         }
-        chapter.stateObserver.onEach {
-            _state.value = it
-        }.launchIn(chapter.scope)
-        pages.onEach { pageList ->
-            pageList.forEach { it.chapter = chapter }
-            _pages.value = pageList
-        }.launchIn(chapter.scope)
-        _currentPage.onEach { index ->
-            pages.value.getOrNull(index - 1)?.let { chapter.pageLoader?.loadPage(it) }
-        }.launchIn(chapter.scope)
+        val lastPageRead = chapter.chapter.lastPageRead
+        if (lastPageRead != 0) {
+            _currentPage.value = chapter.chapter.lastPageRead
+        }
+
+        chapter.stateObserver
+            .onEach {
+                _state.value = it
+            }
+            .launchIn(chapter.scope)
+        pages
+            .onEach { pageList ->
+                pageList.forEach { it.chapter = chapter }
+                _pages.value = pageList
+            }
+            .launchIn(chapter.scope)
+
+        _currentPage
+            .onEach { index ->
+                if (index == pages.value.size) {
+                    markChapterRead(mangaId, chapter)
+                } else {
+                    pages.value.getOrNull(index - 1)?.let { chapter.pageLoader?.loadPage(it) }
+                }
+            }
+            .launchIn(chapter.scope)
+    }
+
+    private suspend fun markChapterRead(mangaId: Long, chapter: ReaderChapter) {
+        chapterHandler.updateChapter(mangaId, chapter.chapter.index, true)
     }
 
     data class Params(val chapterIndex: Int, val mangaId: Long)
