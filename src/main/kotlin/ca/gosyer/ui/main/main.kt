@@ -122,15 +122,18 @@ fun main() {
                     LocalBackPressHandler provides backPressHandler
                 ) {
                     val initialized by serverService.initialized.collectAsState()
-                    if (initialized == ServerResult.STARTED || initialized == ServerResult.UNUSED) {
-                        MainMenu(rootBundle)
-                    } else if (initialized == ServerResult.STARTING || initialized == ServerResult.FAILED) {
-                        LoadingScreen(
-                            initialized == ServerResult.STARTING,
-                            errorMessage = "Unable to start server",
-                            retryMessage = "Start anyway",
-                            retry = serverService::startAnyway
-                        )
+                    when (initialized) {
+                        ServerResult.STARTED, ServerResult.UNUSED -> {
+                            MainMenu(rootBundle)
+                        }
+                        ServerResult.STARTING, ServerResult.FAILED -> {
+                            LoadingScreen(
+                                initialized == ServerResult.STARTING,
+                                errorMessage = "Unable to start server",
+                                retryMessage = "Start anyway",
+                                retry = serverService::startAnyway
+                            )
+                        }
                     }
                 }
             }
