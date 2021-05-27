@@ -10,9 +10,9 @@ import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
+import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import io.github.kerubistan.kroki.coroutines.priorityChannel
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -62,7 +62,7 @@ class TachideskPageLoader(
                                     page.status.value = ReaderPage.Status.READY
                                     page.error.value = null
                                 } catch (e: Exception) {
-                                    if (e is CancellationException) throw e
+                                    e.throwIfCancellation()
                                     page.bitmap.value = null
                                     page.status.value = ReaderPage.Status.ERROR
                                     page.error.value = e.message
@@ -70,7 +70,7 @@ class TachideskPageLoader(
                             }
                         }
                     } catch (e: Exception) {
-                        if (e is CancellationException) throw e
+                        e.throwIfCancellation()
                     }
                 }
             }

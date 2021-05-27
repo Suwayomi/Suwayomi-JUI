@@ -11,8 +11,8 @@ import ca.gosyer.data.models.Extension
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -50,7 +50,7 @@ class ExtensionsMenuViewModel @Inject constructor(
                 .sortedWith(compareBy({ it.lang }, { it.pkgName }))
             search(searchQuery.value.orEmpty())
         } catch (e: Exception) {
-            if (e is CancellationException) throw e
+            e.throwIfCancellation()
         } finally {
             _isLoading.value = false
         }
@@ -62,7 +62,7 @@ class ExtensionsMenuViewModel @Inject constructor(
             try {
                 extensionHandler.installExtension(extension)
             } catch (e: Exception) {
-                if (e is CancellationException) throw e
+                e.throwIfCancellation()
             }
             getExtensions()
         }
@@ -74,7 +74,7 @@ class ExtensionsMenuViewModel @Inject constructor(
             try {
                 extensionHandler.updateExtension(extension)
             } catch (e: Exception) {
-                if (e is CancellationException) throw e
+                e.throwIfCancellation()
             }
             getExtensions()
         }
@@ -86,7 +86,7 @@ class ExtensionsMenuViewModel @Inject constructor(
             try {
                 extensionHandler.uninstallExtension(extension)
             } catch (e: Exception) {
-                if (e is CancellationException) throw e
+                e.throwIfCancellation()
             }
             getExtensions()
         }

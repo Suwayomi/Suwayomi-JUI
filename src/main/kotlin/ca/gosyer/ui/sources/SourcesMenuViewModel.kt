@@ -11,9 +11,9 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import com.github.zsoltk.compose.savedinstancestate.Bundle
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.drop
@@ -72,7 +72,7 @@ class SourcesMenuViewModel @Inject constructor(
                 _sources.value = sources.filter { it.lang in languages.value }
                 info { _sources.value }
             } catch (e: Exception) {
-                if (e is CancellationException) throw e
+                e.throwIfCancellation()
             } finally {
                 val sourceTabs = bundle.getLongArray(SOURCE_TABS_KEY)
                 if (sourceTabs != null) {

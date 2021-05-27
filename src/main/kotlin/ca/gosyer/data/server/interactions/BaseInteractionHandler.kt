@@ -9,6 +9,7 @@ package ca.gosyer.data.server.interactions
 import androidx.compose.ui.graphics.ImageBitmap
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.util.lang.throwIfCancellation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
@@ -16,7 +17,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.http.Parameters
-import kotlinx.coroutines.CancellationException
 
 open class BaseInteractionHandler(
     protected val client: Http,
@@ -32,7 +32,7 @@ open class BaseInteractionHandler(
             try {
                 return block()
             } catch (e: Exception) {
-                if (e is CancellationException) throw e
+                e.throwIfCancellation()
                 lastException = e
             }
             attempt++

@@ -9,8 +9,8 @@ package ca.gosyer.ui.categories
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -40,7 +40,7 @@ class CategoriesMenuViewModel @Inject constructor(
                     .also { originalCategories = it }
                     .map { it.toMenuCategory() }
             } catch (e: Exception) {
-                if (e is CancellationException) throw e
+                e.throwIfCancellation()
             } finally {
                 _isLoading.value = false
             }

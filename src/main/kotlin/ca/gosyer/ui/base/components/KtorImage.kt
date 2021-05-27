@@ -23,7 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.server.Http
 import ca.gosyer.util.compose.imageFromUrl
-import kotlinx.coroutines.CancellationException
+import ca.gosyer.util.lang.throwIfCancellation
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -89,7 +89,7 @@ private suspend fun getImage(client: Http, imageUrl: String, retries: Int = 3): 
         try {
             return imageFromUrl(client, imageUrl)
         } catch (e: Exception) {
-            if (e is CancellationException) throw e
+            e.throwIfCancellation()
             lastException = e
         }
         attempt++

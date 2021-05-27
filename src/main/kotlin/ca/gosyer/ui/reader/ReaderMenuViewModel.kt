@@ -13,7 +13,7 @@ import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.ui.reader.model.ViewerChapters
-import kotlinx.coroutines.CancellationException
+import ca.gosyer.util.lang.throwIfCancellation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -89,7 +89,7 @@ class ReaderMenuViewModel @Inject constructor(
                             chapterHandler.getChapter(mangaId, chapterIndex + 1)
                         )
                     } catch (e: Exception) {
-                        if (e is CancellationException) throw e
+                        e.throwIfCancellation()
                     }
                 },
                 async {
@@ -100,7 +100,7 @@ class ReaderMenuViewModel @Inject constructor(
                                 chapterHandler.getChapter(mangaId, chapterIndex - 1)
                             )
                         } catch (e: Exception) {
-                            if (e is CancellationException) throw e
+                            e.throwIfCancellation()
                         }
                     }
                 }

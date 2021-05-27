@@ -6,6 +6,7 @@
 
 package ca.gosyer.util.lang
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -43,3 +44,11 @@ suspend fun <T> withUIContext(
 suspend fun <T> withIOContext(
     block: suspend CoroutineScope.() -> T
 ) = withContext(Dispatchers.IO, block)
+
+fun Throwable.throwIfCancellation() { if (this is CancellationException) throw this }
+
+fun <T> Result<T>.throwIfCancellation(): Result<T> {
+    val exception = exceptionOrNull()
+    if (exception is CancellationException) throw exception
+    return this
+}
