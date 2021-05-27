@@ -14,8 +14,8 @@ import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.lang.withIOContext
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,6 +46,9 @@ class MangaMenuViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     val dateTimeFormatter = uiPreferences.dateFormat().changes()
         .map {
             getDateFormat(it)
@@ -59,22 +62,30 @@ class MangaMenuViewModel @Inject constructor(
         }
     }
 
-    private suspend fun refreshMangaAsync(mangaId: Long) = withIOContext {
+    fun refreshManga() {
+        scope.launch {
+            _isRefreshing.value = true
+            refreshMangaAsync(params.mangaId, true).await() to refreshChaptersAsync(params.mangaId, true).await()
+            _isRefreshing.value = false
+        }
+    }
+
+    private suspend fun refreshMangaAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
             try {
-                _manga.value = mangaHandler.getManga(mangaId)
+                _manga.value = mangaHandler.getManga(mangaId, refresh)
             } catch (e: Exception) {
-                if (e is CancellationException) throw e
+                e.throwIfCancellation()
             }
         }
     }
 
-    private suspend fun refreshChaptersAsync(mangaId: Long) = withIOContext {
+    private suspend fun refreshChaptersAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
             try {
-                _chapters.value = chapterHandler.getChapters(mangaId)
+                _chapters.value = chapterHandler.getChapters(mangaId, refresh)
             } catch (e: Exception) {
-                if (e is CancellationException) throw e
+                e.throwIfCancellation()
             }
         }
     }

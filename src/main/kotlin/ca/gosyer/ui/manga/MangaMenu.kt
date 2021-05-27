@@ -8,6 +8,7 @@ package ca.gosyer.ui.manga
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -77,9 +78,12 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
         Toolbar("Manga", backStack, backStack != null)
 
         Surface(Modifier.height(40.dp).fillMaxWidth()) {
-            Row {
+            Row(horizontalArrangement = Arrangement.SpaceBetween) {
                 Button(onClick = vm::toggleFavorite) {
                     Text(if (manga?.inLibrary == true) "UnFavorite" else "Favorite")
+                }
+                Button(onClick = vm::refreshManga, enabled = !vm.isRefreshing.collectAsState().value) {
+                    Text("Refresh manga")
                 }
             }
         }
