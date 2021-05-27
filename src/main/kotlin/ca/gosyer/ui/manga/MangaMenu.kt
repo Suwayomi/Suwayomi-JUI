@@ -54,7 +54,7 @@ import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.compose.contextMenu
 import com.github.zsoltk.compose.router.BackStack
-import java.util.Date
+import java.time.Instant
 
 fun openMangaMenu(mangaId: Long) {
     ThemedWindow(BuildConfig.NAME) {
@@ -71,7 +71,7 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
     val chapters by vm.chapters.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
-    val dateFormat by vm.dateFormat.collectAsState()
+    val dateTimeFormatter by vm.dateTimeFormatter.collectAsState()
 
     Column(Modifier.background(MaterialTheme.colors.background)) {
         Toolbar("Manga", backStack, backStack != null)
@@ -93,7 +93,7 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
                     items(chapters) { chapter ->
                         ChapterItem(
                             chapter,
-                            dateFormat::format,
+                            dateTimeFormatter::format,
                             onClick = { openReaderMenu(it, manga.id) },
                             toggleRead = vm::toggleRead,
                             toggleBookmarked = vm::toggleBookmarked,
@@ -189,7 +189,7 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
 @Composable
 fun ChapterItem(
     chapter: Chapter,
-    format: (Date) -> String,
+    format: (Instant) -> String,
     onClick: (Int) -> Unit,
     toggleRead: (Int) -> Unit,
     toggleBookmarked: (Int) -> Unit,
@@ -227,7 +227,7 @@ fun ChapterItem(
             )
             val description = mutableListOf<String>()
             if (chapter.uploadDate != 0L) {
-                description += format(Date(chapter.uploadDate))
+                description += format(Instant.ofEpochMilli(chapter.uploadDate))
             }
             if (!chapter.scanlator.isNullOrEmpty()) {
                 description += chapter.scanlator

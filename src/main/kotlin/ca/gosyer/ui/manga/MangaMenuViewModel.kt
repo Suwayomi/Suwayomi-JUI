@@ -21,8 +21,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
 import javax.inject.Inject
 
@@ -45,7 +46,7 @@ class MangaMenuViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    val dateFormat = uiPreferences.dateFormat().changes()
+    val dateTimeFormatter = uiPreferences.dateFormat().changes()
         .map {
             getDateFormat(it)
         }
@@ -92,9 +93,12 @@ class MangaMenuViewModel @Inject constructor(
         }
     }
 
-    private fun getDateFormat(format: String): DateFormat = when (format) {
-        "" -> DateFormat.getDateInstance(DateFormat.SHORT)
-        else -> SimpleDateFormat(format, Locale.getDefault())
+    private fun getDateFormat(format: String): DateTimeFormatter = when (format) {
+        "" -> DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+            .withLocale(Locale.getDefault())
+            .withZone(ZoneId.systemDefault())
+        else -> DateTimeFormatter.ofPattern(format)
+            .withZone(ZoneId.systemDefault())
     }
 
     fun toggleRead(index: Int) {

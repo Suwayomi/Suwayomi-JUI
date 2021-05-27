@@ -20,9 +20,10 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
 import ca.gosyer.util.lang.capitalize
 import com.github.zsoltk.compose.router.BackStack
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ class SettingsGeneralViewModel @Inject constructor(
     val language = uiPreferences.language().asStateFlow()
     val dateFormat = uiPreferences.dateFormat().asStateFlow()
 
-    private val now = Date()
+    private val now: Instant = Instant.now()
 
     @Composable
     fun getLanguageChoices(): Map<String, String> {
@@ -60,9 +61,11 @@ class SettingsGeneralViewModel @Inject constructor(
 
     private fun getFormattedDate(prefValue: String): String {
         return when (prefValue) {
-            "" -> DateFormat.getDateInstance(DateFormat.SHORT)
-            else -> SimpleDateFormat(prefValue, Locale.getDefault())
-        }.format(now.time)
+            "" -> DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+                .withLocale(Locale.getDefault())
+                .withZone(ZoneId.systemDefault())
+            else -> DateTimeFormatter.ofPattern(prefValue).withZone(ZoneId.systemDefault())
+        }.format(now)
     }
 }
 
