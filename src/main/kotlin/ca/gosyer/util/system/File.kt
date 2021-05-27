@@ -9,11 +9,14 @@ package ca.gosyer.util.system
 import ca.gosyer.BuildConfig
 import ca.gosyer.util.lang.launchUI
 import kotlinx.coroutines.DelicateCoroutinesApi
+import mu.KotlinLogging
 import net.harawata.appdirs.AppDirs
 import net.harawata.appdirs.AppDirsFactory
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
+
+private val logger = KotlinLogging.logger {}
 
 val appDirs: AppDirs by lazy {
     AppDirsFactory.getInstance()
@@ -21,7 +24,9 @@ val appDirs: AppDirs by lazy {
 
 val userDataDir: File by lazy {
     File(appDirs.getUserDataDir(BuildConfig.NAME, null, null)).also {
-        if (!it.exists()) it.mkdirs()
+        if (!it.exists()) {
+            logger.info("Attempted to create app data dir, result: {}", it.mkdirs())
+        }
     }
 }
 
