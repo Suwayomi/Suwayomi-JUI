@@ -29,7 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import ca.gosyer.common.di.AppScope
-import ca.gosyer.data.reader.model.Direction
+import ca.gosyer.data.reader.model.NavigationMode
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.KeyboardShortcut
@@ -38,9 +38,14 @@ import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.reader.model.MoveTo
+import ca.gosyer.ui.reader.model.Navigation
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
+import ca.gosyer.ui.reader.navigation.EdgeNavigation
+import ca.gosyer.ui.reader.navigation.KindlishNavigation
+import ca.gosyer.ui.reader.navigation.LNavigation
+import ca.gosyer.ui.reader.navigation.RightAndLeftNavigation
+import ca.gosyer.ui.reader.navigation.navigationClickable
 import ca.gosyer.ui.reader.viewer.ContinuousReader
 import ca.gosyer.ui.reader.viewer.PagerReader
 import ca.gosyer.util.lang.launchUI
@@ -108,53 +113,35 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
     val continuous by vm.readerModeSettings.continuous.collectAsState()
     val direction by vm.readerModeSettings.direction.collectAsState()
     val padding by vm.readerModeSettings.padding.collectAsState()
+    val imageScale by vm.readerModeSettings.imageScale.collectAsState()
+    val navigationMode by vm.readerModeSettings.navigationMode.collectAsState()
     val currentPage by vm.currentPage.collectAsState()
     LaunchedEffect(Unit) {
         setHotkeys(
             listOf(
                 KeyboardShortcut(Key.W) {
-                    vm.moveDirection(MoveTo.Previous)
+                    vm.navigate(Navigation.PREV)
                 },
                 KeyboardShortcut(Key.DirectionUp) {
-                    vm.moveDirection(MoveTo.Previous)
+                    vm.navigate(Navigation.PREV)
                 },
                 KeyboardShortcut(Key.S) {
-                    vm.moveDirection(MoveTo.Next)
+                    vm.navigate(Navigation.NEXT)
                 },
                 KeyboardShortcut(Key.DirectionDown) {
-                    vm.moveDirection(MoveTo.Next)
+                    vm.navigate(Navigation.NEXT)
                 },
                 KeyboardShortcut(Key.A) {
-                    vm.moveDirection(
-                        when (direction) {
-                            Direction.Left -> MoveTo.Next
-                            else -> MoveTo.Previous
-                        }
-                    )
+                    vm.navigate(Navigation.LEFT)
                 },
                 KeyboardShortcut(Key.DirectionLeft) {
-                    vm.moveDirection(
-                        when (direction) {
-                            Direction.Left -> MoveTo.Next
-                            else -> MoveTo.Previous
-                        }
-                    )
+                    vm.navigate(Navigation.LEFT)
                 },
                 KeyboardShortcut(Key.D) {
-                    vm.moveDirection(
-                        when (direction) {
-                            Direction.Left -> MoveTo.Previous
-                            else -> MoveTo.Next
-                        }
-                    )
+                    vm.navigate(Navigation.RIGHT)
                 },
                 KeyboardShortcut(Key.DirectionRight) {
-                    vm.moveDirection(
-                        when (direction) {
-                            Direction.Left -> MoveTo.Previous
-                            else -> MoveTo.Next
-                        }
-                    )
+                    vm.navigate(Navigation.RIGHT)
                 }
             )
         )
@@ -162,36 +149,43 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
 
     Surface {
         if (state is ReaderChapter.State.Loaded && chapter != null) {
-            chapter?.let { chapter ->
-                val pageModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
-                if (pages.isNotEmpty()) {
-                    if (continuous) {
-                        ContinuousReader(
-                            pages,
-                            previousChapter,
-                            chapter,
-                            nextChapter,
-                            pageModifier,
-                            vm.pageEmitter,
-                            vm::retry,
-                            vm::progress
-                        )
-                    } else {
-                        PagerReader(
-                            direction,
-                            currentPage,
-                            pages,
-                            previousChapter,
-                            chapter,
-                            nextChapter,
-                            pageModifier,
-                            vm.pageEmitter,
-                            vm::retry,
-                            vm::progress
-                        )
+            Box(
+                Modifier.fillMaxSize()
+                    .navigationClickable(navigationMode.toNavigation()) {
+                        vm.navigate(it)
                     }
-                } else {
-                    ErrorScreen("No pages found")
+            ) {
+                chapter?.let { chapter ->
+                    val pageModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
+                    if (pages.isNotEmpty()) {
+                        if (continuous) {
+                            ContinuousReader(
+                                pages,
+                                previousChapter,
+                                chapter,
+                                nextChapter,
+                                pageModifier,
+                                vm.pageEmitter,
+                                vm::retry,
+                                vm::progress
+                            )
+                        } else {
+                            PagerReader(
+                                direction,
+                                currentPage,
+                                pages,
+                                previousChapter,
+                                chapter,
+                                nextChapter,
+                                pageModifier,
+                                vm.pageEmitter,
+                                vm::retry,
+                                vm::progress
+                            )
+                        }
+                    } else {
+                        ErrorScreen("No pages found")
+                    }
                 }
             }
         } else {
@@ -248,4 +242,11 @@ fun ChapterSeperator(
             }
         }
     }
+}
+
+fun NavigationMode.toNavigation() = when (this) {
+    NavigationMode.RightAndLeftNavigation -> RightAndLeftNavigation()
+    NavigationMode.KindlishNavigation -> KindlishNavigation()
+    NavigationMode.LNavigation -> LNavigation()
+    NavigationMode.EdgeNavigation -> EdgeNavigation()
 }

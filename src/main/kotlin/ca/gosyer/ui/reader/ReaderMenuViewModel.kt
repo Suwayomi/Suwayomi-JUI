@@ -8,9 +8,11 @@ package ca.gosyer.ui.reader
 
 import ca.gosyer.data.reader.ReaderModeWatch
 import ca.gosyer.data.reader.ReaderPreferences
+import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.reader.model.MoveTo
+import ca.gosyer.ui.reader.model.Navigation
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.ui.reader.model.ViewerChapters
@@ -61,10 +63,29 @@ class ReaderMenuViewModel @Inject constructor(
         }
     }
 
-    fun moveDirection(direction: MoveTo) {
+    fun navigate(navigationRegion: Navigation) {
         scope.launch {
-            _pageEmitter.emit(direction to currentPage.value)
+            val moveTo = when (navigationRegion) {
+                Navigation.NONE -> null
+                Navigation.NEXT -> MoveTo.Next
+                Navigation.PREV -> MoveTo.Previous
+                Navigation.RIGHT -> when (readerModeSettings.direction.value) {
+                    Direction.Left -> MoveTo.Previous
+                    else -> MoveTo.Next
+                }
+                Navigation.LEFT -> when (readerModeSettings.direction.value) {
+                    Direction.Left -> MoveTo.Next
+                    else -> MoveTo.Previous
+                }
+            }
+            if (moveTo != null) {
+                moveDirection(moveTo)
+            }
         }
+    }
+
+    private suspend fun moveDirection(direction: MoveTo) {
+        _pageEmitter.emit(direction to currentPage.value)
     }
 
     fun progress(index: Int) {

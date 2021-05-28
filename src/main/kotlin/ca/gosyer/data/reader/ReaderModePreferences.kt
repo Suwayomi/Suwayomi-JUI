@@ -11,6 +11,7 @@ import ca.gosyer.common.prefs.PreferenceStore
 import ca.gosyer.data.reader.model.DefaultReaderMode
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
+import ca.gosyer.data.reader.model.NavigationMode
 
 class ReaderModePreferences(private val mode: String, private val preferenceStore: PreferenceStore) {
     constructor(mode: String, factory: (String) -> PreferenceStore) :
@@ -36,5 +37,9 @@ class ReaderModePreferences(private val mode: String, private val preferenceStor
 
     fun imageScale(): Preference<ImageScale> {
         return preferenceStore.getJsonObject("direction", defaultMode?.imageScale ?: ImageScale.FitScreen, ImageScale.serializer())
+    }
+
+    fun navigationMode(): Preference<NavigationMode> {
+        return preferenceStore.getJsonObject("navigation", defaultMode?.navigationMode ?: NavigationMode.LNavigation, NavigationMode.serializer())
     }
 }

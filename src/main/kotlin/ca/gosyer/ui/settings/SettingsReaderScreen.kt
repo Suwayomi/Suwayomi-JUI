@@ -16,6 +16,7 @@ import ca.gosyer.data.reader.ReaderModePreferences
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
+import ca.gosyer.data.reader.model.NavigationMode
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ExpandablePreference
@@ -74,6 +75,8 @@ class SettingsReaderViewModel @Inject constructor(
     }
 
     fun getImageScaleChoices() = ImageScale.values().associate { it to it.res }
+
+    fun getNavigationModeChoices() = NavigationMode.values().associate { it to it.res }
 }
 
 data class ReaderModePreference(
@@ -83,7 +86,8 @@ data class ReaderModePreference(
     val continuous: PreferenceMutableStateFlow<Boolean>,
     val direction: PreferenceMutableStateFlow<Direction>,
     val padding: PreferenceMutableStateFlow<Float>,
-    val imageScale: PreferenceMutableStateFlow<ImageScale>
+    val imageScale: PreferenceMutableStateFlow<ImageScale>,
+    val navigationMode: PreferenceMutableStateFlow<NavigationMode>
 ) {
     constructor(scope: CoroutineScope, mode: String, readerPreferences: ReaderModePreferences) :
         this(
@@ -93,7 +97,8 @@ data class ReaderModePreference(
             readerPreferences.continuous().asStateIn(scope),
             readerPreferences.direction().asStateIn(scope),
             readerPreferences.padding().asStateIn(scope),
-            readerPreferences.imageScale().asStateIn(scope)
+            readerPreferences.imageScale().asStateIn(scope),
+            readerPreferences.navigationMode().asStateIn(scope)
         )
 
     init {
@@ -150,6 +155,11 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
                                 "Image Scale"
                             )
                         }
+                        ChoicePreference(
+                            it.navigationMode,
+                            vm.getNavigationModeChoices(),
+                            "Navigation mode"
+                        )
                     }
                 }
                 item {
