@@ -13,5 +13,5 @@ data class Category(
     val id: Long,
     val order: Int,
     val name: String,
-    val landing: Boolean
+    val default: Boolean
 )

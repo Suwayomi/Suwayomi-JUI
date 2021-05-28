@@ -84,7 +84,7 @@ class CategoriesMenuViewModel @Inject constructor(
     }
 
     fun createCategory(name: String) {
-        _categories.value += MenuCategory(order = categories.value.size + 1, name = name, landing = false)
+        _categories.value += MenuCategory(order = categories.value.size + 1, name = name, default = false)
     }
 
     fun moveUp(category: MenuCategory) {
@@ -105,9 +105,9 @@ class CategoriesMenuViewModel @Inject constructor(
         _categories.value = categories.sortedBy { it.order }
     }
 
-    fun Category.toMenuCategory() = MenuCategory(id, order, name, landing)
+    fun Category.toMenuCategory() = MenuCategory(id, order, name, default)
 
-    data class MenuCategory(val id: Long? = null, var order: Int, val name: String, val landing: Boolean = false)
+    data class MenuCategory(val id: Long? = null, var order: Int, val name: String, val default: Boolean = false)
 
     private companion object : CKLogger({})
 }

@@ -10,7 +10,7 @@ Write-Output "Getting latest Tachidesk build files"
 
 #Invoke-WebRequest -Uri $zipball.Matches.Value -OutFile tmp/Tachidesk.zip -UseBasicParsing
 
-Invoke-WebRequest -Uri "https://github.com/Suwayomi/Tachidesk/archive/refs/tags/v0.3.7.zip" -OutFile tmp/Tachidesk.zip -UseBasicParsing
+Invoke-WebRequest -Uri "https://github.com/Suwayomi/Tachidesk/archive/refs/tags/v0.4.1.zip" -OutFile tmp/Tachidesk.zip -UseBasicParsing
 
 Expand-Archive -Path "tmp/Tachidesk.zip" -DestinationPath "tmp"
 
