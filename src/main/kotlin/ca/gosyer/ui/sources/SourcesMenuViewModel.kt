@@ -107,6 +107,7 @@ class SourcesMenuViewModel @Inject constructor(
         if (selectedSourceTab.value?.id == source.id) {
             _selectedSourceTab.value = null
         }
+        bundle.remove(source.id.toString())
     }
 
     private companion object : CKLogger({}) {

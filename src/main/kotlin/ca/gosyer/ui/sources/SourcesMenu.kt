@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.sources
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.Toolbar
+import ca.gosyer.ui.base.components.combinedMouseClickable
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.ui.sources.components.SourceHomeScreen
@@ -70,9 +70,16 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                     LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
                         items(sourceTabs) { source ->
                             val modifier = Modifier
-                                .clickable {
-                                    vm.selectTab(source)
-                                }
+                                .combinedMouseClickable(
+                                    onClick = {
+                                        vm.selectTab(source)
+                                    },
+                                    onMiddleClick = {
+                                        if (source != null) {
+                                            vm.closeTab(source)
+                                        }
+                                    }
+                                )
                                 .requiredHeight(64.dp)
                                 .requiredWidth(64.dp)
 
