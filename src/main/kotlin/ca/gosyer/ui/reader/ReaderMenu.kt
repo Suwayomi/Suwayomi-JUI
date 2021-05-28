@@ -93,14 +93,16 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
 
         window.show {
             AppTheme {
-                ReaderMenu(chapterIndex, mangaId, setHotkeys)
+                ReaderMenu(chapterIndex, mangaId, setHotkeys) {
+                    window.events.onClose = it
+                }
             }
         }
     }
 }
 
 @Composable
-fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShortcut>) -> Unit) {
+fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShortcut>) -> Unit, setOnCloseEvent: (() -> Unit) -> Unit) {
     val vm = viewModel<ReaderMenuViewModel> {
         ReaderMenuViewModel.Params(chapterIndex, mangaId)
     }
@@ -145,6 +147,7 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                 }
             )
         )
+        setOnCloseEvent(vm::sendProgress)
     }
 
     Surface {

@@ -17,7 +17,9 @@ import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.ui.reader.model.ViewerChapters
 import ca.gosyer.util.lang.throwIfCancellation
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -169,6 +171,15 @@ class ReaderMenuViewModel @Inject constructor(
 
     private suspend fun markChapterRead(mangaId: Long, chapter: ReaderChapter) {
         chapterHandler.updateChapter(mangaId, chapter.chapter.index, true)
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun sendProgress() {
+        val chapter = chapter.value?.chapter ?: return
+        if (chapter.read) return
+        GlobalScope.launch {
+            chapterHandler.updateChapter(chapter.mangaId, chapter.index, lastPageRead = currentPage.value)
+        }
     }
 
     data class Params(val chapterIndex: Int, val mangaId: Long)
