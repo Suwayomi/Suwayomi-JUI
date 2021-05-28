@@ -33,6 +33,7 @@ import ca.gosyer.ui.sources.components.SourceHomeScreen
 import ca.gosyer.ui.sources.components.SourceScreen
 import ca.gosyer.util.compose.ThemedWindow
 import com.github.zsoltk.compose.savedinstancestate.Bundle
+import com.github.zsoltk.compose.savedinstancestate.BundleScope
 import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
 
 fun openSourcesMenu() {
@@ -85,10 +86,12 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                 }
 
                 val selectedSource: Source? = selectedSourceTab
-                if (selectedSource != null) {
-                    SourceScreen(selectedSource, onMangaClick)
-                } else {
-                    SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
+                BundleScope(selectedSource?.id.toString(), autoDispose = false) {
+                    if (selectedSource != null) {
+                        SourceScreen(selectedSource, onMangaClick)
+                    } else {
+                        SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
+                    }
                 }
             }
         }

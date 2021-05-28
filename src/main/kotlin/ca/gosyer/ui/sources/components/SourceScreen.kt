@@ -26,6 +26,7 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.MangaGridItem
 import ca.gosyer.ui.base.vm.viewModel
+import ca.gosyer.util.compose.persistentLazyListState
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
 
@@ -34,13 +35,8 @@ fun SourceScreen(
     source: Source,
     onMangaClick: (Long) -> Unit
 ) {
-    val upstream = LocalSavedInstanceState.current
-
+    val bundle = LocalSavedInstanceState.current
     val vm = viewModel<SourceScreenViewModel>()
-    val bundle = remember(source.id) {
-        upstream.getBundle(source.id.toString())
-            ?: Bundle().also { upstream.putBundle(source.id.toString(), it) }
-    }
     remember(source.id) {
         vm.init(source, bundle)
     }
@@ -51,6 +47,7 @@ fun SourceScreen(
     val serverUrl by vm.serverUrl.collectAsState()
 
     MangaTable(
+        bundle,
         mangas,
         loading,
         hasNextPage,
@@ -64,6 +61,7 @@ fun SourceScreen(
 
 @Composable
 private fun MangaTable(
+    bundle: Bundle,
     mangas: List<Manga>,
     isLoading: Boolean = false,
     hasNextPage: Boolean = false,
@@ -95,7 +93,8 @@ private fun MangaTable(
                 }
             }
 
-            LazyVerticalGrid(GridCells.Adaptive(160.dp)) {
+            val persistentState = persistentLazyListState(bundle)
+            LazyVerticalGrid(GridCells.Adaptive(160.dp), state = persistentState) {
                 items(mangas) { manga ->
                     MangaGridItem(
                         title = manga.title,
