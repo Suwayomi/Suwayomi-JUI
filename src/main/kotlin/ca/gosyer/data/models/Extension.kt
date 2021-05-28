@@ -20,7 +20,7 @@ data class Extension(
     val installed: Boolean,
     val hasUpdate: Boolean,
     val obsolete: Boolean,
-    val nsfw: Boolean
+    val isNsfw: Boolean
 ) {
     fun iconUrl(serverUrl: String) = serverUrl + iconUrl
 }

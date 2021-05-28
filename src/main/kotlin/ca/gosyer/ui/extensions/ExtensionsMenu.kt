@@ -128,7 +128,7 @@ fun ExtensionItem(
                 Text(title, fontSize = 26.sp, color = MaterialTheme.colors.onBackground)
                 Row {
                     Text(extension.lang.uppercase(Locale.getDefault()), fontSize = 14.sp, color = MaterialTheme.colors.onBackground)
-                    if (extension.nsfw) {
+                    if (extension.isNsfw) {
                         Spacer(Modifier.width(4.dp))
                         Text("18+", fontSize = 14.sp, color = Color.Red)
                     }
