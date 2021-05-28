@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.ui.reader.ChapterSeperator
 import ca.gosyer.ui.reader.ReaderImage
@@ -32,6 +33,7 @@ fun PagerReader(
     currentChapter: ReaderChapter,
     nextChapter: ReaderChapter?,
     pageModifier: Modifier,
+    pageContentScale: ContentScale,
     pageEmitter: SharedFlow<Pair<MoveTo, Int>>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit
@@ -65,6 +67,7 @@ fun PagerReader(
                 currentChapter,
                 nextChapter,
                 pageModifier,
+                pageContentScale,
                 retry
             )
         }
@@ -77,6 +80,7 @@ fun PagerReader(
                 currentChapter,
                 nextChapter,
                 pageModifier,
+                pageContentScale,
                 retry
             )
         }
@@ -91,6 +95,7 @@ fun HandlePager(
     currentChapter: ReaderChapter,
     nextChapter: ReaderChapter?,
     pageModifier: Modifier,
+    pageContentScale: ContentScale,
     retry: (ReaderPage) -> Unit,
 ) {
     when (page) {
@@ -107,7 +112,8 @@ fun HandlePager(
                 loadingModifier = pageModifier,
                 retry = { pageIndex ->
                     pages.find { it.index == pageIndex }?.let { retry(it) }
-                }
+                },
+                contentScale = pageContentScale
             )
         }
     }

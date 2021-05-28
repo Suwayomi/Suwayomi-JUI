@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import ca.gosyer.ui.reader.ChapterSeperator
 import ca.gosyer.ui.reader.ReaderImage
 import ca.gosyer.ui.reader.model.MoveTo
@@ -27,16 +28,18 @@ import kotlinx.coroutines.flow.mapLatest
 @Composable
 fun ContinuousReader(
     pages: List<ReaderPage>,
+    currentPage: Int,
     previousChapter: ReaderChapter?,
     currentChapter: ReaderChapter,
     nextChapter: ReaderChapter?,
     pageModifier: Modifier,
+    pageContentScale: ContentScale,
     pageEmitter: SharedFlow<Pair<MoveTo, Int>>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit
 ) {
     BoxWithConstraints {
-        val state = rememberLazyListState(1)
+        val state = rememberLazyListState(currentPage)
         LaunchedEffect(Unit) {
             pageEmitter
                 .mapLatest { (moveTo) ->
@@ -69,7 +72,8 @@ fun ContinuousReader(
                     loadingModifier = pageModifier,
                     retry = { pageIndex ->
                         pages.find { it.index == pageIndex }?.let { retry(it) }
-                    }
+                    },
+                    contentScale = pageContentScale
                 )
             }
             item {

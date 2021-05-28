@@ -29,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import ca.gosyer.common.di.AppScope
+import ca.gosyer.data.reader.model.ImageScale
 import ca.gosyer.data.reader.model.NavigationMode
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.WindowSettings
@@ -164,10 +165,12 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                         if (continuous) {
                             ContinuousReader(
                                 pages,
+                                currentPage,
                                 previousChapter,
                                 chapter,
                                 nextChapter,
                                 pageModifier,
+                                imageScale.toContentScale(),
                                 vm.pageEmitter,
                                 vm::retry,
                                 vm::progress
@@ -181,6 +184,7 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                                 chapter,
                                 nextChapter,
                                 pageModifier,
+                                imageScale.toContentScale(),
                                 vm.pageEmitter,
                                 vm::retry,
                                 vm::progress
@@ -253,4 +257,13 @@ fun NavigationMode.toNavigation() = when (this) {
     NavigationMode.KindlishNavigation -> KindlishNavigation()
     NavigationMode.LNavigation -> LNavigation()
     NavigationMode.EdgeNavigation -> EdgeNavigation()
+}
+
+fun ImageScale.toContentScale() = when (this) {
+    ImageScale.FitScreen -> ContentScale.Inside
+    ImageScale.FitHeight -> ContentScale.FillHeight
+    ImageScale.FitWidth -> ContentScale.FillHeight
+    ImageScale.OriginalSize -> ContentScale.None
+    ImageScale.SmartFit -> ContentScale.Fit
+    ImageScale.Stretch -> ContentScale.FillBounds
 }
