@@ -12,6 +12,7 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.mangaQuery
 import ca.gosyer.data.server.requests.mangaThumbnailQuery
 import ca.gosyer.util.lang.withIOContext
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.parameter
 import javax.inject.Inject
 
@@ -34,10 +35,11 @@ class MangaInteractionHandler @Inject constructor(
 
     suspend fun getManga(manga: Manga, refresh: Boolean = false) = getManga(manga.id, refresh)
 
-    suspend fun getMangaThumbnail(mangaId: Long) = withIOContext {
+    suspend fun getMangaThumbnail(mangaId: Long, block: HttpRequestBuilder.() -> Unit) = withIOContext {
         imageFromUrl(
             client,
-            serverUrl + mangaThumbnailQuery(mangaId)
+            serverUrl + mangaThumbnailQuery(mangaId),
+            block
         )
     }
 }

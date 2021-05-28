@@ -24,10 +24,13 @@ import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.server.Http
 import ca.gosyer.util.compose.imageFromUrl
 import ca.gosyer.util.lang.throwIfCancellation
+import io.ktor.client.features.onDownload
+import io.ktor.client.request.HttpRequestBuilder
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlin.math.max
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
@@ -46,6 +49,7 @@ fun KtorImage(
     BoxWithConstraints {
         val drawable: MutableState<ImageBitmap?> = remember { mutableStateOf(null) }
         val loading: MutableState<Boolean> = remember { mutableStateOf(true) }
+        val progress: MutableState<Float?> = remember { mutableStateOf(null) }
         val error: MutableState<String?> = remember { mutableStateOf(null) }
         DisposableEffect(imageUrl) {
             val handler = CoroutineExceptionHandler { _, throwable ->
@@ -54,7 +58,11 @@ fun KtorImage(
             }
             val job = GlobalScope.launch(handler) {
                 if (drawable.value == null) {
-                    drawable.value = getImage(client, imageUrl, retries)
+                    drawable.value = getImage(client, imageUrl, retries) {
+                        onDownload { bytesSentTotal, contentLength ->
+                            progress.value = max(bytesSentTotal.toFloat() / contentLength, 1.0F)
+                        }
+                    }
                 }
                 loading.value = false
             }
@@ -77,17 +85,17 @@ fun KtorImage(
                 colorFilter = colorFilter
             )
         } else {
-            LoadingScreen(loading.value, loadingModifier, error.value)
+            LoadingScreen(loading.value, loadingModifier, progress.value, error.value)
         }
     }
 }
 
-private suspend fun getImage(client: Http, imageUrl: String, retries: Int = 3): ImageBitmap {
+private suspend fun getImage(client: Http, imageUrl: String, retries: Int = 3, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
     var attempt = 1
     var lastException: Exception
     do {
         try {
-            return imageFromUrl(client, imageUrl)
+            return imageFromUrl(client, imageUrl, block)
         } catch (e: Exception) {
             e.throwIfCancellation()
             lastException = e

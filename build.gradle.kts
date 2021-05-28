@@ -46,7 +46,7 @@ dependencies {
     kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:3.1.0")
 
     // Http client
-    val ktorVersion = "1.5.4"
+    val ktorVersion = "1.6.0"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")

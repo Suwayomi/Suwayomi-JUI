@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,39 +33,53 @@ import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.filePicker
 import ca.gosyer.util.system.fileSaver
 import com.github.zsoltk.compose.router.BackStack
+import io.ktor.client.features.onDownload
+import io.ktor.client.features.onUpload
+import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import kotlin.math.max
 
 class SettingsBackupViewModel @Inject constructor(
     private val backupHandler: BackupInteractionHandler
 ) : ViewModel() {
     private val _restoring = MutableStateFlow(false)
     val restoring = _restoring.asStateFlow()
-    private val _restoreError = MutableStateFlow(false)
-    val restoreError = _restoreError.asStateFlow()
+    private val _restoringProgress = MutableStateFlow<Float?>(null)
+    val restoringProgress = _restoringProgress.asStateFlow()
+    private val _restoreStatus = MutableStateFlow<Status>(Status.Nothing)
+    internal val restoreStatus = _restoreStatus.asStateFlow()
 
     private val _creating = MutableStateFlow(false)
     val creating = _creating.asStateFlow()
-    private val _creatingError = MutableStateFlow(false)
-    val creatingError = _creatingError.asStateFlow()
+    private val _creatingProgress = MutableStateFlow<Float?>(null)
+    val creatingProgress = _creatingProgress.asStateFlow()
+    private val _creatingStatus = MutableStateFlow<Status>(Status.Nothing)
+    internal val creatingStatus = _creatingStatus.asStateFlow()
 
     fun restoreFile(file: File?) {
         scope.launch {
             if (file == null || !file.exists()) {
                 info { "Invalid file ${file?.absolutePath}" }
             } else {
-                _restoreError.value = false
+                _restoreStatus.value = Status.Nothing
+                _restoringProgress.value = null
                 _restoring.value = true
                 try {
-                    backupHandler.importBackupFile(file)
+                    backupHandler.importBackupFile(file) {
+                        onUpload { bytesSentTotal, contentLength ->
+                            _restoringProgress.value = max(bytesSentTotal.toFloat() / contentLength, 1.0F)
+                        }
+                    }
                 } catch (e: Exception) {
                     info(e) { "Error importing backup" }
-                    _restoreError.value = true
+                    _restoreStatus.value = Status.Error
                 } finally {
                     _restoring.value = false
+                    _restoreStatus.value = Status.Success
                 }
             }
         }
@@ -76,18 +91,34 @@ class SettingsBackupViewModel @Inject constructor(
                 info { "Invalid file ${file?.absolutePath}" }
             } else {
                 if (file.exists()) file.delete()
-                _creatingError.value = false
+                _creatingStatus.value = Status.Nothing
+                _creatingProgress.value = null
                 _creating.value = true
                 try {
-                    val backup = backupHandler.exportBackupFile()
+                    val backup = backupHandler.exportBackupFile {
+                        onDownload { bytesSentTotal, contentLength ->
+                            _creatingProgress.value = max(bytesSentTotal.toFloat() / contentLength, 0.99F)
+                        }
+                    }
+                    file.outputStream().use {
+                        backup.content.copyTo(it)
+                    }
                 } catch (e: Exception) {
                     info(e) { "Error exporting backup" }
-                    _creatingError.value = true
+                    _creatingStatus.value = Status.Error
                 } finally {
+                    _creatingProgress.value = 1.0F
                     _creating.value = false
+                    _creatingStatus.value = Status.Success
                 }
             }
         }
+    }
+
+    internal sealed class Status {
+        object Nothing : Status()
+        object Success : Status()
+        object Error : Status()
     }
 
     private companion object : CKLogger({})
@@ -97,9 +128,11 @@ class SettingsBackupViewModel @Inject constructor(
 fun SettingsBackupScreen(navController: BackStack<Route>) {
     val vm = viewModel<SettingsBackupViewModel>()
     val restoring by vm.restoring.collectAsState()
-    val restoreError by vm.restoreError.collectAsState()
+    val restoringProgress by vm.restoringProgress.collectAsState()
+    val restoreStatus by vm.restoreStatus.collectAsState()
     val creating by vm.creating.collectAsState()
-    val creatingError by vm.creatingError.collectAsState()
+    val creatingProgress by vm.creatingProgress.collectAsState()
+    val creatingStatus by vm.creatingStatus.collectAsState()
     Column {
         Toolbar("Backup Settings", navController, true)
         LazyColumn {
@@ -108,7 +141,8 @@ fun SettingsBackupScreen(navController: BackStack<Route>) {
                     "Restore Backup",
                     "Restore a backup into Tachidesk",
                     restoring,
-                    restoreError
+                    restoringProgress,
+                    restoreStatus
                 ) {
                     filePicker("json") {
                         vm.restoreFile(it.selectedFile)
@@ -118,9 +152,10 @@ fun SettingsBackupScreen(navController: BackStack<Route>) {
                     "Create Backup",
                     "Create a backup from Tachidesk",
                     creating,
-                    creatingError
+                    creatingProgress,
+                    creatingStatus
                 ) {
-                    fileSaver("test.json", "json") {
+                    fileSaver("backup.json", "json") {
                         vm.createFile(it.selectedFile)
                     }
                 }
@@ -130,7 +165,7 @@ fun SettingsBackupScreen(navController: BackStack<Route>) {
 }
 
 @Composable
-fun PreferenceFile(title: String, subtitle: String, working: Boolean, error: Boolean, onClick: () -> Unit) {
+private fun PreferenceFile(title: String, subtitle: String, working: Boolean, progress: Float?, status: SettingsBackupViewModel.Status, onClick: () -> Unit) {
     PreferenceRow(
         title = title,
         onClick = onClick,
@@ -144,16 +179,31 @@ fun PreferenceFile(title: String, subtitle: String, working: Boolean, error: Boo
             val modifier = Modifier.align(Alignment.Center)
                 .size(size)
             if (working) {
-                CircularProgressIndicator(
-                    modifier
-                )
-            } else if (error) {
-                Icon(
-                    Icons.Default.Warning,
-                    contentDescription = null,
-                    modifier = modifier,
-                    tint = Color.Red
-                )
+                if (progress != null) {
+                    CircularProgressIndicator(
+                        progress,
+                        modifier
+                    )
+                } else {
+                    CircularProgressIndicator(
+                        modifier
+                    )
+                }
+            } else if (status != SettingsBackupViewModel.Status.Nothing) {
+                when (status) {
+                    SettingsBackupViewModel.Status.Error -> Icon(
+                        Icons.Default.Warning,
+                        contentDescription = null,
+                        modifier = modifier,
+                        tint = Color.Red
+                    )
+                    SettingsBackupViewModel.Status.Success -> Icon(
+                        Icons.Default.Check,
+                        contentDescription = null,
+                        modifier = modifier
+                    )
+                    else -> Unit
+                }
             }
         }
     }

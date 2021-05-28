@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.min
 fun LoadingScreen(
     isLoading: Boolean = true,
     modifier: Modifier = Modifier.fillMaxSize(),
+    /*@FloatRange(from = 0.0, to = 1.0)*/
+    progress: Float? = null,
     errorMessage: String? = null,
     retryMessage: String = "Retry",
     retry: (() -> Unit)? = null
@@ -31,7 +33,11 @@ fun LoadingScreen(
                 val size = remember(maxHeight, maxWidth) {
                     min(maxHeight, maxWidth) / 2
                 }
-                CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
+                if (progress != null) {
+                    CircularProgressIndicator(progress, Modifier.align(Alignment.Center).size(size))
+                } else {
+                    CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
+                }
             } else {
                 ErrorScreen(errorMessage, modifier, retryMessage, retry)
             }

@@ -15,6 +15,7 @@ import ca.gosyer.data.server.requests.getMangaChaptersQuery
 import ca.gosyer.data.server.requests.getPageQuery
 import ca.gosyer.data.server.requests.updateChapterRequest
 import ca.gosyer.util.lang.withIOContext
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
@@ -113,16 +114,17 @@ class ChapterInteractionHandler @Inject constructor(
         markPreviousRead
     )
 
-    suspend fun getPage(mangaId: Long, chapterIndex: Int, pageNum: Int) = withIOContext {
+    suspend fun getPage(mangaId: Long, chapterIndex: Int, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = withIOContext {
         imageFromUrl(
             client,
-            serverUrl + getPageQuery(mangaId, chapterIndex, pageNum)
+            serverUrl + getPageQuery(mangaId, chapterIndex, pageNum),
+            block
         )
     }
 
-    suspend fun getPage(chapter: Chapter, pageNum: Int) = getPage(chapter.mangaId, chapter.index, pageNum)
+    suspend fun getPage(chapter: Chapter, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = getPage(chapter.mangaId, chapter.index, pageNum, block)
 
-    suspend fun getPage(manga: Manga, chapterIndex: Int, pageNum: Int) = getPage(manga.id, chapterIndex, pageNum)
+    suspend fun getPage(manga: Manga, chapterIndex: Int, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = getPage(manga.id, chapterIndex, pageNum, block)
 
-    suspend fun getPage(manga: Manga, chapter: Chapter, pageNum: Int) = getPage(manga.id, chapter.index, pageNum)
+    suspend fun getPage(manga: Manga, chapter: Chapter, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = getPage(manga.id, chapter.index, pageNum, block)
 }

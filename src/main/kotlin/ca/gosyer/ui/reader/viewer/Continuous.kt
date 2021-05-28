@@ -63,6 +63,7 @@ fun ContinuousReader(
                 ReaderImage(
                     image.index,
                     image.bitmap.collectAsState().value,
+                    image.progress.collectAsState().value,
                     image.status.collectAsState().value,
                     image.error.collectAsState().value,
                     loadingModifier = pageModifier,

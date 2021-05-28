@@ -87,9 +87,9 @@ open class BaseInteractionHandler(
         }
     }
 
-    suspend fun imageFromUrl(client: Http, imageUrl: String): ImageBitmap {
+    suspend fun imageFromUrl(client: Http, imageUrl: String, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
         return repeat {
-            ca.gosyer.util.compose.imageFromUrl(client, imageUrl)
+            ca.gosyer.util.compose.imageFromUrl(client, imageUrl, block)
         }
     }
 }

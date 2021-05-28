@@ -13,6 +13,7 @@ import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import io.github.kerubistan.kroki.coroutines.priorityChannel
+import io.ktor.client.features.onDownload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.max
 
 class TachideskPageLoader(
     context: CoroutineContext,
@@ -58,7 +60,11 @@ class TachideskPageLoader(
                             debug { "Loading page ${page.index}" }
                             if (page.status.value == ReaderPage.Status.QUEUE) {
                                 try {
-                                    page.bitmap.value = chapterHandler.getPage(chapter.chapter, page.index)
+                                    page.bitmap.value = chapterHandler.getPage(chapter.chapter, page.index) {
+                                        onDownload { bytesSentTotal, contentLength ->
+                                            page.progress.value = max(bytesSentTotal.toFloat() / contentLength, 1.0F)
+                                        }
+                                    }
                                     page.status.value = ReaderPage.Status.READY
                                     page.error.value = null
                                 } catch (e: Exception) {
@@ -106,6 +112,7 @@ class TachideskPageLoader(
             pagesFlow.value = pageRange.map {
                 ReaderPage(
                     it,
+                    MutableStateFlow(null),
                     MutableStateFlow(null),
                     MutableStateFlow(ReaderPage.Status.QUEUE),
                     MutableStateFlow(null)

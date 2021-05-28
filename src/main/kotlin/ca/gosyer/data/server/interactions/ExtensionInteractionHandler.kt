@@ -15,6 +15,7 @@ import ca.gosyer.data.server.requests.apkUninstallQuery
 import ca.gosyer.data.server.requests.apkUpdateQuery
 import ca.gosyer.data.server.requests.extensionListQuery
 import ca.gosyer.util.lang.withIOContext
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.statement.HttpResponse
 import javax.inject.Inject
 
@@ -47,10 +48,11 @@ class ExtensionInteractionHandler @Inject constructor(
         )
     }
 
-    suspend fun getApkIcon(extension: Extension) = withIOContext {
+    suspend fun getApkIcon(extension: Extension, block: HttpRequestBuilder.() -> Unit) = withIOContext {
         imageFromUrl(
             client,
-            serverUrl + apkIconQuery(extension.apkName)
+            serverUrl + apkIconQuery(extension.apkName),
+            block
         )
     }
 }
