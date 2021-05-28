@@ -11,12 +11,14 @@ import com.russhwolf.settings.JvmPreferencesSettings
 import java.util.prefs.Preferences
 
 class PreferenceStoreFactory {
+    private val rootNode: Preferences = Preferences.userRoot()
+        .node("ca/gosyer/tachideskjui")
 
     fun create(vararg names: String): PreferenceStore {
-        var preferences: Preferences = Preferences.userRoot()
-        names.forEach {
-            preferences = preferences.node(it)
-        }
-        return JvmPreferenceStore(JvmPreferencesSettings(preferences))
+        return JvmPreferenceStore(
+            JvmPreferencesSettings(
+                rootNode.node(names.joinToString(separator = "/"))
+            )
+        )
     }
 }
