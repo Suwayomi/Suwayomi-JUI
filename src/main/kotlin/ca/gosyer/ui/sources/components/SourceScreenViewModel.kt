@@ -78,6 +78,8 @@ class SourceScreenViewModel @Inject constructor(
 
     fun init(source: Source, bundle: Bundle, toLatest: Boolean = source.supportsLatest) {
         scope.launch {
+            // Delay because there seems to be a data race between compose and the assignments,
+            // it will continue to show the old sources items unless its delayed
             delay(0.5.seconds)
             this@SourceScreenViewModel.source = source
             this@SourceScreenViewModel.bundle = bundle
