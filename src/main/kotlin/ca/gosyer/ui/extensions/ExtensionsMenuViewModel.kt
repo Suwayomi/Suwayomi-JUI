@@ -95,15 +95,23 @@ class ExtensionsMenuViewModel @Inject constructor(
     fun search(searchQuery: String) {
         this.searchQuery.value = searchQuery.takeUnless { it.isBlank() }
         if (searchQuery.isBlank()) {
-            _extensions.value = extensionList
+            _extensions.value = extensionList.splitSort()
         } else {
             val queries = searchQuery.split(" ")
             val extensions = extensionList.toMutableList()
             queries.forEach { query ->
                 extensions.removeIf { !it.name.contains(query, true) }
             }
-            _extensions.value = extensions.toList()
+            _extensions.value = extensions.toList().splitSort()
         }
+    }
+
+    private fun List<Extension>.splitSort(): List<Extension> {
+        val obsolete = filter { it.obsolete }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
+        val updates = filter { it.hasUpdate }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
+        val installed = filter { it.installed && !it.hasUpdate && !it.obsolete }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
+        val available = filter { !it.installed }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
+        return obsolete + updates + installed + available
     }
 
     private companion object : CKLogger({})
