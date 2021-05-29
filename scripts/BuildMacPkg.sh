@@ -18,4 +18,4 @@ done
 
 
 echo "Building Pkg package"
-./gradlew packagePkg "$arguments"
+./gradlew packagePkg $arguments
