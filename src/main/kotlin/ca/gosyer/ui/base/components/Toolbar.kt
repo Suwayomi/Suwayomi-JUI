@@ -49,6 +49,7 @@ fun Toolbar(
     name: String,
     router: BackStack<Route>? = null,
     closable: Boolean,
+    onClose: () -> Unit = { router?.pop() },
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     backgroundColor: Color = MaterialTheme.colors.surface, // CustomColors.current.bars,
@@ -95,9 +96,7 @@ fun Toolbar(
                 actions()
                 if (closable) {
                     IconButton(
-                        onClick = {
-                            router?.pop()
-                        }
+                        onClick = onClose
                     ) {
                         Icon(FontAwesomeIcons.Regular.WindowClose, "close", Modifier.size(52.dp))
                     }

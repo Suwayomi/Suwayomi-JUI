@@ -9,8 +9,7 @@ package ca.gosyer.ui.sources
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -64,7 +63,13 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
 
     Surface {
         Column {
-            Toolbar(selectedSourceTab?.name ?: "Sources", closable = false)
+            Toolbar(
+                selectedSourceTab?.name ?: "Sources",
+                closable = selectedSourceTab != null,
+                onClose = {
+                    selectedSourceTab?.let { vm.closeTab(it) }
+                }
+            )
             Row {
                 Surface(elevation = 1.dp) {
                     LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
@@ -80,8 +85,7 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                                         }
                                     }
                                 )
-                                .requiredHeight(64.dp)
-                                .requiredWidth(64.dp)
+                                .requiredSize(64.dp)
 
                             if (source != null) {
                                 KtorImage(source.iconUrl(serverUrl), imageModifier = modifier)
