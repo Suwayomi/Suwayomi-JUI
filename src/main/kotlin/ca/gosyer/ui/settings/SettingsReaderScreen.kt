@@ -47,30 +47,36 @@ class SettingsReaderViewModel @Inject constructor(
         modes.onEach { modes ->
             val modeSettings = _modeSettings.value
             val modesInSettings = modeSettings.map { it.mode }
-            _modeSettings.value = modeSettings.filter { it.mode in modes }
-                .plus(
-                    modes.filter {
-                        it !in modesInSettings
-                    }.map {
-                        ReaderModePreference(scope, it, readerPreferences.getMode(it))
-                    }
-                )
+            _modeSettings.value = modeSettings.filter { it.mode in modes } + modes.filter {
+                it !in modesInSettings
+            }.map {
+                ReaderModePreference(scope, it, readerPreferences.getMode(it))
+            }
         }.launchIn(scope)
     }
 
     fun getDirectionChoices() = Direction.values().associate { it to it.res }
 
-    fun getPaddingChoices(continuous: Boolean) = if (continuous) {
+    fun getPaddingChoices() = mapOf(
+        0 to "None",
+        8 to "8 Dp",
+        16 to "16 Dp",
+        32 to "32 Dp"
+    )
+
+    fun getMaxSizeChoices(direction: Direction) = if (direction == Direction.Right || direction == Direction.Left) {
         mapOf(
-            0.0F to "None",
-            0.5F to "0.5 Dp",
-            1.0F to "1 Dp"
+            0 to "Unrestricted",
+            700 to "700 Dp",
+            900 to "900 Dp",
+            1100 to "1100 Dp"
         )
     } else {
         mapOf(
-            0.0F to "None",
-            4.0F to "4 Dp",
-            8.0F to "8 Dp"
+            0 to "Unrestricted",
+            500 to "500 Dp",
+            700 to "700 Dp",
+            900 to "900 Dp"
         )
     }
 
@@ -85,8 +91,10 @@ data class ReaderModePreference(
     val defaultMode: Boolean,
     val continuous: PreferenceMutableStateFlow<Boolean>,
     val direction: PreferenceMutableStateFlow<Direction>,
-    val padding: PreferenceMutableStateFlow<Float>,
+    val padding: PreferenceMutableStateFlow<Int>,
     val imageScale: PreferenceMutableStateFlow<ImageScale>,
+    val fitSize: PreferenceMutableStateFlow<Boolean>,
+    val maxSize: PreferenceMutableStateFlow<Int>,
     val navigationMode: PreferenceMutableStateFlow<NavigationMode>
 ) {
     constructor(scope: CoroutineScope, mode: String, readerPreferences: ReaderModePreferences) :
@@ -98,16 +106,10 @@ data class ReaderModePreference(
             readerPreferences.direction().asStateIn(scope),
             readerPreferences.padding().asStateIn(scope),
             readerPreferences.imageScale().asStateIn(scope),
+            readerPreferences.fitSize().asStateIn(scope),
+            readerPreferences.maxSize().asStateIn(scope),
             readerPreferences.navigationMode().asStateIn(scope)
         )
-
-    init {
-        continuous
-            .onEach {
-                padding.value = 0.0F
-            }
-            .launchIn(scope)
-    }
 }
 
 @Composable
@@ -143,12 +145,36 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
                             enabled = !it.defaultMode
                         )
                         val continuous by it.continuous.collectAsState()
-                        ChoicePreference(
-                            it.padding,
-                            vm.getPaddingChoices(continuous),
-                            if (continuous) "Page Padding" else "Border Padding"
-                        )
-                        if (!continuous) {
+                        if (continuous) {
+                            ChoicePreference(
+                                it.padding,
+                                vm.getPaddingChoices(),
+                                "Page Padding"
+                            )
+                            val direction by it.direction.collectAsState()
+                            val (title, subtitle) = if (direction == Direction.Up || direction == Direction.Down) {
+                                "Force fit width" to "When the window's width is over the images width, scale the image to the window"
+                            } else {
+                                "Force fit height" to "When the window's height is over the images height, scale the image to the window"
+                            }
+                            SwitchPreference(
+                                it.fitSize,
+                                title,
+                                subtitle
+                            )
+                            val maxSize by it.maxSize.collectAsState()
+                            val (maxSizeTitle, maxSizeSubtitle) = if (direction == Direction.Up || direction == Direction.Down) {
+                                "Max width" to "Width to restrict a image from going over, currently $maxSize" + "dp. Works with the above setting to scale images up but restrict them to a certain amount"
+                            } else {
+                                "Max height" to "Height to restrict a image from going over, currently $maxSize" + "dp. Works with the above setting to scale images up but restrict them to a certain amount"
+                            }
+                            ChoicePreference(
+                                it.maxSize,
+                                vm.getMaxSizeChoices(direction),
+                                maxSizeTitle,
+                                maxSizeSubtitle
+                            )
+                        } else {
                             ChoicePreference(
                                 it.imageScale,
                                 vm.getImageScaleChoices(),

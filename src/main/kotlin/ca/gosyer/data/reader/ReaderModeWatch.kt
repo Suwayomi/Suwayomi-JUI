@@ -25,6 +25,8 @@ class ReaderModeWatch(
     val continuous = MutableStateFlow(initialPreferences.continuous().get())
     val padding = MutableStateFlow(initialPreferences.padding().get())
     val imageScale = MutableStateFlow(initialPreferences.imageScale().get())
+    val fitSize = MutableStateFlow(initialPreferences.fitSize().get())
+    val maxSize = MutableStateFlow(initialPreferences.maxSize().get())
     val navigationMode = MutableStateFlow(initialPreferences.navigationMode().get())
 
     val mode = readerPreferences.mode().stateIn(scope)
@@ -65,6 +67,18 @@ class ReaderModeWatch(
         preferenceJobs += preferences.imageScale()
             .getAsFlow {
                 imageScale.value = it
+            }
+            .launchIn(scope)
+
+        preferenceJobs += preferences.fitSize()
+            .getAsFlow {
+                fitSize.value = it
+            }
+            .launchIn(scope)
+
+        preferenceJobs += preferences.maxSize()
+            .getAsFlow {
+                maxSize.value = it
             }
             .launchIn(scope)
 

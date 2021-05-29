@@ -31,12 +31,29 @@ class ReaderModePreferences(private val mode: String, private val preferenceStor
         return preferenceStore.getJsonObject("direction", defaultMode?.direction ?: Direction.Down, Direction.serializer())
     }
 
-    fun padding(): Preference<Float> {
-        return preferenceStore.getFloat("padding", defaultMode?.padding ?: 0.0F)
+    fun padding(): Preference<Int> {
+        return preferenceStore.getInt("padding", defaultMode?.padding ?: 0)
     }
 
     fun imageScale(): Preference<ImageScale> {
         return preferenceStore.getJsonObject("direction", defaultMode?.imageScale ?: ImageScale.FitScreen, ImageScale.serializer())
+    }
+
+    fun fitSize(): Preference<Boolean> {
+        return preferenceStore.getBoolean("fit_size", false)
+    }
+
+    fun maxSize(): Preference<Int> {
+        return preferenceStore.getInt(
+            "max_size",
+            if (defaultMode?.continuous == true) {
+                if (defaultMode?.direction == Direction.Left || defaultMode?.direction == Direction.Right) {
+                    500
+                } else {
+                    700
+                }
+            } else 0
+        )
     }
 
     fun navigationMode(): Preference<NavigationMode> {

@@ -32,7 +32,7 @@ fun PagerReader(
     previousChapter: ReaderChapter?,
     currentChapter: ReaderChapter,
     nextChapter: ReaderChapter?,
-    pageModifier: Modifier,
+    loadingModifier: Modifier,
     pageContentScale: ContentScale,
     pageEmitter: SharedFlow<Pair<MoveTo, Int>>,
     retry: (ReaderPage) -> Unit,
@@ -66,7 +66,7 @@ fun PagerReader(
                 previousChapter,
                 currentChapter,
                 nextChapter,
-                pageModifier,
+                loadingModifier,
                 pageContentScale,
                 retry
             )
@@ -79,7 +79,7 @@ fun PagerReader(
                 previousChapter,
                 currentChapter,
                 nextChapter,
-                pageModifier,
+                loadingModifier,
                 pageContentScale,
                 retry
             )
@@ -94,7 +94,7 @@ fun HandlePager(
     previousChapter: ReaderChapter?,
     currentChapter: ReaderChapter,
     nextChapter: ReaderChapter?,
-    pageModifier: Modifier,
+    loadingModifier: Modifier,
     pageContentScale: ContentScale,
     retry: (ReaderPage) -> Unit,
 ) {
@@ -109,7 +109,7 @@ fun HandlePager(
                 image.progress.collectAsState().value,
                 image.status.collectAsState().value,
                 image.error.collectAsState().value,
-                loadingModifier = pageModifier,
+                loadingModifier = loadingModifier,
                 retry = { pageIndex ->
                     pages.find { it.index == pageIndex }?.let { retry(it) }
                 },

@@ -10,13 +10,13 @@ enum class DefaultReaderMode(
     val res: String,
     val continuous: Boolean,
     val direction: Direction = Direction.Down,
-    val padding: Float = 0F,
+    val padding: Int = 0,
     val imageScale: ImageScale = ImageScale.FitScreen,
     val navigationMode: NavigationMode = NavigationMode.LNavigation,
 ) {
     RTL("RTL", false, Direction.Left, navigationMode = NavigationMode.RightAndLeftNavigation),
     LTR("LTR", false, Direction.Right, navigationMode = NavigationMode.RightAndLeftNavigation),
     Vertical("Vertical", false),
-    ContinuesVertical("Continues Vertical", true, padding = 1.0F),
+    ContinuesVertical("Continues Vertical", true, padding = 16),
     LongStrip("Long Strip", true)
 }

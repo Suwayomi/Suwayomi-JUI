@@ -29,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import ca.gosyer.common.di.AppScope
+import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
 import ca.gosyer.data.reader.model.NavigationMode
 import ca.gosyer.data.ui.UiPreferences
@@ -95,7 +96,11 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
         window.show {
             AppTheme {
                 ReaderMenu(chapterIndex, mangaId, setHotkeys) {
-                    window.events.onClose = it
+                    val onClose = window.events.onClose
+                    window.events.onClose = {
+                        it()
+                        onClose?.invoke()
+                    }
                 }
             }
         }
@@ -117,35 +122,21 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
     val direction by vm.readerModeSettings.direction.collectAsState()
     val padding by vm.readerModeSettings.padding.collectAsState()
     val imageScale by vm.readerModeSettings.imageScale.collectAsState()
+    val fitSize by vm.readerModeSettings.fitSize.collectAsState()
+    val maxSize by vm.readerModeSettings.maxSize.collectAsState()
     val navigationMode by vm.readerModeSettings.navigationMode.collectAsState()
     val currentPage by vm.currentPage.collectAsState()
     LaunchedEffect(Unit) {
         setHotkeys(
             listOf(
-                KeyboardShortcut(Key.W) {
-                    vm.navigate(Navigation.PREV)
-                },
-                KeyboardShortcut(Key.DirectionUp) {
-                    vm.navigate(Navigation.PREV)
-                },
-                KeyboardShortcut(Key.S) {
-                    vm.navigate(Navigation.NEXT)
-                },
-                KeyboardShortcut(Key.DirectionDown) {
-                    vm.navigate(Navigation.NEXT)
-                },
-                KeyboardShortcut(Key.A) {
-                    vm.navigate(Navigation.LEFT)
-                },
-                KeyboardShortcut(Key.DirectionLeft) {
-                    vm.navigate(Navigation.LEFT)
-                },
-                KeyboardShortcut(Key.D) {
-                    vm.navigate(Navigation.RIGHT)
-                },
-                KeyboardShortcut(Key.DirectionRight) {
-                    vm.navigate(Navigation.RIGHT)
-                }
+                KeyboardShortcut(Key.W) { vm.navigate(Navigation.PREV) },
+                KeyboardShortcut(Key.DirectionUp) { vm.navigate(Navigation.PREV) },
+                KeyboardShortcut(Key.S) { vm.navigate(Navigation.NEXT) },
+                KeyboardShortcut(Key.DirectionDown) { vm.navigate(Navigation.NEXT) },
+                KeyboardShortcut(Key.A) { vm.navigate(Navigation.LEFT) },
+                KeyboardShortcut(Key.DirectionLeft) { vm.navigate(Navigation.LEFT) },
+                KeyboardShortcut(Key.D) { vm.navigate(Navigation.RIGHT) },
+                KeyboardShortcut(Key.DirectionRight) { vm.navigate(Navigation.RIGHT) }
             )
         )
         setOnCloseEvent(vm::sendProgress)
@@ -160,17 +151,28 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                     }
             ) {
                 chapter?.let { chapter ->
-                    val pageModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
+                    val loadingModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
                     if (pages.isNotEmpty()) {
                         if (continuous) {
                             ContinuousReader(
                                 pages,
+                                direction,
+                                maxSize,
+                                padding,
                                 currentPage,
                                 previousChapter,
                                 chapter,
                                 nextChapter,
-                                pageModifier,
-                                imageScale.toContentScale(),
+                                loadingModifier,
+                                if (fitSize) {
+                                    if (direction == Direction.Up || direction == Direction.Down) {
+                                        ContentScale.FillWidth
+                                    } else {
+                                        ContentScale.FillHeight
+                                    }
+                                } else {
+                                    ContentScale.Fit
+                                },
                                 vm.pageEmitter,
                                 vm::retry,
                                 vm::progress
@@ -183,7 +185,7 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                                 previousChapter,
                                 chapter,
                                 nextChapter,
-                                pageModifier,
+                                loadingModifier,
                                 imageScale.toContentScale(),
                                 vm.pageEmitter,
                                 vm::retry,
@@ -262,7 +264,7 @@ fun NavigationMode.toNavigation() = when (this) {
 fun ImageScale.toContentScale() = when (this) {
     ImageScale.FitScreen -> ContentScale.Inside
     ImageScale.FitHeight -> ContentScale.FillHeight
-    ImageScale.FitWidth -> ContentScale.FillHeight
+    ImageScale.FitWidth -> ContentScale.FillWidth
     ImageScale.OriginalSize -> ContentScale.None
     ImageScale.SmartFit -> ContentScale.Fit
     ImageScale.Stretch -> ContentScale.FillBounds
