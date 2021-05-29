@@ -33,8 +33,10 @@ fun LoadingScreen(
                 val size = remember(maxHeight, maxWidth) {
                     min(maxHeight, maxWidth) / 2
                 }
+                // Workaround for random `Cannot round NaN value.` exception
+                val floatProgress = progress ?: 0F
                 if (progress != null) {
-                    CircularProgressIndicator(progress, Modifier.align(Alignment.Center).size(size))
+                    CircularProgressIndicator(floatProgress, Modifier.align(Alignment.Center).size(size))
                 } else {
                     CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
                 }

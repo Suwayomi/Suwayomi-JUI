@@ -28,16 +28,16 @@ import ca.gosyer.ui.base.components.MangaGridItem
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.persistentLazyListState
 import com.github.zsoltk.compose.savedinstancestate.Bundle
-import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
 
 @Composable
 fun SourceScreen(
+    bundle: Bundle,
     source: Source,
     onMangaClick: (Long) -> Unit
 ) {
-    val bundle = LocalSavedInstanceState.current
     val vm = viewModel<SourceScreenViewModel>()
     remember(source.id) {
+        vm.removeOldSource()
         vm.init(source, bundle)
     }
     val mangas by vm.mangas.collectAsState()
@@ -51,6 +51,7 @@ fun SourceScreen(
         mangas,
         loading,
         hasNextPage,
+        source.supportsLatest,
         isLatest,
         serverUrl,
         onLoadNextPage = vm::loadNextPage,
@@ -65,13 +66,14 @@ private fun MangaTable(
     mangas: List<Manga>,
     isLoading: Boolean = false,
     hasNextPage: Boolean = false,
+    supportsLatest: Boolean,
     isLatest: Boolean,
     serverUrl: String,
     onLoadNextPage: () -> Unit,
     onMangaClick: (Long) -> Unit,
     onClickMode: (Boolean) -> Unit
 ) {
-    if (mangas.isEmpty()) {
+    if (isLoading || mangas.isEmpty()) {
         LoadingScreen(isLoading)
     } else {
         Column {
@@ -84,12 +86,14 @@ private fun MangaTable(
                 ) {
                     Text(text = if (isLoading) "Loading..." else "Load next page")
                 }
-                Button(
-                    onClick = { onClickMode(!isLatest) },
-                    enabled = !isLoading,
-                    modifier = Modifier.align(Alignment.TopEnd)
-                ) {
-                    Text(text = if (isLatest) "Latest" else "Browse")
+                if (supportsLatest) {
+                    Button(
+                        onClick = { onClickMode(!isLatest) },
+                        enabled = !isLoading,
+                        modifier = Modifier.align(Alignment.TopEnd)
+                    ) {
+                        Text(text = if (isLatest) "To Browse" else "To Latest")
+                    }
                 }
             }
 

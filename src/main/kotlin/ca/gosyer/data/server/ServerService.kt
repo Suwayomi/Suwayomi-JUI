@@ -37,7 +37,7 @@ class ServerService @Inject constructor(
         }
     )
     private val runtime = Runtime.getRuntime()
-    var process: Process? = null
+    private var process: Process? = null
 
     fun startAnyway() {
         initialized.value = ServerResult.UNUSED

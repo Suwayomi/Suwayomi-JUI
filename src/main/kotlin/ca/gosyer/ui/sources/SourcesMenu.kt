@@ -95,7 +95,7 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                 val selectedSource: Source? = selectedSourceTab
                 BundleScope(selectedSource?.id.toString(), autoDispose = false) {
                     if (selectedSource != null) {
-                        SourceScreen(selectedSource, onMangaClick)
+                        SourceScreen(it, selectedSource, onMangaClick)
                     } else {
                         SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
                     }
