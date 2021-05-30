@@ -69,7 +69,7 @@ jobs:
         security import certificate.p12 -k build.keychain -P ${{ secrets.APPLE_CERT_PASSWORD }} -T /usr/bin/codesign
         security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
 
-        ${{ matrix.buildPackage }} norarizePkg \
+        ${{ matrix.buildPackage }} notarizePkg \
         -Pcompose.desktop.mac.sign=true \
         -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }} \
         -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }} \
