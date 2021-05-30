@@ -10,12 +10,5 @@ else
     scripts/SetupUnix.sh
 fi
 
-arguments=""
-for var in "$@"
-do
-    arguments+=" $var"
-done
-
-
 echo "Building Pkg package"
-./gradlew packagePkg $arguments
+./gradlew packagePkg "$@"
