@@ -15,7 +15,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -94,7 +94,7 @@ private fun MangaTable(
             LazyVerticalGrid(GridCells.Adaptive(160.dp), state = persistentState) {
                 itemsIndexed(mangas) { index, manga ->
                     if (hasNextPage && index == mangas.lastIndex) {
-                        SideEffect(onLoadNextPage)
+                        LaunchedEffect(Unit) { onLoadNextPage() }
                     }
                     MangaGridItem(
                         title = manga.title,
