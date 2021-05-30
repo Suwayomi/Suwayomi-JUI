@@ -126,10 +126,14 @@ fun main() {
                         ServerResult.STARTED, ServerResult.UNUSED -> {
                             MainMenu(rootBundle)
                         }
-                        ServerResult.STARTING, ServerResult.FAILED -> {
+                        ServerResult.STARTING, ServerResult.FAILED, ServerResult.NO_TACHIDESK_JAR -> {
                             LoadingScreen(
                                 initialized == ServerResult.STARTING,
-                                errorMessage = "Unable to start server",
+                                errorMessage = if (initialized == ServerResult.NO_TACHIDESK_JAR) {
+                                    "Tachidesk jar does not exist, run Tachidesk yourself"
+                                } else {
+                                    "Unable to start server"
+                                },
                                 retryMessage = "Start anyway",
                                 retry = serverService::startAnyway
                             )

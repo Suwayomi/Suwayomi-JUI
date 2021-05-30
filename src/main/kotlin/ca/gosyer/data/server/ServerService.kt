@@ -43,12 +43,12 @@ class ServerService @Inject constructor(
         initialized.value = ServerResult.UNUSED
     }
 
-    private fun copyJar(jarFile: File) {
-        javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
+    private fun copyJar(jarFile: File): Boolean {
+        return javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
             jarFile.outputStream().use { output ->
                 input.copyTo(output)
             }
-        }
+        }?.let { true } ?: false
     }
 
     init {
@@ -71,7 +71,9 @@ class ServerService @Inject constructor(
                 val jarFile = File(userDataDir, "Tachidesk.jar")
                 if (!jarFile.exists()) {
                     info { "Copying server to resources" }
-                    copyJar(jarFile)
+                    if (!copyJar(jarFile)) {
+                        initialized.value = ServerResult.NO_TACHIDESK_JAR
+                    }
                 } else {
                     try {
                         val jarVersion = withIOContext {
@@ -131,6 +133,7 @@ class ServerService @Inject constructor(
 
     enum class ServerResult {
         UNUSED,
+        NO_TACHIDESK_JAR,
         STARTING,
         STARTED,
         FAILED;
