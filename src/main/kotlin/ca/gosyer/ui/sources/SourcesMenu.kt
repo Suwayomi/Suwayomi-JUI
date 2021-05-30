@@ -43,8 +43,6 @@ fun openSourcesMenu() {
     }
 }
 
-private const val SOURCE_MENU_KEY = "source_menu"
-
 @Composable
 fun SourcesMenu(onMangaClick: (Long) -> Unit) {
     SourcesMenu(LocalSavedInstanceState.current, onMangaClick)

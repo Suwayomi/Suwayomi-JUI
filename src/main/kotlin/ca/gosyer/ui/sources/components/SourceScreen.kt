@@ -11,10 +11,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -77,15 +78,7 @@ private fun MangaTable(
         LoadingScreen(isLoading)
     } else {
         Column {
-            // TODO: this should happen automatically on scroll
             Box(modifier = Modifier.fillMaxWidth()) {
-                Button(
-                    onClick = onLoadNextPage,
-                    enabled = hasNextPage && !isLoading,
-                    modifier = Modifier.align(Alignment.TopStart)
-                ) {
-                    Text(text = if (isLoading) "Loading..." else "Load next page")
-                }
                 if (supportsLatest) {
                     Button(
                         onClick = { onClickMode(!isLatest) },
@@ -99,7 +92,10 @@ private fun MangaTable(
 
             val persistentState = persistentLazyListState(bundle)
             LazyVerticalGrid(GridCells.Adaptive(160.dp), state = persistentState) {
-                items(mangas) { manga ->
+                itemsIndexed(mangas) { index, manga ->
+                    if (hasNextPage && index == mangas.lastIndex) {
+                        SideEffect(onLoadNextPage)
+                    }
                     MangaGridItem(
                         title = manga.title,
                         cover = manga.cover(serverUrl),
