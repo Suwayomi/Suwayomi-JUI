@@ -63,6 +63,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import ca.gosyer.ui.base.WindowDialog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.round
@@ -331,7 +332,7 @@ fun ColorPalette(
                         val cursorSize = Size(size.width, 10f)
                         val cursorTopLeft = Offset(0f, hueCursor - (cursorSize.height / 2))
                         onDrawBehind {
-                            colors.forEachIndexed { i, color ->
+                            colors.fastForEachIndexed { i, color ->
                                 val pos = i.toFloat()
                                 drawLine(color, Offset(0f, pos), Offset(size.width, pos))
                             }

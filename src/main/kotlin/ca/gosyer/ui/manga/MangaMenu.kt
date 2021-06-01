@@ -107,11 +107,7 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
                 }
                 VerticalScrollbar(
                     modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                    adapter = rememberScrollbarAdapter(
-                        scrollState = state,
-                        itemCount = chapters.size + 1,
-                        averageItemSize = 70.dp
-                    )
+                    adapter = rememberScrollbarAdapter(state)
                 )
                 if (isLoading) {
                     LoadingScreen()

@@ -12,6 +12,7 @@ import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.util.fastForEach
 import ca.gosyer.data.reader.ReaderModePreferences
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.reader.model.Direction
@@ -129,7 +130,7 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
             item {
                 Divider()
             }
-            modeSettings.forEach {
+            modeSettings.fastForEach {
                 item {
                     ExpandablePreference(it.mode) {
                         ChoicePreference(

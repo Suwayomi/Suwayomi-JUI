@@ -28,6 +28,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,9 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.ui.main.Route
 import com.github.zsoltk.compose.router.BackStack
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Regular
-import compose.icons.fontawesomeicons.regular.WindowClose
 
 @Composable
 fun Toolbar(
@@ -98,7 +97,7 @@ fun Toolbar(
                     IconButton(
                         onClick = onClose
                     ) {
-                        Icon(FontAwesomeIcons.Regular.WindowClose, "close", Modifier.size(52.dp))
+                        Icon(Icons.Default.Close, "close", Modifier.size(52.dp))
                     }
                 }
             }

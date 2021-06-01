@@ -95,11 +95,7 @@ fun ExtensionsMenu() {
                 }
                 VerticalScrollbar(
                     modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                    adapter = rememberScrollbarAdapter(
-                        scrollState = state,
-                        itemCount = itemCount + 1, // Plus toolbar,
-                        averageItemSize = 37.dp // TextBox height + Spacer height
-                    )
+                    adapter = rememberScrollbarAdapter(state)
                 )
             }
         }

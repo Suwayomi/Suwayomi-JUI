@@ -5,10 +5,10 @@ import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 plugins {
-    kotlin("jvm") version "1.5.0"
-    kotlin("kapt") version "1.5.0"
-    kotlin("plugin.serialization") version "1.5.0"
-    id("org.jetbrains.compose") version "0.4.0-build209"
+    kotlin("jvm") version "1.5.10"
+    kotlin("kapt") version "1.5.10"
+    kotlin("plugin.serialization") version "1.5.10"
+    id("org.jetbrains.compose") version "0.4.0"
     id("de.fuerstenau.buildconfig") version "1.1.8"
     id("org.jmailen.kotlinter") version "3.4.4"
     id("com.github.ben-manes.versions") version "0.38.0"
@@ -26,7 +26,8 @@ repositories {
 dependencies {
     // UI (Compose)
     implementation(compose.desktop.currentOs)
-    implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:0.2.0")
+    implementation(compose("org.jetbrains.compose.ui:ui-util"))
+    implementation(compose("org.jetbrains.compose.material:material-icons-extended"))
     implementation("ca.gosyer:compose-router:0.24.2-jetbrains-2")
     implementation("ca.gosyer:accompanist-pager:0.9.1")
 

@@ -11,7 +11,7 @@ import androidx.compose.desktop.WindowEvents
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.window.MenuBar
+import androidx.compose.ui.window.v1.MenuBar
 import ca.gosyer.ui.base.theme.AppTheme
 import java.awt.image.BufferedImage
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.ParentDataModifier
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.util.fastForEach
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -169,7 +170,7 @@ fun Pager(
                 .map {
                     it.measure(childConstraints) to it.page
                 }
-                .forEach { (placeable, page) ->
+                .fastForEach { (placeable, page) ->
                     // TODO: current this centers each page. We should investigate reading
                     //  gravity modifiers on the child, or maybe as a param to Pager.
                     val xCenterOffset = (constraints.maxWidth - placeable.width) / 2

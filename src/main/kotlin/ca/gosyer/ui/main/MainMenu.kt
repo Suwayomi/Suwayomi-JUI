@@ -22,6 +22,15 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Store
+import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Store
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,12 +59,6 @@ import ca.gosyer.ui.sources.SourcesMenu
 import com.github.zsoltk.compose.router.Router
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
-import compose.icons.FontAwesomeIcons
-import compose.icons.fontawesomeicons.Regular
-import compose.icons.fontawesomeicons.regular.Bookmark
-import compose.icons.fontawesomeicons.regular.Compass
-import compose.icons.fontawesomeicons.regular.Edit
-import compose.icons.fontawesomeicons.regular.Map
 
 @Composable
 fun MainMenu(rootBundle: Bundle) {
@@ -132,7 +135,16 @@ fun MainMenuItem(menu: TopLevelMenus, selected: Boolean, onClick: (Route) -> Uni
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
             Spacer(Modifier.width(16.dp))
-            Image(menu.icon, menu.text, modifier = Modifier.size(20.dp), colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface))
+            Image(
+                if (selected) {
+                    menu.selectedIcon
+                } else {
+                    menu.unselectedIcon
+                },
+                menu.text,
+                modifier = Modifier.size(20.dp),
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+            )
             Spacer(Modifier.width(16.dp))
             Text(menu.text, color = MaterialTheme.colors.onSurface)
         }
@@ -145,11 +157,11 @@ fun StartScreen.toRoute() = when (this) {
     StartScreen.Extensions -> Route.Extensions
 }
 
-enum class TopLevelMenus(val text: String, val icon: ImageVector, val menu: Route) {
-    Library("Library", FontAwesomeIcons.Regular.Bookmark, Route.Library),
-    Sources("Sources", FontAwesomeIcons.Regular.Compass, Route.Sources),
-    Extensions("Extensions", FontAwesomeIcons.Regular.Map, Route.Extensions),
-    Settings("Settings", FontAwesomeIcons.Regular.Edit, Route.Settings)
+enum class TopLevelMenus(val text: String, val unselectedIcon: ImageVector, val selectedIcon: ImageVector, val menu: Route) {
+    Library("Library", Icons.Outlined.Book, Icons.Filled.Book, Route.Library),
+    Sources("Sources", Icons.Outlined.Explore, Icons.Filled.Explore, Route.Sources),
+    Extensions("Extensions", Icons.Outlined.Store, Icons.Filled.Store, Route.Extensions),
+    Settings("Settings", Icons.Outlined.Settings, Icons.Filled.Settings, Route.Settings)
 }
 
 sealed class Route {

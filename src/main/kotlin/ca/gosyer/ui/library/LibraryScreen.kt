@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
@@ -112,7 +113,7 @@ private fun LibraryTabs(
             // contentColor = CustomColors.current.onBars,
             edgePadding = 0.dp
         ) {
-            categories.forEachIndexed { i, category ->
+            categories.fastForEachIndexed { i, category ->
                 Tab(
                     selected = selectedPage == i,
                     onClick = { onPageChanged(i) },
