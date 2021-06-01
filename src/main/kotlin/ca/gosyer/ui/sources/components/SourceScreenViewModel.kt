@@ -32,7 +32,7 @@ class SourceScreenViewModel @Inject constructor(
     private lateinit var source: Source
     private var bundle: Bundle? = null
 
-    val serverUrl = serverPreferences.server().stateIn(scope)
+    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
 
     private val _mangas = MutableStateFlow(emptyList<Manga>())
     val mangas = _mangas.asStateFlow()

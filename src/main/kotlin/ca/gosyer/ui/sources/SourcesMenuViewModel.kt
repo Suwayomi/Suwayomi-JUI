@@ -28,7 +28,7 @@ class SourcesMenuViewModel @Inject constructor(
     serverPreferences: ServerPreferences,
     catalogPreferences: CatalogPreferences
 ) : ViewModel() {
-    val serverUrl = serverPreferences.server().stateIn(scope)
+    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
 
     private val languages = catalogPreferences.languages().stateIn(scope)
 

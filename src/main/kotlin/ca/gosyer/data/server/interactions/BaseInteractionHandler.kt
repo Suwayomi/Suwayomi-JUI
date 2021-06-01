@@ -22,7 +22,7 @@ open class BaseInteractionHandler(
     protected val client: Http,
     serverPreferences: ServerPreferences
 ) {
-    private val _serverUrl = serverPreferences.server()
+    private val _serverUrl = serverPreferences.serverUrl()
     val serverUrl get() = _serverUrl.get()
 
     protected inline fun <T> repeat(block: () -> T): T {

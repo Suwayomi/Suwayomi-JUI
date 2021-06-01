@@ -16,6 +16,14 @@ class ServerPreferences(private val preferenceStore: PreferenceStore) {
     }
 
     fun server(): Preference<String> {
-        return preferenceStore.getString("server_url", "http://localhost:4567")
+        return preferenceStore.getString("server_url", "http://localhost")
+    }
+
+    fun port(): Preference<Int> {
+        return preferenceStore.getInt("server_port", 4567)
+    }
+
+    fun serverUrl(): Preference<String> {
+        return ServerUrlPreference("", server(), port())
     }
 }

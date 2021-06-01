@@ -35,7 +35,7 @@ class MangaMenuViewModel @Inject constructor(
     private val libraryHandler: LibraryInteractionHandler,
     serverPreferences: ServerPreferences
 ) : ViewModel() {
-    val serverUrl = serverPreferences.server().stateIn(scope)
+    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
 
     private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()

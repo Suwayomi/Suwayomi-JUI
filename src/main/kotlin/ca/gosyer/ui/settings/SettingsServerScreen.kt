@@ -15,6 +15,7 @@ import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.EditTextPreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.prefs.asStateIn
+import ca.gosyer.ui.base.prefs.asStringStateIn
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
@@ -25,7 +26,8 @@ class SettingsServerViewModel @Inject constructor(
     private val serverPreferences: ServerPreferences
 ) : ViewModel() {
     val host = serverPreferences.host().asStateIn(scope)
-    val serverUrl = serverPreferences.server().asStateIn(scope)
+    val server = serverPreferences.server().asStateIn(scope)
+    val port = serverPreferences.port().asStringStateIn(scope)
 }
 
 @Composable
@@ -36,7 +38,10 @@ fun SettingsServerScreen(navController: BackStack<Route>) {
         SwitchPreference(preference = vm.host, title = "Host server inside TachideskJUI")
         LazyColumn {
             item {
-                EditTextPreference(vm.serverUrl, "Server Url", subtitle = vm.serverUrl.collectAsState().value)
+                EditTextPreference(vm.server, "Server Url", subtitle = vm.server.collectAsState().value)
+            }
+            item {
+                EditTextPreference(vm.port, "Server Url", subtitle = vm.port.collectAsState().value)
             }
         }
     }

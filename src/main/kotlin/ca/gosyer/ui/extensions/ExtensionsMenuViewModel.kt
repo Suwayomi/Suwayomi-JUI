@@ -23,7 +23,7 @@ class ExtensionsMenuViewModel @Inject constructor(
     serverPreferences: ServerPreferences,
     private val extensionPreferences: ExtensionPreferences
 ) : ViewModel() {
-    val serverUrl = serverPreferences.server().stateIn(scope)
+    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
 
     private lateinit var extensionList: List<Extension>
 

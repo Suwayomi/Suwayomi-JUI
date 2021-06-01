@@ -36,7 +36,7 @@ class LibraryScreenViewModel @Inject constructor(
     libraryPreferences: LibraryPreferences,
     serverPreferences: ServerPreferences,
 ) : ViewModel() {
-    val serverUrl = serverPreferences.server().stateIn(scope)
+    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
 
     private val library = Library(MutableStateFlow(emptyList()), mutableMapOf())
     val categories = library.categories.asStateFlow()
