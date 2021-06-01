@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
@@ -46,6 +45,7 @@ import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.util.compose.persistentLazyListState
 import java.util.Locale
 
 fun openExtensionsMenu() {
@@ -67,8 +67,7 @@ fun ExtensionsMenu() {
         if (isLoading) {
             LoadingScreen(isLoading)
         } else {
-            val state = rememberLazyListState()
-            val itemCount = extensions.size
+            val state = persistentLazyListState()
 
             Box(Modifier.fillMaxSize()) {
                 LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state) {
