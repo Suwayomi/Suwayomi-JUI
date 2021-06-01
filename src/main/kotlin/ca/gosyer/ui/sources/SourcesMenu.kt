@@ -6,21 +6,26 @@
 
 package ca.gosyer.ui.sources
 
+import androidx.compose.foundation.BoxWithTooltip
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.KtorImage
@@ -85,10 +90,22 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                                 )
                                 .requiredSize(64.dp)
 
-                            if (source != null) {
-                                KtorImage(source.iconUrl(serverUrl), imageModifier = modifier)
-                            } else {
-                                Icon(Icons.Default.Home, "Home", modifier = modifier)
+                            BoxWithTooltip(
+                                {
+                                    Surface(
+                                        modifier = Modifier.shadow(4.dp),
+                                        shape = RoundedCornerShape(4.dp),
+                                        elevation = 4.dp
+                                    ) {
+                                        Text(source?.name ?: "Home", modifier = Modifier.padding(10.dp))
+                                    }
+                                }
+                            ) {
+                                if (source != null) {
+                                    KtorImage(source.iconUrl(serverUrl), imageModifier = modifier)
+                                } else {
+                                    Icon(Icons.Default.Home, "Home", modifier = modifier)
+                                }
                             }
                         }
                     }
