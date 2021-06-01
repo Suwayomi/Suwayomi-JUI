@@ -10,15 +10,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
-
-@Composable
-fun <T> State<T>.persistent(key: String) {
-    val bundle = LocalSavedInstanceState.current
-}
 
 const val LAZY_LIST_ITEM = "lazy_list_item"
 const val LAZY_LIST_OFFSET = "lazy_list_offset"
