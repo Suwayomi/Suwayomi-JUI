@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.config.Configurator
 import toothpick.configuration.Configuration
 import toothpick.ktp.KTP
 import toothpick.ktp.extension.getInstance
+import java.util.logging.Level
 
 @OptIn(DelicateCoroutinesApi::class)
 fun main() {
@@ -72,7 +73,13 @@ fun main() {
                 ThemeMode.Light -> IntelliJTheme()
                 ThemeMode.Dark -> DarculaTheme()
             }
-            LafManager.enableLogging(BuildConfig.DEBUG)
+            LafManager.setLogLevel(
+                if (BuildConfig.DEBUG) {
+                    Level.FINE
+                } else {
+                    Level.WARNING
+                }
+            )
             withUIContext {
                 LafManager.install(theme)
             }

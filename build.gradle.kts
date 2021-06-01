@@ -11,7 +11,7 @@ plugins {
     id("org.jetbrains.compose") version "0.4.0"
     id("de.fuerstenau.buildconfig") version "1.1.8"
     id("org.jmailen.kotlinter") version "3.4.4"
-    id("com.github.ben-manes.versions") version "0.38.0"
+    id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 group = "ca.gosyer"
@@ -32,7 +32,7 @@ dependencies {
     implementation("ca.gosyer:accompanist-pager:0.9.1")
 
     // UI (Swing)
-    implementation("com.github.weisj:darklaf-core:2.5.5")
+    implementation("com.github.weisj:darklaf-core:2.6.1")
 
     // Threading
     val coroutinesVersion = "1.5.0"
@@ -43,8 +43,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
     // Dependency Injection
-    implementation("com.github.stephanenicolas.toothpick:ktp:3.1.0")
-    kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:3.1.0")
+    val toothpickVersion = "3.1.0"
+    implementation("com.github.stephanenicolas.toothpick:ktp:$toothpickVersion")
+    kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:$toothpickVersion")
 
     // Http client
     val ktorVersion = "1.6.0"
