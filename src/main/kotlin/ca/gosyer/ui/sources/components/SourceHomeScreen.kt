@@ -65,11 +65,7 @@ fun SourceHomeScreen(
 
             VerticalScrollbar(
                 modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(
-                    scrollState = state,
-                    itemCount = sources.size,
-                    averageItemSize = 12.dp // TextBox height + Spacer height
-                )
+                adapter = rememberScrollbarAdapter(state)
             )
         }
     }
