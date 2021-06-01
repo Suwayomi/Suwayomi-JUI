@@ -33,6 +33,21 @@ fun launchIO(
     block: suspend CoroutineScope.() -> Unit
 ) = GlobalScope.launch(Dispatchers.IO, start, block)
 
+fun CoroutineScope.launchDefault(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = launch(Dispatchers.Default, start, block)
+
+fun CoroutineScope.launchUI(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = launch(Dispatchers.Main, start, block)
+
+fun CoroutineScope.launchIO(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = launch(Dispatchers.IO, start, block)
+
 suspend fun <T> withDefaultContext(
     block: suspend CoroutineScope.() -> T
 ) = withContext(Dispatchers.Default, block)
