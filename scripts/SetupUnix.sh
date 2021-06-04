@@ -10,7 +10,7 @@ echo "Getting latest Tachidesk build files"
 #TARBALL_LINK="$(curl -s "https://api.github.com/repos/Suwayomi/Tachidesk/releases/latest" | grep -o "https.*tarball\/[a-zA-Z0-9.]*")"
 
 #curl -L "$TARBALL_LINK" -o tmp/Tachidesk.tar
-curl -L "https://github.com/Suwayomi/Tachidesk/archive/refs/tags/v0.4.1.tar.gz" -o tmp/Tachidesk.tar.gz
+curl -L "https://github.com/Suwayomi/Tachidesk/archive/refs/tags/v0.4.2.tar.gz" -o tmp/Tachidesk.tar.gz
 
 tar -xvf tmp/Tachidesk.tar.gz -C tmp
 
