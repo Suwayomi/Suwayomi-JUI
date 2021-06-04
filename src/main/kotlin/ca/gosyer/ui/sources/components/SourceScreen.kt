@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -36,10 +35,8 @@ fun SourceScreen(
     source: Source,
     onMangaClick: (Long) -> Unit
 ) {
-    val vm = viewModel<SourceScreenViewModel>()
-    remember(source.id) {
-        vm.removeOldSource()
-        vm.init(source, bundle)
+    val vm = viewModel<SourceScreenViewModel>(source.id) {
+        SourceScreenViewModel.Params(source, bundle)
     }
     val mangas by vm.mangas.collectAsState()
     val hasNextPage by vm.hasNextPage.collectAsState()

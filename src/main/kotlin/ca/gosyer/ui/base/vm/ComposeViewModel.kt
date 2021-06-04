@@ -16,8 +16,8 @@ import toothpick.ktp.binding.module
 import toothpick.ktp.extension.getInstance
 
 @Composable
-inline fun <reified VM : ViewModel> viewModel(): VM {
-    val viewModel = remember {
+inline fun <reified VM : ViewModel> viewModel(key: Any? = Unit): VM {
+    val viewModel = remember(key) {
         AppScope.getInstance<VM>()
     }
     DisposableEffect(viewModel) {
@@ -30,9 +30,10 @@ inline fun <reified VM : ViewModel> viewModel(): VM {
 
 @Composable
 inline fun <reified VM : ViewModel> viewModel(
+    key: Any? = Unit,
     crossinline binding: @DisallowComposableCalls () -> Any,
 ): VM {
-    val (viewModel, submodule) = remember {
+    val (viewModel, submodule) = remember(key) {
         val submodule = module {
             binding().let { bind(it.javaClass).toInstance(it) }
         }
