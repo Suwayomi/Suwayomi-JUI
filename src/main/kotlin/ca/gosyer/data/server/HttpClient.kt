@@ -10,8 +10,10 @@ import ca.gosyer.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -20,7 +22,15 @@ typealias Http = HttpClient
 internal class HttpProvider @Inject constructor() : Provider<Http> {
     override fun get(): Http {
         return HttpClient(OkHttp) {
-            install(JsonFeature)
+            install(JsonFeature) {
+                serializer = KotlinxSerializer(
+                    Json {
+                        if (!BuildConfig.DEBUG) {
+                            ignoreUnknownKeys = true
+                        }
+                    }
+                )
+            }
             if (BuildConfig.DEBUG) {
                 install(Logging) {
                     level = LogLevel.HEADERS
