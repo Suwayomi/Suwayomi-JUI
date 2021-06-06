@@ -101,6 +101,10 @@ tasks {
         useJUnit()
     }
 
+    withType<org.gradle.jvm.tasks.Jar> {
+        exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
+    }
+
     withType<LintTask> {
         source(files("src"))
         reports.set(mapOf(
