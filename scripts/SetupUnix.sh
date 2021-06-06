@@ -21,6 +21,10 @@ pushd "$TACHIDESK_FOLDER" || exit
 echo "Setting up android.jar"
 AndroidCompat/getAndroid.sh
 
+echo "Writing ci gradle.properties"
+[ ! -d "/path/to/dir" ] && mkdir ".gradle"
+cp ".github/runner-files/ci-gradle.properties" ".gradle/gradle.properties"
+
 echo "Building Tachidesk.jar"
 ./gradlew :server:shadowJar -x :webUI:copyBuild
 

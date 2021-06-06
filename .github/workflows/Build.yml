@@ -12,7 +12,7 @@ jobs:
     name: Build application packages
     strategy:
       matrix:
-        runtime: [ linux-x64, osx-x64, win-x64 ]
+        runtime: [ linux-x64, linux-centos-x64, osx-x64, win-x64 ]
         include:
         - runtime: linux-x64
           arch: x64
@@ -20,13 +20,15 @@ jobs:
           shell: bash
           buildPackage: ./scripts/BuildLinuxDeb.sh
           buildJar: ./scripts/BuildUnixJar.sh
-          
+          setupCl: ./scripts/SetupClUnix.sh
+
         - runtime: linux-centos-x64
           arch: x64
           os: ubuntu-latest
           shell: bash
           buildPackage: ./scripts/BuildLinuxRpm.sh
           buildJar: ./scripts/BuildUnixJar.sh
+          setupCl: ./scripts/SetupClUnix.sh
 
         - runtime: osx-x64
           arch: x64
@@ -34,6 +36,7 @@ jobs:
           shell: bash
           buildPackage: ./scripts/BuildMacDmg.sh
           buildJar: ./scripts/BuildUnixJar.sh
+          setupCl: ./scripts/SetupClUnix.sh
 
         - runtime: win-x64
           arch: x64
@@ -41,6 +44,7 @@ jobs:
           shell: powershell
           buildPackage: ./scripts/BuildWindowsMsi.ps1
           buildJar: ./scripts/BuildWindowsJar.ps1
+          setupCl: ./scripts/SetupClWindows.ps1
 
     runs-on: ${{ matrix.os }}
     defaults:
@@ -54,6 +58,9 @@ jobs:
       with:
         java-version: '15'
         architecture: ${{ matrix.arch }}
+
+    - name: Setup Cl
+      run: ${{ matrix.setupCl }}
 
     - name: Build Package
       if: ${{ matrix.runtime != 'linux-centos-x64' && matrix.runtime != 'osx-x64' }}
