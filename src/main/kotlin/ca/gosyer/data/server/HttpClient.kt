@@ -25,15 +25,18 @@ internal class HttpProvider @Inject constructor() : Provider<Http> {
             install(JsonFeature) {
                 serializer = KotlinxSerializer(
                     Json {
-                        if (!BuildConfig.DEBUG) {
-                            ignoreUnknownKeys = true
-                        }
+                        isLenient = false
+                        ignoreUnknownKeys = !BuildConfig.DEBUG
+                        allowSpecialFloatingPointValues = true
+                        useArrayPolymorphism = false
                     }
                 )
             }
-            if (BuildConfig.DEBUG) {
-                install(Logging) {
-                    level = LogLevel.HEADERS
+            install(Logging) {
+                level = if (BuildConfig.DEBUG) {
+                    LogLevel.HEADERS
+                } else {
+                    LogLevel.INFO
                 }
             }
         }
