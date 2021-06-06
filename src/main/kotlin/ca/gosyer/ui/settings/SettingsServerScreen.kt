@@ -41,7 +41,7 @@ fun SettingsServerScreen(navController: BackStack<Route>) {
                 EditTextPreference(vm.server, "Server Url", subtitle = vm.server.collectAsState().value)
             }
             item {
-                EditTextPreference(vm.port, "Server Url", subtitle = vm.port.collectAsState().value)
+                EditTextPreference(vm.port, "Server Port", subtitle = vm.port.collectAsState().value)
             }
         }
     }
