@@ -25,16 +25,16 @@ Download the latest jar release for your OS from [the releases section](https://
 
 Double-click on the jar file or run `java -jar TachideskJUI-os-arch-X.Y.Z.jar` from a Terminal/Command Prompt window to run the app.
 
-### Windows (Java Included)
+### Windows (Java 8+ required for server)
 Download the latest exe or msi release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
-### MacOS (Java Included)
-Download the latest pkg release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
+### MacOS (Java Included, Server not included)
+Download the latest dmg release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
-### Debian based Linux (Java Included)
+### Debian based Linux (Java 8+ required for server)
 Download the latest deb release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
-### Fedora based Linux (Java Included)
+### Fedora based Linux (Java 8+ required for server)
 Download the latest rpm release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
 ## General troubleshooting
