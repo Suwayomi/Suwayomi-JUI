@@ -128,7 +128,7 @@ compose.desktop {
                 TargetFormat.Deb,
                 TargetFormat.Rpm,
                 // MacOS
-                TargetFormat.Pkg
+                TargetFormat.Dmg
             )
             modules(
                 "java.instrument",

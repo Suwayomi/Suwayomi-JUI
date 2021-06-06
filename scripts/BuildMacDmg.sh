@@ -9,5 +9,5 @@ if test -f "src/main/resources/Tachidesk.jar"; then
     rm "src/main/resources/Tachidesk.jar"
 fi
 
-echo "Building Pkg package"
-./gradlew packagePkg "$@"
+echo "Building Dmg package"
+./gradlew packageDmg "$@"
