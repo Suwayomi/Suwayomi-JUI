@@ -42,9 +42,6 @@ Download the latest release from [the aur](https://aur.archlinux.org/packages/ta
 
 If you use yay, you can run `yay -S tachidesk-jui` inside a terminal window.
 
-### Other Linux (x64, Java 15 required)
-Download the latest linux jar release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
-
 ## General troubleshooting
 If the app breaks try deleting the directory below and re-running the app (**This will delete all your data!**) and if the problem persists open an issue.
 
