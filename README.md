@@ -45,13 +45,11 @@ If you use yay, you can run `yay -S tachidesk-jui` inside a terminal window.
 ## General troubleshooting
 If the app breaks try deleting the directory below and re-running the app (**This will delete all your data!**) and if the problem persists open an issue.
 
-On Mac OS X : `/Users/<Account>/Library/Application Support/TachideskJUI`
+### I'm having issues starting the application
+Make sure you have used either an installer, or you have Java 15 installed.
 
-On Windows XP : `C:\Documents and Settings\<Account>\Application Data\Local Settings\TachideskJUI`
-
-On Windows 7 and later : `C:\Users\<Account>\AppData\Local\TachideskJUI`
-
-On Unix/Linux : `/home/<account>/.local/share/TachideskJUI`
+### It says server failed to start
+Make sure that if you used an installer, that you have at least Java 8 installed.
 
 ## Support and help
 Join Tachidesk's [discord server](https://discord.gg/wgPyb7hE5d) to hang out with the community and receive support and help.
