@@ -18,24 +18,29 @@ Here is a list of current features for interaction with Tachidesk:
 **Note:** Keep in mind that TachideskJUI and Tachidesk are alpha software and can rarely break and/or with each update, so you may have to delete your data to fix it. See [General troubleshooting](#general-troubleshooting) and [Support and help](#support-and-help) if it happens.
 
 ## Downloading and Running the app
-### All Operating Systems (Java Not Included)
+### All Operating Systems (x64, Java Not Included)
 You should have The [Java Runtime Environment(JRE) 15](https://jdk.java.net/15/) or newer.
 
 Download the latest jar release for your OS from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
 Double-click on the jar file or run `java -jar TachideskJUI-os-arch-X.Y.Z.jar` from a Terminal/Command Prompt window to run the app.
 
-### Windows (Java 8+ required for server)
-Download the latest exe or msi release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
+### Windows (x64, Java 8+ required for server)
+Download the latest msi release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
-### MacOS (Java Included, Server not included)
+### MacOS (x64, Java Included, Server not included)
 Download the latest dmg release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
-### Debian based Linux (Java 8+ required for server)
+### Debian based Linux (x64, Java 8+ required for server)
 Download the latest deb release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
-### Fedora based Linux (Java 8+ required for server)
+### Fedora based Linux (x64, Java 8+ required for server)
 Download the latest rpm release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
+
+### Arch based Linux (x64, Java Included)
+Download the latest release from [the aur](https://aur.archlinux.org/packages/tachidesk-jui/).
+
+If you use yay, you can run `yay -S tachidesk-jui` inside a terminal window.
 
 ## General troubleshooting
 If the app breaks try deleting the directory below and re-running the app (**This will delete all your data!**) and if the problem persists open an issue.
