@@ -37,6 +37,12 @@ Download the latest deb release from [the releases section](https://github.com/S
 ### Fedora based Linux (Java 8+ required for server)
 Download the latest rpm release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
+### Arch based Linux (Java 8+ required for server)
+Download the latest release from [the aur](https://aur.archlinux.org/packages/tachidesk-jui/).
+
+### Other Linux(x64 only) (Java 8+ required for server)
+Download the latest linux jar release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
+
 ## General troubleshooting
 If the app breaks try deleting the directory below and re-running the app (**This will delete all your data!**) and if the problem persists open an issue.
 
