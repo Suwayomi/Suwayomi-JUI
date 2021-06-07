@@ -69,6 +69,9 @@ fun main() {
 
     scope.getInstance<UiPreferences>().themeMode()
         .getAsFlow {
+            if (System.getProperty("os.name").startsWith("Mac")) {
+                return@getAsFlow
+            }
             val theme = when (it) {
                 ThemeMode.Light -> IntelliJTheme()
                 ThemeMode.Dark -> DarculaTheme()
