@@ -40,6 +40,8 @@ Download the latest rpm release from [the releases section](https://github.com/S
 ### Arch based Linux (Java 8+ required for server)
 Download the latest release from [the aur](https://aur.archlinux.org/packages/tachidesk-jui/).
 
+If you use yay, you can run `yay -S tachidesk-jui` inside a terminal window.
+
 ### Other Linux(x64 only) (Java 8+ required for server)
 Download the latest linux jar release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
