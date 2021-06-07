@@ -69,7 +69,7 @@ fun main() {
 
     scope.getInstance<UiPreferences>().themeMode()
         .getAsFlow {
-            if (System.getProperty("os.name").startsWith("Mac")) {
+            if (System.getProperty("os.name").startsWith("Mac") && System.getProperty("os.arch") == "aarch64") {
                 return@getAsFlow
             }
             val theme = when (it) {
