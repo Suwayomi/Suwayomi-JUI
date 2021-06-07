@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ReaderMenuViewModel @Inject constructor(
-    params: Params,
+    private val params: Params,
     private val readerPreferences: ReaderPreferences,
     private val chapterHandler: ChapterInteractionHandler
 ) : ViewModel() {
@@ -60,6 +60,10 @@ class ReaderMenuViewModel @Inject constructor(
     private val loader = ChapterLoader(scope.coroutineContext, readerPreferences, chapterHandler)
 
     init {
+        init()
+    }
+
+    fun init() {
         scope.launch(Dispatchers.Default) {
             init(params.mangaId, params.chapterIndex)
         }

@@ -200,7 +200,8 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
         } else {
             LoadingScreen(
                 state is ReaderChapter.State.Wait || state is ReaderChapter.State.Loading,
-                errorMessage = (state as? ReaderChapter.State.Error)?.error?.message
+                errorMessage = (state as? ReaderChapter.State.Error)?.error?.message,
+                retry = vm::init
             )
         }
     }
