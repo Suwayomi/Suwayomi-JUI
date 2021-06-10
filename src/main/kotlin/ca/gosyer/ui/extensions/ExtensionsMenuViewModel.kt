@@ -51,6 +51,7 @@ class ExtensionsMenuViewModel @Inject constructor(
             search(searchQuery.value.orEmpty())
         } catch (e: Exception) {
             e.throwIfCancellation()
+            extensionList = emptyList()
         } finally {
             _isLoading.value = false
         }
