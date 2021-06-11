@@ -13,6 +13,7 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
+import io.ktor.client.features.websocket.WebSockets
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Provider
@@ -32,6 +33,7 @@ internal class HttpProvider @Inject constructor() : Provider<Http> {
                     }
                 )
             }
+            install(WebSockets)
             install(Logging) {
                 level = if (BuildConfig.DEBUG) {
                     LogLevel.HEADERS

@@ -63,7 +63,9 @@ suspend fun <T> withIOContext(
 fun Throwable.throwIfCancellation() { if (this is CancellationException) throw this }
 
 fun <T> Result<T>.throwIfCancellation(): Result<T> {
-    val exception = exceptionOrNull()
-    if (exception is CancellationException) throw exception
+    if (isFailure) {
+        val exception = exceptionOrNull()
+        if (exception is CancellationException) throw exception
+    }
     return this
 }

@@ -21,3 +21,11 @@ fun updateChapterRequest(mangaId: Long, chapterIndex: Int) =
 @Get
 fun getPageQuery(mangaId: Long, chapterIndex: Int, index: Int) =
     "/api/v1/manga/$mangaId/chapter/$chapterIndex/page/$index"
+
+@Get
+fun queueDownloadChapterRequest(mangaId: Long, chapterIndex: Int) =
+    "/api/v1/download/$mangaId/chapter/$chapterIndex"
+
+@Delete
+fun deleteDownloadChapterRequest(mangaId: Long, chapterIndex: Int) =
+    "/api/v1/download/$mangaId/chapter/$chapterIndex"

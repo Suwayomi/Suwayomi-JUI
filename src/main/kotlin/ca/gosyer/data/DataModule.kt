@@ -8,6 +8,7 @@ package ca.gosyer.data
 
 import ca.gosyer.core.prefs.PreferenceStoreFactory
 import ca.gosyer.data.catalog.CatalogPreferences
+import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.reader.ReaderPreferences
@@ -72,5 +73,9 @@ val DataModule = module {
 
     bind<ServerService>()
         .toClass<ServerService>()
+        .singleton()
+
+    bind<DownloadService>()
+        .toClass<DownloadService>()
         .singleton()
 }
