@@ -6,6 +6,8 @@
 
 package ca.gosyer.ui.manga
 
+import ca.gosyer.data.download.DownloadService
+import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.ServerPreferences
@@ -19,7 +21,9 @@ import ca.gosyer.util.lang.withIOContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -29,18 +33,21 @@ import javax.inject.Inject
 
 class MangaMenuViewModel @Inject constructor(
     private val params: Params,
-    private val uiPreferences: UiPreferences,
     private val mangaHandler: MangaInteractionHandler,
     private val chapterHandler: ChapterInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
-    serverPreferences: ServerPreferences
+    private val downloadService: DownloadService,
+    serverPreferences: ServerPreferences,
+    uiPreferences: UiPreferences,
 ) : ViewModel() {
     val serverUrl = serverPreferences.serverUrl().stateIn(scope)
+
+    private val downloadingChapters = downloadService.registerWatch(params.mangaId)
 
     private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()
 
-    private val _chapters = MutableStateFlow(emptyList<Chapter>())
+    private val _chapters = MutableStateFlow(emptyList<ViewChapter>())
     val chapters = _chapters.asStateFlow()
 
     private val _isLoading = MutableStateFlow(true)
@@ -56,6 +63,21 @@ class MangaMenuViewModel @Inject constructor(
         .asStateFlow(getDateFormat(uiPreferences.dateFormat().get()))
 
     init {
+        downloadingChapters.mapLatest { downloadingChapters ->
+            chapters.value.forEach { chapter ->
+                val downloadingChapter = downloadingChapters.find {
+                    it.chapterIndex == chapter.chapter.index
+                }
+                if (downloadingChapter != null && chapter.downloadState.value != DownloadState.Downloading) {
+                    chapter.downloadState.value = DownloadState.Downloading
+                }
+                if (chapter.downloadState.value == DownloadState.Downloading && downloadingChapter == null) {
+                    chapter.downloadState.value = DownloadState.Downloaded
+                }
+                chapter.downloadChapterFlow.value = downloadingChapter
+            }
+        }.launchIn(scope)
+
         scope.launch {
             refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
             _isLoading.value = false
@@ -83,7 +105,7 @@ class MangaMenuViewModel @Inject constructor(
     private suspend fun refreshChaptersAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
             try {
-                _chapters.value = chapterHandler.getChapters(mangaId, refresh)
+                _chapters.value = chapterHandler.getChapters(mangaId, refresh).toViewChapters()
             } catch (e: Exception) {
                 e.throwIfCancellation()
             }
@@ -115,8 +137,8 @@ class MangaMenuViewModel @Inject constructor(
     fun toggleRead(index: Int) {
         scope.launch {
             manga.value?.let { manga ->
-                chapterHandler.updateChapter(manga, index, read = !_chapters.value.first { it.index == index }.read)
-                _chapters.value = chapterHandler.getChapters(manga)
+                chapterHandler.updateChapter(manga, index, read = !_chapters.value.first { it.chapter.index == index }.chapter.read)
+                _chapters.value = chapterHandler.getChapters(manga).toViewChapters()
             }
         }
     }
@@ -124,8 +146,8 @@ class MangaMenuViewModel @Inject constructor(
     fun toggleBookmarked(index: Int) {
         scope.launch {
             manga.value?.let { manga ->
-                chapterHandler.updateChapter(manga, index, bookmarked = !_chapters.value.first { it.index == index }.bookmarked)
-                _chapters.value = chapterHandler.getChapters(manga)
+                chapterHandler.updateChapter(manga, index, bookmarked = !_chapters.value.first { it.chapter.index == index }.chapter.bookmarked)
+                _chapters.value = chapterHandler.getChapters(manga).toViewChapters()
             }
         }
     }
@@ -134,9 +156,54 @@ class MangaMenuViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 chapterHandler.updateChapter(manga, index, markPreviousRead = true)
-                _chapters.value = chapterHandler.getChapters(manga)
+                _chapters.value = chapterHandler.getChapters(manga).toViewChapters()
             }
         }
+    }
+
+    fun downloadChapter(index: Int) {
+        scope.launch {
+            manga.value?.let { manga ->
+                chapterHandler.queueChapterDownload(manga, index)
+            }
+        }
+    }
+
+    fun deleteDownload(index: Int) {
+        scope.launch {
+            manga.value?.let { manga ->
+                chapterHandler.deleteChapterDownload(manga, index)
+                chapters.value.find { it.chapter.index == index }?.downloadState?.value = DownloadState.NotDownloaded
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        downloadService.removeWatch(params.mangaId)
+    }
+
+    private fun List<Chapter>.toViewChapters() = map {
+        ViewChapter(
+            it,
+            MutableStateFlow(
+                if (it.downloaded) {
+                    DownloadState.Downloaded
+                } else {
+                    DownloadState.NotDownloaded
+                }
+            )
+        )
+    }
+
+    data class ViewChapter(
+        val chapter: Chapter,
+        val downloadState: MutableStateFlow<DownloadState>,
+        val downloadChapterFlow: MutableStateFlow<DownloadChapter?> = MutableStateFlow(null)
+    )
+    enum class DownloadState {
+        NotDownloaded,
+        Downloading,
+        Downloaded
     }
 
     data class Params(val mangaId: Long)

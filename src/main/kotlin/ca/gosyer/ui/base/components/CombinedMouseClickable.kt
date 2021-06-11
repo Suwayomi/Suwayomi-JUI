@@ -26,7 +26,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.IntOffset
 import java.awt.event.MouseEvent
 
-private suspend fun AwaitPointerEventScope.awaitEventFirstDown(): PointerEvent {
+suspend fun AwaitPointerEventScope.awaitEventFirstDown(): PointerEvent {
     var event: PointerEvent
     do {
         event = awaitPointerEvent()
