@@ -6,14 +6,18 @@
 
 package ca.gosyer.data.server.requests
 
+@Get
 fun downloadsQuery() =
     "/api/v1/downloads"
 
+@Get
 fun downloadsStartRequest() =
     "/api/v1/downloads/start"
 
+@Get
 fun downloadsStopRequest() =
     "/api/v1/downloads/stop"
 
+@Get
 fun downloadsClearRequest() =
     "/api/v1/downloads/clear"
