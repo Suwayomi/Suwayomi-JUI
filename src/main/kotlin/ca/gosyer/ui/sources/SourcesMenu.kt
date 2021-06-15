@@ -22,11 +22,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import ca.gosyer.BuildConfig
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.Toolbar
@@ -41,9 +43,13 @@ import com.github.zsoltk.compose.savedinstancestate.BundleScope
 import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
 
 fun openSourcesMenu() {
-    ThemedWindow(title = "TachideskJUI - Sources") {
-        SourcesMenu {
-            openMangaMenu(it)
+    ThemedWindow(BuildConfig.NAME) {
+        CompositionLocalProvider(
+            LocalSavedInstanceState provides Bundle()
+        ) {
+            SourcesMenu {
+                openMangaMenu(it)
+            }
         }
     }
 }

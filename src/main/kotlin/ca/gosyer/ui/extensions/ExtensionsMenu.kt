@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.extensions
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,6 +25,7 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,6 +39,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ca.gosyer.BuildConfig
 import ca.gosyer.data.models.Extension
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
@@ -49,12 +50,11 @@ import ca.gosyer.util.compose.persistentLazyListState
 import java.util.Locale
 
 fun openExtensionsMenu() {
-    ThemedWindow(title = "TachideskJUI - Extensions", size = IntSize(550, 700)) {
+    ThemedWindow(BuildConfig.NAME, size = IntSize(550, 700)) {
         ExtensionsMenu()
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExtensionsMenu() {
     val vm = viewModel<ExtensionsMenuViewModel>()
@@ -63,7 +63,7 @@ fun ExtensionsMenu() {
     val serverUrl by vm.serverUrl.collectAsState()
     val search by vm.searchQuery.collectAsState()
 
-    Box(Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+    Surface(Modifier.fillMaxSize()) {
         if (isLoading) {
             LoadingScreen(isLoading)
         } else {

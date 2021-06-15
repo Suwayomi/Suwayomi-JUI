@@ -40,6 +40,10 @@ class DownloadService @Inject constructor(
     private val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
     private val _downloaderStatus = MutableStateFlow(DownloaderStatus.Stopped)
     val downloaderStatus = _downloaderStatus.asStateFlow()
+
+    private val _downloadQueue = MutableStateFlow(emptyList<DownloadChapter>())
+    val downloadQueue = _downloadQueue.asStateFlow()
+
     private val watching = mutableMapOf<Long, MutableSharedFlow<List<DownloadChapter>>>()
 
     init {
@@ -58,6 +62,7 @@ class DownloadService @Inject constructor(
                                 frame as Frame.Text
                                 val status = json.decodeFromString<DownloadStatus>(frame.readText())
                                 _downloaderStatus.value = status.status
+                                _downloadQueue.value = status.queue
                                 val queue = status.queue.groupBy { it.mangaId }
                                 watching.forEach { (mangaId, flow) ->
                                     flow.emit(queue[mangaId].orEmpty())

@@ -13,8 +13,8 @@ import kotlinx.serialization.Serializable
 data class DownloadChapter(
     val chapterIndex: Int,
     val mangaId: Long,
-    var state: DownloadState = DownloadState.Queued,
-    var progress: Float = 0f,
-    var tries: Int = 0,
-    var chapter: Chapter? = null,
+    val state: DownloadState = DownloadState.Queued,
+    val progress: Float = 0f,
+    val tries: Int = 0,
+    val chapter: Chapter? = null,
 )

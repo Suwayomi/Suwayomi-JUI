@@ -16,8 +16,10 @@ import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.HttpProvider
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.ServerService
+import ca.gosyer.data.server.interactions.BackupInteractionHandler
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
+import ca.gosyer.data.server.interactions.DownloadInteractionHandler
 import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
@@ -58,10 +60,14 @@ val DataModule = module {
         .toProvider(HttpProvider::class)
         .providesSingleton()
 
+    bind<BackupInteractionHandler>()
+        .toClass<BackupInteractionHandler>()
     bind<CategoryInteractionHandler>()
         .toClass<CategoryInteractionHandler>()
     bind<ChapterInteractionHandler>()
         .toClass<ChapterInteractionHandler>()
+    bind<DownloadInteractionHandler>()
+        .toClass<DownloadInteractionHandler>()
     bind<ExtensionInteractionHandler>()
         .toClass<ExtensionInteractionHandler>()
     bind<LibraryInteractionHandler>()

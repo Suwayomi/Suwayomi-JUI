@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ScrollableTabRow
+import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
+import ca.gosyer.BuildConfig
 import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
@@ -35,7 +37,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 
 fun openLibraryMenu() {
-    ThemedWindow {
+    ThemedWindow(BuildConfig.NAME) {
         LibraryScreen()
     }
 }
@@ -50,46 +52,48 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
     val serverUrl by vm.serverUrl.collectAsState()
     // val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
-    if (categories.isEmpty()) {
-        LoadingScreen(isLoading)
-    } else {
-        /*ModalBottomSheetLayout(
-        sheetState = sheetState,
-        sheetContent = { *//*LibrarySheet()*//* }
-    ) {*/
-        Column(Modifier.fillMaxWidth()) {
-            /*Toolbar(
-                title = {
-                    val text = if (vm.showCategoryTabs) {
-                        stringResource(R.string.library_label)
-                    } else {
-                        vm.selectedCategory?.visibleName.orEmpty()
+    Surface {
+        if (categories.isEmpty()) {
+            LoadingScreen(isLoading)
+        } else {
+            /*ModalBottomSheetLayout(
+                sheetState = sheetState,
+                sheetContent = { *//*LibrarySheet()*//* }
+            ) {*/
+            Column(Modifier.fillMaxWidth()) {
+                /*Toolbar(
+                    title = {
+                        val text = if (vm.showCategoryTabs) {
+                            stringResource(R.string.library_label)
+                        } else {
+                            vm.selectedCategory?.visibleName.orEmpty()
+                        }
+                        Text(text)
+                    },
+                    actions = {
+                        IconButton(onClick = { scope.launch { sheetState.show() }}) {
+                            Icon(Icons.Default.FilterList, contentDescription = null)
+                        }
                     }
-                    Text(text)
-                },
-                actions = {
-                    IconButton(onClick = { scope.launch { sheetState.show() }}) {
-                        Icon(Icons.Default.FilterList, contentDescription = null)
-                    }
-                }
-            )*/
-            LibraryTabs(
-                visible = true, // vm.showCategoryTabs,
-                categories = categories,
-                selectedPage = selectedCategoryIndex,
-                onPageChanged = vm::setSelectedPage
-            )
-            LibraryPager(
-                categories = categories,
-                displayMode = displayMode,
-                selectedPage = selectedCategoryIndex,
-                serverUrl = serverUrl,
-                getLibraryForPage = { vm.getLibraryForCategoryIndex(it).collectAsState() },
-                onPageChanged = { vm.setSelectedPage(it) },
-                onClickManga = onClickManga
-            )
+                )*/
+                LibraryTabs(
+                    visible = true, // vm.showCategoryTabs,
+                    categories = categories,
+                    selectedPage = selectedCategoryIndex,
+                    onPageChanged = vm::setSelectedPage
+                )
+                LibraryPager(
+                    categories = categories,
+                    displayMode = displayMode,
+                    selectedPage = selectedCategoryIndex,
+                    serverUrl = serverUrl,
+                    getLibraryForPage = { vm.getLibraryForCategoryIndex(it).collectAsState() },
+                    onPageChanged = { vm.setSelectedPage(it) },
+                    onClickManga = onClickManga
+                )
+            }
+            // }
         }
-        // }
     }
 }
 

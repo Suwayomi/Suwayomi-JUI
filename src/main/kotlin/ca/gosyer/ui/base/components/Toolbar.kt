@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -94,13 +95,22 @@ fun Toolbar(
             Row {
                 actions()
                 if (closable) {
-                    IconButton(
-                        onClick = onClose
-                    ) {
-                        Icon(Icons.Default.Close, "close", Modifier.size(52.dp))
-                    }
+                    ActionIcon(onClick = onClose, "Close", Icons.Default.Close)
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ActionIcon(onClick: () -> Unit, contentDescription: String, icon: ImageVector) {
+    BoxWithTooltipSurface(
+        {
+            Text(contentDescription, modifier = Modifier.padding(10.dp))
+        }
+    ) {
+        IconButton(onClick = onClick) {
+            Icon(icon, contentDescription, Modifier.size(52.dp))
         }
     }
 }
