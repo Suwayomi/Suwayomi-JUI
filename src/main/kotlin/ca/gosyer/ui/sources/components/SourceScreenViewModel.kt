@@ -15,6 +15,7 @@ import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.util.compose.saveBooleanInBundle
 import ca.gosyer.util.compose.saveIntInBundle
 import ca.gosyer.util.compose.saveObjectInBundle
+import ca.gosyer.util.compose.saveStringInBundle
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,6 +53,8 @@ class SourceScreenViewModel(
     private val _isLatest = saveBooleanInBundle(scope, bundle, IS_LATEST_KEY, false)
     val isLatest = _isLatest.asStateFlow()
 
+    private val _query = saveStringInBundle(scope, bundle, QUERY_KEY) { null }
+
     private val _pageNum = saveIntInBundle(scope, bundle, PAGE_NUM_KEY, 1)
     val pageNum = _pageNum.asStateFlow()
 
@@ -77,27 +80,45 @@ class SourceScreenViewModel(
         }
     }
 
+    private fun cleanBundle(removeMode: Boolean = true) {
+        bundle.remove(MANGAS_KEY)
+        bundle.remove(NEXT_PAGE_KEY)
+        bundle.remove(PAGE_NUM_KEY)
+        if (removeMode) {
+            bundle.remove(IS_LATEST_KEY)
+        }
+        bundle.remove(QUERY_KEY)
+    }
+
     fun setMode(toLatest: Boolean) {
         if (isLatest.value != toLatest) {
-            bundle.remove(MANGAS_KEY)
-            bundle.remove(NEXT_PAGE_KEY)
-            bundle.remove(PAGE_NUM_KEY)
-            bundle.remove(IS_LATEST_KEY)
+            cleanBundle()
             _isLatest.value = toLatest
             // [loadNextPage] increments by 1
             _pageNum.value = 0
             _loading.value = true
+            _query.value = null
             _mangas.value = emptyList()
             loadNextPage()
         }
     }
 
     private suspend fun getPage(): MangaPage {
-        return if (isLatest.value) {
-            sourceHandler.getLatestManga(source, pageNum.value)
-        } else {
-            sourceHandler.getPopularManga(source, pageNum.value)
+        return when {
+            isLatest.value -> sourceHandler.getLatestManga(source, pageNum.value)
+            _query.value != null -> sourceHandler.getSearchResults(source, _query.value!!, pageNum.value)
+            else -> sourceHandler.getPopularManga(source, pageNum.value)
         }
+    }
+
+    fun search(query: String?) {
+        cleanBundle(false)
+        _pageNum.value = 0
+        _hasNextPage.value = true
+        _loading.value = true
+        _query.value = query
+        _mangas.value = emptyList()
+        loadNextPage()
     }
 
     data class Params(val source: Source, val bundle: Bundle)
@@ -105,7 +126,8 @@ class SourceScreenViewModel(
     private companion object {
         const val MANGAS_KEY = "mangas"
         const val NEXT_PAGE_KEY = "next_page"
-        const val PAGE_NUM_KEY = "next_page"
+        const val PAGE_NUM_KEY = "page_num"
         const val IS_LATEST_KEY = "is_latest"
+        const val QUERY_KEY = "query"
     }
 }

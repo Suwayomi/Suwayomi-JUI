@@ -68,6 +68,8 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
     val sources by vm.sources.collectAsState()
     val sourceTabs by vm.sourceTabs.collectAsState()
     val selectedSourceTab by vm.selectedSourceTab.collectAsState()
+    val sourceSearchEnabled by vm.sourceSearchEnabled.collectAsState()
+    val sourceSearchQuery by vm.sourceSearchQuery.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
 
     Surface {
@@ -77,7 +79,12 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                 closable = selectedSourceTab != null,
                 onClose = {
                     selectedSourceTab?.let { vm.closeTab(it) }
-                }
+                },
+                searchText = if (sourceSearchEnabled) {
+                    sourceSearchQuery
+                } else null,
+                search = if (sourceSearchEnabled) vm::search else null,
+                searchSubmit = vm::submitSearch
             )
             Row {
                 Surface(elevation = 1.dp) {
@@ -120,7 +127,7 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                 val selectedSource: Source? = selectedSourceTab
                 BundleScope(selectedSource?.id.toString(), autoDispose = false) {
                     if (selectedSource != null) {
-                        SourceScreen(it, selectedSource, onMangaClick)
+                        SourceScreen(it, selectedSource, onMangaClick, vm::enableSearch, vm::setSearch)
                     } else {
                         SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
                     }

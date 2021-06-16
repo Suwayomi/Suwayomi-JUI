@@ -44,6 +44,14 @@ class SourcesMenuViewModel @Inject constructor(
     private val _selectedSourceTab = MutableStateFlow<Source?>(null)
     val selectedSourceTab = _selectedSourceTab.asStateFlow()
 
+    private val _sourceSearchEnabled = MutableStateFlow(false)
+    val sourceSearchEnabled = _sourceSearchEnabled.asStateFlow()
+
+    private val _sourceSearchQuery = MutableStateFlow<String?>(null)
+    val sourceSearchQuery = _sourceSearchQuery.asStateFlow()
+
+    private var searchSource: ((String?) -> Unit)? = null
+
     init {
         _sourceTabs.drop(1)
             .onEach { sources ->
@@ -108,6 +116,22 @@ class SourcesMenuViewModel @Inject constructor(
             _selectedSourceTab.value = null
         }
         bundle.remove(source.id.toString())
+    }
+
+    fun setSearch(block: (String?) -> Unit) {
+        searchSource = block
+    }
+
+    fun enableSearch(enabled: Boolean) {
+        _sourceSearchEnabled.value = enabled
+    }
+
+    fun search(query: String) {
+        _sourceSearchQuery.value = query.takeUnless { it.isBlank() }
+    }
+
+    fun submitSearch() {
+        searchSource?.invoke(sourceSearchQuery.value)
     }
 
     private companion object : CKLogger({}) {

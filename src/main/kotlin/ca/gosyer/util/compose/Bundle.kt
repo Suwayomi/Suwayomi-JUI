@@ -102,3 +102,23 @@ fun saveBooleanInBundle(
         { initialValue }
     )
 }
+
+fun saveStringInBundle(
+    scope: CoroutineScope,
+    bundle: Bundle,
+    key: String,
+    initialValue: () -> String? = { null }
+): MutableStateFlow<String?> {
+    return saveAnyInBundle(
+        scope,
+        bundle,
+        key,
+        { getString(key) ?: initialValue() },
+        { itemKey, item ->
+            if (item != null) {
+                putString(itemKey, item)
+            } else remove(itemKey)
+        },
+        initialValue
+    )
+}

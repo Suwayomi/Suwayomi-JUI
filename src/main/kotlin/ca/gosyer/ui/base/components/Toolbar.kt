@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -37,7 +38,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +63,8 @@ fun Toolbar(
     contentColor: Color = contentColorFor(backgroundColor), // CustomColors.current.onBars,
     elevation: Dp = AppBarDefaults.TopAppBarElevation,
     searchText: String? = null,
-    search: ((String) -> Unit)? = null
+    search: ((String) -> Unit)? = null,
+    searchSubmit: (() -> Unit)? = null,
 ) {
     Surface(
         modifier = modifier,
@@ -85,9 +93,20 @@ fun Toolbar(
                             searchText.orEmpty(),
                             onValueChange = search,
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().then(
+                                if (searchSubmit != null) {
+                                    Modifier.onPreviewKeyEvent { event ->
+                                        (event.key == Key.Enter && event.type == KeyEventType.KeyDown).also {
+                                            if (it) {
+                                                searchSubmit()
+                                            }
+                                        }
+                                    }
+                                } else Modifier
+                            ),
                             textStyle = TextStyle(contentColor, 18.sp),
-                            cursorBrush = SolidColor(contentColor.copy(alpha = 0.50F))
+                            cursorBrush = SolidColor(contentColor.copy(alpha = 0.50F)),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)
                         )
                     }
                 }

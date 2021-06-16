@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,7 +34,9 @@ import com.github.zsoltk.compose.savedinstancestate.Bundle
 fun SourceScreen(
     bundle: Bundle,
     source: Source,
-    onMangaClick: (Long) -> Unit
+    onMangaClick: (Long) -> Unit,
+    enableSearch: (Boolean) -> Unit,
+    setSearch: ((String?) -> Unit) -> Unit
 ) {
     val vm = viewModel<SourceScreenViewModel>(source.id) {
         SourceScreenViewModel.Params(source, bundle)
@@ -43,6 +46,18 @@ fun SourceScreen(
     val loading by vm.loading.collectAsState()
     val isLatest by vm.isLatest.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
+
+    LaunchedEffect(Unit) {
+        setSearch(vm::search)
+    }
+
+    DisposableEffect(isLatest) {
+        enableSearch(!isLatest)
+
+        onDispose {
+            enableSearch(false)
+        }
+    }
 
     MangaTable(
         bundle,
