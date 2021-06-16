@@ -15,6 +15,7 @@ import ca.gosyer.data.server.requests.getChapterQuery
 import ca.gosyer.data.server.requests.getMangaChaptersQuery
 import ca.gosyer.data.server.requests.getPageQuery
 import ca.gosyer.data.server.requests.queueDownloadChapterRequest
+import ca.gosyer.data.server.requests.updateChapterMetaRequest
 import ca.gosyer.data.server.requests.updateChapterRequest
 import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.HttpRequestBuilder
@@ -153,4 +154,22 @@ class ChapterInteractionHandler @Inject constructor(
     suspend fun deleteChapterDownload(manga: Manga, chapterIndex: Int) = deleteChapterDownload(manga.id, chapterIndex)
 
     suspend fun deleteChapterDownload(manga: Manga, chapter: Chapter) = deleteChapterDownload(manga.id, chapter.index)
+
+    suspend fun updateChapterMeta(mangaId: Long, chapterIndex: Int, key: String, value: String) = withIOContext {
+        client.submitFormRepeat<HttpResponse>(
+            serverUrl + updateChapterMetaRequest(mangaId, chapterIndex),
+            formParameters = Parameters.build {
+                append("key", key)
+                append("value", value)
+            }
+        ) {
+            method = HttpMethod.Patch
+        }
+    }
+
+    suspend fun updateChapterMeta(chapter: Chapter, key: String, value: String) = updateChapterMeta(chapter.mangaId, chapter.index, key, value)
+
+    suspend fun updateChapterMeta(manga: Manga, chapterIndex: Int, key: String, value: String) = updateChapterMeta(manga.id, chapterIndex, key, value)
+
+    suspend fun updateChapterMeta(manga: Manga, chapter: Chapter, key: String, value: String) = updateChapterMeta(manga.id, chapter.index, key, value)
 }

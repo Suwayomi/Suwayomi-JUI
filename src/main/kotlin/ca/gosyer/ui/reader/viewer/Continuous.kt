@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -44,6 +45,7 @@ fun ContinuousReader(
     maxSize: Int,
     padding: Int,
     currentPage: Int,
+    currentPageOffset: Int,
     previousChapter: ReaderChapter?,
     currentChapter: ReaderChapter,
     nextChapter: ReaderChapter?,
@@ -51,10 +53,11 @@ fun ContinuousReader(
     pageContentScale: ContentScale,
     pageEmitter: SharedFlow<Pair<MoveTo, Int>>,
     retry: (ReaderPage) -> Unit,
-    progress: (Int) -> Unit
+    progress: (Int) -> Unit,
+    updateLastPageReadOffset: (Int) -> Unit
 ) {
     BoxWithConstraints {
-        val state = rememberLazyListState(currentPage)
+        val state = rememberLazyListState(currentPage, currentPageOffset)
         LaunchedEffect(Unit) {
             pageEmitter
                 .mapLatest { (moveTo) ->
@@ -65,6 +68,11 @@ fun ContinuousReader(
                     state.animateScrollBy(by.value)
                 }
                 .launchIn(this)
+        }
+        DisposableEffect(Unit) {
+            onDispose {
+                updateLastPageReadOffset(state.firstVisibleItemScrollOffset)
+            }
         }
 
         val imageModifier = if (maxSize != 0) {

@@ -23,7 +23,13 @@ data class Manga(
     val status: String,
     val inLibrary: Boolean,
     val source: Source?,
-    val freshData: Boolean
+    val freshData: Boolean,
+    val meta: MangaMeta
 ) {
     fun cover(serverUrl: String) = thumbnailUrl?.let { serverUrl + it }
 }
+
+@Serializable
+data class MangaMeta(
+    val jui: Int? = null
+)

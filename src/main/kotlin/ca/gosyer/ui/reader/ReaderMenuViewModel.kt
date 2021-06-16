@@ -52,6 +52,9 @@ class ReaderMenuViewModel @Inject constructor(
     private val _currentPage = MutableStateFlow(1)
     val currentPage = _currentPage.asStateFlow()
 
+    private val _currentPageOffset = MutableStateFlow(1)
+    val currentPageOffset = _currentPageOffset.asStateFlow()
+
     private val _pageEmitter = MutableSharedFlow<Pair<MoveTo, Int>>()
     val pageEmitter = _pageEmitter.asSharedFlow()
 
@@ -147,7 +150,12 @@ class ReaderMenuViewModel @Inject constructor(
         }
         val lastPageRead = chapter.chapter.lastPageRead
         if (lastPageRead != 0) {
-            _currentPage.value = chapter.chapter.lastPageRead
+            _currentPage.value = lastPageRead
+        }
+
+        val lastPageReadOffset = chapter.chapter.meta.juiPageOffset
+        if (lastPageReadOffset != 0) {
+            _currentPage.value = lastPageReadOffset
         }
 
         chapter.stateObserver
@@ -183,6 +191,12 @@ class ReaderMenuViewModel @Inject constructor(
         if (chapter.read) return
         GlobalScope.launch {
             chapterHandler.updateChapter(chapter.mangaId, chapter.index, lastPageRead = currentPage.value)
+        }
+    }
+
+    fun updateLastPageReadOffset(offset: Int) {
+        GlobalScope.launch {
+            chapter.value?.chapter?.updateRemote(chapterHandler, offset)
         }
     }
 

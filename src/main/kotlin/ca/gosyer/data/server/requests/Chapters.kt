@@ -29,3 +29,6 @@ fun queueDownloadChapterRequest(mangaId: Long, chapterIndex: Int) =
 @Delete
 fun deleteDownloadChapterRequest(mangaId: Long, chapterIndex: Int) =
     "/api/v1/download/$mangaId/chapter/$chapterIndex"
+
+fun updateChapterMetaRequest(mangaId: Long, chapterIndex: Int) =
+    "/api/v1/manga/$mangaId/chapter/$chapterIndex/meta"

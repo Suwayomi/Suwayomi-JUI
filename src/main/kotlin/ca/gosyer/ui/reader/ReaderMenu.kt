@@ -126,6 +126,7 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
     val maxSize by vm.readerModeSettings.maxSize.collectAsState()
     val navigationMode by vm.readerModeSettings.navigationMode.collectAsState()
     val currentPage by vm.currentPage.collectAsState()
+    val currentPageOffset by vm.currentPageOffset.collectAsState()
     LaunchedEffect(Unit) {
         setHotkeys(
             listOf(
@@ -160,6 +161,7 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                                 maxSize,
                                 padding,
                                 currentPage,
+                                currentPageOffset,
                                 previousChapter,
                                 chapter,
                                 nextChapter,
@@ -175,7 +177,8 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                                 },
                                 vm.pageEmitter,
                                 vm::retry,
-                                vm::progress
+                                vm::progress,
+                                vm::updateLastPageReadOffset
                             )
                         } else {
                             PagerReader(

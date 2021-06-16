@@ -11,9 +11,13 @@ import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.mangaQuery
 import ca.gosyer.data.server.requests.mangaThumbnailQuery
+import ca.gosyer.data.server.requests.updateMangaMetaRequest
 import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.parameter
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpMethod
+import io.ktor.http.Parameters
 import javax.inject.Inject
 
 class MangaInteractionHandler @Inject constructor(
@@ -42,4 +46,18 @@ class MangaInteractionHandler @Inject constructor(
             block
         )
     }
+
+    suspend fun updateMangaMeta(mangaId: Long, key: String, value: String) = withIOContext {
+        client.submitFormRepeat<HttpResponse>(
+            serverUrl + updateMangaMetaRequest(mangaId),
+            formParameters = Parameters.build {
+                append("key", key)
+                append("value", value)
+            }
+        ) {
+            method = HttpMethod.Patch
+        }
+    }
+
+    suspend fun updateMangaMeta(manga: Manga, key: String, value: String) = updateMangaMeta(manga.id, key, value)
 }

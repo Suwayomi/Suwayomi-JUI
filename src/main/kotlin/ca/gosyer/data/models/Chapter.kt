@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.models
 
+import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -23,5 +24,20 @@ data class Chapter(
     val chapterCount: Int?,
     val pageCount: Int?,
     val lastReadAt: Int?,
-    val downloaded: Boolean
+    val downloaded: Boolean,
+    val meta: ChapterMeta
+) {
+    suspend fun updateRemote(
+        chapterHandler: ChapterInteractionHandler,
+        pageOffset: Int = meta.juiPageOffset
+    ) {
+        if (pageOffset != meta.juiPageOffset) {
+            chapterHandler.updateChapterMeta(this, "juiPageOffset", pageOffset.toString())
+        }
+    }
+}
+
+@Serializable
+data class ChapterMeta(
+    var juiPageOffset: Int = 0
 )

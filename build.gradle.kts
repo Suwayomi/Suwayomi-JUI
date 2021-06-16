@@ -169,7 +169,7 @@ buildConfig {
     packageName = project.group.toString()
 
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
-    buildConfigField("String", "TACHIDESK_SP_VERSION", "v0.4.2")
+    buildConfigField("String", "TACHIDESK_SP_VERSION", "v0.4.3")
 }
 
 kotlinter {
