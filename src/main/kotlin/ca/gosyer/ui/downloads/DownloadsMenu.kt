@@ -7,8 +7,8 @@
 package ca.gosyer.ui.downloads
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -94,51 +93,62 @@ private fun downloadsItem(
     onDownloadCancel: (Chapter?) -> Unit,
     onMoveDownloadToBottom: (Chapter?) -> Unit
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth()
-            .height(56.dp)
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.SpaceAround) {
-            Row(Modifier.fillMaxWidth().padding(horizontal = 32.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(chapter.chapter?.name.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                // Spacer(Modifier.width(16.dp))
-                if (chapter.chapter?.pageCount != null && chapter.chapter.pageCount != -1) {
-                    Text(
-                        "${(chapter.chapter.pageCount * chapter.progress).toInt()}/${chapter.chapter.pageCount}",
-                        Modifier.padding(start = 16.dp).requiredWidth(IntrinsicSize.Max),
-                        style = MaterialTheme.typography.body2,
-                        color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-                        maxLines = 1,
-                        overflow = TextOverflow.Visible
-                    )
-                } else {
-                    Spacer(Modifier.width(32.dp))
-                }
-            }
-            Spacer(Modifier.height(4.dp))
-            LinearProgressIndicator(
-                chapter.progress,
-                Modifier.fillMaxWidth()
-                    .padding(start = 32.dp, end = 16.dp, bottom = 8.dp)
-            )
-        }
-        DropdownIconButton(
-            chapter.mangaId to chapter.chapterIndex,
-            {
-                DropdownMenuItem(onClick = { onDownloadCancel(chapter.chapter) }) {
-                    Text("Cancel")
-                }
-                DropdownMenuItem(onClick = { onMoveDownloadToBottom(chapter.chapter) }) {
-                    Text("Move to bottom")
-                }
-            }
+    BoxWithConstraints {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .height(56.dp)
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceAround
         ) {
-            Icon(
-                Icons.Default.MoreVert,
-                null
-            )
+            Column(Modifier.fillMaxHeight().width(this@BoxWithConstraints.maxWidth - 46.dp).padding(horizontal = 32.dp), verticalArrangement = Arrangement.SpaceAround) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        chapter.chapter?.name.toString(),
+                        Modifier.width(this@BoxWithConstraints.maxWidth - 200.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+
+                    )
+                    // Spacer(Modifier.width(16.dp))
+                    if (chapter.chapter?.pageCount != null && chapter.chapter.pageCount != -1) {
+                        Text(
+                            "${(chapter.chapter.pageCount * chapter.progress).toInt()}/${chapter.chapter.pageCount}",
+                            Modifier.padding(horizontal = 8.dp),
+                            style = MaterialTheme.typography.body2,
+                            color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
+                            maxLines = 1,
+                            overflow = TextOverflow.Visible
+                        )
+                    } else {
+                        Spacer(Modifier.width(32.dp))
+                    }
+                }
+                Spacer(Modifier.height(4.dp))
+                LinearProgressIndicator(
+                    chapter.progress,
+                    Modifier.fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
+            }
+            DropdownIconButton(
+                chapter.mangaId to chapter.chapterIndex,
+                {
+                    DropdownMenuItem(onClick = { onDownloadCancel(chapter.chapter) }) {
+                        Text("Cancel")
+                    }
+                    DropdownMenuItem(onClick = { onMoveDownloadToBottom(chapter.chapter) }) {
+                        Text("Move to bottom")
+                    }
+                }
+            ) {
+                Icon(
+                    Icons.Default.MoreVert,
+                    null
+                )
+            }
         }
     }
 }

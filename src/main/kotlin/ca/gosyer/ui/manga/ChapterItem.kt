@@ -8,13 +8,15 @@ package ca.gosyer.ui.manga
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -39,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloadState
@@ -65,7 +68,7 @@ fun ChapterItem(
         elevation = 1.dp,
         shape = RoundedCornerShape(4.dp)
     ) {
-        Row(
+        BoxWithConstraints(
             Modifier.combinedMouseClickable(
                 onClick = {
                     onClick(chapter.index)
@@ -80,58 +83,68 @@ fun ChapterItem(
                         menuItem("Toggle bookmarked") { toggleBookmarked(chapter.index) }
                     }
                 }
-            ),
-            horizontalArrangement = Arrangement.SpaceBetween
+            )
         ) {
-            Column(
-                Modifier.padding(4.dp)
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    chapter.name,
-                    maxLines = 1,
-                    style = MaterialTheme.typography.h6,
-                    color = LocalContentColor.current.copy(
-                        alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.high
+                Column(
+                    Modifier.padding(4.dp).width(this@BoxWithConstraints.maxWidth - 60.dp)
+                ) {
+                    Text(
+                        chapter.name,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.h6,
+                        color = LocalContentColor.current.copy(
+                            alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.high
+                        ),
+                        overflow = TextOverflow.Ellipsis
                     )
-                )
-                val subtitleStr = buildAnnotatedString {
-                    if (chapter.uploadDate > 0) {
-                        append(format(Instant.ofEpochMilli(chapter.uploadDate)))
-                    }
-                    if (!chapter.read && chapter.lastPageRead > 0) {
-                        if (length > 0) append(" • ")
-                        append(
-                            AnnotatedString(
-                                "Page " + (chapter.lastPageRead + 1).toString(),
-                                SpanStyle(color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled))
+                    val subtitleStr = buildAnnotatedString {
+                        if (chapter.uploadDate > 0) {
+                            append(format(Instant.ofEpochMilli(chapter.uploadDate)))
+                        }
+                        if (!chapter.read && chapter.lastPageRead > 0) {
+                            if (length > 0) append(" • ")
+                            append(
+                                AnnotatedString(
+                                    "Page " + (chapter.lastPageRead + 1).toString(),
+                                    SpanStyle(color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled))
+                                )
                             )
+                        }
+                        if (!chapter.scanlator.isNullOrBlank()) {
+                            if (length > 0) append(" • ")
+                            append(chapter.scanlator)
+                        }
+                    }
+                    Text(
+                        subtitleStr,
+                        style = MaterialTheme.typography.body2,
+                        color = LocalContentColor.current.copy(
+                            alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.medium
+                        )
+                    )
+                }
+                val downloadChapter by viewChapter.downloadChapterFlow.collectAsState()
+                val downloadState by viewChapter.downloadState.collectAsState()
+
+                when (downloadState) {
+                    MangaMenuViewModel.DownloadState.Downloaded -> {
+                        DownloadedIconButton(
+                            chapter.mangaId to chapter.index,
+                            onClick = { deleteDownload(chapter.index) }
                         )
                     }
-                    if (!chapter.scanlator.isNullOrBlank()) {
-                        if (length > 0) append(" • ")
-                        append(chapter.scanlator)
+                    MangaMenuViewModel.DownloadState.Downloading -> {
+                        DownloadingIconButton(
+                            downloadChapter,
+                            onClick = { stopDownload(chapter.index) }
+                        )
                     }
-                }
-                Text(
-                    subtitleStr,
-                    style = MaterialTheme.typography.body2,
-                    color = LocalContentColor.current.copy(
-                        alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.medium
-                    )
-                )
-            }
-            val downloadChapter by viewChapter.downloadChapterFlow.collectAsState()
-            val downloadState by viewChapter.downloadState.collectAsState()
-
-            when (downloadState) {
-                MangaMenuViewModel.DownloadState.Downloaded -> {
-                    DownloadedIconButton(chapter.mangaId to chapter.index, onClick = { deleteDownload(chapter.index) })
-                }
-                MangaMenuViewModel.DownloadState.Downloading -> {
-                    DownloadingIconButton(downloadChapter, onClick = { stopDownload(chapter.index) })
-                }
-                MangaMenuViewModel.DownloadState.NotDownloaded -> {
-                    DownloadIconButton(onClick = { downloadAChapter(chapter.index) })
+                    MangaMenuViewModel.DownloadState.NotDownloaded -> {
+                        DownloadIconButton(onClick = { downloadAChapter(chapter.index) })
+                    }
                 }
             }
         }
@@ -152,7 +165,7 @@ private fun DownloadIconButton(onClick: () -> Unit) {
                 Icons.Default.ArrowDownward,
                 null,
                 Modifier
-                    .requiredSize(22.dp)
+                    .size(22.dp)
                     .padding(2.dp),
                 LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
             )
@@ -173,7 +186,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
         when (downloadChapter?.state) {
             null, DownloadState.Queued -> CircularProgressIndicator(
                 Modifier
-                    .requiredSize(26.dp)
+                    .size(26.dp)
                     .padding(2.dp),
                 LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
                 2.dp
@@ -182,7 +195,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                 CircularProgressIndicator(
                     downloadChapter.progress,
                     Modifier
-                        .requiredSize(26.dp)
+                        .size(26.dp)
                         .padding(2.dp),
                     LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
                     2.dp
@@ -191,14 +204,14 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                     Icons.Default.ArrowDownward,
                     null,
                     Modifier
-                        .requiredSize(22.dp)
+                        .size(22.dp)
                         .padding(2.dp),
                     LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
                 )
             } else {
                 CircularProgressIndicator(
                     Modifier
-                        .requiredSize(26.dp)
+                        .size(26.dp)
                         .padding(2.dp),
                     LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
                     2.dp
@@ -209,7 +222,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                     Icons.Default.Error,
                     null,
                     Modifier
-                        .requiredSize(22.dp)
+                        .size(22.dp)
                         .padding(2.dp),
                     Color.Red
                 )
@@ -219,7 +232,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                     Icons.Default.Check,
                     null,
                     Modifier
-                        .requiredSize(22.dp)
+                        .size(22.dp)
                         .padding(2.dp),
                     MaterialTheme.colors.surface
                 )
@@ -243,7 +256,7 @@ private fun DownloadedIconButton(chapter: Pair<Long, Int?>, onClick: () -> Unit)
                 Icons.Default.Check,
                 null,
                 Modifier
-                    .requiredSize(22.dp)
+                    .size(22.dp)
                     .padding(2.dp),
                 MaterialTheme.colors.surface
             )
