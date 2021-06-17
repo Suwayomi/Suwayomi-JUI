@@ -10,7 +10,7 @@ plugins {
     kotlin("plugin.serialization") version "1.5.10"
     id("org.jetbrains.compose") version "0.4.0"
     id("de.fuerstenau.buildconfig") version "1.1.8"
-    id("org.jmailen.kotlinter") version "3.4.4"
+    id("org.jmailen.kotlinter") version "3.4.5"
     id("com.github.ben-manes.versions") version "0.39.0"
 }
 
@@ -60,7 +60,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.6")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
 
     // User storage
     implementation("net.harawata:appdirs:1.2.1")
