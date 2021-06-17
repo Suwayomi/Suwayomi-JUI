@@ -12,7 +12,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.ripple.rememberRipple
@@ -43,8 +42,7 @@ fun DropdownIconButton(
         content = dropdownItems
     )
     Box(
-        modifier = Modifier.fillMaxHeight()
-            .size(48.dp)
+        modifier = Modifier.size(48.dp)
             .clickable(
                 remember { MutableInteractionSource() },
                 role = Role.Button,
@@ -56,7 +54,7 @@ fun DropdownIconButton(
                 forEachGesture {
                     awaitPointerEventScope {
                         awaitEventFirstDown().mouseEvent?.let {
-                            offset = DpOffset(it.x.dp, it.y.dp)
+                            offset = DpOffset(it.xOnScreen.dp, it.yOnScreen.dp)
                         }
                     }
                 }

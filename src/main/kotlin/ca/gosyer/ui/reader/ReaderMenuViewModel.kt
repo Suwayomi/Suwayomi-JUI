@@ -194,6 +194,7 @@ class ReaderMenuViewModel @Inject constructor(
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun updateLastPageReadOffset(offset: Int) {
         GlobalScope.launch {
             chapter.value?.chapter?.updateRemote(chapterHandler, offset)
