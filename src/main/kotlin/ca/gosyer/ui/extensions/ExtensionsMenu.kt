@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.extensions
 
+import androidx.compose.foundation.ScrollbarAdapter
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -21,15 +22,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,12 +47,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.BuildConfig
 import ca.gosyer.data.models.Extension
+import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.compose.persistentLazyListState
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
 fun openExtensionsMenu() {
@@ -78,6 +87,18 @@ fun ExtensionsMenu() {
                             searchText = search,
                             search = {
                                 vm.search(it)
+                            },
+                            actions = {
+                                ActionIcon(
+                                    {
+                                        val enabledLangs = MutableStateFlow(vm.enabledLangs.value)
+                                        LanguageDialog(enabledLangs, vm.getSourceLanguages().toList()) {
+                                            vm.setEnabledLanguages(enabledLangs.value)
+                                        }
+                                    },
+                                    "Enabled languages",
+                                    Icons.Default.Translate
+                                )
                             }
                         )
                     }
@@ -151,6 +172,37 @@ fun ExtensionItem(
                     else -> "Install"
                 }
             )
+        }
+    }
+}
+
+fun LanguageDialog(enabledLangsFlow: MutableStateFlow<Set<String>>, availableLangs: List<String>, setLangs: () -> Unit) {
+    WindowDialog(BuildConfig.NAME, onPositiveButton = setLangs) {
+        val enabledLangs by enabledLangsFlow.collectAsState()
+        val state = rememberLazyListState()
+        Box {
+            LazyColumn(Modifier.fillMaxWidth(), state) {
+                items(availableLangs) { lang ->
+                    Row {
+                        val langName = remember(lang) {
+                            Locale.forLanguageTag(lang)?.displayName ?: lang
+                        }
+                        Text(langName)
+                        Switch(
+                            lang in enabledLangs,
+                            {
+                                if (it) {
+                                    enabledLangsFlow.value += lang
+                                } else {
+                                    enabledLangsFlow.value -= lang
+                                }
+                            }
+                        )
+                    }
+                }
+                item { Spacer(Modifier.height(70.dp)) }
+            }
+            VerticalScrollbar(ScrollbarAdapter(state), Modifier.align(Alignment.CenterEnd).padding(8.dp))
         }
     }
 }

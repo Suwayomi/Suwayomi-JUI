@@ -8,9 +8,10 @@ package ca.gosyer.data.extension
 
 import ca.gosyer.common.prefs.Preference
 import ca.gosyer.common.prefs.PreferenceStore
+import java.util.Locale
 
 class ExtensionPreferences(private val preferenceStore: PreferenceStore) {
     fun languages(): Preference<Set<String>> {
-        return preferenceStore.getStringSet("enabled_langs", setOf("all", "en"))
+        return preferenceStore.getStringSet("enabled_langs", setOf("all", "en", Locale.getDefault().language))
     }
 }

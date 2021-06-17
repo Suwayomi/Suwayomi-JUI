@@ -15,6 +15,9 @@ import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +27,8 @@ class ExtensionsMenuViewModel @Inject constructor(
     private val extensionPreferences: ExtensionPreferences
 ) : ViewModel() {
     val serverUrl = serverPreferences.serverUrl().stateIn(scope)
+    private val _enabledLangs = extensionPreferences.languages().asStateFlow()
+    val enabledLangs = _enabledLangs.asStateFlow()
 
     private lateinit var extensionList: List<Extension>
 
@@ -33,21 +38,22 @@ class ExtensionsMenuViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    var searchQuery = MutableStateFlow<String?>(null)
+    val searchQuery = MutableStateFlow<String?>(null)
 
     init {
         scope.launch {
             getExtensions()
         }
+
+        enabledLangs.drop(1).onEach {
+            search(searchQuery.value.orEmpty())
+        }.launchIn(scope)
     }
 
     private suspend fun getExtensions() {
         try {
             _isLoading.value = true
-            val enabledLangs = extensionPreferences.languages().get()
             extensionList = extensionHandler.getExtensionList()
-                .filter { it.lang in enabledLangs }
-                .sortedWith(compareBy({ it.lang }, { it.pkgName }))
             search(searchQuery.value.orEmpty())
         } catch (e: Exception) {
             e.throwIfCancellation()
@@ -93,8 +99,16 @@ class ExtensionsMenuViewModel @Inject constructor(
         }
     }
 
+    fun getSourceLanguages() = extensionList.map { it.lang }.toSet()
+
+    fun setEnabledLanguages(langs: Set<String>) {
+        info { langs }
+        _enabledLangs.value = langs
+    }
+
     fun search(searchQuery: String) {
         this.searchQuery.value = searchQuery.takeUnless { it.isBlank() }
+        val extensionList = extensionList.filter { it.lang in enabledLangs.value }
         if (searchQuery.isBlank()) {
             _extensions.value = extensionList.splitSort()
         } else {
@@ -108,10 +122,11 @@ class ExtensionsMenuViewModel @Inject constructor(
     }
 
     private fun List<Extension>.splitSort(): List<Extension> {
-        val obsolete = filter { it.obsolete }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
-        val updates = filter { it.hasUpdate }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
-        val installed = filter { it.installed && !it.hasUpdate && !it.obsolete }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
-        val available = filter { !it.installed }.sortedWith(compareBy({ it.lang }, { it.pkgName }))
+        val comparator = compareBy<Extension>({ it.lang }, { it.pkgName })
+        val obsolete = filter { it.obsolete }.sortedWith(comparator)
+        val updates = filter { it.hasUpdate }.sortedWith(comparator)
+        val installed = filter { it.installed && !it.hasUpdate && !it.obsolete }.sortedWith(comparator)
+        val available = filter { !it.installed }.sortedWith(comparator)
         return obsolete + updates + installed + available
     }
 
