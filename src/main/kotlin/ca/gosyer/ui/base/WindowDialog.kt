@@ -9,13 +9,14 @@ package ca.gosyer.ui.base
 import androidx.compose.desktop.AppWindow
 import androidx.compose.desktop.WindowEvents
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -79,9 +80,17 @@ fun WindowDialog(
     window.show {
         AppTheme {
             Surface {
-                Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxSize(),) {
-                    Row(content = row, modifier = Modifier.fillMaxWidth())
-                    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.End, modifier = Modifier.requiredHeight(70.dp).fillMaxWidth()) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Row(
+                        content = row,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.height(70.dp)
+                            .align(Alignment.BottomEnd)
+                    ) {
                         if (showNegativeButton) {
                             OutlinedButton(onNegativeButton.plusClose(), modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)) {
                                 Text(negativeButtonText)
