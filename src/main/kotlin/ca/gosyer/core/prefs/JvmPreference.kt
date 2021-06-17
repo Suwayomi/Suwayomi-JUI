@@ -30,6 +30,8 @@ internal class JvmPreference<T>(
         fun set(key: String, value: T, editor: ObservableSettings)
 
         fun isSet(keys: Set<String>, key: String): Boolean = key in keys
+
+        fun keyListener(key: String) = key
     }
 
     /**
@@ -83,7 +85,7 @@ internal class JvmPreference<T>(
      */
     override fun changes(): Flow<T> {
         return callbackFlow {
-            val listener = preferences.addListener(key) {
+            val listener = preferences.addListener(adapter.keyListener(key)) {
                 trySend(get())
             }
             awaitClose { listener.deactivate() }

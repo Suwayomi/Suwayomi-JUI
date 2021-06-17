@@ -73,6 +73,21 @@ internal object StringSetAdapter : JvmPreference.Adapter<Set<String>> {
     override fun set(key: String, value: Set<String>, editor: ObservableSettings) {
         editor.encodeValue(SetSerializer(String.serializer()), key, value)
     }
+
+    /**
+     *  Encoding a string set makes a list of keys and a size key, such as key.size and key.0-size
+     */
+    override fun isSet(keys: Set<String>, key: String): Boolean {
+        return keys.contains("$key.size")
+    }
+
+    /**
+     * Watching the regular key doesnt produce updates for a string set for some reason
+     * TODO make better, doesnt produce updates when you add something and remove something
+     */
+    override fun keyListener(key: String): String {
+        return "$key.size"
+    }
 }
 
 internal class ObjectAdapter<T>(
