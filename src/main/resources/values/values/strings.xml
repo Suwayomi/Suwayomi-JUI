@@ -109,6 +109,8 @@
     <string name="color_primary_sub">Displayed most frequently across your app</string>
     <string name="color_secondary">Color secondary</string>
     <string name="color_secondary_sub">Accents select parts of the UI</string>
+    <string name="window_decorations">Window Decorations</string>
+    <string name="window_decorations_sub">Restart JUI when this setting is changed</string>
 
     <!-- Backup Settings -->
     <string name="backup_restore">Restore Backup</string>

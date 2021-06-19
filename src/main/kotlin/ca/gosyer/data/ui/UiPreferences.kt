@@ -66,4 +66,8 @@ class UiPreferences(private val preferenceStore: PreferenceStore) {
     fun readerWindow(): Preference<WindowSettings> {
         return preferenceStore.getJsonObject("reader_window", WindowSettings(), WindowSettings.serializer())
     }
+
+    fun windowDecorations(): Preference<Boolean> {
+        return preferenceStore.getBoolean("window_decorations", true)
+    }
 }

@@ -34,6 +34,7 @@ import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ColorPreference
+import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppColorsPreferenceState
 import ca.gosyer.ui.base.theme.Theme
@@ -56,6 +57,8 @@ class ThemesViewModel @Inject constructor(
     val darkTheme = uiPreferences.darkTheme().asStateFlow()
     val lightColors = uiPreferences.getLightColors().asStateFlow(scope)
     val darkColors = uiPreferences.getDarkColors().asStateFlow(scope)
+
+    val windowDecorations = uiPreferences.windowDecorations().asStateFlow()
 
     @Composable
     fun getActiveColors(): AppColorsPreferenceState {
@@ -119,6 +122,13 @@ fun SettingsAppearance(navController: BackStack<Route>) {
                     title = stringResource("color_secondary"),
                     subtitle = stringResource("color_secondary_sub"),
                     unsetColor = MaterialTheme.colors.secondary
+                )
+            }
+            item {
+                SwitchPreference(
+                    vm.windowDecorations,
+                    stringResource("window_decorations"),
+                    stringResource("window_decorations_sub")
                 )
             }
         }
