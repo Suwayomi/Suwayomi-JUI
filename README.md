@@ -26,7 +26,12 @@ Download the latest jar release for your OS from [the releases section](https://
 Double-click on the jar file or run `java -jar TachideskJUI-os-arch-X.Y.Z.jar` from a Terminal/Command Prompt window to run the app.
 
 ### Windows (x64, Java 8+ required for server)
+#### Installer
 Download the latest msi release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
+#### Scoop
+1. Add Witchilich's Scoop bucket - `scoop bucket add witchilich https://github.com/Witchilich/scoop-witchilich`
+2. Add the Java Scoop bucket - `scoop bucket add java`
+3. Install TachideskJUI - `scoop install tachideskjui`
 
 ### MacOS (x64, Java Included, Server not included)
 Download the latest dmg release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
