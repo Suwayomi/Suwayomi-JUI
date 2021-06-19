@@ -47,6 +47,7 @@ import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloadState
 import ca.gosyer.ui.base.components.DropdownIconButton
 import ca.gosyer.ui.base.components.combinedMouseClickable
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.util.compose.contextMenu
 import java.time.Instant
 
@@ -108,7 +109,7 @@ fun ChapterItem(
                             if (length > 0) append(" • ")
                             append(
                                 AnnotatedString(
-                                    "Page " + (chapter.lastPageRead + 1).toString(),
+                                    stringResource("page_progress", (chapter.lastPageRead + 1).toString()),
                                     SpanStyle(color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled))
                                 )
                             )
@@ -179,7 +180,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
         downloadChapter?.mangaId to downloadChapter?.chapterIndex,
         {
             DropdownMenuItem(onClick = onClick) {
-                Text("Cancel")
+                Text(stringResource("action_cancel"))
             }
         }
     ) {
@@ -247,7 +248,7 @@ private fun DownloadedIconButton(chapter: Pair<Long, Int?>, onClick: () -> Unit)
         chapter,
         {
             DropdownMenuItem(onClick = onClick) {
-                Text("Delete")
+                Text(stringResource("action_delete"))
             }
         }
     ) {

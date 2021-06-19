@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,12 +33,15 @@ import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
 import ca.gosyer.data.reader.model.NavigationMode
+import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.KeyboardShortcut
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.mangaAspectRatio
+import ca.gosyer.ui.base.resources.LocalResources
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.reader.model.Navigation
@@ -62,6 +66,8 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
         size,
         maximized
     ) = windowSettings.get().get()
+
+    val resources = AppScope.getInstance<XmlResourceBundle>()
 
     launchUI {
         val window = AppWindow(
@@ -94,12 +100,16 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
         }
 
         window.show {
-            AppTheme {
-                ReaderMenu(chapterIndex, mangaId, setHotkeys) {
-                    val onClose = window.events.onClose
-                    window.events.onClose = {
-                        it()
-                        onClose?.invoke()
+            CompositionLocalProvider(
+                LocalResources provides resources
+            ) {
+                AppTheme {
+                    ReaderMenu(chapterIndex, mangaId, setHotkeys) {
+                        val onClose = window.events.onClose
+                        window.events.onClose = {
+                            it()
+                            onClose?.invoke()
+                        }
                     }
                 }
             }
@@ -196,7 +206,7 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
                             )
                         }
                     } else {
-                        ErrorScreen("No pages found")
+                        ErrorScreen(stringResource("no_pages_found"))
                     }
                 }
             }
@@ -243,15 +253,15 @@ fun ChapterSeperator(
         Column {
             when {
                 previousChapter == null && nextChapter != null -> {
-                    Text("There is no previous chapter")
+                    Text(stringResource("no_previous_chapter"))
                 }
                 previousChapter != null && nextChapter != null -> {
-                    Text("Previous:\n ${previousChapter.chapter.name}")
+                    Text(stringResource("previous_chapter", previousChapter.chapter.name))
                     Spacer(Modifier.height(8.dp))
-                    Text("Next:\n ${nextChapter.chapter.name}")
+                    Text(stringResource("next_chapter", nextChapter.chapter.name))
                 }
                 previousChapter != null && nextChapter == null -> {
-                    Text("There is no next chapter")
+                    Text(stringResource("no_next_chapter"))
                 }
             }
         }

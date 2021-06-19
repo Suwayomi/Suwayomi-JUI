@@ -52,6 +52,7 @@ import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.compose.persistentLazyListState
@@ -82,7 +83,7 @@ fun ExtensionsMenu() {
                 LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state) {
                     item {
                         Toolbar(
-                            "Extensions",
+                            stringResource("location_extensions"),
                             closable = false,
                             searchText = search,
                             search = {
@@ -96,7 +97,7 @@ fun ExtensionsMenu() {
                                             vm.setEnabledLanguages(enabledLangs.value)
                                         }
                                     },
-                                    "Enabled languages",
+                                    stringResource("enabled_languages"),
                                     Icons.Default.Translate
                                 )
                             }
@@ -167,9 +168,9 @@ fun ExtensionItem(
         ) {
             Text(
                 when {
-                    extension.hasUpdate -> "Update"
-                    extension.installed -> "Uninstall"
-                    else -> "Install"
+                    extension.hasUpdate -> stringResource("action_update")
+                    extension.installed -> stringResource("action_uninstall")
+                    else -> stringResource("action_install")
                 }
             )
         }
@@ -178,6 +179,7 @@ fun ExtensionItem(
 
 fun LanguageDialog(enabledLangsFlow: MutableStateFlow<Set<String>>, availableLangs: List<String>, setLangs: () -> Unit) {
     WindowDialog(BuildConfig.NAME, onPositiveButton = setLangs) {
+        val locale = Locale.getDefault()
         val enabledLangs by enabledLangsFlow.collectAsState()
         val state = rememberLazyListState()
         Box {
@@ -185,7 +187,7 @@ fun LanguageDialog(enabledLangsFlow: MutableStateFlow<Set<String>>, availableLan
                 items(availableLangs) { lang ->
                     Row {
                         val langName = remember(lang) {
-                            Locale.forLanguageTag(lang)?.displayName ?: lang
+                            Locale.forLanguageTag(lang)?.getDisplayName(locale) ?: lang
                         }
                         Text(langName)
                         Switch(

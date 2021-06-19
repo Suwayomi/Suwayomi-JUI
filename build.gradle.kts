@@ -42,6 +42,11 @@ dependencies {
     // Json
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
+    // Xml
+    val xmlutilVersion = "0.82.0"
+    implementation("io.github.pdvrieze.xmlutil:core-jvm:$xmlutilVersion")
+    implementation("io.github.pdvrieze.xmlutil:serialization-jvm:$xmlutilVersion")
+
     // Dependency Injection
     val toothpickVersion = "3.1.0"
     implementation("com.github.stephanenicolas.toothpick:ktp:$toothpickVersion")

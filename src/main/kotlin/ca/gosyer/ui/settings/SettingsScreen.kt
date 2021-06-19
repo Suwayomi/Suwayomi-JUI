@@ -20,94 +20,95 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.runtime.Composable
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.main.Route
 import com.github.zsoltk.compose.router.BackStack
 
 @Composable
 fun SettingsScreen(navController: BackStack<Route>) {
     Column {
-        Toolbar("Settings", closable = false)
+        Toolbar(stringResource("location_settings"), closable = false)
         LazyColumn {
             item {
                 PreferenceRow(
-                    title = "General",
+                    title = stringResource("settings_general"),
                     icon = Icons.Default.Tune,
                     onClick = { navController.push(Route.SettingsGeneral) }
                 )
             }
             item {
                 PreferenceRow(
-                    title = "Appearance",
+                    title = stringResource("settings_appearance"),
                     icon = Icons.Default.Palette,
                     onClick = { navController.push(Route.SettingsAppearance) }
                 )
             }
             item {
                 PreferenceRow(
-                    title = "Server",
+                    title = stringResource("settings_server"),
                     icon = Icons.Default.Computer,
                     onClick = { navController.push(Route.SettingsServer) }
                 )
             }
             item {
                 PreferenceRow(
-                    title = "Library",
+                    title = stringResource("settings_library"),
                     icon = Icons.Default.CollectionsBookmark,
                     onClick = { navController.push(Route.SettingsLibrary) }
                 )
             }
             item {
                 PreferenceRow(
-                    title = "Reader",
+                    title = stringResource("settings_reader"),
                     icon = Icons.Default.ChromeReaderMode,
                     onClick = { navController.push(Route.SettingsReader) }
                 )
             }
             /*item {
                 Pref(
-                    title = "Downloads",
+                    title = stringResource("settings_download"),
                     icon = Icons.Default.GetApp,
                     onClick = { navController.push(Route.SettingsDownloads) }
                 )
             }
             item {
                 Pref(
-                    title = "Tracking",
+                    title = stringResource("settings_tracking"),
                     icon = Icons.Default.Sync,
                     onClick = { navController.push(Route.SettingsTracking) }
                 )
             }*/
             item {
                 PreferenceRow(
-                    title = "Browse",
+                    title = stringResource("settings_browse"),
                     icon = Icons.Default.Explore,
                     onClick = { navController.push(Route.SettingsBrowse) }
                 )
             }
             item {
                 PreferenceRow(
-                    title = "Backup",
+                    title = stringResource("settings_backup"),
                     icon = Icons.Default.Backup,
                     onClick = { navController.push(Route.SettingsBackup) }
                 )
             }
             /*item {
                 Pref(
-                    title = "Security",
+                    title = stringResource("settings_security"),
                     icon = Icons.Default.Security,
                     onClick = { navController.push(Route.SettingsSecurity) }
                 )
             }
             item {
                 Pref(
-                    title = "Parental Controls",
+                    title = stringResource("settings_parental_controls"),
                     icon = Icons.Default.PeopleOutline,
                     onClick = { navController.push(Route.SettingsParentalControls) }
                 )
             }*/
             item {
                 PreferenceRow(
-                    title = "Advanced",
+                    title = stringResource("settings_advanced"),
                     icon = Icons.Default.Code,
                     onClick = { navController.push(Route.SettingsAdvanced) }
                 )

@@ -24,6 +24,8 @@ import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
+import ca.gosyer.data.translation.ResourceProvider
+import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import toothpick.ktp.binding.bind
 import toothpick.ktp.binding.module
@@ -58,6 +60,10 @@ val DataModule = module {
 
     bind<Http>()
         .toProvider(HttpProvider::class)
+        .providesSingleton()
+
+    bind<XmlResourceBundle>()
+        .toProvider(ResourceProvider::class)
         .providesSingleton()
 
     bind<BackupInteractionHandler>()

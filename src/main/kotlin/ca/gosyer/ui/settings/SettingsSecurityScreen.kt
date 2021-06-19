@@ -10,13 +10,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import ca.gosyer.ui.base.components.Toolbar
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.main.Route
 import com.github.zsoltk.compose.router.BackStack
 
 @Composable
 fun SettingsSecurityScreen(navController: BackStack<Route>) {
     Column {
-        Toolbar("Security Settings", navController, true)
+        Toolbar(stringResource("settings_security_screen"), navController, true)
         LazyColumn {
         }
     }

@@ -45,6 +45,7 @@ import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
 import ca.gosyer.ui.reader.openReaderMenu
@@ -69,15 +70,15 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
     val dateTimeFormatter by vm.dateTimeFormatter.collectAsState()
 
     Column(Modifier.background(MaterialTheme.colors.background)) {
-        Toolbar("Manga", backStack, backStack != null)
+        Toolbar(stringResource("location_manga"), backStack, backStack != null)
 
         Surface(Modifier.height(40.dp).fillMaxWidth()) {
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
                 Button(onClick = vm::toggleFavorite) {
-                    Text(if (manga?.inLibrary == true) "UnFavorite" else "Favorite")
+                    Text(stringResource(if (manga?.inLibrary == true) "action_remove_favorite" else "action_favorite"))
                 }
                 Button(onClick = vm::refreshManga, enabled = !vm.isRefreshing.collectAsState().value) {
-                    Text("Refresh manga")
+                    Text(stringResource("action_refresh_manga"))
                 }
             }
         }

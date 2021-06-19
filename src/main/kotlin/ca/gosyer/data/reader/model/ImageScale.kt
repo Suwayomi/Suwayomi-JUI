@@ -10,10 +10,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class ImageScale(val res: String) {
-    FitScreen("Fit Screen"),
-    Stretch("Strech"),
-    FitWidth("Fit Width"),
-    FitHeight("Fit Height"),
-    OriginalSize("Original Size"),
-    SmartFit("Smart Fit"),
+    FitScreen("scale_fit_screen"),
+    Stretch("scale_stretch"),
+    FitWidth("scale_fit_width"),
+    FitHeight("scale_fit_height"),
+    OriginalSize("scale_original"),
+    SmartFit("scale_smart"),
 }

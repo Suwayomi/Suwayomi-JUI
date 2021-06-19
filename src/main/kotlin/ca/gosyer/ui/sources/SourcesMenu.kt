@@ -33,6 +33,7 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.combinedMouseClickable
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.ui.sources.components.SourceHomeScreen
@@ -75,7 +76,7 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
     Surface {
         Column {
             Toolbar(
-                selectedSourceTab?.name ?: "Sources",
+                selectedSourceTab?.name ?: stringResource("location_sources"),
                 closable = selectedSourceTab != null,
                 onClose = {
                     selectedSourceTab?.let { vm.closeTab(it) }
@@ -110,14 +111,14 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                                         shape = RoundedCornerShape(4.dp),
                                         elevation = 4.dp
                                     ) {
-                                        Text(source?.name ?: "Home", modifier = Modifier.padding(10.dp))
+                                        Text(source?.name ?: stringResource("sources_home"), modifier = Modifier.padding(10.dp))
                                     }
                                 }
                             ) {
                                 if (source != null) {
                                     KtorImage(source.iconUrl(serverUrl), imageModifier = modifier)
                                 } else {
-                                    Icon(Icons.Default.Home, "Home", modifier = modifier)
+                                    Icon(Icons.Default.Home, stringResource("sources_home"), modifier = modifier)
                                 }
                             }
                         }

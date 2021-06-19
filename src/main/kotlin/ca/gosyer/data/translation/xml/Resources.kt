@@ -4,14 +4,11 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.data.reader.model
+package ca.gosyer.data.translation.xml
 
 import kotlinx.serialization.Serializable
+import nl.adaptivity.xmlutil.serialization.XmlSerialName
 
 @Serializable
-enum class NavigationMode(val res: String) {
-    LNavigation("nav_l_shaped"),
-    KindlishNavigation("nav_kindle_ish"),
-    EdgeNavigation("nav_edge"),
-    RightAndLeftNavigation("nav_left_right"),
-}
+@XmlSerialName("resources", "", "")
+data class Resources(val values: List<XmlString>)

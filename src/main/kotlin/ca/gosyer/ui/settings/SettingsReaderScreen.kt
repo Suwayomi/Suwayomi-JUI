@@ -18,12 +18,14 @@ import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
 import ca.gosyer.data.reader.model.NavigationMode
+import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ExpandablePreference
 import ca.gosyer.ui.base.prefs.PreferenceMutableStateFlow
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.prefs.asStateIn
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
@@ -36,6 +38,7 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class SettingsReaderViewModel @Inject constructor(
+    private val resources: XmlResourceBundle,
     readerPreferences: ReaderPreferences
 ) : ViewModel() {
     val modes = readerPreferences.modes().asStateFlow()
@@ -56,10 +59,10 @@ class SettingsReaderViewModel @Inject constructor(
         }.launchIn(scope)
     }
 
-    fun getDirectionChoices() = Direction.values().associate { it to it.res }
+    fun getDirectionChoices() = Direction.values().associate { it to resources.getStringA(it.res) }
 
     fun getPaddingChoices() = mapOf(
-        0 to "None",
+        0 to resources.getStringA("page_padding_none"),
         8 to "8 Dp",
         16 to "16 Dp",
         32 to "32 Dp"
@@ -67,23 +70,23 @@ class SettingsReaderViewModel @Inject constructor(
 
     fun getMaxSizeChoices(direction: Direction) = if (direction == Direction.Right || direction == Direction.Left) {
         mapOf(
-            0 to "Unrestricted",
+            0 to resources.getStringA("max_size_unrestricted"),
             700 to "700 Dp",
             900 to "900 Dp",
             1100 to "1100 Dp"
         )
     } else {
         mapOf(
-            0 to "Unrestricted",
+            0 to resources.getStringA("max_size_unrestricted"),
             500 to "500 Dp",
             700 to "700 Dp",
             900 to "900 Dp"
         )
     }
 
-    fun getImageScaleChoices() = ImageScale.values().associate { it to it.res }
+    fun getImageScaleChoices() = ImageScale.values().associate { it to resources.getStringA(it.res) }
 
-    fun getNavigationModeChoices() = NavigationMode.values().associate { it to it.res }
+    fun getNavigationModeChoices() = NavigationMode.values().associate { it to resources.getStringA(it.res) }
 }
 
 data class ReaderModePreference(
@@ -118,13 +121,13 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
     val vm = viewModel<SettingsReaderViewModel>()
     val modeSettings by vm.modeSettings.collectAsState()
     Column {
-        Toolbar("Reader Settings", navController, true)
+        Toolbar(stringResource("settings_reader"), navController, true)
         LazyColumn {
             item {
                 ChoicePreference(
                     vm.selectedMode,
                     vm.modes.collectAsState().value.associateWith { it },
-                    "Reader Mode"
+                    stringResource("reader_mode")
                 )
             }
             item {
@@ -136,13 +139,13 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
                         ChoicePreference(
                             it.direction,
                             vm.getDirectionChoices(),
-                            "Direction",
+                            stringResource("direction"),
                             enabled = !it.defaultMode
                         )
                         SwitchPreference(
                             it.continuous,
-                            "Continuous",
-                            "If the reader is a pager or a scrolling window",
+                            stringResource("continuous"),
+                            stringResource("continuous_sub"),
                             enabled = !it.defaultMode
                         )
                         val continuous by it.continuous.collectAsState()
@@ -150,13 +153,13 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
                             ChoicePreference(
                                 it.padding,
                                 vm.getPaddingChoices(),
-                                "Page Padding"
+                                stringResource("page_padding")
                             )
                             val direction by it.direction.collectAsState()
                             val (title, subtitle) = if (direction == Direction.Up || direction == Direction.Down) {
-                                "Force fit width" to "When the window's width is over the images width, scale the image to the window"
+                                stringResource("force_fit_width") to stringResource("force_fit_width_sub")
                             } else {
-                                "Force fit height" to "When the window's height is over the images height, scale the image to the window"
+                                stringResource("force_fit_height") to stringResource("force_fit_height_sub")
                             }
                             SwitchPreference(
                                 it.fitSize,
@@ -165,9 +168,9 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
                             )
                             val maxSize by it.maxSize.collectAsState()
                             val (maxSizeTitle, maxSizeSubtitle) = if (direction == Direction.Up || direction == Direction.Down) {
-                                "Max width" to "Width to restrict a image from going over, currently $maxSize" + "dp. Works with the above setting to scale images up but restrict them to a certain amount"
+                                stringResource("max_width") to stringResource("max_width_sub", maxSize.toString())
                             } else {
-                                "Max height" to "Height to restrict a image from going over, currently $maxSize" + "dp. Works with the above setting to scale images up but restrict them to a certain amount"
+                                stringResource("max_height") to stringResource("max_height_sub", maxSize.toString())
                             }
                             ChoicePreference(
                                 it.maxSize,
@@ -179,13 +182,13 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
                             ChoicePreference(
                                 it.imageScale,
                                 vm.getImageScaleChoices(),
-                                "Image Scale"
+                                stringResource("image_scale")
                             )
                         }
                         ChoicePreference(
                             it.navigationMode,
                             vm.getNavigationModeChoices(),
-                            "Navigation mode"
+                            stringResource("navigation_mode")
                         )
                     }
                 }

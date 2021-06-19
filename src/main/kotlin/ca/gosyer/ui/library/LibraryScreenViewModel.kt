@@ -12,6 +12,7 @@ import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
+import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.ui.base.vm.ViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -33,6 +34,7 @@ private fun LibraryMap.setManga(order: Int, manga: List<Manga>) {
 class LibraryScreenViewModel @Inject constructor(
     private val libraryHandler: LibraryInteractionHandler,
     private val categoryHandler: CategoryInteractionHandler,
+    private val resources: XmlResourceBundle,
     libraryPreferences: LibraryPreferences,
     serverPreferences: ServerPreferences,
 ) : ViewModel() {
@@ -48,6 +50,8 @@ class LibraryScreenViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
+
+    private val defaultCategory = Category(0, 0, resources.getStringA("default_category"), true)
 
     init {
         getLibrary()
@@ -84,9 +88,5 @@ class LibraryScreenViewModel @Inject constructor(
 
     fun getLibraryForCategoryIndex(index: Int): StateFlow<List<Manga>> {
         return library.mangaMap.getManga(index).asStateFlow()
-    }
-
-    companion object {
-        val defaultCategory = Category(0, 0, "Default", true)
     }
 }

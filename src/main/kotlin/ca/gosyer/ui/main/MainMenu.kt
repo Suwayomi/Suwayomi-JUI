@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.BuildConfig
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.ui.base.components.combinedMouseClickable
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.downloads.DownloadsMenu
 import ca.gosyer.ui.downloads.DownloadsMenuViewModel
@@ -125,7 +126,7 @@ fun SideMenu(backStack: BackStack<Route>) {
 fun SideMenuItem(topLevelMenu: TopLevelMenus, backStack: BackStack<Route>) {
     MainMenuItem(
         backStack.elements.first() == topLevelMenu.menu,
-        topLevelMenu.text,
+        stringResource(topLevelMenu.textKey),
         topLevelMenu.menu,
         topLevelMenu.selectedIcon,
         topLevelMenu.unselectedIcon,
@@ -233,7 +234,7 @@ fun DownloadsExtraInfo() {
     val list by vm.downloadQueue.collectAsState()
     if (list.isNotEmpty()) {
         Text(
-            "${list.size} remaining",
+            stringResource("downloads_remaining", list.size.toString()),
             style = MaterialTheme.typography.body2,
             color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
         )
@@ -241,7 +242,7 @@ fun DownloadsExtraInfo() {
 }
 
 enum class TopLevelMenus(
-    val text: String,
+    val textKey: String,
     val unselectedIcon: ImageVector,
     val selectedIcon: ImageVector,
     val menu: Route,
@@ -249,11 +250,11 @@ enum class TopLevelMenus(
     val openInNewWindow: () -> Unit = {},
     val extraInfo: (@Composable () -> Unit)? = null
 ) {
-    Library("Library", Icons.Outlined.Book, Icons.Filled.Book, Route.Library, true, ::openLibraryMenu),
-    Sources("Sources", Icons.Outlined.Explore, Icons.Filled.Explore, Route.Sources, true, ::openSourcesMenu),
-    Extensions("Extensions", Icons.Outlined.Store, Icons.Filled.Store, Route.Extensions, true, ::openExtensionsMenu),
-    Downloads("Downloads", Icons.Outlined.Download, Icons.Filled.Download, Route.Downloads, false, extraInfo = { DownloadsExtraInfo() }),
-    Settings("Settings", Icons.Outlined.Settings, Icons.Filled.Settings, Route.Settings, false)
+    Library("location_library", Icons.Outlined.Book, Icons.Filled.Book, Route.Library, true, ::openLibraryMenu),
+    Sources("location_sources", Icons.Outlined.Explore, Icons.Filled.Explore, Route.Sources, true, ::openSourcesMenu),
+    Extensions("location_extensions", Icons.Outlined.Store, Icons.Filled.Store, Route.Extensions, true, ::openExtensionsMenu),
+    Downloads("location_downloads", Icons.Outlined.Download, Icons.Filled.Download, Route.Downloads, false, extraInfo = { DownloadsExtraInfo() }),
+    Settings("location_settings", Icons.Outlined.Settings, Icons.Filled.Settings, Route.Settings, false)
 }
 
 sealed class Route {

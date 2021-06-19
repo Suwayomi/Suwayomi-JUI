@@ -1,0 +1,12 @@
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
+
+<resources>
+    <string name="color_primary">Colour primary</string>
+    <string name="color_secondary">Colour secondary</string>
+    <string name="action_favorite">Favourite</string>
+    <string name="action_remove_favorite">UnFavourite</string>
+</resources>

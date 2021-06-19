@@ -16,10 +16,13 @@ import ca.gosyer.BuildConfig
 import ca.gosyer.data.DataModule
 import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.ServerService.ServerResult
+import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.resources.LocalResources
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.lang.launchUI
 import ca.gosyer.util.lang.withUIContext
@@ -66,8 +69,10 @@ fun main() {
         )
 
     val serverService = scope.getInstance<ServerService>()
+    val uiPreferences = scope.getInstance<UiPreferences>()
+    val resources = scope.getInstance<XmlResourceBundle>()
 
-    scope.getInstance<UiPreferences>().themeMode()
+    uiPreferences.themeMode()
         .getAsFlow {
             if (System.getProperty("os.name").startsWith("Mac") && System.getProperty("os.arch") == "aarch64") {
                 return@getAsFlow
@@ -89,7 +94,7 @@ fun main() {
         }
         .launchIn(GlobalScope)
 
-    val windowSettings = scope.getInstance<UiPreferences>().window()
+    val windowSettings = uiPreferences.window()
     val (
         offset,
         size,
@@ -129,7 +134,8 @@ fun main() {
         window.show {
             AppTheme {
                 CompositionLocalProvider(
-                    LocalBackPressHandler provides backPressHandler
+                    LocalBackPressHandler provides backPressHandler,
+                    LocalResources provides resources
                 ) {
                     val initialized by serverService.initialized.collectAsState()
                     when (initialized) {
@@ -139,12 +145,14 @@ fun main() {
                         ServerResult.STARTING, ServerResult.FAILED, ServerResult.NO_TACHIDESK_JAR -> {
                             LoadingScreen(
                                 initialized == ServerResult.STARTING,
-                                errorMessage = if (initialized == ServerResult.NO_TACHIDESK_JAR) {
-                                    "Tachidesk jar does not exist, run Tachidesk yourself"
-                                } else {
-                                    "Unable to start server"
-                                },
-                                retryMessage = "Start anyway",
+                                errorMessage = stringResource(
+                                    if (initialized == ServerResult.NO_TACHIDESK_JAR) {
+                                        "tachidesk_doesnt_exist"
+                                    } else {
+                                        "unable_to_start_server"
+                                    }
+                                ),
+                                retryMessage = stringResource("action_start_anyway"),
                                 retry = serverService::startAnyway
                             )
                         }

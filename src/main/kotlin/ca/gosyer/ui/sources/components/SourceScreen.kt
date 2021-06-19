@@ -26,6 +26,7 @@ import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.MangaGridItem
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.persistentLazyListState
 import com.github.zsoltk.compose.savedinstancestate.Bundle
@@ -97,7 +98,7 @@ private fun MangaTable(
                         enabled = !isLoading,
                         modifier = Modifier.align(Alignment.TopEnd)
                     ) {
-                        Text(text = if (isLatest) "To Browse" else "To Latest")
+                        Text(text = stringResource(if (isLatest) "move_to_browse" else "move_to_latest"))
                     }
                 }
             }

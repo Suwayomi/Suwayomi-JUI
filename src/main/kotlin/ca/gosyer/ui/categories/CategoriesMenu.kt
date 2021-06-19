@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.BuildConfig
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -103,7 +104,7 @@ fun CategoriesMenu(notifyFinished: (() -> Unit)? = null, windowEvents: WindowEve
                 }
             }
             ExtendedFloatingActionButton(
-                text = { Text(text = "Add") },
+                text = { Text(text = stringResource("action_add")) },
                 icon = { Icon(imageVector = Icons.Default.Add, contentDescription = null) },
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 onClick = {

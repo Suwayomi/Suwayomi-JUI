@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.min
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
@@ -134,12 +135,12 @@ fun SettingsBackupScreen(navController: BackStack<Route>) {
     val creatingProgress by vm.creatingProgress.collectAsState()
     val creatingStatus by vm.creatingStatus.collectAsState()
     Column {
-        Toolbar("Backup Settings", navController, true)
+        Toolbar(stringResource("settings_backup_screen"), navController, true)
         LazyColumn {
             item {
                 PreferenceFile(
-                    "Restore Backup",
-                    "Restore a backup into Tachidesk",
+                    stringResource("backup_restore"),
+                    stringResource("backup_restore_sub"),
                     restoring,
                     restoringProgress,
                     restoreStatus
@@ -149,8 +150,8 @@ fun SettingsBackupScreen(navController: BackStack<Route>) {
                     }
                 }
                 PreferenceFile(
-                    "Create Backup",
-                    "Create a backup from Tachidesk",
+                    stringResource("backup_create"),
+                    stringResource("backup_create_sub"),
                     creating,
                     creatingProgress,
                     creatingStatus

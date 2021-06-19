@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class Direction(val res: String) {
-    Down("Down"),
-    Left("RTL"),
-    Right("LTR"),
-    Up("Up")
+    Down("dir_down"),
+    Left("dir_rtl"),
+    Right("dir_ltr"),
+    Up("dir_up")
 }

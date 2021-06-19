@@ -45,6 +45,7 @@ import ca.gosyer.data.models.Chapter
 import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.DropdownIconButton
 import ca.gosyer.ui.base.components.Toolbar
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 
@@ -62,16 +63,16 @@ fun DownloadsMenu() {
     Surface {
         Column {
             Toolbar(
-                "Downloads",
+                stringResource("location_downloads"),
                 closable = false,
                 actions = {
                     val downloadStatus by vm.downloaderStatus.collectAsState()
                     if (downloadStatus == DownloaderStatus.Started) {
-                        ActionIcon(onClick = vm::pause, "Pause", Icons.Default.Pause)
+                        ActionIcon(onClick = vm::pause, stringResource("action_pause"), Icons.Default.Pause)
                     } else {
-                        ActionIcon(onClick = vm::start, "Continue", Icons.Default.PlayArrow)
+                        ActionIcon(onClick = vm::start, stringResource("action_continue"), Icons.Default.PlayArrow)
                     }
-                    ActionIcon(onClick = vm::clear, "Clear queue", Icons.Default.ClearAll)
+                    ActionIcon(onClick = vm::clear, stringResource("action_clear_queue"), Icons.Default.ClearAll)
                 }
             )
             LazyColumn(Modifier.fillMaxSize()) {
@@ -137,10 +138,10 @@ private fun downloadsItem(
                 chapter.mangaId to chapter.chapterIndex,
                 {
                     DropdownMenuItem(onClick = { onDownloadCancel(chapter.chapter) }) {
-                        Text("Cancel")
+                        Text(stringResource("action_cancel"))
                     }
                     DropdownMenuItem(onClick = { onMoveDownloadToBottom(chapter.chapter) }) {
-                        Text("Move to bottom")
+                        Text(stringResource("action_move_to_bottom"))
                     }
                 }
             ) {

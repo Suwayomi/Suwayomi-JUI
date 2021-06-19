@@ -21,6 +21,7 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
@@ -28,6 +29,9 @@ import androidx.compose.ui.input.key.KeysSet
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import ca.gosyer.common.di.AppScope
+import ca.gosyer.data.translation.XmlResourceBundle
+import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.lang.launchUI
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -77,28 +81,34 @@ fun WindowDialog(
         window.keyboard.setShortcut(it.key) { it.shortcut(window) }
     }
 
-    window.show {
-        AppTheme {
-            Surface {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Row(
-                        content = row,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.height(70.dp)
-                            .align(Alignment.BottomEnd)
-                    ) {
-                        if (showNegativeButton) {
-                            OutlinedButton(onNegativeButton.plusClose(), modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)) {
-                                Text(negativeButtonText)
-                            }
-                        }
+    val resources = AppScope.getInstance<XmlResourceBundle>()
 
-                        OutlinedButton(onPositiveButton.plusClose(), modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)) {
-                            Text(positiveButtonText)
+    window.show {
+        CompositionLocalProvider(
+            LocalResources provides resources
+        ) {
+            AppTheme {
+                Surface {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Row(
+                            content = row,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Row(
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.height(70.dp)
+                                .align(Alignment.BottomEnd)
+                        ) {
+                            if (showNegativeButton) {
+                                OutlinedButton(onNegativeButton.plusClose(), modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)) {
+                                    Text(negativeButtonText)
+                                }
+                            }
+
+                            OutlinedButton(onPositiveButton.plusClose(), modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)) {
+                                Text(positiveButtonText)
+                            }
                         }
                     }
                 }
@@ -139,14 +149,20 @@ fun WindowDialog(
         window.keyboard.setShortcut(it.key) { it.shortcut(window) }
     }
 
+    val resources = AppScope.getInstance<XmlResourceBundle>()
+
     window.show {
-        AppTheme {
-            Surface {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    content(window)
-                    buttons(window)
+        CompositionLocalProvider(
+            LocalResources provides resources
+        ) {
+            AppTheme {
+                Surface {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        content(window)
+                        buttons(window)
+                    }
                 }
             }
         }

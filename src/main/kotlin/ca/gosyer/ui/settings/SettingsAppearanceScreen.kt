@@ -34,6 +34,7 @@ import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ColorPreference
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppColorsPreferenceState
 import ca.gosyer.ui.base.theme.Theme
 import ca.gosyer.ui.base.theme.asStateFlow
@@ -73,22 +74,22 @@ fun SettingsAppearance(navController: BackStack<Route>) {
     }
 
     Column {
-        Toolbar("Appearance Settings", navController, true)
+        Toolbar(stringResource("settings_appearance_screen"), navController, true)
         LazyColumn {
             item {
                 ChoicePreference(
                     preference = vm.themeMode,
                     choices = mapOf(
                         // ThemeMode.System to R.string.follow_system_settings,
-                        ThemeMode.Light to "Light",
-                        ThemeMode.Dark to "Dark"
+                        ThemeMode.Light to stringResource("theme_light"),
+                        ThemeMode.Dark to stringResource("theme_Dark")
                     ),
-                    title = "Theme"
+                    title = stringResource("theme")
                 )
             }
             item {
                 Text(
-                    "Preset themes",
+                    stringResource("preset_themes"),
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
                 )
                 LazyRow(modifier = Modifier.padding(horizontal = 8.dp)) {
@@ -107,16 +108,16 @@ fun SettingsAppearance(navController: BackStack<Route>) {
             item {
                 ColorPreference(
                     preference = activeColors.primaryStateFlow,
-                    title = "Color primary",
-                    subtitle = "Displayed most frequently across your app",
+                    title = stringResource("color_primary"),
+                    subtitle = stringResource("color_primary_sub"),
                     unsetColor = MaterialTheme.colors.primary
                 )
             }
             item {
                 ColorPreference(
                     preference = activeColors.secondaryStateFlow,
-                    title = "Color secondary",
-                    subtitle = "Accents select parts of the UI",
+                    title = stringResource("color_secondary"),
+                    subtitle = stringResource("color_secondary_sub"),
                     unsetColor = MaterialTheme.colors.secondary
                 )
             }
@@ -152,7 +153,7 @@ private fun ThemeItem(
                     .weight(1f)
                     .padding(6.dp)
             ) {
-                Text("Text", fontSize = 11.sp)
+                Text(stringResource("theme_text"), fontSize = 11.sp)
                 Button(
                     onClick = {},
                     enabled = false,
