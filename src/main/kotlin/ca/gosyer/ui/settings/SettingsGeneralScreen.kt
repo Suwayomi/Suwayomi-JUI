@@ -54,6 +54,7 @@ class SettingsGeneralViewModel @Inject constructor(
             "" to resources.getString("language_system_default", currentLocaleDisplayName),
             getLocalePair("en"),
             getLocalePair("en-CA"),
+            getLocalePair("fa"),
             getLocalePair("hi"),
             getLocalePair("sv"),
             getLocalePair("tam")
