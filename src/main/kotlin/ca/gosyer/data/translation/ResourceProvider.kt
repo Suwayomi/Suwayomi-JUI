@@ -18,13 +18,16 @@ class ResourceProvider @Inject constructor(
         val languagePref = uiPreferences.language()
         return if (languagePref.isSet()) {
             languagePref.get().let {
-                val locale: Locale? = Locale.forLanguageTag(it)
-                if (locale != null) {
-                    XmlResourceBundle.forLocale(locale)
+                if (it.isBlank()) {
+                    getDefault()
                 } else {
-                    XmlResourceBundle.forTag(it)
+                    val locale: Locale = Locale.forLanguageTag(it)
+                    Locale.setDefault(locale)
+                    XmlResourceBundle.forLocale(locale)
                 }
             }
-        } else XmlResourceBundle.forLocale(Locale.getDefault())
+        } else getDefault()
     }
+
+    private fun getDefault() = XmlResourceBundle.forLocale(Locale.getDefault())
 }
