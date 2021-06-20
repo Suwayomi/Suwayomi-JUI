@@ -48,8 +48,6 @@ Download the latest release from [the aur](https://aur.archlinux.org/packages/ta
 If you use yay, you can run `yay -S tachidesk-jui` inside a terminal window.
 
 ## General troubleshooting
-If the app breaks try deleting the directory below and re-running the app (**This will delete all your data!**) and if the problem persists open an issue.
-
 ### I'm having issues starting the application
 Make sure you have used either an installer, or you have Java 15 installed.
 

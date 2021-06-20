@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "ca.gosyer"
-version = "1.0.1"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -154,6 +154,7 @@ compose.desktop {
             packageName = "TachideskJUI"
             description = "TachideskJUI is a Jvm client for a Tachidesk Server"
             copyright = "Mozilla Public License v2.0"
+            vendor = "Suwayomi"
             windows {
                 dirChooser = true
                 upgradeUuid = "B2ED947E-81E4-4258-8388-2B1EDF5E0A30"
