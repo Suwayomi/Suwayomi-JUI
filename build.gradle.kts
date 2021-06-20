@@ -157,6 +157,8 @@ compose.desktop {
             windows {
                 dirChooser = true
                 upgradeUuid = "B2ED947E-81E4-4258-8388-2B1EDF5E0A30"
+                shortcut = true
+                menu = true
             }
             macOS {
                 bundleID = "ca.gosyer.tachideskjui"
