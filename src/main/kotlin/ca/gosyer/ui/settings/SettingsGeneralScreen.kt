@@ -42,7 +42,7 @@ class SettingsGeneralViewModel @Inject constructor(
     private val now: Instant = Instant.now()
     private val currentLocale = Locale.getDefault()
 
-    fun getLocalePair(locale: String): Pair<String, String> {
+    private fun getLocalePair(locale: String): Pair<String, String> {
         return locale to Locale.forLanguageTag(locale).getDisplayName(currentLocale)
     }
 
@@ -52,7 +52,10 @@ class SettingsGeneralViewModel @Inject constructor(
 
         return mapOf(
             "" to resources.getString("language_system_default", currentLocaleDisplayName),
-            getLocalePair("en-CA")
+            getLocalePair("en"),
+            getLocalePair("en-CA"),
+            getLocalePair("hi"),
+            getLocalePair("tam")
         )
     }
 

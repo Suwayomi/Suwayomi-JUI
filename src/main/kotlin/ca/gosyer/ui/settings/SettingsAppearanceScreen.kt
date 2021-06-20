@@ -85,7 +85,7 @@ fun SettingsAppearance(navController: BackStack<Route>) {
                     choices = mapOf(
                         // ThemeMode.System to R.string.follow_system_settings,
                         ThemeMode.Light to stringResource("theme_light"),
-                        ThemeMode.Dark to stringResource("theme_Dark")
+                        ThemeMode.Dark to stringResource("theme_dark")
                     ),
                     title = stringResource("theme")
                 )

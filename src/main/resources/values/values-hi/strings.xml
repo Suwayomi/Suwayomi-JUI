@@ -1,39 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
   -->
-
 <resources>
     <string name="app_name">TachideskJUI</string>
 
     <!-- Main Menu -->
-    <string name="tachidesk_doesnt_exist">Tachidesk jar does not exist, run Tachidesk yourself</string>
-    <string name="unable_to_start_server">Unable to start server</string>
+    <string name="tachidesk_doesnt_exist">Tachidesk जार मौजूद नहीं है, Tachidesk को स्वयं चलाएं</string>
+    <string name="unable_to_start_server">सर्वर प्रारंभ करने में असमर्थ</string>
 
     <!-- Actions -->
-    <string name="action_yes">Yes</string>
-    <string name="action_no">No</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_start_anyway">Start anyway</string>
-    <string name="action_rename">Rename</string>
-    <string name="action_create">Create</string>
-    <string name="action_add">Add</string>
-    <string name="action_pause">Pause</string>
-    <string name="action_continue">Continue</string>
-    <string name="action_clear_queue">Clear queue</string>
-    <string name="action_move_to_bottom">Move to bottom</string>
-    <string name="action_install">Install</string>
-    <string name="action_uninstall">Uninstall</string>
-    <string name="action_update">Update</string>
-    <string name="action_toggle_read">Toggle read</string>
-    <string name="action_mark_previous_read">Mark previous as read</string>
-    <string name="action_toggle_bookmarked">Toggle bookmarked</string>
-    <string name="action_favorite">Favorite</string>
-    <string name="action_remove_favorite">UnFavorite</string>
-    <string name="action_refresh_manga">Refresh manga</string>
+    <string name="action_yes">हाँ</string>
+    <string name="action_no">नहीं</string>
+    <string name="action_cancel">कॅन्सल</string>
+    <string name="action_delete">डेलीट</string>
+    <string name="action_start_anyway">जबरन स्टार्ट करे</string>
+    <string name="action_rename">रिनेम</string>
+    <string name="action_create">क्रियेट</string>
+    <string name="action_add">एड</string>
+    <string name="action_pause">पॉज़</string>
+    <string name="action_continue">कंटिन्यू</string>
+    <string name="action_clear_queue">क्लियर क्यू</string>
+    <string name="action_move_to_bottom">मूव टू बॉटम</string>
+    <string name="action_install">इनस्टॉल</string>
+    <string name="action_uninstall">उनिन्स्टल्ल</string>
+    <string name="action_update">अपडेट</string>
+    <string name="action_toggle_read">टॉगल रीड</string>
+    <string name="action_mark_previous_read">मार्क प्रीवियस एज रीड</string>
+    <string name="action_toggle_bookmarked">टॉगल बुकमार्क्ड</string>
+    <string name="action_favorite">फेवरेट</string>
+    <string name="action_remove_favorite">अनफेवरेट</string>
+    <string name="action_refresh_manga">रिफ्रेश  manga</string>
 
     <!-- Locations -->
     <string name="location_library">Library</string>
