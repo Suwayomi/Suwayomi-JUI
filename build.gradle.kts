@@ -1,3 +1,4 @@
+import org.gradle.jvm.tasks.Jar
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -15,7 +16,7 @@ plugins {
 }
 
 group = "ca.gosyer"
-version = "1.1.0"
+version = "1.1.1"
 
 repositories {
     mavenCentral()
@@ -84,6 +85,11 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_15
+}
+
 tasks {
     withType<KotlinCompile> {
         dependsOn(formatKotlinMain)
@@ -107,21 +113,16 @@ tasks {
         useJUnit()
     }
 
-    withType<org.gradle.jvm.tasks.Jar> {
+    withType<Jar> {
         exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
     }
 
     withType<LintTask> {
         source(files("src"))
-        reports.set(mapOf(
-            "plain" to file("build/lint-report.txt"),
-            "json" to file("build/lint-report.json")
-        ))
     }
 
     withType<FormatTask> {
         source(files("src"))
-        report.set(file("build/format-report.txt"))
     }
 }
 
