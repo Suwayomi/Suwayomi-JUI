@@ -56,6 +56,7 @@ class SettingsGeneralViewModel @Inject constructor(
             getLocalePair("en-CA"),
             getLocalePair("fa"),
             getLocalePair("hi"),
+            getLocalePair("pt-BR"),
             getLocalePair("sv"),
             getLocalePair("tam")
         )
