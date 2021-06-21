@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
+
+<resources>
+    <string name="app_name">TachideskJUI</string>
+
+    <!-- Main Menu -->
+    <string name="tachidesk_doesnt_exist">O jar do Tachidesk não existe, execute o Tachidesk você mesmo</string>
+    <string name="unable_to_start_server">Incapaz de iniciar o servidor</string>
+
+    <!-- Actions -->
+    <string name="action_yes">Sim</string>
+    <string name="action_no">Não</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_delete">Deletar</string>
+    <string name="action_start_anyway">Começar de qualuqer maneira</string>
+    <string name="action_rename">Renomear</string>
+    <string name="action_create">Criar</string>
+    <string name="action_add">Adicionar</string>
+    <string name="action_pause">Pausar</string>
+    <string name="action_continue">Continuar</string>
+    <string name="action_clear_queue">Limpar fila</string>
+    <string name="action_move_to_bottom">Mover para o fundo</string>
+    <string name="action_install">Instalar</string>
+    <string name="action_uninstall">Desinstalar</string>
+    <string name="action_update">Atualizar</string>
+    <string name="action_toggle_read">Alternar leitura</string>
+    <string name="action_mark_previous_read">Marcar anteriores como lido</string>
+    <string name="action_toggle_bookmarked">Alternar como favorito</string>
+    <string name="action_favorite">Favoritar</string>
+    <string name="action_remove_favorite">Desfavoritar</string>
+    <string name="action_refresh_manga">Atualizar mangá</string>
+
+    <!-- Locations -->
+    <string name="location_library">Biblioteca</string>
+    <string name="location_sources">Fontes</string>
+    <string name="location_extensions">Extensões</string>
+    <string name="location_downloads">Downloads</string>
+    <string name="location_settings">Configurações</string>
+    <string name="location_categories">Categorias</string>
+    <string name="location_manga">Mangá</string>
+
+    <!-- Categories Menu -->
+    <string name="categories_delete_confirm">Você deseja deletar a categoria %1$s?</string>
+
+    <!-- Downloads Menu -->
+    <string name="downloads_remaining">%1$s Remanescente</string>
+
+    <!-- Extensions Menu -->
+    <string name="enabled_languages">Idiomas habilitados</string>
+
+    <!-- Library Menu -->
+    <string name="default_category">Padrão</string>
+
+    <!-- Manga Menu -->
+    <string name="page_progress">Página %1$s</string>
+
+    <!-- Sources Menu -->
+    <string name="sources_home">Iníco</string>
+    <string name="move_to_browse">Para navegar</string>
+    <string name="move_to_latest">Para recente</string>
+
+    <!-- Reader Menu -->
+    <string name="no_pages_found">Nenhuma página encontrada</string>
+    <string name="no_previous_chapter">Não há capítulo anterior</string>
+    <string name="previous_chapter">Anterior:\n %1$s</string>
+    <string name="next_chapter">Próximo:\n %1$s</string>
+    <string name="no_next_chapter">Não há próximo capítulo</string>
+
+    <!-- Settings-->
+    <string name="settings_advanced">Avançado</string>
+    <string name="settings_appearance">Aparência</string>
+    <string name="settings_backup">Backup</string>
+    <string name="settings_browse">Navegar</string>
+    <string name="settings_download">Download</string>
+    <string name="settings_general">Geral</string>
+    <string name="settings_library">Biblioteca</string>
+    <string name="settings_parental_controls">Controle parental</string>
+    <string name="settings_reader">Leitor</string>
+    <string name="settings_security">Segurança</string>
+    <string name="settings_server">Servidor</string>
+    <string name="settings_tracking">Monitoramento</string>
+
+    <!-- Settings Menu Titles-->
+    <string name="settings_advanced_screen">Configuraççoes avançadas</string>
+    <string name="settings_appearance_screen">Configurações de aparência</string>
+    <string name="settings_backup_screen">Configurações de backup</string>
+    <string name="settings_browse_screen">Configurações de navegação</string>
+    <string name="settings_download_screen">Configurações de download</string>
+    <string name="settings_general_screen">Configurações gerais</string>
+    <string name="settings_library_screen">Configurações da biblioteca</string>
+    <string name="settings_parental_control_screen">Configurações de controle parental</string>
+    <string name="settings_reader_screen">Configurações de leitura</string>
+    <string name="settings_security_screen">Configurações de segurança</string>
+    <string name="settings_server_screen">Configurações do servidor</string>
+    <string name="settings_tracking_screen">Configurações de monitoramento</string>
+
+    <!-- Appearance Settings -->
+    <string name="theme">Tema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Escuro</string>
+    <string name="theme_text">Texto</string>
+    <string name="preset_themes">Temas predefinidos</string>
+    <string name="color_primary">Cor primária</string>
+    <string name="color_primary_sub">Exibido com mais frequência em seu aplicativo</string>
+    <string name="color_secondary">Cor secundária</string>
+    <string name="color_secondary_sub">Dectaca partes selecionadas da interface</string>
+    <string name="window_decorations">Decoações da janela</string>
+    <string name="window_decorations_sub">Reinicie o JUI quando esta configuração for alterada</string>
+
+    <!-- Backup Settings -->
+    <string name="backup_restore">Restaurar Backup</string>
+    <string name="backup_restore_sub">Restaurar um backuo no Tachidesk</string>
+    <string name="backup_create">Criar Backup</string>
+    <string name="backup_create_sub">Crie um backup do Tachidesk</string>
+
+    <!-- General Settings -->
+    <string name="start_screen">Tela inicial</string>
+    <string name="confirm_exit">Confirmar saída</string>
+    <string name="language">Idioma</string>
+    <string name="language_system_default">Padrão do sistema (%1$s)</string>
+    <string name="date_format">Formato de data</string>
+    <string name="date_system_default">Padrão do sistema</string>
+
+    <!-- Library Settings -->
+    <string name="show_all_category">Mostrar todas as cetegorias</string>
+
+    <!-- Reader Settings -->
+    <string name="reader_mode">Modo de leitura</string>
+    <string name="direction">Direção</string>
+    <string name="dir_down">Para baixo</string>
+    <string name="dir_rtl">Direita para esquerda</string>
+    <string name="dir_ltr">Esquerda para direita</string>
+    <string name="dir_up">Para cima</string>
+    <string name="continuous">Contínuo</string>
+    <string name="continuous_sub">Se o leitor for um pager ou uma janela de rolagem</string>
+    <string name="page_padding">Preenchimento de página</string>
+    <string name="page_padding_none">Nenhum</string>
+    <string name="force_fit_width">Forçar o ajuste de largura</string>
+    <string name="force_fit_width_sub">Quando a largura da janela estiver acima da largura da imagem, dimensione a imagem para a janela</string>
+    <string name="force_fit_height">Forçar o ajuste de altura</string>
+    <string name="force_fit_height_sub">Quando a altura da janela estiver acima da altura da imagem, dimensione a imagem para a janela</string>
+    <string name="max_width">Largura máxima</string>
+    <string name="max_width_sub">Largura para impedir que uma imagem ultrapasse, atualmente %1$sdp. Funciona com a configuração acima para dimensionar as imagens, mas restringindo-as a uma certa quantidade</string>
+    <string name="max_height">Altura máxima</string>
+    <string name="max_height_sub">Altura para impedir que uma imagem ultrapasse, atualmente %1$sdp. Funciona com a configuração acima para dimensionar as imagens, mas restringindo-as a uma certa quantidade</string>
+    <string name="max_size_unrestricted">Irrestrito</string>
+    <string name="image_scale">Ecala da imagem</string>
+    <string name="scale_fit_screen">Tela de ajuste</string>
+    <string name="scale_stretch">Alongamento</string>
+    <string name="scale_fit_width">Largura de ajuste</string>
+    <string name="scale_fit_height">Altura de ajsute</string>
+    <string name="scale_original">Tamanho original</string>
+    <string name="scale_smart">Ajuste inteligente</string>
+    <string name="navigation_mode">Modo de navegação</string>
+    <string name="nav_l_shaped">Em forma de L</string>
+    <string name="nav_kindle_ish">Kindle-ish</string>
+    <string name="nav_edge">Borda</string>
+    <string name="nav_left_right">Direita e esquerda</string>
+
+    <!-- Server Settings -->
+    <string name="host_server">Servidor host dentro do TachideskJUI</string>
+    <string name="server_url">URL do servidor</string>
+    <string name="server_port">Porta do servidor</string>
+</resources>
