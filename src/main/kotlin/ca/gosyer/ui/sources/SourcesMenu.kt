@@ -21,6 +21,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -30,11 +31,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.BuildConfig
 import ca.gosyer.data.models.Source
+import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.combinedMouseClickable
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
+import ca.gosyer.ui.extensions.LanguageDialog
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.ui.sources.components.SourceHomeScreen
 import ca.gosyer.ui.sources.components.SourceScreen
@@ -42,6 +45,7 @@ import ca.gosyer.util.compose.ThemedWindow
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
 import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
+import kotlinx.coroutines.flow.MutableStateFlow
 
 fun openSourcesMenu() {
     ThemedWindow(BuildConfig.NAME) {
@@ -85,7 +89,21 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                     sourceSearchQuery
                 } else null,
                 search = if (sourceSearchEnabled) vm::search else null,
-                searchSubmit = vm::submitSearch
+                searchSubmit = vm::submitSearch,
+                actions = {
+                    if (selectedSourceTab == null) {
+                        ActionIcon(
+                            {
+                                val enabledLangs = MutableStateFlow(vm.languages.value)
+                                LanguageDialog(enabledLangs, vm.getSourceLanguages().toList()) {
+                                    vm.setEnabledLanguages(enabledLangs.value)
+                                }
+                            },
+                            stringResource("enabled_languages"),
+                            Icons.Default.Translate
+                        )
+                    }
+                }
             )
             Row {
                 Surface(elevation = 1.dp) {

@@ -30,10 +30,13 @@ class SourcesMenuViewModel @Inject constructor(
 ) : ViewModel() {
     val serverUrl = serverPreferences.serverUrl().stateIn(scope)
 
-    private val languages = catalogPreferences.languages().stateIn(scope)
+    private val _languages = catalogPreferences.languages().asStateFlow()
+    val languages = _languages.asStateFlow()
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
+
+    private var installedSources = emptyList<Source>()
 
     private val _sources = MutableStateFlow(emptyList<Source>())
     val sources = _sources.asStateFlow()
@@ -72,12 +75,15 @@ class SourcesMenuViewModel @Inject constructor(
         getSources()
     }
 
+    private fun setSources(langs: Set<String>) {
+        _sources.value = installedSources.filter { it.lang in langs }
+    }
+
     private fun getSources() {
         scope.launch {
             try {
-                val sources = sourceHandler.getSourceList()
-                info { sources }
-                _sources.value = sources.filter { it.lang in languages.value }
+                installedSources = sourceHandler.getSourceList()
+                setSources(_languages.value)
                 info { _sources.value }
             } catch (e: Exception) {
                 e.throwIfCancellation()
@@ -132,6 +138,16 @@ class SourcesMenuViewModel @Inject constructor(
 
     fun submitSearch() {
         searchSource?.invoke(sourceSearchQuery.value)
+    }
+
+    fun getSourceLanguages(): Set<String> {
+        return installedSources.map { it.lang }.toSet()
+    }
+
+    fun setEnabledLanguages(langs: Set<String>) {
+        info { langs }
+        _languages.value = langs
+        setSources(langs)
     }
 
     private companion object : CKLogger({}) {
