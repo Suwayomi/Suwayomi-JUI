@@ -100,8 +100,8 @@
 
     <!-- Appearance Settings -->
     <string name="theme">Tema</string>
-    <string name="theme_light">Ljust</string>
-    <string name="theme_Dark">Mörkt</string>
+    <string name="theme_light">Ljust tema</string>
+    <string name="theme_dark">Mörkt tema</string>
     <string name="theme_text">Text</string>
     <string name="preset_themes">Förinställda teman</string>
     <string name="color_primary">Primär färg</string>
