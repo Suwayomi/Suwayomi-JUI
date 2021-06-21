@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class ResourceProvider @Inject constructor(
-    val uiPreferences: UiPreferences
+    private val uiPreferences: UiPreferences
 ) : Provider<XmlResourceBundle> {
     override fun get(): XmlResourceBundle {
         val languagePref = uiPreferences.language()
