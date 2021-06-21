@@ -103,13 +103,13 @@
     <string name="theme_light">ஒளி பின்னனி</string> 
     <string name="theme_dark">கருமை பின்னனி</string>
     <string name="theme_text">உரை</string>
-    <string name="preset_themes">முன்நிறுவு themes</string>
+    <string name="preset_themes">முன்நிறுவு பின்னனி</string>
     <string name="color_primary">முதன்மை நிறம்</string> 
     <string name="color_primary_sub">பொதுவான நிறம்</string> <!--wasnt sure what "app" is actually called in tamil, this means "common/general color"-->
     <string name="color_secondary">இரண்டாம் நிலை நிறம்</string>
     <string name="color_secondary_sub">குறிப்புகளின் நிறம்</string> <!--Rough translation;means "Color of markings"-->
-    <string name="window_decorations">ஜன்னல் அலங்காரம்</string>
-    <string name="window_decorations_sub">Restart JUI when this setting is changed</string> <!--here-->
+    <string name="window_decorations">சாளரம் அலங்காரம்</string>
+    <string name="window_decorations_sub">இந்த அமைப்பு மாற்றப்படும்போது தாச்சிடெஸ்க் ஜெ.யு.ஐ.-ஐ மறுதொடக்கம் செய்யுங்கள்</string>
 
     <!-- Backup Settings -->
     <string name="backup_restore">பின்சேமிப்பு மீட்டுதல்</string>
@@ -129,40 +129,40 @@
     <string name="show_all_category">எல்லா பிரிவுகளை காமிக்கவும்</string>
 
     <!-- Reader Settings -->
-    <string name="reader_mode">படிக்கும் முறை</string>
-    <string name="direction">படிக்கும் திசை</string> <!--reading direction-->
-    <string name="dir_down">கீழ்நோக்கி</string> <!--Downward-->
+    <string name="reader_mode">படிப்பி முறை</string>
+    <string name="direction">படிக்கும் திசை</string> 
+    <string name="dir_down">கீழ்நோக்கி</string>
     <string name="dir_rtl">வலமிருந்து இடமாக (RTL)</string>
     <string name="dir_ltr">இடமிருந்து வலம் (LTR)</string>
-    <string name="dir_up">மேல்நோக்கி</string> <!--Upward-->
+    <string name="dir_up">மேல்நோக்கி</string>
     <string name="continuous">தொடர்ச்சியாக</string>
-    <string name="continuous_sub">If the reader is a pager or a scrolling window</string>
-    <string name="page_padding">Page Padding</string>
-    <string name="page_padding_none">None</string>
-    <string name="force_fit_width">Force fit width</string>
-    <string name="force_fit_width_sub">When the window's width is over the images width, scale the image to the window</string>
-    <string name="force_fit_height">Force fit height</string>
-    <string name="force_fit_height_sub">When the window's height is over the images height, scale the image to the window</string>
-    <string name="max_width">Max width</string>
-    <string name="max_width_sub">Width to restrict a image from going over, currently %1$sdp. Works with the above setting to scale images up but restrict them to a certain amount</string>
-    <string name="max_height">Max height</string>
-    <string name="max_height_sub">Height to restrict a image from going over, currently %1$sdp. Works with the above setting to scale images up but restrict them to a certain amount</string>
-    <string name="max_size_unrestricted">Unrestricted</string>
-    <string name="image_scale">Image Scale</string>
-    <string name="scale_fit_screen">Fit Screen</string>
-    <string name="scale_stretch">Stretch</string>
-    <string name="scale_fit_width">Fit Width</string>
-    <string name="scale_fit_height">Fit Height</string>
-    <string name="scale_original">Original Size</string>
-    <string name="scale_smart">Smart Fit</string>
-    <string name="navigation_mode">Navigation mode</string>
-    <string name="nav_l_shaped">L shaped</string>
-    <string name="nav_kindle_ish">Kindle-ish</string>
-    <string name="nav_edge">Edge</string>
-    <string name="nav_left_right">Right and Left</string>
+    <string name="continuous_sub">படிப்பி பக்கவகை அல்லது தொடர்ச்சிவகை சாளரம் என்றால்</string> <!--doubtful translation-->
+    <string name="page_padding">பக்க திணிப்பு</string>
+    <string name="page_padding_none">ஏதுமில்லை</string>
+    <string name="force_fit_width">பொருத்தமான அகலம் கட்டாயபடுத்தல்</string>
+    <string name="force_fit_width_sub">சாளரத்தின் அகலம் படங்களின் அகலத்திற்கு மேல் இருக்கும்போது, ​​படத்தை சாளரத்திற்கு அளவிடவும்</string>
+    <string name="force_fit_height">பொருத்தமான உயரம் கட்டாயபடுத்தல்</string>
+    <string name="force_fit_height_sub">சாளரத்தின் உயரம் படங்களின் உயரத்திற்கு மேல் இருக்கும்போது, ​​படத்தை சாளரத்திற்கு அளவிடவும்</string>
+    <string name="max_width">அதிகபட்ச அகலம்</string>
+    <string name="max_width_sub">படத்து அளவு மேலே செல்வதைத் தடுக்கும் அகலம், இப்பொழுது %1$sdp. இது மேல் அமைவுடன் வேலைசையும் ஆனால் ஒரு அளவுக்கு தான் கட்டுப்படுத்தும்</string>
+    <string name="max_height">அதிகபட்ச உயரம்</string>
+    <string name="max_height_sub">படத்து அளவு மேலே செல்வதைத் தடுக்கும் உயரம், இப்பொழுது %1$sdp. இது மேல் அமைவுடன் வேலைசையும் ஆனால் ஒரு அளவுக்கு தான் கட்டுப்படுத்தும்</string>
+    <string name="max_size_unrestricted">கட்டுப்பாடற்ற</string>
+    <string name="image_scale">பட அளவு</string>
+    <string name="scale_fit_screen">திரைக்கு பொருது</string>
+    <string name="scale_stretch">நீட்சி பொருது</string>
+    <string name="scale_fit_width">அகலம் பொருது</string>
+    <string name="scale_fit_height">உயரம் பொருது</string>
+    <string name="scale_original">இயல்பான அளவு</string>
+    <string name="scale_smart">சிறந்த பொருத்தம்</string>
+    <string name="navigation_mode">பக்க மாற்றம் முறை</string>
+    <string name="nav_l_shaped">L வடிவத்தில்</string>
+    <string name="nav_kindle_ish">கின்டெல் போன்ற</string>
+    <string name="nav_edge">ஓரத்தில்</string>
+    <string name="nav_left_right">வலது மற்றும் இடது</string>
 
     <!-- Server Settings -->
     <string name="host_server">தாச்சிடெஸ் ஜெ.யு.ஐ.-க்குள் சேவையகம் நடத்தப்படுத்தல்</string> <!--Rough translation;start server inside TachdeskJUI-->
-    <string name="server_url">சேவையகம் Url</string>
+    <string name="server_url">சேவையகம் url</string>
     <string name="server_port">சேவையகம் Port</string>
 </resources>
