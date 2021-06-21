@@ -1,0 +1,37 @@
+name: Issue closer
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+jobs:
+  autoclose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Autoclose issues
+        uses: arkon/issue-closer-action@v3.0
+        with:
+          repo-token: ${{ github.token }}
+          rules: |
+            [
+              {
+                "type": "title",
+                "regex": ".*<short description>*",
+                "message": "You did not fill out the description in the title"
+              },
+              {
+                "type": "body",
+                "regex": ".*DELETE THIS SECTION IF YOU HAVE READ AND ACKNOWLEDGED IT.*",
+                "message": "The acknowledgment section was not removed"
+              },
+              {
+                "type": "body",
+                "regex": "(TachideskJUI version|Operating System|Desktop Environment|Server Type|Client JVM version|Server JVM version):.*(\\(Example:|<usually).*",
+                "message": "The requested information was not filled out"
+              },
+              {
+                "type": "body",
+                "regex": ".*Remove this line after you are done.*",
+                "message": "The lines requesting to be removed were not removed."
+              }
+            ]
