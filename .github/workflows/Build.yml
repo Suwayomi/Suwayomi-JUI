@@ -47,6 +47,7 @@ jobs:
           setupCl: ./scripts/SetupClWindows.ps1
 
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     defaults:
       run:
         shell: ${{ matrix.shell }}
@@ -79,7 +80,6 @@ jobs:
         ${{ matrix.buildPackage }} notarizeDmg \
         -Pcompose.desktop.mac.sign=true \
         -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }} \
-        -Pcompose.desktop.mac.signing.keychain=build.keychain \
         -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }} \
         -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
 
