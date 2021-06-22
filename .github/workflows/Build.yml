@@ -102,6 +102,15 @@ jobs:
           build/compose/binaries/main/*/
           build/compose/jars/
           !build/compose/binaries/main/app/
+
+      # Upload runner errors
+    - name: Upload error logs
+      uses: actions/upload-artifact@v2
+      if: ${{ failure() }}
+      with:
+        name: runner-errors-${{ matrix.runtime }}
+        path: |
+          build/compose/logs/
   ReleaseBinaries:
     name: Make a release
     needs: [BuildBinaries]
