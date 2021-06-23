@@ -20,7 +20,6 @@ import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
-import ca.gosyer.util.lang.capitalize
 import com.github.zsoltk.compose.router.BackStack
 import java.time.Instant
 import java.time.ZoneId
@@ -42,25 +41,24 @@ class SettingsGeneralViewModel @Inject constructor(
     private val now: Instant = Instant.now()
     private val currentLocale = Locale.getDefault()
 
-    private fun getLocalePair(locale: String): Pair<String, String> {
-        return locale to Locale.forLanguageTag(locale).getDisplayName(currentLocale)
-    }
+    fun getStartScreenChoices() = mapOf(
+        StartScreen.Library to resources.getStringA("location_library"),
+        StartScreen.Sources to resources.getStringA("location_sources"),
+        StartScreen.Extensions to resources.getStringA("location_extensions")
+    )
 
     @Composable
-    fun getLanguageChoices(): Map<String, String> {
-        val currentLocaleDisplayName = currentLocale.getDisplayName(currentLocale).capitalize(currentLocale)
-
-        return mapOf(
-            "" to resources.getString("language_system_default", currentLocaleDisplayName),
-            getLocalePair("en"),
-            getLocalePair("en-CA"),
-            getLocalePair("fa"),
-            getLocalePair("hi"),
-            getLocalePair("pt-BR"),
-            getLocalePair("sv"),
-            getLocalePair("tam")
-        )
-    }
+    fun getLanguageChoices(): Map<String, String> = mapOf(
+        "" to resources.getString("language_system_default", currentLocale.getDisplayName(currentLocale))
+    ) + listOf(
+        "en",
+        "en-CA",
+        "fa",
+        "hi",
+        "pt-BR",
+        "sv",
+        "tam"
+    ).associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
 
     @Composable
     fun getDateChoices(): Map<String, String> {
@@ -92,11 +90,7 @@ fun SettingsGeneralScreen(navController: BackStack<Route>) {
                 ChoicePreference(
                     preference = vm.startScreen,
                     title = stringResource("start_screen"),
-                    choices = mapOf(
-                        StartScreen.Library to stringResource("location_library"),
-                        StartScreen.Sources to stringResource("location_sources"),
-                        StartScreen.Extensions to stringResource("location_extensions"),
-                    )
+                    choices = vm.getStartScreenChoices()
                 )
             }
             item {
