@@ -1,0 +1,42 @@
+name: Validate
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  check_wrapper:
+    name: Validate Gradle Wrapper
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+  run_tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '15'
+          architecture: x64
+
+      - name: Setup Cl
+        run: ./scripts/SetupClUnix.sh
+
+      - name: Run Tests
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: check
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true

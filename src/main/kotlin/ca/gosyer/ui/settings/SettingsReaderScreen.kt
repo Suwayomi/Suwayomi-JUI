@@ -168,9 +168,9 @@ fun SettingsReaderScreen(navController: BackStack<Route>) {
                             )
                             val maxSize by it.maxSize.collectAsState()
                             val (maxSizeTitle, maxSizeSubtitle) = if (direction == Direction.Up || direction == Direction.Down) {
-                                stringResource("max_width") to stringResource("max_width_sub", maxSize.toString())
+                                stringResource("max_width") to stringResource("max_width_sub", maxSize)
                             } else {
-                                stringResource("max_height") to stringResource("max_height_sub", maxSize.toString())
+                                stringResource("max_height") to stringResource("max_height_sub", maxSize)
                             }
                             ChoicePreference(
                                 it.maxSize,

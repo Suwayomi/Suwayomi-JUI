@@ -22,7 +22,7 @@ fun stringResource(key: String): String {
 }
 
 @Composable
-fun stringResource(key: String, vararg replacements: String): String {
+fun stringResource(key: String, vararg replacements: Any): String {
     val resources = LocalResources.current
     return remember(key, replacements) { resources.getString(key, *replacements) }
 }

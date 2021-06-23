@@ -48,7 +48,7 @@
     <string name="categories_delete_confirm">Você deseja deletar a categoria %1$s?</string>
 
     <!-- Downloads Menu -->
-    <string name="downloads_remaining">%1$s Remanescente</string>
+    <string name="downloads_remaining">%1$d Remanescente</string>
 
     <!-- Extensions Menu -->
     <string name="enabled_languages">Idiomas habilitados</string>
@@ -57,7 +57,7 @@
     <string name="default_category">Padrão</string>
 
     <!-- Manga Menu -->
-    <string name="page_progress">Página %1$s</string>
+    <string name="page_progress">Página %1$d</string>
 
     <!-- Sources Menu -->
     <string name="sources_home">Iníco</string>
@@ -145,9 +145,9 @@
     <string name="force_fit_height">Forçar o ajuste de altura</string>
     <string name="force_fit_height_sub">Quando a altura da janela estiver acima da altura da imagem, dimensione a imagem para a janela</string>
     <string name="max_width">Largura máxima</string>
-    <string name="max_width_sub">Largura para impedir que uma imagem ultrapasse, atualmente %1$sdp. Funciona com a configuração acima para dimensionar as imagens, mas restringindo-as a uma certa quantidade</string>
+    <string name="max_width_sub">Largura para impedir que uma imagem ultrapasse, atualmente %1$ddp. Funciona com a configuração acima para dimensionar as imagens, mas restringindo-as a uma certa quantidade</string>
     <string name="max_height">Altura máxima</string>
-    <string name="max_height_sub">Altura para impedir que uma imagem ultrapasse, atualmente %1$sdp. Funciona com a configuração acima para dimensionar as imagens, mas restringindo-as a uma certa quantidade</string>
+    <string name="max_height_sub">Altura para impedir que uma imagem ultrapasse, atualmente %1$ddp. Funciona com a configuração acima para dimensionar as imagens, mas restringindo-as a uma certa quantidade</string>
     <string name="max_size_unrestricted">Irrestrito</string>
     <string name="image_scale">Ecala da imagem</string>
     <string name="scale_fit_screen">Tela de ajuste</string>

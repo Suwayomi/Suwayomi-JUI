@@ -234,7 +234,7 @@ fun DownloadsExtraInfo() {
     val list by vm.downloadQueue.collectAsState()
     if (list.isNotEmpty()) {
         Text(
-            stringResource("downloads_remaining", list.size.toString()),
+            stringResource("downloads_remaining", list.size),
             style = MaterialTheme.typography.body2,
             color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
         )

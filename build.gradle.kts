@@ -20,7 +20,7 @@ version = "1.1.1"
 
 repositories {
     mavenCentral()
-
+    google()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
 }
 
@@ -81,7 +81,8 @@ dependencies {
     implementation("io.github.kerubistan.kroki:kroki-coroutines:1.21")
 
     // Testing
-    testImplementation(kotlin("test-junit5"))
+    testImplementation(kotlin("test-junit"))
+    testImplementation(compose("org.jetbrains.compose.ui:ui-test-junit4"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 }
 

@@ -47,7 +47,7 @@
     <string name="categories_delete_confirm">%1$s-ஐ அழிக்க வரும்புகிறீர்களா?</string>
 
     <!-- Downloads Menu -->
-    <string name="downloads_remaining">%1$s மீதி</string> <!--Translation;%1$s remaining; or "பதிவிறக்கம் மீதி"-download remaining, if needed to be specific-->
+    <string name="downloads_remaining">%1$d மீதி</string> <!--Translation;%1$s remaining; or "பதிவிறக்கம் மீதி"-download remaining, if needed to be specific-->
 
     <!-- Extensions Menu -->
     <string name="enabled_languages">இயக்கப்பட்ட மொழிகள்</string>
@@ -56,7 +56,7 @@
     <string name="default_category">இயல்புநிலை</string> <!--This means default-->
 
     <!-- Manga Menu -->
-    <string name="page_progress">பக்கம் %1$s</string>
+    <string name="page_progress">பக்கம் %1$d</string>
 
     <!-- Sources Menu -->
     <string name="sources_home">முகப்பு</string>
@@ -144,9 +144,9 @@
     <string name="force_fit_height">பொருத்தமான உயரம் கட்டாயபடுத்தல்</string>
     <string name="force_fit_height_sub">சாளரத்தின் உயரம் படங்களின் உயரத்திற்கு மேல் இருக்கும்போது, ​​படத்தை சாளரத்திற்கு அளவிடவும்</string>
     <string name="max_width">அதிகபட்ச அகலம்</string>
-    <string name="max_width_sub">படத்து அளவு மேலே செல்வதைத் தடுக்கும் அகலம், இப்பொழுது %1$sdp. இது மேல் அமைவுடன் வேலைசையும் ஆனால் ஒரு அளவுக்கு தான் கட்டுப்படுத்தும்</string>
+    <string name="max_width_sub">படத்து அளவு மேலே செல்வதைத் தடுக்கும் அகலம், இப்பொழுது %1$ddp. இது மேல் அமைவுடன் வேலைசையும் ஆனால் ஒரு அளவுக்கு தான் கட்டுப்படுத்தும்</string>
     <string name="max_height">அதிகபட்ச உயரம்</string>
-    <string name="max_height_sub">படத்து அளவு மேலே செல்வதைத் தடுக்கும் உயரம், இப்பொழுது %1$sdp. இது மேல் அமைவுடன் வேலைசையும் ஆனால் ஒரு அளவுக்கு தான் கட்டுப்படுத்தும்</string>
+    <string name="max_height_sub">படத்து அளவு மேலே செல்வதைத் தடுக்கும் உயரம், இப்பொழுது %1$ddp. இது மேல் அமைவுடன் வேலைசையும் ஆனால் ஒரு அளவுக்கு தான் கட்டுப்படுத்தும்</string>
     <string name="max_size_unrestricted">கட்டுப்பாடற்ற</string>
     <string name="image_scale">பட அளவு</string>
     <string name="scale_fit_screen">திரைக்கு பொருது</string>

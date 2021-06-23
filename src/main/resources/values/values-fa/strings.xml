@@ -48,7 +48,7 @@
     <string name="categories_delete_confirm">آیا می‌خواهید رده %1$s را پاک کنید؟</string>
 
     <!-- Downloads Menu -->
-    <string name="downloads_remaining">%1$s تغییر نام</string>
+    <string name="downloads_remaining">%1$d تغییر نام</string>
 
     <!-- Extensions Menu -->
     <string name="enabled_languages">زبان‌های‌ فعال</string>
@@ -57,7 +57,7 @@
     <string name="default_category">پیشفرض</string>
 
     <!-- Manga Menu -->
-    <string name="page_progress">صفحه %1$s</string>
+    <string name="page_progress">صفحه %1$d</string>
 
     <!-- Sources Menu -->
     <string name="sources_home">خانه</string>
@@ -145,9 +145,9 @@
     <string name="force_fit_height">هم اندازه کردن طول</string>
     <string name="force_fit_height_sub">اگر طول پنجره از عکس بزرگ تر است، عکس هم اندازه می‌شود</string>
     <string name="max_width">حداکثر عرض</string>
-    <string name="max_width_sub">طولی که عکس باید از آن کوچک‌تر باشد که مقدار فعلی آن %1$sdp است. می‌شود برای بزرگ تر کردن عکس‌ها استفاده شود</string>
+    <string name="max_width_sub">طولی که عکس باید از آن کوچک‌تر باشد که مقدار فعلی آن %1$ddp است. می‌شود برای بزرگ تر کردن عکس‌ها استفاده شود</string>
     <string name="max_height">حداکثر طول</string>
-    <string name="max_height_sub">طولی که عکس باید از آن کوچک‌تر باشد که مقدار فعلی آن %1$sdp است. می‌شود برای بزرگ تر کردن عکس‌ها استفاده شود.</string>
+    <string name="max_height_sub">طولی که عکس باید از آن کوچک‌تر باشد که مقدار فعلی آن %1$ddp است. می‌شود برای بزرگ تر کردن عکس‌ها استفاده شود.</string>
     <string name="max_size_unrestricted">آزاد</string>
     <string name="image_scale">مقیاس عکس</string>
     <string name="scale_fit_screen">هم اندازه صفحه</string>

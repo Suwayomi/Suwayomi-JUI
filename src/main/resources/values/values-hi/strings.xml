@@ -47,7 +47,7 @@
     <string name="categories_delete_confirm">Do you wish to delete the category %1$s?</string>
 
     <!-- Downloads Menu -->
-    <string name="downloads_remaining">%1$s remaining</string>
+    <string name="downloads_remaining">%1$d remaining</string>
 
     <!-- Extensions Menu -->
     <string name="enabled_languages">Enabled languages</string>
@@ -56,7 +56,7 @@
     <string name="default_category">Default</string>
 
     <!-- Manga Menu -->
-    <string name="page_progress">Page %1$s</string>
+    <string name="page_progress">Page %1$d</string>
 
     <!-- Sources Menu -->
     <string name="sources_home">Home</string>
@@ -144,9 +144,9 @@
     <string name="force_fit_height">Force fit height</string>
     <string name="force_fit_height_sub">When the window's height is over the images height, scale the image to the window</string>
     <string name="max_width">Max width</string>
-    <string name="max_width_sub">Width to restrict a image from going over, currently %1$sdp. Works with the above setting to scale images up but restrict them to a certain amount</string>
+    <string name="max_width_sub">Width to restrict a image from going over, currently %1$ddp. Works with the above setting to scale images up but restrict them to a certain amount</string>
     <string name="max_height">Max height</string>
-    <string name="max_height_sub">Height to restrict a image from going over, currently %1$sdp. Works with the above setting to scale images up but restrict them to a certain amount</string>
+    <string name="max_height_sub">Height to restrict a image from going over, currently %1$ddp. Works with the above setting to scale images up but restrict them to a certain amount</string>
     <string name="max_size_unrestricted">Unrestricted</string>
     <string name="image_scale">Image Scale</string>
     <string name="scale_fit_screen">Fit Screen</string>

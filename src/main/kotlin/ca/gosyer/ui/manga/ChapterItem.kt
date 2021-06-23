@@ -109,7 +109,7 @@ fun ChapterItem(
                             if (length > 0) append(" • ")
                             append(
                                 AnnotatedString(
-                                    stringResource("page_progress", (chapter.lastPageRead + 1).toString()),
+                                    stringResource("page_progress", (chapter.lastPageRead + 1)),
                                     SpanStyle(color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled))
                                 )
                             )

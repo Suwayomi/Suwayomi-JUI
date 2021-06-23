@@ -46,18 +46,50 @@ class XmlResourceBundle internal constructor(internal val lookup: Map<String, An
     }
 
     fun getStringA(key: String): String {
-        return getString(key).replace("\\n", "\n")
+        return getString(key)
+            .replace("\\n", "\n")
+            .replace("\\t", "\t")
+            .replace("\\?", "?")
+            .replace("\\@", "@")
     }
 
-    fun getString(key: String, vararg replacements: String): String {
+    fun getString(key: String, vararg replacements: Any): String {
+        val stringBuilder = StringBuilder()
         var string = getStringA(key)
-        replacements.forEachIndexed { index, s ->
-            string = string.replace(
-                "%" + (index + 1).toString() + '$' + "s",
-                s
-            )
+        while (true) {
+            val index = string.indexOf('%')
+            if (index < 0) {
+                stringBuilder.append(string)
+                break
+            } else {
+                stringBuilder.append(string.substring(0, index))
+                val stringConfig = string.substring(index, index + 4)
+                val item = replacements[stringConfig[1].digitToInt() - 1]
+                when (stringConfig[3]) {
+                    's' -> {
+                        require(item is String) { "Expected String, got ${item::class.java.simpleName}" }
+                        stringBuilder.append(item)
+                    }
+                    'd' -> {
+                        when (item) {
+                            is Int -> stringBuilder.append(item)
+                            is Long -> stringBuilder.append(item)
+                            else -> throw IllegalArgumentException("Expected Int or Long, got ${item::class.java.simpleName}")
+                        }
+                    }
+                    'f' -> {
+                        when (item) {
+                            is Float -> stringBuilder.append(item)
+                            is Double -> stringBuilder.append(item)
+                            else -> throw IllegalArgumentException("Expected Float or Double, got ${item::class.java.simpleName}")
+                        }
+                    }
+                }
+                stringBuilder.append(item)
+                string = string.substring((index + 4).coerceAtMost(string.length), string.length)
+            }
         }
-        return string
+        return stringBuilder.toString()
     }
 
     companion object {
@@ -66,29 +98,6 @@ class XmlResourceBundle internal constructor(internal val lookup: Map<String, An
                 autoPolymorphic = true
                 indentString = "\t"
             }
-        }
-
-        fun forTag(tag: String): XmlResourceBundle {
-            val classLoader = this::class.java.classLoader
-            val rootBundle = classLoader.getResourceAsStream("values/values/strings.xml")!!
-                .use { XmlResourceBundle(it) }
-
-            val languageBundle = classLoader.getResourceAsStream("values/values-${tag.substringBefore('-')}/strings.xml")
-                ?.use { XmlResourceBundle(it) }
-
-            val languageTagBundle = if (tag.contains('-')) {
-                classLoader.getResourceAsStream("values/values-$tag/strings.xml")
-                    ?.use { XmlResourceBundle(it) }
-            } else null
-
-            var resultBundle = rootBundle
-            if (languageBundle != null) {
-                resultBundle += languageBundle
-            }
-            if (languageTagBundle != null) {
-                resultBundle += languageTagBundle
-            }
-            return resultBundle
         }
 
         fun forLocale(locale: Locale): XmlResourceBundle {
