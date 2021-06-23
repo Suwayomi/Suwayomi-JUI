@@ -26,7 +26,7 @@ class XmlResourceBundleTest {
     @Test
     fun `test each language parameters`() {
         rootBundle.lookup.entries.forEach { (key, value) ->
-            if (value !is String || !value.contains('%')) return@forEach
+            if (value !is String || !value.contains("[^\\\\]?%\\d".toRegex())) return@forEach
             val testValues: Array<Any> = value.split('%').drop(1).map {
                 when (val char = it[2]) {
                     's' -> "Test string"

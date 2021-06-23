@@ -16,17 +16,20 @@ import java.util.Collections
 import java.util.Enumeration
 import java.util.Locale
 import java.util.ResourceBundle
+import java.util.concurrent.ConcurrentHashMap
 
-class XmlResourceBundle internal constructor(internal val lookup: Map<String, Any>) : ResourceBundle() {
+class XmlResourceBundle internal constructor(internal val lookup: ConcurrentHashMap<String, Any>) : ResourceBundle() {
 
     constructor(stream: InputStream, charset: Charset = Charsets.UTF_8) : this(
         stream.reader(charset)
     )
 
     constructor(reader: Reader) : this(
-        format.decodeFromReader<Resources>(
-            StAXReader(reader)
-        ).values.associate { it.name to it.value }
+        ConcurrentHashMap(
+            format.decodeFromReader<Resources>(
+                StAXReader(reader)
+            ).values.associate { it.name to it.value }
+        )
     )
 
     public override fun handleGetObject(key: String): Any? {
@@ -42,7 +45,7 @@ class XmlResourceBundle internal constructor(internal val lookup: Map<String, An
     }
 
     operator fun plus(other: XmlResourceBundle): XmlResourceBundle {
-        return XmlResourceBundle(lookup + other.lookup)
+        return XmlResourceBundle(ConcurrentHashMap(lookup + other.lookup))
     }
 
     fun getStringA(key: String): String {
@@ -61,6 +64,10 @@ class XmlResourceBundle internal constructor(internal val lookup: Map<String, An
             if (index < 0) {
                 stringBuilder.append(string)
                 break
+            } else if (string[(index - 1).coerceAtLeast(0)] == '\\') {
+                stringBuilder.append(string.substring(0, (index - 1).coerceAtLeast(0)))
+                stringBuilder.append('%')
+                string = string.substring((index + 1).coerceAtMost(string.length))
             } else {
                 stringBuilder.append(string.substring(0, index))
                 val stringConfig = string.substring(index, index + 4)
@@ -86,7 +93,7 @@ class XmlResourceBundle internal constructor(internal val lookup: Map<String, An
                     }
                 }
                 stringBuilder.append(item)
-                string = string.substring((index + 4).coerceAtMost(string.length), string.length)
+                string = string.substring((index + 4).coerceAtMost(string.length))
             }
         }
         return stringBuilder.toString()
