@@ -21,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
@@ -34,7 +33,7 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
 
 fun openLibraryMenu() {
     ThemedWindow(BuildConfig.NAME) {
@@ -140,15 +139,15 @@ private fun LibraryPager(
 ) {
     if (categories.isEmpty()) return
 
-    val state = remember(categories.size, selectedPage) {
-        PagerState(
-            currentPage = selectedPage,
-            pageCount = categories.size
-        )
-    }
+    val state = rememberPagerState(categories.size, selectedPage)
     LaunchedEffect(state.currentPage) {
         if (state.currentPage != selectedPage) {
             onPageChanged(state.currentPage)
+        }
+    }
+    LaunchedEffect(selectedPage) {
+        if (state.currentPage != selectedPage) {
+            state.animateScrollToPage(selectedPage)
         }
     }
     HorizontalPager(state = state) {

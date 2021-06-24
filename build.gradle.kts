@@ -30,7 +30,7 @@ dependencies {
     implementation(compose("org.jetbrains.compose.ui:ui-util"))
     implementation(compose("org.jetbrains.compose.material:material-icons-extended"))
     implementation("ca.gosyer:compose-router:0.24.2-jetbrains-2")
-    implementation("ca.gosyer:accompanist-pager:0.9.1")
+    implementation("ca.gosyer:accompanist-pager:0.12.0")
 
     // UI (Swing)
     implementation("com.github.weisj:darklaf-core:2.6.1")
