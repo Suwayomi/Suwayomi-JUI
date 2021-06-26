@@ -25,144 +25,144 @@
     <string name="action_clear_queue">क्लियर क्यू</string>
     <string name="action_move_to_bottom">मूव टू बॉटम</string>
     <string name="action_install">इनस्टॉल</string>
-    <string name="action_uninstall">उनिन्स्टल्ल</string>
+    <string name="action_uninstall">अनइनस्टॉल</string>
     <string name="action_update">अपडेट</string>
     <string name="action_toggle_read">टॉगल रीड</string>
     <string name="action_mark_previous_read">मार्क प्रीवियस एज रीड</string>
     <string name="action_toggle_bookmarked">टॉगल बुकमार्क्ड</string>
     <string name="action_favorite">फेवरेट</string>
     <string name="action_remove_favorite">अनफेवरेट</string>
-    <string name="action_refresh_manga">रिफ्रेश  manga</string>
+    <string name="action_refresh_manga">रिफ्रेश  Manga</string>
 
     <!-- Locations -->
-    <string name="location_library">Library</string>
-    <string name="location_sources">Sources</string>
-    <string name="location_extensions">Extensions</string>
-    <string name="location_downloads">Downloads</string>
-    <string name="location_settings">Settings</string>
-    <string name="location_categories">Categories</string>
+    <string name="location_library">लाइब्रेरी</string>
+    <string name="location_sources">सोर्सेज</string>
+    <string name="location_extensions">एक्सटेंशन्स</string>
+    <string name="location_downloads">डाउनलोडस</string>
+    <string name="location_settings">सेटिंग्स</string>
+    <string name="location_categories">कैटगरीएस</string>
     <string name="location_manga">Manga</string>
 
     <!-- Categories Menu -->
-    <string name="categories_delete_confirm">Do you wish to delete the category %1$s?</string>
+    <string name="categories_delete_confirm">क्या आप कैटगरी हटाना चाहते हैं %1$s?</string>
 
     <!-- Downloads Menu -->
-    <string name="downloads_remaining">%1$d remaining</string>
+    <string name="downloads_remaining">%1$d रिमेनिंग</string>
 
     <!-- Extensions Menu -->
-    <string name="enabled_languages">Enabled languages</string>
+    <string name="enabled_languages">इनेबल्ड लैंग्वेजेज</string>
 
     <!-- Library Menu -->
-    <string name="default_category">Default</string>
+    <string name="default_category">डिफ़ॉल्ट</string>
 
     <!-- Manga Menu -->
-    <string name="page_progress">Page %1$d</string>
+    <string name="page_progress">पेज %1$d</string>
 
     <!-- Sources Menu -->
-    <string name="sources_home">Home</string>
-    <string name="move_to_browse">To Browse</string>
-    <string name="move_to_latest">To Latest</string>
+    <string name="sources_home">होम</string>
+    <string name="move_to_browse">टू ब्राउज</string>
+    <string name="move_to_latest">टू लेटेस्ट</string>
 
     <!-- Reader Menu -->
-    <string name="no_pages_found">No pages found</string>
-    <string name="no_previous_chapter">There is no previous chapter</string>
-    <string name="previous_chapter">Previous:\n %1$s</string>
-    <string name="next_chapter">Next:\n %1$s</string>
-    <string name="no_next_chapter">There is no next chapter</string>
+    <string name="no_pages_found">कोई पेज नहीं मिला</string>
+    <string name="no_previous_chapter">कोई पिछला चैप्टर नहीं है</string>
+    <string name="previous_chapter">प्रीवियस:\n %1$s</string>
+    <string name="next_chapter">नेक्स्ट :\n %1$s</string>
+    <string name="no_next_chapter">कोई अगला चैप्टर नहीं है</string>
 
     <!-- Settings-->
-    <string name="settings_advanced">Advanced</string>
-    <string name="settings_appearance">Appearance</string>
-    <string name="settings_backup">Backup</string>
-    <string name="settings_browse">Browse</string>
-    <string name="settings_download">Download</string>
-    <string name="settings_general">General</string>
-    <string name="settings_library">Library</string>
-    <string name="settings_parental_controls">Parental Controls</string>
-    <string name="settings_reader">Reader</string>
-    <string name="settings_security">Security</string>
-    <string name="settings_server">Server</string>
-    <string name="settings_tracking">Tracking</string>
+    <string name="settings_advanced">एडवांस्ड</string>
+    <string name="settings_appearance">अपीयरेंस</string>
+    <string name="settings_backup">बैकअप</string>
+    <string name="settings_browse">ब्राउज</string>
+    <string name="settings_download">डाउनलोड</string>
+    <string name="settings_general">जनरल</string>
+    <string name="settings_library">लाइब्रेरी</string>
+    <string name="settings_parental_controls">पैरेंटल कंट्रोल्स</string>
+    <string name="settings_reader">रीडर</string>
+    <string name="settings_security">सिक्योरिटी</string>
+    <string name="settings_server">सर्वर</string>
+    <string name="settings_tracking">ट्रैकिंग</string>
 
     <!-- Settings Menu Titles-->
-    <string name="settings_advanced_screen">Advanced Settings</string>
-    <string name="settings_appearance_screen">Appearance Settings</string>
-    <string name="settings_backup_screen">Backup Settings</string>
-    <string name="settings_browse_screen">Browse Settings</string>
-    <string name="settings_download_screen">Download Settings</string>
-    <string name="settings_general_screen">General Settings</string>
-    <string name="settings_library_screen">Library Settings</string>
-    <string name="settings_parental_control_screen">Parental Control Settings</string>
-    <string name="settings_reader_screen">Reader Settings</string>
-    <string name="settings_security_screen">Security Settings</string>
-    <string name="settings_server_screen">Server Settings</string>
-    <string name="settings_tracking_screen">Tracking Settings</string>
+    <string name="settings_advanced_screen">एडवांस्ड सेटिंग्स</string>
+    <string name="settings_appearance_screen">अपीयरेंस सेटिंग्स</string>
+    <string name="settings_backup_screen">बैकअप सेटिंग्स</string>
+    <string name="settings_browse_screen">ब्राउज सेटिंग्स</string>
+    <string name="settings_download_screen">डाउनलोड सेटिंग्स</string>
+    <string name="settings_general_screen">जनरल सेटिंग्स</string>
+    <string name="settings_library_screen">लाइब्रेरी सेटिंग्स</string>
+    <string name="settings_parental_control_screen">पैरेंटल कंट्रोल्स सेटिंग्स</string>
+    <string name="settings_reader_screen">रीडर सेटिंग्स</string>
+    <string name="settings_security_screen">सिक्योरिटी सेटिंग्स</string>
+    <string name="settings_server_screen">सर्वर सेटिंग्स</string>
+    <string name="settings_tracking_screen">ट्रैकिंग सेटिंग्स</string>
 
     <!-- Appearance Settings -->
-    <string name="theme">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_text">Text</string>
-    <string name="preset_themes">Preset themes</string>
-    <string name="color_primary">Color primary</string>
-    <string name="color_primary_sub">Displayed most frequently across your app</string>
-    <string name="color_secondary">Color secondary</string>
-    <string name="color_secondary_sub">Accents select parts of the UI</string>
-    <string name="window_decorations">Window Decorations</string>
-    <string name="window_decorations_sub">Restart JUI when this setting is changed</string>
+    <string name="theme">थीम</string>
+    <string name="theme_light">लाइट</string>
+    <string name="theme_dark">डार्क</string>
+    <string name="theme_text">टेक्स्ट</string>
+    <string name="preset_themes">प्रीसेट थीम्स</string>
+    <string name="color_primary">कलर प्राइमरी</string>
+    <string name="color_primary_sub">आपके ऐप में सबसे अधिक बार प्रदर्शित होता है</string>
+    <string name="color_secondary">कलर सेकेंडरी</string>
+    <string name="color_secondary_sub">उच्चारण UI के कुछ हिस्सों का चयन करते हैं</string>
+    <string name="window_decorations">विंडो डेकोरेशन</string>
+    <string name="window_decorations_sub">जब यह सेटिंग बदली जाए तो JUI को पुनरारंभ करें</string>
 
     <!-- Backup Settings -->
-    <string name="backup_restore">Restore Backup</string>
-    <string name="backup_restore_sub">Restore a backup into Tachidesk</string>
-    <string name="backup_create">Create Backup</string>
-    <string name="backup_create_sub">Create a backup from Tachidesk</string>
+    <string name="backup_restore">रिस्टोर बैकअप</string>
+    <string name="backup_restore_sub">Tachidesk का बैकअप रिस्टोर करें</string>
+    <string name="backup_create">क्रिएट बैकअप</string>
+    <string name="backup_create_sub">Tachidesk का बैकअप बनाएं</string>
 
     <!-- General Settings -->
-    <string name="start_screen">Start Screen</string>
-    <string name="confirm_exit">Confirm Exit</string>
-    <string name="language">Language</string>
-    <string name="language_system_default">System Default (%1$s)</string>
-    <string name="date_format">Date Format</string>
-    <string name="date_system_default">System Default</string>
+    <string name="start_screen">स्टार्ट स्क्रीन</string>
+    <string name="confirm_exit">कन्फर्म एग्जिट</string>
+    <string name="language">लैंग्वेज</string>
+    <string name="language_system_default">सिस्टम डिफ़ॉल्ट (%1$s)</string>
+    <string name="date_format">डेट फॉर्मेट</string>
+    <string name="date_system_default">सिस्टम डिफ़ॉल्ट</string>
 
     <!-- Library Settings -->
-    <string name="show_all_category">Show all category</string>
+    <string name="show_all_category">सभी कैटगरी दिखाएं</string>
 
     <!-- Reader Settings -->
-    <string name="reader_mode">Reader Mode</string>
-    <string name="direction">Direction</string>
-    <string name="dir_down">Down</string>
-    <string name="dir_rtl">RTL</string>
-    <string name="dir_ltr">LTR</string>
-    <string name="dir_up">Up</string>
-    <string name="continuous">Continuous</string>
-    <string name="continuous_sub">If the reader is a pager or a scrolling window</string>
-    <string name="page_padding">Page Padding</string>
-    <string name="page_padding_none">None</string>
-    <string name="force_fit_width">Force fit width</string>
-    <string name="force_fit_width_sub">When the window's width is over the images width, scale the image to the window</string>
-    <string name="force_fit_height">Force fit height</string>
-    <string name="force_fit_height_sub">When the window's height is over the images height, scale the image to the window</string>
-    <string name="max_width">Max width</string>
-    <string name="max_width_sub">Width to restrict a image from going over, currently %1$ddp. Works with the above setting to scale images up but restrict them to a certain amount</string>
-    <string name="max_height">Max height</string>
-    <string name="max_height_sub">Height to restrict a image from going over, currently %1$ddp. Works with the above setting to scale images up but restrict them to a certain amount</string>
-    <string name="max_size_unrestricted">Unrestricted</string>
-    <string name="image_scale">Image Scale</string>
-    <string name="scale_fit_screen">Fit Screen</string>
-    <string name="scale_stretch">Stretch</string>
-    <string name="scale_fit_width">Fit Width</string>
-    <string name="scale_fit_height">Fit Height</string>
-    <string name="scale_original">Original Size</string>
-    <string name="scale_smart">Smart Fit</string>
-    <string name="navigation_mode">Navigation mode</string>
-    <string name="nav_l_shaped">L shaped</string>
-    <string name="nav_kindle_ish">Kindle-ish</string>
-    <string name="nav_edge">Edge</string>
-    <string name="nav_left_right">Right and Left</string>
+    <string name="reader_mode">रीडर मोड</string>
+    <string name="direction">दिशा</string>
+    <string name="dir_down">नीचे</string>
+    <string name="dir_rtl">दाएं से बाएं</string>
+    <string name="dir_ltr">बाएं से दायां</string>
+    <string name="dir_up">ऊपर</string>
+    <string name="continuous">निरंतर</string>
+    <string name="continuous_sub">यदि रीडर एक पेजर या स्क्रॉलिंग विंडो है</string>
+    <string name="page_padding">पेज पैडिंग</string>
+    <string name="page_padding_none">कोई पेज पैडिंग नहीं</string>
+    <string name="force_fit_width">फाॅर्स फिट विड्थ</string>
+    <string name="force_fit_width_sub">जब विंडो की चौड़ाई इमेज की चौड़ाई से अधिक हो, तो इमेज को विंडो पर स्केल करें</string>
+    <string name="force_fit_height">फाॅर्स फिट हाइट</string>
+    <string name="force_fit_height_sub">जब विंडो की ऊंचाई इमेज की ऊंचाई से अधिक हो, तो इमेज को विंडो पर स्केल करें</string>
+    <string name="max_width">मैक्स विड्थ</string>
+    <string name="max_width_sub">किसी इमेज को ऊपर जाने से रोकने के लिए चौड़ाई, वर्तमान में %1$ddp. इमेज को बड़ा करने के लिए उपरोक्त सेटिंग के साथ काम करता है लेकिन उन्हें एक निश्चित मात्रा तक सीमित रखता है</string>
+    <string name="max_height">मैक्स हाइट</string>
+    <string name="max_height_sub">इमेज को ऊपर जाने से रोकने के लिए ऊँचाई, वर्तमान में %1$ddp। इमेज को बड़ा करने के लिए उपरोक्त सेटिंग के साथ काम करता है लेकिन उन्हें एक निश्चित मात्रा तक सीमित रखता है</string>
+    <string name="max_size_unrestricted">अप्रतिबंधित</string>
+    <string name="image_scale">इमेज स्केल</string>
+    <string name="scale_fit_screen">फिट स्क्रीन</string>
+    <string name="scale_stretch">स्ट्रेच</string>
+    <string name="scale_fit_width">फिट विड्थ</string>
+    <string name="scale_fit_height">फिट हाइट</string>
+    <string name="scale_original">ओरिजिनल साइज</string>
+    <string name="scale_smart">स्मार्ट फिट</string>
+    <string name="navigation_mode">नेविगेशन मोड</string>
+    <string name="nav_l_shaped">L शेप्ड</string>
+    <string name="nav_kindle_ish">kindle की तरह</string>
+    <string name="nav_edge">एज नेविगेशन</string>
+    <string name="nav_left_right">बाएं और दाएं</string>
 
     <!-- Server Settings -->
-    <string name="host_server">Host server inside TachideskJUI</string>
-    <string name="server_url">Server Url</string>
-    <string name="server_port">Server Port</string>
+    <string name="host_server">TachideskJUI के अंदर सर्वर होस्ट करें</string>
+    <string name="server_url">सर्वर url</string>
+    <string name="server_port">सर्वर port</string>
 </resources>
