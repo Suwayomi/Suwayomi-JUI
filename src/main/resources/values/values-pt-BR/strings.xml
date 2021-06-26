@@ -17,7 +17,7 @@
     <string name="action_no">Não</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_delete">Deletar</string>
-    <string name="action_start_anyway">Começar de qualuqer maneira</string>
+    <string name="action_start_anyway">Começar de qualquer maneira</string>
     <string name="action_rename">Renomear</string>
     <string name="action_create">Criar</string>
     <string name="action_add">Adicionar</string>
@@ -48,7 +48,7 @@
     <string name="categories_delete_confirm">Você deseja deletar a categoria %1$s?</string>
 
     <!-- Downloads Menu -->
-    <string name="downloads_remaining">%1$d Remanescente</string>
+    <string name="downloads_remaining">%1$d remanescente</string>
 
     <!-- Extensions Menu -->
     <string name="enabled_languages">Idiomas habilitados</string>
@@ -86,7 +86,7 @@
     <string name="settings_tracking">Monitoramento</string>
 
     <!-- Settings Menu Titles-->
-    <string name="settings_advanced_screen">Configuraççoes avançadas</string>
+    <string name="settings_advanced_screen">Configurações avançadas</string>
     <string name="settings_appearance_screen">Configurações de aparência</string>
     <string name="settings_backup_screen">Configurações de backup</string>
     <string name="settings_browse_screen">Configurações de navegação</string>
@@ -108,8 +108,8 @@
     <string name="color_primary">Cor primária</string>
     <string name="color_primary_sub">Exibido com mais frequência em seu aplicativo</string>
     <string name="color_secondary">Cor secundária</string>
-    <string name="color_secondary_sub">Dectaca partes selecionadas da interface</string>
-    <string name="window_decorations">Decoações da janela</string>
+    <string name="color_secondary_sub">Destaca partes selecionadas da interface</string>
+    <string name="window_decorations">Decorações da janela</string>
     <string name="window_decorations_sub">Reinicie o JUI quando esta configuração for alterada</string>
 
     <!-- Backup Settings -->
@@ -149,11 +149,11 @@
     <string name="max_height">Altura máxima</string>
     <string name="max_height_sub">Altura para impedir que uma imagem ultrapasse, atualmente %1$ddp. Funciona com a configuração acima para dimensionar as imagens, mas restringindo-as a uma certa quantidade</string>
     <string name="max_size_unrestricted">Irrestrito</string>
-    <string name="image_scale">Ecala da imagem</string>
+    <string name="image_scale">Escala da imagem</string>
     <string name="scale_fit_screen">Tela de ajuste</string>
     <string name="scale_stretch">Alongamento</string>
     <string name="scale_fit_width">Largura de ajuste</string>
-    <string name="scale_fit_height">Altura de ajsute</string>
+    <string name="scale_fit_height">Altura de ajuste</string>
     <string name="scale_original">Tamanho original</string>
     <string name="scale_smart">Ajuste inteligente</string>
     <string name="navigation_mode">Modo de navegação</string>
