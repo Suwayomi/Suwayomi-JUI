@@ -51,6 +51,36 @@ class ServerService @Inject constructor(
         }?.let { true } ?: false
     }
 
+    private fun getJavaFromPath(javaPath: File): String? {
+        val javaExeFile = File(javaPath, "java.exe")
+        val javaUnixFile = File(javaPath, "java")
+        return when {
+            javaExeFile.exists() -> '"' + javaExeFile.absolutePath + '"'
+            javaUnixFile.exists() -> '"' + javaUnixFile.absolutePath + '"'
+            else -> null
+        }
+    }
+
+    private fun getRuntimeJava(): String? {
+        return System.getProperty("java.home")?.let { getJavaFromPath(File(it, "bin")) }
+    }
+
+    private fun getPossibleJava(): String? {
+        return System.getProperty("java.library.path")?.split(File.pathSeparatorChar)
+            .orEmpty()
+            .asSequence()
+            .mapNotNull {
+                val file = File(it)
+                if (file.absolutePath.contains("java") || file.absolutePath.contains("jdk")) {
+                    if (file.name.equals("bin", true)) {
+                        file
+                    } else File(file, "bin")
+                } else null
+            }
+            .mapNotNull { getJavaFromPath(it) }
+            .firstOrNull()
+    }
+
     init {
         runtime.addShutdownHook(
             thread(start = false) {
@@ -67,7 +97,6 @@ class ServerService @Inject constructor(
                 return@onEach
             }
             GlobalScope.launch {
-
                 val jarFile = File(userDataDir, "Tachidesk.jar")
                 if (!jarFile.exists()) {
                     info { "Copying server to resources" }
@@ -93,15 +122,7 @@ class ServerService @Inject constructor(
                     }
                 }
 
-                val javaLibraryPath = System.getProperty("java.library.path").substringBefore(File.pathSeparator)
-                val javaExeFile = File(javaLibraryPath, "java.exe")
-                val javaUnixFile = File(javaLibraryPath, "java")
-                val javaExePath = when {
-                    javaExeFile.exists() -> '"' + javaExeFile.absolutePath + '"'
-                    javaUnixFile.exists() -> '"' + javaUnixFile.absolutePath + '"'
-                    else -> "java"
-                }
-
+                val javaExePath = getRuntimeJava() ?: getPossibleJava() ?: "java"
                 info { "Starting server with $javaExePath" }
                 val reader: BufferedReader
                 process = runtime.exec("""$javaExePath -jar "${jarFile.absolutePath}"""").also {
