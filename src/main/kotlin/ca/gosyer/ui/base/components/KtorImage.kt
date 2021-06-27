@@ -30,7 +30,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.math.max
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
@@ -60,7 +59,7 @@ fun KtorImage(
                 if (drawable.value == null) {
                     drawable.value = getImage(client, imageUrl, retries) {
                         onDownload { bytesSentTotal, contentLength ->
-                            progress.value = max(bytesSentTotal.toFloat() / contentLength, 1.0F)
+                            progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                         }
                     }
                 }

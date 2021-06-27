@@ -42,7 +42,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
-import kotlin.math.max
 
 class SettingsBackupViewModel @Inject constructor(
     private val backupHandler: BackupInteractionHandler
@@ -72,7 +71,7 @@ class SettingsBackupViewModel @Inject constructor(
                 try {
                     backupHandler.importBackupFile(file) {
                         onUpload { bytesSentTotal, contentLength ->
-                            _restoringProgress.value = max(bytesSentTotal.toFloat() / contentLength, 1.0F)
+                            _restoringProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                         }
                     }
                 } catch (e: Exception) {
@@ -98,7 +97,7 @@ class SettingsBackupViewModel @Inject constructor(
                 try {
                     val backup = backupHandler.exportBackupFile {
                         onDownload { bytesSentTotal, contentLength ->
-                            _creatingProgress.value = max(bytesSentTotal.toFloat() / contentLength, 0.99F)
+                            _creatingProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(0.99F)
                         }
                     }
                     file.outputStream().use {

@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.max
 
 class TachideskPageLoader(
     context: CoroutineContext,
@@ -62,7 +61,7 @@ class TachideskPageLoader(
                                 try {
                                     page.bitmap.value = chapterHandler.getPage(chapter.chapter, page.index) {
                                         onDownload { bytesSentTotal, contentLength ->
-                                            page.progress.value = max(bytesSentTotal.toFloat() / contentLength, 1.0F)
+                                            page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                                         }
                                     }
                                     page.status.value = ReaderPage.Status.READY
