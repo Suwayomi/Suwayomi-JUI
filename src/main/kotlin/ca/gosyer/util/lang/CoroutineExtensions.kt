@@ -50,15 +50,15 @@ fun CoroutineScope.launchIO(
 
 suspend fun <T> withDefaultContext(
     block: suspend CoroutineScope.() -> T
-) = withContext(Dispatchers.Default, block)
+): T = withContext(Dispatchers.Default, block)
 
 suspend fun <T> withUIContext(
     block: suspend CoroutineScope.() -> T
-) = withContext(Dispatchers.Main, block)
+): T = withContext(Dispatchers.Main, block)
 
 suspend fun <T> withIOContext(
     block: suspend CoroutineScope.() -> T
-) = withContext(Dispatchers.IO, block)
+): T = withContext(Dispatchers.IO, block)
 
 fun Throwable.throwIfCancellation() { if (this is CancellationException) throw this }
 
