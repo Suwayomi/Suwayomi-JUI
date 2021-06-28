@@ -69,6 +69,16 @@ You need this software packages installed in order to build this project:
 ### building a jar for your OS
 Run `./gradlew packageUberJarForCurrentOS`, the resulting built jar file will be `build/compose/TachideskJUI-os-arch-X.Y.Z.jar`.
 
+
+## Translation
+Feel free to translate the project on [Weblate](https://hosted.weblate.org/projects/tachideskjui/desktop/)
+
+<details><summary>Translation Progress</summary>
+<a href="https://hosted.weblate.org/engage/tachideskjui/">
+<img src="https://hosted.weblate.org/widgets/tachideskjui/-/desktop/multi-auto.svg" alt="Translation status" />
+</a>
+</details>
+
 ## Credit
 The `Tachidesk` project is developed by [@AriaMoradi](https://github.com/AriaMoradi) and contributors, a link for [Tachidesk is provided here](https://github.com/Suwayomi/Tachidesk) and is licensed under `Mozilla Public License v2.0`.
 
