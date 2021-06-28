@@ -45,7 +45,7 @@
     <string name="location_manga">Manga</string>
 
     <!-- Categories Menu -->
-    <string name="categories_delete_confirm">Really delete the %1$s category?</string>
+    <string name="categories_delete_confirm">Delete the %1$s category?</string>
 
     <!-- Downloads Menu -->
     <string name="downloads_remaining">%1$d remaining</string>
@@ -66,10 +66,10 @@
 
     <!-- Reader Menu -->
     <string name="no_pages_found">No pages found</string>
-    <string name="no_previous_chapter">There is the first chapter</string>
+    <string name="no_previous_chapter">There is no previous chapter</string>
     <string name="previous_chapter">Previous:\n %1$s</string>
     <string name="next_chapter">Next:\n %1$s</string>
-    <string name="no_next_chapter">This is the last chapter</string>
+    <string name="no_next_chapter">This is no next chapter</string>
 
     <!-- Settings-->
     <string name="settings_advanced">Advanced</string>
@@ -122,9 +122,9 @@
     <string name="start_screen">Start screen</string>
     <string name="confirm_exit">Confirm exit</string>
     <string name="language">Language</string>
-    <string name="language_system_default">System setting (%1$s)</string>
+    <string name="language_system_default">Default (%1$s)</string>
     <string name="date_format">Date format</string>
-    <string name="date_system_default">System setting</string>
+    <string name="date_system_default">Default</string>
 
     <!-- Library Settings -->
     <string name="show_all_category">Show all categories</string>
@@ -133,8 +133,8 @@
     <string name="reader_mode">Reader Mode</string>
     <string name="direction">Direction</string>
     <string name="dir_down">🠗</string>
-    <string name="dir_rtl">RTL</string>
-    <string name="dir_ltr">LTR</string>
+    <string name="dir_rtl">←</string>
+    <string name="dir_ltr">→</string>
     <string name="dir_up">🠕</string>
     <string name="continuous">Continuous</string>
     <string name="continuous_sub">If the reader is a pager or a scrolling window</string>
