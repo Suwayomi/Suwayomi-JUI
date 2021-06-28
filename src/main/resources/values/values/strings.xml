@@ -120,7 +120,7 @@
 
     <!-- General Settings -->
     <string name="start_screen">Start screen</string>
-    <string name="confirm_exit">Confirm exit</string>
+    <string name="confirm_exit">Exit?</string>
     <string name="language">Language</string>
     <string name="language_system_default">Default (%1$s)</string>
     <string name="date_format">Date format</string>
@@ -157,7 +157,7 @@
     <string name="scale_original">Original size</string>
     <string name="scale_smart">Smart fit</string>
     <string name="navigation_mode">Navigation mode</string>
-    <string name="nav_l_shaped">L shaped</string>
+    <string name="nav_l_shaped">L-shaped</string>
     <string name="nav_kindle_ish">Kindle-ish</string>
     <string name="nav_edge">Edge</string>
     <string name="nav_left_right">Right and left</string>
