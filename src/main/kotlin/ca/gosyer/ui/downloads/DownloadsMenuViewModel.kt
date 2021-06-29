@@ -19,6 +19,7 @@ class DownloadsMenuViewModel @Inject constructor(
     private val downloadsHandler: DownloadInteractionHandler,
     private val chapterHandler: ChapterInteractionHandler
 ) : ViewModel() {
+    val serviceStatus get() = downloadService.status
     val downloaderStatus get() = downloadService.downloaderStatus
     val downloadQueue get() = downloadService.downloadQueue
 
@@ -54,4 +55,6 @@ class DownloadsMenuViewModel @Inject constructor(
             chapterHandler.queueChapterDownload(chapter)
         }
     }
+
+    fun restartDownloader() = downloadService.init()
 }

@@ -17,12 +17,15 @@ import ca.gosyer.util.lang.throwIfCancellation
 import io.ktor.client.features.websocket.ws
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.serialization.decodeFromString
@@ -37,6 +40,9 @@ class DownloadService @Inject constructor(
     private val json = Json {
         ignoreUnknownKeys = !BuildConfig.DEBUG
     }
+    private val _status = MutableStateFlow(Status.STARTING)
+    val status = _status.asStateFlow()
+
     private val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
     private val _downloaderStatus = MutableStateFlow(DownloaderStatus.Stopped)
     val downloaderStatus = _downloaderStatus.asStateFlow()
@@ -45,15 +51,29 @@ class DownloadService @Inject constructor(
     val downloadQueue = _downloadQueue.asStateFlow()
 
     private val watching = mutableMapOf<Long, MutableSharedFlow<List<DownloadChapter>>>()
+    private var errorConnectionCount = 0
 
+    private var job: Job? = null
     init {
-        serverUrl.mapLatest { serverUrl ->
+        init()
+    }
+
+    fun init() {
+        errorConnectionCount = 0
+        job?.cancel()
+        job = serverUrl.mapLatest { serverUrl ->
+            _status.value = Status.STARTING
             while (true) {
+                if (errorConnectionCount > 3) {
+                    _status.value = Status.STOPPED
+                    throw CancellationException()
+                }
                 runCatching {
                     client.ws(
                         host = serverUrl.substringAfter("://"),
                         path = downloadsQuery()
                     ) {
+                        _status.value = Status.RUNNING
                         send(Frame.Text("STATUS"))
 
                         while (true) {
@@ -70,8 +90,14 @@ class DownloadService @Inject constructor(
                             }.throwIfCancellation()
                         }
                     }
-                }.throwIfCancellation()
+                }.throwIfCancellation().isFailure.let {
+                    _status.value = Status.STARTING
+                    if (it) errorConnectionCount++
+                }
             }
+        }.catch {
+            _status.value = Status.STOPPED
+            throw it
         }.launchIn(GlobalScope)
     }
 
@@ -80,5 +106,11 @@ class DownloadService @Inject constructor(
 
     fun removeWatch(mangaId: Long) {
         watching.remove(mangaId)
+    }
+
+    enum class Status {
+        STARTING,
+        RUNNING,
+        STOPPED
     }
 }

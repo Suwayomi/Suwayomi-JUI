@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.BuildConfig
+import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.ui.base.components.combinedMouseClickable
 import ca.gosyer.ui.base.resources.stringResource
@@ -231,13 +232,31 @@ fun StartScreen.toRoute() = when (this) {
 @Composable
 fun DownloadsExtraInfo() {
     val vm = viewModel<DownloadsMenuViewModel>()
+    val status by vm.serviceStatus.collectAsState()
     val list by vm.downloadQueue.collectAsState()
-    if (list.isNotEmpty()) {
+    val text = when (status) {
+        DownloadService.Status.STARTING -> stringResource("downloads_loading")
+        DownloadService.Status.RUNNING -> {
+            if (list.isNotEmpty()) {
+                stringResource("downloads_remaining", list.size)
+            } else null
+        }
+        DownloadService.Status.STOPPED -> null
+    }
+    if (text != null) {
         Text(
-            stringResource("downloads_remaining", list.size),
+            text,
             style = MaterialTheme.typography.body2,
             color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
         )
+    } else if (status == DownloadService.Status.STOPPED) {
+        Surface(onClick = vm::restartDownloader, shape = RoundedCornerShape(4.dp)) {
+            Text(
+                stringResource("downloads_stopped"),
+                style = MaterialTheme.typography.body2,
+                color = Color.Red.copy(alpha = ContentAlpha.disabled)
+            )
+        }
     }
 }
 
