@@ -1,4 +1,3 @@
-import Config.serverCode
 import Config.tachideskVersion
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.compose.compose
@@ -11,7 +10,7 @@ plugins {
     kotlin("jvm") version "1.5.10"
     kotlin("kapt") version "1.5.10"
     kotlin("plugin.serialization") version "1.5.10"
-    id("org.jetbrains.compose") version "0.4.0"
+    id("org.jetbrains.compose") version "0.5.0-build227"
     id("de.fuerstenau.buildconfig") version "1.1.8"
     id("org.jmailen.kotlinter") version "3.4.5"
     id("com.github.ben-manes.versions") version "0.39.0"
@@ -112,7 +111,8 @@ tasks {
                 "-Xopt-in=com.russhwolf.settings.ExperimentalSettingsImplementation",
                 "-Xopt-in=com.google.accompanist.pager.ExperimentalPagerApi",
                 "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
-                "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi"
+                "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
+                "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi"
             )
         }
     }

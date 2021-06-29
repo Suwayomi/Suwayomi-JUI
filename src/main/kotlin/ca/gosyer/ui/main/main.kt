@@ -12,6 +12,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.unit.IntOffset
 import ca.gosyer.BuildConfig
 import ca.gosyer.core.logging.initializeLogger
@@ -104,8 +105,13 @@ fun main() {
         }
 
         val backPressHandler = BackPressHandler()
-        window.keyboard.setShortcut(Key.Home) {
-            backPressHandler.handle()
+        window.keyboard.onKeyEvent = {
+            when (it.key) {
+                Key.Home -> {
+                    backPressHandler.handle()
+                }
+                else -> false
+            }
         }
 
         window.events.onClose = {

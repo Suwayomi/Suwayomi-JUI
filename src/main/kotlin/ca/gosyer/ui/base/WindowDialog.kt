@@ -25,7 +25,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeysSet
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,7 @@ fun WindowDialog(
     onNegativeButton: (() -> Unit)? = null,
     positiveButtonText: String = "OK",
     onPositiveButton: (() -> Unit)? = null,
-    keyboardShortcuts: List<KeyboardShortcut> = emptyList(),
+    keyboardShortcuts: Map<Key, (KeyEvent, AppWindow) -> Boolean> = emptyMap(),
     row: @Composable (RowScope.() -> Unit)
 ) = launchUI {
     val window = AppWindow(
@@ -74,11 +75,21 @@ fun WindowDialog(
         window.close()
     }
 
-    window.keyboard.setShortcut(Key.Enter, onPositiveButton.plusClose())
-    window.keyboard.setShortcut(Key.Escape, onNegativeButton.plusClose())
-
-    keyboardShortcuts.forEach {
-        window.keyboard.setShortcut(it.key) { it.shortcut(window) }
+    window.keyboard.onKeyEvent = {
+        when {
+            it.key == Key.Enter -> {
+                onPositiveButton.plusClose()()
+                true
+            }
+            it.key == Key.Escape -> {
+                onNegativeButton.plusClose()()
+                true
+            }
+            keyboardShortcuts[it.key] != null -> {
+                keyboardShortcuts[it.key]?.invoke(it, window) ?: false
+            }
+            else -> false
+        }
     }
 
     val resources = AppScope.getInstance<XmlResourceBundle>()
@@ -123,7 +134,7 @@ fun WindowDialog(
     size: IntSize = IntSize(400, 200),
     onDismissRequest: (() -> Unit)? = null,
     forceFocus: Boolean = true,
-    keyboardShortcuts: List<KeyboardShortcut> = emptyList(),
+    keyboardShortcuts: Map<Key, (KeyEvent, AppWindow) -> Boolean> = emptyMap(),
     buttons: @Composable (AppWindow) -> Unit,
     content: @Composable (AppWindow) -> Unit
 ) = launchUI {
@@ -145,8 +156,13 @@ fun WindowDialog(
         }
     }
 
-    keyboardShortcuts.forEach {
-        window.keyboard.setShortcut(it.key) { it.shortcut(window) }
+    window.keyboard.onKeyEvent = {
+        when {
+            keyboardShortcuts[it.key] != null -> {
+                keyboardShortcuts[it.key]?.invoke(it, window) ?: false
+            }
+            else -> false
+        }
     }
 
     val resources = AppScope.getInstance<XmlResourceBundle>()
@@ -167,9 +183,4 @@ fun WindowDialog(
             }
         }
     }
-}
-
-data class KeyboardShortcut(val key: KeysSet, val shortcut: (AppWindow) -> Unit) {
-    constructor(key: Key, shortcut: (AppWindow) -> Unit) :
-        this(KeysSet(key), shortcut)
 }

@@ -32,6 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -43,7 +45,6 @@ import ca.gosyer.data.reader.model.NavigationMode
 import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.WindowSettings
-import ca.gosyer.ui.base.KeyboardShortcut
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.mangaAspectRatio
@@ -88,9 +89,9 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
             window.maximize()
         }
 
-        val setHotkeys: (List<KeyboardShortcut>) -> Unit = { shortcuts ->
-            shortcuts.forEach {
-                window.keyboard.setShortcut(it.key) { it.shortcut(window) }
+        val setHotkeys: (Map<Key, ((KeyEvent, AppWindow) -> Boolean)>) -> Unit = { shortcuts ->
+            window.keyboard.onKeyEvent = {
+                shortcuts[it.key]?.invoke(it, window) ?: false
             }
         }
 
@@ -125,7 +126,12 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
 }
 
 @Composable
-fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShortcut>) -> Unit, setOnCloseEvent: (() -> Unit) -> Unit) {
+fun ReaderMenu(
+    chapterIndex: Int,
+    mangaId: Long,
+    setHotkeys: (Map<Key, ((KeyEvent, AppWindow) -> Boolean)>) -> Unit,
+    setOnCloseEvent: (() -> Unit) -> Unit
+) {
     val vm = viewModel<ReaderMenuViewModel> {
         ReaderMenuViewModel.Params(chapterIndex, mangaId)
     }
@@ -144,17 +150,25 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
     val navigationMode by vm.readerModeSettings.navigationMode.collectAsState()
     val currentPage by vm.currentPage.collectAsState()
     val currentPageOffset by vm.currentPageOffset.collectAsState()
+
+    fun hotkey(block: () -> Unit): (KeyEvent, AppWindow) -> Boolean {
+        return { _, _ ->
+            block()
+            true
+        }
+    }
+
     LaunchedEffect(Unit) {
         setHotkeys(
-            listOf(
-                KeyboardShortcut(Key.W) { vm.navigate(Navigation.PREV) },
-                KeyboardShortcut(Key.DirectionUp) { vm.navigate(Navigation.PREV) },
-                KeyboardShortcut(Key.S) { vm.navigate(Navigation.NEXT) },
-                KeyboardShortcut(Key.DirectionDown) { vm.navigate(Navigation.NEXT) },
-                KeyboardShortcut(Key.A) { vm.navigate(Navigation.LEFT) },
-                KeyboardShortcut(Key.DirectionLeft) { vm.navigate(Navigation.LEFT) },
-                KeyboardShortcut(Key.D) { vm.navigate(Navigation.RIGHT) },
-                KeyboardShortcut(Key.DirectionRight) { vm.navigate(Navigation.RIGHT) }
+            mapOf(
+                Key.W to hotkey { vm.navigate(Navigation.PREV) },
+                Key.DirectionUp to hotkey { vm.navigate(Navigation.PREV) },
+                Key.S to hotkey { vm.navigate(Navigation.NEXT) },
+                Key.DirectionDown to hotkey { vm.navigate(Navigation.NEXT) },
+                Key.A to hotkey { vm.navigate(Navigation.LEFT) },
+                Key.DirectionLeft to hotkey { vm.navigate(Navigation.LEFT) },
+                Key.D to hotkey { vm.navigate(Navigation.RIGHT) },
+                Key.DirectionRight to hotkey { vm.navigate(Navigation.RIGHT) }
             )
         )
         setOnCloseEvent(vm::sendProgress)
