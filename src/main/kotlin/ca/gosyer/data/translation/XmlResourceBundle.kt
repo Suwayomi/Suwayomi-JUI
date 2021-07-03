@@ -14,6 +14,7 @@ import java.io.Reader
 import java.nio.charset.Charset
 import java.util.Collections
 import java.util.Enumeration
+import java.util.Formatter
 import java.util.Locale
 import java.util.ResourceBundle
 import java.util.concurrent.ConcurrentHashMap
@@ -73,23 +74,43 @@ class XmlResourceBundle internal constructor(internal val lookup: ConcurrentHash
                 val stringConfig = string.substring(index, index + 4)
                 val item = replacements[stringConfig[1].digitToInt() - 1]
                 when (stringConfig[3]) {
-                    's' -> {
-                        require(item is String) { "Expected String, got ${item::class.java.simpleName}" }
-                        stringBuilder.append(item)
+                    's', 'S' -> {
+                        stringBuilder.append(
+                            if (item is Formattable) {
+                                val formatter = Formatter()
+                                item.formatTo(formatter, 0, -1, -1)
+                                formatter.toString().also { formatter.close() }
+                            } else item.toString()
+                        )
                     }
-                    'd' -> {
-                        when (item) {
-                            is Int -> stringBuilder.append(item)
-                            is Long -> stringBuilder.append(item)
-                            else -> throw IllegalArgumentException("Expected Int or Long, got ${item::class.java.simpleName}")
-                        }
+                    'b', 'B' -> when (item) {
+                        null -> stringBuilder.append("false")
+                        is Boolean -> stringBuilder.append(item.toString())
+                        else -> stringBuilder.append("true")
                     }
-                    'f' -> {
-                        when (item) {
-                            is Float -> stringBuilder.append(item)
-                            is Double -> stringBuilder.append(item)
-                            else -> throw IllegalArgumentException("Expected Float or Double, got ${item::class.java.simpleName}")
-                        }
+                    'h', 'H' -> stringBuilder.append(item?.hashCode()?.let { Integer.toHexString(it) }.toString())
+                    'd' -> when (item) {
+                        is Int -> stringBuilder.append(item)
+                        is Long -> stringBuilder.append(item)
+                        else -> throw IllegalArgumentException("Expected Int or Long, got ${item?.let { it::class.java.simpleName }}")
+                    }
+                    'c', 'C' -> stringBuilder.append(
+                        (item as? Char) ?: throw IllegalArgumentException("Expected Char, got ${item?.let { it::class.java.simpleName }}")
+                    )
+                    'o' -> when (item) {
+                        is Int -> stringBuilder.append(Integer.toOctalString(item))
+                        is Long -> stringBuilder.append(JLong.toOctalString(item))
+                        else -> throw IllegalArgumentException("Expected Int or Long, got ${item?.let { it::class.java.simpleName }}")
+                    }
+                    'x', 'X' -> when (item) {
+                        is Int -> stringBuilder.append(Integer.toHexString(item))
+                        is Long -> stringBuilder.append(JLong.toHexString(item))
+                        else -> throw IllegalArgumentException("Expected Int or Long, got ${item?.let { it::class.java.simpleName }}")
+                    }
+                    'f' -> when (item) {
+                        is Float -> stringBuilder.append(item)
+                        is Double -> stringBuilder.append(item)
+                        else -> throw IllegalArgumentException("Expected Float or Double, got ${item?.let { it::class.java.simpleName }}")
                     }
                 }
                 stringBuilder.append(item)
