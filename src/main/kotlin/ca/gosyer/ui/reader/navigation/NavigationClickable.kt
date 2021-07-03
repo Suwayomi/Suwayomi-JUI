@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.reader.navigation
 
-import androidx.compose.desktop.LocalAppWindow
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,7 +22,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import ca.gosyer.ui.reader.model.Navigation
 import java.awt.event.MouseEvent
 
@@ -73,12 +71,11 @@ fun Modifier.navigationClickable(
     }
 ) {
     var lastEvent by remember { mutableStateOf<MouseEvent?>(null) }
-    val window = LocalAppWindow.current
     Modifier
         .clickable(interactionSource, null, enabled, onClickLabel, role) {
             val savedLastEvent = lastEvent ?: return@clickable
             val offset = savedLastEvent.let { IntOffset(it.x, it.y) }
-            onClick(navigation.getAction(offset, IntSize(window.width, window.height)))
+            // onClick(navigation.getAction(offset, IntSize(window.width, window.height)))
         }
         .pointerInput(interactionSource) {
             forEachGesture {

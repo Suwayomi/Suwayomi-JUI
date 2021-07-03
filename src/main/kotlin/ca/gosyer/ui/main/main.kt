@@ -6,14 +6,16 @@
 
 package ca.gosyer.ui.main
 
-import androidx.compose.desktop.AppWindow
 import androidx.compose.material.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.awaitApplication
+import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.BuildConfig
 import ca.gosyer.core.logging.initializeLogger
 import ca.gosyer.data.DataModule
@@ -22,12 +24,10 @@ import ca.gosyer.data.server.ServerService.ServerResult
 import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
-import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppTheme
-import ca.gosyer.util.lang.launchUI
 import ca.gosyer.util.lang.withUIContext
 import ca.gosyer.util.system.getAsFlow
 import ca.gosyer.util.system.userDataDir
@@ -46,7 +46,7 @@ import toothpick.ktp.extension.getInstance
 import java.io.File
 
 @OptIn(DelicateCoroutinesApi::class)
-fun main() {
+suspend fun main() {
     initializeLogger(File(userDataDir, "logging"))
 
     if (BuildConfig.DEBUG) {
@@ -87,47 +87,43 @@ fun main() {
 
     val windowSettings = uiPreferences.window()
     val (
-        offset,
+        position,
         size,
-        maximized
+        placement
     ) = windowSettings.get().get()
 
-    launchUI {
-        val window = AppWindow(
-            title = BuildConfig.NAME,
-            size = size,
-            location = offset,
-            centered = offset == IntOffset.Zero
-        )
+    awaitApplication {
+        val backPressHandler = remember { BackPressHandler() }
 
-        if (maximized) {
-            window.maximize()
-        }
-
-        val backPressHandler = BackPressHandler()
-        window.keyboard.onKeyEvent = {
-            when (it.key) {
-                Key.Home -> {
-                    backPressHandler.handle()
-                }
-                else -> false
-            }
-        }
-
-        window.events.onClose = {
-            windowSettings.set(
-                WindowSettings(
-                    window.x,
-                    window.y,
-                    window.width,
-                    window.height,
-                    window.isMaximized
+        val rootBundle = remember { Bundle() }
+        val windowState = rememberWindowState(size = size, position = position, placement = placement)
+        /*DisposableEffect(Unit) {
+            onDispose {
+                windowSettings.set(
+                    WindowSettings(
+                        windowState.position.x.value.toInt(),
+                        windowState.position.y.value.toInt(),
+                        windowState.size.width.value.toInt(),
+                        windowState.size.height.value.toInt(),
+                        windowState.placement == WindowPlacement.Maximized,
+                        windowState.placement == WindowPlacement.Fullscreen
+                    )
                 )
-            )
-        }
-
-        val rootBundle = Bundle()
-        window.show {
+            }
+        }*/
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = BuildConfig.NAME,
+            state = windowState,
+            onKeyEvent = {
+                when (it.key) {
+                    Key.Home -> {
+                        backPressHandler.handle()
+                    }
+                    else -> false
+                }
+            }
+        ) {
             AppTheme {
                 CompositionLocalProvider(
                     LocalBackPressHandler provides backPressHandler,

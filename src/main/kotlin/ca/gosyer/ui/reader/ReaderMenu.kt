@@ -4,15 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
 package ca.gosyer.ui.reader
 
-import androidx.compose.desktop.AppWindow
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,9 +18,13 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -35,8 +32,11 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPlacement
+import androidx.compose.ui.window.launchApplication
+import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.BuildConfig
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.reader.model.Direction
@@ -62,63 +62,53 @@ import ca.gosyer.ui.reader.navigation.RightAndLeftNavigation
 import ca.gosyer.ui.reader.navigation.navigationClickable
 import ca.gosyer.ui.reader.viewer.ContinuousReader
 import ca.gosyer.ui.reader.viewer.PagerReader
-import ca.gosyer.util.lang.launchUI
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 
 @OptIn(DelicateCoroutinesApi::class)
 fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
     val windowSettings = AppScope.getInstance<UiPreferences>()
         .readerWindow()
     val (
-        offset,
+        position,
         size,
-        maximized
+        placement
     ) = windowSettings.get().get()
 
     val resources = AppScope.getInstance<XmlResourceBundle>()
 
-    launchUI {
-        val window = AppWindow(
-            "${BuildConfig.NAME} - Reader",
-            size = size,
-            location = offset,
-            centered = offset == IntOffset.Zero
-        )
-
-        if (maximized) {
-            window.maximize()
+    GlobalScope.launchApplication {
+        var shortcuts by remember {
+            mutableStateOf(emptyMap<Key, ((KeyEvent) -> Boolean)>())
         }
-
-        val setHotkeys: (Map<Key, ((KeyEvent, AppWindow) -> Boolean)>) -> Unit = { shortcuts ->
-            window.keyboard.onKeyEvent = {
-                shortcuts[it.key]?.invoke(it, window) ?: false
+        val windowState = rememberWindowState(size = size, position = position, placement = placement)
+        DisposableEffect(Unit) {
+            onDispose {
+                windowSettings.set(
+                    WindowSettings(
+                        windowState.position.x.value.toInt(),
+                        windowState.position.y.value.toInt(),
+                        windowState.size.width.value.toInt(),
+                        windowState.size.height.value.toInt(),
+                        windowState.placement == WindowPlacement.Maximized,
+                        windowState.placement == WindowPlacement.Fullscreen
+                    )
+                )
             }
         }
-
-        window.events.onClose = {
-            windowSettings.set(
-                WindowSettings(
-                    window.x,
-                    window.y,
-                    window.width,
-                    window.height,
-                    window.isMaximized
-                )
-            )
-        }
-
-        window.show {
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "${BuildConfig.NAME} - Reader",
+            state = windowState,
+            onKeyEvent = {
+                shortcuts[it.key]?.invoke(it) ?: false
+            }
+        ) {
             CompositionLocalProvider(
                 LocalResources provides resources
             ) {
                 AppTheme {
-                    ReaderMenu(chapterIndex, mangaId, setHotkeys) {
-                        val onClose = window.events.onClose
-                        window.events.onClose = {
-                            it()
-                            onClose?.invoke()
-                        }
-                    }
+                    ReaderMenu(chapterIndex, mangaId) { shortcuts = it }
                 }
             }
         }
@@ -129,8 +119,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
 fun ReaderMenu(
     chapterIndex: Int,
     mangaId: Long,
-    setHotkeys: (Map<Key, ((KeyEvent, AppWindow) -> Boolean)>) -> Unit,
-    setOnCloseEvent: (() -> Unit) -> Unit
+    setHotkeys: (Map<Key, ((KeyEvent) -> Boolean)>) -> Unit
 ) {
     val vm = viewModel<ReaderMenuViewModel> {
         ReaderMenuViewModel.Params(chapterIndex, mangaId)
@@ -151,8 +140,8 @@ fun ReaderMenu(
     val currentPage by vm.currentPage.collectAsState()
     val currentPageOffset by vm.currentPageOffset.collectAsState()
 
-    fun hotkey(block: () -> Unit): (KeyEvent, AppWindow) -> Boolean {
-        return { _, _ ->
+    fun hotkey(block: () -> Unit): (KeyEvent) -> Boolean {
+        return {
             block()
             true
         }
@@ -171,7 +160,9 @@ fun ReaderMenu(
                 Key.DirectionRight to hotkey { vm.navigate(Navigation.RIGHT) }
             )
         )
-        setOnCloseEvent(vm::sendProgress)
+    }
+    DisposableEffect(Unit) {
+        onDispose(vm::sendProgress)
     }
 
     Surface {
@@ -289,14 +280,14 @@ fun ChapterSeperator(
     }
 }
 
-private fun NavigationMode.toNavigation() = when (this) {
+fun NavigationMode.toNavigation() = when (this) {
     NavigationMode.RightAndLeftNavigation -> RightAndLeftNavigation()
     NavigationMode.KindlishNavigation -> KindlishNavigation()
     NavigationMode.LNavigation -> LNavigation()
     NavigationMode.EdgeNavigation -> EdgeNavigation()
 }
 
-private fun ImageScale.toContentScale() = when (this) {
+fun ImageScale.toContentScale() = when (this) {
     ImageScale.FitScreen -> ContentScale.Inside
     ImageScale.FitHeight -> ContentScale.FillHeight
     ImageScale.FitWidth -> ContentScale.FillWidth

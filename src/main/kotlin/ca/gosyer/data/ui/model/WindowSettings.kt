@@ -6,8 +6,10 @@
 
 package ca.gosyer.data.ui.model
 
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.WindowPlacement
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.WindowSize
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -16,33 +18,49 @@ data class WindowSettings(
     val y: Int? = null,
     val width: Int? = null,
     val height: Int? = null,
-    val maximized: Boolean? = null
+    val maximized: Boolean? = null,
+    val fullscreen: Boolean? = null
 ) {
     fun get(): WindowGet {
+        // Maximize and Fullscreen messes with the other parameters so set them to default
         if (maximized == true) {
-            // Maximize messes with the other parameters so set them to default
             return WindowGet(
-                IntOffset.Zero,
-                IntSize(800, 600),
-                true
+                WindowPosition.PlatformDefault,
+                WindowSize(800.dp, 600.dp),
+                WindowPlacement.Maximized
+            )
+        } else if (fullscreen == true) {
+            return WindowGet(
+                WindowPosition.PlatformDefault,
+                WindowSize(800.dp, 600.dp),
+                WindowPlacement.Fullscreen
             )
         }
+
         val offset = if (x != null && y != null) {
-            IntOffset(x, y)
+            WindowPosition(x.dp, y.dp)
         } else {
-            IntOffset.Zero
+            WindowPosition.PlatformDefault
         }
-        val size = IntSize(width ?: 800, height ?: 600)
+        val size = WindowSize((width ?: 800).dp, (height ?: 600).dp)
         return WindowGet(
             offset,
             size,
-            maximized ?: false
+            when {
+                maximized == true -> {
+                    WindowPlacement.Maximized
+                }
+                fullscreen == true -> {
+                    WindowPlacement.Fullscreen
+                }
+                else -> WindowPlacement.Floating
+            }
         )
     }
 
     data class WindowGet(
-        val offset: IntOffset,
-        val size: IntSize,
-        val maximized: Boolean
+        val offset: WindowPosition,
+        val size: WindowSize,
+        val placement: WindowPlacement
     )
 }
