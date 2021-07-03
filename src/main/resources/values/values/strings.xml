@@ -9,8 +9,8 @@
     <string name="app_name">TachideskJUI</string>
 
     <!-- Main Menu -->
-    <string name="tachidesk_doesnt_exist">Tachidesk jar does not exist, run Tachidesk yourself</string>
-    <string name="unable_to_start_server">Unable to start server</string>
+    <string name="tachidesk_doesnt_exist">Tachidesk JAR does not exist, run Tachidesk yourself</string>
+    <string name="unable_to_start_server">Cannot start server</string>
 
     <!-- Actions -->
     <string name="action_yes">Yes</string>
@@ -32,7 +32,7 @@
     <string name="action_mark_previous_read">Mark previous as read</string>
     <string name="action_toggle_bookmarked">Toggle bookmarked</string>
     <string name="action_favorite">Favorite</string>
-    <string name="action_remove_favorite">UnFavorite</string>
+    <string name="action_remove_favorite">Unfavorite</string>
     <string name="action_refresh_manga">Refresh manga</string>
 
     <!-- Locations -->
@@ -45,7 +45,7 @@
     <string name="location_manga">Manga</string>
 
     <!-- Categories Menu -->
-    <string name="categories_delete_confirm">Do you wish to delete the category %1$s?</string>
+    <string name="categories_delete_confirm">Delete the %1$s category?</string>
 
     <!-- Downloads Menu -->
     <string name="downloads_loading">Loading...</string>
@@ -63,8 +63,8 @@
 
     <!-- Sources Menu -->
     <string name="sources_home">Home</string>
-    <string name="move_to_browse">To Browse</string>
-    <string name="move_to_latest">To Latest</string>
+    <string name="move_to_browse">To browse</string>
+    <string name="move_to_latest">To latest</string>
 
     <!-- Reader Menu -->
     <string name="no_pages_found">No pages found</string>
@@ -107,11 +107,11 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_text">Text</string>
     <string name="preset_themes">Preset themes</string>
-    <string name="color_primary">Color primary</string>
+    <string name="color_primary">Primary</string>
     <string name="color_primary_sub">Displayed most frequently across your app</string>
-    <string name="color_secondary">Color secondary</string>
+    <string name="color_secondary">Secondary</string>
     <string name="color_secondary_sub">Accents select parts of the UI</string>
-    <string name="window_decorations">Window Decorations</string>
+    <string name="window_decorations">Window decorations</string>
     <string name="window_decorations_sub">Restart JUI when this setting is changed</string>
 
     <!-- Backup Settings -->
@@ -121,11 +121,11 @@
     <string name="backup_create_sub">Create a backup from Tachidesk</string>
 
     <!-- General Settings -->
-    <string name="start_screen">Start Screen</string>
-    <string name="confirm_exit">Confirm Exit</string>
+    <string name="start_screen">Start screen</string>
+    <string name="confirm_exit">Confirm exit</string>
     <string name="language">Language</string>
     <string name="language_system_default">System Default (%1$s)</string>
-    <string name="date_format">Date Format</string>
+    <string name="date_format">Date format</string>
     <string name="date_system_default">System Default</string>
 
     <!-- Library Settings -->
@@ -134,38 +134,38 @@
     <!-- Reader Settings -->
     <string name="reader_mode">Reader Mode</string>
     <string name="direction">Direction</string>
-    <string name="dir_down">Down</string>
-    <string name="dir_rtl">RTL</string>
-    <string name="dir_ltr">LTR</string>
-    <string name="dir_up">Up</string>
+    <string name="dir_down">Up to down</string>
+    <string name="dir_rtl">Right to left</string>
+    <string name="dir_ltr">Left to right</string>
+    <string name="dir_up">Down to up</string>
     <string name="continuous">Continuous</string>
     <string name="continuous_sub">If the reader is a pager or a scrolling window</string>
-    <string name="page_padding">Page Padding</string>
+    <string name="page_padding">Page padding</string>
     <string name="page_padding_none">None</string>
-    <string name="force_fit_width">Force fit width</string>
-    <string name="force_fit_width_sub">When the window's width is over the images width, scale the image to the window</string>
-    <string name="force_fit_height">Force fit height</string>
-    <string name="force_fit_height_sub">When the window's height is over the images height, scale the image to the window</string>
+    <string name="force_fit_width">Force-fit to width</string>
+    <string name="force_fit_width_sub">Scale the image up to fit the width the window</string>
+    <string name="force_fit_height">Force-fit to height</string>
+    <string name="force_fit_height_sub">Scale the image up to fit the height the window</string>
     <string name="max_width">Max width</string>
-    <string name="max_width_sub">Width to restrict a image from going over, currently %1$ddp. Works with the above setting to scale images up but restrict them to a certain amount</string>
+    <string name="max_width_sub">Max width of a image, currently %1$ddp. The above setting scale images up, and restricts them once a certain width is reached</string>
     <string name="max_height">Max height</string>
-    <string name="max_height_sub">Height to restrict a image from going over, currently %1$ddp. Works with the above setting to scale images up but restrict them to a certain amount</string>
+    <string name="max_height_sub">Max height of a image, currently %1$ddp. The above setting scale images up, and restricts them once a certain height is reached</string>
     <string name="max_size_unrestricted">Unrestricted</string>
     <string name="image_scale">Image Scale</string>
     <string name="scale_fit_screen">Fit Screen</string>
     <string name="scale_stretch">Stretch</string>
-    <string name="scale_fit_width">Fit Width</string>
-    <string name="scale_fit_height">Fit Height</string>
-    <string name="scale_original">Original Size</string>
-    <string name="scale_smart">Smart Fit</string>
+    <string name="scale_fit_width">Fit to width</string>
+    <string name="scale_fit_height">Fit to height</string>
+    <string name="scale_original">Original size</string>
+    <string name="scale_smart">Smart fit</string>
     <string name="navigation_mode">Navigation mode</string>
-    <string name="nav_l_shaped">L shaped</string>
+    <string name="nav_l_shaped">L-shaped</string>
     <string name="nav_kindle_ish">Kindle-ish</string>
     <string name="nav_edge">Edge</string>
-    <string name="nav_left_right">Right and Left</string>
+    <string name="nav_left_right">Right and left</string>
 
     <!-- Server Settings -->
     <string name="host_server">Host server inside TachideskJUI</string>
-    <string name="server_url">Server Url</string>
-    <string name="server_port">Server Port</string>
+    <string name="server_url">Server URL</string>
+    <string name="server_port">Server PORT</string>
 </resources>
