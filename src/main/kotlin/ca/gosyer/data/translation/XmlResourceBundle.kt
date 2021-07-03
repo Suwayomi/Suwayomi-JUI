@@ -50,74 +50,17 @@ class XmlResourceBundle internal constructor(internal val lookup: ConcurrentHash
     }
 
     fun getStringA(key: String): String {
-        return getString(key)
-            .replace("\\n", "\n")
-            .replace("\\t", "\t")
-            .replace("\\?", "?")
-            .replace("\\@", "@")
+        return Formatter().format(getString(key))
+            .let { formatter ->
+                formatter.toString().also { formatter.close() }
+            }
     }
 
-    fun getString(key: String, vararg replacements: Any): String {
-        val stringBuilder = StringBuilder()
-        var string = getStringA(key)
-        while (true) {
-            val index = string.indexOf('%')
-            if (index < 0) {
-                stringBuilder.append(string)
-                break
-            } else if (string[(index - 1).coerceAtLeast(0)] == '\\') {
-                stringBuilder.append(string.substring(0, (index - 1).coerceAtLeast(0)))
-                stringBuilder.append('%')
-                string = string.substring((index + 1).coerceAtMost(string.length))
-            } else {
-                stringBuilder.append(string.substring(0, index))
-                val stringConfig = string.substring(index, index + 4)
-                val item = replacements[stringConfig[1].digitToInt() - 1]
-                when (stringConfig[3]) {
-                    's', 'S' -> {
-                        stringBuilder.append(
-                            if (item is Formattable) {
-                                val formatter = Formatter()
-                                item.formatTo(formatter, 0, -1, -1)
-                                formatter.toString().also { formatter.close() }
-                            } else item.toString()
-                        )
-                    }
-                    'b', 'B' -> when (item) {
-                        null -> stringBuilder.append("false")
-                        is Boolean -> stringBuilder.append(item.toString())
-                        else -> stringBuilder.append("true")
-                    }
-                    'h', 'H' -> stringBuilder.append(item?.hashCode()?.let { Integer.toHexString(it) }.toString())
-                    'd' -> when (item) {
-                        is Int -> stringBuilder.append(item)
-                        is Long -> stringBuilder.append(item)
-                        else -> throw IllegalArgumentException("Expected Int or Long, got ${item?.let { it::class.java.simpleName }}")
-                    }
-                    'c', 'C' -> stringBuilder.append(
-                        (item as? Char) ?: throw IllegalArgumentException("Expected Char, got ${item?.let { it::class.java.simpleName }}")
-                    )
-                    'o' -> when (item) {
-                        is Int -> stringBuilder.append(Integer.toOctalString(item))
-                        is Long -> stringBuilder.append(JLong.toOctalString(item))
-                        else -> throw IllegalArgumentException("Expected Int or Long, got ${item?.let { it::class.java.simpleName }}")
-                    }
-                    'x', 'X' -> when (item) {
-                        is Int -> stringBuilder.append(Integer.toHexString(item))
-                        is Long -> stringBuilder.append(JLong.toHexString(item))
-                        else -> throw IllegalArgumentException("Expected Int or Long, got ${item?.let { it::class.java.simpleName }}")
-                    }
-                    'f' -> when (item) {
-                        is Float -> stringBuilder.append(item)
-                        is Double -> stringBuilder.append(item)
-                        else -> throw IllegalArgumentException("Expected Float or Double, got ${item?.let { it::class.java.simpleName }}")
-                    }
-                }
-                stringBuilder.append(item)
-                string = string.substring((index + 4).coerceAtMost(string.length))
+    fun getString(key: String, vararg replacements: Any?): String {
+        return Formatter().format(getString(key), *replacements)
+            .let { formatter ->
+                formatter.toString().also { formatter.close() }
             }
-        }
-        return stringBuilder.toString()
     }
 
     companion object {
