@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.unit.IntOffset
 import ca.gosyer.BuildConfig
+import ca.gosyer.core.logging.initializeLogger
 import ca.gosyer.data.DataModule
 import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.ServerService.ServerResult
@@ -27,6 +28,7 @@ import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.lang.launchUI
 import ca.gosyer.util.lang.withUIContext
 import ca.gosyer.util.system.getAsFlow
+import ca.gosyer.util.system.userDataDir
 import com.github.weisj.darklaf.LafManager
 import com.github.weisj.darklaf.theme.DarculaTheme
 import com.github.weisj.darklaf.theme.IntelliJTheme
@@ -36,20 +38,15 @@ import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
-import org.apache.logging.log4j.core.config.Configurator
 import toothpick.configuration.Configuration
 import toothpick.ktp.KTP
 import toothpick.ktp.extension.getInstance
+import java.io.File
 import java.util.logging.Level
 
 @OptIn(DelicateCoroutinesApi::class)
 fun main() {
-    val clazz = MainViewModel::class.java
-    Configurator.initialize(
-        null,
-        clazz.classLoader,
-        clazz.getResource("log4j2.xml")?.toURI()
-    )
+    initializeLogger(File(userDataDir, "logging"))
 
     if (BuildConfig.DEBUG) {
         System.setProperty("kotlinx.coroutines.debug", "on")
