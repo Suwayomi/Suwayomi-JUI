@@ -86,7 +86,11 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             onlyIfTachideskDoesntExist(rootDir)
 
             workingDir(File(tmpDir(), "Tachidesk-${tachideskVersion.drop(1)}/"))
-            commandLine("cmd", "/c", "gradlew", ":server:shadowJar")
+            val os = DefaultNativePlatform.getCurrentOperatingSystem()
+            when {
+                os.isWindows -> commandLine("cmd", "/c", "gradlew", ":server:shadowJar")
+                os.isLinux || os.isMacOsX -> commandLine("./gradlew", ":server:shadowJar")
+            }
         }
         register<Copy>(copyTachideskJarTask) {
             group = tachideskGroup
