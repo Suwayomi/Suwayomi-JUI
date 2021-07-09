@@ -10,6 +10,7 @@ import ca.gosyer.BuildConfig
 import ca.gosyer.util.lang.withIOContext
 import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.userDataDir
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -96,7 +97,13 @@ class ServerService @Inject constructor(
                 ServerResult.UNUSED
                 return@onEach
             }
-            GlobalScope.launch {
+            val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+                error(throwable) { "Error launching Tachidesk.jar" }
+                if (initialized.value == ServerResult.STARTING || initialized.value == ServerResult.STARTED) {
+                    initialized.value = ServerResult.FAILED
+                }
+            }
+            GlobalScope.launch(handler) {
                 val jarFile = File(userDataDir, "Tachidesk.jar")
                 if (!jarFile.exists()) {
                     info { "Copying server to resources" }
