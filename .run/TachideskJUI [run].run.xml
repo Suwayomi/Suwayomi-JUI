@@ -10,10 +10,11 @@
       </option>
       <option name="taskNames">
         <list>
+          <option value="setupTachideskJar" />
           <option value="run" />
         </list>
       </option>
-      <option name="vmOptions" value="" />
+      <option name="vmOptions" value="--illegal-access=warn" />
     </ExternalSystemSettings>
     <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>

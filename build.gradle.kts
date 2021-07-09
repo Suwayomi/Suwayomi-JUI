@@ -1,3 +1,4 @@
+import Config.tachideskVersion
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -87,15 +88,15 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_15
-    targetCompatibility = JavaVersion.VERSION_15
+    sourceCompatibility = Config.jvmTarget
+    targetCompatibility = Config.jvmTarget
 }
 
 tasks {
     withType<KotlinCompile> {
         dependsOn(formatKotlinMain)
         kotlinOptions {
-            jvmTarget = "15"
+            jvmTarget = Config.jvmTarget.toString()
             freeCompilerArgs = listOf(
                 "-Xopt-in=kotlin.RequiresOptIn",
                 "-Xopt-in=kotlin.time.ExperimentalTime",
@@ -125,6 +126,8 @@ tasks {
     withType<FormatTask> {
         source(files("src"))
     }
+
+    registerTachideskTasks(project)
 }
 
 
@@ -179,7 +182,7 @@ buildConfig {
     packageName = project.group.toString()
 
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
-    buildConfigField("String", "TACHIDESK_SP_VERSION", "v0.4.3")
+    buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion)
 }
 
 kotlinter {

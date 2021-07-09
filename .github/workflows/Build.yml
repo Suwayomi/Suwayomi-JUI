@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
 on:
@@ -18,32 +16,28 @@ jobs:
           arch: x64
           os: ubuntu-latest
           shell: bash
-          buildPackage: ./scripts/BuildLinuxDeb.sh
-          buildJar: ./scripts/BuildUnixJar.sh
+          build: setupTachideskJar packageUberJarForCurrentOS packageDeb
           setupCl: ./scripts/SetupClUnix.sh
 
         - runtime: linux-centos-x64
           arch: x64
           os: ubuntu-latest
           shell: bash
-          buildPackage: ./scripts/BuildLinuxRpm.sh
-          buildJar: ./scripts/BuildUnixJar.sh
+          build: setupTachideskJar packageRpm
           setupCl: ./scripts/SetupClUnix.sh
 
         - runtime: osx-x64
           arch: x64
           os: macOS-latest
           shell: bash
-          buildPackage: ./scripts/BuildMacDmg.sh
-          buildJar: ./scripts/BuildUnixJar.sh
+          build: setupTachideskJar packageUberJarForCurrentOS
           setupCl: ./scripts/SetupClUnix.sh
 
         - runtime: win-x64
           arch: x64
           os: windows-latest
           shell: powershell
-          buildPackage: ./scripts/BuildWindowsMsi.ps1
-          buildJar: ./scripts/BuildWindowsJar.ps1
+          build: setupTachideskJar packageUberJarForCurrentOS packageMsi
           setupCl: ./scripts/SetupClWindows.ps1
 
     runs-on: ${{ matrix.os }}
@@ -63,35 +57,44 @@ jobs:
     - name: Setup Cl
       run: ${{ matrix.setupCl }}
 
-    - name: Build Package
-      if: ${{ matrix.runtime != 'linux-centos-x64' && matrix.runtime != 'osx-x64' }}
-      run: ${{ matrix.buildPackage }}
-      
-    - name: Build MacOS Package
+    - name: Setup MacOS Keychain
       if: ${{ matrix.runtime == 'osx-x64' }}
       run: |
         echo ${{ secrets.APPLE_CERT }} | base64 --decode > certificate.p12
-        security create-keychain -p ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain 
+        security create-keychain -p ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
         security default-keychain -s build.keychain
         security unlock-keychain -p ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
         security import certificate.p12 -k build.keychain -P ${{ secrets.APPLE_CERT_PASSWORD }} -T /usr/bin/codesign
         security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
 
-        ${{ matrix.buildPackage }} notarizeDmg \
-        -Pcompose.desktop.mac.sign=true \
-        -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }} \
-        -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }} \
-        -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
-
-    - name: Build Jar
-      if: ${{ matrix.runtime != 'linux-centos-x64' }}
-      run: ${{ matrix.buildJar }}
+    - name: Build Mac Package
+      if: ${{ matrix.runtime == 'osx-x64' }}
+      uses: eskatos/gradle-command-action@v1
+      with:
+        arguments: |
+                packageDmg notarizeDmg \
+                -Pcompose.desktop.mac.sign=true \
+                -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }} \
+                -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }} \
+                -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
+        wrapper-cache-enabled: true
+        dependencies-cache-enabled: true
+        configuration-cache-enabled: true
 
     - name: Build rpm Package
       if: ${{ matrix.runtime == 'linux-centos-x64' }}
       uses: Syer10/CentOS-Java15-Action@v1
       with:
-        command: ${{ matrix.buildPackage }}
+        command: ./gradlew ${{ matrix.build }}
+
+    - name: Build
+      if: ${{ matrix.runtime != 'linux-centos-x64' }}
+      uses: eskatos/gradle-command-action@v1
+      with:
+        arguments: ${{ matrix.build }}
+        wrapper-cache-enabled: true
+        dependencies-cache-enabled: true
+        configuration-cache-enabled: true
 
     # Upload runner package tar.gz/zip as artifact
     - name: Publish Artifact
