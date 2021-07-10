@@ -30,7 +30,13 @@ jobs:
           arch: x64
           os: macOS-latest
           shell: bash
-          build: setupTachideskJar packageUberJarForCurrentOS
+          build: |
+            setupTachideskJar packageUberJarForCurrentOS \
+            packageDmg notarizeDmg \
+            -Pcompose.desktop.mac.sign=true \
+            -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }} \
+            -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }} \
+            -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
           setupCl: ./scripts/SetupClUnix.sh
 
         - runtime: win-x64
@@ -66,20 +72,6 @@ jobs:
         security unlock-keychain -p ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
         security import certificate.p12 -k build.keychain -P ${{ secrets.APPLE_CERT_PASSWORD }} -T /usr/bin/codesign
         security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
-
-    - name: Build Mac Package
-      if: ${{ matrix.runtime == 'osx-x64' }}
-      uses: eskatos/gradle-command-action@v1
-      with:
-        arguments: |
-                packageDmg notarizeDmg \
-                -Pcompose.desktop.mac.sign=true \
-                -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }} \
-                -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }} \
-                -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
-        wrapper-cache-enabled: true
-        dependencies-cache-enabled: true
-        configuration-cache-enabled: true
 
     - name: Build rpm Package
       if: ${{ matrix.runtime == 'linux-centos-x64' }}

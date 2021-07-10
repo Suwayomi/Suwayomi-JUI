@@ -33,7 +33,7 @@ Download the latest msi release from [the releases section](https://github.com/S
 2. Add the Java Scoop bucket - `scoop bucket add java`
 3. Install TachideskJUI - `scoop install tachideskjui`
 
-### MacOS (x64, Java Included, Server not included)
+### MacOS (x64, Java 8+ required for server)
 Download the latest dmg release from [the releases section](https://github.com/Suwayomi/TachideskJUI/releases).
 
 ### Debian based Linux (x64, Java 8+ required for server)
