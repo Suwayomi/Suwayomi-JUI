@@ -6,13 +6,18 @@
 
 package ca.gosyer.core.logging
 
+import ca.gosyer.BuildConfig
+import com.github.weisj.darklaf.LafManager
+import mu.KotlinLogging
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
+import org.slf4j.bridge.SLF4JBridgeHandler
 import java.io.File
+import java.util.logging.LogManager as JLogManager
 
 const val consolePattern =
     "%highlight{%d{" + '$' + "{LOG_DATEFORMAT_PATTERN:-HH:mm:ss.SSS}} [%t] " + '$' + "{LOG_LEVEL_PATTERN:-%p}/%c{1}: %m%n" + '$' + "{LOG_EXCEPTION_CONVERSION_WORD:-%xEx}}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=black, TRACE=black}"
@@ -73,4 +78,21 @@ fun initializeLogger(loggingLocation: File) {
         }
     ctx.configuration = builder.build()
     ctx.updateLoggers()
+
+    // Initialize Darklaf logger
+    LafManager.setLogLevel(
+        if (BuildConfig.DEBUG) {
+            java.util.logging.Level.FINE
+        } else {
+            java.util.logging.Level.WARNING
+        }
+    )
+    JLogManager.getLogManager().getLogger("com.github.weisj.darklaf").apply {
+        handlers.forEach { removeHandler(it) }
+        addHandler(SLF4JBridgeHandler())
+    }
+    val logger = KotlinLogging.logger("UncaughtException")
+    Thread.setDefaultUncaughtExceptionHandler { t, e ->
+        logger.error(e) { "Uncaught exception in thread [${t.name}@${t.id}]" }
+    }
 }

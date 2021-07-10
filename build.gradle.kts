@@ -63,6 +63,9 @@ dependencies {
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Logging
+    val slf4jVersion = "1.7.31"
+    implementation("org.slf4j:slf4j-api:$slf4jVersion")
+    implementation("org.slf4j:jul-to-slf4j:$slf4jVersion")
     val log4jVersion = "2.14.1"
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
