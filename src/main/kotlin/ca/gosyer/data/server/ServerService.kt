@@ -167,7 +167,6 @@ class ServerService @Inject constructor(
 
     enum class ServerResult {
         UNUSED,
-        NO_TACHIDESK_JAR,
         STARTING,
         STARTED,
         FAILED;
