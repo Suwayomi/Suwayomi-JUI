@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.min
+import ca.gosyer.ui.base.resources.stringResource
 
 @Composable
 fun LoadingScreen(
@@ -24,7 +25,7 @@ fun LoadingScreen(
     /*@FloatRange(from = 0.0, to = 1.0)*/
     progress: Float = 0.0F,
     errorMessage: String? = null,
-    retryMessage: String = "Retry",
+    retryMessage: String = stringResource("action_retry"),
     retry: (() -> Unit)? = null
 ) {
     Surface(modifier) {
