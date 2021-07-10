@@ -45,12 +45,12 @@ class ServerService @Inject constructor(
     }
 
     @Throws(IOException::class)
-    private fun copyJar(jarFile: File): Boolean {
-        return javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
+    private fun copyJar(jarFile: File) {
+        javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
             jarFile.outputStream().use { output ->
                 input.copyTo(output)
             }
-        }?.let { true } ?: false
+        }
     }
 
     private fun getJavaFromPath(javaPath: File): String? {
@@ -108,9 +108,7 @@ class ServerService @Inject constructor(
                 val jarFile = File(userDataDir, "Tachidesk.jar")
                 if (!jarFile.exists()) {
                     info { "Copying server to resources" }
-                    if (withIOContext { !copyJar(jarFile) }) {
-                        initialized.value = ServerResult.NO_TACHIDESK_JAR
-                    }
+                    withIOContext { copyJar(jarFile) }
                 } else {
                     try {
                         val jarVersion = withIOContext {
@@ -121,9 +119,7 @@ class ServerService @Inject constructor(
 
                         if (jarVersion != BuildConfig.TACHIDESK_SP_VERSION) {
                             info { "Updating server file from resources" }
-                            if (withIOContext { !copyJar(jarFile) }) {
-                                initialized.value = ServerResult.NO_TACHIDESK_JAR
-                            }
+                            withIOContext { copyJar(jarFile) }
                         }
                     } catch (e: IOException) {
                         error(e) {

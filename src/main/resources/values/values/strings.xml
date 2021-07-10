@@ -9,7 +9,6 @@
     <string name="app_name">TachideskJUI</string>
 
     <!-- Main Menu -->
-    <string name="tachidesk_doesnt_exist">Tachidesk JAR does not exist, run Tachidesk yourself</string>
     <string name="unable_to_start_server">Cannot start server</string>
 
     <!-- Actions -->
