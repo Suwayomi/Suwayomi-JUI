@@ -21,9 +21,11 @@ import mu.KotlinLogging
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
+import java.io.Reader
 import java.util.jar.JarInputStream
 import javax.inject.Inject
 import kotlin.concurrent.thread
+import kotlin.jvm.Throws
 
 @OptIn(DelicateCoroutinesApi::class)
 class ServerService @Inject constructor(
@@ -37,13 +39,13 @@ class ServerService @Inject constructor(
             ServerResult.UNUSED
         }
     )
-    private val runtime = Runtime.getRuntime()
     private var process: Process? = null
 
     fun startAnyway() {
         initialized.value = ServerResult.UNUSED
     }
 
+    @Throws(IOException::class)
     private fun copyJar(jarFile: File): Boolean {
         return javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
             jarFile.outputStream().use { output ->
@@ -56,8 +58,8 @@ class ServerService @Inject constructor(
         val javaExeFile = File(javaPath, "java.exe")
         val javaUnixFile = File(javaPath, "java")
         return when {
-            javaExeFile.exists() -> '"' + javaExeFile.absolutePath + '"'
-            javaUnixFile.exists() -> '"' + javaUnixFile.absolutePath + '"'
+            javaExeFile.exists() && javaExeFile.canExecute() -> javaExeFile.absolutePath
+            javaUnixFile.exists() && javaUnixFile.canExecute() -> javaUnixFile.absolutePath
             else -> null
         }
     }
@@ -83,21 +85,21 @@ class ServerService @Inject constructor(
     }
 
     init {
-        runtime.addShutdownHook(
+        Runtime.getRuntime().addShutdownHook(
             thread(start = false) {
                 process?.destroy()
                 process = null
             }
         )
-        host.onEach {
+        host.onEach { host ->
             process?.destroy()
-            initialized.value = if (host.value) {
+            initialized.value = if (host) {
                 ServerResult.STARTING
             } else {
                 ServerResult.UNUSED
                 return@onEach
             }
-            val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            val handler = CoroutineExceptionHandler { _, throwable ->
                 error(throwable) { "Error launching Tachidesk.jar" }
                 if (initialized.value == ServerResult.STARTING || initialized.value == ServerResult.STARTED) {
                     initialized.value = ServerResult.FAILED
@@ -107,7 +109,7 @@ class ServerService @Inject constructor(
                 val jarFile = File(userDataDir, "Tachidesk.jar")
                 if (!jarFile.exists()) {
                     info { "Copying server to resources" }
-                    if (!copyJar(jarFile)) {
+                    if (withIOContext { !copyJar(jarFile) }) {
                         initialized.value = ServerResult.NO_TACHIDESK_JAR
                     }
                 } else {
@@ -120,7 +122,9 @@ class ServerService @Inject constructor(
 
                         if (jarVersion != BuildConfig.TACHIDESK_SP_VERSION) {
                             info { "Updating server file from resources" }
-                            copyJar(jarFile)
+                            if (withIOContext { !copyJar(jarFile) }) {
+                                initialized.value = ServerResult.NO_TACHIDESK_JAR
+                            }
                         }
                     } catch (e: IOException) {
                         error(e) {
@@ -129,32 +133,39 @@ class ServerService @Inject constructor(
                     }
                 }
 
-                val javaExePath = getRuntimeJava() ?: getPossibleJava() ?: "java"
-                info { "Starting server with $javaExePath" }
-                val reader: BufferedReader
-                process = runtime.exec("""$javaExePath -jar "${jarFile.absolutePath}"""").also {
-                    reader = it.inputStream.bufferedReader()
-                }
-                info { "Server started successfully" }
-                val logger = KotlinLogging.logger("Server")
-                var line: String?
-                while (reader.readLine().also { line = it } != null) {
-                    if (initialized.value == ServerResult.STARTING) {
-                        if (line?.contains("Javalin started") == true) {
-                            initialized.value = ServerResult.STARTED
-                        } else if (line?.contains("Javalin has stopped") == true) {
-                            initialized.value = ServerResult.FAILED
+                val javaPath = getRuntimeJava() ?: getPossibleJava() ?: "java"
+                info { "Starting server with $javaPath" }
+
+                withIOContext {
+                    val reader: Reader
+                    process = ProcessBuilder(javaPath, "-jar", jarFile.absolutePath)
+                        .redirectErrorStream(true)
+                        .start()
+                        .also {
+                            reader = it.inputStream.reader()
+                        }
+                    info { "Server started successfully" }
+                    val logger = KotlinLogging.logger("Server")
+                    reader.useLines { lines ->
+                        lines.forEach {
+                            if (initialized.value == ServerResult.STARTING) {
+                                if (it.contains("Javalin started")) {
+                                    initialized.value = ServerResult.STARTED
+                                } else if (it.contains("Javalin has stopped")) {
+                                    initialized.value = ServerResult.FAILED
+                                }
+                            }
+                            logger.info { it }
                         }
                     }
-                    logger.info { line }
+                    if (initialized.value == ServerResult.STARTING) {
+                        initialized.value = ServerResult.FAILED
+                    }
+                    info { "Server closed" }
+                    val exitVal = process?.waitFor()
+                    info { "Process exitValue: $exitVal" }
+                    process = null
                 }
-                if (initialized.value == ServerResult.STARTING) {
-                    initialized.value = ServerResult.FAILED
-                }
-                info { "Server closed" }
-                val exitVal = process?.waitFor()
-                info { "Process exitValue: $exitVal" }
-                process = null
             }
         }.launchIn(GlobalScope)
     }
