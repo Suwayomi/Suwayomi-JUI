@@ -10,6 +10,7 @@ import java.io.File
 import Config.tachideskVersion
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.tasks.bundling.Zip
 
 private const val tachideskGroup = "tachidesk"
 private const val downloadTask = "downloadTar"
@@ -18,12 +19,27 @@ private const val androidScriptTask = "runGetAndroid"
 private const val setupCITask = "setupServerCI"
 private const val buildTachideskTask = "buildTachidesk"
 private const val copyTachideskJarTask = "copyTachidesk"
+private const val extractTachideskJar = "extractJar"
+private const val signTachideskJar = "signJar"
+private const val zipTachideskJar = "zipJar"
 private const val deleteTmpFolderTask = "deleteTmp"
 private const val runAllTachideskTasks = "setupTachideskJar"
 
 private fun Task.onlyIfTachideskDoesntExist(rootDir: File) {
     onlyIf { !File(rootDir, "src/main/resources/Tachidesk.jar").exists() }
 }
+private fun Task.onlyIfSigning(project: Project) {
+    with (project){
+        onlyIf {
+            DefaultNativePlatform.getCurrentOperatingSystem().isMacOsX
+                && isSigning(properties)
+                && !File(rootDir, "src/main/resources/Tachidesk.jar").exists()
+        }
+    }
+
+}
+
+private fun isSigning(properties: Map<String, Any?>) = properties["compose.desktop.mac.sign"].toString() == "true"
 
 private fun Project.tmpDir() = File(rootDir, "tmp")
 
@@ -99,13 +115,60 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
 
             from(File(tmpDir(), "Tachidesk-${tachideskVersion.drop(1)}/server/build/"))
             include("Tachidesk-$tachideskVersion-r*.jar")
-            into(File(rootDir, "src/main/resources/"))
+            val os = DefaultNativePlatform.getCurrentOperatingSystem()
+            when {
+                os.isMacOsX && isSigning(properties) -> into(File(tmpDir(), "macos/"))
+                else -> into(File(rootDir, "src/main/resources/"))
+            }
             rename {
                 "Tachidesk.jar"
             }
         }
-        register<Delete>(deleteTmpFolderTask) {
+        register<Copy>(extractTachideskJar) {
+            group = tachideskGroup
             mustRunAfter(copyTachideskJarTask)
+            onlyIfSigning(project)
+
+            from(zipTree(File(tmpDir(), "macos/Tachidesk.jar")))
+            into(File(tmpDir(), "macos/jar/"))
+        }
+        register(signTachideskJar) {
+            group = tachideskGroup
+            mustRunAfter(extractTachideskJar)
+            onlyIfSigning(project)
+
+            doFirst {
+                File(tmpDir(), "macos/jar/").walkTopDown()
+                    .asSequence()
+                    .filter { it.extension.equals("dylib", true) || it.extension.equals("jnilib", true) }
+                    .forEach {
+                        exec {
+                            commandLine(
+                                "codesign",
+                                "--deep",
+                                "-vvv",
+                                "-f",
+                                "--sign",
+                                properties["compose.desktop.mac.signing.identity"],
+                                it.absolutePath
+                            )
+                        }
+                    }
+            }
+        }
+        register<Zip>(zipTachideskJar) {
+            group = tachideskGroup
+            mustRunAfter(signTachideskJar)
+            onlyIfSigning(project)
+
+            from(File(tmpDir(), "macos/jar/"))
+            archiveBaseName.set("Tachidesk")
+            archiveVersion.set("")
+            archiveExtension.set("jar")
+            destinationDirectory.set(File(rootDir, "src/main/resources/"))
+        }
+        register<Delete>(deleteTmpFolderTask) {
+            mustRunAfter(zipTachideskJar)
             delete(tmpDir())
         }
         register(runAllTachideskTasks) {
@@ -118,6 +181,9 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                 setupCITask,
                 buildTachideskTask,
                 copyTachideskJarTask,
+                extractTachideskJar,
+                signTachideskJar,
+                zipTachideskJar,
                 deleteTmpFolderTask
             )
         }
