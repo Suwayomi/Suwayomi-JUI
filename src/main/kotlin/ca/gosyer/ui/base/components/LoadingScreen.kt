@@ -33,7 +33,7 @@ fun LoadingScreen(
                 val size = remember(maxHeight, maxWidth) {
                     min(maxHeight, maxWidth) / 2
                 }
-                if (progress != 0.0F) {
+                if (progress != 0.0F && !progress.isNaN()) {
                     CircularProgressIndicator(progress, Modifier.align(Alignment.Center).size(size))
                 } else {
                     CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
