@@ -112,7 +112,7 @@ class TachideskPageLoader(
                 ReaderPage(
                     it,
                     MutableStateFlow(null),
-                    MutableStateFlow(null),
+                    MutableStateFlow(0.0F),
                     MutableStateFlow(ReaderPage.Status.QUEUE),
                     MutableStateFlow(null)
                 )

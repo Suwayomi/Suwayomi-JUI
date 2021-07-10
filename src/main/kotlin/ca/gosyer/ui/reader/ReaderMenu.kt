@@ -224,7 +224,7 @@ fun ReaderMenu(chapterIndex: Int, mangaId: Long, setHotkeys: (List<KeyboardShort
 fun ReaderImage(
     imageIndex: Int,
     drawable: ImageBitmap?,
-    progress: Float?,
+    progress: Float,
     status: ReaderPage.Status,
     error: String?,
     imageModifier: Modifier = Modifier.fillMaxSize(),

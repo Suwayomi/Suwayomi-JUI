@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 data class ReaderPage(
     val index: Int,
     val bitmap: MutableStateFlow<ImageBitmap?>,
-    val progress: MutableStateFlow<Float?>,
+    val progress: MutableStateFlow<Float>,
     val status: MutableStateFlow<Status>,
     val error: MutableStateFlow<String?>
 ) {

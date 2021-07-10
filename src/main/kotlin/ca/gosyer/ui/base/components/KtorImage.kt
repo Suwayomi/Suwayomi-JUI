@@ -48,7 +48,7 @@ fun KtorImage(
     BoxWithConstraints {
         val drawable: MutableState<ImageBitmap?> = remember { mutableStateOf(null) }
         val loading: MutableState<Boolean> = remember { mutableStateOf(true) }
-        val progress: MutableState<Float?> = remember { mutableStateOf(null) }
+        val progress: MutableState<Float> = remember { mutableStateOf(0.0F) }
         val error: MutableState<String?> = remember { mutableStateOf(null) }
         DisposableEffect(imageUrl) {
             val handler = CoroutineExceptionHandler { _, throwable ->
