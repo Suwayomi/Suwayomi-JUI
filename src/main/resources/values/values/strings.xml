@@ -54,6 +54,8 @@
 
     <!-- Extensions Menu -->
     <string name="enabled_languages">Enabled languages</string>
+    <string name="installed">Installed</string>
+    <string name="all">All</string>
 
     <!-- Library Menu -->
     <string name="default_category">Default</string>

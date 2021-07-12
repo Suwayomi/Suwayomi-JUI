@@ -103,15 +103,24 @@ fun ExtensionsMenu() {
                             }
                         )
                     }
-                    items(extensions) { extension ->
-                        ExtensionItem(
-                            extension,
-                            serverUrl,
-                            onInstallClicked = vm::install,
-                            onUpdateClicked = vm::update,
-                            onUninstallClicked = vm::uninstall
-                        )
-                        Spacer(Modifier.height(8.dp))
+                    extensions.forEach { (header, items) ->
+                        item {
+                            Text(
+                                header,
+                                style = MaterialTheme.typography.h6,
+                                modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 4.dp)
+                            )
+                        }
+                        items(items) { extension ->
+                            ExtensionItem(
+                                extension,
+                                serverUrl,
+                                onInstallClicked = vm::install,
+                                onUpdateClicked = vm::update,
+                                onUninstallClicked = vm::uninstall
+                            )
+                            Spacer(Modifier.height(8.dp))
+                        }
                     }
                 }
                 VerticalScrollbar(

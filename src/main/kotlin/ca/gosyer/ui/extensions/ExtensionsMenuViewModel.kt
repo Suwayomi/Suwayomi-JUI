@@ -10,6 +10,7 @@ import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.models.Extension
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
+import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
@@ -19,12 +20,14 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 class ExtensionsMenuViewModel @Inject constructor(
     private val extensionHandler: ExtensionInteractionHandler,
+    private val resources: XmlResourceBundle,
     serverPreferences: ServerPreferences,
-    private val extensionPreferences: ExtensionPreferences
+    extensionPreferences: ExtensionPreferences
 ) : ViewModel() {
     val serverUrl = serverPreferences.serverUrl().stateIn(scope)
     private val _enabledLangs = extensionPreferences.languages().asStateFlow()
@@ -32,7 +35,7 @@ class ExtensionsMenuViewModel @Inject constructor(
 
     private lateinit var extensionList: List<Extension>
 
-    private val _extensions = MutableStateFlow(emptyList<Extension>())
+    private val _extensions = MutableStateFlow(emptyMap<String, List<Extension>>())
     val extensions = _extensions.asStateFlow()
 
     private val _isLoading = MutableStateFlow(true)
@@ -121,13 +124,22 @@ class ExtensionsMenuViewModel @Inject constructor(
         }
     }
 
-    private fun List<Extension>.splitSort(): List<Extension> {
+    private fun List<Extension>.splitSort(): Map<String, List<Extension>> {
         val comparator = compareBy<Extension>({ it.lang }, { it.pkgName })
         val obsolete = filter { it.obsolete }.sortedWith(comparator)
         val updates = filter { it.hasUpdate }.sortedWith(comparator)
         val installed = filter { it.installed && !it.hasUpdate && !it.obsolete }.sortedWith(comparator)
         val available = filter { !it.installed }.sortedWith(comparator)
-        return obsolete + updates + installed + available
+
+        return mapOf(
+            resources.getStringA("installed") to (obsolete + updates + installed),
+        ) + available.groupBy { it.lang }.mapKeys {
+            if (it.key == "all") {
+                resources.getStringA("all")
+            } else {
+                Locale.forLanguageTag(it.key).displayName
+            }
+        }
     }
 
     private companion object : CKLogger({})
