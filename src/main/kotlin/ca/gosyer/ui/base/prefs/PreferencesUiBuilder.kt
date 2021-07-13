@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -160,7 +161,8 @@ fun EditTextPreference(
     title: String,
     subtitle: String? = null,
     icon: ImageVector? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     var editText by remember { mutableStateOf(TextFieldValue(preference.value)) }
     PreferenceRow(
@@ -178,7 +180,8 @@ fun EditTextPreference(
                     editText,
                     onValueChange = {
                         editText = it
-                    }
+                    },
+                    visualTransformation = visualTransformation
                 )
             }
         },

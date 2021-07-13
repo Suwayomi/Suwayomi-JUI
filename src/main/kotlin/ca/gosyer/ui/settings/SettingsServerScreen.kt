@@ -11,7 +11,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.data.server.model.Auth
 import ca.gosyer.data.server.model.Proxy
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
@@ -46,12 +48,24 @@ class SettingsServerViewModel @Inject constructor(
     val httpPort = serverPreferences.proxyHttpPort().asStringStateIn(scope)
     val socksHost = serverPreferences.proxySocksHost().asStateIn(scope)
     val socksPort = serverPreferences.proxySocksPort().asStringStateIn(scope)
+
+    val auth = serverPreferences.auth().asStateIn(scope)
+
+    @Composable
+    fun getAuthChoices() = mapOf(
+        Auth.NONE to stringResource("no_auth"),
+        Auth.BASIC to stringResource("basic_auth"),
+        Auth.DIGEST to stringResource("digest_auth")
+    )
+    val authUsername = serverPreferences.authUsername().asStateIn(scope)
+    val authPassword = serverPreferences.authPassword().asStateIn(scope)
 }
 
 @Composable
 fun SettingsServerScreen(navController: BackStack<Route>) {
     val vm = viewModel<SettingsServerViewModel>()
     val proxy by vm.proxy.collectAsState()
+    val auth by vm.auth.collectAsState()
     Column {
         Toolbar(stringResource("settings_server_screen"), navController, true)
         SwitchPreference(preference = vm.host, title = stringResource("host_server"))
@@ -62,6 +76,7 @@ fun SettingsServerScreen(navController: BackStack<Route>) {
             item {
                 EditTextPreference(vm.port, stringResource("server_port"), subtitle = vm.port.collectAsState().value)
             }
+
             item {
                 ChoicePreference(vm.proxy, vm.getProxyChoices(), stringResource("server_proxy"))
             }
@@ -82,6 +97,17 @@ fun SettingsServerScreen(navController: BackStack<Route>) {
                     item {
                         EditTextPreference(vm.socksPort, stringResource("socks_port"), vm.socksPort.collectAsState().value)
                     }
+                }
+            }
+            item {
+                ChoicePreference(vm.auth, vm.getAuthChoices(), stringResource("authentication"))
+            }
+            if (auth != Auth.NONE) {
+                item {
+                    EditTextPreference(vm.authUsername, stringResource("auth_username"))
+                }
+                item {
+                    EditTextPreference(vm.authPassword, stringResource("auth_password"), visualTransformation = PasswordVisualTransformation())
                 }
             }
         }

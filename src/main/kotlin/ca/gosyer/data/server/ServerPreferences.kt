@@ -8,6 +8,7 @@ package ca.gosyer.data.server
 
 import ca.gosyer.common.prefs.Preference
 import ca.gosyer.common.prefs.PreferenceStore
+import ca.gosyer.data.server.model.Auth
 import ca.gosyer.data.server.model.Proxy
 
 class ServerPreferences(private val preferenceStore: PreferenceStore) {
@@ -46,5 +47,16 @@ class ServerPreferences(private val preferenceStore: PreferenceStore) {
 
     fun proxySocksPort(): Preference<Int> {
         return preferenceStore.getInt("proxy_socks_port")
+    }
+
+    fun auth(): Preference<Auth> {
+        return preferenceStore.getJsonObject("auth", Auth.NONE, Auth.serializer())
+    }
+
+    fun authUsername(): Preference<String> {
+        return preferenceStore.getString("auth_username")
+    }
+    fun authPassword(): Preference<String> {
+        return preferenceStore.getString("auth_password")
     }
 }

@@ -7,11 +7,16 @@
 package ca.gosyer.data.server
 
 import ca.gosyer.BuildConfig
+import ca.gosyer.data.server.model.Auth
 import ca.gosyer.data.server.model.Proxy
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.ProxyBuilder
 import io.ktor.client.engine.ProxyConfig
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.features.auth.providers.BasicAuthCredentials
+import io.ktor.client.features.auth.providers.DigestAuthCredentials
+import io.ktor.client.features.auth.providers.basic
+import io.ktor.client.features.auth.providers.digest
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.LogLevel
@@ -21,6 +26,7 @@ import io.ktor.http.URLBuilder
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Provider
+import io.ktor.client.features.auth.Auth as AuthFeature
 
 typealias Http = HttpClient
 
@@ -42,6 +48,29 @@ internal class HttpProvider @Inject constructor(
                         serverPreferences.proxySocksHost().get(),
                         serverPreferences.proxySocksPort().get()
                     )
+                }
+            }
+            when (serverPreferences.auth().get()) {
+                Auth.NONE -> Unit
+                Auth.BASIC -> install(AuthFeature) {
+                    basic {
+                        credentials {
+                            BasicAuthCredentials(
+                                serverPreferences.authUsername().get(),
+                                serverPreferences.authPassword().get()
+                            )
+                        }
+                    }
+                }
+                Auth.DIGEST -> install(AuthFeature) {
+                    digest {
+                        credentials {
+                            DigestAuthCredentials(
+                                serverPreferences.authUsername().get(),
+                                serverPreferences.authPassword().get()
+                            )
+                        }
+                    }
                 }
             }
             install(JsonFeature) {

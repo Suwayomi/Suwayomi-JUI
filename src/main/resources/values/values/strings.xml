@@ -176,4 +176,10 @@
     <string name="server_proxy">Proxy access to the server</string>
     <string name="http_port">HTTP PORT</string>
     <string name="socks_port">SOCKS PORT</string>
+    <string name="authentication">Server authentication</string>
+    <string name="no_auth">No auth</string>
+    <string name="basic_auth">Basic auth</string>
+    <string name="digest_auth">Digest auth</string>
+    <string name="auth_username">Auth username</string>
+    <string name="auth_password">Auth password</string>
 </resources>
