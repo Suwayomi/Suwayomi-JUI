@@ -37,12 +37,12 @@ dependencies {
     implementation("com.github.weisj:darklaf-core:2.6.1")
 
     // Threading
-    val coroutinesVersion = "1.5.0"
+    val coroutinesVersion = "1.5.1"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
 
     // Json
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 
     // Xml
     val xmlutilVersion = "0.82.0"
@@ -55,7 +55,7 @@ dependencies {
     kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:$toothpickVersion")
 
     // Http client
-    val ktorVersion = "1.6.0"
+    val ktorVersion = "1.6.1"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
