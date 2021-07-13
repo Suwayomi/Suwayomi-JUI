@@ -53,9 +53,6 @@ class MangaMenuViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _isRefreshing = MutableStateFlow(false)
-    val isRefreshing = _isRefreshing.asStateFlow()
-
     val dateTimeFormatter = uiPreferences.dateFormat().changes()
         .map {
             getDateFormat(it)
@@ -84,11 +81,27 @@ class MangaMenuViewModel @Inject constructor(
         }
     }
 
+    fun loadManga() {
+        scope.launch {
+            _isLoading.value = true
+            refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
+            _isLoading.value = false
+        }
+    }
+
+    fun loadChapters() {
+        scope.launch {
+            _isLoading.value = true
+            refreshChaptersAsync(params.mangaId).await()
+            _isLoading.value = false
+        }
+    }
+
     fun refreshManga() {
         scope.launch {
-            _isRefreshing.value = true
+            _isLoading.value = true
             refreshMangaAsync(params.mangaId, true).await() to refreshChaptersAsync(params.mangaId, true).await()
-            _isRefreshing.value = false
+            _isLoading.value = false
         }
     }
 

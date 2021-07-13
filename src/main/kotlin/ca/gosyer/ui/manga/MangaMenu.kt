@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.BuildConfig
 import ca.gosyer.data.models.Manga
+import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
@@ -69,48 +70,65 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
     val serverUrl by vm.serverUrl.collectAsState()
     val dateTimeFormatter by vm.dateTimeFormatter.collectAsState()
 
-    Column(Modifier.background(MaterialTheme.colors.background)) {
-        Toolbar(stringResource("location_manga"), backStack, backStack != null)
+    Box {
+        Column(Modifier.background(MaterialTheme.colors.background)) {
+            Toolbar(stringResource("location_manga"), backStack, backStack != null)
 
-        Surface(Modifier.height(40.dp).fillMaxWidth()) {
-            Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                Button(onClick = vm::toggleFavorite) {
-                    Text(stringResource(if (manga?.inLibrary == true) "action_remove_favorite" else "action_favorite"))
-                }
-                Button(onClick = vm::refreshManga, enabled = !vm.isRefreshing.collectAsState().value) {
-                    Text(stringResource("action_refresh_manga"))
+            manga.let { manga ->
+                if (manga != null) {
+                    Surface(Modifier.height(40.dp).fillMaxWidth()) {
+                        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                            Button(onClick = vm::toggleFavorite) {
+                                Text(stringResource(if (manga.inLibrary) "action_remove_favorite" else "action_favorite"))
+                            }
+                            Button(onClick = vm::refreshManga, enabled = !isLoading) {
+                                Text(stringResource("action_refresh_manga"))
+                            }
+                        }
+                    }
+
+                    Box {
+                        val state = rememberLazyListState()
+                        LazyColumn(state = state) {
+                            item {
+                                MangaItem(manga, serverUrl)
+                            }
+                            if (chapters.isNotEmpty()) {
+                                items(chapters) { chapter ->
+                                    ChapterItem(
+                                        chapter,
+                                        dateTimeFormatter::format,
+                                        onClick = { openReaderMenu(it, manga.id) },
+                                        toggleRead = vm::toggleRead,
+                                        toggleBookmarked = vm::toggleBookmarked,
+                                        markPreviousAsRead = vm::markPreviousRead,
+                                        downloadAChapter = vm::downloadChapter,
+                                        deleteDownload = vm::deleteDownload,
+                                        stopDownload = vm::deleteDownload
+                                    )
+                                }
+                            } else if (!isLoading) {
+                                item {
+                                    ErrorScreen(
+                                        stringResource("no_chapters_found"),
+                                        Modifier.height(400.dp).fillMaxWidth(),
+                                        retry = vm::loadChapters
+                                    )
+                                }
+                            }
+                        }
+                        VerticalScrollbar(
+                            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                            adapter = rememberScrollbarAdapter(state)
+                        )
+                    }
+                } else if (!isLoading) {
+                    ErrorScreen(stringResource("failed_manga_fetch"), retry = vm::loadManga)
                 }
             }
         }
-        manga?.let { manga ->
-            Box {
-                val state = rememberLazyListState()
-                LazyColumn(state = state) {
-                    item {
-                        MangaItem(manga, serverUrl)
-                    }
-                    items(chapters) { chapter ->
-                        ChapterItem(
-                            chapter,
-                            dateTimeFormatter::format,
-                            onClick = { openReaderMenu(it, manga.id) },
-                            toggleRead = vm::toggleRead,
-                            toggleBookmarked = vm::toggleBookmarked,
-                            markPreviousAsRead = vm::markPreviousRead,
-                            downloadAChapter = vm::downloadChapter,
-                            deleteDownload = vm::deleteDownload,
-                            stopDownload = vm::deleteDownload
-                        )
-                    }
-                }
-                VerticalScrollbar(
-                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                    adapter = rememberScrollbarAdapter(state)
-                )
-                if (isLoading) {
-                    LoadingScreen()
-                }
-            }
+        if (isLoading) {
+            LoadingScreen()
         }
     }
 }
