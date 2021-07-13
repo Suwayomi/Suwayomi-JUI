@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.data.server.model.Proxy
 import ca.gosyer.ui.base.components.Toolbar
+import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.EditTextPreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.prefs.asStateIn
@@ -24,16 +27,31 @@ import com.github.zsoltk.compose.router.BackStack
 import javax.inject.Inject
 
 class SettingsServerViewModel @Inject constructor(
-    private val serverPreferences: ServerPreferences
+    serverPreferences: ServerPreferences
 ) : ViewModel() {
     val host = serverPreferences.host().asStateIn(scope)
     val server = serverPreferences.server().asStateIn(scope)
     val port = serverPreferences.port().asStringStateIn(scope)
+
+    val proxy = serverPreferences.proxy().asStateIn(scope)
+
+    @Composable
+    fun getProxyChoices() = mapOf(
+        Proxy.NO_PROXY to stringResource("no_proxy"),
+        Proxy.HTTP_PROXY to stringResource("http_proxy"),
+        Proxy.SOCKS_PROXY to stringResource("socks_proxy")
+    )
+
+    val httpHost = serverPreferences.proxyHttpHost().asStateIn(scope)
+    val httpPort = serverPreferences.proxyHttpPort().asStringStateIn(scope)
+    val socksHost = serverPreferences.proxySocksHost().asStateIn(scope)
+    val socksPort = serverPreferences.proxySocksPort().asStringStateIn(scope)
 }
 
 @Composable
 fun SettingsServerScreen(navController: BackStack<Route>) {
     val vm = viewModel<SettingsServerViewModel>()
+    val proxy by vm.proxy.collectAsState()
     Column {
         Toolbar(stringResource("settings_server_screen"), navController, true)
         SwitchPreference(preference = vm.host, title = stringResource("host_server"))
@@ -43,6 +61,28 @@ fun SettingsServerScreen(navController: BackStack<Route>) {
             }
             item {
                 EditTextPreference(vm.port, stringResource("server_port"), subtitle = vm.port.collectAsState().value)
+            }
+            item {
+                ChoicePreference(vm.proxy, vm.getProxyChoices(), stringResource("server_proxy"))
+            }
+            when (proxy) {
+                Proxy.NO_PROXY -> Unit
+                Proxy.HTTP_PROXY -> {
+                    item {
+                        EditTextPreference(vm.httpHost, stringResource("http_proxy"), vm.httpHost.collectAsState().value)
+                    }
+                    item {
+                        EditTextPreference(vm.httpPort, stringResource("http_port"), vm.httpPort.collectAsState().value)
+                    }
+                }
+                Proxy.SOCKS_PROXY -> {
+                    item {
+                        EditTextPreference(vm.socksHost, stringResource("socks_proxy"), vm.socksHost.collectAsState().value)
+                    }
+                    item {
+                        EditTextPreference(vm.socksPort, stringResource("socks_port"), vm.socksPort.collectAsState().value)
+                    }
+                }
             }
         }
     }

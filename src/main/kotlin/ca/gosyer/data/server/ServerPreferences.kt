@@ -8,6 +8,7 @@ package ca.gosyer.data.server
 
 import ca.gosyer.common.prefs.Preference
 import ca.gosyer.common.prefs.PreferenceStore
+import ca.gosyer.data.server.model.Proxy
 
 class ServerPreferences(private val preferenceStore: PreferenceStore) {
 
@@ -25,5 +26,25 @@ class ServerPreferences(private val preferenceStore: PreferenceStore) {
 
     fun serverUrl(): Preference<String> {
         return ServerUrlPreference("", server(), port())
+    }
+
+    fun proxy(): Preference<Proxy> {
+        return preferenceStore.getJsonObject("proxy", Proxy.NO_PROXY, Proxy.serializer())
+    }
+
+    fun proxyHttpHost(): Preference<String> {
+        return preferenceStore.getString("proxy_http_host")
+    }
+
+    fun proxyHttpPort(): Preference<Int> {
+        return preferenceStore.getInt("proxy_http_port")
+    }
+
+    fun proxySocksHost(): Preference<String> {
+        return preferenceStore.getString("proxy_socks_host")
+    }
+
+    fun proxySocksPort(): Preference<Int> {
+        return preferenceStore.getInt("proxy_socks_port")
     }
 }
