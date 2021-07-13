@@ -60,23 +60,34 @@ class SourceScreenViewModel(
 
     init {
         scope.launch {
-            if (bundle[MANGAS_KEY] == null) {
-                val (mangas, hasNextPage) = getPage()
-                _mangas.value = mangas
-                _hasNextPage.value = hasNextPage
+            try {
+                if (bundle[MANGAS_KEY] == null) {
+                    val (mangas, hasNextPage) = getPage()
+                    _mangas.value = mangas
+                    _hasNextPage.value = hasNextPage
+                }
+            } finally {
+                _loading.value = false
             }
-            _loading.value = false
         }
     }
 
     fun loadNextPage() {
         scope.launch {
-            _hasNextPage.value = false
-            _pageNum.value++
-            val page = getPage()
-            _mangas.value += page.mangaList
-            _hasNextPage.value = page.hasNextPage
-            _loading.value = false
+            val hasNextPage = hasNextPage.value
+            val pageNum = pageNum.value
+            try {
+                _hasNextPage.value = false
+                _pageNum.value++
+                val page = getPage()
+                _mangas.value += page.mangaList
+                _hasNextPage.value = page.hasNextPage
+            } catch (e: Exception) {
+                _hasNextPage.value = hasNextPage
+                _pageNum.value = pageNum
+            } finally {
+                _loading.value = false
+            }
         }
     }
 
