@@ -47,7 +47,7 @@ fun PagerReader(
                     MoveTo.Previous -> currentPage - 1
                     MoveTo.Next -> currentPage + 1
                 }
-                if (page <= pages.size) {
+                if (page in 0..pages.size) {
                     state.animateScrollToPage(page)
                 }
             }
