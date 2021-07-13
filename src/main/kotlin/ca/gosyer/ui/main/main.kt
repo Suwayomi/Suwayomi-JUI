@@ -7,6 +7,7 @@
 package ca.gosyer.ui.main
 
 import androidx.compose.desktop.AppWindow
+import androidx.compose.material.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -132,12 +133,14 @@ fun main() {
                             MainMenu(rootBundle)
                         }
                         ServerResult.STARTING, ServerResult.FAILED -> {
-                            LoadingScreen(
-                                initialized == ServerResult.STARTING,
-                                errorMessage = stringResource("unable_to_start_server"),
-                                retryMessage = stringResource("action_start_anyway"),
-                                retry = serverService::startAnyway
-                            )
+                            Surface {
+                                LoadingScreen(
+                                    initialized == ServerResult.STARTING,
+                                    errorMessage = stringResource("unable_to_start_server"),
+                                    retryMessage = stringResource("action_start_anyway"),
+                                    retry = serverService::startAnyway
+                                )
+                            }
                         }
                     }
                 }

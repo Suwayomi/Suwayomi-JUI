@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,20 +27,18 @@ fun LoadingScreen(
     retryMessage: String = stringResource("action_retry"),
     retry: (() -> Unit)? = null
 ) {
-    Surface(modifier) {
-        BoxWithConstraints {
-            if (isLoading) {
-                val size = remember(maxHeight, maxWidth) {
-                    min(maxHeight, maxWidth) / 2
-                }
-                if (progress != 0.0F && !progress.isNaN()) {
-                    CircularProgressIndicator(progress, Modifier.align(Alignment.Center).size(size))
-                } else {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
-                }
-            } else {
-                ErrorScreen(errorMessage, modifier, retryMessage, retry)
+    BoxWithConstraints(modifier) {
+        if (isLoading) {
+            val size = remember(maxHeight, maxWidth) {
+                min(maxHeight, maxWidth) / 2
             }
+            if (progress != 0.0F && !progress.isNaN()) {
+                CircularProgressIndicator(progress, Modifier.align(Alignment.Center).size(size))
+            } else {
+                CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
+            }
+        } else {
+            ErrorScreen(errorMessage, modifier, retryMessage, retry)
         }
     }
 }
