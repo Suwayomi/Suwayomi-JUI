@@ -20,9 +20,21 @@ import java.io.File
 import java.util.logging.LogManager as JLogManager
 
 const val consolePattern =
-    "%highlight{%d{" + '$' + "{LOG_DATEFORMAT_PATTERN:-HH:mm:ss.SSS}} [%t] " + '$' + "{LOG_LEVEL_PATTERN:-%p}/%c{1}: %m%n" + '$' + "{LOG_EXCEPTION_CONVERSION_WORD:-%xEx}}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=black, TRACE=black}"
+    "%highlight{%d{" +
+        '$' +
+        "{LOG_DATEFORMAT_PATTERN:-HH:mm:ss.SSS}} [%t] " +
+        '$' +
+        "{LOG_LEVEL_PATTERN:-%p}/%c{1}: %m%n" +
+        '$' +
+        "{LOG_EXCEPTION_CONVERSION_WORD:-%xEx}}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=black, TRACE=black}"
 const val filePattern =
-    "%d{" + '$' + "{LOG_DATEFORMAT_PATTERN:-HH:mm:ss.SSS}} [%t] " + '$' + "{LOG_LEVEL_PATTERN:-%p}/%c{1}: %m%n" + '$' + "{LOG_EXCEPTION_CONVERSION_WORD:-%xEx}"
+    "%d{" +
+        '$' +
+        "{LOG_DATEFORMAT_PATTERN:-HH:mm:ss.SSS}} [%t] " +
+        '$' +
+        "{LOG_LEVEL_PATTERN:-%p}/%c{1}: %m%n" +
+        '$' +
+        "{LOG_EXCEPTION_CONVERSION_WORD:-%xEx}"
 
 @Suppress("UPPER_BOUND_VIOLATED_WARNING")
 fun initializeLogger(loggingLocation: File) {
@@ -51,7 +63,7 @@ fun initializeLogger(loggingLocation: File) {
                     )
                     .addAttribute(
                         "filePattern",
-                        loggingLocation.absolutePath.trimEnd { it == '/' || it == '\\' } + "/archive/rolling-%d{MM-dd-yy}.log.gz"
+                        loggingLocation.absolutePath.trimEnd { it == '/' || it == '\\' } + "/archive/rolling-%d{yyyy-MM-dd-}.log.gz"
                     )
                     .add(
                         newLayout("PatternLayout")
