@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
-import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.ui.base.components.Toolbar
@@ -29,7 +28,6 @@ import java.util.Locale
 import javax.inject.Inject
 
 class SettingsGeneralViewModel @Inject constructor(
-    private val resources: XmlResourceBundle,
     uiPreferences: UiPreferences,
 ) : ViewModel() {
 
@@ -41,15 +39,16 @@ class SettingsGeneralViewModel @Inject constructor(
     private val now: Instant = Instant.now()
     private val currentLocale = Locale.getDefault()
 
+    @Composable
     fun getStartScreenChoices() = mapOf(
-        StartScreen.Library to resources.getStringA("location_library"),
-        StartScreen.Sources to resources.getStringA("location_sources"),
-        StartScreen.Extensions to resources.getStringA("location_extensions")
+        StartScreen.Library to stringResource("location_library"),
+        StartScreen.Sources to stringResource("location_sources"),
+        StartScreen.Extensions to stringResource("location_extensions")
     )
 
     @Composable
     fun getLanguageChoices(): Map<String, String> = mapOf(
-        "" to resources.getString("language_system_default", currentLocale.getDisplayName(currentLocale))
+        "" to stringResource("language_system_default", currentLocale.getDisplayName(currentLocale))
     ) + listOf(
         "en",
         "en-CA",
@@ -63,13 +62,14 @@ class SettingsGeneralViewModel @Inject constructor(
     @Composable
     fun getDateChoices(): Map<String, String> {
         return mapOf(
-            "" to resources.getStringA("date_system_default"),
+            "" to stringResource("date_system_default"),
             "MM/dd/yy" to "MM/dd/yy",
             "dd/MM/yy" to "dd/MM/yy",
             "yyyy-MM-dd" to "yyyy-MM-dd"
         ).mapValues { "${it.value} (${getFormattedDate(it.key)})" }
     }
 
+    @Composable
     private fun getFormattedDate(prefValue: String): String {
         return when (prefValue) {
             "" -> DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
