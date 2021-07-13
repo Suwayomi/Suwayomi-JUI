@@ -49,15 +49,17 @@ class XmlResourceBundle internal constructor(internal val lookup: ConcurrentHash
         return XmlResourceBundle(ConcurrentHashMap(lookup + other.lookup))
     }
 
+    private fun String.replaceAndroid() = replace("\\n", "%n")
+
     fun getStringA(key: String): String {
-        return Formatter().format(getString(key))
+        return Formatter().format(getString(key).replaceAndroid())
             .let { formatter ->
                 formatter.toString().also { formatter.close() }
             }
     }
 
     fun getString(key: String, vararg replacements: Any?): String {
-        return Formatter().format(getString(key), *replacements)
+        return Formatter().format(getString(key).replaceAndroid(), *replacements)
             .let { formatter ->
                 formatter.toString().also { formatter.close() }
             }
