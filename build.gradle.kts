@@ -150,6 +150,7 @@ compose.desktop {
                 TargetFormat.Dmg
             )
             modules(
+                "java.compiler",
                 "java.instrument",
                 "java.management",
                 "java.naming",
