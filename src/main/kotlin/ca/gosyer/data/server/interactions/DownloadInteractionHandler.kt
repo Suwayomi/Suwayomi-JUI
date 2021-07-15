@@ -12,6 +12,7 @@ import ca.gosyer.data.server.requests.downloadsClearRequest
 import ca.gosyer.data.server.requests.downloadsStartRequest
 import ca.gosyer.data.server.requests.downloadsStopRequest
 import ca.gosyer.util.lang.withIOContext
+import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import javax.inject.Inject
 
@@ -21,19 +22,19 @@ class DownloadInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun startDownloading() = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + downloadsStartRequest()
         )
     }
 
     suspend fun stopDownloading() = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + downloadsStopRequest()
         )
     }
 
     suspend fun clearDownloadQueue() = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + downloadsClearRequest()
         )
     }

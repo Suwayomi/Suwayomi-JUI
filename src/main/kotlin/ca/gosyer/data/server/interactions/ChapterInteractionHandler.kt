@@ -17,8 +17,12 @@ import ca.gosyer.data.server.requests.getPageQuery
 import ca.gosyer.data.server.requests.queueDownloadChapterRequest
 import ca.gosyer.data.server.requests.updateChapterMetaRequest
 import ca.gosyer.data.server.requests.updateChapterRequest
+import ca.gosyer.util.compose.imageFromUrl
 import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.delete
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
@@ -31,7 +35,7 @@ class ChapterInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getChapters(mangaId: Long, refresh: Boolean = false) = withIOContext {
-        client.getRepeat<List<Chapter>>(
+        client.get<List<Chapter>>(
             serverUrl + getMangaChaptersQuery(mangaId)
         ) {
             url {
@@ -45,7 +49,7 @@ class ChapterInteractionHandler @Inject constructor(
     suspend fun getChapters(manga: Manga, refresh: Boolean = false) = getChapters(manga.id, refresh)
 
     suspend fun getChapter(mangaId: Long, chapterIndex: Int) = withIOContext {
-        client.getRepeat<Chapter>(
+        client.get<Chapter>(
             serverUrl + getChapterQuery(mangaId, chapterIndex)
         )
     }
@@ -64,7 +68,7 @@ class ChapterInteractionHandler @Inject constructor(
         lastPageRead: Int? = null,
         markPreviousRead: Boolean? = null
     ) = withIOContext {
-        client.submitFormRepeat<HttpResponse>(
+        client.submitForm<HttpResponse>(
             serverUrl + updateChapterRequest(mangaId, chapterIndex),
             formParameters = Parameters.build {
                 if (read != null) {
@@ -132,7 +136,7 @@ class ChapterInteractionHandler @Inject constructor(
     suspend fun getPage(manga: Manga, chapter: Chapter, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = getPage(manga.id, chapter.index, pageNum, block)
 
     suspend fun queueChapterDownload(mangaId: Long, chapterIndex: Int) = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + queueDownloadChapterRequest(mangaId, chapterIndex)
         )
     }
@@ -144,7 +148,7 @@ class ChapterInteractionHandler @Inject constructor(
     suspend fun queueChapterDownload(manga: Manga, chapter: Chapter) = queueChapterDownload(manga.id, chapter.index)
 
     suspend fun deleteChapterDownload(mangaId: Long, chapterIndex: Int) = withIOContext {
-        client.deleteRepeat<HttpResponse>(
+        client.delete<HttpResponse>(
             serverUrl + deleteDownloadChapterRequest(mangaId, chapterIndex)
         )
     }
@@ -156,7 +160,7 @@ class ChapterInteractionHandler @Inject constructor(
     suspend fun deleteChapterDownload(manga: Manga, chapter: Chapter) = deleteChapterDownload(manga.id, chapter.index)
 
     suspend fun updateChapterMeta(mangaId: Long, chapterIndex: Int, key: String, value: String) = withIOContext {
-        client.submitFormRepeat<HttpResponse>(
+        client.submitForm<HttpResponse>(
             serverUrl + updateChapterMetaRequest(mangaId, chapterIndex),
             formParameters = Parameters.build {
                 append("key", key)

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,13 +22,14 @@ import androidx.compose.ui.layout.ContentScale
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.server.Http
 import ca.gosyer.util.compose.imageFromUrl
-import ca.gosyer.util.lang.throwIfCancellation
+import ca.gosyer.util.system.kLogger
 import io.ktor.client.features.onDownload
-import io.ktor.client.request.HttpRequestBuilder
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
+val logger = kLogger {}
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
@@ -42,22 +42,22 @@ fun KtorImage(
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
-    retries: Int = 3,
     client: Http = remember { AppScope.getInstance() }
 ) {
     BoxWithConstraints {
-        val drawable: MutableState<ImageBitmap?> = remember { mutableStateOf(null) }
-        val loading: MutableState<Boolean> = remember { mutableStateOf(true) }
-        val progress: MutableState<Float> = remember { mutableStateOf(0.0F) }
-        val error: MutableState<String?> = remember { mutableStateOf(null) }
+        val drawable = remember { mutableStateOf<ImageBitmap?>(null) }
+        val loading = remember { mutableStateOf(true) }
+        val progress = remember { mutableStateOf(0.0F) }
+        val error = remember { mutableStateOf<String?>(null) }
         DisposableEffect(imageUrl) {
             val handler = CoroutineExceptionHandler { _, throwable ->
+                logger.error(throwable) { "Error loading image $imageUrl" }
                 loading.value = false
                 error.value = throwable.message
             }
             val job = GlobalScope.launch(handler) {
                 if (drawable.value == null) {
-                    drawable.value = getImage(client, imageUrl, retries) {
+                    drawable.value = imageFromUrl(client, imageUrl) {
                         onDownload { bytesSentTotal, contentLength ->
                             progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                         }
@@ -87,19 +87,4 @@ fun KtorImage(
             LoadingScreen(loading.value, loadingModifier, progress.value, error.value)
         }
     }
-}
-
-private suspend fun getImage(client: Http, imageUrl: String, retries: Int = 3, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
-    var attempt = 1
-    var lastException: Exception
-    do {
-        try {
-            return imageFromUrl(client, imageUrl, block)
-        } catch (e: Exception) {
-            e.throwIfCancellation()
-            lastException = e
-        }
-        attempt++
-    } while (attempt <= retries)
-    throw lastException
 }

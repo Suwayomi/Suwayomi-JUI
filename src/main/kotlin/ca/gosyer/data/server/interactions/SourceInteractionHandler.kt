@@ -18,6 +18,7 @@ import ca.gosyer.data.server.requests.sourceListQuery
 import ca.gosyer.data.server.requests.sourcePopularQuery
 import ca.gosyer.data.server.requests.sourceSearchQuery
 import ca.gosyer.util.lang.withIOContext
+import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import javax.inject.Inject
 
@@ -27,13 +28,13 @@ class SourceInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getSourceList() = withIOContext {
-        client.getRepeat<List<Source>>(
+        client.get<List<Source>>(
             serverUrl + sourceListQuery()
         )
     }
 
     suspend fun getSourceInfo(sourceId: Long) = withIOContext {
-        client.getRepeat<Source>(
+        client.get<Source>(
             serverUrl + sourceInfoQuery(sourceId)
         )
     }
@@ -41,7 +42,7 @@ class SourceInteractionHandler @Inject constructor(
     suspend fun getSourceInfo(source: Source) = getSourceInfo(source.id)
 
     suspend fun getPopularManga(sourceId: Long, pageNum: Int) = withIOContext {
-        client.getRepeat<MangaPage>(
+        client.get<MangaPage>(
             serverUrl + sourcePopularQuery(sourceId, pageNum)
         )
     }
@@ -52,7 +53,7 @@ class SourceInteractionHandler @Inject constructor(
     )
 
     suspend fun getLatestManga(sourceId: Long, pageNum: Int) = withIOContext {
-        client.getRepeat<MangaPage>(
+        client.get<MangaPage>(
             serverUrl + sourceLatestQuery(sourceId, pageNum)
         )
     }
@@ -64,13 +65,13 @@ class SourceInteractionHandler @Inject constructor(
 
     // TODO: 2021-03-14
     suspend fun getGlobalSearchResults(searchTerm: String) = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + globalSearchQuery(searchTerm)
         )
     }
 
     suspend fun getSearchResults(sourceId: Long, searchTerm: String, pageNum: Int) = withIOContext {
-        client.getRepeat<MangaPage>(
+        client.get<MangaPage>(
             serverUrl + sourceSearchQuery(sourceId, searchTerm, pageNum)
         )
     }
@@ -83,7 +84,7 @@ class SourceInteractionHandler @Inject constructor(
 
     // TODO: 2021-03-14  
     suspend fun getFilterList(sourceId: Long) = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + getFilterListQuery(sourceId)
         )
     }

@@ -20,6 +20,9 @@ import ca.gosyer.data.server.requests.getMangaCategoriesQuery
 import ca.gosyer.data.server.requests.getMangaInCategoryQuery
 import ca.gosyer.data.server.requests.removeMangaFromCategoryRequest
 import ca.gosyer.util.lang.withIOContext
+import io.ktor.client.request.delete
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
@@ -31,7 +34,7 @@ class CategoryInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getMangaCategories(mangaId: Long) = withIOContext {
-        client.getRepeat<List<Category>>(
+        client.get<List<Category>>(
             serverUrl + getMangaCategoriesQuery(mangaId)
         )
     }
@@ -39,7 +42,7 @@ class CategoryInteractionHandler @Inject constructor(
     suspend fun getMangaCategories(manga: Manga) = getMangaCategories(manga.id)
 
     suspend fun addMangaToCategory(mangaId: Long, categoryId: Long) = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + addMangaToCategoryQuery(mangaId, categoryId)
         )
     }
@@ -48,7 +51,7 @@ class CategoryInteractionHandler @Inject constructor(
     suspend fun addMangaToCategory(mangaId: Long, category: Category) = addMangaToCategory(mangaId, category.id)
 
     suspend fun removeMangaFromCategory(mangaId: Long, categoryId: Long) = withIOContext {
-        client.deleteRepeat<HttpResponse>(
+        client.delete<HttpResponse>(
             serverUrl + removeMangaFromCategoryRequest(mangaId, categoryId)
         )
     }
@@ -57,13 +60,13 @@ class CategoryInteractionHandler @Inject constructor(
     suspend fun removeMangaFromCategory(mangaId: Long, category: Category) = removeMangaFromCategory(mangaId, category.id)
 
     suspend fun getCategories() = withIOContext {
-        client.getRepeat<List<Category>>(
+        client.get<List<Category>>(
             serverUrl + getCategoriesQuery()
         )
     }
 
     suspend fun createCategory(name: String) = withIOContext {
-        client.submitFormRepeat<HttpResponse>(
+        client.submitForm<HttpResponse>(
             serverUrl + createCategoryRequest(),
             formParameters = Parameters.build {
                 append("name", name)
@@ -72,7 +75,7 @@ class CategoryInteractionHandler @Inject constructor(
     }
 
     suspend fun modifyCategory(categoryId: Long, name: String? = null, isLanding: Boolean? = null) = withIOContext {
-        client.submitFormRepeat<HttpResponse>(
+        client.submitForm<HttpResponse>(
             serverUrl + categoryModifyRequest(categoryId),
             formParameters = Parameters.build {
                 if (name != null) {
@@ -89,7 +92,7 @@ class CategoryInteractionHandler @Inject constructor(
     suspend fun modifyCategory(category: Category, name: String? = null, isLanding: Boolean? = null) = modifyCategory(category.id, name, isLanding)
 
     suspend fun reorderCategory(categoryId: Long, to: Int, from: Int) = withIOContext {
-        client.submitFormRepeat<HttpResponse>(
+        client.submitForm<HttpResponse>(
             serverUrl + categoryReorderRequest(categoryId),
             formParameters = Parameters.build {
                 append("to", to.toString())
@@ -102,14 +105,14 @@ class CategoryInteractionHandler @Inject constructor(
     suspend fun reorderCategory(category: Category, to: Int, from: Int) = reorderCategory(category.id, to, from)
 
     suspend fun deleteCategory(categoryId: Long) = withIOContext {
-        client.deleteRepeat<HttpResponse>(
+        client.delete<HttpResponse>(
             serverUrl + categoryDeleteRequest(categoryId)
         )
     }
     suspend fun deleteCategory(category: Category) = deleteCategory(category.id)
 
     suspend fun getMangaFromCategory(categoryId: Long) = withIOContext {
-        client.getRepeat<List<Manga>>(
+        client.get<List<Manga>>(
             serverUrl + getMangaInCategoryQuery(categoryId)
         )
     }

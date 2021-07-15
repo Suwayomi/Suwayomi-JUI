@@ -14,8 +14,10 @@ import ca.gosyer.data.server.requests.apkInstallQuery
 import ca.gosyer.data.server.requests.apkUninstallQuery
 import ca.gosyer.data.server.requests.apkUpdateQuery
 import ca.gosyer.data.server.requests.extensionListQuery
+import ca.gosyer.util.compose.imageFromUrl
 import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import javax.inject.Inject
 
@@ -25,25 +27,25 @@ class ExtensionInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getExtensionList() = withIOContext {
-        client.getRepeat<List<Extension>>(
+        client.get<List<Extension>>(
             serverUrl + extensionListQuery()
         )
     }
 
     suspend fun installExtension(extension: Extension) = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + apkInstallQuery(extension.pkgName)
         )
     }
 
     suspend fun updateExtension(extension: Extension) = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + apkUpdateQuery(extension.pkgName)
         )
     }
 
     suspend fun uninstallExtension(extension: Extension) = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + apkUninstallQuery(extension.pkgName)
         )
     }

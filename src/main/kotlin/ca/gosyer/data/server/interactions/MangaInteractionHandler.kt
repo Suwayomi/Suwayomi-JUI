@@ -12,8 +12,11 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.mangaQuery
 import ca.gosyer.data.server.requests.mangaThumbnailQuery
 import ca.gosyer.data.server.requests.updateMangaMetaRequest
+import ca.gosyer.util.compose.imageFromUrl
 import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
@@ -26,7 +29,7 @@ class MangaInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     suspend fun getManga(mangaId: Long, refresh: Boolean = false) = withIOContext {
-        client.getRepeat<Manga>(
+        client.get<Manga>(
             serverUrl + mangaQuery(mangaId)
         ) {
             url {
@@ -48,7 +51,7 @@ class MangaInteractionHandler @Inject constructor(
     }
 
     suspend fun updateMangaMeta(mangaId: Long, key: String, value: String) = withIOContext {
-        client.submitFormRepeat<HttpResponse>(
+        client.submitForm<HttpResponse>(
             serverUrl + updateMangaMetaRequest(mangaId),
             formParameters = Parameters.build {
                 append("key", key)

@@ -17,6 +17,8 @@ import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
+import io.ktor.client.request.get
+import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
@@ -47,7 +49,7 @@ class BackupInteractionHandler @Inject constructor(
     }
 
     suspend fun importBackup(backup: Backup, block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
-        client.postRepeat<HttpResponse>(
+        client.post<HttpResponse>(
             serverUrl + backupImportRequest()
         ) {
             contentType(ContentType.Application.Json)
@@ -57,14 +59,14 @@ class BackupInteractionHandler @Inject constructor(
     }
 
     suspend fun exportBackupFile(block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
-        client.getRepeat<HttpResponse>(
+        client.get<HttpResponse>(
             serverUrl + backupFileExportRequest(),
             block
         )
     }
 
     suspend fun exportBackup(block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
-        client.getRepeat<Backup>(
+        client.get<Backup>(
             serverUrl + backupExportRequest(),
             block
         )
