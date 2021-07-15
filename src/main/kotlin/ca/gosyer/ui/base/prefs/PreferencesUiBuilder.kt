@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -81,7 +82,7 @@ fun PreferenceRow(
 ) {
     val height = if (subtitle != null) 72.dp else 56.dp
 
-    var modifier = Modifier.fillMaxWidth().requiredHeight(height)
+    var modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = height)
     if (enabled) {
         modifier = modifier.combinedClickable(
             onLongClick = onLongClick,
@@ -95,7 +96,7 @@ fun PreferenceRow(
         if (icon != null) {
             Icon(
                 imageVector = icon,
-                modifier = Modifier.padding(horizontal = 16.dp).size(24.dp),
+                modifier = Modifier.padding(start = 16.dp).size(24.dp),
                 tint = MaterialTheme.colors.primary,
                 contentDescription = null
             )
@@ -115,8 +116,6 @@ fun PreferenceRow(
             if (subtitle != null) {
                 Text(
                     text = subtitle,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
                     color = if (enabled) {
                         LocalContentColor.current.copy(alpha = ContentAlpha.medium)
                     } else {
