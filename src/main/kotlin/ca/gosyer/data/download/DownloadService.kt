@@ -14,6 +14,7 @@ import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.downloadsQuery
 import ca.gosyer.util.lang.throwIfCancellation
+import ca.gosyer.util.system.CKLogger
 import io.ktor.client.features.websocket.ws
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
@@ -97,6 +98,7 @@ class DownloadService @Inject constructor(
             }
         }.catch {
             _status.value = Status.STOPPED
+            error(it) { "Error while running downloader" }
             throw it
         }.launchIn(GlobalScope)
     }
@@ -113,4 +115,6 @@ class DownloadService @Inject constructor(
         RUNNING,
         STOPPED
     }
+
+    private companion object : CKLogger({})
 }
