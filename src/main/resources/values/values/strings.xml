@@ -172,6 +172,8 @@
     <string name="host_server">Host server inside TachideskJUI</string>
     <string name="server_url">Server URL</string>
     <string name="server_port">Server PORT</string>
+    <string name="server_preference_warning">Warning</string>
+    <string name="server_preference_warning_sub">The below settings require a restart to take affect</string>
     <string name="no_proxy">No Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
     <string name="socks_proxy">SOCKS Proxy</string>

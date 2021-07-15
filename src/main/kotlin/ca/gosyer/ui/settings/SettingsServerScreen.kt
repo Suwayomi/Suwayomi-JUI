@@ -8,6 +8,8 @@ package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,6 +20,7 @@ import ca.gosyer.data.server.model.Proxy
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.EditTextPreference
+import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.prefs.asStringStateIn
@@ -77,6 +80,13 @@ fun SettingsServerScreen(navController: BackStack<Route>) {
                 EditTextPreference(vm.port, stringResource("server_port"), subtitle = vm.port.collectAsState().value)
             }
 
+            item {
+                PreferenceRow(
+                    stringResource("server_preference_warning"),
+                    Icons.Default.Info,
+                    subtitle = stringResource("server_preference_warning_sub")
+                )
+            }
             item {
                 ChoicePreference(vm.proxy, vm.getProxyChoices(), stringResource("server_proxy"))
             }
