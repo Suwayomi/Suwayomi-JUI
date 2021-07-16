@@ -158,6 +158,7 @@ compose.desktop {
                 "java.rmi",
                 "java.scripting",
                 "java.sql",
+                "jdk.crypto.ec",
                 "jdk.unsupported"
             )
 
