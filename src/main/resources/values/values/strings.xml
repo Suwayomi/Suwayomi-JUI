@@ -10,6 +10,8 @@
 
     <!-- Main Menu -->
     <string name="unable_to_start_server">Cannot start server</string>
+    <string name="confirm_exit">Confirm exit</string>
+    <string name="confirm_exit_message">Are you sure you want to exit?</string>
 
     <!-- Actions -->
     <string name="action_yes">Yes</string>

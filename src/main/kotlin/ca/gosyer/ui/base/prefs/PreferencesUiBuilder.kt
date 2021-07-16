@@ -19,7 +19,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.desktop.AppWindow
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -226,13 +225,13 @@ fun <Key> ChoicePreference(
 fun <T> ChoiceDialog(
     items: List<Pair<T, String>>,
     selected: T?,
-    onDismissRequest: () -> Unit = {},
+    onCloseRequest: () -> Unit = {},
     onSelected: (T) -> Unit,
     title: String,
-    buttons: @Composable (AppWindow) -> Unit = { }
+    buttons: @Composable (() -> Unit) -> Unit = { }
 ) {
     WindowDialog(
-        onDismissRequest = onDismissRequest,
+        onCloseRequest = onCloseRequest,
         buttons = buttons,
         title = title,
         content = {
@@ -242,7 +241,7 @@ fun <T> ChoiceDialog(
                         modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
                             onClick = {
                                 onSelected(value)
-                                it.close()
+                                it()
                             }
                         ),
                         verticalAlignment = Alignment.CenterVertically
@@ -251,7 +250,7 @@ fun <T> ChoiceDialog(
                             selected = value == selected,
                             onClick = {
                                 onSelected(value)
-                                it.close()
+                                it()
                             },
                         )
                         Text(text = text, modifier = Modifier.padding(start = 24.dp))

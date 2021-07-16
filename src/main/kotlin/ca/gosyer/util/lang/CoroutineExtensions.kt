@@ -6,6 +6,9 @@
 
 package ca.gosyer.util.lang
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.window.ApplicationScope
+import androidx.compose.ui.window.launchApplication
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -32,6 +35,11 @@ fun launchIO(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ) = GlobalScope.launch(Dispatchers.IO, start, block)
+
+@DelicateCoroutinesApi
+fun launchApplication(
+    content: @Composable (ApplicationScope.() -> Unit)
+) = GlobalScope.launchApplication(content)
 
 fun CoroutineScope.launchDefault(
     start: CoroutineStart = CoroutineStart.DEFAULT,

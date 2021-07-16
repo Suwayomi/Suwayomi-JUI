@@ -7,7 +7,9 @@
 package ca.gosyer.ui.main
 
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,7 +26,9 @@ import ca.gosyer.data.server.ServerService.ServerResult
 import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
+import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppTheme
@@ -44,6 +48,7 @@ import toothpick.configuration.Configuration
 import toothpick.ktp.KTP
 import toothpick.ktp.extension.getInstance
 import java.io.File
+import kotlin.system.exitProcess
 
 @OptIn(DelicateCoroutinesApi::class)
 suspend fun main() {
@@ -92,27 +97,38 @@ suspend fun main() {
         placement
     ) = windowSettings.get().get()
 
+    val confirmExit = uiPreferences.confirmExit().asStateIn(GlobalScope)
+
     awaitApplication {
+        // Exit the whole application when this window closes
+        DisposableEffect(Unit) {
+            onDispose {
+                exitProcess(0)
+            }
+        }
+
         val backPressHandler = remember { BackPressHandler() }
 
         val rootBundle = remember { Bundle() }
-        val windowState = rememberWindowState(size = size, position = position, placement = placement)
-        /*DisposableEffect(Unit) {
-            onDispose {
-                windowSettings.set(
-                    WindowSettings(
-                        windowState.position.x.value.toInt(),
-                        windowState.position.y.value.toInt(),
-                        windowState.size.width.value.toInt(),
-                        windowState.size.height.value.toInt(),
-                        windowState.placement == WindowPlacement.Maximized,
-                        windowState.placement == WindowPlacement.Fullscreen
-                    )
-                )
-            }
-        }*/
+        val windowState = rememberWindowState(
+            size = size,
+            position = position,
+            placement = placement
+        )
+
         Window(
-            onCloseRequest = ::exitApplication,
+            onCloseRequest = {
+                if (confirmExit.value) {
+                    WindowDialog(
+                        title = resources.getStringA("confirm_exit"),
+                        onPositiveButton = ::exitApplication
+                    ) {
+                        Text(stringResource("confirm_exit_message"))
+                    }
+                } else {
+                    exitApplication()
+                }
+            },
             title = BuildConfig.NAME,
             state = windowState,
             onKeyEvent = {
