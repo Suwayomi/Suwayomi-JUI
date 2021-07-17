@@ -8,14 +8,15 @@ TachideskJUI can run the Tachidesk server on its own, or connect to an already h
 Any platform that runs Java can run it. On most platforms are binaries available if you don't want to install Java yourself
 
 ## Is this application usable? Should I test it?
-Here is a list of current features for interaction with Tachidesk:
+Here is a list of current features for interaction with TachideskJUI:
 
-- Installing and uninstalling Extensions.
+- Managing installed Extensions.
 - Interaction with your library.
 - Browsing installed sources.
-- Viewing manga and chapter info.
+- Viewing manga and chapters.
+- Reading, downloading, and managing chapters.
 
-**Note:** Keep in mind that TachideskJUI and Tachidesk are alpha software and can rarely break and/or with each update, so you may have to delete your data to fix it. See [General troubleshooting](#general-troubleshooting) and [Support and help](#support-and-help) if it happens.
+**Note:** Keep in mind that TachideskJUI and Tachidesk are alpha software, so it can have issues. See [General troubleshooting](#general-troubleshooting) and [Support and help](#support-and-help) if it happens.
 
 ## Downloading and Running the app
 ### All Operating Systems (x64, Java Not Included)
@@ -54,18 +55,20 @@ Make sure you have used either an installer, or you have Java 15 installed.
 ### It says server failed to start
 Make sure that if you used an installer, that you have at least Java 8 installed.
 
+### The top bar is broken
+You are most likely using Java 16 to start the jar, this additional argument can fix it:
+
+`java --add-exports java.desktop/sun.swing=ALL-UNNAMED -jar TachideskJUI-os-arch-X.Y.Z.jar`
+
 ## Support and help
 Join Tachidesk's [discord server](https://discord.gg/wgPyb7hE5d) to hang out with the community and receive support and help.
 
 ## Building from source
-### Prerequisite: Getting Tachidesk.jar
-#### Linux
-Run `./scripts/SetupUnix.sh` in bash from project's root directory to download and rebuild the Tachidesk jar without the WebUI.
-#### Windows
-Run `&"./scripts/SetupWindows.ps1"` in powershell from project's root directory to download and rebuild the Tachidesk jar without the WebUI.
 ### Prerequisite: Software dependencies
 You need this software packages installed in order to build this project:
 - Java Development Kit and Java Runtime Environment version 15, this can be handled by IntelliJ
+### Prerequisite: Getting Tachidesk.jar
+Run `./gradlew setupTachideskJar`, it will add the required Tachidesk jar to the resources. Note that you will have to delete it and run the task again if the required version has been bumped
 ### building a jar for your OS
 Run `./gradlew packageUberJarForCurrentOS`, the resulting built jar file will be `build/compose/TachideskJUI-os-arch-X.Y.Z.jar`.
 
