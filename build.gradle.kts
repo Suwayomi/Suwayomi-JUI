@@ -31,7 +31,7 @@ dependencies {
     implementation(compose("org.jetbrains.compose.ui:ui-util"))
     implementation(compose("org.jetbrains.compose.material:material-icons-extended"))
     implementation("ca.gosyer:compose-router:0.24.2-jetbrains-2")
-    implementation("ca.gosyer:accompanist-pager:0.12.0")
+    implementation("ca.gosyer:accompanist-pager:0.14.0")
 
     // UI (Swing)
     implementation("com.github.weisj:darklaf-core:2.6.1")
@@ -71,7 +71,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.10")
 
     // User storage
     implementation("net.harawata:appdirs:1.2.1")

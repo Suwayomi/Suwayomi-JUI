@@ -31,7 +31,7 @@ private fun Task.onlyIfTachideskDoesntExist(rootDir: File) {
     onlyIf { !File(rootDir, "src/main/resources/Tachidesk.jar").exists() }
 }
 private fun Task.onlyIfSigning(project: Project) {
-    with (project){
+    with(project){
         onlyIf {
             DefaultNativePlatform.getCurrentOperatingSystem().isMacOsX
                 && isSigning(properties)
