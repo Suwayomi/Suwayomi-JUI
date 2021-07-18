@@ -16,14 +16,14 @@ jobs:
           arch: x64
           os: ubuntu-latest
           shell: bash
-          build: setupTachideskJar packageUberJarForCurrentOS packageDeb
+          build: packageUberJarForCurrentOS packageDeb
           setupCl: ./scripts/SetupClUnix.sh
 
         - runtime: linux-centos-x64
           arch: x64
           os: ubuntu-latest
           shell: bash
-          build: setupTachideskJar packageRpm
+          build: packageRpm
           setupCl: ./scripts/SetupClUnix.sh
 
         - runtime: osx-x64
@@ -31,7 +31,7 @@ jobs:
           os: macOS-latest
           shell: bash
           build: |
-            setupTachideskJar packageUberJarForCurrentOS \
+            packageUberJarForCurrentOS \
             packageDmg notarizeDmg \
             -Pcompose.desktop.mac.sign=true \
             -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }} \
@@ -43,7 +43,7 @@ jobs:
           arch: x64
           os: windows-latest
           shell: powershell
-          build: setupTachideskJar packageUberJarForCurrentOS packageMsi
+          build: packageUberJarForCurrentOS packageMsi
           setupCl: ./scripts/SetupClWindows.ps1
 
     runs-on: ${{ matrix.os }}

@@ -1,18 +1,20 @@
+import Config.tachideskVersion
 import de.undercouch.gradle.tasks.download.Download
+import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.KotlinClosure1
 import org.gradle.kotlin.dsl.TaskContainerScope
 import org.gradle.kotlin.dsl.register
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import java.io.File
-import Config.tachideskVersion
-import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.tasks.bundling.Zip
+import java.util.jar.JarFile
 
 private const val tachideskGroup = "tachidesk"
+private const val deleteOldTachideskTask = "deleteOldTachidesk"
 private const val downloadTask = "downloadTar"
 private const val extractTask = "extractTar"
 private const val androidScriptTask = "runGetAndroid"
@@ -45,8 +47,20 @@ private fun Project.tmpDir() = File(rootDir, "tmp")
 
 fun TaskContainerScope.registerTachideskTasks(project: Project) {
     with(project) {
+        register<Delete>(deleteOldTachideskTask) {
+            group = tachideskGroup
+            val tachideskJar = File(rootDir, "src/main/resources/Tachidesk.jar")
+            onlyIf {
+                tachideskJar.exists() && JarFile(tachideskJar).use {
+                    it.manifest?.mainAttributes?.getValue("Specification-Version") != tachideskVersion
+                }
+            }
+            delete(tachideskJar)
+        }
+
         register<Download>(downloadTask) {
             group = tachideskGroup
+            mustRunAfter(deleteOldTachideskTask)
             onlyIfTachideskDoesntExist(rootDir)
 
             val tmpDir = tmpDir()
@@ -175,6 +189,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             group = tachideskGroup
 
             dependsOn(
+                deleteOldTachideskTask,
                 downloadTask,
                 extractTask,
                 androidScriptTask,
@@ -190,6 +205,6 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
     }
 
     named("processResources") {
-        mustRunAfter(runAllTachideskTasks)
+        dependsOn(runAllTachideskTasks)
     }
 }

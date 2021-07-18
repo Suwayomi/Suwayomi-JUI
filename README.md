@@ -67,9 +67,7 @@ Join Tachidesk's [discord server](https://discord.gg/wgPyb7hE5d) to hang out wit
 ### Prerequisite: Software dependencies
 You need this software packages installed in order to build this project:
 - Java Development Kit and Java Runtime Environment version 15, this can be handled by IntelliJ
-### Prerequisite: Getting Tachidesk.jar
-Run `./gradlew setupTachideskJar`, it will add the required Tachidesk jar to the resources. Note that you will have to delete it and run the task again if the required version has been bumped
-### building a jar for your OS
+### Building a jar for your OS
 Run `./gradlew packageUberJarForCurrentOS`, the resulting built jar file will be `build/compose/TachideskJUI-os-arch-X.Y.Z.jar`.
 
 
