@@ -3,15 +3,10 @@
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
-  -->
-
-<resources>
+  --><resources>
     <string name="app_name">TachideskJUI</string>
-
     <!-- Main Menu -->
-    <string name="tachidesk_doesnt_exist">را خودتان اجرا کنید Tachidesk پیدا نشد, برنامه Tachidesk jar فایل</string>
     <string name="unable_to_start_server">اجرای سرور ناموفق بود</string>
-
     <!-- Actions -->
     <string name="action_yes">بله</string>
     <string name="action_no">خیر</string>
@@ -34,7 +29,6 @@
     <string name="action_favorite">مورد علاقه</string>
     <string name="action_remove_favorite">عدم مورد علاقه</string>
     <string name="action_refresh_manga">تازه کردن مانگاه</string>
-
     <!-- Locations -->
     <string name="location_library">کتاب خانه</string>
     <string name="location_sources">منابع</string>
@@ -43,34 +37,26 @@
     <string name="location_settings">تنضیمات</string>
     <string name="location_categories">رده ها</string>
     <string name="location_manga">مانگا</string>
-
     <!-- Categories Menu -->
     <string name="categories_delete_confirm">آیا می‌خواهید رده %1$s را پاک کنید؟</string>
-
     <!-- Downloads Menu -->
     <string name="downloads_remaining">%1$d تغییر نام</string>
-
     <!-- Extensions Menu -->
     <string name="enabled_languages">زبان‌های‌ فعال</string>
-
     <!-- Library Menu -->
     <string name="default_category">پیشفرض</string>
-
     <!-- Manga Menu -->
     <string name="page_progress">صفحه %1$d</string>
-
     <!-- Sources Menu -->
     <string name="sources_home">خانه</string>
     <string name="move_to_browse">به مرور</string>
     <string name="move_to_latest">به آخرین</string>
-
     <!-- Reader Menu -->
     <string name="no_pages_found">صفحه ای پیدا نشد</string>
     <string name="no_previous_chapter">فصل قبلی وجود ندارد</string>
     <string name="previous_chapter">قبلی:\n %1$s</string>
     <string name="next_chapter">بعدی:\n %1$s</string>
     <string name="no_next_chapter">فصل بعدی وجود ندارد</string>
-
     <!-- Settings-->
     <string name="settings_advanced">پیشرفته</string>
     <string name="settings_appearance">ظاهر</string>
@@ -84,7 +70,6 @@
     <string name="settings_security">امنیت</string>
     <string name="settings_server">سرور</string>
     <string name="settings_tracking">ردیابی</string>
-
     <!-- Settings Menu Titles-->
     <string name="settings_advanced_screen">تنضیمات پیشرفته</string>
     <string name="settings_appearance_screen">تنضیمات ظاهر</string>
@@ -98,11 +83,9 @@
     <string name="settings_security_screen">تنضیمات امنیت</string>
     <string name="settings_server_screen">تنضیمات سرور</string>
     <string name="settings_tracking_screen">تنضیمات ردیابی</string>
-
     <!-- Appearance Settings -->
     <string name="theme">تم</string>
     <string name="theme_light">روشن</string>
-    <string name="theme_Dark">تیره</string>
     <string name="theme_text">متن</string>
     <string name="preset_themes">تم پیشفرض</string>
     <string name="color_primary">رنگ اصلی</string>
@@ -111,13 +94,11 @@
     <string name="color_secondary_sub">برای مشخص کردن متن‌های خاص</string>
     <string name="window_decorations">ظاهر صفحهات</string>
     <string name="window_decorations_sub">برای این که تنضیمات تغییر کند JUI را باید دوباره اجرا کنید</string>
-
     <!-- Backup Settings -->
     <string name="backup_restore">بازگردانی بکاپ</string>
     <string name="backup_restore_sub">بازگردانی یک بکاپ در Tachidesk</string>
     <string name="backup_create">ساختن بکاپ</string>
     <string name="backup_create_sub">ساختن بکاپ از Tachidesk</string>
-
     <!-- General Settings -->
     <string name="start_screen">صفحه شروع</string>
     <string name="confirm_exit">تایید خروج</string>
@@ -125,10 +106,8 @@
     <string name="language_system_default">پیشفرض سیستم (%1$s)</string>
     <string name="date_format">قالب تاریخ</string>
     <string name="date_system_default">پیشفرض سیستم</string>
-
     <!-- Library Settings -->
     <string name="show_all_category">نمایش همه رده‌ها</string>
-
     <!-- Reader Settings -->
     <string name="reader_mode">حالت خواننده</string>
     <string name="direction">جهت</string>
@@ -161,9 +140,9 @@
     <string name="nav_kindle_ish">مدل کیندل</string>
     <string name="nav_edge">لبه</string>
     <string name="nav_left_right">راست و چپ</string>
-
     <!-- Server Settings -->
     <string name="host_server">میزبانی سرور در TachideskJUI</string>
     <string name="server_url">آدرس سرور</string>
     <string name="server_port">پورت سرور</string>
+    <string name="theme_dark">تیره</string>
 </resources>

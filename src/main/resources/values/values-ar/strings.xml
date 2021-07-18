@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_edge">حافة</string>
+    <string name="categories_delete_confirm">هل ترغب في حذف الفئة%1$s؟</string>
+    <string name="settings_download_screen">الإعدادات التحميل</string>
+    <string name="location_downloads">التحميلات</string>
+    <string name="settings_download">تحميل</string>
+    <string name="dir_down">تحت</string>
+    <string name="color_primary_sub">عرضها بشكل متكرر عبر تطبيقك</string>
+    <string name="direction">اِتّجاه</string>
+    <string name="action_delete">حذف</string>
+    <string name="default_category">افتراضي</string>
+    <string name="date_format">صيغة التاريخ</string>
+    <string name="theme_dark">داكن</string>
+    <string name="backup_create">انشاء نسخة احتياطية</string>
+    <string name="backup_create_sub">قيام بإنشاء نسخة احتياطية من Tachidesk</string>
+    <string name="action_create">انشاء</string>
+    <string name="continuous">مستمر</string>
+    <string name="action_continue">استمر</string>
+    <string name="confirm_exit">تأكيد الخروج</string>
+    <string name="color_secondary">لون ثانوي</string>
+    <string name="color_primary">اللون الأساسي</string>
+    <string name="action_clear_queue">مسح قائمة الانتظار</string>
+    <string name="location_categories">فئات</string>
+    <string name="action_cancel">الغاء</string>
+    <string name="settings_browse_screen">تصفح الإعدادات</string>
+    <string name="settings_browse">تصفح</string>
+    <string name="settings_backup_screen">إعدادات النسخ الاحتياطي</string>
+    <string name="settings_backup">نسخة إحتياطية</string>
+    <string name="settings_appearance_screen">إعدادات المظهر</string>
+    <string name="settings_appearance">مظهر</string>
+    <string name="settings_advanced_screen">اعدادات متقدمة</string>
+    <string name="settings_advanced">متقدم</string>
+    <string name="action_add">أضف</string>
+    <string name="downloads_remaining">%1$d remainingالمتبقية</string>
+</resources>

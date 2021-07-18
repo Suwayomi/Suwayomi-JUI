@@ -1,16 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
-  -->
-<resources>
+  --><resources>
     <string name="app_name">TachideskJUI</string>
-
     <!-- Main Menu -->
-    <string name="tachidesk_doesnt_exist">Tachidesk jar finns inte, kör Tachidesk själv</string>
     <string name="unable_to_start_server">Kunde inte starta servern</string>
-
     <!-- Actions -->
     <string name="action_yes">Ja</string>
     <string name="action_no">Nej</string>
@@ -33,7 +29,6 @@
     <string name="action_favorite">Lägg till i favoriter</string>
     <string name="action_remove_favorite">Ta bort från favoriter</string>
     <string name="action_refresh_manga">Uppdatera manga</string>
-
     <!-- Locations -->
     <string name="location_library">Bibliotek</string>
     <string name="location_sources">Källor</string>
@@ -42,34 +37,26 @@
     <string name="location_settings">Inställningar</string>
     <string name="location_categories">Kategorier</string>
     <string name="location_manga">Manga</string>
-
     <!-- Categories Menu -->
     <string name="categories_delete_confirm">Vill du radera kategorin? %1$s?</string>
-
     <!-- Downloads Menu -->
     <string name="downloads_remaining">%1$d kvar</string>
-
     <!-- Extensions Menu -->
     <string name="enabled_languages">Aktiverade språk</string>
-
     <!-- Library Menu -->
     <string name="default_category">Standard</string>
-
     <!-- Manga Menu -->
     <string name="page_progress">Sida %1$d</string>
-
     <!-- Sources Menu -->
     <string name="sources_home">Hem</string>
     <string name="move_to_browse">Till bläddring</string>
     <string name="move_to_latest">Till senaste</string>
-
     <!-- Reader Menu -->
     <string name="no_pages_found">Inga sidor funna</string>
     <string name="no_previous_chapter">Det finns inga  tidigare kapitel</string>
     <string name="previous_chapter">Tidigare:\n %1$s</string>
     <string name="next_chapter">Nästa:\n %1$s</string>
     <string name="no_next_chapter">Det finns inget nästa kapitel</string>
-
     <!-- Settings-->
     <string name="settings_advanced">Avancerat</string>
     <string name="settings_appearance">Utseende</string>
@@ -83,7 +70,6 @@
     <string name="settings_security">Säkerhet</string>
     <string name="settings_server">Server</string>
     <string name="settings_tracking">Spårning</string>
-
     <!-- Settings Menu Titles-->
     <string name="settings_advanced_screen">Avancerade Inställningar</string>
     <string name="settings_appearance_screen">Inställningar för utseende</string>
@@ -97,7 +83,6 @@
     <string name="settings_security_screen">Säkerhetsinställningar</string>
     <string name="settings_server_screen">Serverinställningar</string>
     <string name="settings_tracking_screen">Inställningar för spårning</string>
-
     <!-- Appearance Settings -->
     <string name="theme">Tema</string>
     <string name="theme_light">Ljust tema</string>
@@ -110,13 +95,11 @@
     <string name="color_secondary_sub">Accentfärg för delar av användargränssnittet</string>
     <string name="window_decorations">Fönster dekorationer</string>
     <string name="window_decorations_sub">Starta om JUI när den här inställningen ändras</string>
-
     <!-- Backup Settings -->
     <string name="backup_restore">Återställ säkerhetskopering</string>
     <string name="backup_restore_sub">Återställ en säkerhetskopia till TachiDesk</string>
     <string name="backup_create">Skapa säkerhetskopia</string>
     <string name="backup_create_sub">Skapa en säkerhetskopia från TachiDesk</string>
-
     <!-- General Settings -->
     <string name="start_screen">Startskärm</string>
     <string name="confirm_exit">Bekräfta avslut</string>
@@ -124,10 +107,8 @@
     <string name="language_system_default">Systemets standard (%1$s)</string>
     <string name="date_format">Datumformat</string>
     <string name="date_system_default">Systemets standard</string>
-
     <!-- Library Settings -->
     <string name="show_all_category">Visa alla kategorier</string>
-
     <!-- Reader Settings -->
     <string name="reader_mode">Läsningsläge</string>
     <string name="direction">Riktning</string>
@@ -160,7 +141,6 @@
     <string name="nav_kindle_ish">Kindle-ish</string>
     <string name="nav_edge">Edge</string>
     <string name="nav_left_right">Höger och vänster</string>
-
     <!-- Server Settings -->
     <string name="host_server">Host server inom TachideskJUI</string>
     <string name="server_url">Server Url</string>

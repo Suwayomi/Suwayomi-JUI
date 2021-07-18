@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_advanced">Avancé</string>
+    <string name="action_add">Ajouter</string>
+    <string name="color_secondary_sub">Accentue certaines parties de l\'interface utilisateur</string>
+    <string name="downloads_remaining">%1$d restant</string>
+</resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="server_preference_warning">Uyarı</string>
+    <string name="action_uninstall">Kaldır</string>
+    <string name="action_yes">Evet</string>
+    <string name="no_previous_chapter">Önceki bölüm yok</string>
+    <string name="theme">Tema</string>
+    <string name="server_preference_warning_sub">Aşağıdaki ayarların etkili olması için yeniden başlatma gerekir</string>
+    <string name="app_name">TachideskJUI</string>
+    <string name="language_system_default">Sistem Varsayılanı (%1$s)</string>
+    <string name="date_system_default">Sistem Varsayılanı</string>
+    <string name="downloads_stopped">Durduruldu</string>
+    <string name="action_start_anyway">Yine de başla</string>
+    <string name="location_sources">Kaynaklar</string>
+    <string name="socks_proxy">SOCKS Proxy\'si</string>
+    <string name="socks_port">SOCKS Port\'u</string>
+    <string name="settings_server_screen">Sunucu Ayarları</string>
+    <string name="server_port">Sunucu Port\'u</string>
+    <string name="show_all_category">Tüm kategorileri göster</string>
+    <string name="location_settings">Ayarlar</string>
+    <string name="server_url">Sunucu URL\'si</string>
+    <string name="installed">Yüklenen</string>
+</resources>

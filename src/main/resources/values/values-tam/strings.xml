@@ -1,89 +1,87 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
-  -->
-<resources>
-    <string name="app_name">தாச்சிடெஸ்க் ஜெ.யு.ஐ.</string> <!--தாச்சிடெஸ்க் - Tachidesk ஜெ.யு.ஐ. - JUI-->
-
+  --><resources>
+    <string name="app_name">தாச்சிடெஸ்க் ஜெ.யு.ஐ.</string>
+    <!--தாச்சிடெஸ்க் - Tachidesk ஜெ.யு.ஐ. - JUI-->
     <!-- Main Menu -->
-    <string name="tachidesk_doesnt_exist">"Tachidesk.jar" கண்டுபிடிக்க முடியவில்லை, "Tachidesk.jar"-ஐ நீங்களே ஆரம்பியுங்கள்</string> <!--Rough Translation, Jar cant be found, start Jar yourself -->
+    <!--Rough Translation, Jar cant be found, start Jar yourself -->
     <string name="unable_to_start_server">சேவையகம் ஆரம்பிக்க முடியவில்லை</string>
-
     <!-- Actions -->
     <string name="action_yes">சரி</string>
     <string name="action_no">இல்லை</string>
-    <string name="action_cancel">ஏற்காதே</string> 
-    <string name="action_delete">அழி</string> 
-    <string name="action_start_anyway">எப்படியும் ஆரம்பி</string> <!--Rough translation;anyway's translation is difficult-->
+    <string name="action_cancel">ஏற்காதே</string>
+    <string name="action_delete">அழி</string>
+    <string name="action_start_anyway">எப்படியும் ஆரம்பி</string>
+    <!--Rough translation;anyway's translation is difficult-->
     <string name="action_rename">மறுபெயரிடு</string>
     <string name="action_create">உருவாக்கு</string>
     <string name="action_add">கூட்டு</string>
-    <string name="action_pause">இடைநிறுத்தம்</string> 
+    <string name="action_pause">இடைநிறுத்தம்</string>
     <string name="action_continue">தொடரவும்</string>
     <string name="action_clear_queue">வரிசையை அழிக்கு</string>
     <string name="action_move_to_bottom">கீழே நகர்த்து</string>
-    <string name="action_install">நிறுவுக</string> 
+    <string name="action_install">நிறுவுக</string>
     <string name="action_uninstall">நிறுவல் நீக்கம்</string>
     <string name="action_update">புதுப்பிப்பு</string>
-    <string name="action_toggle_read">வாசிப்பு நிலை மாற்று</string> 
+    <string name="action_toggle_read">வாசிப்பு நிலை மாற்று</string>
     <string name="action_mark_previous_read">முந்தியதை வாசித்ததாகக் குறி</string>
-    <string name="action_toggle_bookmarked">புத்தக அடையாள குறி மாற்று</string> <!--Rough translation;means change bookmark-->
-    <string name="action_favorite">பிடித்ததுனு குறி</string> <!--Rough translation;Mark favorite-->
-    <string name="action_remove_favorite">பிடித்ததுனு குறிக்காதே</string> <!--Rough translation;Do not mark favorite-->
-    <string name="action_refresh_manga">மங்காவை புதுஏற்றவும்</string> <!--Rough Translation;reload manga-->
-
+    <string name="action_toggle_bookmarked">புத்தக அடையாள குறி மாற்று</string>
+    <!--Rough translation;means change bookmark-->
+    <string name="action_favorite">பிடித்ததுனு குறி</string>
+    <!--Rough translation;Mark favorite-->
+    <string name="action_remove_favorite">பிடித்ததுனு குறிக்காதே</string>
+    <!--Rough translation;Do not mark favorite-->
+    <string name="action_refresh_manga">மங்காவை புதுஏற்றவும்</string>
+    <!--Rough Translation;reload manga-->
     <!-- Locations -->
     <string name="location_library">நூலகம்</string>
     <string name="location_sources">மூலங்கள்</string>
     <string name="location_extensions">நீட்டிப்புகள்</string>
     <string name="location_downloads">பதிவிறக்கங்கள்</string>
-    <string name="location_settings">அமைவுகள்</string> 
+    <string name="location_settings">அமைவுகள்</string>
     <string name="location_categories">பிரிவுகள்</string>
     <string name="location_manga">மங்கா</string>
-
     <!-- Categories Menu -->
     <string name="categories_delete_confirm">%1$s-ஐ அழிக்க வரும்புகிறீர்களா?</string>
-
     <!-- Downloads Menu -->
-    <string name="downloads_remaining">%1$d மீதி</string> <!--Translation;%1$s remaining; or "பதிவிறக்கம் மீதி"-download remaining, if needed to be specific-->
-
+    <string name="downloads_remaining">%1$d மீதி</string>
+    <!--Translation;%1$s remaining; or "பதிவிறக்கம் மீதி"-download remaining, if needed to be specific-->
     <!-- Extensions Menu -->
     <string name="enabled_languages">இயக்கப்பட்ட மொழிகள்</string>
-
     <!-- Library Menu -->
-    <string name="default_category">இயல்புநிலை</string> <!--This means default-->
-
+    <string name="default_category">இயல்புநிலை</string>
+    <!--This means default-->
     <!-- Manga Menu -->
     <string name="page_progress">பக்கம் %1$d</string>
-
     <!-- Sources Menu -->
     <string name="sources_home">முகப்பு</string>
-    <string name="move_to_browse">உலாவு</string> 
+    <string name="move_to_browse">உலாவு</string>
     <string name="move_to_latest">சமீபம்</string>
-
     <!-- Reader Menu -->
     <string name="no_pages_found">எந்தப் பக்கமும் கிடைக்கவில்லை</string>
     <string name="no_previous_chapter">முந்தைய அதிகாரம் இல்லை</string>
-    <string name="previous_chapter">முந்தைய அதிகாரம்:\n %1$s</string> <!--முந்தைய - previous, அதிகாரம்- chapter;change to "முந்தையது:\n %1$s" if space is limited-->
-    <string name="next_chapter">அடுத்த அதிகாரம்:\n %1$s</string><!--அடுத்த - next, அதிகாரம்- chapter;change to "அடுத்தது:\n %1$s" if space is limited-->
+    <string name="previous_chapter">முந்தைய அதிகாரம்:\n %1$s</string>
+    <!--முந்தைய - previous, அதிகாரம்- chapter;change to "முந்தையது:\n %1$s" if space is limited-->
+    <string name="next_chapter">அடுத்த அதிகாரம்:\n %1$s</string>
+    <!--அடுத்த - next, அதிகாரம்- chapter;change to "அடுத்தது:\n %1$s" if space is limited-->
     <string name="no_next_chapter">அடுத்த அதிகாரம் இல்லை</string>
-
     <!-- Settings-->
     <string name="settings_advanced">மேம்பட்ட</string>
     <string name="settings_appearance">தோற்றம்</string>
-    <string name="settings_backup">பின்சேமிப்பு</string> 
+    <string name="settings_backup">பின்சேமிப்பு</string>
     <string name="settings_browse">உலாவு</string>
     <string name="settings_download">பதிவிறக்க</string>
     <string name="settings_general">பொது</string>
     <string name="settings_library">நூலகம்</string>
     <string name="settings_parental_controls">பெற்றோர் கட்டுப்பாடுகள்</string>
-    <string name="settings_reader">படிப்பி</string> 
+    <string name="settings_reader">படிப்பி</string>
     <string name="settings_security">பாதுகாப்பு</string>
     <string name="settings_server">சேவையகம்</string>
-    <string name="settings_tracking">கண்காணிப்பு சேவைகள்</string> <!--Translation;Tracking services; கண்காணிப்பு literally means watching, felt weird-->
-
+    <string name="settings_tracking">கண்காணிப்பு சேவைகள்</string>
+    <!--Translation;Tracking services; கண்காணிப்பு literally means watching, felt weird-->
     <!-- Settings Menu Titles-->
     <string name="settings_advanced_screen">மேம்பட்ட அமைவுகள்</string>
     <string name="settings_appearance_screen">தோற்ற அமைவுகள்</string>
@@ -93,50 +91,50 @@
     <string name="settings_general_screen">பொது அமைவுகள்</string>
     <string name="settings_library_screen">நூலகம் அமைவுகள்</string>
     <string name="settings_parental_control_screen">பெற்றோர் கட்டுப்பு அமைவுகள்</string>
-    <string name="settings_reader_screen">படிப்பி அமைவுகள்</string> 
+    <string name="settings_reader_screen">படிப்பி அமைவுகள்</string>
     <string name="settings_security_screen">பாதுகாப்பு அமைவுகள்</string>
     <string name="settings_server_screen">சேவையகமின் அமைவுகள்</string>
     <string name="settings_tracking_screen">கண்காணிப்பு சேவைகளின் அமைவுகள்</string>
-
     <!-- Appearance Settings -->
     <string name="theme">பின்னனி</string>
-    <string name="theme_light">ஒளி பின்னனி</string> 
+    <string name="theme_light">ஒளி பின்னனி</string>
     <string name="theme_dark">கருமை பின்னனி</string>
     <string name="theme_text">உரை</string>
     <string name="preset_themes">முன்நிறுவு பின்னனி</string>
-    <string name="color_primary">முதன்மை நிறம்</string> 
-    <string name="color_primary_sub">பொதுவான நிறம்</string> <!--wasnt sure what "app" is actually called in tamil, this means "common/general color"-->
+    <string name="color_primary">முதன்மை நிறம்</string>
+    <string name="color_primary_sub">பொதுவான நிறம்</string>
+    <!--wasnt sure what "app" is actually called in tamil, this means "common/general color"-->
     <string name="color_secondary">இரண்டாம் நிலை நிறம்</string>
-    <string name="color_secondary_sub">குறிப்புகளின் நிறம்</string> <!--Rough translation;means "Color of markings"-->
+    <string name="color_secondary_sub">குறிப்புகளின் நிறம்</string>
+    <!--Rough translation;means "Color of markings"-->
     <string name="window_decorations">சாளரம் அலங்காரம்</string>
     <string name="window_decorations_sub">இந்த அமைப்பு மாற்றப்படும்போது தாச்சிடெஸ்க் ஜெ.யு.ஐ.-ஐ மறுதொடக்கம் செய்யுங்கள்</string>
-
     <!-- Backup Settings -->
     <string name="backup_restore">பின்சேமிப்பு மீட்டுதல்</string>
     <string name="backup_restore_sub">தாச்சிடெஸ்கில் பின்சேமிப்பை மீட்க்கபடும் </string>
     <string name="backup_create">பின்சேமிப்பை உருவாக்கு</string>
     <string name="backup_create_sub">தாச்சிடெஸ்கில் பின்சேமிப்பை உருவாக்கபடும்</string>
-
     <!-- General Settings -->
     <string name="start_screen">தொடக்கத் திரை</string>
     <string name="confirm_exit">வெளியேற்றும்போது உறுதிப்படுத்தவும்</string>
     <string name="language">மொழி</string>
-    <string name="language_system_default">கருவியின் இயல்பு மொழி (%1$s)</string> <!--Translation;Systems default language; without language its a bit meaningless-->
+    <string name="language_system_default">கருவியின் இயல்பு மொழி (%1$s)</string>
+    <!--Translation;Systems default language; without language its a bit meaningless-->
     <string name="date_format">தேதி வடிவமைப்பு</string>
-    <string name="date_system_default">கருவியின் இயல்பு வடிவமைப்பு</string> <!--Translation;Systems default format; without format its a bit meaningless-->
-
+    <string name="date_system_default">கருவியின் இயல்பு வடிவமைப்பு</string>
+    <!--Translation;Systems default format; without format its a bit meaningless-->
     <!-- Library Settings -->
     <string name="show_all_category">எல்லா பிரிவுகளை காமிக்கவும்</string>
-
     <!-- Reader Settings -->
     <string name="reader_mode">படிப்பி முறை</string>
-    <string name="direction">படிக்கும் திசை</string> 
+    <string name="direction">படிக்கும் திசை</string>
     <string name="dir_down">கீழ்நோக்கி</string>
     <string name="dir_rtl">வலமிருந்து இடமாக (RTL)</string>
     <string name="dir_ltr">இடமிருந்து வலம் (LTR)</string>
     <string name="dir_up">மேல்நோக்கி</string>
     <string name="continuous">தொடர்ச்சியாக</string>
-    <string name="continuous_sub">படிப்பி பக்கவகை அல்லது தொடர்ச்சிவகை சாளரம் என்றால்</string> <!--doubtful translation-->
+    <string name="continuous_sub">படிப்பி பக்கவகை அல்லது தொடர்ச்சிவகை சாளரம் என்றால்</string>
+    <!--doubtful translation-->
     <string name="page_padding">பக்க திணிப்பு</string>
     <string name="page_padding_none">ஏதுமில்லை</string>
     <string name="force_fit_width">பொருத்தமான அகலம் கட்டாயபடுத்தல்</string>
@@ -160,9 +158,9 @@
     <string name="nav_kindle_ish">கின்டெல் போன்ற</string>
     <string name="nav_edge">ஓரத்தில்</string>
     <string name="nav_left_right">வலது மற்றும் இடது</string>
-
     <!-- Server Settings -->
-    <string name="host_server">தாச்சிடெஸ் ஜெ.யு.ஐ.-க்குள் சேவையகம் நடத்தப்படுத்தல்</string> <!--Rough translation;start server inside TachdeskJUI-->
+    <string name="host_server">தாச்சிடெஸ் ஜெ.யு.ஐ.-க்குள் சேவையகம் நடத்தப்படுத்தல்</string>
+    <!--Rough translation;start server inside TachdeskJUI-->
     <string name="server_url">சேவையகம் url</string>
     <string name="server_port">சேவையகம் Port</string>
 </resources>
