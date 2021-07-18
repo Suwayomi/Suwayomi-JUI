@@ -1,16 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
-  -->
-<resources>
+  --><resources>
     <string name="app_name">TachideskJUI</string>
-
     <!-- Main Menu -->
-    <string name="tachidesk_doesnt_exist">Tachidesk जार मौजूद नहीं है, Tachidesk को स्वयं चलाएं</string>
     <string name="unable_to_start_server">सर्वर प्रारंभ करने में असमर्थ</string>
-
     <!-- Actions -->
     <string name="action_yes">हाँ</string>
     <string name="action_no">नहीं</string>
@@ -33,7 +29,6 @@
     <string name="action_favorite">फेवरेट</string>
     <string name="action_remove_favorite">अनफेवरेट</string>
     <string name="action_refresh_manga">रिफ्रेश  Manga</string>
-
     <!-- Locations -->
     <string name="location_library">लाइब्रेरी</string>
     <string name="location_sources">सोर्सेज</string>
@@ -42,34 +37,26 @@
     <string name="location_settings">सेटिंग्स</string>
     <string name="location_categories">कैटगरीएस</string>
     <string name="location_manga">Manga</string>
-
     <!-- Categories Menu -->
     <string name="categories_delete_confirm">क्या आप कैटगरी हटाना चाहते हैं %1$s?</string>
-
     <!-- Downloads Menu -->
     <string name="downloads_remaining">%1$d रिमेनिंग</string>
-
     <!-- Extensions Menu -->
     <string name="enabled_languages">इनेबल्ड लैंग्वेजेज</string>
-
     <!-- Library Menu -->
     <string name="default_category">डिफ़ॉल्ट</string>
-
     <!-- Manga Menu -->
     <string name="page_progress">पेज %1$d</string>
-
     <!-- Sources Menu -->
     <string name="sources_home">होम</string>
     <string name="move_to_browse">टू ब्राउज</string>
     <string name="move_to_latest">टू लेटेस्ट</string>
-
     <!-- Reader Menu -->
     <string name="no_pages_found">कोई पेज नहीं मिला</string>
     <string name="no_previous_chapter">कोई पिछला चैप्टर नहीं है</string>
     <string name="previous_chapter">प्रीवियस:\n %1$s</string>
     <string name="next_chapter">नेक्स्ट :\n %1$s</string>
     <string name="no_next_chapter">कोई अगला चैप्टर नहीं है</string>
-
     <!-- Settings-->
     <string name="settings_advanced">एडवांस्ड</string>
     <string name="settings_appearance">अपीयरेंस</string>
@@ -83,7 +70,6 @@
     <string name="settings_security">सिक्योरिटी</string>
     <string name="settings_server">सर्वर</string>
     <string name="settings_tracking">ट्रैकिंग</string>
-
     <!-- Settings Menu Titles-->
     <string name="settings_advanced_screen">एडवांस्ड सेटिंग्स</string>
     <string name="settings_appearance_screen">अपीयरेंस सेटिंग्स</string>
@@ -97,7 +83,6 @@
     <string name="settings_security_screen">सिक्योरिटी सेटिंग्स</string>
     <string name="settings_server_screen">सर्वर सेटिंग्स</string>
     <string name="settings_tracking_screen">ट्रैकिंग सेटिंग्स</string>
-
     <!-- Appearance Settings -->
     <string name="theme">थीम</string>
     <string name="theme_light">लाइट</string>
@@ -110,13 +95,11 @@
     <string name="color_secondary_sub">उच्चारण UI के कुछ हिस्सों का चयन करते हैं</string>
     <string name="window_decorations">विंडो डेकोरेशन</string>
     <string name="window_decorations_sub">जब यह सेटिंग बदली जाए तो JUI को पुनरारंभ करें</string>
-
     <!-- Backup Settings -->
     <string name="backup_restore">रिस्टोर बैकअप</string>
     <string name="backup_restore_sub">Tachidesk का बैकअप रिस्टोर करें</string>
     <string name="backup_create">क्रिएट बैकअप</string>
     <string name="backup_create_sub">Tachidesk का बैकअप बनाएं</string>
-
     <!-- General Settings -->
     <string name="start_screen">स्टार्ट स्क्रीन</string>
     <string name="confirm_exit">कन्फर्म एग्जिट</string>
@@ -124,10 +107,8 @@
     <string name="language_system_default">सिस्टम डिफ़ॉल्ट (%1$s)</string>
     <string name="date_format">डेट फॉर्मेट</string>
     <string name="date_system_default">सिस्टम डिफ़ॉल्ट</string>
-
     <!-- Library Settings -->
     <string name="show_all_category">सभी कैटगरी दिखाएं</string>
-
     <!-- Reader Settings -->
     <string name="reader_mode">रीडर मोड</string>
     <string name="direction">दिशा</string>
@@ -160,7 +141,6 @@
     <string name="nav_kindle_ish">kindle की तरह</string>
     <string name="nav_edge">एज नेविगेशन</string>
     <string name="nav_left_right">बाएं और दाएं</string>
-
     <!-- Server Settings -->
     <string name="host_server">TachideskJUI के अंदर सर्वर होस्ट करें</string>
     <string name="server_url">सर्वर url</string>

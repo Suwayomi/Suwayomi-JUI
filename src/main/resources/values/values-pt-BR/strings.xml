@@ -3,15 +3,10 @@
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
-  -->
-
-<resources>
+  --><resources>
     <string name="app_name">TachideskJUI</string>
-
     <!-- Main Menu -->
-    <string name="tachidesk_doesnt_exist">O jar do Tachidesk não existe, execute o Tachidesk você mesmo</string>
-    <string name="unable_to_start_server">Incapaz de iniciar o servidor</string>
-
+    <string name="unable_to_start_server">Não é possível iniciar o servidor</string>
     <!-- Actions -->
     <string name="action_yes">Sim</string>
     <string name="action_no">Não</string>
@@ -34,7 +29,6 @@
     <string name="action_favorite">Favoritar</string>
     <string name="action_remove_favorite">Desfavoritar</string>
     <string name="action_refresh_manga">Atualizar mangá</string>
-
     <!-- Locations -->
     <string name="location_library">Biblioteca</string>
     <string name="location_sources">Fontes</string>
@@ -43,34 +37,26 @@
     <string name="location_settings">Configurações</string>
     <string name="location_categories">Categorias</string>
     <string name="location_manga">Mangá</string>
-
     <!-- Categories Menu -->
-    <string name="categories_delete_confirm">Você deseja deletar a categoria %1$s?</string>
-
+    <string name="categories_delete_confirm">Excluir a categoria %1$s\?</string>
     <!-- Downloads Menu -->
     <string name="downloads_remaining">%1$d remanescente</string>
-
     <!-- Extensions Menu -->
     <string name="enabled_languages">Idiomas habilitados</string>
-
     <!-- Library Menu -->
     <string name="default_category">Padrão</string>
-
     <!-- Manga Menu -->
     <string name="page_progress">Página %1$d</string>
-
     <!-- Sources Menu -->
     <string name="sources_home">Iníco</string>
     <string name="move_to_browse">Para navegar</string>
-    <string name="move_to_latest">Para recente</string>
-
+    <string name="move_to_latest">Para o mais recente</string>
     <!-- Reader Menu -->
     <string name="no_pages_found">Nenhuma página encontrada</string>
     <string name="no_previous_chapter">Não há capítulo anterior</string>
     <string name="previous_chapter">Anterior:\n %1$s</string>
     <string name="next_chapter">Próximo:\n %1$s</string>
     <string name="no_next_chapter">Não há próximo capítulo</string>
-
     <!-- Settings-->
     <string name="settings_advanced">Avançado</string>
     <string name="settings_appearance">Aparência</string>
@@ -84,7 +70,6 @@
     <string name="settings_security">Segurança</string>
     <string name="settings_server">Servidor</string>
     <string name="settings_tracking">Monitoramento</string>
-
     <!-- Settings Menu Titles-->
     <string name="settings_advanced_screen">Configurações avançadas</string>
     <string name="settings_appearance_screen">Configurações de aparência</string>
@@ -98,26 +83,23 @@
     <string name="settings_security_screen">Configurações de segurança</string>
     <string name="settings_server_screen">Configurações do servidor</string>
     <string name="settings_tracking_screen">Configurações de monitoramento</string>
-
     <!-- Appearance Settings -->
     <string name="theme">Tema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Escuro</string>
     <string name="theme_text">Texto</string>
     <string name="preset_themes">Temas predefinidos</string>
-    <string name="color_primary">Cor primária</string>
+    <string name="color_primary">Primária</string>
     <string name="color_primary_sub">Exibido com mais frequência em seu aplicativo</string>
-    <string name="color_secondary">Cor secundária</string>
+    <string name="color_secondary">Secundária</string>
     <string name="color_secondary_sub">Destaca partes selecionadas da interface</string>
     <string name="window_decorations">Decorações da janela</string>
     <string name="window_decorations_sub">Reinicie o JUI quando esta configuração for alterada</string>
-
     <!-- Backup Settings -->
     <string name="backup_restore">Restaurar Backup</string>
     <string name="backup_restore_sub">Restaurar um backuo no Tachidesk</string>
     <string name="backup_create">Criar Backup</string>
     <string name="backup_create_sub">Crie um backup do Tachidesk</string>
-
     <!-- General Settings -->
     <string name="start_screen">Tela inicial</string>
     <string name="confirm_exit">Confirmar saída</string>
@@ -125,14 +107,12 @@
     <string name="language_system_default">Padrão do sistema (%1$s)</string>
     <string name="date_format">Formato de data</string>
     <string name="date_system_default">Padrão do sistema</string>
-
     <!-- Library Settings -->
     <string name="show_all_category">Mostrar todas as cetegorias</string>
-
     <!-- Reader Settings -->
     <string name="reader_mode">Modo de leitura</string>
     <string name="direction">Direção</string>
-    <string name="dir_down">Para baixo</string>
+    <string name="dir_down">De cima para baixo</string>
     <string name="dir_rtl">Direita para esquerda</string>
     <string name="dir_ltr">Esquerda para direita</string>
     <string name="dir_up">Para cima</string>
@@ -141,19 +121,19 @@
     <string name="page_padding">Preenchimento de página</string>
     <string name="page_padding_none">Nenhum</string>
     <string name="force_fit_width">Forçar o ajuste de largura</string>
-    <string name="force_fit_width_sub">Quando a largura da janela estiver acima da largura da imagem, dimensione a imagem para a janela</string>
+    <string name="force_fit_width_sub">Dimensiona a imagem para caber na largura da janela</string>
     <string name="force_fit_height">Forçar o ajuste de altura</string>
-    <string name="force_fit_height_sub">Quando a altura da janela estiver acima da altura da imagem, dimensione a imagem para a janela</string>
+    <string name="force_fit_height_sub">"Dimensiona a  imagem para caber na altura da janela"</string>
     <string name="max_width">Largura máxima</string>
-    <string name="max_width_sub">Largura para impedir que uma imagem ultrapasse, atualmente %1$ddp. Funciona com a configuração acima para dimensionar as imagens, mas restringindo-as a uma certa quantidade</string>
+    <string name="max_width_sub">Largura máxima de uma imagem, atualmente %1$ddp. As configurações acima dimensionam a escala das imagens, e a restringe uma vez que uma certa largura é atingida</string>
     <string name="max_height">Altura máxima</string>
-    <string name="max_height_sub">Altura para impedir que uma imagem ultrapasse, atualmente %1$ddp. Funciona com a configuração acima para dimensionar as imagens, mas restringindo-as a uma certa quantidade</string>
+    <string name="max_height_sub">Altura máxima de uma imagem, atualmente %1$ddp. As configurações acima dimensionam a escala das imagens, e a restringe uma vez que uma certa altura é atingida</string>
     <string name="max_size_unrestricted">Irrestrito</string>
     <string name="image_scale">Escala da imagem</string>
     <string name="scale_fit_screen">Tela de ajuste</string>
     <string name="scale_stretch">Alongamento</string>
-    <string name="scale_fit_width">Largura de ajuste</string>
-    <string name="scale_fit_height">Altura de ajuste</string>
+    <string name="scale_fit_width">Ajustar à largura</string>
+    <string name="scale_fit_height">Ajustar à altura</string>
     <string name="scale_original">Tamanho original</string>
     <string name="scale_smart">Ajuste inteligente</string>
     <string name="navigation_mode">Modo de navegação</string>
@@ -161,9 +141,29 @@
     <string name="nav_kindle_ish">Kindle-ish</string>
     <string name="nav_edge">Borda</string>
     <string name="nav_left_right">Direita e esquerda</string>
-
     <!-- Server Settings -->
     <string name="host_server">Servidor host dentro do TachideskJUI</string>
     <string name="server_url">URL do servidor</string>
     <string name="server_port">Porta do servidor</string>
+    <string name="downloads_stopped">Parado</string>
+    <string name="downloads_loading">Carregando...</string>
+    <string name="socks_port">Porta SOCKS</string>
+    <string name="auth_username">Nome de usuário de autenticação</string>
+    <string name="server_preference_warning">Aviso</string>
+    <string name="server_preference_warning_sub">"As configurações abaixo  exigem reinicialização para terem efeito"</string>
+    <string name="socks_proxy">Proxy SOCKS</string>
+    <string name="authentication">Autenticação do servidor</string>
+    <string name="action_retry">Tentar novamente</string>
+    <string name="server_proxy">Acesso Proxy para o servidor</string>
+    <string name="no_proxy">Sem Proxy</string>
+    <string name="no_chapters_found">Nenhum capítulo encontrado</string>
+    <string name="no_auth">Nao autorizado</string>
+    <string name="installed">Instalado</string>
+    <string name="http_proxy">Proxy HTTP</string>
+    <string name="http_port">PORTA HTTP</string>
+    <string name="failed_manga_fetch">Falha ao carregar mangá</string>
+    <string name="digest_auth">Autenticação resumida</string>
+    <string name="basic_auth">Autenticação básica</string>
+    <string name="auth_password">Senha de autenticação</string>
+    <string name="all">Tudo</string>
 </resources>
