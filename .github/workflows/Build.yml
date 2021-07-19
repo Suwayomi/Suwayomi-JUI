@@ -30,13 +30,7 @@ jobs:
           arch: x64
           os: macOS-latest
           shell: bash
-          build: |
-            packageUberJarForCurrentOS \
-            packageDmg notarizeDmg \
-            -Pcompose.desktop.mac.sign=true \
-            -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }} \
-            -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }} \
-            -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
+          build: packageUberJarForCurrentOS packageDmg notarizeDmg
           setupCl: ./scripts/SetupClUnix.sh
 
         - runtime: win-x64
@@ -83,7 +77,12 @@ jobs:
       if: ${{ matrix.runtime != 'linux-centos-x64' }}
       uses: eskatos/gradle-command-action@v1
       with:
-        arguments: ${{ matrix.build }}
+        arguments: >
+          ${{ matrix.build }}
+          -Pcompose.desktop.mac.sign=true
+          -Pcompose.desktop.mac.signing.identity="${{ secrets.APPLE_IDENTITY }}"
+          -Pcompose.desktop.mac.notarization.appleID="${{ secrets.APPLE_ID }}"
+          -Pcompose.desktop.mac.notarization.password="${{ secrets.APPLE_PASSWORD }}"
         wrapper-cache-enabled: true
         dependencies-cache-enabled: true
         configuration-cache-enabled: true

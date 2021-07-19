@@ -4,6 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package ca.gosyer.data.server
 
 import ca.gosyer.common.prefs.Preference
@@ -11,8 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 class ServerUrlPreference(
@@ -48,8 +53,9 @@ class ServerUrlPreference(
     }
 
     override fun changes(): Flow<String> {
-        return merge(server.changes(), port.changes())
-            .map { get() }
+        return combine(server.changes(), port.changes()) { server, port ->
+            "$server:$port"
+        }
     }
 
     override fun stateIn(scope: CoroutineScope): StateFlow<String> {

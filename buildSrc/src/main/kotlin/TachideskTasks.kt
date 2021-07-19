@@ -38,8 +38,9 @@ private fun Task.onlyIfSigning(project: Project) {
                 && !File(rootDir, "src/main/resources/Tachidesk.jar").exists()
         }
     }
-
 }
+
+private fun Project.getSigningIdentity() = "${properties["compose.desktop.mac.signing.identity"]}".trim('"')
 
 private fun isSigning(properties: Map<String, Any?>) = properties["compose.desktop.mac.sign"].toString() == "true"
 
@@ -159,11 +160,13 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                         exec {
                             commandLine(
                                 "codesign",
+                                "-vvvv",
                                 "--deep",
-                                "-vvv",
-                                "-f",
-                                "--sign",
-                                properties["compose.desktop.mac.signing.identity"],
+                                "--timestamp",
+                                "--options", "runtime",
+                                "--force",
+                                "--prefix", "ca.gosyer.",
+                                "--sign", "Developer ID Application: ${getSigningIdentity()}",
                                 it.absolutePath
                             )
                         }

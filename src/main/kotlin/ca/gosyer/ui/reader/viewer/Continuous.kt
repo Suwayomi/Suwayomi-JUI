@@ -135,7 +135,7 @@ fun ContinuousReader(
     }
 }
 
-fun LazyListScope.items(
+private fun LazyListScope.items(
     pages: List<ReaderPage>,
     paddingValues: PaddingValues,
     previousChapter: ReaderChapter?,

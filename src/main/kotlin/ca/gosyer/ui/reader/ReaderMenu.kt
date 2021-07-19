@@ -4,6 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package ca.gosyer.ui.reader
 
 import androidx.compose.desktop.AppWindow
@@ -268,14 +274,14 @@ fun ChapterSeperator(
     }
 }
 
-fun NavigationMode.toNavigation() = when (this) {
+private fun NavigationMode.toNavigation() = when (this) {
     NavigationMode.RightAndLeftNavigation -> RightAndLeftNavigation()
     NavigationMode.KindlishNavigation -> KindlishNavigation()
     NavigationMode.LNavigation -> LNavigation()
     NavigationMode.EdgeNavigation -> EdgeNavigation()
 }
 
-fun ImageScale.toContentScale() = when (this) {
+private fun ImageScale.toContentScale() = when (this) {
     ImageScale.FitScreen -> ContentScale.Inside
     ImageScale.FitHeight -> ContentScale.FillHeight
     ImageScale.FitWidth -> ContentScale.FillWidth
