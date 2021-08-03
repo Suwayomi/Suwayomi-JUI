@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,12 +21,13 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
@@ -100,7 +102,7 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                                 }
                             },
                             stringResource("enabled_languages"),
-                            Icons.Default.Translate
+                            Icons.Rounded.Translate
                         )
                     }
                 }
@@ -109,19 +111,6 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                 Surface(elevation = 1.dp) {
                     LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
                         items(sourceTabs) { source ->
-                            val modifier = Modifier
-                                .combinedMouseClickable(
-                                    onClick = {
-                                        vm.selectTab(source)
-                                    },
-                                    onMiddleClick = {
-                                        if (source != null) {
-                                            vm.closeTab(source)
-                                        }
-                                    }
-                                )
-                                .requiredSize(64.dp)
-
                             BoxWithTooltip(
                                 {
                                     Surface(
@@ -131,12 +120,26 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                                     ) {
                                         Text(source?.name ?: stringResource("sources_home"), modifier = Modifier.padding(10.dp))
                                     }
-                                }
+                                },
+                                modifier = Modifier.size(64.dp)
                             ) {
+                                val modifier = Modifier
+                                    .combinedMouseClickable(
+                                        onClick = {
+                                            vm.selectTab(source)
+                                        },
+                                        onMiddleClick = {
+                                            if (source != null) {
+                                                vm.closeTab(source)
+                                            }
+                                        }
+                                    )
+                                    .requiredSize(50.dp)
+                                    .align(Alignment.Center)
                                 if (source != null) {
-                                    KtorImage(source.iconUrl(serverUrl), imageModifier = modifier)
+                                    KtorImage(source.iconUrl(serverUrl), modifier = modifier)
                                 } else {
-                                    Icon(Icons.Default.Home, stringResource("sources_home"), modifier = modifier)
+                                    Icon(Icons.Rounded.Home, stringResource("sources_home"), modifier = modifier)
                                 }
                             }
                         }

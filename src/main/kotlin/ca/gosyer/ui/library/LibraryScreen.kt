@@ -71,7 +71,7 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
                     },
                     actions = {
                         IconButton(onClick = { scope.launch { sheetState.show() }}) {
-                            Icon(Icons.Default.FilterList, contentDescription = null)
+                            Icon(Icons.Rounded.FilterList, contentDescription = null)
                         }
                     }
                 )*/

@@ -12,12 +12,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -32,11 +33,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
-import java.util.Locale
 
 @Composable
 fun SourceHomeScreen(
@@ -80,9 +81,9 @@ fun SourceCategory(
     state: LazyListState
 ) {
     Column {
-        Surface(elevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
+        /*Surface(elevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
             Text(lang.uppercase(Locale.getDefault()), modifier = Modifier.align(Alignment.CenterHorizontally), color = MaterialTheme.colors.onBackground)
-        }
+        }*/
         LazyVerticalGrid(GridCells.Adaptive(120.dp), state = state) {
             items(sources) { source ->
                 SourceItem(
@@ -114,7 +115,9 @@ fun SourceItem(
         }
     ) {
         Column(
-            Modifier.size(120.dp)
+            Modifier.width(120.dp)
+                .defaultMinSize(minHeight = 120.dp)
+                .padding(8.dp)
                 .clickable {
                     onSourceClicked(source)
                 },
@@ -122,7 +125,12 @@ fun SourceItem(
         ) {
             KtorImage(source.iconUrl(serverUrl), Modifier.size(96.dp))
             Spacer(Modifier.height(4.dp))
-            Text("${source.name} (${source.lang})", color = MaterialTheme.colors.onBackground)
+            Text(
+                "${source.name} (${source.lang.uppercase()})",
+                color = MaterialTheme.colors.onBackground,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

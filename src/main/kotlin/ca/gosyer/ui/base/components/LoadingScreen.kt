@@ -6,15 +6,15 @@
 
 package ca.gosyer.ui.base.components
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.min
 import ca.gosyer.ui.base.resources.stringResource
 
 @Composable
@@ -29,13 +29,14 @@ fun LoadingScreen(
 ) {
     BoxWithConstraints(modifier) {
         if (isLoading) {
-            val size = remember(maxHeight, maxWidth) {
-                min(maxHeight, maxWidth) / 2
-            }
             if (progress != 0.0F && !progress.isNaN()) {
-                CircularProgressIndicator(progress, Modifier.align(Alignment.Center).size(size))
+                val animatedProgress by animateFloatAsState(
+                    targetValue = progress,
+                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                )
+                CircularProgressIndicator(animatedProgress, Modifier.align(Alignment.Center))
             } else {
-                CircularProgressIndicator(Modifier.align(Alignment.Center).size(size))
+                CircularProgressIndicator(Modifier.align(Alignment.Center))
             }
         } else {
             ErrorScreen(errorMessage, modifier, retryMessage, retry)

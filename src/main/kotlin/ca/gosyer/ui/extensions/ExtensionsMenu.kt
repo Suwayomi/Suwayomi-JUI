@@ -31,7 +31,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -80,7 +80,7 @@ fun ExtensionsMenu() {
             val state = persistentLazyListState()
 
             Box(Modifier.fillMaxSize()) {
-                LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state) {
+                LazyColumn(Modifier.fillMaxSize(), state) {
                     item {
                         Toolbar(
                             stringResource("location_extensions"),
@@ -98,7 +98,7 @@ fun ExtensionsMenu() {
                                         }
                                     },
                                     stringResource("enabled_languages"),
-                                    Icons.Default.Translate
+                                    Icons.Rounded.Translate
                                 )
                             }
                         )
@@ -140,10 +140,10 @@ fun ExtensionItem(
     onUpdateClicked: (Extension) -> Unit,
     onUninstallClicked: (Extension) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxWidth().height(64.dp).background(MaterialTheme.colors.background)) {
+    Box(modifier = Modifier.fillMaxWidth().padding(end = 12.dp).height(50.dp).background(MaterialTheme.colors.background)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(Modifier.width(4.dp))
-            KtorImage(extension.iconUrl(serverUrl), Modifier.size(60.dp))
+            KtorImage(extension.iconUrl(serverUrl), Modifier.size(50.dp))
             Spacer(Modifier.width(8.dp))
             Column {
                 val title = buildAnnotatedString {
@@ -151,7 +151,7 @@ fun ExtensionItem(
                     val mediumColor = MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
                     withStyle(SpanStyle(fontSize = 12.sp, color = mediumColor)) { append("v${extension.versionName}") }
                 }
-                Text(title, fontSize = 26.sp, color = MaterialTheme.colors.onBackground)
+                Text(title, fontSize = 18.sp, color = MaterialTheme.colors.onBackground)
                 Row {
                     Text(extension.lang.uppercase(Locale.getDefault()), fontSize = 14.sp, color = MaterialTheme.colors.onBackground)
                     if (extension.isNsfw) {

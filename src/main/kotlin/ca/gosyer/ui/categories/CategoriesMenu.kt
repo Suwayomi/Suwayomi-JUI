@@ -28,12 +28,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.List
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -105,7 +105,7 @@ fun CategoriesMenu(notifyFinished: (() -> Unit)? = null, windowEvents: WindowEve
             }
             ExtendedFloatingActionButton(
                 text = { Text(text = stringResource("action_add")) },
-                icon = { Icon(imageVector = Icons.Default.Add, contentDescription = null) },
+                icon = { Icon(imageVector = Icons.Rounded.Add, contentDescription = null) },
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 onClick = {
                     openCreateDialog {
@@ -150,7 +150,7 @@ private fun CategoryRow(
                         enabled = moveUpEnabled
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
+                            imageVector = Icons.Rounded.KeyboardArrowUp,
                             tint = if (moveUpEnabled) enabledColor else disabledColor,
                             contentDescription = null
                         )
@@ -160,7 +160,7 @@ private fun CategoryRow(
                         enabled = moveDownEnabled
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
+                            imageVector = Icons.Rounded.KeyboardArrowDown,
                             tint = if (moveDownEnabled) enabledColor else disabledColor,
                             contentDescription = null
                         )
@@ -168,13 +168,13 @@ private fun CategoryRow(
                     Spacer(modifier = Modifier.weight(1f))
                     IconButton(onClick = onRename) {
                         Icon(
-                            imageVector = Icons.Default.Edit,
+                            imageVector = Icons.Rounded.Edit,
                             contentDescription = null
                         )
                     }
                     IconButton(onClick = onDelete) {
                         Icon(
-                            imageVector = Icons.Default.Delete,
+                            imageVector = Icons.Rounded.Delete,
                             contentDescription = null
                         )
                     }

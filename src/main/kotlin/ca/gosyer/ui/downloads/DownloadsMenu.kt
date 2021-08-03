@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.downloads
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -25,13 +26,14 @@ import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ClearAll
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.rounded.ClearAll
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -68,11 +70,11 @@ fun DownloadsMenu() {
                 actions = {
                     val downloadStatus by vm.downloaderStatus.collectAsState()
                     if (downloadStatus == DownloaderStatus.Started) {
-                        ActionIcon(onClick = vm::pause, stringResource("action_pause"), Icons.Default.Pause)
+                        ActionIcon(onClick = vm::pause, stringResource("action_pause"), Icons.Rounded.Pause)
                     } else {
-                        ActionIcon(onClick = vm::start, stringResource("action_continue"), Icons.Default.PlayArrow)
+                        ActionIcon(onClick = vm::start, stringResource("action_continue"), Icons.Rounded.PlayArrow)
                     }
-                    ActionIcon(onClick = vm::clear, stringResource("action_clear_queue"), Icons.Default.ClearAll)
+                    ActionIcon(onClick = vm::clear, stringResource("action_clear_queue"), Icons.Rounded.ClearAll)
                 }
             )
             LazyColumn(Modifier.fillMaxSize()) {
@@ -128,8 +130,12 @@ private fun downloadsItem(
                     }
                 }
                 Spacer(Modifier.height(4.dp))
+                val animatedProgress by animateFloatAsState(
+                    targetValue = chapter.progress,
+                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                )
                 LinearProgressIndicator(
-                    chapter.progress,
+                    animatedProgress,
                     Modifier.fillMaxWidth()
                         .padding(bottom = 8.dp)
                 )
@@ -146,7 +152,7 @@ private fun downloadsItem(
                 }
             ) {
                 Icon(
-                    Icons.Default.MoreVert,
+                    Icons.Rounded.MoreVert,
                     null
                 )
             }

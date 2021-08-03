@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.manga
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -27,12 +28,13 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -163,7 +165,7 @@ private fun DownloadIconButton(onClick: () -> Unit) {
             border = BorderStroke(2.dp, LocalContentColor.current.copy(alpha = ContentAlpha.disabled)),
         ) {
             Icon(
-                Icons.Default.ArrowDownward,
+                Icons.Rounded.ArrowDownward,
                 null,
                 Modifier
                     .size(22.dp)
@@ -193,8 +195,12 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                 2.dp
             )
             DownloadState.Downloading -> if (downloadChapter.progress != 0.0F) {
+                val animatedProgress by animateFloatAsState(
+                    targetValue = downloadChapter.progress,
+                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                )
                 CircularProgressIndicator(
-                    downloadChapter.progress,
+                    animatedProgress,
                     Modifier
                         .size(26.dp)
                         .padding(2.dp),
@@ -202,7 +208,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                     2.dp
                 )
                 Icon(
-                    Icons.Default.ArrowDownward,
+                    Icons.Rounded.ArrowDownward,
                     null,
                     Modifier
                         .size(22.dp)
@@ -220,7 +226,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
             }
             DownloadState.Error -> Surface(shape = CircleShape, color = LocalContentColor.current) {
                 Icon(
-                    Icons.Default.Error,
+                    Icons.Rounded.Error,
                     null,
                     Modifier
                         .size(22.dp)
@@ -230,7 +236,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
             }
             DownloadState.Finished -> Surface(shape = CircleShape, color = LocalContentColor.current) {
                 Icon(
-                    Icons.Default.Check,
+                    Icons.Rounded.Check,
                     null,
                     Modifier
                         .size(22.dp)
@@ -254,7 +260,7 @@ private fun DownloadedIconButton(chapter: Pair<Long, Int?>, onClick: () -> Unit)
     ) {
         Surface(shape = CircleShape, color = LocalContentColor.current) {
             Icon(
-                Icons.Default.Check,
+                Icons.Rounded.Check,
                 null,
                 Modifier
                     .size(22.dp)

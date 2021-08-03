@@ -26,16 +26,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Store
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
+import androidx.compose.material.icons.rounded.Book
+import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.Explore
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Store
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -93,11 +93,11 @@ fun MainMenu(rootBundle: Bundle) {
 fun SideMenu(backStack: BackStack<Route>) {
     Surface(Modifier.width(200.dp).fillMaxHeight(), elevation = 2.dp) {
         Box(Modifier.fillMaxSize()) {
-            Column(Modifier.fillMaxSize()) {
+            Column(Modifier.fillMaxSize().padding(horizontal = 4.dp)) {
                 Box(Modifier.fillMaxWidth().height(60.dp)) {
                     Text(
                         BuildConfig.NAME,
-                        fontSize = 30.sp,
+                        fontSize = 24.sp,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -269,11 +269,11 @@ enum class TopLevelMenus(
     val openInNewWindow: () -> Unit = {},
     val extraInfo: (@Composable () -> Unit)? = null
 ) {
-    Library("location_library", Icons.Outlined.Book, Icons.Filled.Book, Route.Library, true, ::openLibraryMenu),
-    Sources("location_sources", Icons.Outlined.Explore, Icons.Filled.Explore, Route.Sources, true, ::openSourcesMenu),
-    Extensions("location_extensions", Icons.Outlined.Store, Icons.Filled.Store, Route.Extensions, true, ::openExtensionsMenu),
-    Downloads("location_downloads", Icons.Outlined.Download, Icons.Filled.Download, Route.Downloads, false, extraInfo = { DownloadsExtraInfo() }),
-    Settings("location_settings", Icons.Outlined.Settings, Icons.Filled.Settings, Route.Settings, false)
+    Library("location_library", Icons.Outlined.Book, Icons.Rounded.Book, Route.Library, true, ::openLibraryMenu),
+    Sources("location_sources", Icons.Outlined.Explore, Icons.Rounded.Explore, Route.Sources, true, ::openSourcesMenu),
+    Extensions("location_extensions", Icons.Outlined.Store, Icons.Rounded.Store, Route.Extensions, true, ::openExtensionsMenu),
+    Downloads("location_downloads", Icons.Outlined.Download, Icons.Rounded.Download, Route.Downloads, false, extraInfo = { DownloadsExtraInfo() }),
+    Settings("location_settings", Icons.Outlined.Settings, Icons.Rounded.Settings, Route.Settings, false)
 }
 
 sealed class Route {

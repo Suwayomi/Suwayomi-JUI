@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -30,7 +29,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,11 +73,11 @@ fun Toolbar(
         contentColor = contentColor
     ) {
         Row(
-            Modifier.fillMaxWidth().padding(AppBarDefaults.ContentPadding).height(56.dp),
+            Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp).height(56.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(name, fontSize = 24.sp)
+            Text(name, fontSize = 20.sp)
             if (search != null) {
                 Card(
                     Modifier.fillMaxHeight()
@@ -114,7 +113,7 @@ fun Toolbar(
             Row {
                 actions()
                 if (closable) {
-                    ActionIcon(onClick = onClose, "Close", Icons.Default.Close)
+                    ActionIcon(onClick = onClose, "Close", Icons.Rounded.Close)
                 }
             }
         }
@@ -129,7 +128,7 @@ fun ActionIcon(onClick: () -> Unit, contentDescription: String, icon: ImageVecto
         }
     ) {
         IconButton(onClick = onClick) {
-            Icon(icon, contentDescription, Modifier.size(52.dp))
+            Icon(icon, contentDescription)
         }
     }
 }

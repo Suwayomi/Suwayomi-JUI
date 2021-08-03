@@ -13,8 +13,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -192,13 +192,13 @@ private fun PreferenceFile(title: String, subtitle: String, working: Boolean, pr
             } else if (status != SettingsBackupViewModel.Status.Nothing) {
                 when (status) {
                     SettingsBackupViewModel.Status.Error -> Icon(
-                        Icons.Default.Warning,
+                        Icons.Rounded.Warning,
                         contentDescription = null,
                         modifier = modifier,
                         tint = Color.Red
                     )
                     SettingsBackupViewModel.Status.Success -> Icon(
-                        Icons.Default.Check,
+                        Icons.Rounded.Check,
                         contentDescription = null,
                         modifier = modifier
                     )

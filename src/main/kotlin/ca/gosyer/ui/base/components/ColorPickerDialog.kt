@@ -36,7 +36,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -198,7 +198,7 @@ private fun ColorPresetItem(
     ) {
         if (isSelected) {
             Icon(
-                imageVector = Icons.Default.Check,
+                imageVector = Icons.Rounded.Check,
                 tint = if (color.luminance() > 0.5) Color.Black else Color.White,
                 contentDescription = null,
                 modifier = Modifier.requiredWidth(32.dp).requiredHeight(32.dp)

@@ -9,14 +9,14 @@ package ca.gosyer.ui.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Backup
-import androidx.compose.material.icons.filled.ChromeReaderMode
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.CollectionsBookmark
-import androidx.compose.material.icons.filled.Computer
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.rounded.Backup
+import androidx.compose.material.icons.rounded.ChromeReaderMode
+import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material.icons.rounded.CollectionsBookmark
+import androidx.compose.material.icons.rounded.Computer
+import androidx.compose.material.icons.rounded.Explore
+import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.runtime.Composable
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
@@ -32,84 +32,84 @@ fun SettingsScreen(navController: BackStack<Route>) {
             item {
                 PreferenceRow(
                     title = stringResource("settings_general"),
-                    icon = Icons.Default.Tune,
+                    icon = Icons.Rounded.Tune,
                     onClick = { navController.push(Route.SettingsGeneral) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_appearance"),
-                    icon = Icons.Default.Palette,
+                    icon = Icons.Rounded.Palette,
                     onClick = { navController.push(Route.SettingsAppearance) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_server"),
-                    icon = Icons.Default.Computer,
+                    icon = Icons.Rounded.Computer,
                     onClick = { navController.push(Route.SettingsServer) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_library"),
-                    icon = Icons.Default.CollectionsBookmark,
+                    icon = Icons.Rounded.CollectionsBookmark,
                     onClick = { navController.push(Route.SettingsLibrary) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_reader"),
-                    icon = Icons.Default.ChromeReaderMode,
+                    icon = Icons.Rounded.ChromeReaderMode,
                     onClick = { navController.push(Route.SettingsReader) }
                 )
             }
             /*item {
                 Pref(
                     title = stringResource("settings_download"),
-                    icon = Icons.Default.GetApp,
+                    icon = Icons.Rounded.GetApp,
                     onClick = { navController.push(Route.SettingsDownloads) }
                 )
             }
             item {
                 Pref(
                     title = stringResource("settings_tracking"),
-                    icon = Icons.Default.Sync,
+                    icon = Icons.Rounded.Sync,
                     onClick = { navController.push(Route.SettingsTracking) }
                 )
             }*/
             item {
                 PreferenceRow(
                     title = stringResource("settings_browse"),
-                    icon = Icons.Default.Explore,
+                    icon = Icons.Rounded.Explore,
                     onClick = { navController.push(Route.SettingsBrowse) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_backup"),
-                    icon = Icons.Default.Backup,
+                    icon = Icons.Rounded.Backup,
                     onClick = { navController.push(Route.SettingsBackup) }
                 )
             }
             /*item {
                 Pref(
                     title = stringResource("settings_security"),
-                    icon = Icons.Default.Security,
+                    icon = Icons.Rounded.Security,
                     onClick = { navController.push(Route.SettingsSecurity) }
                 )
             }
             item {
                 Pref(
                     title = stringResource("settings_parental_controls"),
-                    icon = Icons.Default.PeopleOutline,
+                    icon = Icons.Rounded.PeopleOutline,
                     onClick = { navController.push(Route.SettingsParentalControls) }
                 )
             }*/
             item {
                 PreferenceRow(
                     title = stringResource("settings_advanced"),
-                    icon = Icons.Default.Code,
+                    icon = Icons.Rounded.Code,
                     onClick = { navController.push(Route.SettingsAdvanced) }
                 )
             }

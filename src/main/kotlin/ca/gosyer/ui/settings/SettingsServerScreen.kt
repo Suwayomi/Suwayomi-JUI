@@ -9,7 +9,7 @@ package ca.gosyer.ui.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -83,7 +83,7 @@ fun SettingsServerScreen(navController: BackStack<Route>) {
             item {
                 PreferenceRow(
                     stringResource("server_preference_warning"),
-                    Icons.Default.Info,
+                    Icons.Rounded.Info,
                     subtitle = stringResource("server_preference_warning_sub")
                 )
             }

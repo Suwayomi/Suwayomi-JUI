@@ -35,8 +35,8 @@ val logger = kLogger {}
 @Composable
 fun KtorImage(
     imageUrl: String,
-    imageModifier: Modifier = Modifier.fillMaxSize(),
-    loadingModifier: Modifier = imageModifier,
+    modifier: Modifier = Modifier.fillMaxSize(),
+    loadingModifier: Modifier = modifier,
     contentDescription: String? = null,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
@@ -44,7 +44,7 @@ fun KtorImage(
     colorFilter: ColorFilter? = null,
     client: Http = remember { AppScope.getInstance() }
 ) {
-    BoxWithConstraints {
+    BoxWithConstraints(modifier) {
         val drawable = remember { mutableStateOf<ImageBitmap?>(null) }
         val loading = remember { mutableStateOf(true) }
         val progress = remember { mutableStateOf(0.0F) }
@@ -76,7 +76,7 @@ fun KtorImage(
         if (value != null) {
             Image(
                 value,
-                modifier = imageModifier,
+                modifier = Modifier.fillMaxSize(),
                 contentDescription = contentDescription,
                 alignment = alignment,
                 contentScale = contentScale,
