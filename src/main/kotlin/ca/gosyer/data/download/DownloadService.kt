@@ -74,6 +74,7 @@ class DownloadService @Inject constructor(
                         host = serverUrl.substringAfter("://"),
                         path = downloadsQuery()
                     ) {
+                        errorConnectionCount = 0
                         _status.value = Status.RUNNING
                         send(Frame.Text("STATUS"))
 
