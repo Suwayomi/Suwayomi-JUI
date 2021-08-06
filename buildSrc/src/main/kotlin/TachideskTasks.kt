@@ -1,3 +1,5 @@
+import Config.preview
+import Config.previewCommit
 import Config.tachideskVersion
 import de.undercouch.gradle.tasks.download.Download
 import org.gradle.api.Project
@@ -46,6 +48,12 @@ private fun isSigning(properties: Map<String, Any?>) = properties["compose.deskt
 
 private fun Project.tmpDir() = File(rootDir, "tmp")
 
+private val fileSuffix get() = if (preview) {
+    previewCommit
+} else {
+    tachideskVersion.drop(1)
+}
+
 fun TaskContainerScope.registerTachideskTasks(project: Project) {
     with(project) {
         register<Delete>(deleteOldTachideskTask) {
@@ -65,7 +73,13 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             onlyIfTachideskDoesntExist(rootDir)
 
             val tmpDir = tmpDir()
-            src("https://github.com/Suwayomi/Tachidesk/archive/refs/tags/$tachideskVersion.tar.gz")
+            src(
+                if (preview) {
+                    "https://github.com/Suwayomi/Tachidesk/archive/$previewCommit.tar.gz"
+                } else {
+                    "https://github.com/Suwayomi/Tachidesk/archive/refs/tags/$tachideskVersion.tar.gz"
+                }
+            )
 
             dest(
                 KotlinClosure1<Any?, File>(
@@ -90,7 +104,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             mustRunAfter(extractTask)
             onlyIfTachideskDoesntExist(rootDir)
 
-            val workingDir = File(tmpDir(), "Tachidesk-${tachideskVersion.drop(1)}/")
+            val workingDir = File(tmpDir(), "Tachidesk-$fileSuffix/")
             val getAndroidScript = File(workingDir, "AndroidCompat/getAndroid").absolutePath
             workingDir(workingDir)
             val os = DefaultNativePlatform.getCurrentOperatingSystem()
@@ -104,7 +118,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             mustRunAfter(androidScriptTask)
             onlyIfTachideskDoesntExist(rootDir)
 
-            val tachideskDir = File(tmpDir(), "Tachidesk-${tachideskVersion.drop(1)}/")
+            val tachideskDir = File(tmpDir(), "Tachidesk-$fileSuffix/")
             from(File(tachideskDir, ".github/runner-files/ci-gradle.properties"))
             into(File(tachideskDir, ".gradle/"))
             rename {
@@ -116,7 +130,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             mustRunAfter(setupCITask)
             onlyIfTachideskDoesntExist(rootDir)
 
-            workingDir(File(tmpDir(), "Tachidesk-${tachideskVersion.drop(1)}/"))
+            workingDir(File(tmpDir(), "Tachidesk-$fileSuffix/"))
             val os = DefaultNativePlatform.getCurrentOperatingSystem()
             when {
                 os.isWindows -> commandLine("cmd", "/c", "gradlew", ":server:shadowJar")
@@ -128,7 +142,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             mustRunAfter(buildTachideskTask)
             onlyIfTachideskDoesntExist(rootDir)
 
-            from(File(tmpDir(), "Tachidesk-${tachideskVersion.drop(1)}/server/build/"))
+            from(File(tmpDir(), "Tachidesk-$fileSuffix/server/build/"))
             include("Tachidesk-$tachideskVersion-r*.jar")
             val os = DefaultNativePlatform.getCurrentOperatingSystem()
             when {
