@@ -23,7 +23,7 @@ Note that the issue will be automatically closed if you do not fill out the titl
 ---
 
 ## Device information
-- TachideskJUI version: (Example: v1.1.0)
+- Tachidesk-JUI version: (Example: v1.1.0)
 - Operating System: (Example: Ubuntu 20.04)
 - Desktop Environment: (Example: Gnome 40)
 - Server Type: (Example: Internal)

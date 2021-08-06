@@ -11,6 +11,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.input.TextFieldValue
+import ca.gosyer.BuildConfig
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.resources.stringResource
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ fun openRenameDialog(
     val newName = MutableStateFlow(TextFieldValue(category.name))
 
     WindowDialog(
-        title = "TachideskJUI - Categories - Rename Dialog",
+        title = "${BuildConfig.NAME} - Categories - Rename Dialog",
         positiveButtonText = "Rename",
         onPositiveButton = {
             if (newName.value.text != category.name) {
@@ -46,7 +47,7 @@ fun openDeleteDialog(
     onDelete: (CategoriesMenuViewModel.MenuCategory) -> Unit
 ) {
     WindowDialog(
-        title = "TachideskJUI - Categories - Delete Dialog",
+        title = "${BuildConfig.NAME} - Categories - Delete Dialog",
         positiveButtonText = "Yes",
         onPositiveButton = {
             onDelete(category)
@@ -63,7 +64,7 @@ fun openCreateDialog(
     val name = MutableStateFlow(TextFieldValue(""))
 
     WindowDialog(
-        title = "TachideskJUI - Categories - Create Dialog",
+        title = "${BuildConfig.NAME} - Categories - Create Dialog",
         positiveButtonText = "Create",
         onPositiveButton = {
             onCreate(name.value.text)

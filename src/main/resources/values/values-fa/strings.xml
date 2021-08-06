@@ -4,7 +4,7 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
   --><resources>
-    <string name="app_name">TachideskJUI</string>
+    <string name="app_name">Tachidesk-JUI</string>
     <!-- Main Menu -->
     <string name="unable_to_start_server">اجرای سرور ناموفق بود</string>
     <!-- Actions -->
@@ -141,7 +141,7 @@
     <string name="nav_edge">لبه</string>
     <string name="nav_left_right">راست و چپ</string>
     <!-- Server Settings -->
-    <string name="host_server">میزبانی سرور در TachideskJUI</string>
+    <string name="host_server">میزبانی سرور در Tachidesk-JUI</string>
     <string name="server_url">آدرس سرور</string>
     <string name="server_port">پورت سرور</string>
     <string name="theme_dark">تیره</string>

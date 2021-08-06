@@ -6,6 +6,6 @@ pluginManagement {
     }
     
 }
-rootProject.name = "TachideskJUI"
+rootProject.name = "Tachidesk-JUI"
 
 

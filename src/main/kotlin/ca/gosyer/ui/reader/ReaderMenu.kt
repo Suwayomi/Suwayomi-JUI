@@ -35,6 +35,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import ca.gosyer.BuildConfig
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
@@ -77,7 +78,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
 
     launchUI {
         val window = AppWindow(
-            "TachideskJUI - Reader",
+            "${BuildConfig.NAME} - Reader",
             size = size,
             location = offset,
             centered = offset == IntOffset.Zero

@@ -4,7 +4,7 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
   --><resources>
-    <string name="app_name">TachideskJUI</string>
+    <string name="app_name">Tachidesk-JUI</string>
     <!-- Main Menu -->
     <string name="unable_to_start_server">Kunde inte starta servern</string>
     <!-- Actions -->
@@ -142,7 +142,7 @@
     <string name="nav_edge">Edge</string>
     <string name="nav_left_right">Höger och vänster</string>
     <!-- Server Settings -->
-    <string name="host_server">Host server inom TachideskJUI</string>
+    <string name="host_server">Host server inom Tachidesk-JUI</string>
     <string name="server_url">Server Url</string>
     <string name="server_port">Server Port</string>
 </resources>

@@ -162,8 +162,8 @@ compose.desktop {
                 "jdk.unsupported"
             )
 
-            packageName = "TachideskJUI"
-            description = "TachideskJUI is a Jvm client for a Tachidesk Server"
+            packageName = "Tachidesk-JUI"
+            description = "Tachidesk-JUI is a Jvm client for a Tachidesk Server"
             copyright = "Mozilla Public License v2.0"
             vendor = "Suwayomi"
             windows {

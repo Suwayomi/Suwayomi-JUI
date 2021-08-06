@@ -6,7 +6,7 @@
   -->
 
 <resources>
-    <string name="app_name">TachideskJUI</string>
+    <string name="app_name">Tachidesk-JUI</string>
 
     <!-- Main Menu -->
     <string name="unable_to_start_server">Cannot start server</string>
@@ -169,7 +169,7 @@
     <string name="nav_left_right">Right and left</string>
 
     <!-- Server Settings -->
-    <string name="host_server">Host server inside TachideskJUI</string>
+    <string name="host_server">Host server inside Tachidesk-JUI</string>
     <string name="server_url">Server URL</string>
     <string name="server_port">Server PORT</string>
     <string name="server_preference_warning">Warning</string>
