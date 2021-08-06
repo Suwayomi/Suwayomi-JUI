@@ -71,6 +71,7 @@ import ca.gosyer.ui.settings.SettingsScreen
 import ca.gosyer.ui.settings.SettingsServerScreen
 import ca.gosyer.ui.sources.SourcesMenu
 import ca.gosyer.ui.sources.openSourcesMenu
+import ca.gosyer.ui.sources.settings.SourceSettingsMenu
 import com.github.zsoltk.compose.router.BackStack
 import com.github.zsoltk.compose.router.Router
 import com.github.zsoltk.compose.savedinstancestate.Bundle
@@ -140,18 +141,24 @@ fun SideMenuItem(topLevelMenu: TopLevelMenus, backStack: BackStack<Route>) {
 
 @Composable
 fun MainWindow(rootBundle: Bundle, backStack: BackStack<Route>) {
-    Column(Modifier.fillMaxSize()) {
+    Box(Modifier.fillMaxSize()) {
         BundleScope("K${backStack.lastIndex}", rootBundle, false) {
             when (val routing = backStack.last()) {
                 is Route.Library -> LibraryScreen {
                     backStack.push(Route.Manga(it))
                 }
-                is Route.Sources -> SourcesMenu {
+                is Route.Sources -> SourcesMenu(
+                    {
+                        backStack.push(Route.SourceSettings(it))
+                    }
+                ) {
                     backStack.push(Route.Manga(it))
                 }
                 is Route.Extensions -> ExtensionsMenu()
                 is Route.Manga -> MangaMenu(routing.mangaId, backStack)
                 is Route.Downloads -> DownloadsMenu()
+
+                is Route.SourceSettings -> SourceSettingsMenu(routing.sourceId, backStack)
 
                 is Route.Settings -> SettingsScreen(backStack)
                 is Route.SettingsGeneral -> SettingsGeneralScreen(backStack)
@@ -168,6 +175,20 @@ fun MainWindow(rootBundle: Bundle, backStack: BackStack<Route>) {
                 is Route.SettingsAdvanced -> SettingsAdvancedScreen(backStack)
             }
         }
+        /*Box(Modifier.padding(bottom = 32.dp).align(Alignment.BottomCenter)) {
+            val shape = RoundedCornerShape(50.dp)
+            Box(
+                Modifier
+                    .width(200.dp)
+                    .defaultMinSize(minHeight = 64.dp)
+                    .shadow(4.dp, shape)
+                    .background(SolidColor(Color.Gray), alpha = 0.2F)
+                    .clip(shape),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Test text")
+            }
+        }*/
     }
 }
 
@@ -282,6 +303,8 @@ sealed class Route {
     object Extensions : Route()
     data class Manga(val mangaId: Long) : Route()
     object Downloads : Route()
+
+    data class SourceSettings(val sourceId: Long) : Route()
 
     object Settings : Route()
     object SettingsGeneral : Route()

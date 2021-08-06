@@ -14,5 +14,6 @@ fun mangaQuery(mangaId: Long) =
 fun mangaThumbnailQuery(mangaId: Long) =
     "/api/v1/manga/$mangaId/thumbnail"
 
+@Post
 fun updateMangaMetaRequest(mangaId: Long) =
     "/api/v1/manga/$mangaId/meta"

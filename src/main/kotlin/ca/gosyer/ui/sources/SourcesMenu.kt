@@ -22,6 +22,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -43,6 +44,7 @@ import ca.gosyer.ui.extensions.LanguageDialog
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.ui.sources.components.SourceHomeScreen
 import ca.gosyer.ui.sources.components.SourceScreen
+import ca.gosyer.ui.sources.settings.openSourceSettingsMenu
 import ca.gosyer.util.compose.ThemedWindow
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
@@ -54,20 +56,21 @@ fun openSourcesMenu() {
         CompositionLocalProvider(
             LocalSavedInstanceState provides Bundle()
         ) {
-            SourcesMenu {
-                openMangaMenu(it)
-            }
+            SourcesMenu(
+                ::openSourceSettingsMenu,
+                ::openMangaMenu
+            )
         }
     }
 }
 
 @Composable
-fun SourcesMenu(onMangaClick: (Long) -> Unit) {
-    SourcesMenu(LocalSavedInstanceState.current, onMangaClick)
+fun SourcesMenu(onSourceSettingsClick: (Long) -> Unit, onMangaClick: (Long) -> Unit) {
+    SourcesMenu(LocalSavedInstanceState.current, onSourceSettingsClick, onMangaClick)
 }
 
 @Composable
-fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
+fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaClick: (Long) -> Unit) {
     val vm = viewModel<SourcesMenuViewModel> {
         bundle
     }
@@ -93,17 +96,29 @@ fun SourcesMenu(bundle: Bundle, onMangaClick: (Long) -> Unit) {
                 search = if (sourceSearchEnabled) vm::search else null,
                 searchSubmit = vm::submitSearch,
                 actions = {
-                    if (selectedSourceTab == null) {
-                        ActionIcon(
-                            {
-                                val enabledLangs = MutableStateFlow(vm.languages.value)
-                                LanguageDialog(enabledLangs, vm.getSourceLanguages().toList()) {
-                                    vm.setEnabledLanguages(enabledLangs.value)
-                                }
-                            },
-                            stringResource("enabled_languages"),
-                            Icons.Rounded.Translate
-                        )
+                    selectedSourceTab.let { selectedSource ->
+                        if (selectedSource == null) {
+                            ActionIcon(
+                                {
+                                    val enabledLangs = MutableStateFlow(vm.languages.value)
+                                    LanguageDialog(enabledLangs, vm.getSourceLanguages().toList()) {
+                                        vm.setEnabledLanguages(enabledLangs.value)
+                                    }
+                                },
+                                stringResource("enabled_languages"),
+                                Icons.Rounded.Translate
+                            )
+                        } else {
+                            if (selectedSource.isConfigurable) {
+                                ActionIcon(
+                                    {
+                                        onSourceSettingsClick(selectedSource.id)
+                                    },
+                                    stringResource("location_settings"),
+                                    Icons.Rounded.Settings
+                                )
+                            }
+                        }
                     }
                 }
             )

@@ -214,7 +214,7 @@ fun <Key> ChoicePreference(
     )
 }
 
-private fun <T> ChoiceDialog(
+fun <T> ChoiceDialog(
     items: List<Pair<T, String>>,
     selected: T?,
     onDismissRequest: () -> Unit = {},

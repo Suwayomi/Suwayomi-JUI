@@ -4,18 +4,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.data.models
+package ca.gosyer.data.models.sourcepreference
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Source(
-    val id: Long,
-    val name: String,
-    val lang: String,
-    val iconUrl: String,
-    val supportsLatest: Boolean,
-    val isConfigurable: Boolean
-) {
-    fun iconUrl(serverUrl: String) = serverUrl + iconUrl
-}
+@SerialName("SwitchPreferenceCompat")
+data class SwitchPreference(
+    override val props: TwoStateProps
+) : SourcePreference()
