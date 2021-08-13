@@ -123,6 +123,7 @@
     <string name="backup_restore_sub">Restore a backup into Tachidesk</string>
     <string name="backup_create">Create Backup</string>
     <string name="backup_create_sub">Create a backup from Tachidesk</string>
+    <string name="missing_sources">Missing sources:</string>
 
     <!-- General Settings -->
     <string name="start_screen">Start screen</string>
