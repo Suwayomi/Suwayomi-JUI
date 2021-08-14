@@ -185,9 +185,8 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                     .forEach {
                         exec {
                             commandLine(
-                                "codesign",
+                                "/usr/bin/codesign",
                                 "-vvvv",
-                                "--deep",
                                 "--timestamp",
                                 "--options", "runtime",
                                 "--force",
