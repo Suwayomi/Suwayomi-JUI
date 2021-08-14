@@ -4,6 +4,7 @@
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
   -->
+
 <resources>
     <string name="app_name">Tachidesk-JUI</string>
 
@@ -124,7 +125,6 @@
     <string name="backup_create_sub">Create a backup from Tachidesk</string>
     <string name="missing_sources">Missing sources:</string>
 
-
     <!-- General Settings -->
     <string name="start_screen">Start screen</string>
     <string name="confirm_exit">Confirm exit</string>
@@ -187,5 +187,4 @@
     <string name="digest_auth">Digest auth</string>
     <string name="auth_username">Auth username</string>
     <string name="auth_password">Auth password</string>
-    <string name="">Right and left</string>
 </resources>
