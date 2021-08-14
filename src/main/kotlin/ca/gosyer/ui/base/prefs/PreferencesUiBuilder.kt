@@ -140,7 +140,8 @@ fun SwitchPreference(
     title: String,
     subtitle: String? = null,
     icon: ImageVector? = null,
-    enabled: Boolean = true
+    changeListener: () -> Unit = {},
+    enabled: Boolean = true,
 ) {
     PreferenceRow(
         title = title,
@@ -150,7 +151,10 @@ fun SwitchPreference(
             val prefValue by preference.collectAsState()
             Switch(checked = prefValue, onCheckedChange = null, enabled = enabled)
         },
-        onClick = { preference.value = !preference.value },
+        onClick = {
+            preference.value = !preference.value
+            changeListener()
+        },
         enabled = enabled
     )
 }
@@ -161,6 +165,7 @@ fun EditTextPreference(
     title: String,
     subtitle: String? = null,
     icon: ImageVector? = null,
+    changeListener: () -> Unit = {},
     enabled: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
@@ -174,6 +179,7 @@ fun EditTextPreference(
                 title,
                 onPositiveButton = {
                     preference.value = editText.text
+                    changeListener()
                 }
             ) {
                 OutlinedTextField(
@@ -195,6 +201,7 @@ fun <Key> ChoicePreference(
     choices: Map<Key, String>,
     title: String,
     subtitle: String? = null,
+    changeListener: () -> Unit = {},
     enabled: Boolean = true
 ) {
     val prefValue by preference.collectAsState()
@@ -208,6 +215,7 @@ fun <Key> ChoicePreference(
                 title = title,
                 onSelected = { selected ->
                     preference.value = selected
+                    changeListener()
                 }
             )
         },

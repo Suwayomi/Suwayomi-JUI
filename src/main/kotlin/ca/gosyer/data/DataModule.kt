@@ -14,6 +14,7 @@ import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.HttpProvider
+import ca.gosyer.data.server.ServerHostPreferences
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
@@ -36,6 +37,9 @@ val DataModule = module {
 
     bind<ServerPreferences>()
         .toProviderInstance { ServerPreferences(preferenceFactory.create("server")) }
+        .providesSingleton()
+    bind<ServerHostPreferences>()
+        .toProviderInstance { ServerHostPreferences(preferenceFactory.create("host")) }
         .providesSingleton()
 
     bind<ExtensionPreferences>()

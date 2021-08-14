@@ -13,9 +13,12 @@ import ca.gosyer.util.system.userDataDir
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import java.io.File
@@ -24,24 +27,30 @@ import java.io.Reader
 import java.util.jar.JarInputStream
 import javax.inject.Inject
 import kotlin.concurrent.thread
-import kotlin.jvm.Throws
 
 @OptIn(DelicateCoroutinesApi::class)
 class ServerService @Inject constructor(
-    val serverPreferences: ServerPreferences
+    serverPreferences: ServerPreferences,
+    private val serverHostPreferences: ServerHostPreferences
 ) {
+    private val restartServerFlow = MutableSharedFlow<Unit>()
     private val host = serverPreferences.host().stateIn(GlobalScope)
-    val initialized = MutableStateFlow(
+    private val _initialized = MutableStateFlow(
         if (host.value) {
             ServerResult.STARTING
         } else {
             ServerResult.UNUSED
         }
     )
+    val initialized = _initialized.asStateFlow()
     private var process: Process? = null
 
     fun startAnyway() {
-        initialized.value = ServerResult.UNUSED
+        _initialized.value = ServerResult.UNUSED
+    }
+
+    fun restartServer() {
+        GlobalScope.launch { restartServerFlow.emit(Unit) }
     }
 
     @Throws(IOException::class)
@@ -90,18 +99,20 @@ class ServerService @Inject constructor(
                 process = null
             }
         )
-        host.onEach { host ->
+
+        merge(restartServerFlow, host).mapLatest {
             process?.destroy()
-            initialized.value = if (host) {
+            process?.waitFor()
+            _initialized.value = if (host.value) {
                 ServerResult.STARTING
             } else {
                 ServerResult.UNUSED
-                return@onEach
+                return@mapLatest
             }
             val handler = CoroutineExceptionHandler { _, throwable ->
                 error(throwable) { "Error launching Tachidesk.jar" }
-                if (initialized.value == ServerResult.STARTING || initialized.value == ServerResult.STARTED) {
-                    initialized.value = ServerResult.FAILED
+                if (_initialized.value == ServerResult.STARTING || _initialized.value == ServerResult.STARTED) {
+                    _initialized.value = ServerResult.FAILED
                 }
             }
             GlobalScope.launch(handler) {
@@ -130,10 +141,12 @@ class ServerService @Inject constructor(
 
                 val javaPath = getRuntimeJava() ?: getPossibleJava() ?: "java"
                 info { "Starting server with $javaPath" }
+                val properties = serverHostPreferences.properties()
+                info { "Using server properties:\n" + properties.joinToString(separator = "\n") }
 
                 withIOContext {
                     val reader: Reader
-                    process = ProcessBuilder(javaPath, "-jar", jarFile.absolutePath)
+                    process = ProcessBuilder(javaPath, *properties, "-jar", jarFile.absolutePath)
                         .redirectErrorStream(true)
                         .start()
                         .also {
@@ -143,18 +156,18 @@ class ServerService @Inject constructor(
                     val logger = KotlinLogging.logger("Server")
                     reader.useLines { lines ->
                         lines.forEach {
-                            if (initialized.value == ServerResult.STARTING) {
+                            if (_initialized.value == ServerResult.STARTING) {
                                 if (it.contains("Javalin started")) {
-                                    initialized.value = ServerResult.STARTED
+                                    _initialized.value = ServerResult.STARTED
                                 } else if (it.contains("Javalin has stopped")) {
-                                    initialized.value = ServerResult.FAILED
+                                    _initialized.value = ServerResult.FAILED
                                 }
                             }
                             logger.info { it }
                         }
                     }
-                    if (initialized.value == ServerResult.STARTING) {
-                        initialized.value = ServerResult.FAILED
+                    if (_initialized.value == ServerResult.STARTING) {
+                        _initialized.value = ServerResult.FAILED
                     }
                     info { "Server closed" }
                     val exitVal = process?.waitFor()

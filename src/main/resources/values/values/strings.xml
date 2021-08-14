@@ -171,6 +171,25 @@
 
     <!-- Server Settings -->
     <string name="host_server">Host server inside Tachidesk-JUI</string>
+    <string name="host_settings">Tachidesk-Server settings</string>
+    <string name="host_settings_sub">The below settings configure the internal Tachidesk-Server</string>
+    <string name="host_ip">Server IP</string>
+    <string name="host_ip_sub">Current server IP: %1$s</string>
+    <string name="host_port">Server PORT</string>
+    <string name="host_port_sub">Current server PORT: %1$s</string>
+    <string name="host_socks_enabled">Server SOCKS5 Proxy</string>
+    <string name="host_socks_host">Server SOCKS5 Proxy HOST</string>
+    <string name="host_socks_host_sub">Current Proxy HOST: %1$s</string>
+    <string name="host_socks_port">Server SOCKS5 Proxy PORT</string>
+    <string name="host_socks_port_sub">Current Proxy PORT: %1$s</string>
+    <string name="host_debug_logging">Server debug logs</string>
+    <string name="host_debug_logging_sub">Output debug logs from the server to JUI</string>
+    <string name="host_system_tray">Server system tray icon</string>
+    <string name="host_system_tray_sub">Use the system tray icon to view whether the server is running</string>
+    <string name="host_webui">Server WebUI</string>
+    <string name="host_webui_sub">Whether the server's default WebUI is enabled, makes you able to use Tachidesk in your browser</string>
+    <string name="host_open_in_browser">Open Server WebUI on startup</string>
+    <string name="host_open_in_browser_sub">Open the WebUI inside your browser on server startup. Requires the WebUI be enabled</string>
     <string name="server_url">Server URL</string>
     <string name="server_port">Server PORT</string>
     <string name="server_preference_warning">Warning</string>
