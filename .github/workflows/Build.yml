@@ -66,11 +66,12 @@ jobs:
 #         security unlock-keychain -p ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
 #         security import certificate.p12 -k build.keychain -P ${{ secrets.APPLE_CERT_PASSWORD }} -T /usr/bin/codesign
 #         security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
-    - name: Setup MacOS Keychain 
+    - name: Setup MacOS Keychain
       uses: apple-actions/import-codesign-certs@v1
+      if: ${{ matrix.runtime == 'osx-x64' }}
       with: 
         p12-file-base64: ${{ secrets.APPLE_CERT }}
-        p12-password: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+        p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
 
     - name: Build rpm Package
       if: ${{ matrix.runtime == 'linux-centos-x64' }}
