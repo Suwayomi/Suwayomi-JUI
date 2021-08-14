@@ -1,3 +1,4 @@
+import Config.serverCode
 import Config.tachideskVersion
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.compose.compose
@@ -189,6 +190,7 @@ buildConfig {
 
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
     buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion)
+    buildConfigField("int", "SERVER_CODE", serverCode.toString())
 }
 
 kotlinter {

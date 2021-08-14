@@ -1,5 +1,6 @@
 import Config.preview
 import Config.previewCommit
+import Config.serverCode
 import Config.tachideskVersion
 import de.undercouch.gradle.tasks.download.Download
 import org.gradle.api.Project
@@ -12,7 +13,11 @@ import org.gradle.kotlin.dsl.TaskContainerScope
 import org.gradle.kotlin.dsl.register
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import java.io.File
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.util.jar.Attributes
 import java.util.jar.JarFile
+import java.util.jar.Manifest
 
 private const val tachideskGroup = "tachidesk"
 private const val deleteOldTachideskTask = "deleteOldTachidesk"
@@ -25,6 +30,7 @@ private const val copyTachideskJarTask = "copyTachidesk"
 private const val extractTachideskJar = "extractJar"
 private const val signTachideskJar = "signJar"
 private const val zipTachideskJar = "zipJar"
+private const val modifyTachideskJarManifest = "modifyManifest"
 private const val deleteTmpFolderTask = "deleteTmp"
 private const val runAllTachideskTasks = "setupTachideskJar"
 
@@ -36,9 +42,10 @@ fun String?.anyEquals(vararg others: String?, ignoreCase: Boolean = false): Bool
     return others.any { this.equals(it, ignoreCase) }
 }
 
+private fun tachideskExists(rootDir: File) = File(rootDir, "src/main/resources/Tachidesk.jar").exists()
 
 private fun Task.onlyIfTachideskDoesntExist(rootDir: File) {
-    onlyIf { !File(rootDir, "src/main/resources/Tachidesk.jar").exists() }
+    onlyIf { !tachideskExists(rootDir) }
 }
 private fun Task.onlyIfSigning(project: Project) {
     with(project){
@@ -79,7 +86,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             val tachideskJar = file(finalJar)
             onlyIf {
                 tachideskJar.exists() && JarFile(tachideskJar).use { jar ->
-                    jar.manifest?.mainAttributes?.getValue("Specification-Version") != tachideskVersion
+                    jar.manifest?.mainAttributes?.getValue(Attributes.Name.IMPLEMENTATION_VERSION)?.toIntOrNull() != serverCode
                 }
             }
             delete(tachideskJar)
@@ -88,6 +95,8 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Download>(downloadTask) {
             group = tachideskGroup
             mustRunAfter(deleteOldTachideskTask)
+            onlyIf { !tachideskExists(rootDir) && !file(tmpTar).exists() }
+
             onlyIfTachideskDoesntExist(rootDir)
 
             src(tarUrl)
@@ -96,6 +105,8 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Copy>(extractTask) {
             group = tachideskGroup
             mustRunAfter(downloadTask)
+            onlyIf { !tachideskExists(rootDir) && !file(tmpServerFolder).exists() }
+
             onlyIfTachideskDoesntExist(rootDir)
 
             from(tarTree(tmpTar))
@@ -104,7 +115,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Exec>(androidScriptTask) {
             group = tachideskGroup
             mustRunAfter(extractTask)
-            onlyIfTachideskDoesntExist(rootDir)
+            onlyIf { !tachideskExists(rootDir) && !file("${tmpServerFolder}AndroidCompat/lib/android.jar").exists() }
 
             val workingDir = file(tmpServerFolder)
             val getAndroidScript = File(workingDir, "AndroidCompat/getAndroid").absolutePath
@@ -199,8 +210,34 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             archiveExtension.set("jar")
             destinationDirectory.set(file(destination))
         }
-        register<Delete>(deleteTmpFolderTask) {
+        register<Task>(modifyTachideskJarManifest) {
+            group = tachideskGroup
             mustRunAfter(zipTachideskJar)
+            val tachideskJar = file(finalJar)
+            onlyIf {
+                tachideskJar.exists() && JarFile(tachideskJar).use { jar ->
+                    jar.manifest?.mainAttributes?.getValue(Attributes.Name.IMPLEMENTATION_VERSION)?.toIntOrNull() != serverCode
+                }
+            }
+
+            doFirst {
+                val manifest = JarFile(tachideskJar).use { jar ->
+                    Manifest(jar.manifest)
+                }
+                manifest.mainAttributes[Attributes.Name.IMPLEMENTATION_VERSION] = serverCode.toString()
+                FileSystems.newFileSystem(tachideskJar.toPath()).use { fs ->
+                    val manifestFile = fs.getPath("META-INF/MANIFEST.MF")
+                    val manifestBak = fs.getPath("META-INF/MANIFEST.MF" + ".bak")
+                    Files.deleteIfExists(manifestBak)
+                    Files.move(manifestFile, manifestBak)
+                    Files.newOutputStream(manifestFile).use {
+                        manifest.write(it)
+                    }
+                }
+            }
+        }
+        register<Delete>(deleteTmpFolderTask) {
+            mustRunAfter(modifyTachideskJarManifest)
             delete(tmpPath)
 
             doFirst {
@@ -221,6 +258,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                 extractTachideskJar,
                 signTachideskJar,
                 zipTachideskJar,
+                modifyTachideskJarManifest,
                 deleteTmpFolderTask
             )
         }

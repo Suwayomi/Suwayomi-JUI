@@ -24,6 +24,7 @@ import mu.KotlinLogging
 import java.io.File
 import java.io.IOException
 import java.io.Reader
+import java.util.jar.Attributes
 import java.util.jar.JarInputStream
 import javax.inject.Inject
 import kotlin.concurrent.thread
@@ -116,7 +117,7 @@ class ServerService @Inject constructor(
                 }
             }
             GlobalScope.launch(handler) {
-                val jarFile = File(userDataDir, "Tachidesk.jar")
+                val jarFile = File(userDataDir.also { it.mkdirs() }, "Tachidesk.jar")
                 if (!jarFile.exists()) {
                     info { "Copying server to resources" }
                     withIOContext { copyJar(jarFile) }
@@ -124,11 +125,11 @@ class ServerService @Inject constructor(
                     try {
                         val jarVersion = withIOContext {
                             JarInputStream(jarFile.inputStream()).use { jar ->
-                                jar.manifest?.mainAttributes?.getValue("Specification-Version")
+                                jar.manifest?.mainAttributes?.getValue(Attributes.Name.IMPLEMENTATION_VERSION)?.toIntOrNull()
                             }
                         }
 
-                        if (jarVersion != BuildConfig.TACHIDESK_SP_VERSION) {
+                        if (jarVersion != BuildConfig.SERVER_CODE) {
                             info { "Updating server file from resources" }
                             withIOContext { copyJar(jarFile) }
                         }
