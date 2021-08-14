@@ -26,7 +26,7 @@ const val consolePattern =
         '$' +
         "{LOG_LEVEL_PATTERN:-%p}/%c{1}: %m%n" +
         '$' +
-        "{LOG_EXCEPTION_CONVERSION_WORD:-%xEx}}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=black, TRACE=black}"
+        "{LOG_EXCEPTION_CONVERSION_WORD:-%xEx}}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=normal, DEBUG=normal, TRACE=normal}"
 const val filePattern =
     "%d{" +
         '$' +

@@ -60,8 +60,8 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             group = tachideskGroup
             val tachideskJar = File(rootDir, "src/main/resources/Tachidesk.jar")
             onlyIf {
-                tachideskJar.exists() && JarFile(tachideskJar).use {
-                    it.manifest?.mainAttributes?.getValue("Specification-Version") != tachideskVersion
+                tachideskJar.exists() && JarFile(tachideskJar).use { jar ->
+                    jar.manifest?.mainAttributes?.getValue("Specification-Version") != tachideskVersion
                 }
             }
             delete(tachideskJar)
@@ -143,7 +143,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             onlyIfTachideskDoesntExist(rootDir)
 
             from(File(tmpDir(), "Tachidesk-Server-$fileSuffix/server/build/"))
-            include("Tachidesk-$tachideskVersion-r*.jar")
+            include("Tachidesk-Server-$tachideskVersion-r*.jar")
             val os = DefaultNativePlatform.getCurrentOperatingSystem()
             when {
                 os.isMacOsX && isSigning(properties) -> into(File(tmpDir(), "macos/"))
@@ -201,6 +201,10 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Delete>(deleteTmpFolderTask) {
             mustRunAfter(zipTachideskJar)
             delete(tmpDir())
+
+            doFirst {
+                require(File(rootDir, "src/main/resources/Tachidesk.jar").exists()) { "Tachidesk.jar does not exist" }
+            }
         }
         register(runAllTachideskTasks) {
             group = tachideskGroup

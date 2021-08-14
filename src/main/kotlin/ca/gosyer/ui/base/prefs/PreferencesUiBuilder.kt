@@ -26,6 +26,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -78,7 +79,7 @@ fun PreferenceRow(
     onLongClick: () -> Unit = {},
     subtitle: String? = null,
     enabled: Boolean = true,
-    action: @Composable (() -> Unit)? = null,
+    action: @Composable (BoxScope.() -> Unit)? = null,
 ) {
     val height = if (subtitle != null) 72.dp else 56.dp
 
