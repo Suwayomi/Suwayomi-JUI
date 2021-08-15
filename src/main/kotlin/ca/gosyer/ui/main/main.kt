@@ -78,7 +78,7 @@ suspend fun main() {
 
     uiPreferences.themeMode()
         .getAsFlow {
-            if (!uiPreferences.windowDecorations().get() || System.getProperty("os.name").startsWith("Mac") && System.getProperty("os.arch") == "aarch64") {
+            if (!uiPreferences.windowDecorations().get()) {
                 return@getAsFlow
             }
             val theme = when (it) {

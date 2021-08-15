@@ -13,7 +13,7 @@ plugins {
     kotlin("plugin.serialization") version "1.5.21"
     id("org.jetbrains.compose") version "1.0.0-alpha4-build310"
     id("de.fuerstenau.buildconfig") version "1.1.8"
-    id("org.jmailen.kotlinter") version "3.4.5"
+    id("org.jmailen.kotlinter") version "3.5.0"
     id("com.github.ben-manes.versions") version "0.39.0"
 }
 
@@ -36,7 +36,7 @@ dependencies {
     implementation("ca.gosyer:accompanist-pager:0.14.0")
 
     // UI (Swing)
-    implementation("com.github.weisj:darklaf-core:2.6.1")
+    implementation("com.github.weisj:darklaf-core:2.7.2")
 
     // Threading
     val coroutinesVersion = "1.5.1"
@@ -57,7 +57,7 @@ dependencies {
     kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:$toothpickVersion")
 
     // Http client
-    val ktorVersion = "1.6.1"
+    val ktorVersion = "1.6.2"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")

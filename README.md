@@ -55,11 +55,6 @@ Make sure you have used either an installer, or you have Java 15 installed.
 ### It says server failed to start
 Make sure that if you used an installer, that you have at least Java 8 installed.
 
-### The top bar is broken
-You are most likely using Java 16 to start the jar, this additional argument can fix it:
-
-`java --add-exports java.desktop/sun.swing=ALL-UNNAMED -jar Tachidesk-JUI-os-arch-X.Y.Z.jar`
-
 ## Support and help
 Join Tachidesk's [discord server](https://discord.gg/wgPyb7hE5d) to hang out with the community and receive support and help.
 
