@@ -42,9 +42,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.WindowSize
+import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.BuildConfig
 import ca.gosyer.data.models.Extension
 import ca.gosyer.ui.base.WindowDialog
@@ -56,12 +57,18 @@ import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.compose.persistentLazyListState
+import ca.gosyer.util.lang.launchApplication
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
+@OptIn(DelicateCoroutinesApi::class)
 fun openExtensionsMenu() {
-    ThemedWindow(BuildConfig.NAME, size = IntSize(550, 700)) {
-        ExtensionsMenu()
+    launchApplication {
+        val state = rememberWindowState(size = WindowSize(550.dp, 700.dp))
+        ThemedWindow(::exitApplication, state, title = BuildConfig.NAME) {
+            ExtensionsMenu()
+        }
     }
 }
 

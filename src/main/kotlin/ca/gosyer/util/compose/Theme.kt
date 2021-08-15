@@ -6,34 +6,51 @@
 
 package ca.gosyer.util.compose
 
-import androidx.compose.desktop.Window
-import androidx.compose.desktop.WindowEvents
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.window.v1.MenuBar
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.window.FrameWindowScope
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowState
+import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.theme.AppTheme
-import java.awt.image.BufferedImage
 
+@Composable
 fun ThemedWindow(
-    title: String = "JetpackDesktopWindow",
-    size: IntSize = IntSize(800, 600),
-    location: IntOffset = IntOffset.Zero,
-    centered: Boolean = true,
-    icon: BufferedImage? = null,
-    menuBar: MenuBar? = null,
+    onCloseRequest: () -> Unit,
+    state: WindowState = rememberWindowState(),
+    visible: Boolean = true,
+    title: String = "Untitled",
+    icon: Painter? = null,
     undecorated: Boolean = false,
     resizable: Boolean = true,
-    events: WindowEvents = WindowEvents(),
-    onDismissRequest: (() -> Unit)? = null,
-    content: @Composable () -> Unit = { }
+    enabled: Boolean = true,
+    focusable: Boolean = true,
+    alwaysOnTop: Boolean = false,
+    onPreviewKeyEvent: (KeyEvent) -> Boolean = { false },
+    onKeyEvent: (KeyEvent) -> Boolean = { false },
+    content: @Composable FrameWindowScope.() -> Unit = { }
 ) {
-    val resources = AppScope.getInstance<XmlResourceBundle>()
-    Window(title, size, location, centered, icon, menuBar, undecorated, resizable, events, onDismissRequest) {
+    val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
+    Window(
+        onCloseRequest,
+        state,
+        visible,
+        title,
+        icon,
+        undecorated,
+        resizable,
+        enabled,
+        focusable,
+        alwaysOnTop,
+        onPreviewKeyEvent,
+        onKeyEvent
+    ) {
         CompositionLocalProvider(
             LocalResources provides resources
         ) {

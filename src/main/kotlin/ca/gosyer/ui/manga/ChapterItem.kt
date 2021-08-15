@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloadState
 import ca.gosyer.ui.base.components.DropdownIconButton
+import ca.gosyer.ui.base.components.LocalComposeWindow
 import ca.gosyer.ui.base.components.combinedMouseClickable
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.util.compose.contextMenu
@@ -71,6 +72,7 @@ fun ChapterItem(
         elevation = 1.dp,
         shape = RoundedCornerShape(4.dp)
     ) {
+        val window = LocalComposeWindow.current
         BoxWithConstraints(
             Modifier.combinedMouseClickable(
                 onClick = {
@@ -78,6 +80,7 @@ fun ChapterItem(
                 },
                 onRightClick = {
                     contextMenu(
+                        window,
                         it
                     ) {
                         menuItem("Toggle read") { toggleRead(chapter.index) }

@@ -50,10 +50,15 @@ import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.util.lang.launchApplication
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@OptIn(DelicateCoroutinesApi::class)
 fun openDownloadsMenu() {
-    ThemedWindow(BuildConfig.NAME) {
-        DownloadsMenu()
+    launchApplication {
+        ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
+            DownloadsMenu()
+        }
     }
 }
 

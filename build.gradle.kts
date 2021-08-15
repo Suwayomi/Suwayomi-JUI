@@ -1,3 +1,4 @@
+import Config.serverCode
 import Config.tachideskVersion
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.compose.compose
@@ -7,10 +8,10 @@ import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 plugins {
-    kotlin("jvm") version "1.5.10"
-    kotlin("kapt") version "1.5.10"
-    kotlin("plugin.serialization") version "1.5.10"
-    id("org.jetbrains.compose") version "0.5.0-build245"
+    kotlin("jvm") version "1.5.21"
+    kotlin("kapt") version "1.5.21"
+    kotlin("plugin.serialization") version "1.5.21"
+    id("org.jetbrains.compose") version "1.0.0-alpha4-build310"
     id("de.fuerstenau.buildconfig") version "1.1.8"
     id("org.jmailen.kotlinter") version "3.4.5"
     id("com.github.ben-manes.versions") version "0.39.0"

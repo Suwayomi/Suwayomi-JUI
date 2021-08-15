@@ -36,12 +36,15 @@ import ca.gosyer.ui.sources.settings.model.SourceSettingsView.List
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.TwoState
 import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.util.lang.launchApplication
 import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.flow.MutableStateFlow
 
 fun openSourceSettingsMenu(sourceId: Long) {
-    ThemedWindow(BuildConfig.NAME) {
-        SourceSettingsMenu(sourceId)
+    launchApplication {
+        ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
+            SourceSettingsMenu(sourceId)
+        }
     }
 }
 

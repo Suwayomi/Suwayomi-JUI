@@ -6,26 +6,29 @@
 
 package ca.gosyer.util.compose
 
-import androidx.compose.desktop.AppManager
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.unit.IntOffset
 import ca.gosyer.util.lang.launchUI
 import com.github.weisj.darklaf.listener.MouseClickListener
 import kotlinx.coroutines.DelicateCoroutinesApi
+import java.awt.event.WindowEvent
+import java.awt.event.WindowFocusListener
 import javax.swing.Icon
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 import javax.swing.JSeparator
 
-class ContextMenu internal constructor() {
+class ContextMenu internal constructor(private val window: ComposeWindow) {
     internal val items = mutableListOf<Pair<Any, (() -> Unit)?>>()
 
     @OptIn(DelicateCoroutinesApi::class)
     internal fun popupMenu() = JPopupMenu().apply {
-        val window = AppManager.focusedWindow
         var mouseListener: MouseClickListener? = null
+        var focusListener: WindowFocusListener? = null
         fun close() {
             isVisible = false
-            mouseListener?.let { window?.removeMouseListener(it) }
+            mouseListener?.let { window.removeMouseListener(it) }
+            focusListener?.let { window.removeWindowFocusListener(it) }
         }
         fun (() -> Unit)?.andClose() {
             launchUI {
@@ -39,14 +42,17 @@ class ContextMenu internal constructor() {
                 close()
             }
         }
-        window?.addMouseListener(mouseListener)
-        window?.events?.let {
-            val oldFocusLost = it.onFocusLost
-            it.onFocusLost = {
-                it.onFocusLost.andClose()
-                it.onFocusLost = oldFocusLost
+        window.addMouseListener(mouseListener)
+
+        focusListener = object : WindowFocusListener {
+            override fun windowGainedFocus(e: WindowEvent?) {}
+            override fun windowLostFocus(e: WindowEvent?) {
+                launchUI {
+                    close()
+                }
             }
         }
+        window.addWindowFocusListener(focusListener)
 
         items.forEach { (item, block) ->
             when (item) {
@@ -68,6 +74,6 @@ class ContextMenu internal constructor() {
     }
 }
 
-fun contextMenu(offset: IntOffset, contextMenu: ContextMenu.() -> Unit) {
-    ContextMenu().apply(contextMenu).popupMenu().show(null, offset.x, offset.y)
+fun contextMenu(window: ComposeWindow, offset: IntOffset, contextMenu: ContextMenu.() -> Unit) {
+    ContextMenu(window).apply(contextMenu).popupMenu().show(null, offset.x, offset.y)
 }

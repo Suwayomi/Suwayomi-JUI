@@ -89,6 +89,7 @@ fun WindowDialog(
                 else -> false
             }
         },
+        alwaysOnTop = forceFocus
     ) {
         CompositionLocalProvider(
             LocalResources provides resources
@@ -153,7 +154,8 @@ fun WindowDialog(
                 }
                 else -> false
             }
-        }
+        },
+        alwaysOnTop = forceFocus
     ) {
         CompositionLocalProvider(
             LocalResources provides resources

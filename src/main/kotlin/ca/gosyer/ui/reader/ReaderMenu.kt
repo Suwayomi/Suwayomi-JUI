@@ -35,7 +35,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
-import androidx.compose.ui.window.launchApplication
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.BuildConfig
 import ca.gosyer.common.di.AppScope
@@ -47,6 +46,7 @@ import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.components.LocalComposeWindow
 import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.resources.stringResource
@@ -62,8 +62,8 @@ import ca.gosyer.ui.reader.navigation.RightAndLeftNavigation
 import ca.gosyer.ui.reader.navigation.navigationClickable
 import ca.gosyer.ui.reader.viewer.ContinuousReader
 import ca.gosyer.ui.reader.viewer.PagerReader
+import ca.gosyer.util.lang.launchApplication
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 
 @OptIn(DelicateCoroutinesApi::class)
 fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
@@ -77,7 +77,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
 
     val resources = AppScope.getInstance<XmlResourceBundle>()
 
-    GlobalScope.launchApplication {
+    launchApplication {
         var shortcuts by remember {
             mutableStateOf(emptyMap<Key, ((KeyEvent) -> Boolean)>())
         }
@@ -105,6 +105,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
             }
         ) {
             CompositionLocalProvider(
+                LocalComposeWindow provides window,
                 LocalResources provides resources
             ) {
                 AppTheme {

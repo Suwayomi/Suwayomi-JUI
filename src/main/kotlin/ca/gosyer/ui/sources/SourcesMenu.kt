@@ -7,9 +7,11 @@
 package ca.gosyer.ui.sources
 
 import androidx.compose.foundation.BoxWithTooltip
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
@@ -46,20 +48,25 @@ import ca.gosyer.ui.sources.components.SourceHomeScreen
 import ca.gosyer.ui.sources.components.SourceScreen
 import ca.gosyer.ui.sources.settings.openSourceSettingsMenu
 import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.util.lang.launchApplication
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
 import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
+@OptIn(DelicateCoroutinesApi::class)
 fun openSourcesMenu() {
-    ThemedWindow(BuildConfig.NAME) {
-        CompositionLocalProvider(
-            LocalSavedInstanceState provides Bundle()
-        ) {
-            SourcesMenu(
-                ::openSourceSettingsMenu,
-                ::openMangaMenu
-            )
+    launchApplication {
+        ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
+            CompositionLocalProvider(
+                LocalSavedInstanceState provides Bundle()
+            ) {
+                SourcesMenu(
+                    ::openSourceSettingsMenu,
+                    ::openMangaMenu
+                )
+            }
         }
     }
 }
@@ -138,23 +145,25 @@ fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaCl
                                 },
                                 modifier = Modifier.size(64.dp)
                             ) {
-                                val modifier = Modifier
-                                    .combinedMouseClickable(
-                                        onClick = {
-                                            vm.selectTab(source)
-                                        },
-                                        onMiddleClick = {
-                                            if (source != null) {
-                                                vm.closeTab(source)
+                                Box(Modifier.fillMaxSize()) {
+                                    val modifier = Modifier
+                                        .combinedMouseClickable(
+                                            onClick = {
+                                                vm.selectTab(source)
+                                            },
+                                            onMiddleClick = {
+                                                if (source != null) {
+                                                    vm.closeTab(source)
+                                                }
                                             }
-                                        }
-                                    )
-                                    .requiredSize(50.dp)
-                                    .align(Alignment.Center)
-                                if (source != null) {
-                                    KtorImage(source.iconUrl(serverUrl), modifier = modifier)
-                                } else {
-                                    Icon(Icons.Rounded.Home, stringResource("sources_home"), modifier = modifier)
+                                        )
+                                        .requiredSize(50.dp)
+                                        .align(Alignment.Center)
+                                    if (source != null) {
+                                        KtorImage(source.iconUrl(serverUrl), modifier = modifier)
+                                    } else {
+                                        Icon(Icons.Rounded.Home, stringResource("sources_home"), modifier = modifier)
+                                    }
                                 }
                             }
                         }

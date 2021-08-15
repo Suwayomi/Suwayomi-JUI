@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.categories
 
-import androidx.compose.desktop.WindowEvents
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,9 +35,9 @@ import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -46,26 +45,32 @@ import ca.gosyer.BuildConfig
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.util.lang.launchApplication
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 
+@OptIn(DelicateCoroutinesApi::class)
 fun openCategoriesMenu(notifyFinished: (() -> Unit)? = null) {
-    val windowEvents = WindowEvents()
-    ThemedWindow("${BuildConfig.NAME} - Categories", events = windowEvents) {
-        CategoriesMenu(notifyFinished, windowEvents)
+    launchApplication {
+        ThemedWindow(
+            ::exitApplication,
+            title = "${BuildConfig.NAME} - Categories"
+        ) {
+            CategoriesMenu(notifyFinished)
+        }
     }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun CategoriesMenu(notifyFinished: (() -> Unit)? = null, windowEvents: WindowEvents) {
+fun CategoriesMenu(notifyFinished: (() -> Unit)? = null) {
     val vm = viewModel<CategoriesMenuViewModel>()
     val categories by vm.categories.collectAsState()
-    remember {
-        windowEvents.onClose = {
+    DisposableEffect(Unit) {
+        onDispose {
             val logger = KotlinLogging.logger {}
             val handler = CoroutineExceptionHandler { _, throwable ->
                 logger.debug { throwable }

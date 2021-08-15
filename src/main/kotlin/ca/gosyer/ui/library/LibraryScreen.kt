@@ -32,12 +32,17 @@ import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.util.lang.launchApplication
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@OptIn(DelicateCoroutinesApi::class)
 fun openLibraryMenu() {
-    ThemedWindow(BuildConfig.NAME) {
-        LibraryScreen()
+    launchApplication {
+        ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
+            LibraryScreen()
+        }
     }
 }
 

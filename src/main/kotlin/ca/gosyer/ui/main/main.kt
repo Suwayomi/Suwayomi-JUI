@@ -28,6 +28,7 @@ import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.components.LocalComposeWindow
 import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.resources.stringResource
@@ -142,6 +143,7 @@ suspend fun main() {
         ) {
             AppTheme {
                 CompositionLocalProvider(
+                    LocalComposeWindow provides window,
                     LocalBackPressHandler provides backPressHandler,
                     LocalResources provides resources
                 ) {

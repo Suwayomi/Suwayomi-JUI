@@ -7,7 +7,7 @@
 package ca.gosyer.ui.base.components
 
 import androidx.compose.foundation.BoxWithTooltip
-import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.TooltipPlacement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -24,8 +24,10 @@ fun BoxWithTooltipSurface(
     contentAlignment: Alignment = Alignment.TopStart,
     propagateMinConstraints: Boolean = false,
     delay: Int = 500,
-    offset: DpOffset = DpOffset.Zero,
-    content: @Composable BoxScope.() -> Unit
+    offset: TooltipPlacement = TooltipPlacement.CursorPoint(
+        offset = DpOffset(0.dp, 16.dp)
+    ),
+    content: @Composable () -> Unit
 ) {
     BoxWithTooltip(
         {

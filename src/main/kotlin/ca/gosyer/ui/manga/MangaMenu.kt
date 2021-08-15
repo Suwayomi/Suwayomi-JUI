@@ -51,11 +51,16 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Route
 import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.util.compose.ThemedWindow
+import ca.gosyer.util.lang.launchApplication
 import com.github.zsoltk.compose.router.BackStack
+import kotlinx.coroutines.DelicateCoroutinesApi
 
+@OptIn(DelicateCoroutinesApi::class)
 fun openMangaMenu(mangaId: Long) {
-    ThemedWindow(BuildConfig.NAME) {
-        MangaMenu(mangaId)
+    launchApplication {
+        ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
+            MangaMenu(mangaId)
+        }
     }
 }
 
