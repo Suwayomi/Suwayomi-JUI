@@ -38,8 +38,10 @@ import ca.gosyer.ui.sources.settings.model.SourceSettingsView.TwoState
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
 import com.github.zsoltk.compose.router.BackStack
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
+@OptIn(DelicateCoroutinesApi::class)
 fun openSourceSettingsMenu(sourceId: Long) {
     launchApplication {
         ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
