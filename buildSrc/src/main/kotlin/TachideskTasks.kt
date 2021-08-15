@@ -238,6 +238,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Delete>(deleteTmpFolderTask) {
             mustRunAfter(modifyTachideskJarManifest)
             delete(tmpPath)
+            onlyIf { file(tmpPath).let { it.exists() && it.canWrite() } }
 
             doFirst {
                 require(file(finalJar).exists()) { "Tachidesk.jar does not exist" }
