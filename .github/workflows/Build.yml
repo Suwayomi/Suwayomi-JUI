@@ -86,9 +86,9 @@ jobs:
         arguments: >
           ${{ matrix.build }}
           -Pcompose.desktop.mac.sign=true
-          -Pcompose.desktop.mac.signing.identity="${{ secrets.APPLE_IDENTITY }}"
-          -Pcompose.desktop.mac.notarization.appleID="${{ secrets.APPLE_ID }}"
-          -Pcompose.desktop.mac.notarization.password="${{ secrets.APPLE_PASSWORD }}"
+          -Pcompose.desktop.mac.signing.identity='${{ secrets.APPLE_IDENTITY }}'
+          -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }}
+          -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
         wrapper-cache-enabled: true
         dependencies-cache-enabled: true
         configuration-cache-enabled: true
