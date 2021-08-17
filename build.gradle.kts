@@ -12,7 +12,7 @@ plugins {
     kotlin("kapt") version "1.5.21"
     kotlin("plugin.serialization") version "1.5.21"
     id("org.jetbrains.compose") version "1.0.0-alpha4-build310"
-    id("de.fuerstenau.buildconfig") version "1.1.8"
+    id("com.github.gmazzo.buildconfig") version "3.0.2"
     id("org.jmailen.kotlinter") version "3.5.0"
     id("com.github.ben-manes.versions") version "0.39.0"
 }
@@ -183,15 +183,17 @@ compose.desktop {
     }
 }
 
+fun String.wrap() = """"$this""""
 buildConfig {
-    appName = project.name
-    version = project.version.toString()
+    className("BuildConfig")
+    packageName(project.group.toString())
+    useKotlinOutput { internalVisibility = true }
 
-    clsName = "BuildConfig"
-    packageName = project.group.toString()
+    buildConfigField("String", "NAME", project.name.wrap())
+    buildConfigField("String", "VERSION", project.version.toString().wrap())
 
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
-    buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion)
+    buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion.wrap())
     buildConfigField("int", "SERVER_CODE", serverCode.toString())
 }
 
