@@ -4,4 +4,24 @@
     <string name="action_add">Ajouter</string>
     <string name="color_secondary_sub">Accentue certaines parties de l\'interface utilisateur</string>
     <string name="downloads_remaining">%1$d restant</string>
+    <string name="categories_delete_confirm">Supprimer la catégorie %1$s \?</string>
+    <string name="action_delete">Supprimer</string>
+    <string name="backup_create">Créer une Sauvegarde</string>
+    <string name="backup_create_sub">Créer une sauvegarde à partir de Tachidesk</string>
+    <string name="action_create">Créer</string>
+    <string name="action_continue">Continuer</string>
+    <string name="action_retry">Ressayer</string>
+    <string name="backup_restore">Restaurer la Sauvegarde</string>
+    <string name="action_rename">Renommer</string>
+    <string name="action_clear_queue">Vider la file d\'attente</string>
+    <string name="location_categories">Catégories</string>
+    <string name="unable_to_start_server">Impossible de démarrer le serveur</string>
+    <string name="action_cancel">Annuler</string>
+    <string name="settings_backup_screen">Paramètres de sauvegarde</string>
+    <string name="settings_backup">Sauvegarde</string>
+    <string name="confirm_exit_message">Vous êtes sûr de vouloir quitter \?</string>
+    <string name="settings_appearance_screen">Paramètres d\'apparence</string>
+    <string name="settings_appearance">Apparence</string>
+    <string name="all">Tout</string>
+    <string name="settings_advanced_screen">Paramètres avancés</string>
 </resources>
