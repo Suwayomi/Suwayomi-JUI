@@ -149,7 +149,7 @@ private fun ColorPresets(
                 ColorPresetItem(
                     color = color,
                     borderColor = borderColor,
-                    isSelected = selectedShade == null && initialColor == color,
+                    isSelected = selectedShade == null && selectedColor == color,
                     onClick = {
                         selectedShade = null
                         selectedColor = color
