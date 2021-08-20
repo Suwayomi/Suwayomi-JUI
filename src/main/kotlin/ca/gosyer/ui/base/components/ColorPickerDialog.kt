@@ -53,6 +53,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ExperimentalGraphicsApi
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.luminance
@@ -413,8 +414,9 @@ private fun hueToCoordinate(hue: Float, size: IntSize): Float {
 
 // Color space conversions
 
+@OptIn(ExperimentalGraphicsApi::class)
 fun hsvToColor(hue: Float, saturation: Float, value: Float): Color {
-    return Color(java.awt.Color.HSBtoRGB(hue, saturation, value))
+    return Color.hsv(hue, saturation, value)
 }
 
 private fun Color.toHsv(): FloatArray {
