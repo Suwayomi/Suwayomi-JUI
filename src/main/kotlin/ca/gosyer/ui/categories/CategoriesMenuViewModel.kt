@@ -61,13 +61,14 @@ class CategoriesMenuViewModel @Inject constructor(
                 categoryHandler.modifyCategory(originalCategory, category.name)
             }
         }
-        val updatedCategories = categoryHandler.getCategories()
-        updatedCategories.forEach { updatedCategory ->
-            val category = categories.find { it.id == updatedCategory.id || it.name == updatedCategory.name } ?: return@forEach
+        var updatedCategories = categoryHandler.getCategories()
+        categories.forEach { category ->
+            val updatedCategory = updatedCategories.find { it.id == category.id || it.name == category.name } ?: return@forEach
             if (category.order != updatedCategory.order) {
-                debug { "${category.order} to ${updatedCategory.order}" }
+                debug { "${category.name}: ${updatedCategory.order} to ${category.order}" }
                 categoryHandler.reorderCategory(updatedCategory, category.order, updatedCategory.order)
             }
+            updatedCategories = categoryHandler.getCategories()
         }
 
         if (manualUpdate) {
@@ -88,24 +89,28 @@ class CategoriesMenuViewModel @Inject constructor(
     }
 
     fun moveUp(category: MenuCategory) {
-        val categories = _categories.value
+        val categories = _categories.value.toMutableList()
         val index = categories.indexOf(category)
         if (index == -1) throw Exception("Invalid index")
-        categories[index].order = category.order - 1
-        categories[index - 1].order = category.order + 1
-        _categories.value = categories.sortedBy { it.order }
+        categories.add(index - 1, categories.removeAt(index))
+        categories.forEachIndexed { i, _ ->
+            categories[i].order = i + 1
+        }
+        _categories.value = categories.sortedBy { it.order }.toList()
     }
 
     fun moveDown(category: MenuCategory) {
-        val categories = _categories.value
+        val categories = _categories.value.toMutableList()
         val index = categories.indexOf(category)
         if (index == -1) throw Exception("Invalid index")
-        categories[index].order = category.order + 1
-        categories[index + 1].order = category.order - 1
-        _categories.value = categories.sortedBy { it.order }
+        categories.add(index + 1, categories.removeAt(index))
+        categories.forEachIndexed { i, _ ->
+            categories[i].order = i + 1
+        }
+        _categories.value = categories.sortedBy { it.order }.toList()
     }
 
-    fun Category.toMenuCategory() = MenuCategory(id, order, name, default)
+    private fun Category.toMenuCategory() = MenuCategory(id, order, name, default)
 
     data class MenuCategory(val id: Long? = null, var order: Int, val name: String, val default: Boolean = false)
 
