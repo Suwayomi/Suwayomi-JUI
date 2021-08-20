@@ -34,9 +34,9 @@ jobs:
         run: ./scripts/SetupClUnix.sh
 
       - name: Run Tests
-        uses: eskatos/gradle-command-action@v1
+        uses: gradle/gradle-build-action@v1
         with:
           arguments: check
-          wrapper-cache-enabled: true
+          distributions-cache-enabled: true
           dependencies-cache-enabled: true
           configuration-cache-enabled: true
