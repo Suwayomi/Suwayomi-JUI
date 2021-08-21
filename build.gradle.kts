@@ -128,16 +128,18 @@ tasks {
 
     withType<LintTask> {
         source(files("src"))
+        exclude("ca/gosyer/build")
     }
 
     withType<FormatTask> {
         source(files("src"))
+        exclude("ca/gosyer/build")
     }
 
     registerTachideskTasks(project)
 
     task("generateResourceConstants") {
-        val buildResources = buildConfig.forClass(project.group.toString(), "BuildResources")
+        val buildResources = buildConfig.forClass(project.group.toString()+ ".build", "BuildResources")
 
         doFirst {
             val langs = listOf("en") + sourceSets["main"].resources
@@ -202,7 +204,7 @@ compose.desktop {
 fun String.wrap() = """"$this""""
 buildConfig {
     className("BuildConfig")
-    packageName(project.group.toString())
+    packageName(project.group.toString() + ".build")
     useKotlinOutput { internalVisibility = true }
 
     buildConfigField("String", "NAME", project.name.wrap())

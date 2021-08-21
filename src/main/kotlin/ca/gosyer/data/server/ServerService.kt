@@ -6,7 +6,7 @@
 
 package ca.gosyer.data.server
 
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.util.lang.withIOContext
 import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.userDataDir

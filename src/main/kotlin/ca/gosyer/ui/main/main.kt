@@ -19,7 +19,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
 import androidx.compose.ui.window.rememberWindowState
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.core.logging.initializeLogger
 import ca.gosyer.data.DataModule
 import ca.gosyer.data.server.ServerService

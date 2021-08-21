@@ -6,7 +6,7 @@
 
 package ca.gosyer.data.server
 
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.server.model.Auth
 import ca.gosyer.data.server.model.Proxy
 import io.ktor.client.HttpClient

@@ -34,7 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.KtorImage

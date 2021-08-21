@@ -6,7 +6,7 @@
 
 package ca.gosyer.data.download
 
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloadStatus
 import ca.gosyer.data.download.model.DownloaderStatus

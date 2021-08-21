@@ -6,7 +6,7 @@
 
 package ca.gosyer.core.logging
 
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import com.github.weisj.darklaf.LafManager
 import mu.KotlinLogging
 import org.apache.logging.log4j.Level

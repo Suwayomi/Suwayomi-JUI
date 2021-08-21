@@ -47,7 +47,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.ui.base.components.combinedMouseClickable

@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.rememberWindowState
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Extension
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.ActionIcon

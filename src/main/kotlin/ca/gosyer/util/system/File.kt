@@ -6,7 +6,7 @@
 
 package ca.gosyer.util.system
 
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.util.lang.launchUI
 import kotlinx.coroutines.DelicateCoroutinesApi
 import mu.KotlinLogging

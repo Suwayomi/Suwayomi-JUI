@@ -40,7 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloaderStatus
 import ca.gosyer.data.models.Chapter

@@ -11,7 +11,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.input.TextFieldValue
-import ca.gosyer.BuildConfig
+import ca.gosyer.build.BuildConfig
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.resources.stringResource
 import kotlinx.coroutines.flow.MutableStateFlow
