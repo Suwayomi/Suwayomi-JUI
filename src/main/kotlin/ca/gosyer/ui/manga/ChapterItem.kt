@@ -40,6 +40,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ContextMenuItem
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -48,10 +49,8 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloadState
 import ca.gosyer.ui.base.components.DropdownIconButton
-import ca.gosyer.ui.base.components.LocalComposeWindow
-import ca.gosyer.ui.base.components.combinedMouseClickable
+import ca.gosyer.ui.base.components.contextMenuClickable
 import ca.gosyer.ui.base.resources.stringResource
-import ca.gosyer.util.compose.contextMenu
 import java.time.Instant
 
 @Composable
@@ -72,23 +71,16 @@ fun ChapterItem(
         elevation = 1.dp,
         shape = RoundedCornerShape(4.dp)
     ) {
-        val window = LocalComposeWindow.current
         BoxWithConstraints(
-            Modifier.combinedMouseClickable(
-                onClick = {
-                    onClick(chapter.index)
+            Modifier.contextMenuClickable(
+                {
+                    listOf(
+                        ContextMenuItem("Toggle read") { toggleRead(chapter.index) },
+                        ContextMenuItem("Mark previous as read") { markPreviousAsRead(chapter.index) },
+                        ContextMenuItem("Toggle bookmarked") { toggleBookmarked(chapter.index) }
+                    )
                 },
-                onRightClick = {
-                    contextMenu(
-                        window,
-                        it
-                    ) {
-                        menuItem("Toggle read") { toggleRead(chapter.index) }
-                        menuItem("Mark previous as read") { markPreviousAsRead(chapter.index) }
-                        separator()
-                        menuItem("Toggle bookmarked") { toggleBookmarked(chapter.index) }
-                    }
-                }
+                onClick = { onClick(chapter.index) }
             )
         ) {
             Row(
