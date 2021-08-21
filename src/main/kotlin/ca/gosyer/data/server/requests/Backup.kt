@@ -8,16 +8,20 @@ package ca.gosyer.data.server.requests
 
 @Post
 fun backupImportRequest() =
-    "/api/v1/backup/legacy/import"
+    "/api/v1/backup/import"
 
 @Post
 fun backupFileImportRequest() =
-    "/api/v1/backup/legacy/import/file"
+    "/api/v1/backup/import/file"
 
 @Post
 fun backupExportRequest() =
-    "/api/v1/backup/legacy/export"
+    "/api/v1/backup/export"
 
 @Post
 fun backupFileExportRequest() =
-    "/api/v1/backup/legacy/export/file"
+    "/api/v1/backup/export/file"
+
+@Post
+fun validateBackupFileRequest() =
+    "/api/v1/backup/validate/file"

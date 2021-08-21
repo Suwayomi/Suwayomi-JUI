@@ -6,24 +6,21 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.data.models.Backup
+import ca.gosyer.data.models.BackupValidationResult
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
-import ca.gosyer.data.server.requests.backupExportRequest
 import ca.gosyer.data.server.requests.backupFileExportRequest
 import ca.gosyer.data.server.requests.backupFileImportRequest
-import ca.gosyer.data.server.requests.backupImportRequest
+import ca.gosyer.data.server.requests.validateBackupFileRequest
 import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
-import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import io.ktor.http.contentType
 import java.io.File
 import javax.inject.Inject
 
@@ -37,10 +34,10 @@ class BackupInteractionHandler @Inject constructor(
             serverUrl + backupFileImportRequest(),
             formData = formData {
                 append(
-                    "backup.json", file.readBytes(),
+                    "backup.proto.gz", file.readBytes(),
                     Headers.build {
-                        append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                        append(HttpHeaders.ContentDisposition, "filename=backup.json")
+                        append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
+                        append(HttpHeaders.ContentDisposition, "filename=backup.proto.gz")
                     }
                 )
             },
@@ -48,26 +45,25 @@ class BackupInteractionHandler @Inject constructor(
         )
     }
 
-    suspend fun importBackup(backup: Backup, block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
-        client.post<HttpResponse>(
-            serverUrl + backupImportRequest()
-        ) {
-            contentType(ContentType.Application.Json)
-            body = backup
-            block()
-        }
+    suspend fun validateBackupFile(file: File, block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
+        client.submitFormWithBinaryData<BackupValidationResult>(
+            serverUrl + validateBackupFileRequest(),
+            formData = formData {
+                append(
+                    "backup.proto.gz", file.readBytes(),
+                    Headers.build {
+                        append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
+                        append(HttpHeaders.ContentDisposition, "filename=backup.proto.gz")
+                    }
+                )
+            },
+            block = block
+        )
     }
 
     suspend fun exportBackupFile(block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
         client.get<HttpResponse>(
             serverUrl + backupFileExportRequest(),
-            block
-        )
-    }
-
-    suspend fun exportBackup(block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
-        client.get<Backup>(
-            serverUrl + backupExportRequest(),
             block
         )
     }

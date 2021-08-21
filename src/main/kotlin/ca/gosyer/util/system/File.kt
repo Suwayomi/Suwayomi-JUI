@@ -31,12 +31,12 @@ val userDataDir: File by lazy {
 }
 
 fun filePicker(
-    extension: String? = null,
+    vararg extensions: String,
     builder: JFileChooser.() -> Unit = {},
     onCancel: (JFileChooser) -> Unit = {},
     onError: (JFileChooser) -> Unit = {},
     onApprove: (JFileChooser) -> Unit
-) = fileChooser(false, builder, onCancel, onError, onApprove, extension)
+) = fileChooser(false, builder, onCancel, onError, onApprove, extensions = extensions)
 
 fun fileSaver(
     defaultFileName: String,
@@ -51,8 +51,8 @@ fun fileSaver(
     onCancel,
     onError,
     onApprove,
-    extension,
-    defaultFileName
+    defaultFileName,
+    extension
 )
 
 /**
@@ -71,15 +71,15 @@ private fun fileChooser(
     onCancel: (JFileChooser) -> Unit = {},
     onError: (JFileChooser) -> Unit = {},
     onApprove: (JFileChooser) -> Unit,
-    extension: String? = null,
-    defaultFileName: String = ""
+    defaultFileName: String = "",
+    vararg extensions: String,
 ) = launchUI {
     val fileChooser = JFileChooser()
         .apply {
             val details = actionMap.get("viewTypeDetails")
             details?.actionPerformed(null)
-            if (extension != null) {
-                fileFilter = FileNameExtensionFilter("$extension file", extension)
+            if (extensions.isNotEmpty()) {
+                fileFilter = FileNameExtensionFilter("${extensions.joinToString()} files", *extensions)
             }
             if (saving) {
                 selectedFile = File(defaultFileName)

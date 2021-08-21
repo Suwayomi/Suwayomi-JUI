@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
@@ -25,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
-import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
@@ -40,6 +40,7 @@ import ca.gosyer.util.system.fileSaver
 import com.github.zsoltk.compose.router.BackStack
 import io.ktor.client.features.onDownload
 import io.ktor.client.features.onUpload
+import io.ktor.http.isSuccess
 import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,17 +48,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 import javax.inject.Inject
 
 class SettingsBackupViewModel @Inject constructor(
-    private val backupHandler: BackupInteractionHandler,
-    private val sourceHandler: SourceInteractionHandler
+    private val backupHandler: BackupInteractionHandler
 ) : ViewModel() {
     private val _restoring = MutableStateFlow(false)
     val restoring = _restoring.asStateFlow()
@@ -74,6 +69,8 @@ class SettingsBackupViewModel @Inject constructor(
     val creatingProgress = _creatingProgress.asStateFlow()
     private val _creatingStatus = MutableStateFlow<Status>(Status.Nothing)
     internal val creatingStatus = _creatingStatus.asStateFlow()
+    private val _createFlow = MutableSharedFlow<Pair<String, (File) -> Unit>>()
+    val createFlow = _createFlow.asSharedFlow()
 
     fun restoreFile(file: File?) {
         scope.launch {
@@ -83,17 +80,11 @@ class SettingsBackupViewModel @Inject constructor(
                 _restoring.value = false
             } else {
                 try {
-                    val sources =
-                        Json.decodeFromString<JsonObject>(file.readText())["extensions"]!!.jsonArray.associate {
-                            val items = it.jsonPrimitive.content.split(":")
-                            items[0].toLong() to items[1]
-                        }
-                    val installedSources = sourceHandler.getSourceList().associateBy { it.id }
-                    val missingSources = sources.filter { installedSources[it.key] == null }
+                    val (missingSources) = backupHandler.validateBackupFile(file)
                     if (missingSources.isEmpty()) {
                         restoreBackup(file)
                     } else {
-                        _missingSourceFlow.emit(file to missingSources.values.toList())
+                        _missingSourceFlow.emit(file to missingSources)
                     }
                 } catch (e: Exception) {
                     info(e) { "Error importing backup" }
@@ -131,33 +122,35 @@ class SettingsBackupViewModel @Inject constructor(
         _restoring.value = false
     }
 
-    fun createFile(file: File?) {
+    fun exportBackup() {
         scope.launch {
-            if (file == null) {
-                info { "Invalid file ${file?.absolutePath}" }
-            } else {
-                if (file.exists()) file.delete()
-                _creatingStatus.value = Status.Nothing
-                _creatingProgress.value = null
-                _creating.value = true
-                try {
-                    val backup = backupHandler.exportBackupFile {
-                        onDownload { bytesSentTotal, contentLength ->
-                            _creatingProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(0.99F)
+            _creatingStatus.value = Status.Nothing
+            _creatingProgress.value = null
+            _creating.value = true
+            val backup = try {
+                backupHandler.exportBackupFile {
+                    onDownload { bytesSentTotal, contentLength ->
+                        _creatingProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(0.99F)
+                    }
+                }
+            } catch (e: Exception) {
+                info(e) { "Error exporting backup" }
+                _creatingStatus.value = Status.Error
+                e.throwIfCancellation()
+                null
+            }
+            _creatingProgress.value = 1.0F
+            if (backup != null && backup.status.isSuccess()) {
+                _createFlow.emit(
+                    (backup.headers["content-disposition"]?.substringAfter("filename=")?.trim('"') ?: "backup") to {
+                        scope.launch {
+                            it.outputStream().use {
+                                backup.content.copyTo(it)
+                            }
+                            _creatingStatus.value = Status.Success
                         }
                     }
-                    file.outputStream().use {
-                        backup.content.copyTo(it)
-                    }
-                    _creatingStatus.value = Status.Success
-                } catch (e: Exception) {
-                    info(e) { "Error exporting backup" }
-                    _creatingStatus.value = Status.Error
-                    e.throwIfCancellation()
-                } finally {
-                    _creatingProgress.value = 1.0F
-                    _creating.value = false
-                }
+                )
             }
         }
     }
@@ -181,8 +174,17 @@ fun SettingsBackupScreen(navController: BackStack<Route>) {
     val creatingProgress by vm.creatingProgress.collectAsState()
     val creatingStatus by vm.creatingStatus.collectAsState()
     LaunchedEffect(Unit) {
-        vm.missingSourceFlow.collect { (backup, sources) ->
-            openMissingSourcesDialog(sources, { vm.restoreBackup(backup) }, vm::stopRestore)
+        launch {
+            vm.missingSourceFlow.collect { (backup, sources) ->
+                openMissingSourcesDialog(sources, { vm.restoreBackup(backup) }, vm::stopRestore)
+            }
+        }
+        launch {
+            vm.createFlow.collect { (filename, function) ->
+                fileSaver(filename, "proto.gz") {
+                    function(it.selectedFile)
+                }
+            }
         }
     }
 
@@ -197,7 +199,7 @@ fun SettingsBackupScreen(navController: BackStack<Route>) {
                     restoringProgress,
                     restoreStatus
                 ) {
-                    filePicker("json") {
+                    filePicker("gz") {
                         vm.restoreFile(it.selectedFile)
                     }
                 }
@@ -206,12 +208,9 @@ fun SettingsBackupScreen(navController: BackStack<Route>) {
                     stringResource("backup_create_sub"),
                     creating,
                     creatingProgress,
-                    creatingStatus
-                ) {
-                    fileSaver("backup.json", "json") {
-                        vm.createFile(it.selectedFile)
-                    }
-                }
+                    creatingStatus,
+                    vm::exportBackup
+                )
             }
         }
     }
@@ -225,7 +224,7 @@ private fun openMissingSourcesDialog(missingSources: List<String>, onPositiveCli
     ) {
         LazyColumn {
             item {
-                Text(stringResource("missing_sources"))
+                Text(stringResource("missing_sources"), style = MaterialTheme.typography.subtitle2)
             }
             items(missingSources) {
                 Text(it)
