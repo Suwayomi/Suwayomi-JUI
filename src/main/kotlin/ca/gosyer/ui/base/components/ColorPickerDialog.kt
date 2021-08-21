@@ -101,7 +101,7 @@ fun ColorPickerDialog(
         buttons = {
             val showPresetsState by showPresets.collectAsState()
             val currentColorState by currentColor.collectAsState()
-            Row(Modifier.fillMaxWidth().padding(8.dp)) {
+            Row(Modifier.fillMaxWidth().padding(8.dp).align(Alignment.BottomCenter)) {
                 TextButton(
                     onClick = {
                         showPresets.value = !showPresetsState
@@ -373,7 +373,8 @@ fun ColorPalette(
                     } else {
                         textFieldHex = it
                     }
-                }
+                },
+                singleLine = true
             )
         }
     }

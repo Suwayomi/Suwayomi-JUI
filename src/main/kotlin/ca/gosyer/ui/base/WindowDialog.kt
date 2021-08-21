@@ -9,6 +9,7 @@ package ca.gosyer.ui.base
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -131,8 +132,8 @@ fun WindowDialog(
     onCloseRequest: (() -> Unit)? = null,
     forceFocus: Boolean = true,
     keyboardShortcuts: Map<Key, (KeyEvent) -> Boolean> = emptyMap(),
-    buttons: @Composable (() -> Unit) -> Unit,
-    content: @Composable (() -> Unit) -> Unit
+    buttons: @Composable BoxWithConstraintsScope.(() -> Unit) -> Unit,
+    content: @Composable BoxWithConstraintsScope.(() -> Unit) -> Unit
 ) = launchApplication {
     DisposableEffect(Unit) {
         onDispose {
@@ -141,7 +142,7 @@ fun WindowDialog(
     }
 
     val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
-    val windowState = rememberWindowState(size = size)
+    val windowState = rememberWindowState(size = size, position = WindowPosition.Aligned(Alignment.Center))
 
     Window(
         title = title,
@@ -155,17 +156,17 @@ fun WindowDialog(
                 else -> false
             }
         },
-        alwaysOnTop = forceFocus
+        alwaysOnTop = forceFocus,
     ) {
         CompositionLocalProvider(
             LocalResources provides resources
         ) {
             AppTheme {
                 Surface {
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        BoxWithConstraints {
+                    Column {
+                        BoxWithConstraints(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
                             content(::exitApplication)
                             buttons(::exitApplication)
                         }

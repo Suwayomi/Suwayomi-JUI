@@ -26,10 +26,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -228,14 +230,14 @@ fun <T> ChoiceDialog(
     onCloseRequest: () -> Unit = {},
     onSelected: (T) -> Unit,
     title: String,
-    buttons: @Composable (() -> Unit) -> Unit = { }
+    buttons: @Composable BoxWithConstraintsScope.(() -> Unit) -> Unit = { }
 ) {
     WindowDialog(
         onCloseRequest = onCloseRequest,
         buttons = buttons,
         title = title,
         content = {
-            LazyColumn {
+            LazyColumn(Modifier.fillMaxSize()) {
                 items(items) { (value, text) ->
                     Row(
                         modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
