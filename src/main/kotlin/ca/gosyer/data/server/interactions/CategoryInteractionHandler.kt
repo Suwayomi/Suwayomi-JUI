@@ -59,10 +59,14 @@ class CategoryInteractionHandler @Inject constructor(
     suspend fun removeMangaFromCategory(manga: Manga, categoryId: Long) = removeMangaFromCategory(manga.id, categoryId)
     suspend fun removeMangaFromCategory(mangaId: Long, category: Category) = removeMangaFromCategory(mangaId, category.id)
 
-    suspend fun getCategories() = withIOContext {
+    suspend fun getCategories(dropDefault: Boolean = false) = withIOContext {
         client.get<List<Category>>(
             serverUrl + getCategoriesQuery()
-        )
+        ).let { categories ->
+            if (dropDefault) {
+                categories.filterNot { it.name.equals("default", true) }
+            } else categories
+        }
     }
 
     suspend fun createCategory(name: String) = withIOContext {

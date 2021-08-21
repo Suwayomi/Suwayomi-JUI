@@ -13,7 +13,3 @@ fun addMangaToLibraryQuery(mangaId: Long) =
 @Delete
 fun removeMangaFromLibraryRequest(mangaId: Long) =
     "/api/v1/manga/$mangaId/library"
-
-@Get
-fun getLibraryQuery() =
-    "/api/v1/library/"

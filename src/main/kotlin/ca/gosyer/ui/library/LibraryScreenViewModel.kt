@@ -11,9 +11,8 @@ import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
-import ca.gosyer.data.server.interactions.LibraryInteractionHandler
-import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.lang.throwIfCancellation
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,9 +31,7 @@ private fun LibraryMap.setManga(order: Int, manga: List<Manga>) {
 }
 
 class LibraryScreenViewModel @Inject constructor(
-    private val libraryHandler: LibraryInteractionHandler,
     private val categoryHandler: CategoryInteractionHandler,
-    private val resources: XmlResourceBundle,
     libraryPreferences: LibraryPreferences,
     serverPreferences: ServerPreferences,
 ) : ViewModel() {
@@ -51,7 +48,8 @@ class LibraryScreenViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private val defaultCategory = Category(0, 0, resources.getStringA("default_category"), true)
+    private val _error = MutableStateFlow<String?>(null)
+    val error = _error.asStateFlow()
 
     init {
         getLibrary()
@@ -63,19 +61,17 @@ class LibraryScreenViewModel @Inject constructor(
             try {
                 val categories = categoryHandler.getCategories()
                 if (categories.isEmpty()) {
-                    library.categories.value = listOf(defaultCategory)
-                    library.mangaMap.setManga(defaultCategory.order, libraryHandler.getLibraryManga())
-                } else {
-                    library.categories.value = listOf(defaultCategory) + categories.sortedBy { it.order }
-                    categories.map {
-                        async {
-                            library.mangaMap.setManga(it.order, categoryHandler.getMangaFromCategory(it))
-                        }
-                    }.awaitAll()
-                    val mangaInCategories = library.mangaMap.flatMap { it.value.value }.map { it.id }.distinct()
-                    library.mangaMap.setManga(defaultCategory.order, libraryHandler.getLibraryManga().filterNot { it.id in mangaInCategories })
+                    throw Exception("Library is empty")
                 }
+                library.categories.value = categories.sortedBy { it.order }
+                categories.map {
+                    async {
+                        library.mangaMap.setManga(it.order, categoryHandler.getMangaFromCategory(it))
+                    }
+                }.awaitAll()
             } catch (e: Exception) {
+                e.throwIfCancellation()
+                _error.value = e.message
             } finally {
                 _isLoading.value = false
             }

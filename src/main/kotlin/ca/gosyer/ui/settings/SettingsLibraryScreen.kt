@@ -41,7 +41,7 @@ class SettingsLibraryViewModel @Inject constructor(
 
     fun refreshCategoryCount() {
         scope.launch {
-            _categories.value = categoryHandler.getCategories().size
+            _categories.value = categoryHandler.getCategories(true).size
         }
     }
 }

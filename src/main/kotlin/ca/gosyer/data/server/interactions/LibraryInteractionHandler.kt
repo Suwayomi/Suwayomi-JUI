@@ -10,7 +10,6 @@ import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.addMangaToLibraryQuery
-import ca.gosyer.data.server.requests.getLibraryQuery
 import ca.gosyer.data.server.requests.removeMangaFromLibraryRequest
 import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.delete
@@ -22,12 +21,6 @@ class LibraryInteractionHandler @Inject constructor(
     client: Http,
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
-
-    suspend fun getLibraryManga() = withIOContext {
-        client.get<List<Manga>>(
-            serverUrl + getLibraryQuery()
-        )
-    }
 
     suspend fun addMangaToLibrary(mangaId: Long) = withIOContext {
         client.get<HttpResponse>(

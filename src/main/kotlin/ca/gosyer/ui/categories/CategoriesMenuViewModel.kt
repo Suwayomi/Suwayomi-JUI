@@ -35,7 +35,7 @@ class CategoriesMenuViewModel @Inject constructor(
             _categories.value = emptyList()
             _isLoading.value = true
             try {
-                _categories.value = categoryHandler.getCategories()
+                _categories.value = categoryHandler.getCategories(true)
                     .sortedBy { it.order }
                     .also { originalCategories = it }
                     .map { it.toMenuCategory() }
@@ -61,14 +61,14 @@ class CategoriesMenuViewModel @Inject constructor(
                 categoryHandler.modifyCategory(originalCategory, category.name)
             }
         }
-        var updatedCategories = categoryHandler.getCategories()
+        var updatedCategories = categoryHandler.getCategories(true)
         categories.forEach { category ->
             val updatedCategory = updatedCategories.find { it.id == category.id || it.name == category.name } ?: return@forEach
             if (category.order != updatedCategory.order) {
                 debug { "${category.name}: ${updatedCategory.order} to ${category.order}" }
                 categoryHandler.reorderCategory(updatedCategory, category.order, updatedCategory.order)
             }
-            updatedCategories = categoryHandler.getCategories()
+            updatedCategories = categoryHandler.getCategories(true)
         }
 
         if (manualUpdate) {
