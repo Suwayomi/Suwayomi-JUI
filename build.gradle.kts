@@ -11,7 +11,7 @@ plugins {
     kotlin("jvm") version "1.5.21"
     kotlin("kapt") version "1.5.21"
     kotlin("plugin.serialization") version "1.5.21"
-    id("org.jetbrains.compose") version "1.0.0-alpha4-build310"
+    id("org.jetbrains.compose") version "1.0.0-alpha4-build315"
     id("com.github.gmazzo.buildconfig") version "3.0.2"
     id("org.jmailen.kotlinter") version "3.5.0"
     id("com.github.ben-manes.versions") version "0.39.0"
@@ -135,6 +135,22 @@ tasks {
     }
 
     registerTachideskTasks(project)
+
+    task("generateResourceConstants") {
+        val buildResources = buildConfig.forClass(project.group.toString(), "BuildResources")
+
+        doFirst {
+            val langs = listOf("en") + sourceSets["main"].resources
+                .filter { it.name == "strings.xml" }
+                .drop(1)
+                .map { it.absolutePath.substringAfter("values-").substringBefore(File.separatorChar) }
+            buildResources.buildConfigField("Array<String>", "LANGUAGES", langs.joinToString(prefix = "arrayOf(", postfix = ")") { it.wrap() })
+        }
+
+        generateBuildConfig {
+            dependsOn(this@task)
+        }
+    }
 }
 
 

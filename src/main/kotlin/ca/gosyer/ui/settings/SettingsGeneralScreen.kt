@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
+import ca.gosyer.BuildResources
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.ui.base.components.Toolbar
@@ -47,17 +48,13 @@ class SettingsGeneralViewModel @Inject constructor(
     )
 
     @Composable
-    fun getLanguageChoices(): Map<String, String> = mapOf(
-        "" to stringResource("language_system_default", currentLocale.getDisplayName(currentLocale))
-    ) + listOf(
-        "en",
-        "en-CA",
-        "fa",
-        "hi",
-        "pt-BR",
-        "sv",
-        "tam"
-    ).associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
+    fun getLanguageChoices(): Map<String, String> = (
+        mapOf(
+            "" to stringResource("language_system_default", currentLocale.getDisplayName(currentLocale))
+        ) + BuildResources.LANGUAGES
+            .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
+        )
+        .toSortedMap(compareBy { it.lowercase() })
 
     @Composable
     fun getDateChoices(): Map<String, String> {
