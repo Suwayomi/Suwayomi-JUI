@@ -68,6 +68,8 @@ You need this software packages installed in order to build this project:
 ### Building a jar for your OS
 Run `./gradlew packageUberJarForCurrentOS`, the resulting built jar file will be `build/compose/Tachidesk-JUI-os-arch-X.Y.Z.jar`.
 
+### Running without package
+Run `./gradlew run`, JUI will build and run. Use this for debugging and development purposes.
 
 ## Translation
 Feel free to translate the project on [Weblate](https://hosted.weblate.org/projects/tachideskjui/desktop/)
