@@ -78,20 +78,14 @@ class XmlResourceBundle internal constructor(internal val lookup: ConcurrentHash
             val rootBundle = classLoader.getResourceAsStream("values/values/strings.xml")!!
                 .use { XmlResourceBundle(it) }
 
-            val languageBundle = classLoader.getResourceAsStream("values/values-${locale.language}/strings.xml")
+            val languageBundle = classLoader.getResourceAsStream("values/values-${locale.toLanguageTag()}/strings.xml")
                 ?.use { XmlResourceBundle(it) }
 
-            val languageTagBundle = classLoader.getResourceAsStream("values/values-${locale.toLanguageTag()}/strings.xml")
-                ?.use { XmlResourceBundle(it) }
-
-            var resultBundle = rootBundle
-            if (languageBundle != null) {
-                resultBundle += languageBundle
+            return if (languageBundle != null) {
+                rootBundle + languageBundle
+            } else {
+                rootBundle
             }
-            if (languageTagBundle != null) {
-                resultBundle += languageTagBundle
-            }
-            return resultBundle
         }
     }
 }

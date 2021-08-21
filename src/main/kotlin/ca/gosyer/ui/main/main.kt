@@ -13,6 +13,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.configureSwingGlobalsForCompose
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.window.Window
@@ -49,6 +50,7 @@ import toothpick.configuration.Configuration
 import toothpick.ktp.KTP
 import toothpick.ktp.extension.getInstance
 import java.io.File
+import java.util.Locale
 import kotlin.system.exitProcess
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -74,7 +76,21 @@ suspend fun main() {
 
     val serverService = scope.getInstance<ServerService>()
     val uiPreferences = scope.getInstance<UiPreferences>()
+
+    // Call setDefault before getting a resource bundle
+    val language = uiPreferences.language().get()
+    if (language.isNotBlank()) {
+        val locale: Locale? = Locale.forLanguageTag(language)
+        if (locale != null) {
+            Locale.setDefault(locale)
+        }
+    }
+
     val resources = scope.getInstance<XmlResourceBundle>()
+
+    // Set the Compose constants before any
+    // Swing functions are called
+    configureSwingGlobalsForCompose()
 
     uiPreferences.themeMode()
         .getAsFlow {
