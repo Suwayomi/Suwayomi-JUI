@@ -8,9 +8,11 @@ package ca.gosyer.ui.manga
 
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.download.model.DownloadChapter
+import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.ServerPreferences
+import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
@@ -19,6 +21,7 @@ import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.lang.withIOContext
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -35,6 +38,7 @@ class MangaMenuViewModel @Inject constructor(
     private val params: Params,
     private val mangaHandler: MangaInteractionHandler,
     private val chapterHandler: ChapterInteractionHandler,
+    private val categoryHandler: CategoryInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
     private val downloadService: DownloadService,
     serverPreferences: ServerPreferences,
@@ -52,6 +56,11 @@ class MangaMenuViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
+
+    private val _categoriesExist = MutableStateFlow(true)
+    val categoriesExist = _categoriesExist.asStateFlow()
+
+    val chooseCategoriesFlow = MutableSharedFlow<Pair<List<Category>, List<Category>>>()
 
     val dateTimeFormatter = uiPreferences.dateFormat().changes()
         .map {
@@ -79,6 +88,10 @@ class MangaMenuViewModel @Inject constructor(
             refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
             _isLoading.value = false
         }
+
+        scope.launch {
+            _categoriesExist.value = categoryHandler.getCategories(true).isNotEmpty()
+        }
     }
 
     fun loadManga() {
@@ -105,6 +118,16 @@ class MangaMenuViewModel @Inject constructor(
         }
     }
 
+    fun setCategories() {
+        scope.launch {
+            manga.value?.let { manga ->
+                val categories = async { categoryHandler.getCategories(true) }
+                val oldCategories = async { categoryHandler.getMangaCategories(manga) }
+                chooseCategoriesFlow.emit(categories.await() to oldCategories.await())
+            }
+        }
+    }
+
     private suspend fun refreshMangaAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
             try {
@@ -127,14 +150,36 @@ class MangaMenuViewModel @Inject constructor(
 
     fun toggleFavorite() {
         scope.launch {
-            manga.value?.let {
-                if (it.inLibrary) {
-                    libraryHandler.removeMangaFromLibrary(it)
+            manga.value?.let { manga ->
+                if (manga.inLibrary) {
+                    libraryHandler.removeMangaFromLibrary(manga)
+                    refreshMangaAsync(manga.id).await()
                 } else {
-                    libraryHandler.addMangaToLibrary(it)
+                    val categories = categoryHandler.getCategories(true)
+                    if (categories.isEmpty()) {
+                        addFavorite(emptyList(), emptyList())
+                    } else {
+                        chooseCategoriesFlow.emit(categories to emptyList())
+                    }
                 }
+            }
+        }
+    }
 
-                refreshMangaAsync(it.id).await()
+    fun addFavorite(categories: List<Category>, oldCategories: List<Category>) {
+        scope.launch {
+            manga.value?.let { manga ->
+                if (manga.inLibrary) {
+                    oldCategories.filterNot { it in categories }.forEach {
+                        categoryHandler.removeMangaFromCategory(manga, it)
+                    }
+                } else {
+                    libraryHandler.addMangaToLibrary(manga)
+                }
+                categories.filterNot { it in oldCategories }.forEach {
+                    categoryHandler.addMangaToCategory(manga, it)
+                }
+                refreshMangaAsync(manga.id).await()
             }
         }
     }

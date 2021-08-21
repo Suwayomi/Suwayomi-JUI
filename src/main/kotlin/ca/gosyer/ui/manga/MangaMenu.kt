@@ -8,6 +8,7 @@ package ca.gosyer.ui.manga
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -28,10 +29,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Label
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,7 +45,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.BuildConfig
+import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
+import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
@@ -54,6 +62,8 @@ import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
 import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 
 @OptIn(DelicateCoroutinesApi::class)
 fun openMangaMenu(mangaId: Long) {
@@ -74,10 +84,30 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
     val isLoading by vm.isLoading.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
     val dateTimeFormatter by vm.dateTimeFormatter.collectAsState()
+    val categoriesExist by vm.categoriesExist.collectAsState()
+
+    LaunchedEffect(Unit) {
+        vm.chooseCategoriesFlow.collect { (availableCategories, usedCategories) ->
+            openCategorySelectDialog(availableCategories, usedCategories, vm::addFavorite)
+        }
+    }
 
     Box {
         Column(Modifier.background(MaterialTheme.colors.background)) {
-            Toolbar(stringResource("location_manga"), backStack, backStack != null)
+            Toolbar(
+                stringResource("location_manga"),
+                backStack,
+                backStack != null,
+                actions = {
+                    if (categoriesExist) {
+                        ActionIcon(
+                            vm::setCategories,
+                            stringResource("edit_categories"),
+                            Icons.Rounded.Label
+                        )
+                    }
+                }
+            )
 
             manga.let { manga ->
                 if (manga != null) {
@@ -197,6 +227,41 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
         }
         if (!manga.genre.isNullOrEmpty()) {
             Text(manga.genre)
+        }
+    }
+}
+
+fun openCategorySelectDialog(
+    categories: List<Category>,
+    oldCategories: List<Category>,
+    onPositiveClick: (List<Category>, List<Category>) -> Unit
+) {
+    val enabledCategoriesFlow = MutableStateFlow(oldCategories)
+    WindowDialog(
+        "Select Categories",
+        onPositiveButton = { onPositiveClick(enabledCategoriesFlow.value, oldCategories) }
+    ) {
+        val enabledCategories by enabledCategoriesFlow.collectAsState()
+        LazyColumn {
+            items(categories) { category ->
+                Row(
+                    Modifier.fillMaxWidth().padding(8.dp)
+                        .clickable {
+                            if (category in enabledCategories) {
+                                enabledCategoriesFlow.value -= category
+                            } else {
+                                enabledCategoriesFlow.value += category
+                            }
+                        },
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(category.name, style = MaterialTheme.typography.subtitle1)
+                    Checkbox(
+                        category in enabledCategories,
+                        onCheckedChange = null
+                    )
+                }
+            }
         }
     }
 }

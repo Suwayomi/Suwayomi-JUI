@@ -66,6 +66,7 @@
     <string name="page_progress">Page %1$d</string>
     <string name="no_chapters_found">No chapters found</string>
     <string name="failed_manga_fetch">Failed to load manga</string>
+    <string name="edit_categories">Edit categories</string>
 
     <!-- Sources Menu -->
     <string name="sources_home">Home</string>
