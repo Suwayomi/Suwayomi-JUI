@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.main
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -143,36 +144,38 @@ fun SideMenuItem(topLevelMenu: TopLevelMenus, backStack: BackStack<Route>) {
 fun MainWindow(rootBundle: Bundle, backStack: BackStack<Route>) {
     Box(Modifier.fillMaxSize()) {
         BundleScope("K${backStack.lastIndex}", rootBundle, false) {
-            when (val routing = backStack.last()) {
-                is Route.Library -> LibraryScreen {
-                    backStack.push(Route.Manga(it))
-                }
-                is Route.Sources -> SourcesMenu(
-                    {
-                        backStack.push(Route.SourceSettings(it))
+            Crossfade(backStack.last()) { routing ->
+                when (routing) {
+                    is Route.Library -> LibraryScreen {
+                        backStack.push(Route.Manga(it))
                     }
-                ) {
-                    backStack.push(Route.Manga(it))
+                    is Route.Sources -> SourcesMenu(
+                        {
+                            backStack.push(Route.SourceSettings(it))
+                        }
+                    ) {
+                        backStack.push(Route.Manga(it))
+                    }
+                    is Route.Extensions -> ExtensionsMenu()
+                    is Route.Manga -> MangaMenu(routing.mangaId, backStack)
+                    is Route.Downloads -> DownloadsMenu()
+
+                    is Route.SourceSettings -> SourceSettingsMenu(routing.sourceId, backStack)
+
+                    is Route.Settings -> SettingsScreen(backStack)
+                    is Route.SettingsGeneral -> SettingsGeneralScreen(backStack)
+                    is Route.SettingsAppearance -> SettingsAppearance(backStack)
+                    is Route.SettingsServer -> SettingsServerScreen(backStack)
+                    is Route.SettingsLibrary -> SettingsLibraryScreen(backStack)
+                    is Route.SettingsReader -> SettingsReaderScreen(backStack)
+                    /*is Route.SettingsDownloads -> SettingsDownloadsScreen(backStack)
+                    is Route.SettingsTracking -> SettingsTrackingScreen(backStack)*/
+                    is Route.SettingsBrowse -> SettingsBrowseScreen(backStack)
+                    is Route.SettingsBackup -> SettingsBackupScreen(backStack)
+                    /*is Route.SettingsSecurity -> SettingsSecurityScreen(backStack)
+                    is Route.SettingsParentalControls -> SettingsParentalControlsScreen(backStack)*/
+                    is Route.SettingsAdvanced -> SettingsAdvancedScreen(backStack)
                 }
-                is Route.Extensions -> ExtensionsMenu()
-                is Route.Manga -> MangaMenu(routing.mangaId, backStack)
-                is Route.Downloads -> DownloadsMenu()
-
-                is Route.SourceSettings -> SourceSettingsMenu(routing.sourceId, backStack)
-
-                is Route.Settings -> SettingsScreen(backStack)
-                is Route.SettingsGeneral -> SettingsGeneralScreen(backStack)
-                is Route.SettingsAppearance -> SettingsAppearance(backStack)
-                is Route.SettingsServer -> SettingsServerScreen(backStack)
-                is Route.SettingsLibrary -> SettingsLibraryScreen(backStack)
-                is Route.SettingsReader -> SettingsReaderScreen(backStack)
-                /*is Route.SettingsDownloads -> SettingsDownloadsScreen(backStack)
-                is Route.SettingsTracking -> SettingsTrackingScreen(backStack)*/
-                is Route.SettingsBrowse -> SettingsBrowseScreen(backStack)
-                is Route.SettingsBackup -> SettingsBackupScreen(backStack)
-                /*is Route.SettingsSecurity -> SettingsSecurityScreen(backStack)
-                is Route.SettingsParentalControls -> SettingsParentalControlsScreen(backStack)*/
-                is Route.SettingsAdvanced -> SettingsAdvancedScreen(backStack)
             }
         }
         /*Box(Modifier.padding(bottom = 32.dp).align(Alignment.BottomCenter)) {
