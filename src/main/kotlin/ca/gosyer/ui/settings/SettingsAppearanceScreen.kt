@@ -83,7 +83,7 @@ fun SettingsAppearance(navController: BackStack<Route>) {
                 ChoicePreference(
                     preference = vm.themeMode,
                     choices = mapOf(
-                        // ThemeMode.System to R.string.follow_system_settings,
+                        ThemeMode.System to stringResource("theme_follow_system"),
                         ThemeMode.Light to stringResource("theme_light"),
                         ThemeMode.Dark to stringResource("theme_dark")
                     ),

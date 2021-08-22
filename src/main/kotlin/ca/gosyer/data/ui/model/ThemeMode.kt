@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class ThemeMode {
-    /*System,*/
+    System,
     Light,
     Dark,
 }

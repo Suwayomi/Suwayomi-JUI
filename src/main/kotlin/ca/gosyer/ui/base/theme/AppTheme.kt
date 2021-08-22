@@ -7,6 +7,7 @@
 package ca.gosyer.ui.base.theme
 
 import androidx.compose.desktop.DesktopMaterialTheme
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -83,11 +84,11 @@ private class AppThemeViewModel @Inject constructor(
         }
 
         return when (themeMode) {
-            /*ThemeMode.System -> if (!isSystemInDarkTheme()) {
-              getTheme(lightTheme, true)
+            ThemeMode.System -> if (!isSystemInDarkTheme()) {
+                getTheme(lightTheme, true)
             } else {
-              getTheme(darkTheme, false)
-            }*/
+                getTheme(darkTheme, false)
+            }
             ThemeMode.Light -> getTheme(lightTheme, true)
             ThemeMode.Dark -> getTheme(darkTheme, false)
         }

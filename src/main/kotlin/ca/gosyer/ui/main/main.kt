@@ -46,6 +46,8 @@ import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
+import org.jetbrains.skiko.SystemTheme
+import org.jetbrains.skiko.currentSystemTheme
 import toothpick.configuration.Configuration
 import toothpick.ktp.KTP
 import toothpick.ktp.extension.getInstance
@@ -98,6 +100,10 @@ suspend fun main() {
                 return@getAsFlow
             }
             val theme = when (it) {
+                ThemeMode.System -> when (currentSystemTheme) {
+                    SystemTheme.LIGHT, SystemTheme.UNKNOWN -> IntelliJTheme()
+                    SystemTheme.DARK -> DarculaTheme()
+                }
                 ThemeMode.Light -> IntelliJTheme()
                 ThemeMode.Dark -> DarculaTheme()
             }
