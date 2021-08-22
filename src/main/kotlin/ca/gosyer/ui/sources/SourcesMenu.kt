@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.sources
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.BoxWithTooltip
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.build.BuildConfig
-import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.Toolbar
@@ -103,7 +103,7 @@ fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaCl
                 search = if (sourceSearchEnabled) vm::search else null,
                 searchSubmit = vm::submitSearch,
                 actions = {
-                    selectedSourceTab.let { selectedSource ->
+                    Crossfade(selectedSourceTab) { selectedSource ->
                         if (selectedSource == null) {
                             ActionIcon(
                                 {
@@ -170,12 +170,13 @@ fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaCl
                     }
                 }
 
-                val selectedSource: Source? = selectedSourceTab
-                BundleScope(selectedSource?.id.toString(), autoDispose = false) {
-                    if (selectedSource != null) {
-                        SourceScreen(it, selectedSource, onMangaClick, vm::enableSearch, vm::setSearch)
-                    } else {
-                        SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
+                Crossfade(selectedSourceTab) { selectedSource ->
+                    BundleScope(selectedSource?.id.toString(), autoDispose = false) {
+                        if (selectedSource != null) {
+                            SourceScreen(it, selectedSource, onMangaClick, vm::enableSearch, vm::setSearch)
+                        } else {
+                            SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
+                        }
                     }
                 }
             }

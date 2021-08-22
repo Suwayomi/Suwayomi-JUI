@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.base.components
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,19 +73,20 @@ fun KtorImage(
             }
         }
 
-        val value = drawable.value
-        if (value != null) {
-            Image(
-                value,
-                modifier = Modifier.fillMaxSize(),
-                contentDescription = contentDescription,
-                alignment = alignment,
-                contentScale = contentScale,
-                alpha = alpha,
-                colorFilter = colorFilter
-            )
-        } else {
-            LoadingScreen(loading.value, loadingModifier, progress.value, error.value)
+        Crossfade(drawable.value to loading.value) { (value, loading) ->
+            if (value != null) {
+                Image(
+                    value,
+                    modifier = Modifier.fillMaxSize(),
+                    contentDescription = contentDescription,
+                    alignment = alignment,
+                    contentScale = contentScale,
+                    alpha = alpha,
+                    colorFilter = colorFilter
+                )
+            } else {
+                LoadingScreen(loading, loadingModifier, progress.value, error.value)
+            }
         }
     }
 }

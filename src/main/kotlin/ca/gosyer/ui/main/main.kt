@@ -6,12 +6,12 @@
 
 package ca.gosyer.ui.main
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.configureSwingGlobalsForCompose
 import androidx.compose.ui.input.key.Key
@@ -163,19 +163,20 @@ suspend fun main() {
                     LocalBackPressHandler provides backPressHandler,
                     LocalResources provides resources
                 ) {
-                    val initialized by serverService.initialized.collectAsState()
-                    when (initialized) {
-                        ServerResult.STARTED, ServerResult.UNUSED -> {
-                            MainMenu(rootBundle)
-                        }
-                        ServerResult.STARTING, ServerResult.FAILED -> {
-                            Surface {
-                                LoadingScreen(
-                                    initialized == ServerResult.STARTING,
-                                    errorMessage = stringResource("unable_to_start_server"),
-                                    retryMessage = stringResource("action_start_anyway"),
-                                    retry = serverService::startAnyway
-                                )
+                    Crossfade(serverService.initialized.collectAsState().value) { initialized ->
+                        when (initialized) {
+                            ServerResult.STARTED, ServerResult.UNUSED -> {
+                                MainMenu(rootBundle)
+                            }
+                            ServerResult.STARTING, ServerResult.FAILED -> {
+                                Surface {
+                                    LoadingScreen(
+                                        initialized == ServerResult.STARTING,
+                                        errorMessage = stringResource("unable_to_start_server"),
+                                        retryMessage = stringResource("action_start_anyway"),
+                                        retry = serverService::startAnyway
+                                    )
+                                }
                             }
                         }
                     }

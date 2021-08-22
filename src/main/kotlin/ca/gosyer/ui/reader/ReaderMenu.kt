@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.reader
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -167,14 +168,14 @@ fun ReaderMenu(
     }
 
     Surface {
-        if (state is ReaderChapter.State.Loaded && chapter != null) {
-            Box(
-                Modifier.fillMaxSize()
-                    .navigationClickable(navigationMode.toNavigation()) {
-                        vm.navigate(it)
-                    }
-            ) {
-                chapter?.let { chapter ->
+        Crossfade(state to chapter) { (state, chapter) ->
+            if (state is ReaderChapter.State.Loaded && chapter != null) {
+                Box(
+                    Modifier.fillMaxSize()
+                        .navigationClickable(navigationMode.toNavigation()) {
+                            vm.navigate(it)
+                        }
+                ) {
                     val loadingModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
                     if (pages.isNotEmpty()) {
                         if (continuous) {
@@ -222,13 +223,13 @@ fun ReaderMenu(
                         ErrorScreen(stringResource("no_pages_found"))
                     }
                 }
+            } else {
+                LoadingScreen(
+                    state is ReaderChapter.State.Wait || state is ReaderChapter.State.Loading,
+                    errorMessage = (state as? ReaderChapter.State.Error)?.error?.message,
+                    retry = vm::init
+                )
             }
-        } else {
-            LoadingScreen(
-                state is ReaderChapter.State.Wait || state is ReaderChapter.State.Loading,
-                errorMessage = (state as? ReaderChapter.State.Error)?.error?.message,
-                retry = vm::init
-            )
         }
     }
 }
@@ -245,15 +246,17 @@ fun ReaderImage(
     contentScale: ContentScale = ContentScale.Fit,
     retry: (Int) -> Unit
 ) {
-    if (drawable != null) {
-        Image(
-            drawable,
-            modifier = imageModifier,
-            contentDescription = null,
-            contentScale = contentScale
-        )
-    } else {
-        LoadingScreen(status == ReaderPage.Status.QUEUE, loadingModifier, progress, error) { retry(imageIndex) }
+    Crossfade(drawable to status) { (drawable, status) ->
+        if (drawable != null) {
+            Image(
+                drawable,
+                modifier = imageModifier,
+                contentDescription = null,
+                contentScale = contentScale
+            )
+        } else {
+            LoadingScreen(status == ReaderPage.Status.QUEUE, loadingModifier, progress, error) { retry(imageIndex) }
+        }
     }
 }
 
