@@ -192,10 +192,15 @@ compose.desktop {
                 upgradeUuid = "B2ED947E-81E4-4258-8388-2B1EDF5E0A30"
                 shortcut = true
                 menu = true
+                iconFile.set(project.file("resources/icon.ico"))
             }
             macOS {
                 bundleID = "ca.gosyer.tachideskjui"
                 packageName = rootProject.name
+                iconFile.set(project.file("resources/icon.icns"))
+            }
+            linux {
+                iconFile.set(project.file("resources/icon.png"))
             }
         }
     }

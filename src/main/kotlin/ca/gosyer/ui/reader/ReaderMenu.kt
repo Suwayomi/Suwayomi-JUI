@@ -49,6 +49,7 @@ import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.LocalComposeWindow
 import ca.gosyer.ui.base.components.mangaAspectRatio
+import ca.gosyer.ui.base.components.setIcon
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppTheme
@@ -105,6 +106,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
                 shortcuts[it.key]?.invoke(it) ?: false
             }
         ) {
+            setIcon()
             CompositionLocalProvider(
                 LocalComposeWindow provides window,
                 LocalResources provides resources

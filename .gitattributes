@@ -16,6 +16,7 @@
 *.jpeg binary
 *.gif binary
 *.ico binary
+*.icns binary
 *.gz binary
 *.zip binary
 *.7z binary

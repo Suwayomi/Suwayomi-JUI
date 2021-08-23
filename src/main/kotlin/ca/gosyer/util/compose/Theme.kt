@@ -17,6 +17,7 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.translation.XmlResourceBundle
+import ca.gosyer.ui.base.components.setIcon
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.theme.AppTheme
 
@@ -51,6 +52,7 @@ fun ThemedWindow(
         onPreviewKeyEvent,
         onKeyEvent
     ) {
+        setIcon()
         CompositionLocalProvider(
             LocalResources provides resources
         ) {

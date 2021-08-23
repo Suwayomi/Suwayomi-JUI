@@ -1,5 +1,5 @@
 
-![image](https://github.com/Suwayomi/Tachidesk/raw/master/server/src/main/resources/icon/faviconlogo.png)
+![image](resources/icon.png)
 # Tachidesk-JUI
 A free and open source manga reader to read manga from a [Tachidesk](https://github.com/Suwayomi/Tachidesk) server.
 

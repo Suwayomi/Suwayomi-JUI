@@ -36,6 +36,7 @@ import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.translation.XmlResourceBundle
+import ca.gosyer.ui.base.components.setIcon
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.lang.launchApplication
@@ -92,6 +93,7 @@ fun WindowDialog(
         },
         alwaysOnTop = forceFocus
     ) {
+        setIcon()
         CompositionLocalProvider(
             LocalResources provides resources
         ) {
@@ -158,6 +160,7 @@ fun WindowDialog(
         },
         alwaysOnTop = forceFocus,
     ) {
+        setIcon()
         CompositionLocalProvider(
             LocalResources provides resources
         ) {
