@@ -201,5 +201,9 @@ class ReaderMenuViewModel @Inject constructor(
         }
     }
 
+    override fun onDestroy() {
+        viewerChapters.recycle()
+    }
+
     data class Params(val chapterIndex: Int, val mangaId: Long)
 }
