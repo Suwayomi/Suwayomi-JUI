@@ -47,7 +47,6 @@ data class ReaderChapter(val context: CoroutineContext, val chapter: Chapter) {
         pageLoader = null
         state = State.Wait
         scope.cancel()
-        scope = CoroutineScope(context + Job())
     }
 
     sealed class State {
