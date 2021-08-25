@@ -16,7 +16,7 @@ import kotlinx.serialization.builtins.serializer
 class UiPreferences(private val preferenceStore: PreferenceStore) {
 
     fun themeMode(): Preference<ThemeMode> {
-        return preferenceStore.getJsonObject("theme_mode", ThemeMode.Light, ThemeMode.serializer())
+        return preferenceStore.getJsonObject("theme_mode", ThemeMode.System, ThemeMode.serializer())
     }
 
     fun lightTheme(): Preference<Int> {
