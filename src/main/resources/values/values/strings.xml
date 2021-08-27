@@ -131,7 +131,6 @@
 
     <!-- General Settings -->
     <string name="start_screen">Start screen</string>
-    <string name="confirm_exit">Confirm exit</string>
     <string name="language">Language</string>
     <string name="language_system_default">System Default (%1$s)</string>
     <string name="date_format">Date format</string>
