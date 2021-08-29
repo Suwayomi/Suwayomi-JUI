@@ -12,7 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import ca.gosyer.data.reader.model.Direction
-import ca.gosyer.ui.reader.ChapterSeperator
+import ca.gosyer.ui.reader.ChapterSeparator
 import ca.gosyer.ui.reader.ReaderImage
 import ca.gosyer.ui.reader.model.MoveTo
 import ca.gosyer.ui.reader.model.ReaderChapter
@@ -101,8 +101,8 @@ fun HandlePager(
     retry: (ReaderPage) -> Unit,
 ) {
     when (page) {
-        0 -> ChapterSeperator(previousChapter, currentChapter)
-        pages.size -> ChapterSeperator(currentChapter, nextChapter)
+        0 -> ChapterSeparator(previousChapter, currentChapter)
+        pages.size -> ChapterSeparator(currentChapter, nextChapter)
         else -> {
             val image = pages[page - 1]
             ReaderImage(

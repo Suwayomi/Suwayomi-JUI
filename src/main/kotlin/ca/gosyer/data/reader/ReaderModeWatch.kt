@@ -29,7 +29,7 @@ class ReaderModeWatch(
     val maxSize = MutableStateFlow(initialPreferences.maxSize().get())
     val navigationMode = MutableStateFlow(initialPreferences.navigationMode().get())
 
-    val mode = readerPreferences.mode().stateIn(scope)
+    private val mode = readerPreferences.mode().stateIn(scope)
 
     init {
         setupJobs(mode.value)

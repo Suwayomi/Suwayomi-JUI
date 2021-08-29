@@ -95,9 +95,9 @@ class TachideskPageLoader(
             .subList(pageIndex + 1, (pageIndex + 1 + amount).coerceAtMost(pages.value.size))
             .mapNotNull {
                 if (it.status.value == ReaderPage.Status.QUEUE) {
-                    PriorityPage(it, 0).apply {
+                    PriorityPage(it, 0).also {
                         scope.launch {
-                            channel.send(this@apply)
+                            channel.send(it)
                         }
                     }
                 } else null

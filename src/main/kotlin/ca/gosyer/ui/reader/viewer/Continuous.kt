@@ -29,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.reader.model.Direction
-import ca.gosyer.ui.reader.ChapterSeperator
+import ca.gosyer.ui.reader.ChapterSeparator
 import ca.gosyer.ui.reader.ReaderImage
 import ca.gosyer.ui.reader.model.MoveTo
 import ca.gosyer.ui.reader.model.ReaderChapter
@@ -151,7 +151,7 @@ private fun LazyListScope.items(
         LaunchedEffect(Unit) {
             progress(0)
         }
-        ChapterSeperator(previousChapter, currentChapter)
+        ChapterSeparator(previousChapter, currentChapter)
     }
     items(pages) { image ->
         Box(Modifier.padding(paddingValues)) {
@@ -176,6 +176,6 @@ private fun LazyListScope.items(
         LaunchedEffect(Unit) {
             progress(pages.size)
         }
-        ChapterSeperator(currentChapter, nextChapter)
+        ChapterSeparator(currentChapter, nextChapter)
     }
 }

@@ -263,7 +263,7 @@ fun ReaderImage(
 }
 
 @Composable
-fun ChapterSeperator(
+fun ChapterSeparator(
     previousChapter: ReaderChapter?,
     nextChapter: ReaderChapter?
 ) {

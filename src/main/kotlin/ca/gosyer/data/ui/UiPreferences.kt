@@ -11,7 +11,6 @@ import ca.gosyer.common.prefs.PreferenceStore
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.data.ui.model.WindowSettings
-import kotlinx.serialization.builtins.serializer
 
 class UiPreferences(private val preferenceStore: PreferenceStore) {
 
