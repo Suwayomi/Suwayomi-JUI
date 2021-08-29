@@ -133,7 +133,7 @@ class ExtensionsMenuViewModel @Inject constructor(
 
         return mapOf(
             resources.getStringA("installed") to (obsolete + updates + installed),
-        ) + available.groupBy { it.lang }.mapKeys {
+        ).filterNot { it.value.isEmpty() } + available.groupBy { it.lang }.mapKeys {
             if (it.key == "all") {
                 resources.getStringA("all")
             } else {
