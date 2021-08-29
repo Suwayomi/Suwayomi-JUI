@@ -15,7 +15,8 @@ data class Source(
     val lang: String,
     val iconUrl: String,
     val supportsLatest: Boolean,
-    val isConfigurable: Boolean
+    val isConfigurable: Boolean,
+    val isNSFW: Boolean
 ) {
     fun iconUrl(serverUrl: String) = serverUrl + iconUrl
 }

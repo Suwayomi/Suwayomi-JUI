@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.base.components
 
+import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.ExperimentalDesktopApi
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.LocalIndication
@@ -33,8 +34,9 @@ import androidx.compose.ui.input.pointer.PointerKeyboardModifiers
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.consumeDownChange
 import androidx.compose.ui.input.pointer.isOutOfBounds
+import androidx.compose.ui.input.pointer.isSecondaryPressed
+import androidx.compose.ui.input.pointer.isTertiaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.ContextMenuItem
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.AccessibilityAction
 import androidx.compose.ui.semantics.Role
