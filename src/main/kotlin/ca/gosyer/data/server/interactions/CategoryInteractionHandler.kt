@@ -95,9 +95,9 @@ class CategoryInteractionHandler @Inject constructor(
     }
     suspend fun modifyCategory(category: Category, name: String? = null, isLanding: Boolean? = null) = modifyCategory(category.id, name, isLanding)
 
-    suspend fun reorderCategory(categoryId: Long, to: Int, from: Int) = withIOContext {
+    suspend fun reorderCategory(to: Int, from: Int) = withIOContext {
         client.submitForm<HttpResponse>(
-            serverUrl + categoryReorderRequest(categoryId),
+            serverUrl + categoryReorderRequest(),
             formParameters = Parameters.build {
                 append("to", to.toString())
                 append("from", from.toString())
@@ -106,7 +106,6 @@ class CategoryInteractionHandler @Inject constructor(
             method = HttpMethod.Patch
         }
     }
-    suspend fun reorderCategory(category: Category, to: Int, from: Int) = reorderCategory(category.id, to, from)
 
     suspend fun deleteCategory(categoryId: Long) = withIOContext {
         client.delete<HttpResponse>(

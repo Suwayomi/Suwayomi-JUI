@@ -34,8 +34,8 @@ fun categoryModifyRequest(categoryId: Long) =
     "/api/v1/category/$categoryId"
 
 @Patch
-fun categoryReorderRequest(categoryId: Long) =
-    "/api/v1/category/$categoryId/reorder"
+fun categoryReorderRequest() =
+    "/api/v1/category/reorder"
 
 @Delete
 fun categoryDeleteRequest(categoryId: Long) =

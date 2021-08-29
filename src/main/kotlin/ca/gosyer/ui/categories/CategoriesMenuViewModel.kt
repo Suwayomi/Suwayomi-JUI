@@ -66,7 +66,7 @@ class CategoriesMenuViewModel @Inject constructor(
             val updatedCategory = updatedCategories.find { it.id == category.id || it.name == category.name } ?: return@forEach
             if (category.order != updatedCategory.order) {
                 debug { "${category.name}: ${updatedCategory.order} to ${category.order}" }
-                categoryHandler.reorderCategory(updatedCategory, category.order, updatedCategory.order)
+                categoryHandler.reorderCategory(category.order, updatedCategory.order)
             }
             updatedCategories = categoryHandler.getCategories(true)
         }
