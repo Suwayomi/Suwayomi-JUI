@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
@@ -254,7 +255,8 @@ fun ReaderImage(
                 drawable,
                 modifier = imageModifier,
                 contentDescription = null,
-                contentScale = contentScale
+                contentScale = contentScale,
+                filterQuality = FilterQuality.High
             )
         } else {
             LoadingScreen(status == ReaderPage.Status.QUEUE, loadingModifier, progress, error) { retry(imageIndex) }
