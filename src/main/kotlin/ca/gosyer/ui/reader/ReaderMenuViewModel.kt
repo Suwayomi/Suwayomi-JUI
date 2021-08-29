@@ -115,7 +115,6 @@ class ReaderMenuViewModel @Inject constructor(
     suspend fun init(mangaId: Long, chapterIndex: Int) {
         resetValues()
         val chapter = ReaderChapter(
-            scope.coroutineContext + Dispatchers.Default,
             try {
                 chapterHandler.getChapter(mangaId, chapterIndex)
             } catch (e: Exception) {
@@ -136,14 +135,12 @@ class ReaderMenuViewModel @Inject constructor(
             val nextChapter = chapters.find { it.index == chapterIndex + 1 }
             if (nextChapter != null) {
                 viewerChapters.nextChapter.value = ReaderChapter(
-                    scope.coroutineContext + Dispatchers.Default,
                     nextChapter
                 )
             }
             val prevChapter = chapters.find { it.index == chapterIndex - 1 }
             if (prevChapter != null) {
                 viewerChapters.prevChapter.value = ReaderChapter(
-                    scope.coroutineContext + Dispatchers.Default,
                     prevChapter
                 )
             }

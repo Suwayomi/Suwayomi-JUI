@@ -10,16 +10,15 @@ import ca.gosyer.data.models.Chapter
 import ca.gosyer.ui.reader.loader.PageLoader
 import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlin.coroutines.CoroutineContext
 
-data class ReaderChapter(val context: CoroutineContext, val chapter: Chapter) {
-    var scope = CoroutineScope(context + Job())
-        private set
+data class ReaderChapter(val chapter: Chapter) {
+    val scope = CoroutineScope(Dispatchers.Default + Job())
 
     var state: State =
         State.Wait
