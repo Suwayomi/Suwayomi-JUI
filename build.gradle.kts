@@ -8,10 +8,10 @@ import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 plugins {
-    kotlin("jvm") version "1.5.21"
-    kotlin("kapt") version "1.5.21"
-    kotlin("plugin.serialization") version "1.5.21"
-    id("org.jetbrains.compose") version "1.0.0-alpha4-build315"
+    kotlin("jvm") version "1.5.30"
+    kotlin("kapt") version "1.5.30"
+    kotlin("plugin.serialization") version "1.5.30"
+    id("org.jetbrains.compose") version "1.0.0-alpha4-build328"
     id("com.github.gmazzo.buildconfig") version "3.0.2"
     id("org.jmailen.kotlinter") version "3.5.0"
     id("com.github.ben-manes.versions") version "0.39.0"
@@ -66,14 +66,14 @@ dependencies {
     implementation("io.ktor:ktor-client-auth:$ktorVersion")
 
     // Logging
-    val slf4jVersion = "1.7.31"
+    val slf4jVersion = "1.7.32"
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     implementation("org.slf4j:jul-to-slf4j:$slf4jVersion")
     val log4jVersion = "2.14.1"
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.10")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
 
     // User storage
     implementation("net.harawata:appdirs:1.2.1")
