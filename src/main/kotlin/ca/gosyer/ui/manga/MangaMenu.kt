@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
@@ -214,19 +215,21 @@ private fun Cover(manga: Manga, serverUrl: String, modifier: Modifier = Modifier
 
 @Composable
 private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
-    Column(modifier) {
-        Text(manga.title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        if (!manga.author.isNullOrEmpty()) {
-            Text(manga.author, fontSize = 18.sp)
-        }
-        if (!manga.artist.isNullOrEmpty() && manga.artist != manga.author) {
-            Text(manga.artist, fontSize = 18.sp)
-        }
-        if (!manga.description.isNullOrEmpty()) {
-            Text(manga.description)
-        }
-        if (!manga.genre.isNullOrEmpty()) {
-            Text(manga.genre)
+    SelectionContainer {
+        Column(modifier) {
+            Text(manga.title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            if (!manga.author.isNullOrEmpty()) {
+                Text(manga.author, fontSize = 18.sp)
+            }
+            if (!manga.artist.isNullOrEmpty() && manga.artist != manga.author) {
+                Text(manga.artist, fontSize = 18.sp)
+            }
+            if (!manga.description.isNullOrEmpty()) {
+                Text(manga.description)
+            }
+            if (!manga.genre.isNullOrEmpty()) {
+                Text(manga.genre)
+            }
         }
     }
 }
