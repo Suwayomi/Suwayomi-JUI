@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.library
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,18 +27,21 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ContextMenuItem
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.KtorImage
+import ca.gosyer.ui.base.components.contextMenuClickable
 
 @Composable
 fun LibraryMangaCompactGrid(
     library: List<Manga>,
     serverUrl: String,
-    onClickManga: (Long) -> Unit = {}
+    onClickManga: (Long) -> Unit = {},
+    onRemoveMangaClicked: (Long) -> Unit = {}
 ) {
     LazyVerticalGrid(
         cells = GridCells.Adaptive(160.dp),
@@ -52,7 +54,11 @@ fun LibraryMangaCompactGrid(
                 downloaded = null, // TODO
                 serverUrl = serverUrl,
                 onClick = { onClickManga(manga.id) }
-            )
+            ) {
+                listOf(
+                    ContextMenuItem("Unfavorite") { onRemoveMangaClicked(manga.id) }
+                )
+            }
         }
     }
 }
@@ -63,7 +69,8 @@ private fun LibraryMangaCompactGridItem(
     unread: Int?,
     downloaded: Int?,
     serverUrl: String,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    contextMenuItems: () -> List<ContextMenuItem> = { emptyList() }
 ) {
     val cover = remember(manga.id, serverUrl) { manga.cover(serverUrl) }
     val fontStyle = LocalTextStyle.current.merge(
@@ -75,7 +82,10 @@ private fun LibraryMangaCompactGridItem(
             .fillMaxWidth()
             .aspectRatio(3f / 4f)
             .clip(MaterialTheme.shapes.medium)
-            .clickable(onClick = onClick)
+            .contextMenuClickable(
+                onClick = { onClick() },
+                items = contextMenuItems
+            )
     ) {
         if (cover != null) {
             KtorImage(cover, contentScale = ContentScale.Crop)

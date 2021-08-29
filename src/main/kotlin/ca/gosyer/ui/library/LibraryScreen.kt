@@ -93,8 +93,9 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
                     selectedPage = selectedCategoryIndex,
                     serverUrl = serverUrl,
                     getLibraryForPage = { vm.getLibraryForCategoryIndex(it).collectAsState() },
-                    onPageChanged = { vm.setSelectedPage(it) },
-                    onClickManga = onClickManga
+                    onPageChanged = vm::setSelectedPage,
+                    onClickManga = onClickManga,
+                    onRemoveMangaClicked = vm::removeManga
                 )
             }
             // }
@@ -141,7 +142,8 @@ private fun LibraryPager(
     serverUrl: String,
     getLibraryForPage: @Composable (Int) -> State<List<Manga>>,
     onPageChanged: (Int) -> Unit,
-    onClickManga: (Long) -> Unit
+    onClickManga: (Long) -> Unit,
+    onRemoveMangaClicked: (Long) -> Unit
 ) {
     if (categories.isEmpty()) return
 
@@ -162,7 +164,8 @@ private fun LibraryPager(
             DisplayMode.CompactGrid -> LibraryMangaCompactGrid(
                 library = library,
                 serverUrl = serverUrl,
-                onClickManga = onClickManga
+                onClickManga = onClickManga,
+                onRemoveMangaClicked = onRemoveMangaClicked
             )
             /*DisplayMode.ComfortableGrid -> LibraryMangaComfortableGrid(
                 library = library,

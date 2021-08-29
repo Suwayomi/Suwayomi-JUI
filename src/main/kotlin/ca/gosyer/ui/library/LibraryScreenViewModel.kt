@@ -11,8 +11,10 @@ import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
+import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.util.lang.throwIfCancellation
+import ca.gosyer.util.lang.withDefaultContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +34,7 @@ private fun LibraryMap.setManga(order: Int, manga: List<Manga>) {
 
 class LibraryScreenViewModel @Inject constructor(
     private val categoryHandler: CategoryInteractionHandler,
+    private val libraryHandler: LibraryInteractionHandler,
     libraryPreferences: LibraryPreferences,
     serverPreferences: ServerPreferences,
 ) : ViewModel() {
@@ -64,11 +67,7 @@ class LibraryScreenViewModel @Inject constructor(
                     throw Exception("Library is empty")
                 }
                 library.categories.value = categories.sortedBy { it.order }
-                categories.map {
-                    async {
-                        library.mangaMap.setManga(it.order, categoryHandler.getMangaFromCategory(it))
-                    }
-                }.awaitAll()
+                updateCategories(categories)
             } catch (e: Exception) {
                 e.throwIfCancellation()
                 _error.value = e.message
@@ -84,5 +83,30 @@ class LibraryScreenViewModel @Inject constructor(
 
     fun getLibraryForCategoryIndex(index: Int): StateFlow<List<Manga>> {
         return library.mangaMap.getManga(index).asStateFlow()
+    }
+
+    private suspend fun updateCategories(categories: List<Category>) {
+        withDefaultContext {
+            categories.map {
+                async {
+                    library.mangaMap.setManga(it.order, categoryHandler.getMangaFromCategory(it))
+                }
+            }.awaitAll()
+        }
+    }
+
+    private fun getCategoriesToUpdate(mangaId: Long): List<Category> {
+        return library.mangaMap
+            .filter { mangaMapEntry ->
+                mangaMapEntry.value.value.firstOrNull { it.id == mangaId } != null
+            }
+            .map { library.categories.value[it.key] }
+    }
+
+    fun removeManga(mangaId: Long) {
+        scope.launch {
+            libraryHandler.removeMangaFromLibrary(mangaId)
+            updateCategories(getCategoriesToUpdate(mangaId))
+        }
     }
 }
