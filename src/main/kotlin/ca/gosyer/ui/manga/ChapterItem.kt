@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
@@ -89,15 +90,17 @@ fun ChapterItem(
                 Column(
                     Modifier.padding(4.dp).width(this@BoxWithConstraints.maxWidth - 60.dp)
                 ) {
-                    Text(
-                        chapter.name,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.h6,
-                        color = LocalContentColor.current.copy(
-                            alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.high
-                        ),
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    SelectionContainer {
+                        Text(
+                            chapter.name,
+                            maxLines = 1,
+                            style = MaterialTheme.typography.h6,
+                            color = LocalContentColor.current.copy(
+                                alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.high
+                            ),
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                     val subtitleStr = buildAnnotatedString {
                         if (chapter.uploadDate > 0) {
                             append(format(Instant.ofEpochMilli(chapter.uploadDate)))
@@ -116,13 +119,15 @@ fun ChapterItem(
                             append(chapter.scanlator)
                         }
                     }
-                    Text(
-                        subtitleStr,
-                        style = MaterialTheme.typography.body2,
-                        color = LocalContentColor.current.copy(
-                            alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.medium
+                    SelectionContainer {
+                        Text(
+                            subtitleStr,
+                            style = MaterialTheme.typography.body2,
+                            color = LocalContentColor.current.copy(
+                                alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.medium
+                            )
                         )
-                    )
+                    }
                 }
                 val downloadChapter by viewChapter.downloadChapterFlow.collectAsState()
                 val downloadState by viewChapter.downloadState.collectAsState()
