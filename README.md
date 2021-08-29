@@ -1,11 +1,11 @@
 
 ![image](resources/icon.png)
 # Tachidesk-JUI
-A free and open source manga reader to read manga from a [Tachidesk](https://github.com/Suwayomi/Tachidesk) server.
+A free and open source manga reader to read manga from a [Tachidesk-Server](https://github.com/Suwayomi/Tachidesk-Server) instance.
 
-Tachidesk-JUI can run the Tachidesk server on its own, or connect to an already hosted server. 
+Tachidesk-JUI can run Tachidesk-Server on its own, or connect to an already hosted server. 
 
-Any platform that runs Java can run it. On most platforms are binaries available if you don't want to install Java yourself
+Any platform that runs Java can run it. On most platforms are binaries available if you don't want to install Java yourself.
 
 ## Is this application usable? Should I test it?
 Here is a list of current features for interaction with Tachidesk-JUI:
@@ -16,7 +16,7 @@ Here is a list of current features for interaction with Tachidesk-JUI:
 - Viewing manga and chapters.
 - Reading, downloading, and managing chapters.
 
-**Note:** Keep in mind that Tachidesk-JUI and Tachidesk are alpha software, so it can have issues. See [General troubleshooting](#general-troubleshooting) and [Support and help](#support-and-help) if it happens.
+**Note:** Keep in mind that Tachidesk-JUI and Tachidesk-Server are alpha software, so it can have issues. See [General troubleshooting](#general-troubleshooting) and [Support and help](#support-and-help) if it happens.
 
 ## Downloading and Running the app
 ### All Operating Systems (x64, Java Not Included)
