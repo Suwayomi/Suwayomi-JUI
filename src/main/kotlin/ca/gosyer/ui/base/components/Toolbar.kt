@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.base.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,6 +31,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,45 +79,70 @@ fun Toolbar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(name, fontSize = 20.sp)
-            if (search != null) {
-                Card(
-                    Modifier.fillMaxHeight()
-                        .width(300.dp)
-                        .padding(8.dp),
-                    shape = RoundedCornerShape(4.dp),
-                    elevation = 2.dp,
-                    border = BorderStroke(1.dp, MaterialTheme.colors.primary)
-                ) {
-                    Box(Modifier.fillMaxSize().padding(8.dp), Alignment.CenterStart) {
-                        BasicTextField(
-                            searchText.orEmpty(),
-                            onValueChange = search,
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth().then(
-                                if (searchSubmit != null) {
-                                    Modifier.onPreviewKeyEvent { event ->
-                                        (event.key == Key.Enter && event.type == KeyEventType.KeyDown).also {
-                                            if (it) {
-                                                searchSubmit()
-                                            }
-                                        }
-                                    }
-                                } else Modifier
-                            ),
-                            textStyle = TextStyle(contentColor, 18.sp),
-                            cursorBrush = SolidColor(contentColor.copy(alpha = 0.50F)),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)
-                        )
+            Row(
+                Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val menuController = LocalMenuController.current
+                if (menuController != null) {
+                    AnimatedVisibility(
+                        !menuController.sideMenuVisible
+                    ) {
+                        ActionIcon(menuController::openSideMenu, "Open nav", Icons.Rounded.Sort)
                     }
                 }
+
+                Text(name, fontSize = 20.sp)
+                if (search != null) {
+                    SearchBox(contentColor, searchText, search, searchSubmit)
+                }
             }
+
             Row {
                 actions()
                 if (closable) {
                     ActionIcon(onClick = onClose, "Close", Icons.Rounded.Close)
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun SearchBox(
+    contentColor: Color,
+    searchText: String?,
+    search: (String) -> Unit,
+    searchSubmit: (() -> Unit)?
+) {
+    Card(
+        Modifier.fillMaxHeight()
+            .width(300.dp)
+            .padding(8.dp),
+        shape = RoundedCornerShape(4.dp),
+        elevation = 2.dp,
+        border = BorderStroke(1.dp, MaterialTheme.colors.primary)
+    ) {
+        Box(Modifier.fillMaxSize().padding(8.dp), Alignment.CenterStart) {
+            BasicTextField(
+                searchText.orEmpty(),
+                onValueChange = search,
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth().then(
+                    if (searchSubmit != null) {
+                        Modifier.onPreviewKeyEvent { event ->
+                            (event.key == Key.Enter && event.type == KeyEventType.KeyDown).also {
+                                if (it) {
+                                    searchSubmit()
+                                }
+                            }
+                        }
+                    } else Modifier
+                ),
+                textStyle = TextStyle(contentColor, 18.sp),
+                cursorBrush = SolidColor(contentColor.copy(alpha = 0.50F)),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)
+            )
         }
     }
 }

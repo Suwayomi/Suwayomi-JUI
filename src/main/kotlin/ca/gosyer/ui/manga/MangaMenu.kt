@@ -70,7 +70,9 @@ import kotlinx.coroutines.flow.collect
 fun openMangaMenu(mangaId: Long) {
     launchApplication {
         ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
-            MangaMenu(mangaId)
+            Surface {
+                MangaMenu(mangaId)
+            }
         }
     }
 }
@@ -94,7 +96,7 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
     }
 
     Box {
-        Column(Modifier.background(MaterialTheme.colors.background)) {
+        Column {
             Toolbar(
                 stringResource("location_manga"),
                 backStack,

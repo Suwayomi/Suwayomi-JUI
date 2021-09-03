@@ -59,13 +59,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 fun openSourcesMenu() {
     launchApplication {
         ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
-            CompositionLocalProvider(
-                LocalSavedInstanceState provides Bundle()
-            ) {
-                SourcesMenu(
-                    ::openSourceSettingsMenu,
-                    ::openMangaMenu
-                )
+            Surface {
+                CompositionLocalProvider(
+                    LocalSavedInstanceState provides Bundle()
+                ) {
+                    SourcesMenu(
+                        ::openSourceSettingsMenu,
+                        ::openMangaMenu
+                    )
+                }
             }
         }
     }
@@ -88,95 +90,92 @@ fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaCl
     val sourceSearchEnabled by vm.sourceSearchEnabled.collectAsState()
     val sourceSearchQuery by vm.sourceSearchQuery.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
-
-    Surface {
-        Column {
-            Toolbar(
-                selectedSourceTab?.name ?: stringResource("location_sources"),
-                closable = selectedSourceTab != null,
-                onClose = {
-                    selectedSourceTab?.let { vm.closeTab(it) }
-                },
-                searchText = if (sourceSearchEnabled) {
-                    sourceSearchQuery
-                } else null,
-                search = if (sourceSearchEnabled) vm::search else null,
-                searchSubmit = vm::submitSearch,
-                actions = {
-                    Crossfade(selectedSourceTab) { selectedSource ->
-                        if (selectedSource == null) {
+    Column {
+        Toolbar(
+            selectedSourceTab?.name ?: stringResource("location_sources"),
+            closable = selectedSourceTab != null,
+            onClose = {
+                selectedSourceTab?.let { vm.closeTab(it) }
+            },
+            searchText = if (sourceSearchEnabled) {
+                sourceSearchQuery
+            } else null,
+            search = if (sourceSearchEnabled) vm::search else null,
+            searchSubmit = vm::submitSearch,
+            actions = {
+                Crossfade(selectedSourceTab) { selectedSource ->
+                    if (selectedSource == null) {
+                        ActionIcon(
+                            {
+                                val enabledLangs = MutableStateFlow(vm.languages.value)
+                                LanguageDialog(enabledLangs, vm.getSourceLanguages().toList()) {
+                                    vm.setEnabledLanguages(enabledLangs.value)
+                                }
+                            },
+                            stringResource("enabled_languages"),
+                            Icons.Rounded.Translate
+                        )
+                    } else {
+                        if (selectedSource.isConfigurable) {
                             ActionIcon(
                                 {
-                                    val enabledLangs = MutableStateFlow(vm.languages.value)
-                                    LanguageDialog(enabledLangs, vm.getSourceLanguages().toList()) {
-                                        vm.setEnabledLanguages(enabledLangs.value)
-                                    }
+                                    onSourceSettingsClick(selectedSource.id)
                                 },
-                                stringResource("enabled_languages"),
-                                Icons.Rounded.Translate
+                                stringResource("location_settings"),
+                                Icons.Rounded.Settings
                             )
-                        } else {
-                            if (selectedSource.isConfigurable) {
-                                ActionIcon(
-                                    {
-                                        onSourceSettingsClick(selectedSource.id)
-                                    },
-                                    stringResource("location_settings"),
-                                    Icons.Rounded.Settings
-                                )
-                            }
                         }
                     }
                 }
-            )
-            Row {
-                Surface(elevation = 1.dp) {
-                    LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
-                        items(sourceTabs) { source ->
-                            BoxWithTooltip(
-                                {
-                                    Surface(
-                                        modifier = Modifier.shadow(4.dp),
-                                        shape = RoundedCornerShape(4.dp),
-                                        elevation = 4.dp
-                                    ) {
-                                        Text(source?.name ?: stringResource("sources_home"), modifier = Modifier.padding(10.dp))
-                                    }
-                                },
-                                modifier = Modifier.size(64.dp)
-                            ) {
-                                Box(Modifier.fillMaxSize()) {
-                                    val modifier = Modifier
-                                        .combinedMouseClickable(
-                                            onClick = {
-                                                vm.selectTab(source)
-                                            },
-                                            onMiddleClick = {
-                                                if (source != null) {
-                                                    vm.closeTab(source)
-                                                }
+            }
+        )
+        Row {
+            Surface(elevation = 1.dp) {
+                LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
+                    items(sourceTabs) { source ->
+                        BoxWithTooltip(
+                            {
+                                Surface(
+                                    modifier = Modifier.shadow(4.dp),
+                                    shape = RoundedCornerShape(4.dp),
+                                    elevation = 4.dp
+                                ) {
+                                    Text(source?.name ?: stringResource("sources_home"), modifier = Modifier.padding(10.dp))
+                                }
+                            },
+                            modifier = Modifier.size(64.dp)
+                        ) {
+                            Box(Modifier.fillMaxSize()) {
+                                val modifier = Modifier
+                                    .combinedMouseClickable(
+                                        onClick = {
+                                            vm.selectTab(source)
+                                        },
+                                        onMiddleClick = {
+                                            if (source != null) {
+                                                vm.closeTab(source)
                                             }
-                                        )
-                                        .requiredSize(50.dp)
-                                        .align(Alignment.Center)
-                                    if (source != null) {
-                                        KtorImage(source.iconUrl(serverUrl), modifier = modifier)
-                                    } else {
-                                        Icon(Icons.Rounded.Home, stringResource("sources_home"), modifier = modifier)
-                                    }
+                                        }
+                                    )
+                                    .requiredSize(50.dp)
+                                    .align(Alignment.Center)
+                                if (source != null) {
+                                    KtorImage(source.iconUrl(serverUrl), modifier = modifier)
+                                } else {
+                                    Icon(Icons.Rounded.Home, stringResource("sources_home"), modifier = modifier)
                                 }
                             }
                         }
                     }
                 }
+            }
 
-                Crossfade(selectedSourceTab) { selectedSource ->
-                    BundleScope(selectedSource?.id.toString(), autoDispose = false) {
-                        if (selectedSource != null) {
-                            SourceScreen(it, selectedSource, onMangaClick, vm::enableSearch, vm::setSearch)
-                        } else {
-                            SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
-                        }
+            Crossfade(selectedSourceTab) { selectedSource ->
+                BundleScope(selectedSource?.id.toString(), autoDispose = false) {
+                    if (selectedSource != null) {
+                        SourceScreen(it, selectedSource, onMangaClick, vm::enableSearch, vm::setSearch)
+                    } else {
+                        SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
                     }
                 }
             }

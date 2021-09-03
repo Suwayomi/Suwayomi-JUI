@@ -57,7 +57,9 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 fun openDownloadsMenu() {
     launchApplication {
         ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
-            DownloadsMenu()
+            Surface {
+                DownloadsMenu()
+            }
         }
     }
 }
@@ -67,29 +69,27 @@ fun DownloadsMenu() {
     val vm = viewModel<DownloadsMenuViewModel>()
     val downloadQueue by vm.downloadQueue.collectAsState()
 
-    Surface {
-        Column {
-            Toolbar(
-                stringResource("location_downloads"),
-                closable = false,
-                actions = {
-                    val downloadStatus by vm.downloaderStatus.collectAsState()
-                    if (downloadStatus == DownloaderStatus.Started) {
-                        ActionIcon(onClick = vm::pause, stringResource("action_pause"), Icons.Rounded.Pause)
-                    } else {
-                        ActionIcon(onClick = vm::start, stringResource("action_continue"), Icons.Rounded.PlayArrow)
-                    }
-                    ActionIcon(onClick = vm::clear, stringResource("action_clear_queue"), Icons.Rounded.ClearAll)
+    Column {
+        Toolbar(
+            stringResource("location_downloads"),
+            closable = false,
+            actions = {
+                val downloadStatus by vm.downloaderStatus.collectAsState()
+                if (downloadStatus == DownloaderStatus.Started) {
+                    ActionIcon(onClick = vm::pause, stringResource("action_pause"), Icons.Rounded.Pause)
+                } else {
+                    ActionIcon(onClick = vm::start, stringResource("action_continue"), Icons.Rounded.PlayArrow)
                 }
-            )
-            LazyColumn(Modifier.fillMaxSize()) {
-                items(downloadQueue) {
-                    downloadsItem(
-                        it,
-                        vm::stopDownload,
-                        vm::moveToBottom
-                    )
-                }
+                ActionIcon(onClick = vm::clear, stringResource("action_clear_queue"), Icons.Rounded.ClearAll)
+            }
+        )
+        LazyColumn(Modifier.fillMaxSize()) {
+            items(downloadQueue) {
+                downloadsItem(
+                    it,
+                    vm::stopDownload,
+                    vm::moveToBottom
+                )
             }
         }
     }

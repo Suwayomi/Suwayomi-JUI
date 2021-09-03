@@ -7,7 +7,10 @@
 package ca.gosyer.ui.main
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +25,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -33,6 +38,7 @@ import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
 import androidx.compose.material.icons.rounded.Book
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.icons.rounded.Settings
@@ -51,7 +57,10 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.ui.model.StartScreen
+import ca.gosyer.ui.base.components.LocalMenuController
+import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.combinedMouseClickable
+import ca.gosyer.ui.base.components.withMenuController
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.downloads.DownloadsMenu
@@ -78,44 +87,70 @@ import com.github.zsoltk.compose.router.Router
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
 
+const val SIDE_MENU_EXPAND_DURATION = 500
+
 @Composable
 fun MainMenu(rootBundle: Bundle) {
     val vm = viewModel<MainViewModel>()
     Surface {
         Router("TopLevel", vm.startScreen.toRoute()) { backStack ->
-            Row {
-                SideMenu(backStack)
-                MainWindow(rootBundle, backStack)
+            Box {
+                val controller = remember {
+                    MenuController(backStack)
+                }
+                val startPadding by animateDpAsState(
+                    if (controller.sideMenuVisible) {
+                        200.dp
+                    } else {
+                        0.dp
+                    },
+                    animationSpec = tween(SIDE_MENU_EXPAND_DURATION)
+                )
+                if (startPadding != 0.dp) {
+                    SideMenu(controller)
+                }
+                withMenuController(controller) {
+                    MainWindow(Modifier.padding(start = startPadding), rootBundle)
+                }
             }
         }
     }
 }
 
 @Composable
-fun SideMenu(backStack: BackStack<Route>) {
+fun SideMenu(controller: MenuController) {
     Surface(Modifier.width(200.dp).fillMaxHeight(), elevation = 2.dp) {
         Box(Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize().padding(horizontal = 4.dp)) {
-                Box(Modifier.fillMaxWidth().height(60.dp)) {
+                Row(
+                    Modifier.fillMaxWidth().height(60.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         BuildConfig.NAME,
                         fontSize = 24.sp,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier
                     )
+                    IconButton(controller::closeSideMenu) {
+                        Icon(Icons.Rounded.Close, contentDescription = null)
+                    }
                 }
                 Spacer(Modifier.height(20.dp))
                 remember { TopLevelMenus.values().filter { it.top } }.forEach { topLevelMenu ->
                     SideMenuItem(
+                        topLevelMenu.isSelected(controller.backStack),
                         topLevelMenu,
-                        backStack
+                        controller.backStack::newRoot
                     )
                 }
                 Box(Modifier.fillMaxSize()) {
                     Column(Modifier.align(Alignment.BottomStart).padding(bottom = 8.dp)) {
                         remember { TopLevelMenus.values().filterNot { it.top } }.forEach { topLevelMenu ->
                             SideMenuItem(
+                                topLevelMenu.isSelected(controller.backStack),
                                 topLevelMenu,
-                                backStack
+                                controller.backStack::newRoot
                             )
                         }
                     }
@@ -126,23 +161,23 @@ fun SideMenu(backStack: BackStack<Route>) {
 }
 
 @Composable
-fun SideMenuItem(topLevelMenu: TopLevelMenus, backStack: BackStack<Route>) {
+fun SideMenuItem(selected: Boolean, topLevelMenu: TopLevelMenus, newRoot: (Route) -> Unit) {
     MainMenuItem(
-        backStack.elements.first() == topLevelMenu.menu,
+        selected,
         stringResource(topLevelMenu.textKey),
         topLevelMenu.menu,
         topLevelMenu.selectedIcon,
         topLevelMenu.unselectedIcon,
         topLevelMenu.openInNewWindow,
-        topLevelMenu.extraInfo
-    ) {
-        backStack.newRoot(it)
-    }
+        topLevelMenu.extraInfo,
+        newRoot
+    )
 }
 
 @Composable
-fun MainWindow(rootBundle: Bundle, backStack: BackStack<Route>) {
-    Box(Modifier.fillMaxSize()) {
+fun MainWindow(modifier: Modifier, rootBundle: Bundle) {
+    Surface(Modifier.fillMaxSize().then(modifier)) {
+        val backStack = LocalMenuController.current!!.backStack
         BundleScope("K${backStack.lastIndex}", rootBundle, false) {
             Crossfade(backStack.last()) { routing ->
                 when (routing) {
@@ -297,7 +332,9 @@ enum class TopLevelMenus(
     Sources("location_sources", Icons.Outlined.Explore, Icons.Rounded.Explore, Route.Sources, true, ::openSourcesMenu),
     Extensions("location_extensions", Icons.Outlined.Store, Icons.Rounded.Store, Route.Extensions, true, ::openExtensionsMenu),
     Downloads("location_downloads", Icons.Outlined.Download, Icons.Rounded.Download, Route.Downloads, false, extraInfo = { DownloadsExtraInfo() }),
-    Settings("location_settings", Icons.Outlined.Settings, Icons.Rounded.Settings, Route.Settings, false)
+    Settings("location_settings", Icons.Outlined.Settings, Icons.Rounded.Settings, Route.Settings, false);
+
+    fun isSelected(backStack: BackStack<Route>) = backStack.elements.first() == menu
 }
 
 sealed class Route {

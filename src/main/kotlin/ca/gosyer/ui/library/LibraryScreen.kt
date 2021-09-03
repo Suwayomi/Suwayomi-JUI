@@ -12,6 +12,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
@@ -29,6 +30,8 @@ import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.components.Toolbar
+import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
@@ -41,7 +44,9 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 fun openLibraryMenu() {
     launchApplication {
         ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
-            LibraryScreen()
+            Surface {
+                LibraryScreen()
+            }
         }
     }
 }
@@ -57,49 +62,48 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
     val serverUrl by vm.serverUrl.collectAsState()
     // val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
-    Surface {
-        if (categories.isEmpty()) {
-            LoadingScreen(isLoading, errorMessage = error)
-        } else {
-            /*ModalBottomSheetLayout(
-                sheetState = sheetState,
-                sheetContent = { *//*LibrarySheet()*//* }
-            ) {*/
-            Column(Modifier.fillMaxWidth()) {
-                /*Toolbar(
-                    title = {
-                        val text = if (vm.showCategoryTabs) {
-                            stringResource(R.string.library_label)
-                        } else {
-                            vm.selectedCategory?.visibleName.orEmpty()
-                        }
-                        Text(text)
-                    },
-                    actions = {
-                        IconButton(onClick = { scope.launch { sheetState.show() }}) {
-                            Icon(Icons.Rounded.FilterList, contentDescription = null)
-                        }
+    if (categories.isEmpty()) {
+        LoadingScreen(isLoading, errorMessage = error)
+    } else {
+        /*ModalBottomSheetLayout(
+            sheetState = sheetState,
+            sheetContent = { *//*LibrarySheet()*//* }
+        ) {*/
+        Column(Modifier.fillMaxWidth()) {
+            /*Toolbar(
+                title = {
+                    val text = if (vm.showCategoryTabs) {
+                        stringResource(R.string.library_label)
+                    } else {
+                        vm.selectedCategory?.visibleName.orEmpty()
                     }
-                )*/
-                LibraryTabs(
-                    visible = true, // vm.showCategoryTabs,
-                    categories = categories,
-                    selectedPage = selectedCategoryIndex,
-                    onPageChanged = vm::setSelectedPage
-                )
-                LibraryPager(
-                    categories = categories,
-                    displayMode = displayMode,
-                    selectedPage = selectedCategoryIndex,
-                    serverUrl = serverUrl,
-                    getLibraryForPage = { vm.getLibraryForCategoryIndex(it).collectAsState() },
-                    onPageChanged = vm::setSelectedPage,
-                    onClickManga = onClickManga,
-                    onRemoveMangaClicked = vm::removeManga
-                )
-            }
-            // }
+                    Text(text)
+                },
+                actions = {
+                    IconButton(onClick = { scope.launch { sheetState.show() }}) {
+                        Icon(Icons.Rounded.FilterList, contentDescription = null)
+                    }
+                }
+            )*/
+            Toolbar(stringResource("location_library"), closable = false)
+            LibraryTabs(
+                visible = true, // vm.showCategoryTabs,
+                categories = categories,
+                selectedPage = selectedCategoryIndex,
+                onPageChanged = vm::setSelectedPage
+            )
+            LibraryPager(
+                categories = categories,
+                displayMode = displayMode,
+                selectedPage = selectedCategoryIndex,
+                serverUrl = serverUrl,
+                getLibraryForPage = { vm.getLibraryForCategoryIndex(it).collectAsState() },
+                onPageChanged = vm::setSelectedPage,
+                onClickManga = onClickManga,
+                onRemoveMangaClicked = vm::removeManga
+            )
         }
+        // }
     }
 }
 
@@ -119,7 +123,7 @@ private fun LibraryTabs(
     ) {
         ScrollableTabRow(
             selectedTabIndex = selectedPage,
-            // backgroundColor = CustomColors.current.bars,
+            backgroundColor = MaterialTheme.colors.surface,
             // contentColor = CustomColors.current.onBars,
             edgePadding = 0.dp
         ) {

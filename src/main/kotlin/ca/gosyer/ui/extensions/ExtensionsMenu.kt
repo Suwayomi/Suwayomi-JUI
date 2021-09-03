@@ -67,7 +67,9 @@ fun openExtensionsMenu() {
     launchApplication {
         val state = rememberWindowState(size = WindowSize(550.dp, 700.dp))
         ThemedWindow(::exitApplication, state, title = BuildConfig.NAME) {
-            ExtensionsMenu()
+            Surface {
+                ExtensionsMenu()
+            }
         }
     }
 }
@@ -80,61 +82,59 @@ fun ExtensionsMenu() {
     val serverUrl by vm.serverUrl.collectAsState()
     val search by vm.searchQuery.collectAsState()
 
-    Surface(Modifier.fillMaxSize()) {
-        if (isLoading) {
-            LoadingScreen(isLoading)
-        } else {
-            val state = persistentLazyListState()
+    if (isLoading) {
+        LoadingScreen(isLoading)
+    } else {
+        val state = persistentLazyListState()
 
-            Box(Modifier.fillMaxSize()) {
-                LazyColumn(Modifier.fillMaxSize(), state) {
+        Box(Modifier.fillMaxSize()) {
+            LazyColumn(Modifier.fillMaxSize(), state) {
+                item {
+                    Toolbar(
+                        stringResource("location_extensions"),
+                        closable = false,
+                        searchText = search,
+                        search = {
+                            vm.search(it)
+                        },
+                        actions = {
+                            ActionIcon(
+                                {
+                                    val enabledLangs = MutableStateFlow(vm.enabledLangs.value)
+                                    LanguageDialog(enabledLangs, vm.getSourceLanguages().toList()) {
+                                        vm.setEnabledLanguages(enabledLangs.value)
+                                    }
+                                },
+                                stringResource("enabled_languages"),
+                                Icons.Rounded.Translate
+                            )
+                        }
+                    )
+                }
+                extensions.forEach { (header, items) ->
                     item {
-                        Toolbar(
-                            stringResource("location_extensions"),
-                            closable = false,
-                            searchText = search,
-                            search = {
-                                vm.search(it)
-                            },
-                            actions = {
-                                ActionIcon(
-                                    {
-                                        val enabledLangs = MutableStateFlow(vm.enabledLangs.value)
-                                        LanguageDialog(enabledLangs, vm.getSourceLanguages().toList()) {
-                                            vm.setEnabledLanguages(enabledLangs.value)
-                                        }
-                                    },
-                                    stringResource("enabled_languages"),
-                                    Icons.Rounded.Translate
-                                )
-                            }
+                        Text(
+                            header,
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 4.dp)
                         )
                     }
-                    extensions.forEach { (header, items) ->
-                        item {
-                            Text(
-                                header,
-                                style = MaterialTheme.typography.h6,
-                                modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 4.dp)
-                            )
-                        }
-                        items(items) { extension ->
-                            ExtensionItem(
-                                extension,
-                                serverUrl,
-                                onInstallClicked = vm::install,
-                                onUpdateClicked = vm::update,
-                                onUninstallClicked = vm::uninstall
-                            )
-                            Spacer(Modifier.height(8.dp))
-                        }
+                    items(items) { extension ->
+                        ExtensionItem(
+                            extension,
+                            serverUrl,
+                            onInstallClicked = vm::install,
+                            onUpdateClicked = vm::update,
+                            onUninstallClicked = vm::uninstall
+                        )
+                        Spacer(Modifier.height(8.dp))
                     }
                 }
-                VerticalScrollbar(
-                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                    adapter = rememberScrollbarAdapter(state)
-                )
             }
+            VerticalScrollbar(
+                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                adapter = rememberScrollbarAdapter(state)
+            )
         }
     }
 }
