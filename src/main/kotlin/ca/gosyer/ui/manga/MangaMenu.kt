@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,7 +51,6 @@ import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.main.Routes
