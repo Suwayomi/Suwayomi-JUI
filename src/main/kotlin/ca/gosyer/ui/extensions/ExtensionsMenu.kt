@@ -60,6 +60,7 @@ import ca.gosyer.util.compose.persistentLazyListState
 import ca.gosyer.util.lang.launchApplication
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -83,32 +84,28 @@ fun ExtensionsMenu() {
     val search by vm.searchQuery.collectAsState()
 
     if (isLoading) {
-        LoadingScreen(isLoading)
+        Column {
+            ExtensionsToolbar(
+                search,
+                vm::search,
+                vm.enabledLangs,
+                vm::getSourceLanguages,
+                vm::setEnabledLanguages
+            )
+            LoadingScreen(isLoading)
+        }
     } else {
         val state = persistentLazyListState()
 
         Box(Modifier.fillMaxSize()) {
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
-                    Toolbar(
-                        stringResource("location_extensions"),
-                        closable = false,
-                        searchText = search,
-                        search = {
-                            vm.search(it)
-                        },
-                        actions = {
-                            ActionIcon(
-                                {
-                                    val enabledLangs = MutableStateFlow(vm.enabledLangs.value)
-                                    LanguageDialog(enabledLangs, vm.getSourceLanguages().toList()) {
-                                        vm.setEnabledLanguages(enabledLangs.value)
-                                    }
-                                },
-                                stringResource("enabled_languages"),
-                                Icons.Rounded.Translate
-                            )
-                        }
+                    ExtensionsToolbar(
+                        search,
+                        vm::search,
+                        vm.enabledLangs,
+                        vm::getSourceLanguages,
+                        vm::setEnabledLanguages
                     )
                 }
                 extensions.forEach { (header, items) ->
@@ -137,6 +134,34 @@ fun ExtensionsMenu() {
             )
         }
     }
+}
+
+@Composable
+fun ExtensionsToolbar(
+    searchText: String?,
+    search: (String) -> Unit,
+    currentEnabledLangs: StateFlow<Set<String>>,
+    getSourceLanguages: () -> Set<String>,
+    setEnabledLanguages: (Set<String>) -> Unit
+) {
+    Toolbar(
+        stringResource("location_extensions"),
+        closable = false,
+        searchText = searchText,
+        search = search,
+        actions = {
+            ActionIcon(
+                {
+                    val enabledLangs = MutableStateFlow(currentEnabledLangs.value)
+                    LanguageDialog(enabledLangs, getSourceLanguages().toList()) {
+                        setEnabledLanguages(enabledLangs.value)
+                    }
+                },
+                stringResource("enabled_languages"),
+                Icons.Rounded.Translate
+            )
+        }
+    )
 }
 
 @Composable
