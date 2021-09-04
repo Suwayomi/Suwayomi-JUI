@@ -25,4 +25,3 @@ sealed class Routes {
     object SettingsParentalControls : Route()*/
     object SettingsAdvanced : Routes()
 }
-
