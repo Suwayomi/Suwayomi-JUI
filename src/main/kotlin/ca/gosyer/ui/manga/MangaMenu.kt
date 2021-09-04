@@ -175,22 +175,15 @@ fun MangaItem(manga: Manga, serverUrl: String) {
     BoxWithConstraints(Modifier.padding(8.dp)) {
         if (maxWidth > 600.dp) {
             Row {
-                Cover(manga, serverUrl)
+                Cover(manga, serverUrl, Modifier.width(300.dp))
                 Spacer(Modifier.width(16.dp))
-                Surface(
-                    elevation = 2.dp,
-                    modifier = Modifier.defaultMinSize(minHeight = 450.dp).fillMaxWidth()
-                ) {
-                    MangaInfo(manga)
-                }
+                MangaInfo(manga)
             }
         } else {
             Column {
                 Cover(manga, serverUrl, Modifier.align(Alignment.CenterHorizontally))
                 Spacer(Modifier.height(16.dp))
-                Surface(elevation = 2.dp) {
-                    MangaInfo(manga)
-                }
+                MangaInfo(manga)
             }
         }
     }
@@ -200,10 +193,7 @@ fun MangaItem(manga: Manga, serverUrl: String) {
 private fun Cover(manga: Manga, serverUrl: String, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier then Modifier
-            .width(300.dp)
-            .aspectRatio(mangaAspectRatio)
             .padding(4.dp),
-        elevation = 4.dp,
         shape = RoundedCornerShape(4.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
