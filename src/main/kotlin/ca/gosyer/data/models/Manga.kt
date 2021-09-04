@@ -19,7 +19,7 @@ data class Manga(
     val artist: String?,
     val author: String?,
     val description: String?,
-    val genre: String?,
+    val genre: List<String>,
     val status: String,
     val inLibrary: Boolean,
     val source: Source?,

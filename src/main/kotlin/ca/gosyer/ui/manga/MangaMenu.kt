@@ -27,6 +27,7 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastForEach
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
@@ -58,6 +60,7 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
+import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -215,9 +218,26 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
             if (!manga.description.isNullOrEmpty()) {
                 Text(manga.description)
             }
-            if (!manga.genre.isNullOrEmpty()) {
-                Text(manga.genre)
+            if (manga.genre.isNotEmpty()) {
+                FlowRow {
+                    manga.genre.fastForEach {
+                        Chip(it)
+                    }
+                }
+                // Text(manga.genre.joinToString())
             }
+        }
+    }
+}
+
+@Composable
+private fun Chip(text: String) {
+    Box(Modifier.padding(horizontal = 4.dp, vertical = 2.dp)) {
+        Card(
+            shape = RoundedCornerShape(50),
+            elevation = 4.dp
+        ) {
+            Text(text, Modifier.align(Alignment.Center).padding(8.dp))
         }
     }
 }

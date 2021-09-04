@@ -34,6 +34,7 @@ dependencies {
     implementation(compose("org.jetbrains.compose.ui:ui-util"))
     implementation("ca.gosyer:compose-router:0.24.2-jetbrains-2")
     implementation("ca.gosyer:accompanist-pager:0.14.0")
+    implementation("ca.gosyer:accompanist-flowlayout:0.14.0")
 
     // UI (Swing)
     implementation("com.github.weisj:darklaf-core:2.7.2")
