@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import ca.gosyer.data.server.Http
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
+import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.jvm.javaio.copyTo
 import org.jetbrains.skija.Image
 import java.io.ByteArrayOutputStream
@@ -23,7 +23,7 @@ fun imageFromFile(file: File): ImageBitmap {
 
 suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
     val bytes = ByteArrayOutputStream().use {
-        client.get<HttpResponse>(url, block).content.copyTo(it)
+        client.get<ByteReadChannel>(url, block).copyTo(it)
         it.toByteArray()
     }
     return Image.makeFromEncoded(bytes).asImageBitmap()
