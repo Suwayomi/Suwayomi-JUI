@@ -19,7 +19,7 @@ import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import com.github.zsoltk.compose.router.BackStack
 import java.time.Instant
 import java.time.ZoneId
@@ -78,7 +78,7 @@ class SettingsGeneralViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsGeneralScreen(navController: BackStack<Route>) {
+fun SettingsGeneralScreen(navController: BackStack<Routes>) {
     val vm = viewModel<SettingsGeneralViewModel>()
     Column {
         Toolbar(stringResource("settings_general_screen"), navController, true)

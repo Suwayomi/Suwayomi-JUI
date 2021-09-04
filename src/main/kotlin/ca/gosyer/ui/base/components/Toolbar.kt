@@ -49,13 +49,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import com.github.zsoltk.compose.router.BackStack
 
 @Composable
 fun Toolbar(
     name: String,
-    router: BackStack<Route>? = null,
+    router: BackStack<Routes>? = null,
     closable: Boolean,
     onClose: () -> Unit = { router?.pop() },
     modifier: Modifier = Modifier,

@@ -21,11 +21,11 @@ import androidx.compose.runtime.Composable
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.resources.stringResource
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import com.github.zsoltk.compose.router.BackStack
 
 @Composable
-fun SettingsScreen(navController: BackStack<Route>) {
+fun SettingsScreen(navController: BackStack<Routes>) {
     Column {
         Toolbar(stringResource("location_settings"), closable = false)
         LazyColumn {
@@ -33,35 +33,35 @@ fun SettingsScreen(navController: BackStack<Route>) {
                 PreferenceRow(
                     title = stringResource("settings_general"),
                     icon = Icons.Rounded.Tune,
-                    onClick = { navController.push(Route.SettingsGeneral) }
+                    onClick = { navController.push(Routes.SettingsGeneral) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_appearance"),
                     icon = Icons.Rounded.Palette,
-                    onClick = { navController.push(Route.SettingsAppearance) }
+                    onClick = { navController.push(Routes.SettingsAppearance) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_server"),
                     icon = Icons.Rounded.Computer,
-                    onClick = { navController.push(Route.SettingsServer) }
+                    onClick = { navController.push(Routes.SettingsServer) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_library"),
                     icon = Icons.Rounded.CollectionsBookmark,
-                    onClick = { navController.push(Route.SettingsLibrary) }
+                    onClick = { navController.push(Routes.SettingsLibrary) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_reader"),
                     icon = Icons.Rounded.ChromeReaderMode,
-                    onClick = { navController.push(Route.SettingsReader) }
+                    onClick = { navController.push(Routes.SettingsReader) }
                 )
             }
             /*item {
@@ -82,14 +82,14 @@ fun SettingsScreen(navController: BackStack<Route>) {
                 PreferenceRow(
                     title = stringResource("settings_browse"),
                     icon = Icons.Rounded.Explore,
-                    onClick = { navController.push(Route.SettingsBrowse) }
+                    onClick = { navController.push(Routes.SettingsBrowse) }
                 )
             }
             item {
                 PreferenceRow(
                     title = stringResource("settings_backup"),
                     icon = Icons.Rounded.Backup,
-                    onClick = { navController.push(Route.SettingsBackup) }
+                    onClick = { navController.push(Routes.SettingsBackup) }
                 )
             }
             /*item {
@@ -110,7 +110,7 @@ fun SettingsScreen(navController: BackStack<Route>) {
                 PreferenceRow(
                     title = stringResource("settings_advanced"),
                     icon = Icons.Rounded.Code,
-                    onClick = { navController.push(Route.SettingsAdvanced) }
+                    onClick = { navController.push(Routes.SettingsAdvanced) }
                 )
             }
         }

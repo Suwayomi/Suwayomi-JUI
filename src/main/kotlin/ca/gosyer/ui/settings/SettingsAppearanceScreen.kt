@@ -44,7 +44,7 @@ import ca.gosyer.ui.base.theme.getLightColors
 import ca.gosyer.ui.base.theme.themes
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import com.github.zsoltk.compose.router.BackStack
 import javax.inject.Inject
 
@@ -67,7 +67,7 @@ class ThemesViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsAppearance(navController: BackStack<Route>) {
+fun SettingsAppearance(navController: BackStack<Routes>) {
     val vm = viewModel<ThemesViewModel>()
 
     val activeColors = vm.getActiveColors()

@@ -11,11 +11,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.resources.stringResource
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import com.github.zsoltk.compose.router.BackStack
 
 @Composable
-fun SettingsDownloadsScreen(navController: BackStack<Route>) {
+fun SettingsDownloadsScreen(navController: BackStack<Routes>) {
     Column {
         Toolbar(stringResource("settings_download_screen"), navController, true)
         LazyColumn {

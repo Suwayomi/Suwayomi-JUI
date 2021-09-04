@@ -28,7 +28,7 @@ import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -117,7 +117,7 @@ data class ReaderModePreference(
 }
 
 @Composable
-fun SettingsReaderScreen(navController: BackStack<Route>) {
+fun SettingsReaderScreen(navController: BackStack<Routes>) {
     val vm = viewModel<SettingsReaderViewModel>()
     val modeSettings by vm.modeSettings.collectAsState()
     Column {

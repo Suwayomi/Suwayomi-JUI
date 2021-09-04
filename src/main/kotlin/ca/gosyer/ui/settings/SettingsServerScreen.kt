@@ -32,7 +32,7 @@ import ca.gosyer.ui.base.prefs.asStringStateIn
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -103,7 +103,7 @@ class SettingsServerViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsServerScreen(navController: BackStack<Route>) {
+fun SettingsServerScreen(navController: BackStack<Routes>) {
     val vm = viewModel<SettingsServerViewModel>()
     val host by vm.host.collectAsState()
     val proxy by vm.proxy.collectAsState()

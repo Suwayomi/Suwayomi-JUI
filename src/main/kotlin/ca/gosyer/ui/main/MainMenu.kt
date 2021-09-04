@@ -161,7 +161,7 @@ fun SideMenu(controller: MenuController) {
 }
 
 @Composable
-fun SideMenuItem(selected: Boolean, topLevelMenu: TopLevelMenus, newRoot: (Route) -> Unit) {
+fun SideMenuItem(selected: Boolean, topLevelMenu: TopLevelMenus, newRoot: (Routes) -> Unit) {
     MainMenuItem(
         selected,
         stringResource(topLevelMenu.textKey),
@@ -181,35 +181,35 @@ fun MainWindow(modifier: Modifier, rootBundle: Bundle) {
         BundleScope("K${backStack.lastIndex}", rootBundle, false) {
             Crossfade(backStack.last()) { routing ->
                 when (routing) {
-                    is Route.Library -> LibraryScreen {
-                        backStack.push(Route.Manga(it))
+                    is Routes.Library -> LibraryScreen {
+                        backStack.push(Routes.Manga(it))
                     }
-                    is Route.Sources -> SourcesMenu(
+                    is Routes.Sources -> SourcesMenu(
                         {
-                            backStack.push(Route.SourceSettings(it))
+                            backStack.push(Routes.SourceSettings(it))
                         }
                     ) {
-                        backStack.push(Route.Manga(it))
+                        backStack.push(Routes.Manga(it))
                     }
-                    is Route.Extensions -> ExtensionsMenu()
-                    is Route.Manga -> MangaMenu(routing.mangaId, backStack)
-                    is Route.Downloads -> DownloadsMenu()
+                    is Routes.Extensions -> ExtensionsMenu()
+                    is Routes.Manga -> MangaMenu(routing.mangaId, backStack)
+                    is Routes.Downloads -> DownloadsMenu()
 
-                    is Route.SourceSettings -> SourceSettingsMenu(routing.sourceId, backStack)
+                    is Routes.SourceSettings -> SourceSettingsMenu(routing.sourceId, backStack)
 
-                    is Route.Settings -> SettingsScreen(backStack)
-                    is Route.SettingsGeneral -> SettingsGeneralScreen(backStack)
-                    is Route.SettingsAppearance -> SettingsAppearance(backStack)
-                    is Route.SettingsServer -> SettingsServerScreen(backStack)
-                    is Route.SettingsLibrary -> SettingsLibraryScreen(backStack)
-                    is Route.SettingsReader -> SettingsReaderScreen(backStack)
+                    is Routes.Settings -> SettingsScreen(backStack)
+                    is Routes.SettingsGeneral -> SettingsGeneralScreen(backStack)
+                    is Routes.SettingsAppearance -> SettingsAppearance(backStack)
+                    is Routes.SettingsServer -> SettingsServerScreen(backStack)
+                    is Routes.SettingsLibrary -> SettingsLibraryScreen(backStack)
+                    is Routes.SettingsReader -> SettingsReaderScreen(backStack)
                     /*is Route.SettingsDownloads -> SettingsDownloadsScreen(backStack)
                     is Route.SettingsTracking -> SettingsTrackingScreen(backStack)*/
-                    is Route.SettingsBrowse -> SettingsBrowseScreen(backStack)
-                    is Route.SettingsBackup -> SettingsBackupScreen(backStack)
+                    is Routes.SettingsBrowse -> SettingsBrowseScreen(backStack)
+                    is Routes.SettingsBackup -> SettingsBackupScreen(backStack)
                     /*is Route.SettingsSecurity -> SettingsSecurityScreen(backStack)
                     is Route.SettingsParentalControls -> SettingsParentalControlsScreen(backStack)*/
-                    is Route.SettingsAdvanced -> SettingsAdvancedScreen(backStack)
+                    is Routes.SettingsAdvanced -> SettingsAdvancedScreen(backStack)
                 }
             }
         }
@@ -234,12 +234,12 @@ fun MainWindow(modifier: Modifier, rootBundle: Bundle) {
 fun MainMenuItem(
     selected: Boolean,
     text: String,
-    menu: Route,
+    menu: Routes,
     selectedIcon: ImageVector,
     unselectedIcon: ImageVector,
     onMiddleClick: () -> Unit,
     extraInfo: (@Composable () -> Unit)? = null,
-    onClick: (Route) -> Unit
+    onClick: (Routes) -> Unit
 ) {
     Card(
         Modifier.fillMaxWidth(),
@@ -283,9 +283,9 @@ fun MainMenuItem(
 }
 
 fun StartScreen.toRoute() = when (this) {
-    StartScreen.Library -> Route.Library
-    StartScreen.Sources -> Route.Sources
-    StartScreen.Extensions -> Route.Extensions
+    StartScreen.Library -> Routes.Library
+    StartScreen.Sources -> Routes.Sources
+    StartScreen.Extensions -> Routes.Extensions
 }
 
 @Composable
@@ -323,42 +323,16 @@ enum class TopLevelMenus(
     val textKey: String,
     val unselectedIcon: ImageVector,
     val selectedIcon: ImageVector,
-    val menu: Route,
+    val menu: Routes,
     val top: Boolean,
     val openInNewWindow: () -> Unit = {},
     val extraInfo: (@Composable () -> Unit)? = null
 ) {
-    Library("location_library", Icons.Outlined.Book, Icons.Rounded.Book, Route.Library, true, ::openLibraryMenu),
-    Sources("location_sources", Icons.Outlined.Explore, Icons.Rounded.Explore, Route.Sources, true, ::openSourcesMenu),
-    Extensions("location_extensions", Icons.Outlined.Store, Icons.Rounded.Store, Route.Extensions, true, ::openExtensionsMenu),
-    Downloads("location_downloads", Icons.Outlined.Download, Icons.Rounded.Download, Route.Downloads, false, extraInfo = { DownloadsExtraInfo() }),
-    Settings("location_settings", Icons.Outlined.Settings, Icons.Rounded.Settings, Route.Settings, false);
+    Library("location_library", Icons.Outlined.Book, Icons.Rounded.Book, Routes.Library, true, ::openLibraryMenu),
+    Sources("location_sources", Icons.Outlined.Explore, Icons.Rounded.Explore, Routes.Sources, true, ::openSourcesMenu),
+    Extensions("location_extensions", Icons.Outlined.Store, Icons.Rounded.Store, Routes.Extensions, true, ::openExtensionsMenu),
+    Downloads("location_downloads", Icons.Outlined.Download, Icons.Rounded.Download, Routes.Downloads, false, extraInfo = { DownloadsExtraInfo() }),
+    Settings("location_settings", Icons.Outlined.Settings, Icons.Rounded.Settings, Routes.Settings, false);
 
-    fun isSelected(backStack: BackStack<Route>) = backStack.elements.first() == menu
-}
-
-sealed class Route {
-    object Library : Route()
-    object Sources : Route()
-    object Extensions : Route()
-    data class Manga(val mangaId: Long) : Route()
-    object Downloads : Route()
-
-    data class SourceSettings(val sourceId: Long) : Route()
-
-    object Settings : Route()
-    object SettingsGeneral : Route()
-    object SettingsAppearance : Route()
-    object SettingsLibrary : Route()
-    object SettingsReader : Route()
-
-    /*object SettingsDownloads : Route()
-    object SettingsTracking : Route()*/
-    object SettingsBrowse : Route()
-    object SettingsBackup : Route()
-    object SettingsServer : Route()
-
-    /*object SettingsSecurity : Route()
-    object SettingsParentalControls : Route()*/
-    object SettingsAdvanced : Route()
+    fun isSelected(backStack: BackStack<Routes>) = backStack.elements.first() == menu
 }

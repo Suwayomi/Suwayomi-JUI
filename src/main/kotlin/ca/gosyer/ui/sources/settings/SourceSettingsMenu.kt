@@ -29,7 +29,7 @@ import ca.gosyer.ui.base.prefs.ChoiceDialog
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.CheckBox
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.EditText
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.List
@@ -51,7 +51,7 @@ fun openSourceSettingsMenu(sourceId: Long) {
 }
 
 @Composable
-fun SourceSettingsMenu(sourceId: Long, backStack: BackStack<Route>? = null) {
+fun SourceSettingsMenu(sourceId: Long, backStack: BackStack<Routes>? = null) {
     val vm = viewModel<SourceSettingsViewModel> {
         SourceSettingsViewModel.Params(sourceId)
     }

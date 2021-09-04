@@ -6,14 +6,14 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import com.github.zsoltk.compose.router.BackStack
 
 val LocalMenuController =
     compositionLocalOf<MenuController?> { null }
 
 class MenuController(
-    val backStack: BackStack<Route>,
+    val backStack: BackStack<Routes>,
     private val _sideMenuVisible: MutableState<Boolean> = mutableStateOf(true),
 ) {
     val sideMenuVisible by _sideMenuVisible

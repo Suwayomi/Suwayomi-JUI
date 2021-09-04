@@ -19,7 +19,7 @@ import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.categories.openCategoriesMenu
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,7 +47,7 @@ class SettingsLibraryViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsLibraryScreen(navController: BackStack<Route>) {
+fun SettingsLibraryScreen(navController: BackStack<Routes>) {
     val vm = viewModel<SettingsLibraryViewModel>()
 
     Column {

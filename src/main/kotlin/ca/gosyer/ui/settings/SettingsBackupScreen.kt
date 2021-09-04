@@ -32,7 +32,7 @@ import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.filePicker
@@ -165,7 +165,7 @@ class SettingsBackupViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsBackupScreen(navController: BackStack<Route>) {
+fun SettingsBackupScreen(navController: BackStack<Routes>) {
     val vm = viewModel<SettingsBackupViewModel>()
     val restoring by vm.restoring.collectAsState()
     val restoringProgress by vm.restoringProgress.collectAsState()

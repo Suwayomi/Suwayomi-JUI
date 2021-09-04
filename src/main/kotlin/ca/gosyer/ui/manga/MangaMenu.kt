@@ -56,7 +56,7 @@ import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Route
+import ca.gosyer.ui.main.Routes
 import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
@@ -77,7 +77,7 @@ fun openMangaMenu(mangaId: Long) {
 }
 
 @Composable
-fun MangaMenu(mangaId: Long, backStack: BackStack<Route>? = null) {
+fun MangaMenu(mangaId: Long, backStack: BackStack<Routes>? = null) {
     val vm = viewModel<MangaMenuViewModel> {
         MangaMenuViewModel.Params(mangaId)
     }
