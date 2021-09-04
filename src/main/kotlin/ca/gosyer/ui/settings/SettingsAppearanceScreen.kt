@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
+import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ColorPreference
@@ -44,8 +45,6 @@ import ca.gosyer.ui.base.theme.getLightColors
 import ca.gosyer.ui.base.theme.themes
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Routes
-import com.github.zsoltk.compose.router.BackStack
 import javax.inject.Inject
 
 class ThemesViewModel @Inject constructor(
@@ -67,7 +66,7 @@ class ThemesViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsAppearance(navController: BackStack<Routes>) {
+fun SettingsAppearance(menuController: MenuController) {
     val vm = viewModel<ThemesViewModel>()
 
     val activeColors = vm.getActiveColors()
@@ -77,7 +76,7 @@ fun SettingsAppearance(navController: BackStack<Routes>) {
     }
 
     Column {
-        Toolbar(stringResource("settings_appearance_screen"), navController, true)
+        Toolbar(stringResource("settings_appearance_screen"), menuController, true)
         LazyColumn {
             item {
                 ChoicePreference(

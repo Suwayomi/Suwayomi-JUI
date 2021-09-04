@@ -22,6 +22,7 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.model.Auth
 import ca.gosyer.data.server.model.Proxy
+import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.EditTextPreference
@@ -32,8 +33,6 @@ import ca.gosyer.ui.base.prefs.asStringStateIn
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Routes
-import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -103,7 +102,7 @@ class SettingsServerViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsServerScreen(navController: BackStack<Routes>) {
+fun SettingsServerScreen(menuController: MenuController) {
     val vm = viewModel<SettingsServerViewModel>()
     val host by vm.host.collectAsState()
     val proxy by vm.proxy.collectAsState()
@@ -114,7 +113,7 @@ fun SettingsServerScreen(navController: BackStack<Routes>) {
         }
     }
     Column {
-        Toolbar(stringResource("settings_server_screen"), navController, true)
+        Toolbar(stringResource("settings_server_screen"), menuController, true)
         LazyColumn {
             item {
                 SwitchPreference(preference = vm.host, title = stringResource("host_server"))

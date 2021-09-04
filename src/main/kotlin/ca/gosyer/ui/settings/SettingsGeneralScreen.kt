@@ -13,14 +13,13 @@ import androidx.compose.runtime.Composable
 import ca.gosyer.build.BuildResources
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.StartScreen
+import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Routes
-import com.github.zsoltk.compose.router.BackStack
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -78,10 +77,10 @@ class SettingsGeneralViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsGeneralScreen(navController: BackStack<Routes>) {
+fun SettingsGeneralScreen(menuController: MenuController) {
     val vm = viewModel<SettingsGeneralViewModel>()
     Column {
-        Toolbar(stringResource("settings_general_screen"), navController, true)
+        Toolbar(stringResource("settings_general_screen"), menuController, closable = true)
         LazyColumn {
             item {
                 ChoicePreference(

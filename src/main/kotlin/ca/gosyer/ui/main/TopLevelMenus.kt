@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import ca.gosyer.ui.extensions.openExtensionsMenu
 import ca.gosyer.ui.library.openLibraryMenu
+import ca.gosyer.ui.main.components.DownloadsExtraInfo
 import ca.gosyer.ui.sources.openSourcesMenu
 import com.github.zsoltk.compose.router.BackStack
 

@@ -24,12 +24,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoiceDialog
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Routes
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.CheckBox
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.EditText
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.List
@@ -37,7 +37,6 @@ import ca.gosyer.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.TwoState
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
-import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -51,14 +50,14 @@ fun openSourceSettingsMenu(sourceId: Long) {
 }
 
 @Composable
-fun SourceSettingsMenu(sourceId: Long, backStack: BackStack<Routes>? = null) {
+fun SourceSettingsMenu(sourceId: Long, menuController: MenuController? = null) {
     val vm = viewModel<SourceSettingsViewModel> {
         SourceSettingsViewModel.Params(sourceId)
     }
     val settings by vm.sourceSettings.collectAsState()
 
     Column {
-        Toolbar(stringResource("location_settings"), backStack, backStack != null)
+        Toolbar(stringResource("location_settings"), menuController, menuController != null)
         LazyColumn {
             items(settings, { it.props.hashCode() }) {
                 when (it) {

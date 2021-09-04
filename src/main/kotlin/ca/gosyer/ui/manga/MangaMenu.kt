@@ -50,14 +50,14 @@ import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.KtorImage
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.components.LocalMenuController
+import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Routes
 import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
-import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -74,7 +74,7 @@ fun openMangaMenu(mangaId: Long) {
 }
 
 @Composable
-fun MangaMenu(mangaId: Long, backStack: BackStack<Routes>? = null) {
+fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuController.current) {
     val vm = viewModel<MangaMenuViewModel> {
         MangaMenuViewModel.Params(mangaId)
     }
@@ -95,8 +95,8 @@ fun MangaMenu(mangaId: Long, backStack: BackStack<Routes>? = null) {
         Column {
             Toolbar(
                 stringResource("location_manga"),
-                backStack,
-                backStack != null,
+                menuController,
+                menuController != null,
                 actions = {
                     if (categoriesExist) {
                         ActionIcon(

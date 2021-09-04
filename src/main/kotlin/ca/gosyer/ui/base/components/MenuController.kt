@@ -15,14 +15,35 @@ val LocalMenuController =
 class MenuController(
     val backStack: BackStack<Routes>,
     private val _sideMenuVisible: MutableState<Boolean> = mutableStateOf(true),
+    private val _isDrawer: MutableState<Boolean> = mutableStateOf(false),
 ) {
     val sideMenuVisible by _sideMenuVisible
+    val isDrawer by _isDrawer
 
     fun openSideMenu() {
         _sideMenuVisible.value = true
     }
     fun closeSideMenu() {
         _sideMenuVisible.value = false
+    }
+    fun setAsDrawer() {
+        _isDrawer.value = true
+    }
+    fun setAsNotDrawer() {
+        _isDrawer.value = false
+    }
+
+    fun push(route: Routes) {
+        backStack.push(route)
+        if (isDrawer) {
+            closeSideMenu()
+        }
+    }
+    fun newRoot(route: Routes) {
+        backStack.newRoot(route)
+        if (isDrawer) {
+            closeSideMenu()
+        }
     }
 }
 

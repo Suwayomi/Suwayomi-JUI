@@ -27,17 +27,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
 import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.ui.main.Routes
 import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.filePicker
 import ca.gosyer.util.system.fileSaver
-import com.github.zsoltk.compose.router.BackStack
 import io.ktor.client.features.onDownload
 import io.ktor.client.features.onUpload
 import io.ktor.http.isSuccess
@@ -165,7 +164,7 @@ class SettingsBackupViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsBackupScreen(navController: BackStack<Routes>) {
+fun SettingsBackupScreen(menuController: MenuController) {
     val vm = viewModel<SettingsBackupViewModel>()
     val restoring by vm.restoring.collectAsState()
     val restoringProgress by vm.restoringProgress.collectAsState()
@@ -189,7 +188,7 @@ fun SettingsBackupScreen(navController: BackStack<Routes>) {
     }
 
     Column {
-        Toolbar(stringResource("settings_backup_screen"), navController, true)
+        Toolbar(stringResource("settings_backup_screen"), menuController, true)
         LazyColumn {
             item {
                 PreferenceFile(

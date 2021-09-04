@@ -1,5 +1,7 @@
 package ca.gosyer.ui.main
 
+import ca.gosyer.data.ui.model.StartScreen
+
 sealed class Routes {
     object Library : Routes()
     object Sources : Routes()
@@ -24,4 +26,10 @@ sealed class Routes {
     /*object SettingsSecurity : Route()
     object SettingsParentalControls : Route()*/
     object SettingsAdvanced : Routes()
+}
+
+fun StartScreen.toRoute() = when (this) {
+    StartScreen.Library -> Routes.Library
+    StartScreen.Sources -> Routes.Sources
+    StartScreen.Extensions -> Routes.Extensions
 }

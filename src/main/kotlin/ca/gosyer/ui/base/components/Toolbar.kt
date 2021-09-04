@@ -31,6 +31,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,15 +50,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.ui.main.Routes
-import com.github.zsoltk.compose.router.BackStack
 
 @Composable
 fun Toolbar(
     name: String,
-    router: BackStack<Routes>? = null,
+    menuController: MenuController? = LocalMenuController.current,
     closable: Boolean,
-    onClose: () -> Unit = { router?.pop() },
+    onClose: () -> Unit = { menuController?.backStack?.pop() },
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     backgroundColor: Color = MaterialTheme.colors.surface, // CustomColors.current.bars,
@@ -83,19 +82,23 @@ fun Toolbar(
                 Modifier.fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val menuController = LocalMenuController.current
                 if (menuController != null) {
-                    AnimatedVisibility(
-                        !menuController.sideMenuVisible
-                    ) {
-                        ActionIcon(menuController::openSideMenu, "Open nav", Icons.Rounded.Sort)
+                    if (menuController.isDrawer) {
+                        ActionIcon(menuController::openSideMenu, "Open nav", Icons.Rounded.Menu)
+                    } else {
+                        AnimatedVisibility(
+                            !menuController.sideMenuVisible
+                        ) {
+                            ActionIcon(menuController::openSideMenu, "Open nav", Icons.Rounded.Sort)
+                        }
                     }
                 }
 
                 Text(name, fontSize = 20.sp)
-                if (search != null) {
-                    SearchBox(contentColor, searchText, search, searchSubmit)
-                }
+            }
+
+            if (search != null) {
+                SearchBox(contentColor, searchText, search, searchSubmit)
             }
 
             Row {

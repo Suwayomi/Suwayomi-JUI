@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
+import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.prefs.SwitchPreference
@@ -19,8 +20,6 @@ import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.categories.openCategoriesMenu
-import ca.gosyer.ui.main.Routes
-import com.github.zsoltk.compose.router.BackStack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -47,11 +46,11 @@ class SettingsLibraryViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsLibraryScreen(navController: BackStack<Routes>) {
+fun SettingsLibraryScreen(menuController: MenuController) {
     val vm = viewModel<SettingsLibraryViewModel>()
 
     Column {
-        Toolbar(stringResource("settings_library_screen"), navController, true)
+        Toolbar(stringResource("settings_library_screen"), menuController, true)
         LazyColumn {
             item {
                 SwitchPreference(preference = vm.showAllCategory, title = stringResource("show_all_category"))
