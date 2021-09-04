@@ -32,17 +32,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Book
-import androidx.compose.material.icons.outlined.Download
-import androidx.compose.material.icons.outlined.Explore
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Store
-import androidx.compose.material.icons.rounded.Book
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.Explore
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.Store
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -66,9 +56,7 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.downloads.DownloadsMenu
 import ca.gosyer.ui.downloads.DownloadsMenuViewModel
 import ca.gosyer.ui.extensions.ExtensionsMenu
-import ca.gosyer.ui.extensions.openExtensionsMenu
 import ca.gosyer.ui.library.LibraryScreen
-import ca.gosyer.ui.library.openLibraryMenu
 import ca.gosyer.ui.manga.MangaMenu
 import ca.gosyer.ui.settings.SettingsAdvancedScreen
 import ca.gosyer.ui.settings.SettingsAppearance
@@ -80,9 +68,7 @@ import ca.gosyer.ui.settings.SettingsReaderScreen
 import ca.gosyer.ui.settings.SettingsScreen
 import ca.gosyer.ui.settings.SettingsServerScreen
 import ca.gosyer.ui.sources.SourcesMenu
-import ca.gosyer.ui.sources.openSourcesMenu
 import ca.gosyer.ui.sources.settings.SourceSettingsMenu
-import com.github.zsoltk.compose.router.BackStack
 import com.github.zsoltk.compose.router.Router
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
@@ -317,22 +303,4 @@ fun DownloadsExtraInfo() {
             )
         }
     }
-}
-
-enum class TopLevelMenus(
-    val textKey: String,
-    val unselectedIcon: ImageVector,
-    val selectedIcon: ImageVector,
-    val menu: Routes,
-    val top: Boolean,
-    val openInNewWindow: () -> Unit = {},
-    val extraInfo: (@Composable () -> Unit)? = null
-) {
-    Library("location_library", Icons.Outlined.Book, Icons.Rounded.Book, Routes.Library, true, ::openLibraryMenu),
-    Sources("location_sources", Icons.Outlined.Explore, Icons.Rounded.Explore, Routes.Sources, true, ::openSourcesMenu),
-    Extensions("location_extensions", Icons.Outlined.Store, Icons.Rounded.Store, Routes.Extensions, true, ::openExtensionsMenu),
-    Downloads("location_downloads", Icons.Outlined.Download, Icons.Rounded.Download, Routes.Downloads, false, extraInfo = { DownloadsExtraInfo() }),
-    Settings("location_settings", Icons.Outlined.Settings, Icons.Rounded.Settings, Routes.Settings, false);
-
-    fun isSelected(backStack: BackStack<Routes>) = backStack.elements.first() == menu
 }
