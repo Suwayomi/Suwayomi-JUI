@@ -6,7 +6,7 @@
   --><resources>
     <string name="app_name">Tachidesk-JUI</string>
     <!-- Main Menu -->
-    <string name="unable_to_start_server">सर्वर प्रारंभ करने में असमर्थ</string>
+    <string name="unable_to_start_server">सर्वर शुरू नहीं कर सकते</string>
     <!-- Actions -->
     <string name="action_yes">हाँ</string>
     <string name="action_no">नहीं</string>
@@ -27,7 +27,7 @@
     <string name="action_mark_previous_read">मार्क प्रीवियस एज रीड</string>
     <string name="action_toggle_bookmarked">टॉगल बुकमार्क्ड</string>
     <string name="action_favorite">फेवरेट</string>
-    <string name="action_remove_favorite">अनफेवरेट</string>
+    <string name="action_remove_favorite">नापसंद करें</string>
     <string name="action_refresh_manga">रिफ्रेश  Manga</string>
     <!-- Locations -->
     <string name="location_library">लाइब्रेरी</string>
@@ -38,7 +38,7 @@
     <string name="location_categories">कैटगरीएस</string>
     <string name="location_manga">Manga</string>
     <!-- Categories Menu -->
-    <string name="categories_delete_confirm">क्या आप कैटगरी हटाना चाहते हैं %1$s?</string>
+    <string name="categories_delete_confirm">%1$s श्रेणी को हटाएं\?</string>
     <!-- Downloads Menu -->
     <string name="downloads_remaining">%1$d रिमेनिंग</string>
     <!-- Extensions Menu -->
@@ -49,8 +49,8 @@
     <string name="page_progress">पेज %1$d</string>
     <!-- Sources Menu -->
     <string name="sources_home">होम</string>
-    <string name="move_to_browse">टू ब्राउज</string>
-    <string name="move_to_latest">टू लेटेस्ट</string>
+    <string name="move_to_browse">ब्राउज़ करने के लिए</string>
+    <string name="move_to_latest">नवीनतम करने के लिए</string>
     <!-- Reader Menu -->
     <string name="no_pages_found">कोई पेज नहीं मिला</string>
     <string name="no_previous_chapter">कोई पिछला चैप्टर नहीं है</string>
@@ -89,11 +89,11 @@
     <string name="theme_dark">डार्क</string>
     <string name="theme_text">टेक्स्ट</string>
     <string name="preset_themes">प्रीसेट थीम्स</string>
-    <string name="color_primary">कलर प्राइमरी</string>
+    <string name="color_primary">मुख्य</string>
     <string name="color_primary_sub">आपके ऐप में सबसे अधिक बार प्रदर्शित होता है</string>
-    <string name="color_secondary">कलर सेकेंडरी</string>
+    <string name="color_secondary">माध्यमिक</string>
     <string name="color_secondary_sub">उच्चारण UI के कुछ हिस्सों का चयन करते हैं</string>
-    <string name="window_decorations">विंडो डेकोरेशन</string>
+    <string name="window_decorations">खिड़की की सजावट</string>
     <string name="window_decorations_sub">जब यह सेटिंग बदली जाए तो JUI को पुनरारंभ करें</string>
     <!-- Backup Settings -->
     <string name="backup_restore">रिस्टोर बैकअप</string>
@@ -101,48 +101,92 @@
     <string name="backup_create">क्रिएट बैकअप</string>
     <string name="backup_create_sub">Tachidesk का बैकअप बनाएं</string>
     <!-- General Settings -->
-    <string name="start_screen">स्टार्ट स्क्रीन</string>
+    <string name="start_screen">प्रथम प्रदर्शनी</string>
     <string name="confirm_exit">कन्फर्म एग्जिट</string>
     <string name="language">लैंग्वेज</string>
     <string name="language_system_default">सिस्टम डिफ़ॉल्ट (%1$s)</string>
-    <string name="date_format">डेट फॉर्मेट</string>
+    <string name="date_format">तिथि प्रारूप</string>
     <string name="date_system_default">सिस्टम डिफ़ॉल्ट</string>
     <!-- Library Settings -->
     <string name="show_all_category">सभी कैटगरी दिखाएं</string>
     <!-- Reader Settings -->
     <string name="reader_mode">रीडर मोड</string>
     <string name="direction">दिशा</string>
-    <string name="dir_down">नीचे</string>
+    <string name="dir_down">ऊपर से नीचे</string>
     <string name="dir_rtl">दाएं से बाएं</string>
-    <string name="dir_ltr">बाएं से दायां</string>
-    <string name="dir_up">ऊपर</string>
+    <string name="dir_ltr">बाएं से दाएं</string>
+    <string name="dir_up">नीचे से ऊपर</string>
     <string name="continuous">निरंतर</string>
     <string name="continuous_sub">यदि रीडर एक पेजर या स्क्रॉलिंग विंडो है</string>
     <string name="page_padding">पेज पैडिंग</string>
     <string name="page_padding_none">कोई पेज पैडिंग नहीं</string>
-    <string name="force_fit_width">फाॅर्स फिट विड्थ</string>
-    <string name="force_fit_width_sub">जब विंडो की चौड़ाई इमेज की चौड़ाई से अधिक हो, तो इमेज को विंडो पर स्केल करें</string>
-    <string name="force_fit_height">फाॅर्स फिट हाइट</string>
-    <string name="force_fit_height_sub">जब विंडो की ऊंचाई इमेज की ऊंचाई से अधिक हो, तो इमेज को विंडो पर स्केल करें</string>
+    <string name="force_fit_width">चौड़ाई के लिए बल फिट</string>
+    <string name="force_fit_width_sub">विंडो की चौड़ाई को फिट करने के लिए छवि को स्केल करें</string>
+    <string name="force_fit_height">ऊंचाई के लिए बल फिट</string>
+    <string name="force_fit_height_sub">ऊंचाई खिड़की फिट करने के लिए छवि स्केल</string>
     <string name="max_width">मैक्स विड्थ</string>
-    <string name="max_width_sub">किसी इमेज को ऊपर जाने से रोकने के लिए चौड़ाई, वर्तमान में %1$ddp. इमेज को बड़ा करने के लिए उपरोक्त सेटिंग के साथ काम करता है लेकिन उन्हें एक निश्चित मात्रा तक सीमित रखता है</string>
+    <string name="max_width_sub">एक छवि की अधिकतम चौड़ाई, वर्तमान में %1$ddp। उपरोक्त सेटिंग स्केल छवियां ऊपर, और एक निश्चित चौड़ाई तक पहुंचने के बाद उन्हें प्रतिबंधित करती है</string>
     <string name="max_height">मैक्स हाइट</string>
-    <string name="max_height_sub">इमेज को ऊपर जाने से रोकने के लिए ऊँचाई, वर्तमान में %1$ddp। इमेज को बड़ा करने के लिए उपरोक्त सेटिंग के साथ काम करता है लेकिन उन्हें एक निश्चित मात्रा तक सीमित रखता है</string>
+    <string name="max_height_sub">एक छवि की अधिकतम ऊंचाई, वर्तमान में %1$ddp। उपरोक्त सेटिंग स्केल छवियां ऊपर, और एक निश्चित ऊंचाई तक पहुंचने के बाद उन्हें प्रतिबंधित करता है</string>
     <string name="max_size_unrestricted">अप्रतिबंधित</string>
     <string name="image_scale">इमेज स्केल</string>
     <string name="scale_fit_screen">फिट स्क्रीन</string>
     <string name="scale_stretch">स्ट्रेच</string>
-    <string name="scale_fit_width">फिट विड्थ</string>
-    <string name="scale_fit_height">फिट हाइट</string>
-    <string name="scale_original">ओरिजिनल साइज</string>
+    <string name="scale_fit_width">चौड़ाई के लिए फिट</string>
+    <string name="scale_fit_height">ऊंचाई के लिए फिट</string>
+    <string name="scale_original">मूल आकार</string>
     <string name="scale_smart">स्मार्ट फिट</string>
     <string name="navigation_mode">नेविगेशन मोड</string>
-    <string name="nav_l_shaped">L शेप्ड</string>
+    <string name="nav_l_shaped">एल के आकार का</string>
     <string name="nav_kindle_ish">kindle की तरह</string>
     <string name="nav_edge">एज नेविगेशन</string>
-    <string name="nav_left_right">बाएं और दाएं</string>
+    <string name="nav_left_right">दाएं और बाएं</string>
     <!-- Server Settings -->
     <string name="host_server">Tachidesk-JUI के अंदर सर्वर होस्ट करें</string>
-    <string name="server_url">सर्वर url</string>
-    <string name="server_port">सर्वर port</string>
+    <string name="server_url">सर्वर यूआरएल</string>
+    <string name="server_port">सर्वर पोर्ट</string>
+    <string name="host_open_in_browser_sub">सर्वर स्टार्टअप पर अपने ब्राउज़र के अंदर वेबयूआई खोलें। वेबयूआई को सक्षम होने की आवश्यकता है</string>
+    <string name="host_open_in_browser">स्टार्टअप पर सर्वर वेबयूआई खोलें</string>
+    <string name="no_proxy">कोई प्रॉक्सी नहीं</string>
+    <string name="no_chapters_found">कोई अध्याय नहीं मिला</string>
+    <string name="no_auth">कोई ऑथ नहीं</string>
+    <string name="missing_sources">अनुपलब्ध स्रोत:</string>
+    <string name="downloads_loading">लोड हो रहा है...</string>
+    <string name="http_proxy">प्रॉक्सी HTTP</string>
+    <string name="http_port">HTTP पोर्ट</string>
+    <string name="theme_follow_system">सिस्टम सेटिंग्स का पालन करें</string>
+    <string name="failed_manga_fetch">मंगा लोड करने में विफल</string>
+    <string name="auth_username">यूजरनेम</string>
+    <string name="auth_password">पासवर्ड</string>
+    <string name="host_webui_sub">क्या सर्वर का डिफ़ॉल्ट वेबयूआई सक्षम है, आप अपने ब्राउज़र में टैचिडस्क का उपयोग करने में सक्षम बनाता है</string>
+    <string name="server_preference_warning">चेतावनी</string>
+    <string name="host_system_tray_sub">सर्वर चल रहा है या नहीं, यह देखने के लिए सिस्टम ट्रे आइकन का उपयोग करें</string>
+    <string name="server_preference_warning_sub">नीचे दी गई सेटिंग्स को प्रभावित करने के लिए पुनः आरंभ करने की आवश्यकता होती है</string>
+    <string name="host_settings_sub">नीचे दी गई सेटिंग्स आंतरिक टैचडस्क-सर्वर को कॉन्फ़िगर करती हैं</string>
+    <string name="host_settings">टैचडस्क-सर्वर सेटिंग्स</string>
+    <string name="downloads_stopped">रोका गया</string>
+    <string name="socks_proxy">सॉक्स प्रॉक्सी</string>
+    <string name="socks_port">सॉक्स पोर्ट</string>
+    <string name="host_webui">सर्वर वेबयूआई</string>
+    <string name="host_system_tray">सर्वर सिस्टम ट्रे आइकन</string>
+    <string name="host_socks_port">सर्वर सॉक्स5 प्रॉक्सी पोर्ट</string>
+    <string name="host_socks_host">सर्वर सॉक्स5 प्रॉक्सी होस्ट</string>
+    <string name="host_socks_enabled">सर्वर सॉक्स5 प्रॉक्सी</string>
+    <string name="host_port">सर्वर पोर्ट</string>
+    <string name="host_ip">सर्वर आईपी</string>
+    <string name="host_debug_logging">सर्वर डिबग लॉग</string>
+    <string name="authentication">सर्वर प्रमाणीकरण</string>
+    <string name="action_retry">पुन: प्रयास करें</string>
+    <string name="server_proxy">सर्वर के लिए प्रॉक्सी का उपयोग</string>
+    <string name="host_debug_logging_sub">सर्वर से JUI में आउटपुट डिबग लॉग</string>
+    <string name="installed">स्थापित</string>
+    <string name="edit_categories">श्रेणियाँ संपादित करें</string>
+    <string name="digest_auth">डाइजेस्ट ऑथ</string>
+    <string name="host_port_sub">वर्तमान सर्वर पोर्ट: %1$s</string>
+    <string name="host_ip_sub">वर्तमान सर्वर आईपी: %1$s</string>
+    <string name="host_socks_port_sub">वर्तमान प्रॉक्सी पोर्ट: %1$s</string>
+    <string name="host_socks_host_sub">वर्तमान प्रॉक्सी होस्ट: %1$s</string>
+    <string name="basic_auth">बेसिक ऑथ</string>
+    <string name="confirm_exit_message">क्या आप सुनिश्चित हैं कि आप बाहर निकलना चाहते हैं\?</string>
+    <string name="all">समस्त</string>
 </resources>

@@ -24,4 +24,26 @@
     <string name="settings_appearance">Apparence</string>
     <string name="all">Tout</string>
     <string name="settings_advanced_screen">Paramètres avancés</string>
+    <string name="action_favorite">Favoris</string>
+    <string name="location_extensions">Extensions</string>
+    <string name="enabled_languages">Langues activées</string>
+    <string name="edit_categories">Modifier catégories</string>
+    <string name="dir_up">En bas vers en haut</string>
+    <string name="settings_download_screen">Paramètres de téléchargement</string>
+    <string name="location_downloads">Téléchargements</string>
+    <string name="settings_download">Télécharger</string>
+    <string name="color_primary_sub">La plus utilisée dans l\'application</string>
+    <string name="direction">Direction</string>
+    <string name="default_category">Défaut</string>
+    <string name="date_format">Format de date</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="host_port_sub">Port Serveur actuel : %1$s</string>
+    <string name="host_ip_sub">Adresse IP actuelle : %1$s</string>
+    <string name="host_socks_host_sub">Hôte Proxy actuel:%1$s</string>
+    <string name="host_socks_port_sub">Port Proxy actuel : %1$s</string>
+    <string name="continuous">En continu</string>
+    <string name="settings_browse_screen">Paramètres de recherche</string>
+    <string name="settings_browse">Rechercher</string>
+    <string name="auth_username">Nom d\'utilisateur</string>
+    <string name="auth_password">Mot de passe</string>
 </resources>
