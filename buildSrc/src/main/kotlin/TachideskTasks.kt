@@ -23,7 +23,6 @@ private const val tachideskGroup = "tachidesk"
 private const val deleteOldTachideskTask = "deleteOldTachidesk"
 private const val downloadTask = "downloadTar"
 private const val extractTask = "extractTar"
-private const val androidScriptTask = "runGetAndroid"
 private const val setupCITask = "setupServerCI"
 private const val buildTachideskTask = "buildTachidesk"
 private const val copyTachideskJarTask = "copyTachidesk"
@@ -112,23 +111,9 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             from(tarTree(tmpTar))
             into(tmpPath)
         }
-        register<Exec>(androidScriptTask) {
-            group = tachideskGroup
-            mustRunAfter(extractTask)
-            onlyIf { !tachideskExists(rootDir) && !file("${tmpServerFolder}AndroidCompat/lib/android.jar").exists() }
-
-            val workingDir = file(tmpServerFolder)
-            val getAndroidScript = File(workingDir, "AndroidCompat/getAndroid").absolutePath
-            workingDir(workingDir)
-            val os = DefaultNativePlatform.getCurrentOperatingSystem()
-            when {
-                os.isWindows -> commandLine("cmd", "/c", """Powershell -File "$getAndroidScript.ps1"""")
-                os.isLinux || os.isMacOsX -> commandLine("$getAndroidScript.sh")
-            }
-        }
         register<Copy>(setupCITask) {
             group = tachideskGroup
-            mustRunAfter(androidScriptTask)
+            mustRunAfter(extractTask)
             onlyIfTachideskDoesntExist(rootDir)
 
             from(file("$tmpServerFolder.github/runner-files/ci-gradle.properties"))
@@ -251,7 +236,6 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                 deleteOldTachideskTask,
                 downloadTask,
                 extractTask,
-                androidScriptTask,
                 setupCITask,
                 buildTachideskTask,
                 copyTachideskJarTask,
