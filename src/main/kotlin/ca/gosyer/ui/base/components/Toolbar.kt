@@ -7,6 +7,8 @@
 package ca.gosyer.ui.base.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -79,7 +81,7 @@ fun Toolbar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                Modifier.fillMaxHeight(),
+                Modifier.fillMaxHeight().animateContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (menuController != null) {
@@ -97,11 +99,13 @@ fun Toolbar(
                 Text(name, fontSize = 20.sp)
             }
 
-            if (search != null) {
-                SearchBox(contentColor, searchText, search, searchSubmit)
+            Crossfade(search != null) { showSearch ->
+                if (showSearch) {
+                    SearchBox(contentColor, searchText, search, searchSubmit)
+                }
             }
 
-            Row {
+            Row(Modifier.animateContentSize()) {
                 actions()
                 if (closable) {
                     ActionIcon(onClick = onClose, "Close", Icons.Rounded.Close)
@@ -115,7 +119,7 @@ fun Toolbar(
 private fun SearchBox(
     contentColor: Color,
     searchText: String?,
-    search: (String) -> Unit,
+    search: ((String) -> Unit)?,
     searchSubmit: (() -> Unit)?
 ) {
     Card(
@@ -129,7 +133,7 @@ private fun SearchBox(
         Box(Modifier.fillMaxSize().padding(8.dp), Alignment.CenterStart) {
             BasicTextField(
                 searchText.orEmpty(),
-                onValueChange = search,
+                onValueChange = { search?.invoke(it) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().then(
                     if (searchSubmit != null) {
