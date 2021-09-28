@@ -170,12 +170,12 @@ fun EditTextPreference(
     enabled: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
-    var editText by remember { mutableStateOf(TextFieldValue(preference.value)) }
     PreferenceRow(
         title = title,
         subtitle = subtitle,
         icon = icon,
         onClick = {
+            var editText by mutableStateOf(TextFieldValue(preference.value))
             WindowDialog(
                 title,
                 onPositiveButton = {
