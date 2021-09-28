@@ -35,6 +35,7 @@ import ca.gosyer.ui.extensions.ExtensionsMenu
 import ca.gosyer.ui.library.LibraryScreen
 import ca.gosyer.ui.main.components.SideMenu
 import ca.gosyer.ui.manga.MangaMenu
+import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.ui.settings.SettingsAdvancedScreen
 import ca.gosyer.ui.settings.SettingsAppearance
 import ca.gosyer.ui.settings.SettingsBackupScreen
@@ -46,6 +47,7 @@ import ca.gosyer.ui.settings.SettingsScreen
 import ca.gosyer.ui.settings.SettingsServerScreen
 import ca.gosyer.ui.sources.SourcesMenu
 import ca.gosyer.ui.sources.settings.SourceSettingsMenu
+import ca.gosyer.ui.updates.UpdatesMenu
 import com.github.zsoltk.compose.router.Router
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
