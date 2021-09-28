@@ -73,6 +73,11 @@ data class ChapterDownloadItem(
         chapterHandler.deleteChapterDownload(chapter)
         _downloadState.value = ChapterDownloadState.NotDownloaded
     }
+
+    suspend fun stopDownloading(chapterHandler: ChapterInteractionHandler) {
+        chapterHandler.stopChapterDownload(chapter)
+        _downloadState.value = ChapterDownloadState.NotDownloaded
+    }
 }
 
 enum class ChapterDownloadState {
@@ -84,8 +89,9 @@ enum class ChapterDownloadState {
 @Composable
 fun ChapterDownloadIcon(
     chapter: ChapterDownloadItem,
-    downloadAChapter: (Chapter) -> Unit,
-    deleteDownload: (Chapter) -> Unit
+    onClickDownload: (Chapter) -> Unit,
+    onClickStop: (Chapter) -> Unit,
+    onClickDelete: (Chapter) -> Unit
 ) {
     val downloadChapter by chapter.downloadChapterFlow.collectAsState()
     val downloadState by chapter.downloadState.collectAsState()
@@ -94,17 +100,17 @@ fun ChapterDownloadIcon(
         ChapterDownloadState.Downloaded -> {
             DownloadedIconButton(
                 chapter.chapter.mangaId to chapter.chapter.index,
-                onClick = { deleteDownload(chapter.chapter) }
+                onClick = { onClickDelete(chapter.chapter) }
             )
         }
         ChapterDownloadState.Downloading -> {
             DownloadingIconButton(
                 downloadChapter,
-                onClick = { deleteDownload(chapter.chapter) }
+                onClick = { onClickStop(chapter.chapter) }
             )
         }
         ChapterDownloadState.NotDownloaded -> {
-            DownloadIconButton(onClick = { downloadAChapter(chapter.chapter) })
+            DownloadIconButton(onClick = { onClickDownload(chapter.chapter) })
         }
     }
 }

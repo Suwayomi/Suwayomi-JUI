@@ -62,7 +62,8 @@ fun UpdatesMenu(
                         onClickItem = { openChapter(chapter.index, chapter.mangaId) },
                         onClickCover = { openManga(manga.id) },
                         onClickDownload = vm::downloadChapter,
-                        onClickDeleteDownload = vm::deleteDownload
+                        onClickDeleteDownload = vm::deleteDownloadedChapter,
+                        onClickStopDownload = vm::stopDownloadingChapter
                     )
                 }
             }
@@ -77,7 +78,8 @@ fun UpdatesItem(
     onClickItem: () -> Unit,
     onClickCover: () -> Unit,
     onClickDownload: (Chapter) -> Unit,
-    onClickDeleteDownload: (Chapter) -> Unit
+    onClickDeleteDownload: (Chapter) -> Unit,
+    onClickStopDownload: (Chapter) -> Unit
 ) {
     val manga = chapterDownloadItem.manga!!
     val chapter = chapterDownloadItem.chapter
@@ -119,7 +121,8 @@ fun UpdatesItem(
         ChapterDownloadIcon(
             chapterDownloadItem,
             onClickDownload,
-            onClickDeleteDownload
+            onClickStopDownload,
+            onClickDeleteDownload,
         )
     }
 }

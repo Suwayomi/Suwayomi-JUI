@@ -224,6 +224,12 @@ class MangaMenuViewModel @Inject constructor(
         }
     }
 
+    fun stopDownloadingChapter(index: Int) {
+        scope.launch {
+            chapters.value.find { it.chapter.index == index }?.stopDownloading(chapterHandler)
+        }
+    }
+
     override fun onDestroy() {
         downloadService.removeWatch(params.mangaId)
     }

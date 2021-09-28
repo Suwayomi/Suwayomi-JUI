@@ -24,9 +24,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class UpdatesMenuViewModel @Inject constructor(
-    private val serverPreferences: ServerPreferences,
     private val chapterHandler: ChapterInteractionHandler,
     private val updatesHandler: UpdatesInteractionHandler,
+    private val serverPreferences: ServerPreferences,
     private val downloadService: DownloadService
 ) : ViewModel() {
     val serverUrl = serverPreferences.serverUrl().asStateIn(scope).asStateFlow()
@@ -73,12 +73,21 @@ class UpdatesMenuViewModel @Inject constructor(
         }
     }
 
-    fun deleteDownload(chapter: Chapter) {
+    fun deleteDownloadedChapter(chapter: Chapter) {
         scope.launch {
             updates.value.find {
                 it.chapter.mangaId == chapter.mangaId &&
                     it.chapter.index == chapter.index
             }?.deleteDownload(chapterHandler)
+        }
+    }
+
+    fun stopDownloadingChapter(chapter: Chapter) {
+        scope.launch {
+            updates.value.find {
+                it.chapter.mangaId == chapter.mangaId &&
+                    it.chapter.index == chapter.index
+            }?.stopDownloading(chapterHandler)
         }
     }
 

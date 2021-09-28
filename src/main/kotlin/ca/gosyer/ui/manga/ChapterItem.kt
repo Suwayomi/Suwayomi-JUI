@@ -43,8 +43,9 @@ fun ChapterItem(
     toggleRead: (Int) -> Unit,
     toggleBookmarked: (Int) -> Unit,
     markPreviousAsRead: (Int) -> Unit,
-    downloadAChapter: (Int) -> Unit,
-    deleteDownload: (Int) -> Unit
+    onClickDownload: (Int) -> Unit,
+    onClickStopDownload: (Int) -> Unit,
+    onClickDeleteChapter: (Int) -> Unit
 ) {
     val chapter = chapterDownload.chapter
     Card(
@@ -112,8 +113,9 @@ fun ChapterItem(
 
                 ChapterDownloadIcon(
                     chapterDownload,
-                    { downloadAChapter(it.index) },
-                    { deleteDownload(it.index) }
+                    { onClickDownload(it.index) },
+                    { onClickStopDownload(it.index) },
+                    { onClickDeleteChapter(it.index) }
                 )
             }
         }

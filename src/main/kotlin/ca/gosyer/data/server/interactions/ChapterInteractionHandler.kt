@@ -10,11 +10,12 @@ import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
-import ca.gosyer.data.server.requests.deleteDownloadChapterRequest
+import ca.gosyer.data.server.requests.deleteDownloadedChapterRequest
 import ca.gosyer.data.server.requests.getChapterQuery
 import ca.gosyer.data.server.requests.getMangaChaptersQuery
 import ca.gosyer.data.server.requests.getPageQuery
 import ca.gosyer.data.server.requests.queueDownloadChapterRequest
+import ca.gosyer.data.server.requests.stopDownloadingChapterRequest
 import ca.gosyer.data.server.requests.updateChapterMetaRequest
 import ca.gosyer.data.server.requests.updateChapterRequest
 import ca.gosyer.util.compose.imageFromUrl
@@ -135,6 +136,18 @@ class ChapterInteractionHandler @Inject constructor(
 
     suspend fun getPage(manga: Manga, chapter: Chapter, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = getPage(manga.id, chapter.index, pageNum, block)
 
+    suspend fun deleteChapterDownload(mangaId: Long, chapterIndex: Int) = withIOContext {
+        client.delete<HttpResponse>(
+            serverUrl + deleteDownloadedChapterRequest(mangaId, chapterIndex)
+        )
+    }
+
+    suspend fun deleteChapterDownload(chapter: Chapter) = deleteChapterDownload(chapter.mangaId, chapter.index)
+
+    suspend fun deleteChapterDownload(manga: Manga, chapterIndex: Int) = deleteChapterDownload(manga.id, chapterIndex)
+
+    suspend fun deleteChapterDownload(manga: Manga, chapter: Chapter) = deleteChapterDownload(manga.id, chapter.index)
+
     suspend fun queueChapterDownload(mangaId: Long, chapterIndex: Int) = withIOContext {
         client.get<HttpResponse>(
             serverUrl + queueDownloadChapterRequest(mangaId, chapterIndex)
@@ -147,17 +160,17 @@ class ChapterInteractionHandler @Inject constructor(
 
     suspend fun queueChapterDownload(manga: Manga, chapter: Chapter) = queueChapterDownload(manga.id, chapter.index)
 
-    suspend fun deleteChapterDownload(mangaId: Long, chapterIndex: Int) = withIOContext {
+    suspend fun stopChapterDownload(mangaId: Long, chapterIndex: Int) = withIOContext {
         client.delete<HttpResponse>(
-            serverUrl + deleteDownloadChapterRequest(mangaId, chapterIndex)
+            serverUrl + stopDownloadingChapterRequest(mangaId, chapterIndex)
         )
     }
 
-    suspend fun deleteChapterDownload(chapter: Chapter) = deleteChapterDownload(chapter.mangaId, chapter.index)
+    suspend fun stopChapterDownload(chapter: Chapter) = stopChapterDownload(chapter.mangaId, chapter.index)
 
-    suspend fun deleteChapterDownload(manga: Manga, chapterIndex: Int) = deleteChapterDownload(manga.id, chapterIndex)
+    suspend fun stopChapterDownload(manga: Manga, chapterIndex: Int) = stopChapterDownload(manga.id, chapterIndex)
 
-    suspend fun deleteChapterDownload(manga: Manga, chapter: Chapter) = deleteChapterDownload(manga.id, chapter.index)
+    suspend fun stopChapterDownload(manga: Manga, chapter: Chapter) = stopChapterDownload(manga.id, chapter.index)
 
     suspend fun updateChapterMeta(mangaId: Long, chapterIndex: Int, key: String, value: String) = withIOContext {
         client.submitForm<HttpResponse>(
