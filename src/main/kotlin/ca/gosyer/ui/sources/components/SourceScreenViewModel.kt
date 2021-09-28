@@ -16,6 +16,7 @@ import ca.gosyer.util.compose.saveBooleanInBundle
 import ca.gosyer.util.compose.saveIntInBundle
 import ca.gosyer.util.compose.saveObjectInBundle
 import ca.gosyer.util.compose.saveStringInBundle
+import ca.gosyer.util.lang.throwIfCancellation
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -66,6 +67,8 @@ class SourceScreenViewModel(
                     _mangas.value = mangas
                     _hasNextPage.value = hasNextPage
                 }
+            } catch (e: Exception) {
+                e.throwIfCancellation()
             } finally {
                 _loading.value = false
             }
