@@ -12,8 +12,8 @@ plugins {
     kotlin("kapt") version "1.5.30"
     kotlin("plugin.serialization") version "1.5.30"
     id("org.jetbrains.compose") version "1.0.0-alpha4-build328"
-    id("com.github.gmazzo.buildconfig") version "3.0.2"
-    id("org.jmailen.kotlinter") version "3.5.0"
+    id("com.github.gmazzo.buildconfig") version "3.0.3"
+    id("org.jmailen.kotlinter") version "3.6.0"
     id("com.github.ben-manes.versions") version "0.39.0"
 }
 
@@ -23,7 +23,7 @@ version = "1.1.3"
 repositories {
     mavenCentral()
     google()
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
@@ -37,18 +37,18 @@ dependencies {
     implementation("ca.gosyer:accompanist-flowlayout:0.14.0")
 
     // UI (Swing)
-    implementation("com.github.weisj:darklaf-core:2.7.2")
+    implementation("com.github.weisj:darklaf-core:2.7.3")
 
     // Threading
-    val coroutinesVersion = "1.5.1"
+    val coroutinesVersion = "1.5.2"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
 
     // Json
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
 
     // Xml
-    val xmlutilVersion = "0.82.0"
+    val xmlutilVersion = "0.83.0"
     implementation("io.github.pdvrieze.xmlutil:core-jvm:$xmlutilVersion")
     implementation("io.github.pdvrieze.xmlutil:serialization-jvm:$xmlutilVersion")
 
@@ -58,7 +58,7 @@ dependencies {
     kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:$toothpickVersion")
 
     // Http client
-    val ktorVersion = "1.6.2"
+    val ktorVersion = "1.6.3"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
@@ -80,13 +80,13 @@ dependencies {
     implementation("net.harawata:appdirs:1.2.1")
 
     // Preferences
-    val multiplatformSettingsVersion = "0.7.7"
+    val multiplatformSettingsVersion = "0.8.1"
     implementation("com.russhwolf:multiplatform-settings-jvm:$multiplatformSettingsVersion")
     implementation("com.russhwolf:multiplatform-settings-serialization-jvm:$multiplatformSettingsVersion")
     implementation("com.russhwolf:multiplatform-settings-coroutines-jvm:$multiplatformSettingsVersion")
 
     // Utility
-    implementation("io.github.kerubistan.kroki:kroki-coroutines:1.21")
+    implementation("io.github.kerubistan.kroki:kroki-coroutines:1.22")
 
     // Testing
     testImplementation(kotlin("test-junit"))
