@@ -18,6 +18,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -36,6 +37,8 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
+import com.github.zsoltk.compose.savedinstancestate.Bundle
+import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -44,8 +47,12 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 fun openLibraryMenu() {
     launchApplication {
         ThemedWindow(::exitApplication, title = BuildConfig.NAME) {
-            Surface {
-                LibraryScreen()
+            CompositionLocalProvider(
+                LocalSavedInstanceState provides Bundle()
+            ) {
+                Surface {
+                    LibraryScreen()
+                }
             }
         }
     }
@@ -53,7 +60,14 @@ fun openLibraryMenu() {
 
 @Composable
 fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
-    val vm = viewModel<LibraryScreenViewModel>()
+    LibraryScreen(LocalSavedInstanceState.current, onClickManga)
+}
+
+@Composable
+fun LibraryScreen(bundle: Bundle, onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
+    val vm = viewModel<LibraryScreenViewModel> {
+        bundle
+    }
     val categories by vm.categories.collectAsState()
     val selectedCategoryIndex by vm.selectedCategoryIndex.collectAsState()
     val displayMode by vm.displayMode.collectAsState()

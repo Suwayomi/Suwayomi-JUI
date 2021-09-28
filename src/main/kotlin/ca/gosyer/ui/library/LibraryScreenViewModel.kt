@@ -13,8 +13,11 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
+import ca.gosyer.util.compose.saveIntInBundle
+import ca.gosyer.util.compose.saveStringInBundle
 import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.lang.withDefaultContext
+import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,20 +39,20 @@ private data class Library(val categories: MutableStateFlow<List<Category>>, val
 
 private fun LibraryMap.getManga(order: Int) =
     getOrPut(order) { MutableStateFlow(emptyList<Manga>()) to MutableStateFlow(emptyList()) }
-private suspend fun LibraryMap.setManga(query: String, order: Int, manga: List<Manga>) {
+private suspend fun LibraryMap.setManga(query: String?, order: Int, manga: List<Manga>) {
     getManga(order).let { (items, unfilteredItems) ->
         items.value = filterManga(query, manga)
         unfilteredItems.value = manga
     }
 }
-private suspend fun LibraryMap.updateMangaFilter(query: String) {
+private suspend fun LibraryMap.updateMangaFilter(query: String?) {
     values.forEach { (items, unfilteredItems) ->
         items.value = filterManga(query, unfilteredItems.value)
     }
 }
 
-private suspend fun filterManga(query: String, mangaList: List<Manga>): List<Manga> {
-    if (query.isEmpty()) return mangaList
+private suspend fun filterManga(query: String?, mangaList: List<Manga>): List<Manga> {
+    if (query.isNullOrEmpty()) return mangaList
     val queries = query.split(" ")
     return mangaList.asFlow()
         .filter { manga ->
@@ -67,6 +70,7 @@ private suspend fun filterManga(query: String, mangaList: List<Manga>): List<Man
 }
 
 class LibraryScreenViewModel @Inject constructor(
+    private val bundle: Bundle,
     private val categoryHandler: CategoryInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
     libraryPreferences: LibraryPreferences,
@@ -77,7 +81,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val library = Library(MutableStateFlow(emptyList()), mutableMapOf())
     val categories = library.categories.asStateFlow()
 
-    private val _selectedCategoryIndex = MutableStateFlow(0)
+    private val _selectedCategoryIndex = saveIntInBundle(scope, bundle, SELECTED_CATEGORY_KEY, 0)
     val selectedCategoryIndex = _selectedCategoryIndex.asStateFlow()
 
     val displayMode = libraryPreferences.displayMode().stateIn(scope)
@@ -88,7 +92,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error = _error.asStateFlow()
 
-    private val _query = MutableStateFlow("")
+    private val _query = saveStringInBundle(scope, bundle, QUERY_KEY)
     val query = _query.asStateFlow()
 
     init {
@@ -130,7 +134,7 @@ class LibraryScreenViewModel @Inject constructor(
         withDefaultContext {
             categories.map {
                 async {
-                    library.mangaMap.setManga("", it.order, categoryHandler.getMangaFromCategory(it))
+                    library.mangaMap.setManga(query.value, it.order, categoryHandler.getMangaFromCategory(it))
                 }
             }.awaitAll()
         }
@@ -153,5 +157,10 @@ class LibraryScreenViewModel @Inject constructor(
 
     fun updateQuery(query: String) {
         _query.value = query
+    }
+
+    companion object {
+        const val QUERY_KEY = "query"
+        const val SELECTED_CATEGORY_KEY = "selected_category"
     }
 }
