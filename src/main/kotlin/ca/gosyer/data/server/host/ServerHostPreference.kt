@@ -114,4 +114,21 @@ sealed class ServerHostPreference<T : Any> {
         false,
         true
     )
+
+    // Authentication
+    class BasicAuthEnabled(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
+        preferenceStore,
+        "basicAuthEnabled",
+        false
+    )
+    class BasicAuthUsername(preferenceStore: PreferenceStore) : StringServerHostPreference(
+        preferenceStore,
+        "basicAuthUsername",
+        ""
+    )
+    class BasicAuthPassword(preferenceStore: PreferenceStore) : StringServerHostPreference(
+        preferenceStore,
+        "basicAuthPassword",
+        ""
+    )
 }

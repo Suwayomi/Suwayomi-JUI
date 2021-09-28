@@ -49,6 +49,20 @@ class ServerHostPreferences(preferenceStore: PreferenceStore) {
         return openInBrowserEnabled.preference()
     }
 
+    // Authentication
+    private val basicAuthEnabled = ServerHostPreference.BasicAuthEnabled(preferenceStore)
+    fun basicAuthEnabled(): Preference<Boolean> {
+        return basicAuthEnabled.preference()
+    }
+    private val basicAuthUsername = ServerHostPreference.BasicAuthUsername(preferenceStore)
+    fun basicAuthUsername(): Preference<String> {
+        return basicAuthUsername.preference()
+    }
+    private val basicAuthPassword = ServerHostPreference.BasicAuthPassword(preferenceStore)
+    fun basicAuthPassword(): Preference<String> {
+        return basicAuthPassword.preference()
+    }
+
     fun properties(): Array<String> {
         return listOf(
             ip,
@@ -59,7 +73,10 @@ class ServerHostPreferences(preferenceStore: PreferenceStore) {
             debugLogsEnabled,
             systemTrayEnabled,
             webUIEnabled,
-            openInBrowserEnabled
+            openInBrowserEnabled,
+            basicAuthEnabled,
+            basicAuthUsername,
+            basicAuthPassword
         ).mapNotNull {
             it.getProperty()
         }.toTypedArray()

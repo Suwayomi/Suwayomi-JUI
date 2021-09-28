@@ -33,8 +33,11 @@ import ca.gosyer.ui.base.prefs.asStringStateIn
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
+import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 
 class SettingsServerViewModel @Inject constructor(
@@ -58,6 +61,11 @@ class SettingsServerViewModel @Inject constructor(
     // WebUI
     val webUIEnabled = serverHostPreferences.webUIEnabled().asStateIn(scope)
     val openInBrowserEnabled = serverHostPreferences.openInBrowserEnabled().asStateIn(scope)
+
+    // Authentication
+    val basicAuthEnabled = serverHostPreferences.basicAuthEnabled().asStateIn(scope)
+    val basicAuthUsername = serverHostPreferences.basicAuthUsername().asStateIn(scope)
+    val basicAuthPassword = serverHostPreferences.basicAuthPassword().asStateIn(scope)
 
     // JUI connection
     val serverUrl = serverPreferences.server().asStateIn(scope)
@@ -99,12 +107,24 @@ class SettingsServerViewModel @Inject constructor(
             serverService.restartServer()
         }
     }
+
+    init {
+        combine(basicAuthEnabled, basicAuthUsername, basicAuthPassword) { enabled, username, password ->
+            if (enabled) {
+                auth.value = Auth.BASIC
+                authUsername.value = username
+                authPassword.value = password
+            }
+        }.launchIn(scope)
+    }
+    private companion object : CKLogger({})
 }
 
 @Composable
 fun SettingsServerScreen(menuController: MenuController) {
     val vm = viewModel<SettingsServerViewModel>()
     val host by vm.host.collectAsState()
+    val basicAuthEnabled by vm.basicAuthEnabled.collectAsState()
     val proxy by vm.proxy.collectAsState()
     val auth by vm.auth.collectAsState()
     DisposableEffect(Unit) {
@@ -201,6 +221,31 @@ fun SettingsServerScreen(menuController: MenuController) {
                         subtitle = stringResource("host_open_in_browser_sub"),
                         changeListener = vm::serverSettingChanged,
                         enabled = webUIEnabled
+                    )
+                }
+                item {
+                    SwitchPreference(
+                        preference = vm.basicAuthEnabled,
+                        title = stringResource("basic_auth"),
+                        subtitle = stringResource("host_basic_auth_sub"),
+                        changeListener = vm::serverSettingChanged
+                    )
+                }
+                item {
+                    EditTextPreference(
+                        preference = vm.basicAuthUsername,
+                        title = stringResource("host_basic_auth_username"),
+                        changeListener = vm::serverSettingChanged,
+                        enabled = basicAuthEnabled
+                    )
+                }
+                item {
+                    EditTextPreference(
+                        preference = vm.basicAuthPassword,
+                        title = stringResource("host_basic_auth_password"),
+                        changeListener = vm::serverSettingChanged,
+                        visualTransformation = PasswordVisualTransformation(),
+                        enabled = basicAuthEnabled
                     )
                 }
             }

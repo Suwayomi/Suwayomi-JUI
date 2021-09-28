@@ -193,6 +193,9 @@
     <string name="host_webui_sub">Whether the server's default WebUI is enabled, makes you able to use Tachidesk in your browser</string>
     <string name="host_open_in_browser">Open Server WebUI on startup</string>
     <string name="host_open_in_browser_sub">Open the WebUI inside your browser on server startup. Requires the WebUI be enabled</string>
+    <string name="host_basic_auth_sub">Use basic auth to protect your library, requires username and password</string>
+    <string name="host_basic_auth_username">Basic auth username</string>
+    <string name="host_basic_auth_password">Basic auth password</string>
     <string name="server_url">Server URL</string>
     <string name="server_port">Server PORT</string>
     <string name="server_preference_warning">Warning</string>
