@@ -76,7 +76,7 @@ class SourcesMenuViewModel @Inject constructor(
     }
 
     private fun setSources(langs: Set<String>) {
-        _sources.value = installedSources.filter { it.lang in langs }
+        _sources.value = installedSources.filter { it.lang in langs || it.lang == Source.LOCAL_SOURCE_LANG }
     }
 
     private fun getSources() {
@@ -141,7 +141,7 @@ class SourcesMenuViewModel @Inject constructor(
     }
 
     fun getSourceLanguages(): Set<String> {
-        return installedSources.map { it.lang }.toSet()
+        return installedSources.map { it.lang }.toSet() - setOf(Source.LOCAL_SOURCE_LANG)
     }
 
     fun setEnabledLanguages(langs: Set<String>) {

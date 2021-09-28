@@ -25,7 +25,8 @@ data class Manga(
     val source: Source?,
     val freshData: Boolean,
     val meta: MangaMeta,
-    val realUrl: String?
+    val realUrl: String?,
+    val inLibraryAt: Long
 ) {
     fun cover(serverUrl: String) = thumbnailUrl?.let { serverUrl + it }
 }

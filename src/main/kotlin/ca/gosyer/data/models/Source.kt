@@ -16,7 +16,11 @@ data class Source(
     val iconUrl: String,
     val supportsLatest: Boolean,
     val isConfigurable: Boolean,
-    val isNsfw: Boolean
+    val isNsfw: Boolean,
+    val displayName: String
 ) {
     fun iconUrl(serverUrl: String) = serverUrl + iconUrl
+    companion object {
+        const val LOCAL_SOURCE_LANG = "localsourcelang"
+    }
 }
