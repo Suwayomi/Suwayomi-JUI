@@ -84,11 +84,13 @@ fun SkinnyMainMenu(
             drawerState.close()
         }
     }
-    LaunchedEffect(drawerState.isOpen) {
-        if (drawerState.isOpen) {
-            controller.openSideMenu()
-        } else {
-            controller.closeSideMenu()
+    DisposableEffect(drawerState.isOpen) {
+        onDispose {
+            if (drawerState.isOpen) {
+                controller.openSideMenu()
+            } else {
+                controller.closeSideMenu()
+            }
         }
     }
     DisposableEffect(Unit) {
