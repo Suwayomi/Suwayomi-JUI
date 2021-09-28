@@ -20,5 +20,7 @@ bin/
 *.iws
 /.idea/*
 !/.idea/runConfigurations/
+!/.idea/scopes
+!/.idea/copyright
 out/
 workspace.xml
