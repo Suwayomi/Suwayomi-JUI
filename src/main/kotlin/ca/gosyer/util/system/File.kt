@@ -12,9 +12,12 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import mu.KotlinLogging
 import net.harawata.appdirs.AppDirs
 import net.harawata.appdirs.AppDirsFactory
-import java.io.File
+import java.nio.file.Path
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
+import kotlin.io.path.Path
+import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
 
 private val logger = KotlinLogging.logger {}
 
@@ -22,10 +25,10 @@ val appDirs: AppDirs by lazy {
     AppDirsFactory.getInstance()
 }
 
-val userDataDir: File by lazy {
-    File(appDirs.getUserDataDir(BuildConfig.NAME, null, null)).also {
+val userDataDir: Path by lazy {
+    Path(appDirs.getUserDataDir(BuildConfig.NAME, null, null)).also {
         if (!it.exists()) {
-            logger.info("Attempted to create app data dir, result: {}", it.mkdirs())
+            logger.info("Attempted to create app data dir, result: {}", it.createDirectories())
         }
     }
 }
@@ -82,7 +85,7 @@ private fun fileChooser(
                 fileFilter = FileNameExtensionFilter("${extensions.joinToString()} files", *extensions)
             }
             if (saving) {
-                selectedFile = File(defaultFileName)
+                selectedFile = Path(defaultFileName).toFile()
             }
         }
         .apply(builder)

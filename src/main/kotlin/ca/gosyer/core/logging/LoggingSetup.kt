@@ -16,7 +16,8 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.absolutePathString
 import java.util.logging.LogManager as JLogManager
 
 const val consolePattern =
@@ -37,7 +38,7 @@ const val filePattern =
         "{LOG_EXCEPTION_CONVERSION_WORD:-%xEx}"
 
 @Suppress("UPPER_BOUND_VIOLATED_WARNING")
-fun initializeLogger(loggingLocation: File) {
+fun initializeLogger(loggingLocation: Path) {
     val ctx = LogManager.getContext(false) as LoggerContext
     val builder = ConfigurationBuilderFactory.newConfigurationBuilder()
         .apply {
@@ -59,11 +60,11 @@ fun initializeLogger(loggingLocation: File) {
                 newAppender("Rolling", "RollingFile")
                     .addAttribute(
                         "fileName",
-                        loggingLocation.absolutePath.trimEnd { it == '/' || it == '\\' } + "/rolling.log"
+                        loggingLocation.absolutePathString().trimEnd { it == '/' || it == '\\' } + "/rolling.log"
                     )
                     .addAttribute(
                         "filePattern",
-                        loggingLocation.absolutePath.trimEnd { it == '/' || it == '\\' } + "/archive/rolling-%d{yyyy-MM-dd-}.log.gz"
+                        loggingLocation.absolutePathString().trimEnd { it == '/' || it == '\\' } + "/archive/rolling-%d{yyyy-MM-dd-}.log.gz"
                     )
                     .add(
                         newLayout("PatternLayout")

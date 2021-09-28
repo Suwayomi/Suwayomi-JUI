@@ -47,8 +47,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.io.File
+import java.nio.file.Path
 import javax.inject.Inject
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.notExists
+import kotlin.io.path.outputStream
 
 class SettingsBackupViewModel @Inject constructor(
     private val backupHandler: BackupInteractionHandler
@@ -59,7 +62,7 @@ class SettingsBackupViewModel @Inject constructor(
     val restoringProgress = _restoringProgress.asStateFlow()
     private val _restoreStatus = MutableStateFlow<Status>(Status.Nothing)
     internal val restoreStatus = _restoreStatus.asStateFlow()
-    private val _missingSourceFlow = MutableSharedFlow<Pair<File, List<String>>>()
+    private val _missingSourceFlow = MutableSharedFlow<Pair<Path, List<String>>>()
     val missingSourceFlow = _missingSourceFlow.asSharedFlow()
 
     private val _creating = MutableStateFlow(false)
@@ -68,13 +71,13 @@ class SettingsBackupViewModel @Inject constructor(
     val creatingProgress = _creatingProgress.asStateFlow()
     private val _creatingStatus = MutableStateFlow<Status>(Status.Nothing)
     internal val creatingStatus = _creatingStatus.asStateFlow()
-    private val _createFlow = MutableSharedFlow<Pair<String, (File) -> Unit>>()
+    private val _createFlow = MutableSharedFlow<Pair<String, (Path) -> Unit>>()
     val createFlow = _createFlow.asSharedFlow()
 
-    fun restoreFile(file: File?) {
+    fun restoreFile(file: Path?) {
         scope.launch {
-            if (file == null || !file.exists()) {
-                info { "Invalid file ${file?.absolutePath}" }
+            if (file == null || file.notExists()) {
+                info { "Invalid file ${file?.absolutePathString()}" }
                 _restoreStatus.value = Status.Error
                 _restoring.value = false
             } else {
@@ -94,7 +97,7 @@ class SettingsBackupViewModel @Inject constructor(
         }
     }
 
-    fun restoreBackup(file: File) {
+    fun restoreBackup(file: Path) {
         scope.launch {
             _restoreStatus.value = Status.Nothing
             _restoringProgress.value = null
@@ -189,7 +192,7 @@ fun SettingsBackupScreen(menuController: MenuController) {
         launch {
             vm.createFlow.collect { (filename, function) ->
                 fileSaver(filename, "proto.gz") {
-                    function(it.selectedFile)
+                    function(it.selectedFile.toPath())
                 }
             }
         }
@@ -207,7 +210,7 @@ fun SettingsBackupScreen(menuController: MenuController) {
                     restoreStatus
                 ) {
                     filePicker("gz") {
-                        vm.restoreFile(it.selectedFile)
+                        vm.restoreFile(it.selectedFile.toPath())
                     }
                 }
                 PreferenceFile(

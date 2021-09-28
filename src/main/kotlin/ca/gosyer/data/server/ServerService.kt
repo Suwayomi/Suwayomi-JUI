@@ -21,13 +21,22 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
-import java.io.File
+import java.io.File.pathSeparatorChar
 import java.io.IOException
 import java.io.Reader
+import java.nio.file.Path
 import java.util.jar.Attributes
 import java.util.jar.JarInputStream
 import javax.inject.Inject
 import kotlin.concurrent.thread
+import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
+import kotlin.io.path.inputStream
+import kotlin.io.path.isExecutable
+import kotlin.io.path.name
+import kotlin.io.path.outputStream
 
 @OptIn(DelicateCoroutinesApi::class)
 class ServerService @Inject constructor(
@@ -55,7 +64,7 @@ class ServerService @Inject constructor(
     }
 
     @Throws(IOException::class)
-    private fun copyJar(jarFile: File) {
+    private fun copyJar(jarFile: Path) {
         javaClass.getResourceAsStream("/Tachidesk.jar")?.buffered()?.use { input ->
             jarFile.outputStream().use { output ->
                 input.copyTo(output)
@@ -63,30 +72,30 @@ class ServerService @Inject constructor(
         }
     }
 
-    private fun getJavaFromPath(javaPath: File): String? {
-        val javaExeFile = File(javaPath, "java.exe")
-        val javaUnixFile = File(javaPath, "java")
+    private fun getJavaFromPath(javaPath: Path): String? {
+        val javaExeFile = javaPath.resolve("java.exe")
+        val javaUnixFile = javaPath.resolve("java")
         return when {
-            javaExeFile.exists() && javaExeFile.canExecute() -> javaExeFile.absolutePath
-            javaUnixFile.exists() && javaUnixFile.canExecute() -> javaUnixFile.absolutePath
+            javaExeFile.exists() && javaExeFile.isExecutable() -> javaExeFile.absolutePathString()
+            javaUnixFile.exists() && javaUnixFile.isExecutable() -> javaUnixFile.absolutePathString()
             else -> null
         }
     }
 
     private fun getRuntimeJava(): String? {
-        return System.getProperty("java.home")?.let { getJavaFromPath(File(it, "bin")) }
+        return System.getProperty("java.home")?.let { getJavaFromPath(Path(it).resolve("bin")) }
     }
 
     private fun getPossibleJava(): String? {
-        return System.getProperty("java.library.path")?.split(File.pathSeparatorChar)
+        return System.getProperty("java.library.path")?.split(pathSeparatorChar)
             .orEmpty()
             .asSequence()
             .mapNotNull {
-                val file = File(it)
-                if (file.absolutePath.contains("java") || file.absolutePath.contains("jdk")) {
+                val file = Path(it)
+                if (file.absolutePathString().contains("java") || file.absolutePathString().contains("jdk")) {
                     if (file.name.equals("bin", true)) {
                         file
-                    } else File(file, "bin")
+                    } else file.resolve("bin")
                 } else null
             }
             .mapNotNull { getJavaFromPath(it) }
@@ -117,7 +126,7 @@ class ServerService @Inject constructor(
                 }
             }
             GlobalScope.launch(handler) {
-                val jarFile = File(userDataDir.also { it.mkdirs() }, "Tachidesk.jar")
+                val jarFile = userDataDir.also { it.createDirectories() }.resolve("Tachidesk.jar")
                 if (!jarFile.exists()) {
                     info { "Copying server to resources" }
                     withIOContext { copyJar(jarFile) }
@@ -147,7 +156,7 @@ class ServerService @Inject constructor(
 
                 withIOContext {
                     val reader: Reader
-                    process = ProcessBuilder(javaPath, *properties, "-jar", jarFile.absolutePath)
+                    process = ProcessBuilder(javaPath, *properties, "-jar", jarFile.absolutePathString())
                         .redirectErrorStream(true)
                         .start()
                         .also {

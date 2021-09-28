@@ -11,12 +11,12 @@ import okio.BufferedSink
 import okio.Source
 import okio.buffer
 import okio.sink
-import java.io.File
+import java.nio.file.Path
 
-suspend fun Source.saveTo(file: File) {
+suspend fun Source.saveTo(path: Path) {
     withIOContext {
         use { source ->
-            file.sink().buffer().use { it.writeAll(source) }
+            path.sink().buffer().use { it.writeAll(source) }
         }
     }
 }

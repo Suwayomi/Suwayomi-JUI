@@ -21,15 +21,16 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import java.io.File
+import java.nio.file.Path
 import javax.inject.Inject
+import kotlin.io.path.readBytes
 
 class BackupInteractionHandler @Inject constructor(
     client: Http,
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun importBackupFile(file: File, block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
+    suspend fun importBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
         client.submitFormWithBinaryData<HttpResponse>(
             serverUrl + backupFileImportRequest(),
             formData = formData {
@@ -45,7 +46,7 @@ class BackupInteractionHandler @Inject constructor(
         )
     }
 
-    suspend fun validateBackupFile(file: File, block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
+    suspend fun validateBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
         client.submitFormWithBinaryData<BackupValidationResult>(
             serverUrl + validateBackupFileRequest(),
             formData = formData {

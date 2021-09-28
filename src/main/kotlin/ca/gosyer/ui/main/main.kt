@@ -52,13 +52,12 @@ import org.jetbrains.skiko.currentSystemTheme
 import toothpick.configuration.Configuration
 import toothpick.ktp.KTP
 import toothpick.ktp.extension.getInstance
-import java.io.File
 import java.util.Locale
 import kotlin.system.exitProcess
 
 @OptIn(DelicateCoroutinesApi::class)
 suspend fun main() {
-    initializeLogger(File(userDataDir, "logging"))
+    initializeLogger(userDataDir.resolve(userDataDir, "logging"))
 
     if (BuildConfig.DEBUG) {
         System.setProperty("kotlinx.coroutines.debug", "on")

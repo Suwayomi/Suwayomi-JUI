@@ -13,11 +13,12 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.jvm.javaio.copyTo
-import org.jetbrains.skija.Image
+import org.jetbrains.skia.Image
 import java.io.ByteArrayOutputStream
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.readBytes
 
-fun imageFromFile(file: File): ImageBitmap {
+fun imageFromFile(file: Path): ImageBitmap {
     return Image.makeFromEncoded(file.readBytes()).asImageBitmap()
 }
 
