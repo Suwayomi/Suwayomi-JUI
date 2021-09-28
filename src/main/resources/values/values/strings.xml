@@ -39,6 +39,7 @@
 
     <!-- Locations -->
     <string name="location_library">Library</string>
+    <string name="location_updates">Updates</string>
     <string name="location_sources">Sources</string>
     <string name="location_extensions">Extensions</string>
     <string name="location_downloads">Downloads</string>

@@ -21,6 +21,7 @@ data class Chapter(
     val bookmarked: Boolean,
     val lastPageRead: Int,
     val index: Int,
+    val fetchedAt: Long,
     val chapterCount: Int?,
     val pageCount: Int?,
     val lastReadAt: Int?,

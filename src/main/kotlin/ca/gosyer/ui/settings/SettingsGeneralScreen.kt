@@ -42,6 +42,7 @@ class SettingsGeneralViewModel @Inject constructor(
     @Composable
     fun getStartScreenChoices() = mapOf(
         StartScreen.Library to stringResource("location_library"),
+        StartScreen.Updates to stringResource("location_updates"),
         StartScreen.Sources to stringResource("location_sources"),
         StartScreen.Extensions to stringResource("location_extensions")
     )

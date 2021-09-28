@@ -7,7 +7,6 @@
 package ca.gosyer.ui.manga
 
 import ca.gosyer.data.download.DownloadService
-import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
@@ -17,6 +16,7 @@ import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.data.ui.UiPreferences
+import ca.gosyer.ui.base.components.ChapterDownloadItem
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.lang.withIOContext
@@ -51,7 +51,7 @@ class MangaMenuViewModel @Inject constructor(
     private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()
 
-    private val _chapters = MutableStateFlow(emptyList<ViewChapter>())
+    private val _chapters = MutableStateFlow(emptyList<ChapterDownloadItem>())
     val chapters = _chapters.asStateFlow()
 
     private val _isLoading = MutableStateFlow(true)
@@ -69,18 +69,9 @@ class MangaMenuViewModel @Inject constructor(
         .asStateFlow(getDateFormat(uiPreferences.dateFormat().get()))
 
     init {
-        downloadingChapters.mapLatest { downloadingChapters ->
+        downloadingChapters.mapLatest { (_, downloadingChapters) ->
             chapters.value.forEach { chapter ->
-                val downloadingChapter = downloadingChapters.find {
-                    it.chapterIndex == chapter.chapter.index
-                }
-                if (downloadingChapter != null && chapter.downloadState.value != DownloadState.Downloading) {
-                    chapter.downloadState.value = DownloadState.Downloading
-                }
-                if (chapter.downloadState.value == DownloadState.Downloading && downloadingChapter == null) {
-                    chapter.downloadState.value = DownloadState.Downloaded
-                }
-                chapter.downloadChapterFlow.value = downloadingChapter
+                chapter.updateFrom(downloadingChapters)
             }
         }.launchIn(scope)
 
@@ -141,7 +132,7 @@ class MangaMenuViewModel @Inject constructor(
     private suspend fun refreshChaptersAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
             try {
-                _chapters.value = chapterHandler.getChapters(mangaId, refresh).toViewChapters()
+                _chapters.value = chapterHandler.getChapters(mangaId, refresh).toDownloadChapters()
             } catch (e: Exception) {
                 e.throwIfCancellation()
             }
@@ -196,7 +187,7 @@ class MangaMenuViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 chapterHandler.updateChapter(manga, index, read = !_chapters.value.first { it.chapter.index == index }.chapter.read)
-                _chapters.value = chapterHandler.getChapters(manga).toViewChapters()
+                _chapters.value = chapterHandler.getChapters(manga).toDownloadChapters()
             }
         }
     }
@@ -205,7 +196,7 @@ class MangaMenuViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 chapterHandler.updateChapter(manga, index, bookmarked = !_chapters.value.first { it.chapter.index == index }.chapter.bookmarked)
-                _chapters.value = chapterHandler.getChapters(manga).toViewChapters()
+                _chapters.value = chapterHandler.getChapters(manga).toDownloadChapters()
             }
         }
     }
@@ -214,7 +205,7 @@ class MangaMenuViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 chapterHandler.updateChapter(manga, index, markPreviousRead = true)
-                _chapters.value = chapterHandler.getChapters(manga).toViewChapters()
+                _chapters.value = chapterHandler.getChapters(manga).toDownloadChapters()
             }
         }
     }
@@ -229,10 +220,7 @@ class MangaMenuViewModel @Inject constructor(
 
     fun deleteDownload(index: Int) {
         scope.launch {
-            manga.value?.let { manga ->
-                chapterHandler.deleteChapterDownload(manga, index)
-                chapters.value.find { it.chapter.index == index }?.downloadState?.value = DownloadState.NotDownloaded
-            }
+            chapters.value.find { it.chapter.index == index }?.deleteDownload(chapterHandler)
         }
     }
 
@@ -240,28 +228,8 @@ class MangaMenuViewModel @Inject constructor(
         downloadService.removeWatch(params.mangaId)
     }
 
-    private fun List<Chapter>.toViewChapters() = map {
-        ViewChapter(
-            it,
-            MutableStateFlow(
-                if (it.downloaded) {
-                    DownloadState.Downloaded
-                } else {
-                    DownloadState.NotDownloaded
-                }
-            )
-        )
-    }
-
-    data class ViewChapter(
-        val chapter: Chapter,
-        val downloadState: MutableStateFlow<DownloadState>,
-        val downloadChapterFlow: MutableStateFlow<DownloadChapter?> = MutableStateFlow(null)
-    )
-    enum class DownloadState {
-        NotDownloaded,
-        Downloading,
-        Downloaded
+    private fun List<Chapter>.toDownloadChapters() = map {
+        ChapterDownloadItem(null, it)
     }
 
     data class Params(val mangaId: Long)

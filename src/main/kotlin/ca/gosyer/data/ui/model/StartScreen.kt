@@ -13,8 +13,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class StartScreen {
     Library,
+    Updates,
 
-//  Updates,
 //  History,
     Sources,
     Extensions

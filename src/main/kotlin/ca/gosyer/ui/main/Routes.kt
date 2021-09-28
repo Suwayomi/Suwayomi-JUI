@@ -1,9 +1,16 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package ca.gosyer.ui.main
 
 import ca.gosyer.data.ui.model.StartScreen
 
 sealed class Routes {
     object Library : Routes()
+    object Updates : Routes()
     object Sources : Routes()
     object Extensions : Routes()
     data class Manga(val mangaId: Long) : Routes()
@@ -30,6 +37,7 @@ sealed class Routes {
 
 fun StartScreen.toRoute() = when (this) {
     StartScreen.Library -> Routes.Library
+    StartScreen.Updates -> Routes.Updates
     StartScreen.Sources -> Routes.Sources
     StartScreen.Extensions -> Routes.Extensions
 }

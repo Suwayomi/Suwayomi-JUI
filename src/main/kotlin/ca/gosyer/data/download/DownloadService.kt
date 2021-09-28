@@ -51,7 +51,7 @@ class DownloadService @Inject constructor(
     private val _downloadQueue = MutableStateFlow(emptyList<DownloadChapter>())
     val downloadQueue = _downloadQueue.asStateFlow()
 
-    private val watching = mutableMapOf<Long, MutableSharedFlow<List<DownloadChapter>>>()
+    private val watching = mutableMapOf<Long, MutableSharedFlow<Pair<Long, List<DownloadChapter>>>>()
     private var errorConnectionCount = 0
 
     private var job: Job? = null
@@ -87,7 +87,7 @@ class DownloadService @Inject constructor(
                                 _downloadQueue.value = status.queue
                                 val queue = status.queue.groupBy { it.mangaId }
                                 watching.forEach { (mangaId, flow) ->
-                                    flow.emit(queue[mangaId].orEmpty())
+                                    flow.emit(mangaId to queue[mangaId].orEmpty())
                                 }
                             }.throwIfCancellation()
                         }
@@ -105,10 +105,15 @@ class DownloadService @Inject constructor(
     }
 
     fun registerWatch(mangaId: Long) =
-        MutableSharedFlow<List<DownloadChapter>>().also { watching[mangaId] = it }.asSharedFlow()
+        MutableSharedFlow<Pair<Long, List<DownloadChapter>>>().also { watching[mangaId] = it }.asSharedFlow()
+    fun registerWatches(mangaIds: Set<Long>) =
+        mangaIds.map { registerWatch(it) }
 
     fun removeWatch(mangaId: Long) {
-        watching.remove(mangaId)
+        watching -= mangaId
+    }
+    fun removeWatches(mangaIds: Set<Long>) {
+        watching -= mangaIds
     }
 
     enum class Status {

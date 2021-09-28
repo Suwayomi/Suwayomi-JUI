@@ -6,67 +6,47 @@
 
 package ca.gosyer.ui.manga
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProgressIndicatorDefaults
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDownward
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Error
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import ca.gosyer.data.download.model.DownloadChapter
-import ca.gosyer.data.download.model.DownloadState
-import ca.gosyer.ui.base.components.DropdownIconButton
+import ca.gosyer.ui.base.components.ChapterDownloadIcon
+import ca.gosyer.ui.base.components.ChapterDownloadItem
 import ca.gosyer.ui.base.components.contextMenuClickable
 import ca.gosyer.ui.base.resources.stringResource
 import java.time.Instant
 
 @Composable
 fun ChapterItem(
-    viewChapter: MangaMenuViewModel.ViewChapter,
+    chapterDownload: ChapterDownloadItem,
     format: (Instant) -> String,
     onClick: (Int) -> Unit,
     toggleRead: (Int) -> Unit,
     toggleBookmarked: (Int) -> Unit,
     markPreviousAsRead: (Int) -> Unit,
     downloadAChapter: (Int) -> Unit,
-    deleteDownload: (Int) -> Unit,
-    stopDownload: (Int) -> Unit
+    deleteDownload: (Int) -> Unit
 ) {
-    val chapter = viewChapter.chapter
+    val chapter = chapterDownload.chapter
     Card(
         modifier = Modifier.fillMaxWidth().height(70.dp).padding(4.dp),
         elevation = 1.dp,
@@ -129,144 +109,13 @@ fun ChapterItem(
                         )
                     }
                 }
-                val downloadChapter by viewChapter.downloadChapterFlow.collectAsState()
-                val downloadState by viewChapter.downloadState.collectAsState()
 
-                when (downloadState) {
-                    MangaMenuViewModel.DownloadState.Downloaded -> {
-                        DownloadedIconButton(
-                            chapter.mangaId to chapter.index,
-                            onClick = { deleteDownload(chapter.index) }
-                        )
-                    }
-                    MangaMenuViewModel.DownloadState.Downloading -> {
-                        DownloadingIconButton(
-                            downloadChapter,
-                            onClick = { stopDownload(chapter.index) }
-                        )
-                    }
-                    MangaMenuViewModel.DownloadState.NotDownloaded -> {
-                        DownloadIconButton(onClick = { downloadAChapter(chapter.index) })
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun DownloadIconButton(onClick: () -> Unit) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.fillMaxHeight()
-    ) {
-        Surface(
-            shape = CircleShape,
-            border = BorderStroke(2.dp, LocalContentColor.current.copy(alpha = ContentAlpha.disabled)),
-        ) {
-            Icon(
-                Icons.Rounded.ArrowDownward,
-                null,
-                Modifier
-                    .size(22.dp)
-                    .padding(2.dp),
-                LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
-            )
-        }
-    }
-}
-
-@Composable
-private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: () -> Unit) {
-    DropdownIconButton(
-        downloadChapter?.mangaId to downloadChapter?.chapterIndex,
-        {
-            DropdownMenuItem(onClick = onClick) {
-                Text(stringResource("action_cancel"))
-            }
-        }
-    ) {
-        when (downloadChapter?.state) {
-            null, DownloadState.Queued -> CircularProgressIndicator(
-                Modifier
-                    .size(26.dp)
-                    .padding(2.dp),
-                LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-                2.dp
-            )
-            DownloadState.Downloading -> if (downloadChapter.progress != 0.0F) {
-                val animatedProgress by animateFloatAsState(
-                    targetValue = downloadChapter.progress,
-                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
-                )
-                CircularProgressIndicator(
-                    animatedProgress,
-                    Modifier
-                        .size(26.dp)
-                        .padding(2.dp),
-                    LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-                    2.dp
-                )
-                Icon(
-                    Icons.Rounded.ArrowDownward,
-                    null,
-                    Modifier
-                        .size(22.dp)
-                        .padding(2.dp),
-                    LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
-                )
-            } else {
-                CircularProgressIndicator(
-                    Modifier
-                        .size(26.dp)
-                        .padding(2.dp),
-                    LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-                    2.dp
+                ChapterDownloadIcon(
+                    chapterDownload,
+                    { downloadAChapter(it.index) },
+                    { deleteDownload(it.index) }
                 )
             }
-            DownloadState.Error -> Surface(shape = CircleShape, color = LocalContentColor.current) {
-                Icon(
-                    Icons.Rounded.Error,
-                    null,
-                    Modifier
-                        .size(22.dp)
-                        .padding(2.dp),
-                    Color.Red
-                )
-            }
-            DownloadState.Finished -> Surface(shape = CircleShape, color = LocalContentColor.current) {
-                Icon(
-                    Icons.Rounded.Check,
-                    null,
-                    Modifier
-                        .size(22.dp)
-                        .padding(2.dp),
-                    MaterialTheme.colors.surface
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun DownloadedIconButton(chapter: Pair<Long, Int?>, onClick: () -> Unit) {
-    DropdownIconButton(
-        chapter,
-        {
-            DropdownMenuItem(onClick = onClick) {
-                Text(stringResource("action_delete"))
-            }
-        }
-    ) {
-        Surface(shape = CircleShape, color = LocalContentColor.current) {
-            Icon(
-                Icons.Rounded.Check,
-                null,
-                Modifier
-                    .size(22.dp)
-                    .padding(2.dp),
-                MaterialTheme.colors.surface
-            )
         }
     }
 }

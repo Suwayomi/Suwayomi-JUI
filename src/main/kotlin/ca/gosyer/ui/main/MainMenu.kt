@@ -146,6 +146,10 @@ fun MainWindow(modifier: Modifier, rootBundle: Bundle) {
                     is Routes.Library -> LibraryScreen {
                         menuController.push(Routes.Manga(it))
                     }
+                    is Routes.Updates -> UpdatesMenu(
+                        openChapter = ::openReaderMenu,
+                        openManga = { menuController.push(Routes.Manga(it)) }
+                    )
                     is Routes.Sources -> SourcesMenu(
                         {
                             menuController.push(Routes.SourceSettings(it))

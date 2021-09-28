@@ -1,14 +1,22 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 package ca.gosyer.ui.main
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Store
 import androidx.compose.material.icons.rounded.Book
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Explore
+import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Store
 import androidx.compose.runtime.Composable
@@ -29,6 +37,7 @@ enum class TopLevelMenus(
     val extraInfo: (@Composable () -> Unit)? = null
 ) {
     Library("location_library", Icons.Outlined.Book, Icons.Rounded.Book, Routes.Library, true, ::openLibraryMenu),
+    Updates("location_updates", Icons.Outlined.NewReleases, Icons.Rounded.NewReleases, Routes.Updates, true, ::openLibraryMenu),
     Sources("location_sources", Icons.Outlined.Explore, Icons.Rounded.Explore, Routes.Sources, true, ::openSourcesMenu),
     Extensions("location_extensions", Icons.Outlined.Store, Icons.Rounded.Store, Routes.Extensions, true, ::openExtensionsMenu),
     Downloads("location_downloads", Icons.Outlined.Download, Icons.Rounded.Download, Routes.Downloads, false, extraInfo = { DownloadsExtraInfo() }),

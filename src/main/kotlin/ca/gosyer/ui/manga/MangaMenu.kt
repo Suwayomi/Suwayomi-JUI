@@ -140,8 +140,7 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
                                         toggleBookmarked = vm::toggleBookmarked,
                                         markPreviousAsRead = vm::markPreviousRead,
                                         downloadAChapter = vm::downloadChapter,
-                                        deleteDownload = vm::deleteDownload,
-                                        stopDownload = vm::deleteDownload
+                                        deleteDownload = vm::deleteDownload
                                     )
                                 }
                             } else if (!isLoading) {
