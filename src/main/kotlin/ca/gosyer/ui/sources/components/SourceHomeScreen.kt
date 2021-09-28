@@ -51,7 +51,7 @@ fun SourceHomeScreen(
     } else {
         Box(Modifier.fillMaxSize(), Alignment.TopCenter) {
             val state = rememberLazyListState()
-            SourceCategory("all", sources, serverUrl, onSourceClicked, state)
+            SourceCategory(sources, serverUrl, onSourceClicked, state)
             /*val sourcesByLang = sources.groupBy { it.lang.toLowerCase() }.toList()
             LazyColumn(state = state) {
                 items(sourcesByLang) { (lang, sources) ->
@@ -74,25 +74,19 @@ fun SourceHomeScreen(
 
 @Composable
 fun SourceCategory(
-    lang: String,
     sources: List<Source>,
     serverUrl: String,
     onSourceClicked: (Source) -> Unit,
     state: LazyListState
 ) {
-    Column {
-        /*Surface(elevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
-            Text(lang.uppercase(Locale.getDefault()), modifier = Modifier.align(Alignment.CenterHorizontally), color = MaterialTheme.colors.onBackground)
-        }*/
-        LazyVerticalGrid(GridCells.Adaptive(120.dp), state = state) {
-            items(sources) { source ->
-                SourceItem(
-                    source,
-                    serverUrl,
-                    onSourceClicked = onSourceClicked
-                )
-                Spacer(Modifier.height(8.dp))
-            }
+    LazyVerticalGrid(GridCells.Adaptive(120.dp), state = state) {
+        items(sources) { source ->
+            SourceItem(
+                source,
+                serverUrl,
+                onSourceClicked = onSourceClicked
+            )
+            Spacer(Modifier.height(8.dp))
         }
     }
 }
