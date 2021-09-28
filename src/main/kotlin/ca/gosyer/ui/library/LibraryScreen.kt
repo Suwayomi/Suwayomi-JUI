@@ -60,6 +60,7 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
     val isLoading by vm.isLoading.collectAsState()
     val error by vm.error.collectAsState()
     val serverUrl by vm.serverUrl.collectAsState()
+    val query by vm.query.collectAsState()
     // val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
     if (categories.isEmpty()) {
@@ -85,7 +86,12 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
                     }
                 }
             )*/
-            Toolbar(stringResource("location_library"), closable = false)
+            Toolbar(
+                stringResource("location_library"),
+                closable = false,
+                searchText = query,
+                search = vm::updateQuery
+            )
             LibraryTabs(
                 visible = true, // vm.showCategoryTabs,
                 categories = categories,

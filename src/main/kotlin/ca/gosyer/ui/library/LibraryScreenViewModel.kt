@@ -19,17 +19,51 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private typealias LibraryMap = MutableMap<Int, MutableStateFlow<List<Manga>>>
+private typealias CategoryItems = Pair<MutableStateFlow<List<Manga>>, MutableStateFlow<List<Manga>>>
+private typealias LibraryMap = MutableMap<Int, CategoryItems>
 private data class Library(val categories: MutableStateFlow<List<Category>>, val mangaMap: LibraryMap)
 
 private fun LibraryMap.getManga(order: Int) =
-    getOrPut(order) { MutableStateFlow(emptyList()) }
-private fun LibraryMap.setManga(order: Int, manga: List<Manga>) {
-    getManga(order).value = manga
+    getOrPut(order) { MutableStateFlow(emptyList<Manga>()) to MutableStateFlow(emptyList()) }
+private suspend fun LibraryMap.setManga(query: String, order: Int, manga: List<Manga>) {
+    getManga(order).let { (items, unfilteredItems) ->
+        items.value = filterManga(query, manga)
+        unfilteredItems.value = manga
+    }
+}
+private suspend fun LibraryMap.updateMangaFilter(query: String) {
+    values.forEach { (items, unfilteredItems) ->
+        items.value = filterManga(query, unfilteredItems.value)
+    }
+}
+
+private suspend fun filterManga(query: String, mangaList: List<Manga>): List<Manga> {
+    if (query.isEmpty()) return mangaList
+    val queries = query.split(" ")
+    return mangaList.asFlow()
+        .filter { manga ->
+            queries.all { query ->
+                manga.title.contains(query, true) ||
+                    manga.author.orEmpty().contains(query, true) ||
+                    manga.artist.orEmpty().contains(query, true) ||
+                    manga.genre.any { it.contains(query, true) } ||
+                    manga.description.orEmpty().contains(query, true)
+            }
+        }
+        .cancellable()
+        .buffer()
+        .toList()
 }
 
 class LibraryScreenViewModel @Inject constructor(
@@ -54,8 +88,15 @@ class LibraryScreenViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error = _error.asStateFlow()
 
+    private val _query = MutableStateFlow("")
+    val query = _query.asStateFlow()
+
     init {
         getLibrary()
+
+        _query.mapLatest {
+            library.mangaMap.updateMangaFilter(it)
+        }.launchIn(scope)
     }
 
     private fun getLibrary() {
@@ -82,14 +123,14 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     fun getLibraryForCategoryIndex(index: Int): StateFlow<List<Manga>> {
-        return library.mangaMap.getManga(index).asStateFlow()
+        return library.mangaMap.getManga(index).first.asStateFlow()
     }
 
     private suspend fun updateCategories(categories: List<Category>) {
         withDefaultContext {
             categories.map {
                 async {
-                    library.mangaMap.setManga(it.order, categoryHandler.getMangaFromCategory(it))
+                    library.mangaMap.setManga("", it.order, categoryHandler.getMangaFromCategory(it))
                 }
             }.awaitAll()
         }
@@ -98,7 +139,7 @@ class LibraryScreenViewModel @Inject constructor(
     private fun getCategoriesToUpdate(mangaId: Long): List<Category> {
         return library.mangaMap
             .filter { mangaMapEntry ->
-                mangaMapEntry.value.value.firstOrNull { it.id == mangaId } != null
+                mangaMapEntry.value.first.value.firstOrNull { it.id == mangaId } != null
             }
             .map { library.categories.value[it.key] }
     }
@@ -108,5 +149,9 @@ class LibraryScreenViewModel @Inject constructor(
             libraryHandler.removeMangaFromLibrary(mangaId)
             updateCategories(getCategoriesToUpdate(mangaId))
         }
+    }
+
+    fun updateQuery(query: String) {
+        _query.value = query
     }
 }
