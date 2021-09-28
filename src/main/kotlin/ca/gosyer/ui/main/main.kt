@@ -57,7 +57,7 @@ import kotlin.system.exitProcess
 
 @OptIn(DelicateCoroutinesApi::class)
 suspend fun main() {
-    initializeLogger(userDataDir.resolve(userDataDir, "logging"))
+    initializeLogger(userDataDir.resolve("logging"))
 
     if (BuildConfig.DEBUG) {
         System.setProperty("kotlinx.coroutines.debug", "on")
