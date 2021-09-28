@@ -30,8 +30,11 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 
 private val logger = kLogger {}
+private val semaphore = Semaphore(5)
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
@@ -60,9 +63,11 @@ fun KtorImage(
             }
             val job = GlobalScope.launch(handler) {
                 if (drawable.value == null) {
-                    drawable.value = imageFromUrl(client, imageUrl) {
-                        onDownload { bytesSentTotal, contentLength ->
-                            progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
+                    semaphore.withPermit {
+                        drawable.value = imageFromUrl(client, imageUrl) {
+                            onDownload { bytesSentTotal, contentLength ->
+                                progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
+                            }
                         }
                     }
                 }
