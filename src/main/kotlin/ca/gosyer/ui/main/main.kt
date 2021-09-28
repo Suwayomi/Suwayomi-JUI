@@ -7,15 +7,19 @@
 package ca.gosyer.ui.main
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.configureSwingGlobalsForCompose
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
 import androidx.compose.ui.window.rememberWindowState
@@ -46,6 +50,7 @@ import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
@@ -122,6 +127,8 @@ suspend fun main() {
 
     val confirmExit = uiPreferences.confirmExit().asStateIn(GlobalScope)
 
+    val displayDebugInfoFlow = MutableStateFlow(false)
+
     awaitApplication {
         // Exit the whole application when this window closes
         DisposableEffect(Unit) {
@@ -155,12 +162,18 @@ suspend fun main() {
             title = BuildConfig.NAME,
             state = windowState,
             onKeyEvent = {
-                when (it.key) {
-                    Key.Home -> {
-                        backPressHandler.handle()
+                if (it.type == KeyEventType.KeyUp) {
+                    when (it.key) {
+                        Key.Home -> {
+                            backPressHandler.handle()
+                        }
+                        Key.F3 -> {
+                            displayDebugInfoFlow.value = !displayDebugInfoFlow.value
+                            true
+                        }
+                        else -> false
                     }
-                    else -> false
-                }
+                } else false
             }
         ) {
             setIcon()
@@ -173,7 +186,13 @@ suspend fun main() {
                     Crossfade(serverService.initialized.collectAsState().value) { initialized ->
                         when (initialized) {
                             ServerResult.STARTED, ServerResult.UNUSED -> {
-                                MainMenu(rootBundle)
+                                Box {
+                                    MainMenu(rootBundle)
+                                    val displayDebugInfo by displayDebugInfoFlow.collectAsState()
+                                    if (displayDebugInfo) {
+                                        DebugOverlay()
+                                    }
+                                }
                             }
                             ServerResult.STARTING, ServerResult.FAILED -> {
                                 Surface {
