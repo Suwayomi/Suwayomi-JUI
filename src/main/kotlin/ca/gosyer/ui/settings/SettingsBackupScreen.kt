@@ -143,10 +143,18 @@ class SettingsBackupViewModel @Inject constructor(
                 _createFlow.emit(
                     (backup.headers["content-disposition"]?.substringAfter("filename=")?.trim('"') ?: "backup") to {
                         scope.launch {
-                            it.outputStream().use {
-                                backup.content.copyTo(it)
+                            try {
+                                it.outputStream().use {
+                                    backup.content.copyTo(it)
+                                }
+                                _creatingStatus.value = Status.Success
+                            } catch (e: Exception) {
+                                e.throwIfCancellation()
+                                error(e) { "Error creating backup" }
+                                _creatingStatus.value = Status.Error
+                            } finally {
+                                _creating.value = false
                             }
-                            _creatingStatus.value = Status.Success
                         }
                     }
                 )
