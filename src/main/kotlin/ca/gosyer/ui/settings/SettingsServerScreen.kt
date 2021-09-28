@@ -114,6 +114,10 @@ class SettingsServerViewModel @Inject constructor(
                 auth.value = Auth.BASIC
                 authUsername.value = username
                 authPassword.value = password
+            } else {
+                auth.value = Auth.NONE
+                authUsername.value = ""
+                authPassword.value = ""
             }
         }.launchIn(scope)
     }
