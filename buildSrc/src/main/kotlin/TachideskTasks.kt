@@ -162,7 +162,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                         }
                         .forEach {
                             val tmpFile = macJarFolder.resolve(it.toString())
-                            Files.copy(it, tmpFile)
+                            Files.copy(Files.newInputStream(it), tmpFile)
                             exec {
                                 commandLine(
                                     "/usr/bin/codesign",
@@ -175,7 +175,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                                     tmpFile.toAbsolutePath().toString()
                                 )
                             }
-                            Files.copy(tmpFile, it, StandardCopyOption.REPLACE_EXISTING)
+                            Files.copy(Files.newInputStream(tmpFile), it, StandardCopyOption.REPLACE_EXISTING)
                             Files.delete(tmpFile)
                         }
 
