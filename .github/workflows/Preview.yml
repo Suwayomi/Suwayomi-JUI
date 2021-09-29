@@ -109,6 +109,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Download Build Artifacts
       uses: actions/download-artifact@v2
@@ -140,7 +142,6 @@ jobs:
           | jq '[.commits[]|{message:(.commit.message | split("\n")), username:.author.login}]' \
           | jq -r '.[]|"- \(.message | first) (@\(.username))"')
         {delimiter}" >> $GITHUB_ENV
-
 
     - uses: ncipollo/release-action@v1
       with:
