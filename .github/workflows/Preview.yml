@@ -1,4 +1,4 @@
-name: CI
+name: Preview CI
 
 on:
   push:
@@ -148,6 +148,8 @@ jobs:
         draft: true
         token: ${{ secrets.GITHUB_TOKEN }}
         repo: Tachidesk-JUI-preview
+        tag: r${{ env.COMMIT_COUNT }}
+        name: Tachidesk-JUI Preview r${{ env.COMMIT_COUNT }}
         body: |
           ### Commits
           https://github.com/Suwayomi/Tachidesk-JUI/compare/${{ env.PREV_RELEASE_SHA }}...${{ env.CURRENT_SHA }}
