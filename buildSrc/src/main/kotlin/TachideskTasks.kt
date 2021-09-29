@@ -161,12 +161,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                                 .anyEquals("dylib", "jnilib", ignoreCase = true)
                         }
                         .forEach {
-                            val tmpFile = macJarFolder.resolve(it.toString()).apply {
-                                val parent = parent
-                                if (parent != null && Files.notExists(parent)) {
-                                    Files.createDirectories(parent)
-                                }
-                            }
+                            val tmpFile = macJarFolder.resolve(it.toString())
                             Files.copy(it, tmpFile)
                             exec {
                                 commandLine(
@@ -180,7 +175,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                                     tmpFile.toAbsolutePath().toString()
                                 )
                             }
-                            Files.copy(tmpFile, it, StandardCopyOption.REPLACE_EXISTING)
+                            Files.move(tmpFile, it, StandardCopyOption.REPLACE_EXISTING)
                         }
 
                 }
