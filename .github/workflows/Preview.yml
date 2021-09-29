@@ -1,0 +1,164 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  BuildBinaries:
+    name: Build application packages
+    strategy:
+      matrix:
+        runtime: [ linux-x64, linux-centos-x64, osx-x64, win-x64 ]
+        include:
+          - runtime: linux-x64
+            arch: x64
+            os: ubuntu-latest
+            shell: bash
+            build: packageUberJarForCurrentOS packageDeb
+            setupCl: ./scripts/SetupClUnix.sh
+
+          - runtime: linux-centos-x64
+            arch: x64
+            os: ubuntu-latest
+            shell: bash
+            build: packageRpm
+            setupCl: ./scripts/SetupClUnix.sh
+
+          - runtime: osx-x64
+            arch: x64
+            os: macOS-latest
+            shell: bash
+            build: packageUberJarForCurrentOS # packageDmg notarizeDmg
+            setupCl: ./scripts/SetupClUnix.sh
+
+          - runtime: win-x64
+            arch: x64
+            os: windows-latest
+            shell: powershell
+            build: packageUberJarForCurrentOS packageMsi
+            setupCl: ./scripts/SetupClWindows.ps1
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-java@v1
+      if: ${{ matrix.runtime != 'linux-centos-x64' }}
+      with:
+        java-version: '15'
+        architecture: ${{ matrix.arch }}
+
+    - name: Setup Cl
+      run: ${{ matrix.setupCl }}
+
+    - name: Setup MacOS Keychain
+      uses: apple-actions/import-codesign-certs@v1
+      if: ${{ matrix.runtime == 'osx-x64' }}
+      with:
+        p12-file-base64: ${{ secrets.APPLE_CERT }}
+        p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
+
+    - name: Build rpm Package
+      if: ${{ matrix.runtime == 'linux-centos-x64' }}
+      uses: Syer10/CentOS-Java15-Action@v1
+      with:
+        command: ./gradlew ${{ matrix.build }} -Ppreview
+
+    - name: Build
+      if: ${{ matrix.runtime != 'linux-centos-x64' }}
+      uses: gradle/gradle-build-action@v1
+      with:
+        arguments: >
+          ${{ matrix.build }}
+          -Pcompose.desktop.mac.sign=true
+          -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY_SHORT }}
+          -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }}
+          -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
+          -Pidentity="${{ secrets.APPLE_IDENTITY }}"
+        distributions-cache-enabled: true
+        dependencies-cache-enabled: true
+        configuration-cache-enabled: true
+
+    # Upload runner package tar.gz/zip as artifact
+    - name: Publish Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: runner-package-${{ matrix.runtime }}
+        path: |
+          build/compose/binaries/main/*/
+          build/compose/jars/
+          !build/compose/binaries/main/app/
+
+      # Upload runner errors
+    - name: Upload error logs
+      uses: actions/upload-artifact@v2
+      if: ${{ failure() }}
+      with:
+        name: runner-errors-${{ matrix.runtime }}
+        path: |
+          build/compose/logs/
+  ReleaseBinaries:
+    name: Make a release
+    needs: [BuildBinaries]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v2
+
+    - name: Get previous release
+      id: last_release
+      uses: Dmagine/get-latest-release@master
+      with:
+        myToken: ${{ github.token }}
+        exclude_types: "draft|prerelease"
+        view_top: 1
+        owner: Suwayomi
+        repo: Tachidesk-JUI-preview
+
+    - name: Prepare build
+      run: |
+        set -e
+        commit_count=$(git rev-list --count HEAD)
+        echo "COMMIT_COUNT=$commit_count" >> $GITHUB_ENV
+        current_sha=$(git rev-parse --short HEAD)
+        echo "CURRENT_SHA=$current_sha" >> $GITHUB_ENV
+        prev_commit_count=$(echo "${{ steps.last_release.outputs.tag_name }}" | sed -e "s/^r//")
+        commit_count_diff=$(expr $commit_count - $prev_commit_count)
+        prev_release_sha=$(git rev-parse --short HEAD~$commit_count_diff)
+        echo "PREV_RELEASE_SHA=$prev_release_sha" >> $GITHUB_ENV
+        echo "COMMIT_LOGS<<{delimiter}
+        $(curl -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/suwayomi/tachidesk-jui/compare/$prev_release_sha...$current_sha" \
+          | jq '[.commits[]|{message:(.commit.message | split("\n")), username:.author.login}]' \
+          | jq -r '.[]|"- \(.message | first) (@\(.username))"')
+        {delimiter}" >> $GITHUB_ENV
+
+
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "*/binaries/main/*/*.*,*/jars/*.jar"
+        draft: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        repo: Tachidesk-JUI-preview
+        body: |
+          ### Commits
+          https://github.com/Suwayomi/Tachidesk-JUI/compare/${{ env.PREV_RELEASE_SHA }}...${{ env.CURRENT_SHA }}
+
+          ${{ env.COMMIT_LOGS }}
+
+    - name: Prune old releases
+      uses: dev-drprasad/delete-older-releases@v0.2.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        keep_latest: 15
+        delete_tags: true
+        repo: Suwayomi/Tachidesk-JUI-preview
