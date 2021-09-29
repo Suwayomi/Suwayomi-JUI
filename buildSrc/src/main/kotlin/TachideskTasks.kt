@@ -15,9 +15,11 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.util.jar.Attributes
 import java.util.jar.JarFile
 import java.util.jar.Manifest
+import kotlin.streams.asSequence
 
 private const val tachideskGroup = "tachidesk"
 private const val deleteOldTachideskTask = "deleteOldTachidesk"
@@ -150,37 +152,40 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                 "Tachidesk.jar"
             }
         }
-        register<Copy>(extractTachideskJar) {
-            group = tachideskGroup
-            mustRunAfter(copyTachideskJarTask)
-            onlyIfSigning(project)
-
-            from(zipTree("${macosFolder}Tachidesk.jar"))
-            into(macosJarFolder)
-        }
         register(signTachideskJar) {
             group = tachideskGroup
             mustRunAfter(extractTachideskJar)
             onlyIfSigning(project)
 
             doFirst {
-                file(macosJarFolder).walkTopDown()
-                    .asSequence()
-                    .filter { it.extension.anyEquals("dylib", "jnilib", ignoreCase = true) }
-                    .forEach {
-                        exec {
-                            commandLine(
-                                "/usr/bin/codesign",
-                                "-vvvv",
-                                "--timestamp",
-                                "--options", "runtime",
-                                "--force",
-                                "--prefix", "ca.gosyer.",
-                                "--sign", "Developer ID Application: ${getSigningIdentity()}",
-                                it.absolutePath
-                            )
+                FileSystems.newFileSystem(file("${macosFolder}Tachidesk.jar").toPath(), null as ClassLoader?).use { fs ->
+                    val macJarFolder = file(macosJarFolder).also { it.mkdirs() }.toPath()
+                    Files.walk(fs.getPath("/"))
+                        .asSequence()
+                        .filter { !Files.isDirectory(it) && it.toString()
+                            .substringAfterLast('.')
+                            .anyEquals("dylib", "jnilib", ignoreCase = true)
                         }
-                    }
+                        .forEach {
+                            val tmpFile = macJarFolder.resolve(it.fileName)
+                            Files.copy(it, tmpFile)
+                            exec {
+                                commandLine(
+                                    "/usr/bin/codesign",
+                                    "-vvvv",
+                                    "--timestamp",
+                                    "--options", "runtime",
+                                    "--force",
+                                    "--prefix", "ca.gosyer.",
+                                    "--sign", "Developer ID Application: ${getSigningIdentity()}",
+                                    tmpFile.toAbsolutePath().toString()
+                                )
+                            }
+                            Files.copy(tmpFile, it, StandardCopyOption.REPLACE_EXISTING)
+                        }
+
+                }
+
             }
         }
         register<Zip>(zipTachideskJar) {
