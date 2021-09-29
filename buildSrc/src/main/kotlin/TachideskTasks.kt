@@ -28,7 +28,6 @@ private const val extractTask = "extractTar"
 private const val setupCITask = "setupServerCI"
 private const val buildTachideskTask = "buildTachidesk"
 private const val copyTachideskJarTask = "copyTachidesk"
-private const val extractTachideskJar = "extractJar"
 private const val signTachideskJar = "signJar"
 private const val zipTachideskJar = "zipJar"
 private const val modifyTachideskJarManifest = "modifyManifest"
@@ -154,7 +153,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         }
         register(signTachideskJar) {
             group = tachideskGroup
-            mustRunAfter(extractTachideskJar)
+            mustRunAfter(copyTachideskJarTask)
             onlyIfSigning(project)
 
             doFirst {
@@ -162,9 +161,10 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                     val macJarFolder = file(macosJarFolder).also { it.mkdirs() }.toPath()
                     Files.walk(fs.getPath("/"))
                         .asSequence()
-                        .filter { !Files.isDirectory(it) && it.toString()
-                            .substringAfterLast('.')
-                            .anyEquals("dylib", "jnilib", ignoreCase = true)
+                        .filter {
+                            !Files.isDirectory(it) && it.toString()
+                                .substringAfterLast('.')
+                                .anyEquals("dylib", "jnilib", ignoreCase = true)
                         }
                         .forEach {
                             val tmpFile = macJarFolder.resolve(it.fileName)
@@ -244,7 +244,6 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                 setupCITask,
                 buildTachideskTask,
                 copyTachideskJarTask,
-                extractTachideskJar,
                 signTachideskJar,
                 zipTachideskJar,
                 modifyTachideskJarManifest,
