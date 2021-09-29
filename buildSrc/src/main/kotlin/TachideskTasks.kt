@@ -161,7 +161,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                                 .anyEquals("dylib", "jnilib", ignoreCase = true)
                         }
                         .forEach {
-                            val tmpFile = macJarFolder.resolve(it.fileName)
+                            val tmpFile = macJarFolder.resolve(it.fileName.toString())
                             Files.copy(it, tmpFile)
                             exec {
                                 commandLine(
