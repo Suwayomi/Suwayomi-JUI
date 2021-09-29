@@ -1,7 +1,7 @@
 
 ![image](resources/icon.png)
 # Tachidesk-JUI
-A free and open source manga reader to read manga from a [Tachidesk-Server](https://github.com/Suwayomi/Tachidesk-Server) instance.
+A free and open source manga reader to read manga from a [Tachidesk-Server][tachidesk-server] instance.
 
 Tachidesk-JUI can run Tachidesk-Server on its own, or connect to an already hosted server. 
 
@@ -15,20 +15,28 @@ Here is a list of current features for interaction with Tachidesk-JUI:
 - Browsing installed sources.
 - Viewing manga and chapters.
 - Reading, downloading, and managing chapters.
+- Viewing chapter updates
 
 **Note:** Keep in mind that Tachidesk-JUI and Tachidesk-Server are alpha software, so it can have issues. See [General troubleshooting](#general-troubleshooting) and [Support and help](#support-and-help) if it happens.
+
+### Supported Tachidesk versions
+These are the versions of [Tachidesk-Server][tachidesk-server] that JUI supports.
+#### [Release build][release]
+- [Tachidesk-Server][tachidesk-server] v0.4.5, works up to v0.4.9
+#### [Preview build][preview]
+- [Tachidesk-Server][tachidesk-server] v0.5.3
 
 ## Downloading and Running the app
 ### All Operating Systems (x64, Java Not Included)
 You should have The [Java Runtime Environment(JRE) 15](https://jdk.java.net/15/) or newer.
 
-Download the latest jar release for your OS from [the releases section](https://github.com/Suwayomi/Tachidesk-JUI/releases).
+Download the latest jar release for your OS from [the releases section][release] (Or from [the preview releases][preview]).
 
 Double-click on the jar file or run `java -jar Tachidesk-JUI-os-arch-X.Y.Z.jar` from a Terminal/Command Prompt window to run the app.
 
 ### Windows (x64, Java 8+ required for server)
 #### Installer
-Download the latest msi release from [the releases section](https://github.com/Suwayomi/Tachidesk-JUI/releases).
+Download the latest msi release from [the releases section][release] (Or from [the preview releases][preview]).
 #### Winget
 `winget install tachidesk-jui`
 #### Scoop
@@ -38,13 +46,13 @@ scoop install tachidesk-jui
 ```
 
 ### MacOS (x64, Java 8+ required for server)
-Download the latest dmg release from [the releases section](https://github.com/Suwayomi/Tachidesk-JUI/releases).
+Download the latest dmg release from [the releases section][release] (Or from [the preview releases][preview]).
 
 ### Debian based Linux (x64, Java 8+ required for server)
-Download the latest deb release from [the releases section](https://github.com/Suwayomi/Tachidesk-JUI/releases).
+Download the latest deb release from [the releases section][release] (Or from [the preview releases][preview]).
 
 ### Fedora based Linux (x64, Java 8+ required for server)
-Download the latest rpm release from [the releases section](https://github.com/Suwayomi/Tachidesk-JUI/releases).
+Download the latest rpm release from [the releases section][release] (Or from [the preview releases][preview]).
 
 ### Arch based Linux (x64, Java Included)
 Download the latest release from [the aur](https://aur.archlinux.org/packages/tachidesk-jui/).
@@ -94,3 +102,8 @@ You can obtain a copy of `Mozilla Public License v2.0` from https://mozilla.org/
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
+[release]: https://github.com/Suwayomi/Tachidesk-JUI/releases
+[preview]: https://github.com/Suwayomi/Tachidesk-JUI-preview/releases
+[tachidesk-server]: https://github.com/Suwayomi/Tachidesk-Server
