@@ -228,7 +228,6 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                 buildTachideskTask,
                 copyTachideskJarTask,
                 signTachideskJar,
-                zipTachideskJar,
                 modifyTachideskJarManifest,
                 deleteTmpFolderTask
             )
