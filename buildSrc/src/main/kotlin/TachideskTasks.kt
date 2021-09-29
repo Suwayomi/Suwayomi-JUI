@@ -8,7 +8,6 @@ import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.Exec
-import org.gradle.api.tasks.bundling.Zip
 import org.gradle.kotlin.dsl.TaskContainerScope
 import org.gradle.kotlin.dsl.register
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
@@ -29,7 +28,6 @@ private const val setupCITask = "setupServerCI"
 private const val buildTachideskTask = "buildTachidesk"
 private const val copyTachideskJarTask = "copyTachidesk"
 private const val signTachideskJar = "signJar"
-private const val zipTachideskJar = "zipJar"
 private const val modifyTachideskJarManifest = "modifyManifest"
 private const val deleteTmpFolderTask = "deleteTmp"
 private const val runAllTachideskTasks = "setupTachideskJar"
@@ -142,11 +140,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
 
             from("${tmpServerFolder}server/build/")
             include("Tachidesk-Server-$tachideskVersion-r*.jar")
-            val os = DefaultNativePlatform.getCurrentOperatingSystem()
-            when {
-                os.isMacOsX && isSigning(properties) -> into(macosFolder)
-                else -> into(destination)
-            }
+            into(destination)
             rename {
                 "Tachidesk.jar"
             }
@@ -157,7 +151,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             onlyIfSigning(project)
 
             doFirst {
-                FileSystems.newFileSystem(file("${macosFolder}Tachidesk.jar").toPath(), null as ClassLoader?).use { fs ->
+                FileSystems.newFileSystem(file(finalJar).toPath()).use { fs ->
                     val macJarFolder = file(macosJarFolder).also { it.mkdirs() }.toPath()
                     Files.walk(fs.getPath("/"))
                         .asSequence()
@@ -188,20 +182,9 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
 
             }
         }
-        register<Zip>(zipTachideskJar) {
-            group = tachideskGroup
-            mustRunAfter(signTachideskJar)
-            onlyIfSigning(project)
-
-            from(macosJarFolder)
-            archiveBaseName.set("Tachidesk")
-            archiveVersion.set("")
-            archiveExtension.set("jar")
-            destinationDirectory.set(file(destination))
-        }
         register<Task>(modifyTachideskJarManifest) {
             group = tachideskGroup
-            mustRunAfter(zipTachideskJar)
+            mustRunAfter(signTachideskJar)
             val tachideskJar = file(finalJar)
             onlyIf {
                 tachideskJar.exists() && JarFile(tachideskJar).use { jar ->
