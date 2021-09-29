@@ -175,7 +175,8 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                                     tmpFile.toAbsolutePath().toString()
                                 )
                             }
-                            Files.move(tmpFile, it, StandardCopyOption.REPLACE_EXISTING)
+                            Files.copy(tmpFile, it, StandardCopyOption.REPLACE_EXISTING)
+                            Files.delete(tmpFile)
                         }
 
                 }
