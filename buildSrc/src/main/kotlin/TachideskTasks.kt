@@ -14,7 +14,6 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 import java.util.jar.Attributes
 import java.util.jar.JarFile
 import java.util.jar.Manifest
@@ -162,7 +161,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                         }
                         .forEach {
                             val tmpFile = macJarFolder.resolve(it.toString())
-                            Files.copy(Files.newInputStream(it), tmpFile)
+                            Files.copy(fs.provider().newInputStream(it), tmpFile)
                             exec {
                                 commandLine(
                                     "/usr/bin/codesign",
@@ -175,7 +174,13 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                                     tmpFile.toAbsolutePath().toString()
                                 )
                             }
-                            Files.copy(Files.newInputStream(tmpFile), it, StandardCopyOption.REPLACE_EXISTING)
+
+                            Files.delete(it)
+                            Files.newOutputStream(it).use { outStream ->
+                                Files.newInputStream(tmpFile).use { inStream ->
+                                    inStream.copyTo(outStream)
+                                }
+                            }
                             Files.delete(tmpFile)
                         }
 
