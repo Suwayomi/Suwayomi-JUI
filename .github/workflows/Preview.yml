@@ -68,7 +68,7 @@ jobs:
       if: ${{ matrix.runtime == 'linux-centos-x64' }}
       uses: Syer10/CentOS-Java15-Action@v1
       with:
-        command: ./gradlew ${{ matrix.build }} -Ppreview
+        command: ./gradlew ${{ matrix.build }} --stacktrace
 
     - name: Build
       if: ${{ matrix.runtime != 'linux-centos-x64' }}
@@ -81,6 +81,7 @@ jobs:
           -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }}
           -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
           -Pidentity="${{ secrets.APPLE_IDENTITY }}"
+          --stacktrace
         distributions-cache-enabled: true
         dependencies-cache-enabled: true
         configuration-cache-enabled: true
