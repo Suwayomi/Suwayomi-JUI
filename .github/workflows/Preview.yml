@@ -30,7 +30,7 @@ jobs:
             arch: x64
             os: macOS-latest
             shell: bash
-            build: packageUberJarForCurrentOS # packageDmg notarizeDmg
+            build: packageUberJarForCurrentOS packageDmg notarizeDmg
             setupCl: ./scripts/SetupClUnix.sh
 
           - runtime: win-x64

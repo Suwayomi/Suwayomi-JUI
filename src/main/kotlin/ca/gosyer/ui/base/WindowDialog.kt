@@ -29,10 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.translation.XmlResourceBundle
@@ -46,7 +46,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 @Suppress("FunctionName")
 fun WindowDialog(
     title: String = "Dialog",
-    size: WindowSize = WindowSize(400.dp, 200.dp),
+    size: DpSize = DpSize(400.dp, 200.dp),
     onCloseRequest: (() -> Unit)? = null,
     forceFocus: Boolean = true,
     showNegativeButton: Boolean = true,
@@ -130,7 +130,7 @@ fun WindowDialog(
 @OptIn(DelicateCoroutinesApi::class)
 fun WindowDialog(
     title: String = "Dialog",
-    size: WindowSize = WindowSize(400.dp, 200.dp),
+    size: DpSize = DpSize(400.dp, 200.dp),
     onCloseRequest: (() -> Unit)? = null,
     forceFocus: Boolean = true,
     keyboardShortcuts: Map<Key, (KeyEvent) -> Boolean> = emptyMap(),

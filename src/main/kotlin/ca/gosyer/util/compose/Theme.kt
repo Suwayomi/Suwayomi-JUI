@@ -29,6 +29,7 @@ fun ThemedWindow(
     title: String = "Untitled",
     icon: Painter? = null,
     undecorated: Boolean = false,
+    transparent: Boolean = false,
     resizable: Boolean = true,
     enabled: Boolean = true,
     focusable: Boolean = true,
@@ -39,18 +40,19 @@ fun ThemedWindow(
 ) {
     val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
     Window(
-        onCloseRequest,
-        state,
-        visible,
-        title,
-        icon,
-        undecorated,
-        resizable,
-        enabled,
-        focusable,
-        alwaysOnTop,
-        onPreviewKeyEvent,
-        onKeyEvent
+        onCloseRequest = onCloseRequest,
+        state = state,
+        visible = visible,
+        title = title,
+        icon = icon,
+        undecorated = undecorated,
+        transparent = transparent,
+        resizable = resizable,
+        enabled = enabled,
+        focusable = focusable,
+        alwaysOnTop = alwaysOnTop,
+        onPreviewKeyEvent = onPreviewKeyEvent,
+        onKeyEvent = onKeyEvent
     ) {
         setIcon()
         CompositionLocalProvider(

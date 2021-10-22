@@ -62,10 +62,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
-import androidx.compose.ui.window.WindowSize
 import ca.gosyer.ui.base.WindowDialog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.round
@@ -81,7 +81,7 @@ fun ColorPickerDialog(
 
     WindowDialog(
         onCloseRequest = onCloseRequest,
-        size = WindowSize(300.dp, 520.dp),
+        size = DpSize(300.dp, 520.dp),
         title = title,
         content = {
             val showPresetsState by showPresets.collectAsState()

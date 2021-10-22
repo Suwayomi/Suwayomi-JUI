@@ -6,10 +6,10 @@
 
 package ca.gosyer.data.ui.model
 
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.WindowSize
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -26,13 +26,13 @@ data class WindowSettings(
         if (maximized == true) {
             return WindowGet(
                 WindowPosition.PlatformDefault,
-                WindowSize(800.dp, 600.dp),
+                DpSize(800.dp, 600.dp),
                 WindowPlacement.Maximized
             )
         } else if (fullscreen == true) {
             return WindowGet(
                 WindowPosition.PlatformDefault,
-                WindowSize(800.dp, 600.dp),
+                DpSize(800.dp, 600.dp),
                 WindowPlacement.Fullscreen
             )
         }
@@ -42,7 +42,7 @@ data class WindowSettings(
         } else {
             WindowPosition.PlatformDefault
         }
-        val size = WindowSize((width ?: 800).dp, (height ?: 600).dp)
+        val size = DpSize((width ?: 800).dp, (height ?: 600).dp)
         return WindowGet(
             offset,
             size,
@@ -60,7 +60,7 @@ data class WindowSettings(
 
     data class WindowGet(
         val offset: WindowPosition,
-        val size: WindowSize,
+        val size: DpSize,
         val placement: WindowPlacement
     )
 }

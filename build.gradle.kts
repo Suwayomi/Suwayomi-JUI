@@ -8,10 +8,10 @@ import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 plugins {
-    kotlin("jvm") version "1.5.30"
-    kotlin("kapt") version "1.5.30"
-    kotlin("plugin.serialization") version "1.5.30"
-    id("org.jetbrains.compose") version "1.0.0-alpha4-build328"
+    kotlin("jvm") version "1.5.31"
+    kotlin("kapt") version "1.5.31"
+    kotlin("plugin.serialization") version "1.5.31"
+    id("org.jetbrains.compose") version "1.0.0-beta1"
     id("com.github.gmazzo.buildconfig") version "3.0.3"
     id("org.jmailen.kotlinter") version "3.6.0"
     id("com.github.ben-manes.versions") version "0.39.0"
@@ -33,8 +33,8 @@ dependencies {
     implementation(compose.materialIconsExtended)
     implementation(compose("org.jetbrains.compose.ui:ui-util"))
     implementation("ca.gosyer:compose-router:0.24.2-jetbrains-2")
-    implementation("ca.gosyer:accompanist-pager:0.14.0")
-    implementation("ca.gosyer:accompanist-flowlayout:0.14.0")
+    implementation("ca.gosyer:accompanist-pager:0.18.1")
+    implementation("ca.gosyer:accompanist-flowlayout:0.18.1")
 
     // UI (Swing)
     implementation("com.github.weisj:darklaf-core:2.7.3")
@@ -58,7 +58,7 @@ dependencies {
     kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:$toothpickVersion")
 
     // Http client
-    val ktorVersion = "1.6.3"
+    val ktorVersion = "1.6.4"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")

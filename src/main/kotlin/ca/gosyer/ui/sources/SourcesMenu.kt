@@ -7,7 +7,8 @@
 package ca.gosyer.ui.sources
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.BoxWithTooltip
+import androidx.compose.foundation.TooltipArea
+import androidx.compose.foundation.TooltipPlacement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.ui.base.components.ActionIcon
@@ -133,7 +135,7 @@ fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaCl
             Surface(elevation = 1.dp) {
                 LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
                     items(sourceTabs) { source ->
-                        BoxWithTooltip(
+                        TooltipArea(
                             {
                                 Surface(
                                     modifier = Modifier.shadow(4.dp),
@@ -143,7 +145,10 @@ fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaCl
                                     Text(source?.name ?: stringResource("sources_home"), modifier = Modifier.padding(10.dp))
                                 }
                             },
-                            modifier = Modifier.size(64.dp)
+                            modifier = Modifier.size(64.dp),
+                            tooltipPlacement = TooltipPlacement.CursorPoint(
+                                offset = DpOffset(0.dp, 16.dp)
+                            )
                         ) {
                             Box(Modifier.fillMaxSize()) {
                                 val modifier = Modifier

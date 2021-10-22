@@ -42,9 +42,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Extension
@@ -66,7 +66,7 @@ import java.util.Locale
 @OptIn(DelicateCoroutinesApi::class)
 fun openExtensionsMenu() {
     launchApplication {
-        val state = rememberWindowState(size = WindowSize(550.dp, 700.dp))
+        val state = rememberWindowState(size = DpSize(550.dp, 700.dp))
         ThemedWindow(::exitApplication, state, title = BuildConfig.NAME) {
             Surface {
                 ExtensionsMenu()

@@ -7,19 +7,19 @@
 package ca.gosyer.util.compose
 
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toComposeImageBitmap
 import ca.gosyer.data.server.Http
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.jvm.javaio.copyTo
-import org.jetbrains.skija.Image
+import org.jetbrains.skia.Image
 import java.io.ByteArrayOutputStream
 import java.nio.file.Path
 import kotlin.io.path.readBytes
 
 fun imageFromFile(file: Path): ImageBitmap {
-    return Image.makeFromEncoded(file.readBytes()).asImageBitmap()
+    return Image.makeFromEncoded(file.readBytes()).toComposeImageBitmap()
 }
 
 suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
@@ -27,5 +27,5 @@ suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.()
         client.get<ByteReadChannel>(url, block).copyTo(it)
         it.toByteArray()
     }
-    return Image.makeFromEncoded(bytes).asImageBitmap()
+    return Image.makeFromEncoded(bytes).toComposeImageBitmap()
 }

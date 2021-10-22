@@ -7,15 +7,20 @@
 package ca.gosyer.ui.base.theme
 
 import androidx.compose.desktop.DesktopMaterialTheme
+import androidx.compose.foundation.LocalScrollbarStyle
+import androidx.compose.foundation.ScrollbarStyle
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.unit.dp
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.ui.base.vm.ViewModel
@@ -36,7 +41,19 @@ fun AppTheme(content: @Composable () -> Unit) {
     val colors = vm.getColors()
     /*val systemUiController = rememberSystemUiController()*/
 
-    DesktopMaterialTheme(colors = colors, content = content)
+    MaterialTheme(colors = colors) {
+        CompositionLocalProvider(
+            LocalScrollbarStyle provides ScrollbarStyle(
+                minimalHeight = 16.dp,
+                thickness = 8.dp,
+                shape = MaterialTheme.shapes.small,
+                hoverDurationMillis = 300,
+                unhoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
+                hoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.50f)
+            ),
+            content = content
+        )
+    }
 }
 
 private class AppThemeViewModel @Inject constructor(

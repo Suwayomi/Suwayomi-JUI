@@ -6,7 +6,7 @@
 
 package ca.gosyer.ui.sources.components
 
-import androidx.compose.foundation.BoxWithTooltip
+import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -97,7 +97,7 @@ fun SourceItem(
     serverUrl: String,
     onSourceClicked: (Source) -> Unit
 ) {
-    BoxWithTooltip(
+    TooltipArea(
         {
             Surface(
                 modifier = Modifier.shadow(4.dp),

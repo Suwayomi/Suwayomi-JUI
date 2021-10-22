@@ -7,7 +7,6 @@
 package ca.gosyer.ui.base.components
 
 import androidx.compose.foundation.ContextMenuItem
-import androidx.compose.foundation.ExperimentalDesktopApi
 import androidx.compose.foundation.MouseClickScope
 import androidx.compose.foundation.mouseClickable
 import androidx.compose.material.CursorDropdownMenu
@@ -28,7 +27,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.semantics
 
-@OptIn(ExperimentalDesktopApi::class)
 fun Modifier.contextMenuClickable(
     items: () -> List<ContextMenuItem>,
     onClickLabel: String? = null,
@@ -75,7 +73,6 @@ fun Modifier.contextMenuClickable(
     )
 }
 
-@OptIn(ExperimentalDesktopApi::class)
 fun Modifier.combinedMouseClickable(
     enabled: Boolean = true,
     onClickLabel: String? = null,
@@ -116,7 +113,6 @@ fun Modifier.combinedMouseClickable(
         }
 }
 
-@OptIn(ExperimentalDesktopApi::class)
 private object DesktopSemanticsActions {
     val onRightClick = ActionPropertyKey<MouseClickScope.() -> Boolean>("OnRightClick")
     val onMiddleClick = ActionPropertyKey<MouseClickScope.() -> Boolean>("OnMiddleClick")

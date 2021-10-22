@@ -235,32 +235,31 @@ fun <T> ChoiceDialog(
     WindowDialog(
         onCloseRequest = onCloseRequest,
         buttons = buttons,
-        title = title,
-        content = {
-            LazyColumn(Modifier.fillMaxSize()) {
-                items(items) { (value, text) ->
-                    Row(
-                        modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
-                            onClick = {
-                                onSelected(value)
-                                it()
-                            }
-                        ),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = value == selected,
-                            onClick = {
-                                onSelected(value)
-                                it()
-                            },
-                        )
-                        Text(text = text, modifier = Modifier.padding(start = 24.dp))
-                    }
+        title = title
+    ) {
+        LazyColumn(Modifier.fillMaxSize()) {
+            items(items) { (value, text) ->
+                Row(
+                    modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
+                        onClick = {
+                            onSelected(value)
+                            it()
+                        }
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = value == selected,
+                        onClick = {
+                            onSelected(value)
+                            it()
+                        },
+                    )
+                    Text(text = text, modifier = Modifier.padding(start = 24.dp))
                 }
             }
         }
-    )
+    }
 }
 
 @Composable
