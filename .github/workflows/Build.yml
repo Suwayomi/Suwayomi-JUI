@@ -57,15 +57,6 @@ jobs:
     - name: Setup Cl
       run: ${{ matrix.setupCl }}
 
-#     - name: Setup MacOS Keychain
-#       if: ${{ matrix.runtime == 'osx-x64' }}
-#       run: |
-#         echo ${{ secrets.APPLE_CERT }} | base64 --decode > certificate.p12
-#         security create-keychain -p ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
-#         security default-keychain -s build.keychain
-#         security unlock-keychain -p ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
-#         security import certificate.p12 -k build.keychain -P ${{ secrets.APPLE_CERT_PASSWORD }} -T /usr/bin/codesign
-#         security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.APPLE_KEYCHAIN_PASSWORD }} build.keychain
     - name: Setup MacOS Keychain
       uses: apple-actions/import-codesign-certs@v1
       if: ${{ matrix.runtime == 'osx-x64' }}
