@@ -107,14 +107,14 @@ class TachideskPageLoader(
     override fun getPages(): StateFlow<List<ReaderPage>> {
         scope.launch {
             if (pagesFlow.value.isNotEmpty()) return@launch
-            val pageRange = 0..(chapter.chapter.pageCount?.minus(1) ?: 0)
+            val pageRange = chapter.chapter.pageCount?.let { 0..it } ?: IntRange.EMPTY
             pagesFlow.value = pageRange.map {
                 ReaderPage(
-                    it,
-                    MutableStateFlow(null),
-                    MutableStateFlow(0.0F),
-                    MutableStateFlow(ReaderPage.Status.QUEUE),
-                    MutableStateFlow(null)
+                    index = it,
+                    bitmap = MutableStateFlow(null),
+                    progress = MutableStateFlow(0.0F),
+                    status = MutableStateFlow(ReaderPage.Status.QUEUE),
+                    error = MutableStateFlow(null)
                 )
             }
         }
