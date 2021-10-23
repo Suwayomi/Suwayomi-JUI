@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.components.LocalMenuController
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoiceDialog
@@ -50,7 +51,7 @@ fun openSourceSettingsMenu(sourceId: Long) {
 }
 
 @Composable
-fun SourceSettingsMenu(sourceId: Long, menuController: MenuController? = null) {
+fun SourceSettingsMenu(sourceId: Long, menuController: MenuController? = LocalMenuController.current) {
     val vm = viewModel<SourceSettingsViewModel> {
         SourceSettingsViewModel.Params(sourceId)
     }
