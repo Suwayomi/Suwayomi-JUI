@@ -33,17 +33,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
-import ca.gosyer.ui.base.components.KtorImage
+import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.LoadingScreen
+import io.kamel.image.lazyPainterResource
 
 @Composable
 fun SourceHomeScreen(
     isLoading: Boolean,
     sources: List<Source>,
-    serverUrl: String,
     onSourceClicked: (Source) -> Unit
 ) {
     if (sources.isEmpty()) {
@@ -51,7 +52,7 @@ fun SourceHomeScreen(
     } else {
         Box(Modifier.fillMaxSize(), Alignment.TopCenter) {
             val state = rememberLazyListState()
-            SourceCategory(sources, serverUrl, onSourceClicked, state)
+            SourceCategory(sources, onSourceClicked, state)
             /*val sourcesByLang = sources.groupBy { it.lang.toLowerCase() }.toList()
             LazyColumn(state = state) {
                 items(sourcesByLang) { (lang, sources) ->
@@ -75,7 +76,6 @@ fun SourceHomeScreen(
 @Composable
 fun SourceCategory(
     sources: List<Source>,
-    serverUrl: String,
     onSourceClicked: (Source) -> Unit,
     state: LazyListState
 ) {
@@ -83,7 +83,6 @@ fun SourceCategory(
         items(sources) { source ->
             SourceItem(
                 source,
-                serverUrl,
                 onSourceClicked = onSourceClicked
             )
             Spacer(Modifier.height(8.dp))
@@ -94,7 +93,6 @@ fun SourceCategory(
 @Composable
 fun SourceItem(
     source: Source,
-    serverUrl: String,
     onSourceClicked: (Source) -> Unit
 ) {
     TooltipArea(
@@ -117,7 +115,7 @@ fun SourceItem(
                 },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            KtorImage(source.iconUrl(serverUrl), Modifier.size(96.dp))
+            KamelImage(lazyPainterResource(source, filterQuality = FilterQuality.Medium), source.displayName, Modifier.size(96.dp))
             Spacer(Modifier.height(4.dp))
             Text(
                 "${source.name} (${source.lang.uppercase()})",

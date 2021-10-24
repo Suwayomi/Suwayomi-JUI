@@ -40,6 +40,8 @@ import ca.gosyer.ui.base.components.setIcon
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.lang.launchApplication
+import io.kamel.core.config.KamelConfig
+import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -69,6 +71,7 @@ fun WindowDialog(
     }
 
     val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
+    val kamelConfig = remember { AppScope.getInstance<KamelConfig>() }
     val windowState = rememberWindowState(size = size, position = WindowPosition(Alignment.Center))
 
     Window(
@@ -95,7 +98,8 @@ fun WindowDialog(
     ) {
         setIcon()
         CompositionLocalProvider(
-            LocalResources provides resources
+            LocalResources provides resources,
+            LocalKamelConfig provides kamelConfig
         ) {
             AppTheme {
                 Surface {
@@ -144,6 +148,7 @@ fun WindowDialog(
     }
 
     val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
+    val kamelConfig = remember { AppScope.getInstance<KamelConfig>() }
     val windowState = rememberWindowState(size = size, position = WindowPosition.Aligned(Alignment.Center))
 
     Window(
@@ -162,7 +167,8 @@ fun WindowDialog(
     ) {
         setIcon()
         CompositionLocalProvider(
-            LocalResources provides resources
+            LocalResources provides resources,
+            LocalKamelConfig provides kamelConfig
         ) {
             AppTheme {
                 Surface {

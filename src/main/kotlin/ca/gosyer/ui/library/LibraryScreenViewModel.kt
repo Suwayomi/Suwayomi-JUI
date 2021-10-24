@@ -9,7 +9,6 @@ package ca.gosyer.ui.library
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
-import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
@@ -73,11 +72,8 @@ class LibraryScreenViewModel @Inject constructor(
     private val bundle: Bundle,
     private val categoryHandler: CategoryInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
-    libraryPreferences: LibraryPreferences,
-    serverPreferences: ServerPreferences,
+    libraryPreferences: LibraryPreferences
 ) : ViewModel() {
-    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
-
     private val library = Library(MutableStateFlow(emptyList()), mutableMapOf())
     val categories = library.categories.asStateFlow()
 

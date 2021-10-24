@@ -27,9 +27,7 @@ data class Manga(
     val meta: MangaMeta,
     val realUrl: String?,
     val inLibraryAt: Long
-) {
-    fun cover(serverUrl: String) = thumbnailUrl?.let { serverUrl + it }
-}
+)
 
 @Serializable
 data class MangaMeta(

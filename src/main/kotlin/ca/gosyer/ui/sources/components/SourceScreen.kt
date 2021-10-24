@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
@@ -30,6 +31,7 @@ import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.persistentLazyListState
 import com.github.zsoltk.compose.savedinstancestate.Bundle
+import io.kamel.image.lazyPainterResource
 
 @Composable
 fun SourceScreen(
@@ -46,7 +48,6 @@ fun SourceScreen(
     val hasNextPage by vm.hasNextPage.collectAsState()
     val loading by vm.loading.collectAsState()
     val isLatest by vm.isLatest.collectAsState()
-    val serverUrl by vm.serverUrl.collectAsState()
 
     LaunchedEffect(Unit) {
         setSearch(vm::search)
@@ -67,7 +68,6 @@ fun SourceScreen(
         hasNextPage,
         source.supportsLatest,
         isLatest,
-        serverUrl,
         onLoadNextPage = vm::loadNextPage,
         onMangaClick = onMangaClick,
         onClickMode = vm::setMode
@@ -82,7 +82,6 @@ private fun MangaTable(
     hasNextPage: Boolean = false,
     supportsLatest: Boolean,
     isLatest: Boolean,
-    serverUrl: String,
     onLoadNextPage: () -> Unit,
     onMangaClick: (Long) -> Unit,
     onClickMode: (Boolean) -> Unit
@@ -111,7 +110,7 @@ private fun MangaTable(
                     }
                     MangaGridItem(
                         title = manga.title,
-                        cover = manga.cover(serverUrl),
+                        cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium),
                         onClick = {
                             onMangaClick(manga.id)
                         }

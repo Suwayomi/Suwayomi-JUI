@@ -35,11 +35,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.ui.base.components.ActionIcon
-import ca.gosyer.ui.base.components.KtorImage
+import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.combinedMouseClickable
 import ca.gosyer.ui.base.resources.stringResource
@@ -54,6 +55,7 @@ import ca.gosyer.util.lang.launchApplication
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
 import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
+import io.kamel.image.lazyPainterResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -91,7 +93,6 @@ fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaCl
     val selectedSourceTab by vm.selectedSourceTab.collectAsState()
     val sourceSearchEnabled by vm.sourceSearchEnabled.collectAsState()
     val sourceSearchQuery by vm.sourceSearchQuery.collectAsState()
-    val serverUrl by vm.serverUrl.collectAsState()
     Column {
         Toolbar(
             selectedSourceTab?.name ?: stringResource("location_sources"),
@@ -165,7 +166,13 @@ fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaCl
                                     .requiredSize(50.dp)
                                     .align(Alignment.Center)
                                 if (source != null) {
-                                    KtorImage(source.iconUrl(serverUrl), modifier = modifier)
+                                    Box(Modifier.align(Alignment.Center)) {
+                                        KamelImage(
+                                            lazyPainterResource(source, filterQuality = FilterQuality.Medium),
+                                            source.displayName,
+                                            modifier
+                                        )
+                                    }
                                 } else {
                                     Icon(Icons.Rounded.Home, stringResource("sources_home"), modifier = modifier)
                                 }
@@ -180,7 +187,7 @@ fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaCl
                     if (selectedSource != null) {
                         SourceScreen(it, selectedSource, onMangaClick, vm::enableSearch, vm::setSearch)
                     } else {
-                        SourceHomeScreen(isLoading, sources, serverUrl, vm::addTab)
+                        SourceHomeScreen(isLoading, sources, vm::addTab)
                     }
                 }
             }

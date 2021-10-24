@@ -19,7 +19,6 @@ import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,19 +26,20 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Manga
-import ca.gosyer.ui.base.components.KtorImage
+import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.contextMenuClickable
+import io.kamel.image.lazyPainterResource
 
 @Composable
 fun LibraryMangaCompactGrid(
     library: List<Manga>,
-    serverUrl: String,
     onClickManga: (Long) -> Unit = {},
     onRemoveMangaClicked: (Long) -> Unit = {}
 ) {
@@ -52,7 +52,6 @@ fun LibraryMangaCompactGrid(
                 manga = manga,
                 unread = null, // TODO
                 downloaded = null, // TODO
-                serverUrl = serverUrl,
                 onClick = { onClickManga(manga.id) }
             ) {
                 listOf(
@@ -68,11 +67,10 @@ private fun LibraryMangaCompactGridItem(
     manga: Manga,
     unread: Int?,
     downloaded: Int?,
-    serverUrl: String,
     onClick: () -> Unit = {},
     contextMenuItems: () -> List<ContextMenuItem> = { emptyList() }
 ) {
-    val cover = remember(manga.id, serverUrl) { manga.cover(serverUrl) }
+    val cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium)
     val fontStyle = LocalTextStyle.current.merge(
         TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
     )
@@ -87,9 +85,7 @@ private fun LibraryMangaCompactGridItem(
                 items = contextMenuItems
             )
     ) {
-        if (cover != null) {
-            KtorImage(cover, contentScale = ContentScale.Crop)
-        }
+        KamelImage(cover, manga.title, contentScale = ContentScale.Crop)
         Box(modifier = Modifier.fillMaxSize().then(shadowGradient))
         Text(
             text = manga.title,

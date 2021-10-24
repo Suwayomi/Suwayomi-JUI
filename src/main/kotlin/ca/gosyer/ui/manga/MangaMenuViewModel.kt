@@ -10,7 +10,6 @@ import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
-import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
@@ -41,11 +40,8 @@ class MangaMenuViewModel @Inject constructor(
     private val categoryHandler: CategoryInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
     private val downloadService: DownloadService,
-    serverPreferences: ServerPreferences,
     uiPreferences: UiPreferences,
 ) : ViewModel() {
-    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
-
     private val downloadingChapters = downloadService.registerWatch(params.mangaId)
 
     private val _manga = MutableStateFlow<Manga?>(null)

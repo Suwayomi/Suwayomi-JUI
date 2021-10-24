@@ -14,6 +14,7 @@ import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.HttpProvider
+import ca.gosyer.data.server.KamelConfigProvider
 import ca.gosyer.data.server.ServerHostPreferences
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.ServerService
@@ -28,6 +29,7 @@ import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.data.translation.ResourceProvider
 import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
+import io.kamel.core.config.KamelConfig
 import toothpick.ktp.binding.bind
 import toothpick.ktp.binding.module
 
@@ -64,6 +66,10 @@ val DataModule = module {
 
     bind<Http>()
         .toProvider(HttpProvider::class)
+        .providesSingleton()
+
+    bind<KamelConfig>()
+        .toProvider(KamelConfigProvider::class)
         .providesSingleton()
 
     bind<XmlResourceBundle>()

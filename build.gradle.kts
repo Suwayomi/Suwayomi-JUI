@@ -35,6 +35,7 @@ dependencies {
     implementation("ca.gosyer:compose-router:0.24.2-jetbrains-2")
     implementation("ca.gosyer:accompanist-pager:0.18.1")
     implementation("ca.gosyer:accompanist-flowlayout:0.18.1")
+    implementation("com.alialbaali.kamel:kamel-image:0.3.0")
 
     // UI (Swing)
     implementation("com.github.weisj:darklaf-core:2.7.3")

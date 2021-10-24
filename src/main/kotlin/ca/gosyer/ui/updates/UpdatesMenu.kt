@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Chapter
@@ -37,6 +38,7 @@ import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
+import io.kamel.image.lazyPainterResource
 
 @Composable
 fun UpdatesMenu(
@@ -44,7 +46,6 @@ fun UpdatesMenu(
     openManga: (Long) -> Unit
 ) {
     val vm = viewModel<UpdatesMenuViewModel>()
-    val serverUrl by vm.serverUrl.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
     val updates by vm.updates.collectAsState()
     Column {
@@ -57,7 +58,6 @@ fun UpdatesMenu(
                     val manga = it.manga!!
                     val chapter = it.chapter
                     UpdatesItem(
-                        serverUrl,
                         it,
                         onClickItem = { openChapter(chapter.index, chapter.mangaId) },
                         onClickCover = { openManga(manga.id) },
@@ -73,7 +73,6 @@ fun UpdatesMenu(
 
 @Composable
 fun UpdatesItem(
-    serverUrl: String,
     chapterDownloadItem: ChapterDownloadItem,
     onClickItem: () -> Unit,
     onClickCover: () -> Unit,
@@ -101,7 +100,8 @@ fun UpdatesItem(
                 .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
                 .clip(MaterialTheme.shapes.medium)
                 .clickable { onClickCover() },
-            imageUrl = manga.cover(serverUrl)
+            cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium),
+            contentDescription = manga.title
         )
         MangaListItemColumn(
             modifier = Modifier

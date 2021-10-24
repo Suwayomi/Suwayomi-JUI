@@ -73,7 +73,6 @@ fun LibraryScreen(bundle: Bundle, onClickManga: (Long) -> Unit = { openMangaMenu
     val displayMode by vm.displayMode.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
     val error by vm.error.collectAsState()
-    val serverUrl by vm.serverUrl.collectAsState()
     val query by vm.query.collectAsState()
     // val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
@@ -116,7 +115,6 @@ fun LibraryScreen(bundle: Bundle, onClickManga: (Long) -> Unit = { openMangaMenu
                 categories = categories,
                 displayMode = displayMode,
                 selectedPage = selectedCategoryIndex,
-                serverUrl = serverUrl,
                 getLibraryForPage = { vm.getLibraryForCategoryIndex(it).collectAsState() },
                 onPageChanged = vm::setSelectedPage,
                 onClickManga = onClickManga,
@@ -163,7 +161,6 @@ private fun LibraryPager(
     categories: List<Category>,
     displayMode: DisplayMode,
     selectedPage: Int,
-    serverUrl: String,
     getLibraryForPage: @Composable (Int) -> State<List<Manga>>,
     onPageChanged: (Int) -> Unit,
     onClickManga: (Long) -> Unit,
@@ -187,7 +184,6 @@ private fun LibraryPager(
         when (displayMode) {
             DisplayMode.CompactGrid -> LibraryMangaCompactGrid(
                 library = library,
-                serverUrl = serverUrl,
                 onClickManga = onClickManga,
                 onRemoveMangaClicked = onRemoveMangaClicked
             )

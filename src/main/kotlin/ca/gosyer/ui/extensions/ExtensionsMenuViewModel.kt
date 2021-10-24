@@ -8,7 +8,6 @@ package ca.gosyer.ui.extensions
 
 import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.models.Extension
-import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.ui.base.vm.ViewModel
@@ -26,10 +25,8 @@ import javax.inject.Inject
 class ExtensionsMenuViewModel @Inject constructor(
     private val extensionHandler: ExtensionInteractionHandler,
     private val resources: XmlResourceBundle,
-    serverPreferences: ServerPreferences,
     extensionPreferences: ExtensionPreferences
 ) : ViewModel() {
-    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
     private val _enabledLangs = extensionPreferences.languages().asStateFlow()
     val enabledLangs = _enabledLangs.asStateFlow()
 

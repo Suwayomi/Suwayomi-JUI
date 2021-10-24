@@ -66,6 +66,8 @@ import ca.gosyer.ui.reader.navigation.navigationClickable
 import ca.gosyer.ui.reader.viewer.ContinuousReader
 import ca.gosyer.ui.reader.viewer.PagerReader
 import ca.gosyer.util.lang.launchApplication
+import io.kamel.core.config.KamelConfig
+import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -79,6 +81,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
     ) = windowSettings.get().get()
 
     val resources = AppScope.getInstance<XmlResourceBundle>()
+    val kamelConfig = AppScope.getInstance<KamelConfig>()
 
     launchApplication {
         var shortcuts by remember {
@@ -110,7 +113,8 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
             setIcon()
             CompositionLocalProvider(
                 LocalComposeWindow provides window,
-                LocalResources provides resources
+                LocalResources provides resources,
+                LocalKamelConfig provides kamelConfig
             ) {
                 AppTheme {
                     ReaderMenu(chapterIndex, mangaId) { shortcuts = it }

@@ -40,6 +40,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +51,7 @@ import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.ErrorScreen
-import ca.gosyer.ui.base.components.KtorImage
+import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.LocalMenuController
 import ca.gosyer.ui.base.components.MenuController
@@ -61,6 +62,7 @@ import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
 import com.google.accompanist.flowlayout.FlowRow
+import io.kamel.image.lazyPainterResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -84,7 +86,6 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
     val manga by vm.manga.collectAsState()
     val chapters by vm.chapters.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
-    val serverUrl by vm.serverUrl.collectAsState()
     val dateTimeFormatter by vm.dateTimeFormatter.collectAsState()
     val categoriesExist by vm.categoriesExist.collectAsState()
 
@@ -128,7 +129,7 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
                         val state = rememberLazyListState()
                         LazyColumn(state = state) {
                             item {
-                                MangaItem(manga, serverUrl)
+                                MangaItem(manga)
                             }
                             if (chapters.isNotEmpty()) {
                                 items(chapters) { chapter ->
@@ -171,17 +172,17 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
 }
 
 @Composable
-fun MangaItem(manga: Manga, serverUrl: String) {
+fun MangaItem(manga: Manga) {
     BoxWithConstraints(Modifier.padding(8.dp)) {
         if (maxWidth > 600.dp) {
             Row {
-                Cover(manga, serverUrl, Modifier.width(300.dp))
+                Cover(manga, Modifier.width(300.dp))
                 Spacer(Modifier.width(16.dp))
                 MangaInfo(manga)
             }
         } else {
             Column {
-                Cover(manga, serverUrl, Modifier.align(Alignment.CenterHorizontally))
+                Cover(manga, Modifier.align(Alignment.CenterHorizontally))
                 Spacer(Modifier.height(16.dp))
                 MangaInfo(manga)
             }
@@ -190,17 +191,17 @@ fun MangaItem(manga: Manga, serverUrl: String) {
 }
 
 @Composable
-private fun Cover(manga: Manga, serverUrl: String, modifier: Modifier = Modifier) {
+private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier then Modifier
             .padding(4.dp),
         shape = RoundedCornerShape(4.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            manga.cover(serverUrl)?.let {
-                KtorImage(it)
-            }
-        }
+        KamelImage(
+            lazyPainterResource(manga, filterQuality = FilterQuality.Medium),
+            manga.title,
+            Modifier.fillMaxSize()
+        )
     }
 }
 

@@ -9,7 +9,6 @@ package ca.gosyer.ui.sources.components
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.MangaPage
 import ca.gosyer.data.models.Source
-import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.util.compose.saveBooleanInBundle
@@ -26,21 +25,17 @@ import javax.inject.Inject
 class SourceScreenViewModel(
     private val source: Source,
     private val bundle: Bundle,
-    private val sourceHandler: SourceInteractionHandler,
-    serverPreferences: ServerPreferences
+    private val sourceHandler: SourceInteractionHandler
 ) : ViewModel() {
 
     @Inject constructor(
         params: Params,
-        sourceHandler: SourceInteractionHandler,
-        serverPreferences: ServerPreferences
+        sourceHandler: SourceInteractionHandler
     ) : this(
         params.source,
         params.bundle,
-        sourceHandler,
-        serverPreferences
+        sourceHandler
     )
-    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
 
     private val _mangas = saveObjectInBundle(scope, bundle, MANGAS_KEY) { emptyList<Manga>() }
     val mangas = _mangas.asStateFlow()

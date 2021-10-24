@@ -48,6 +48,8 @@ import com.github.weisj.darklaf.theme.IntelliJTheme
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.github.zsoltk.compose.savedinstancestate.Bundle
+import io.kamel.core.config.KamelConfig
+import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -94,6 +96,7 @@ suspend fun main() {
     }
 
     val resources = scope.getInstance<XmlResourceBundle>()
+    val kamelConfig = scope.getInstance<KamelConfig>()
 
     // Set the Compose constants before any
     // Swing functions are called
@@ -181,7 +184,8 @@ suspend fun main() {
                 CompositionLocalProvider(
                     LocalComposeWindow provides window,
                     LocalBackPressHandler provides backPressHandler,
-                    LocalResources provides resources
+                    LocalResources provides resources,
+                    LocalKamelConfig provides kamelConfig
                 ) {
                     Crossfade(serverService.initialized.collectAsState().value) { initialized ->
                         when (initialized) {

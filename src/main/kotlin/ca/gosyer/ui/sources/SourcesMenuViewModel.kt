@@ -8,7 +8,6 @@ package ca.gosyer.ui.sources
 
 import ca.gosyer.data.catalog.CatalogPreferences
 import ca.gosyer.data.models.Source
-import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.util.lang.throwIfCancellation
@@ -25,11 +24,8 @@ import javax.inject.Inject
 class SourcesMenuViewModel @Inject constructor(
     private val bundle: Bundle,
     private val sourceHandler: SourceInteractionHandler,
-    serverPreferences: ServerPreferences,
     catalogPreferences: CatalogPreferences
 ) : ViewModel() {
-    val serverUrl = serverPreferences.serverUrl().stateIn(scope)
-
     private val _languages = catalogPreferences.languages().asStateFlow()
     val languages = _languages.asStateFlow()
 

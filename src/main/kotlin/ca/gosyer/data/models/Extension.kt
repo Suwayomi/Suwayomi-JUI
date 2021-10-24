@@ -21,6 +21,4 @@ data class Extension(
     val hasUpdate: Boolean,
     val obsolete: Boolean,
     val isNsfw: Boolean
-) {
-    fun iconUrl(serverUrl: String) = serverUrl + iconUrl
-}
+)

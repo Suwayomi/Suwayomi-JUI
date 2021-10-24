@@ -39,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -50,7 +51,7 @@ import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Extension
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.ActionIcon
-import ca.gosyer.ui.base.components.KtorImage
+import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.resources.stringResource
@@ -58,6 +59,7 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.compose.persistentLazyListState
 import ca.gosyer.util.lang.launchApplication
+import io.kamel.image.lazyPainterResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -80,7 +82,6 @@ fun ExtensionsMenu() {
     val vm = viewModel<ExtensionsMenuViewModel>()
     val extensions by vm.extensions.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
-    val serverUrl by vm.serverUrl.collectAsState()
     val search by vm.searchQuery.collectAsState()
 
     if (isLoading) {
@@ -119,7 +120,6 @@ fun ExtensionsMenu() {
                     items(items) { extension ->
                         ExtensionItem(
                             extension,
-                            serverUrl,
                             onInstallClicked = vm::install,
                             onUpdateClicked = vm::update,
                             onUninstallClicked = vm::uninstall
@@ -167,7 +167,6 @@ fun ExtensionsToolbar(
 @Composable
 fun ExtensionItem(
     extension: Extension,
-    serverUrl: String,
     onInstallClicked: (Extension) -> Unit,
     onUpdateClicked: (Extension) -> Unit,
     onUninstallClicked: (Extension) -> Unit
@@ -175,7 +174,7 @@ fun ExtensionItem(
     Box(modifier = Modifier.fillMaxWidth().padding(end = 12.dp).height(50.dp).background(MaterialTheme.colors.background)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(Modifier.width(4.dp))
-            KtorImage(extension.iconUrl(serverUrl), Modifier.size(50.dp))
+            KamelImage(lazyPainterResource(extension, filterQuality = FilterQuality.Medium), extension.name, Modifier.size(50.dp))
             Spacer(Modifier.width(8.dp))
             Column {
                 val title = buildAnnotatedString {
