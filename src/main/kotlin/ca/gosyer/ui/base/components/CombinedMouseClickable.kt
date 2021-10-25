@@ -103,8 +103,8 @@ fun Modifier.combinedMouseClickable(
         ) {
             when {
                 buttons.isPrimaryPressed -> onClick()
-                buttons.isSecondaryPressed -> onMiddleClick()
-                buttons.isTertiaryPressed -> onRightClick()
+                buttons.isSecondaryPressed -> onRightClick()
+                buttons.isTertiaryPressed -> onMiddleClick()
             }
         }
         .semantics(mergeDescendants = true) {
