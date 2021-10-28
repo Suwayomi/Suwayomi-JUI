@@ -6,7 +6,7 @@
   --><resources>
     <string name="app_name">Tachidesk-JUI</string>
     <!-- Main Menu -->
-    <string name="unable_to_start_server">Kunde inte starta servern</string>
+    <string name="unable_to_start_server">Kan inte starta servern</string>
     <!-- Actions -->
     <string name="action_yes">Ja</string>
     <string name="action_no">Nej</string>
