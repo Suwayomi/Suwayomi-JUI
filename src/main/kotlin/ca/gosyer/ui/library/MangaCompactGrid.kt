@@ -50,8 +50,8 @@ fun LibraryMangaCompactGrid(
         items(library) { manga ->
             LibraryMangaCompactGridItem(
                 manga = manga,
-                unread = null, // TODO
-                downloaded = null, // TODO
+                unread = manga.unreadCount,
+                downloaded = manga.downloadCount,
                 onClick = { onClickManga(manga.id) }
             ) {
                 listOf(

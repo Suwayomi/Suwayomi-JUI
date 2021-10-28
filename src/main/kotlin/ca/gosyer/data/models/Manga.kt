@@ -26,7 +26,9 @@ data class Manga(
     val freshData: Boolean,
     val meta: MangaMeta,
     val realUrl: String?,
-    val inLibraryAt: Long
+    val inLibraryAt: Long,
+    val unreadCount: Int?,
+    val downloadCount: Int?
 )
 
 @Serializable
