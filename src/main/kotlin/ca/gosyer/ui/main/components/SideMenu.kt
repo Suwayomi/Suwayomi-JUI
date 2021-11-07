@@ -52,7 +52,7 @@ fun SideMenu(modifier: Modifier, controller: MenuController) {
                     }
                 }
                 Spacer(Modifier.height(20.dp))
-                remember { TopLevelMenus.values().filter { it.top } }.forEach { topLevelMenu ->
+                remember { TopLevelMenus.values().filter(TopLevelMenus::top) }.forEach { topLevelMenu ->
                     SideMenuItem(
                         topLevelMenu.isSelected(controller.backStack),
                         topLevelMenu,
@@ -61,7 +61,7 @@ fun SideMenu(modifier: Modifier, controller: MenuController) {
                 }
                 Box(Modifier.fillMaxSize()) {
                     Column(Modifier.align(Alignment.BottomStart).padding(bottom = 8.dp)) {
-                        remember { TopLevelMenus.values().filterNot { it.top } }.forEach { topLevelMenu ->
+                        remember { TopLevelMenus.values().filterNot(TopLevelMenus::top) }.forEach { topLevelMenu ->
                             SideMenuItem(
                                 topLevelMenu.isSelected(controller.backStack),
                                 topLevelMenu,

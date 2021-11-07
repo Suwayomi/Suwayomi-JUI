@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DebugOverlayViewModel @Inject constructor() : ViewModel() {
-    val runtime = Runtime.getRuntime()
+    val runtime: Runtime = Runtime.getRuntime()
     val maxMemory = runtime.maxMemory().formatSize()
     val usedMemoryFlow = MutableStateFlow(runtime.usedMemory().formatSize())
 
