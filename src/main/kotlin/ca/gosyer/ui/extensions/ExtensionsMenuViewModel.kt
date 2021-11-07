@@ -30,14 +30,13 @@ class ExtensionsMenuViewModel @Inject constructor(
     private val _enabledLangs = extensionPreferences.languages().asStateFlow()
     val enabledLangs = _enabledLangs.asStateFlow()
 
-    private lateinit var extensionList: List<Extension>
+    private var extensionList: List<Extension>? = null
 
     private val _extensions = MutableStateFlow(emptyMap<String, List<Extension>>())
     val extensions = _extensions.asStateFlow()
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
-
     val searchQuery = MutableStateFlow<String?>(null)
 
     init {
@@ -99,7 +98,7 @@ class ExtensionsMenuViewModel @Inject constructor(
         }
     }
 
-    fun getSourceLanguages() = extensionList.map { it.lang }.toSet()
+    fun getSourceLanguages() = extensionList?.map { it.lang }?.toSet().orEmpty()
 
     fun setEnabledLanguages(langs: Set<String>) {
         info { langs }
@@ -108,7 +107,8 @@ class ExtensionsMenuViewModel @Inject constructor(
 
     fun search(searchQuery: String) {
         this.searchQuery.value = searchQuery.takeUnless { it.isBlank() }
-        val extensionList = extensionList.filter { it.lang in enabledLangs.value }
+        val extensionList = extensionList?.filter { it.lang in enabledLangs.value }
+            .orEmpty()
         if (searchQuery.isBlank()) {
             _extensions.value = extensionList.splitSort()
         } else {
