@@ -50,9 +50,9 @@ import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Extension
 import ca.gosyer.ui.base.WindowDialog
-import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.components.TextActionIcon
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
@@ -150,7 +150,7 @@ fun ExtensionsToolbar(
         searchText = searchText,
         search = search,
         actions = {
-            ActionIcon(
+            TextActionIcon(
                 {
                     val enabledLangs = MutableStateFlow(currentEnabledLangs.value)
                     LanguageDialog(enabledLangs, getSourceLanguages().toList()) {

@@ -56,7 +56,7 @@
     <string name="downloads_stopped">Stopped</string>
 
     <!-- Extensions Menu -->
-    <string name="enabled_languages">Enabled languages</string>
+    <string name="enabled_languages">Languages</string>
     <string name="installed">Installed</string>
     <string name="all">All</string>
 
