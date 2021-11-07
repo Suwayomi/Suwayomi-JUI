@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -43,7 +43,7 @@ inline fun <T> saveAnyInBundle(
         MutableStateFlow(initialValue())
     }
     flow.drop(1)
-        .onEach { bundle.putValue(key, it) }
+        .mapLatest { bundle.putValue(key, it) }
         .launchIn(scope)
 
     return flow
