@@ -127,12 +127,10 @@ sealed class SourceSettingsView<T, R : Any?> {
     }
 }
 
-fun withFormat(text: String, value: Any?): String {
-    return Formatter().format(text, value)
-        .let { formatter ->
-            formatter.toString()
-                .also { formatter.close() }
-        }
+private fun withFormat(text: String, value: Any?): String {
+    return Formatter().use {
+        it.format(text, value).toString()
+    }
 }
 
 fun SourceSettingsView(index: Int, preference: SourcePreference): SourceSettingsView<*, *> {

@@ -52,17 +52,17 @@ class XmlResourceBundle internal constructor(internal val lookup: ConcurrentHash
     private fun String.replaceAndroid() = replace("\\n", "%n")
 
     fun getStringA(key: String): String {
-        return Formatter().format(getString(key).replaceAndroid())
-            .let { formatter ->
-                formatter.toString().also { formatter.close() }
-            }
+        return Formatter().use {
+            it.format(getString(key).replaceAndroid())
+                .toString()
+        }
     }
 
     fun getString(key: String, vararg replacements: Any?): String {
-        return Formatter().format(getString(key).replaceAndroid(), *replacements)
-            .let { formatter ->
-                formatter.toString().also { formatter.close() }
-            }
+        return Formatter().use {
+            it.format(getString(key).replaceAndroid(), *replacements)
+                .toString()
+        }
     }
 
     companion object {
