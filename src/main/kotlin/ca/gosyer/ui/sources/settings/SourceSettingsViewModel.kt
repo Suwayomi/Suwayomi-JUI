@@ -15,6 +15,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -40,11 +41,9 @@ class SourceSettingsViewModel @Inject constructor(
             subscriptions.forEach { it.cancel() }
             subscriptions.clear()
             subscriptions += settings.map { setting ->
-                setting.state.drop(1).onEach {
-                    if (it != null) {
-                        sourceHandler.setSourceSetting(params.sourceId, setting.index, it)
-                        getSourceSettings()
-                    }
+                setting.state.drop(1).filterNotNull().onEach {
+                    sourceHandler.setSourceSetting(params.sourceId, setting.index, it)
+                    getSourceSettings()
                 }.launchIn(scope)
             }
         }.launchIn(scope)
