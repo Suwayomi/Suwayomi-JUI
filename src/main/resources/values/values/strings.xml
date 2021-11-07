@@ -34,7 +34,7 @@
     <string name="action_toggle_bookmarked">Toggle bookmarked</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_remove_favorite">Unfavorite</string>
-    <string name="action_refresh_manga">Refresh manga</string>
+    <string name="action_refresh_manga">Refresh</string>
     <string name="action_retry">Retry</string>
 
     <!-- Locations -->
@@ -67,7 +67,7 @@
     <string name="page_progress">Page %1$d</string>
     <string name="no_chapters_found">No chapters found</string>
     <string name="failed_manga_fetch">Failed to load manga</string>
-    <string name="edit_categories">Edit categories</string>
+    <string name="edit_categories">Categories</string>
 
     <!-- Sources Menu -->
     <string name="sources_home">Home</string>

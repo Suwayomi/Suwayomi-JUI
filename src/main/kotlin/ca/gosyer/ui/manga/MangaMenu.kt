@@ -26,14 +26,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Label
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,12 +51,12 @@ import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.WindowDialog
-import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.LocalMenuController
 import ca.gosyer.ui.base.components.MenuController
+import ca.gosyer.ui.base.components.TextActionIcon
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
@@ -103,28 +105,33 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
                 menuController != null,
                 actions = {
                     if (categoriesExist) {
-                        ActionIcon(
+                        TextActionIcon(
                             vm::setCategories,
                             stringResource("edit_categories"),
                             Icons.Rounded.Label
                         )
                     }
+                    TextActionIcon(
+                        vm::toggleFavorite,
+                        stringResource(if (manga?.inLibrary == true) "action_remove_favorite" else "action_favorite"),
+                        if (manga?.inLibrary == true) {
+                            Icons.Rounded.Favorite
+                        } else {
+                            Icons.Filled.Favorite
+                        },
+                        manga != null
+                    )
+                    TextActionIcon(
+                        vm::refreshManga,
+                        stringResource("action_refresh_manga"),
+                        Icons.Rounded.Refresh,
+                        !isLoading
+                    )
                 }
             )
 
             manga.let { manga ->
                 if (manga != null) {
-                    Surface(Modifier.height(40.dp).fillMaxWidth()) {
-                        Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                            Button(onClick = vm::toggleFavorite) {
-                                Text(stringResource(if (manga.inLibrary) "action_remove_favorite" else "action_favorite"))
-                            }
-                            Button(onClick = vm::refreshManga, enabled = !isLoading) {
-                                Text(stringResource("action_refresh_manga"))
-                            }
-                        }
-                    }
-
                     Box {
                         val state = rememberLazyListState()
                         LazyColumn(state = state) {
