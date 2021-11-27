@@ -41,15 +41,13 @@ class DownloadsMenuViewModel @Inject constructor(
         }
     }
 
-    fun stopDownload(chapter: Chapter?) {
-        chapter ?: return
+    fun stopDownload(chapter: Chapter) {
         scope.launch {
             chapterHandler.stopChapterDownload(chapter)
         }
     }
 
-    fun moveToBottom(chapter: Chapter?) {
-        chapter ?: return
+    fun moveToBottom(chapter: Chapter) {
         scope.launch {
             chapterHandler.stopChapterDownload(chapter)
             chapterHandler.queueChapterDownload(chapter)

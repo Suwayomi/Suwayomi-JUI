@@ -7,14 +7,16 @@
 package ca.gosyer.data.download.model
 
 import ca.gosyer.data.models.Chapter
+import ca.gosyer.data.models.Manga
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class DownloadChapter(
     val chapterIndex: Int,
     val mangaId: Long,
+    val chapter: Chapter,
+    val manga: Manga,
     val state: DownloadState = DownloadState.Queued,
     val progress: Float = 0f,
-    val tries: Int = 0,
-    val chapter: Chapter? = null,
+    val tries: Int = 0
 )
