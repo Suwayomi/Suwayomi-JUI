@@ -4,15 +4,12 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="-PdebugApp" />
+      <option name="scriptParameters" value="setupTachideskJar run -PdebugApp" />
       <option name="taskDescriptions">
         <list />
       </option>
       <option name="taskNames">
-        <list>
-          <option value="setupTachideskJar" />
-          <option value="run" />
-        </list>
+        <list />
       </option>
       <option name="vmOptions" value="--illegal-access=warn" />
     </ExternalSystemSettings>

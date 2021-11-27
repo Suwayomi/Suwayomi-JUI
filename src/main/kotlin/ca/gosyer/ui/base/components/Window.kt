@@ -17,6 +17,6 @@ fun FrameWindowScope.setIcon() {
         window.iconImage = this::class.java.classLoader.getResourceAsStream("icon.png")!!.use {
             ImageIO.read(it)
         }
-        onDispose { }
+        onDispose {}
     }
 }
