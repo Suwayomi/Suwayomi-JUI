@@ -3,9 +3,9 @@ import org.gradle.api.JavaVersion
 object Config {
     const val tachideskVersion = "v0.5.4"
     // Match this to the Tachidesk-Server commit count
-    const val serverCode = 1031
+    const val serverCode = 1043
     const val preview = true
-    const val previewCommit = "420d14fc37a18269a9d7232519e3f9a21c6302a2"
+    const val previewCommit = "5e47b7ae6b37931ce3a8eee33cafb9475d7a77bb"
 
     val jvmTarget = JavaVersion.VERSION_15
 }

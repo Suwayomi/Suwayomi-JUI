@@ -14,9 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -54,11 +55,16 @@ fun UpdatesMenu(
             LoadingScreen(isLoading)
         } else {
             LazyColumn {
-                items(updates) {
-                    val manga = it.manga!!
-                    val chapter = it.chapter
+                itemsIndexed(updates) { index, item ->
+                    LaunchedEffect(Unit) {
+                        if (index == updates.lastIndex) {
+                            vm.loadNextPage()
+                        }
+                    }
+                    val manga = item.manga!!
+                    val chapter = item.chapter
                     UpdatesItem(
-                        it,
+                        item,
                         onClickItem = { openChapter(chapter.index, chapter.mangaId) },
                         onClickCover = { openManga(manga.id) },
                         onClickDownload = vm::downloadChapter,

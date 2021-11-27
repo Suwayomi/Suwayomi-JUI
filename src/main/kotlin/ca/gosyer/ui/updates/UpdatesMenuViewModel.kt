@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import javax.inject.Inject
 
 class UpdatesMenuViewModel @Inject constructor(
@@ -35,32 +36,57 @@ class UpdatesMenuViewModel @Inject constructor(
     private val _updates = MutableStateFlow<List<ChapterDownloadItem>>(emptyList())
     val updates = _updates.asStateFlow()
 
+    private val currentPage = MutableStateFlow(1)
+    private val hasNextPage = MutableStateFlow(false)
+
+    private val updatesMutex = Mutex()
+
     init {
         scope.launch {
             try {
-                val updates = updatesHandler.getRecentUpdates()
-                mangaIds = updates.map { it.manga.id }.toSet()
-
-                _updates.value = updates.map {
-                    ChapterDownloadItem(
-                        it.manga,
-                        it.chapter
-                    )
-                }
-                downloadService.registerWatches(mangaIds).merge()
-                    .onEach { (mangaId, chapters) ->
-                        _updates.value.filter { it.chapter.mangaId == mangaId }
-                            .forEach {
-                                it.updateFrom(chapters)
-                            }
-                    }
-                    .launchIn(scope)
+                getUpdates(1)
             } catch (e: Exception) {
                 e.throwIfCancellation()
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+
+    fun loadNextPage() {
+        scope.launch {
+            if (hasNextPage.value && updatesMutex.tryLock()) {
+                try {
+                    getUpdates(currentPage.value++)
+                } catch (e: Exception) {
+                    e.throwIfCancellation()
+                    currentPage.value--
+                }
+                updatesMutex.unlock()
+            }
+        }
+    }
+
+    private suspend fun getUpdates(pageNum: Int) {
+        val updates = updatesHandler.getRecentUpdates(pageNum)
+        mangaIds = updates.page.map { it.manga.id }.toSet()
+
+        _updates.value += updates.page.map {
+            ChapterDownloadItem(
+                it.manga,
+                it.chapter
+            )
+        }
+        downloadService.registerWatches(mangaIds).merge()
+            .onEach { (mangaId, chapters) ->
+                _updates.value.filter { it.chapter.mangaId == mangaId }
+                    .forEach {
+                        it.updateFrom(chapters)
+                    }
+            }
+            .launchIn(scope)
+
+        hasNextPage.value = updates.hasNextPage
     }
 
     fun downloadChapter(chapter: Chapter) {

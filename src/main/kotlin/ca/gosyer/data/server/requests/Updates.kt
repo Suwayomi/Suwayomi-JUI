@@ -7,5 +7,5 @@
 package ca.gosyer.data.server.requests
 
 @Get
-fun recentUpdatesQuery() =
-    "/api/v1/update/recentChapters"
+fun recentUpdatesQuery(pageNum: Int) =
+    "/api/v1/update/recentChapters/$pageNum"

@@ -6,7 +6,7 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.data.models.MangaAndChapter
+import ca.gosyer.data.models.Updates
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.recentUpdatesQuery
@@ -19,9 +19,9 @@ class UpdatesInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getRecentUpdates() = withIOContext {
-        client.get<List<MangaAndChapter>>(
-            serverUrl + recentUpdatesQuery()
+    suspend fun getRecentUpdates(pageNum: Int) = withIOContext {
+        client.get<Updates>(
+            serverUrl + recentUpdatesQuery(pageNum)
         )
     }
 }
