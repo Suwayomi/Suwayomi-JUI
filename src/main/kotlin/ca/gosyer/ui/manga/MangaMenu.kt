@@ -32,8 +32,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Label
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.Composable
@@ -117,7 +117,7 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
                         if (manga?.inLibrary == true) {
                             Icons.Rounded.Favorite
                         } else {
-                            Icons.Filled.Favorite
+                            Icons.Rounded.FavoriteBorder
                         },
                         manga != null
                     )
