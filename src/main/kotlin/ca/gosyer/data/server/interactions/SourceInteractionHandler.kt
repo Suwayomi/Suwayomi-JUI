@@ -27,7 +27,6 @@ import ca.gosyer.data.server.requests.updateSourceSettingQuery
 import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
@@ -111,7 +110,7 @@ class SourceInteractionHandler @Inject constructor(
     suspend fun getFilterList(source: Source, reset: Boolean = false) = getFilterList(source.id, reset)
 
     suspend fun setFilter(sourceId: Long, sourceFilter: SourceFilterChange) = withIOContext {
-        client.patch<HttpResponse>(
+        client.post<HttpResponse>(
             serverUrl + setFilterRequest(sourceId)
         ) {
             contentType(ContentType.Application.Json)

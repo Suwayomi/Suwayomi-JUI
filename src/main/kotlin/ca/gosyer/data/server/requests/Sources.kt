@@ -34,7 +34,7 @@ fun sourceSearchQuery(sourceId: Long, searchTerm: String, pageNum: Int) =
 fun getFilterListQuery(sourceId: Long) =
     "/api/v1/source/$sourceId/filters"
 
-@Patch
+@Post
 fun setFilterRequest(sourceId: Long) =
     "/api/v1/source/$sourceId/filters"
 
