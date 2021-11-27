@@ -29,7 +29,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -39,38 +44,88 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.LoadingScreen
+import ca.gosyer.ui.base.components.TextActionIcon
+import ca.gosyer.ui.base.components.Toolbar
+import ca.gosyer.ui.base.resources.stringResource
+import ca.gosyer.ui.base.vm.viewModel
+import ca.gosyer.ui.extensions.LanguageDialog
+import com.github.zsoltk.compose.savedinstancestate.Bundle
 import io.kamel.image.lazyPainterResource
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun SourceHomeScreen(
-    isLoading: Boolean,
-    sources: List<Source>,
-    onSourceClicked: (Source) -> Unit
+    bundle: Bundle,
+    onAddSource: (Source) -> Unit,
+    onLoadSources: (List<Source>) -> Unit
 ) {
+    val vm = viewModel<SourceHomeScreenViewModel> {
+        bundle
+    }
+    val sources by vm.sources.collectAsState()
+    val isLoading by vm.isLoading.collectAsState()
+    LaunchedEffect(sources) {
+        if (sources.isNotEmpty()) {
+            onLoadSources(sources)
+        }
+    }
+
     if (sources.isEmpty()) {
         LoadingScreen(isLoading)
     } else {
-        Box(Modifier.fillMaxSize(), Alignment.TopCenter) {
-            val state = rememberLazyListState()
-            SourceCategory(sources, onSourceClicked, state)
-            /*val sourcesByLang = sources.groupBy { it.lang.toLowerCase() }.toList()
-            LazyColumn(state = state) {
-                items(sourcesByLang) { (lang, sources) ->
-                    SourceCategory(
-                        lang,
-                        sources,
-                        onSourceClicked = sourceClicked
-                    )
-                    Spacer(Modifier.height(8.dp))
-                }
-            }*/
-
-            VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(state)
+        Column {
+            SourceHomeScreenToolbar(
+                vm.languages,
+                vm::getSourceLanguages,
+                vm::setEnabledLanguages
             )
+            Box(Modifier.fillMaxSize(), Alignment.TopCenter) {
+                val state = rememberLazyListState()
+                SourceCategory(sources, onAddSource, state)
+                /*val sourcesByLang = sources.groupBy { it.lang.toLowerCase() }.toList()
+                LazyColumn(state = state) {
+                    items(sourcesByLang) { (lang, sources) ->
+                        SourceCategory(
+                            lang,
+                            sources,
+                            onSourceClicked = sourceClicked
+                        )
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }*/
+
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                    adapter = rememberScrollbarAdapter(state)
+                )
+            }
         }
     }
+}
+
+@Composable
+fun SourceHomeScreenToolbar(
+    sourceLanguages: StateFlow<Set<String>>,
+    onGetEnabledLanguages: () -> Set<String>,
+    onSetEnabledLanguages: (Set<String>) -> Unit
+) {
+    Toolbar(
+        stringResource("location_sources"),
+        closable = false,
+        actions = {
+            TextActionIcon(
+                {
+                    val enabledLangs = MutableStateFlow(sourceLanguages.value)
+                    LanguageDialog(enabledLangs, onGetEnabledLanguages().toList()) {
+                        onSetEnabledLanguages(enabledLangs.value)
+                    }
+                },
+                stringResource("enabled_languages"),
+                Icons.Rounded.Translate
+            )
+        }
+    )
 }
 
 @Composable

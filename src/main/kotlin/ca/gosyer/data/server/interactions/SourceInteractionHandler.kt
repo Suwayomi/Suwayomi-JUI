@@ -8,6 +8,8 @@ package ca.gosyer.data.server.interactions
 
 import ca.gosyer.data.models.MangaPage
 import ca.gosyer.data.models.Source
+import ca.gosyer.data.models.sourcefilters.SourceFilter
+import ca.gosyer.data.models.sourcefilters.SourceFilterChange
 import ca.gosyer.data.models.sourcepreference.SourcePreference
 import ca.gosyer.data.models.sourcepreference.SourcePreferenceChange
 import ca.gosyer.data.server.Http
@@ -15,6 +17,7 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.getFilterListQuery
 import ca.gosyer.data.server.requests.getSourceSettingsQuery
 import ca.gosyer.data.server.requests.globalSearchQuery
+import ca.gosyer.data.server.requests.setFilterRequest
 import ca.gosyer.data.server.requests.sourceInfoQuery
 import ca.gosyer.data.server.requests.sourceLatestQuery
 import ca.gosyer.data.server.requests.sourceListQuery
@@ -23,10 +26,14 @@ import ca.gosyer.data.server.requests.sourceSearchQuery
 import ca.gosyer.data.server.requests.updateSourceSettingQuery
 import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class SourceInteractionHandler @Inject constructor(
@@ -89,14 +96,41 @@ class SourceInteractionHandler @Inject constructor(
         pageNum
     )
 
-    // TODO: 2021-03-14  
-    suspend fun getFilterList(sourceId: Long) = withIOContext {
-        client.get<HttpResponse>(
+    suspend fun getFilterList(sourceId: Long, reset: Boolean = false) = withIOContext {
+        client.get<List<SourceFilter>>(
             serverUrl + getFilterListQuery(sourceId)
-        )
+        ) {
+            url {
+                if (reset) {
+                    parameter("reset", true)
+                }
+            }
+        }
     }
 
-    suspend fun getFilterList(source: Source) = getFilterList(source.id)
+    suspend fun getFilterList(source: Source, reset: Boolean = false) = getFilterList(source.id, reset)
+
+    suspend fun setFilter(sourceId: Long, sourceFilter: SourceFilterChange) = withIOContext {
+        client.patch<HttpResponse>(
+            serverUrl + setFilterRequest(sourceId)
+        ) {
+            contentType(ContentType.Application.Json)
+            body = sourceFilter
+        }
+    }
+
+    suspend fun setFilter(sourceId: Long, position: Int, value: Any) = setFilter(
+        sourceId,
+        SourceFilterChange(position, value)
+    )
+
+    suspend fun setFilter(sourceId: Long, parentPosition: Int, childPosition: Int, value: Any) = setFilter(
+        sourceId,
+        SourceFilterChange(
+            parentPosition,
+            Json.encodeToString(SourceFilterChange(childPosition, value))
+        )
+    )
 
     suspend fun getSourceSettings(sourceId: Long) = withIOContext {
         client.get<List<SourcePreference>>(

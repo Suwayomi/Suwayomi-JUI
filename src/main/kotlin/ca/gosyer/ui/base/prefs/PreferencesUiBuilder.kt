@@ -52,6 +52,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -310,9 +311,16 @@ const val FADE_OUT_ANIMATION_DURATION = 300
 @Composable
 fun ExpandablePreference(
     title: String,
+    startExpanded: Boolean = false,
+    onExpandedChanged: ((Boolean) -> Unit)? = null,
     expandedContent: @Composable ColumnScope.() -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(startExpanded) }
+    LaunchedEffect(expanded) {
+        if (onExpandedChanged != null) {
+            onExpandedChanged(expanded)
+        }
+    }
     val transitionState = remember {
         MutableTransitionState(expanded).apply {
             targetState = !expanded

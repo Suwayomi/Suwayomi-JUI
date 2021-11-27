@@ -6,11 +6,8 @@
 
 package ca.gosyer.ui.sources
 
-import ca.gosyer.data.catalog.CatalogPreferences
 import ca.gosyer.data.models.Source
-import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,38 +15,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SourcesMenuViewModel @Inject constructor(
-    private val bundle: Bundle,
-    private val sourceHandler: SourceInteractionHandler,
-    catalogPreferences: CatalogPreferences
+    private val bundle: Bundle
 ) : ViewModel() {
-    private val _languages = catalogPreferences.languages().asStateFlow()
-    val languages = _languages.asStateFlow()
-
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading = _isLoading.asStateFlow()
-
-    private var installedSources = emptyList<Source>()
-
-    private val _sources = MutableStateFlow(emptyList<Source>())
-    val sources = _sources.asStateFlow()
-
     private val _sourceTabs = MutableStateFlow<List<Source?>>(listOf(null))
     val sourceTabs = _sourceTabs.asStateFlow()
 
     private val _selectedSourceTab = MutableStateFlow<Source?>(null)
     val selectedSourceTab = _selectedSourceTab.asStateFlow()
-
-    private val _sourceSearchEnabled = MutableStateFlow(false)
-    val sourceSearchEnabled = _sourceSearchEnabled.asStateFlow()
-
-    private val _sourceSearchQuery = MutableStateFlow<String?>(null)
-    val sourceSearchQuery = _sourceSearchQuery.asStateFlow()
-
-    private var searchSource: ((String?) -> Unit)? = null
 
     init {
         _sourceTabs.drop(1)
@@ -67,38 +42,6 @@ class SourcesMenuViewModel @Inject constructor(
                 }
             }
             .launchIn(scope)
-
-        getSources()
-    }
-
-    private fun setSources(langs: Set<String>) {
-        _sources.value = installedSources.filter { it.lang in langs || it.lang == Source.LOCAL_SOURCE_LANG }
-    }
-
-    private fun getSources() {
-        scope.launch {
-            try {
-                installedSources = sourceHandler.getSourceList()
-                setSources(_languages.value)
-                info { _sources.value }
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-            } finally {
-                val sourceTabs = bundle.getLongArray(SOURCE_TABS_KEY)
-                if (sourceTabs != null) {
-                    _sourceTabs.value = listOf(null) + sourceTabs.toList()
-                        .mapNotNull { sourceId ->
-                            _sources.value.find { it.id == sourceId }
-                        }
-                    _selectedSourceTab.value = bundle.getLong(SELECTED_SOURCE_TAB, -1).let { id ->
-                        if (id != -1L) {
-                            _sources.value.find { it.id == id }
-                        } else null
-                    }
-                }
-                _isLoading.value = false
-            }
-        }
     }
 
     fun selectTab(source: Source?) {
@@ -120,30 +63,19 @@ class SourcesMenuViewModel @Inject constructor(
         bundle.remove(source.id.toString())
     }
 
-    fun setSearch(block: (String?) -> Unit) {
-        searchSource = block
-    }
-
-    fun enableSearch(enabled: Boolean) {
-        _sourceSearchEnabled.value = enabled
-    }
-
-    fun search(query: String) {
-        _sourceSearchQuery.value = query.takeUnless { it.isBlank() }
-    }
-
-    fun submitSearch() {
-        searchSource?.invoke(sourceSearchQuery.value)
-    }
-
-    fun getSourceLanguages(): Set<String> {
-        return installedSources.map { it.lang }.toSet() - setOf(Source.LOCAL_SOURCE_LANG)
-    }
-
-    fun setEnabledLanguages(langs: Set<String>) {
-        info { langs }
-        _languages.value = langs
-        setSources(langs)
+    fun setLoadedSources(sources: List<Source>) {
+        val sourceTabs = bundle.getLongArray(SOURCE_TABS_KEY)
+        if (sourceTabs != null) {
+            _sourceTabs.value = listOf(null) + sourceTabs.toList()
+                .mapNotNull { sourceId ->
+                    sources.find { it.id == sourceId }
+                }
+            _selectedSourceTab.value = bundle.getLong(SELECTED_SOURCE_TAB, -1).let { id ->
+                if (id != -1L) {
+                    sources.find { it.id == id }
+                } else null
+            }
+        }
     }
 
     private companion object : CKLogger({}) {

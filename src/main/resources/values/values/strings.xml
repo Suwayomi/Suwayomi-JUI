@@ -71,8 +71,10 @@
 
     <!-- Sources Menu -->
     <string name="sources_home">Home</string>
-    <string name="move_to_browse">To browse</string>
-    <string name="move_to_latest">To latest</string>
+    <string name="move_to_browse">Browse</string>
+    <string name="move_to_latest">Latest</string>
+    <string name="reset_filters">Reset</string>
+    <string name="filter_source">Filter</string>
 
     <!-- Reader Menu -->
     <string name="no_pages_found">No pages found</string>

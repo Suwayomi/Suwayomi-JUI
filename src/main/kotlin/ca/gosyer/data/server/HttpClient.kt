@@ -77,7 +77,7 @@ internal class HttpProvider @Inject constructor(
                 serializer = KotlinxSerializer(
                     Json {
                         isLenient = false
-                        ignoreUnknownKeys = !BuildConfig.DEBUG
+                        ignoreUnknownKeys = true
                         allowSpecialFloatingPointValues = true
                         useArrayPolymorphism = false
                     }

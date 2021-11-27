@@ -49,6 +49,20 @@ class SourceScreenViewModel(
     private val _isLatest = saveBooleanInBundle(scope, bundle, IS_LATEST_KEY, false)
     val isLatest = _isLatest.asStateFlow()
 
+    private val _filterButtonEnabled = saveBooleanInBundle(scope, bundle, SHOW_FILTERS, false)
+    val filterButtonEnabled = _filterButtonEnabled.asStateFlow()
+
+    private val _latestButtonEnabled = saveBooleanInBundle(scope, bundle, SHOW_LATEST, false)
+    val latestButtonEnabled = _latestButtonEnabled.asStateFlow()
+
+    private val _showingFilters = MutableStateFlow(false)
+    val showingFilters = _showingFilters.asStateFlow()
+
+    private val _usingFilters = MutableStateFlow(false)
+
+    private val _sourceSearchQuery = MutableStateFlow<String?>(null)
+    val sourceSearchQuery = _sourceSearchQuery.asStateFlow()
+
     private val _query = saveStringInBundle(scope, bundle, QUERY_KEY) { null }
 
     private val _pageNum = saveIntInBundle(scope, bundle, PAGE_NUM_KEY, 1)
@@ -115,12 +129,12 @@ class SourceScreenViewModel(
     private suspend fun getPage(): MangaPage {
         return when {
             isLatest.value -> sourceHandler.getLatestManga(source, pageNum.value)
-            _query.value != null -> sourceHandler.getSearchResults(source, _query.value!!, pageNum.value)
+            _query.value != null || _usingFilters.value -> sourceHandler.getSearchResults(source, _query.value.orEmpty(), pageNum.value)
             else -> sourceHandler.getPopularManga(source, pageNum.value)
         }
     }
 
-    fun search(query: String?) {
+    fun startSearch(query: String?) {
         cleanBundle(false)
         _pageNum.value = 0
         _hasNextPage.value = true
@@ -130,6 +144,26 @@ class SourceScreenViewModel(
         loadNextPage()
     }
 
+    fun showingFilters(show: Boolean) {
+        _showingFilters.value = show
+    }
+    fun setUsingFilters(usingFilters: Boolean) {
+        _usingFilters.value = usingFilters
+    }
+    fun enableFilters(enabled: Boolean) {
+        _filterButtonEnabled.value = enabled
+    }
+    fun enableLatest(enabled: Boolean) {
+        _latestButtonEnabled.value = enabled
+    }
+
+    fun search(query: String) {
+        _sourceSearchQuery.value = query
+    }
+    fun submitSearch() {
+        startSearch(sourceSearchQuery.value)
+    }
+
     data class Params(val source: Source, val bundle: Bundle)
 
     private companion object {
@@ -137,6 +171,8 @@ class SourceScreenViewModel(
         const val NEXT_PAGE_KEY = "next_page"
         const val PAGE_NUM_KEY = "page_num"
         const val IS_LATEST_KEY = "is_latest"
+        const val SHOW_FILTERS = "show_filters"
+        const val SHOW_LATEST = "show_latest"
         const val QUERY_KEY = "query"
     }
 }
