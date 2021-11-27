@@ -39,11 +39,11 @@ fun Spinner(modifier: Modifier, items: List<String>, selectedItemIndex: Int, onS
     Box(
         modifier then Modifier.border(1.dp, MaterialTheme.colors.primary, shape)
             .clip(shape)
+            .clickable { expanded = true }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
-                .padding(16.dp)
-                .clickable { expanded = true },
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
