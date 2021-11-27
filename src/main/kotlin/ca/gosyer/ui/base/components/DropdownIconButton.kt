@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.awtEvent
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.changedToDown
@@ -56,7 +57,7 @@ fun DropdownIconButton(
             .pointerInput(Unit) {
                 forEachGesture {
                     awaitPointerEventScope {
-                        awaitEventFirstDown().mouseEvent?.let {
+                        awaitEventFirstDown().awtEvent.let {
                             offset = DpOffset(it.xOnScreen.dp, it.yOnScreen.dp)
                         }
                     }

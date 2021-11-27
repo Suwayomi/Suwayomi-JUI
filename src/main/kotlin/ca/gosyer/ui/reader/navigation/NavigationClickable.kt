@@ -83,7 +83,7 @@ fun Modifier.navigationClickable(
         .pointerInput(interactionSource) {
             forEachGesture {
                 awaitPointerEventScope {
-                    lastEvent = awaitEventFirstDown().mouseEvent
+                    lastEvent = awaitEventFirstDown().awtEvent
                 }
             }
         }
