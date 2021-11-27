@@ -8,21 +8,23 @@ package ca.gosyer.ui.base.resources
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
 import ca.gosyer.data.translation.XmlResourceBundle
 
 val LocalResources: ProvidableCompositionLocal<XmlResourceBundle> =
     compositionLocalOf { throw IllegalStateException("resources have not been not initialized") }
 
 @Composable
+@ReadOnlyComposable
 fun stringResource(key: String): String {
     val resources = LocalResources.current
-    return remember(key) { resources.getStringA(key) }
+    return resources.getStringA(key)
 }
 
 @Composable
+@ReadOnlyComposable
 fun stringResource(key: String, vararg replacements: Any): String {
     val resources = LocalResources.current
-    return remember(key, replacements) { resources.getString(key, *replacements) }
+    return resources.getString(key, *replacements)
 }
