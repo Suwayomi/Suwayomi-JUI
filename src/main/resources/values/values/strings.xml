@@ -77,11 +77,15 @@
     <string name="filter_source">Filter</string>
 
     <!-- Reader Menu -->
+    <string name="default_reader_mode">Default</string>
+    <string name="reader_mode">Reader mode</string>
     <string name="no_pages_found">No pages found</string>
     <string name="no_previous_chapter">There is no previous chapter</string>
     <string name="previous_chapter">Previous:\n %1$s</string>
     <string name="next_chapter">Next:\n %1$s</string>
     <string name="no_next_chapter">There is no next chapter</string>
+    <string name="nav_next_chapter">Next chapter</string>
+    <string name="nav_prev_chapter">Previous chapter</string>
 
     <!-- Settings-->
     <string name="settings_advanced">Advanced</string>

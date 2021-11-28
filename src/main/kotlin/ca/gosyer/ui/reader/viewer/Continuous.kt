@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.ui.reader.ChapterSeparator
 import ca.gosyer.ui.reader.ReaderImage
 import ca.gosyer.ui.reader.model.MoveTo
+import ca.gosyer.ui.reader.model.PageMove
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import kotlinx.coroutines.flow.SharedFlow
@@ -40,6 +42,7 @@ import kotlinx.coroutines.flow.mapLatest
 
 @Composable
 fun ContinuousReader(
+    modifier: Modifier,
     pages: List<ReaderPage>,
     direction: Direction,
     maxSize: Int,
@@ -51,21 +54,33 @@ fun ContinuousReader(
     nextChapter: ReaderChapter?,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    pageEmitter: SharedFlow<Pair<MoveTo, Int>>,
+    pageEmitter: SharedFlow<PageMove>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit
 ) {
-    BoxWithConstraints {
+    BoxWithConstraints(modifier then Modifier.fillMaxSize()) {
         val state = rememberLazyListState(currentPage, currentPageOffset)
         LaunchedEffect(Unit) {
             pageEmitter
-                .mapLatest { (moveTo) ->
-                    val by = when (moveTo) {
-                        MoveTo.Previous -> -maxHeight
-                        MoveTo.Next -> maxHeight
+                .mapLatest { pageMove ->
+                    when (pageMove) {
+                        is PageMove.Direction -> {
+                            val (moveTo) = pageMove
+                            val by = when (moveTo) {
+                                MoveTo.Previous -> -maxHeight
+                                MoveTo.Next -> maxHeight
+                            }
+                            state.animateScrollBy(by.value)
+                            Unit
+                        }
+                        is PageMove.Page -> {
+                            val (pageNumber) = pageMove
+                            if (pageNumber in 0..pages.size) {
+                                state.animateScrollToItem(pageNumber)
+                            }
+                        }
                     }
-                    state.animateScrollBy(by.value)
                 }
                 .launchIn(this)
         }

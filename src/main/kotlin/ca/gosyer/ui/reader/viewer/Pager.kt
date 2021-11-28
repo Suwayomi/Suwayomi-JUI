@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.reader.viewer
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,6 +16,7 @@ import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.ui.reader.ChapterSeparator
 import ca.gosyer.ui.reader.ReaderImage
 import ca.gosyer.ui.reader.model.MoveTo
+import ca.gosyer.ui.reader.model.PageMove
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import com.google.accompanist.pager.HorizontalPager
@@ -26,6 +28,7 @@ import kotlinx.coroutines.flow.mapLatest
 
 @Composable
 fun PagerReader(
+    parentModifier: Modifier,
     direction: Direction,
     currentPage: Int,
     pages: List<ReaderPage>,
@@ -34,21 +37,33 @@ fun PagerReader(
     nextChapter: ReaderChapter?,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    pageEmitter: SharedFlow<Pair<MoveTo, Int>>,
+    pageEmitter: SharedFlow<PageMove>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit
 ) {
-    val state = rememberPagerState(pages.size + 1, initialPage = currentPage)
+    val state = rememberPagerState(pages.size + 2, initialPage = currentPage)
 
     LaunchedEffect(Unit) {
+        val pageRange = 0..(pages.size + 1)
         pageEmitter
-            .mapLatest { (moveTo, currentPage) ->
-                val page = when (moveTo) {
-                    MoveTo.Previous -> currentPage - 1
-                    MoveTo.Next -> currentPage + 1
-                }
-                if (page in 0..pages.size) {
-                    state.animateScrollToPage(page)
+            .mapLatest { pageMove ->
+                when (pageMove) {
+                    is PageMove.Direction -> {
+                        val (moveTo, currentPage) = pageMove
+                        val page = when (moveTo) {
+                            MoveTo.Previous -> currentPage - 1
+                            MoveTo.Next -> currentPage + 1
+                        }
+                        if (page in pageRange) {
+                            state.animateScrollToPage(page)
+                        }
+                    }
+                    is PageMove.Page -> {
+                        val (pageNumber) = pageMove
+                        if (pageNumber in pageRange) {
+                            state.animateScrollToPage(pageNumber)
+                        }
+                    }
                 }
             }
             .launchIn(this)
@@ -59,9 +74,10 @@ fun PagerReader(
             progress(state.currentPage)
         }
     }
+    val modifier = parentModifier then Modifier.fillMaxSize()
 
     if (direction == Direction.Down || direction == Direction.Up) {
-        VerticalPager(state, reverseLayout = direction == Direction.Up) {
+        VerticalPager(state, reverseLayout = direction == Direction.Up, modifier = modifier) {
             HandlePager(
                 pages,
                 it,
@@ -74,7 +90,7 @@ fun PagerReader(
             )
         }
     } else {
-        HorizontalPager(state, reverseLayout = direction == Direction.Left) {
+        HorizontalPager(state, reverseLayout = direction == Direction.Left, modifier = modifier) {
             HandlePager(
                 pages,
                 it,
@@ -102,7 +118,7 @@ fun HandlePager(
 ) {
     when (page) {
         0 -> ChapterSeparator(previousChapter, currentChapter)
-        pages.size -> ChapterSeparator(currentChapter, nextChapter)
+        pages.size + 1 -> ChapterSeparator(currentChapter, nextChapter)
         else -> {
             val image = pages[page - 1]
             ReaderImage(

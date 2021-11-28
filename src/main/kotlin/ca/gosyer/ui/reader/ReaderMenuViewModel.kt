@@ -6,34 +6,48 @@
 
 package ca.gosyer.ui.reader
 
+import ca.gosyer.data.models.Chapter
+import ca.gosyer.data.models.Manga
+import ca.gosyer.data.models.MangaMeta
 import ca.gosyer.data.reader.ReaderModeWatch
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
+import ca.gosyer.data.server.interactions.MangaInteractionHandler
+import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.reader.model.MoveTo
 import ca.gosyer.ui.reader.model.Navigation
+import ca.gosyer.ui.reader.model.PageMove
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.ui.reader.model.ViewerChapters
 import ca.gosyer.util.lang.throwIfCancellation
+import ca.gosyer.util.system.CKLogger
+import ca.gosyer.util.system.getAsFlow
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ReaderMenuViewModel @Inject constructor(
     private val params: Params,
     private val readerPreferences: ReaderPreferences,
+    private val mangaHandler: MangaInteractionHandler,
     private val chapterHandler: ChapterInteractionHandler
 ) : ViewModel() {
+    private val _manga = MutableStateFlow<Manga?>(null)
     private val viewerChapters = ViewerChapters(
         MutableStateFlow(null),
         MutableStateFlow(null),
@@ -55,12 +69,25 @@ class ReaderMenuViewModel @Inject constructor(
     private val _currentPageOffset = MutableStateFlow(1)
     val currentPageOffset = _currentPageOffset.asStateFlow()
 
-    private val _pageEmitter = MutableSharedFlow<Pair<MoveTo, Int>>()
+    private val _pageEmitter = MutableSharedFlow<PageMove>()
     val pageEmitter = _pageEmitter.asSharedFlow()
 
-    val readerModeSettings = ReaderModeWatch(readerPreferences, scope)
+    val readerModes = readerPreferences.modes().asStateIn(scope)
+    val readerMode = combine(merge(readerPreferences.mode().getAsFlow()), _manga) { mode, manga ->
+        if (
+            manga != null &&
+            manga.meta.juiReaderMode != MangaMeta.DEFAULT_READER_MODE &&
+            manga.meta.juiReaderMode in readerModes.value
+        ) {
+            manga.meta.juiReaderMode
+        } else {
+            mode
+        }
+    }.stateIn(scope, SharingStarted.Eagerly, readerPreferences.mode().get())
 
-    private val loader = ChapterLoader(scope.coroutineContext, readerPreferences, chapterHandler)
+    val readerModeSettings = ReaderModeWatch(readerPreferences, scope, readerMode)
+
+    private val loader = ChapterLoader(readerPreferences, chapterHandler)
 
     init {
         init()
@@ -68,7 +95,8 @@ class ReaderMenuViewModel @Inject constructor(
 
     fun init() {
         scope.launch(Dispatchers.Default) {
-            init(params.mangaId, params.chapterIndex)
+            initManga(params.mangaId)
+            initChapters(params.mangaId, params.chapterIndex)
         }
     }
 
@@ -88,31 +116,81 @@ class ReaderMenuViewModel @Inject constructor(
                 }
             }
             if (moveTo != null) {
-                moveDirection(moveTo)
+                _pageEmitter.emit(PageMove.Direction(moveTo, currentPage.value))
             }
         }
     }
 
-    private suspend fun moveDirection(direction: MoveTo) {
-        _pageEmitter.emit(direction to currentPage.value)
+    fun navigate(page: Int) {
+        info { "Navigate to $page" }
+        scope.launch {
+            _pageEmitter.emit(PageMove.Page(page))
+        }
     }
 
     fun progress(index: Int) {
+        info { "Progressed to $index" }
         _currentPage.value = index
     }
 
     fun retry(page: ReaderPage) {
+        info { "Retrying $page" }
         chapter.value?.pageLoader?.retryPage(page)
     }
 
     private fun resetValues() {
+        viewerChapters.recycle()
         _pages.value = emptyList()
         _currentPage.value = 1
-        _state.value = ReaderChapter.State.Wait
-        viewerChapters.recycle()
     }
 
-    suspend fun init(mangaId: Long, chapterIndex: Int) {
+    fun setMangaReaderMode(mode: String) {
+        scope.launch(Dispatchers.Default) {
+            _manga.value?.updateRemote(
+                mangaHandler,
+                mode
+            )
+            initManga(params.mangaId)
+        }
+    }
+
+    fun prevChapter() {
+        scope.launch(Dispatchers.Default) {
+            val prevChapter = previousChapter.value ?: return@launch
+            try {
+                _state.value = ReaderChapter.State.Wait
+                sendProgress()
+                initChapters(params.mangaId, prevChapter.chapter.index)
+            } catch (e: Exception) {
+                info(e) { "Error loading prev chapter" }
+            }
+        }
+    }
+
+    fun nextChapter() {
+        scope.launch(Dispatchers.Default) {
+            val nextChapter = nextChapter.value ?: return@launch
+            try {
+                _state.value = ReaderChapter.State.Wait
+                sendProgress()
+                initChapters(params.mangaId, nextChapter.chapter.index)
+            } catch (e: Exception) {
+                info(e) { "Error loading next chapter" }
+            }
+        }
+    }
+
+    private suspend fun initManga(mangaId: Long) {
+        try {
+            _manga.value = mangaHandler.getManga(mangaId)
+        } catch (e: Exception) {
+            e.throwIfCancellation()
+            _state.value = ReaderChapter.State.Error(e)
+            throw e
+        }
+    }
+
+    private suspend fun initChapters(mangaId: Long, chapterIndex: Int) {
         resetValues()
         val chapter = ReaderChapter(
             try {
@@ -147,12 +225,12 @@ class ReaderMenuViewModel @Inject constructor(
         }
         val lastPageRead = chapter.chapter.lastPageRead
         if (lastPageRead != 0) {
-            _currentPage.value = lastPageRead
+            _currentPage.value = lastPageRead.coerceAtMost(chapter.chapter.pageCount!!)
         }
 
         val lastPageReadOffset = chapter.chapter.meta.juiPageOffset
         if (lastPageReadOffset != 0) {
-            _currentPage.value = lastPageReadOffset
+            _currentPageOffset.value = lastPageReadOffset
         }
 
         chapter.stateObserver
@@ -162,17 +240,16 @@ class ReaderMenuViewModel @Inject constructor(
             .launchIn(chapter.scope)
         pages
             .onEach { pageList ->
-                pageList.forEach { it.chapter = chapter }
                 _pages.value = pageList
+                pageList.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
             }
             .launchIn(chapter.scope)
 
         _currentPage
             .onEach { index ->
+                pages.value.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
                 if (index == pages.value.size) {
                     markChapterRead(mangaId, chapter)
-                } else {
-                    pages.value.getOrNull(index - 1)?.let { chapter.pageLoader?.loadPage(it) }
                 }
             }
             .launchIn(chapter.scope)
@@ -183,18 +260,22 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun sendProgress() {
-        val chapter = chapter.value?.chapter ?: return
+    fun sendProgress(chapter: Chapter? = this.chapter.value?.chapter, lastPageRead: Int = currentPage.value) {
+        chapter ?: return
         if (chapter.read) return
         GlobalScope.launch {
-            chapterHandler.updateChapter(chapter.mangaId, chapter.index, lastPageRead = currentPage.value)
+            chapterHandler.updateChapter(chapter.mangaId, chapter.index, lastPageRead = lastPageRead)
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun updateLastPageReadOffset(offset: Int) {
+        updateLastPageReadOffset(chapter.value?.chapter ?: return, offset)
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun updateLastPageReadOffset(chapter: Chapter, offset: Int) {
         GlobalScope.launch {
-            chapter.value?.chapter?.updateRemote(chapterHandler, offset)
+            chapter.updateRemote(chapterHandler, offset)
         }
     }
 
@@ -203,4 +284,6 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     data class Params(val chapterIndex: Int, val mangaId: Long)
+
+    private companion object : CKLogger({})
 }

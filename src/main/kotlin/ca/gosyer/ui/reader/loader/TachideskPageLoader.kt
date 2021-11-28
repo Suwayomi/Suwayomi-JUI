@@ -15,6 +15,7 @@ import ca.gosyer.util.system.CKLogger
 import io.github.kerubistan.kroki.coroutines.priorityChannel
 import io.ktor.client.features.onDownload
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,15 +23,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.coroutines.CoroutineContext
 
 class TachideskPageLoader(
-    context: CoroutineContext,
     val chapter: ReaderChapter,
     readerPreferences: ReaderPreferences,
     chapterHandler: ChapterInteractionHandler
 ) : PageLoader() {
-    val scope = CoroutineScope(SupervisorJob() + context)
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     /**
      * A channel used to manage requests one by one while allowing priorities.
@@ -107,14 +106,15 @@ class TachideskPageLoader(
     override fun getPages(): StateFlow<List<ReaderPage>> {
         scope.launch {
             if (pagesFlow.value.isNotEmpty()) return@launch
-            val pageRange = chapter.chapter.pageCount?.let { 0..it } ?: IntRange.EMPTY
+            val pageRange = chapter.chapter.pageCount?.let { 0..it.minus(1) } ?: IntRange.EMPTY
             pagesFlow.value = pageRange.map {
                 ReaderPage(
                     index = it,
                     bitmap = MutableStateFlow(null),
                     progress = MutableStateFlow(0.0F),
                     status = MutableStateFlow(ReaderPage.Status.QUEUE),
-                    error = MutableStateFlow(null)
+                    error = MutableStateFlow(null),
+                    chapter = chapter
                 )
             }
         }

@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 
-fun <T> Preference<T>.getAsFlow(action: suspend (T) -> Unit): Flow<T> {
-    return merge(flowOf(get()), changes()).onEach(action = action)
+fun <T> Preference<T>.getAsFlow(action: (suspend (T) -> Unit)? = null): Flow<T> {
+    val flow = merge(flowOf(get()), changes())
+    return if (action != null) {
+        flow.onEach(action = action)
+    } else flow
 }

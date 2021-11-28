@@ -6,7 +6,13 @@
 
 package ca.gosyer.ui.reader
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +21,13 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -139,6 +150,8 @@ fun ReaderMenu(
     val chapter by vm.chapter.collectAsState()
     val nextChapter by vm.nextChapter.collectAsState()
     val pages by vm.pages.collectAsState()
+    val readerModes by vm.readerModes.collectAsState()
+    val readerMode by vm.readerMode.collectAsState()
     val continuous by vm.readerModeSettings.continuous.collectAsState()
     val direction by vm.readerModeSettings.direction.collectAsState()
     val padding by vm.readerModeSettings.padding.collectAsState()
@@ -177,16 +190,49 @@ fun ReaderMenu(
     Surface {
         Crossfade(state to chapter) { (state, chapter) ->
             if (state is ReaderChapter.State.Loaded && chapter != null) {
-                Box(
-                    Modifier.fillMaxSize()
-                        .navigationClickable(navigationMode.toNavigation()) {
-                            vm.navigate(it)
+                if (pages.isNotEmpty()) {
+                    var sideMenuOpen by remember { mutableStateOf(true) }
+                    val sideMenuSize by animateDpAsState(
+                        targetValue = if (sideMenuOpen) {
+                            260.dp
+                        } else {
+                            0.dp
                         }
-                ) {
+                    )
+
                     val loadingModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
-                    if (pages.isNotEmpty()) {
+                    AnimatedVisibility(
+                        sideMenuOpen,
+                        enter = fadeIn() + slideInHorizontally(),
+                        exit = fadeOut() + slideOutHorizontally()
+                    ) {
+                        ReaderSideMenu(
+                            chapter = chapter,
+                            currentPage = currentPage,
+                            readerModes = readerModes,
+                            selectedMode = readerMode,
+                            onNewPageClicked = vm::navigate,
+                            onCloseSideMenuClicked = {
+                                sideMenuOpen = false
+                            },
+                            onSetReaderMode = vm::setMangaReaderMode,
+                            onPrevChapterClicked = vm::prevChapter,
+                            onNextChapterClicked = vm::nextChapter
+                        )
+                    }
+
+                    Box(
+                        Modifier.padding(start = sideMenuSize).fillMaxSize()
+                    ) {
+                        val readerModifier = Modifier
+                            .navigationClickable(
+                                navigation = navigationMode.toNavigation(),
+                                onClick = vm::navigate
+                            )
+
                         if (continuous) {
                             ContinuousReader(
+                                readerModifier,
                                 pages,
                                 direction,
                                 maxSize,
@@ -213,6 +259,7 @@ fun ReaderMenu(
                             )
                         } else {
                             PagerReader(
+                                readerModifier,
                                 direction,
                                 currentPage,
                                 pages,
@@ -226,9 +273,10 @@ fun ReaderMenu(
                                 vm::progress
                             )
                         }
-                    } else {
-                        ErrorScreen(stringResource("no_pages_found"))
+                        SideMenuButton(sideMenuOpen, onOpenSideMenuClicked = { sideMenuOpen = true })
                     }
+                } else {
+                    ErrorScreen(stringResource("no_pages_found"))
                 }
             } else {
                 LoadingScreen(
@@ -237,6 +285,19 @@ fun ReaderMenu(
                     retry = vm::init
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun SideMenuButton(sideMenuOpen: Boolean, onOpenSideMenuClicked: () -> Unit) {
+    AnimatedVisibility(
+        !sideMenuOpen,
+        enter = fadeIn() + slideInHorizontally(),
+        exit = fadeOut() + slideOutHorizontally()
+    ) {
+        IconButton(onOpenSideMenuClicked) {
+            Icon(Icons.Rounded.ChevronRight, null)
         }
     }
 }

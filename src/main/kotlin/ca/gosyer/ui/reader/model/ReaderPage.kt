@@ -14,13 +14,11 @@ data class ReaderPage(
     val bitmap: MutableStateFlow<ImageBitmap?>,
     val progress: MutableStateFlow<Float>,
     val status: MutableStateFlow<Status>,
-    val error: MutableStateFlow<String?>
+    val error: MutableStateFlow<String?>,
+    val chapter: ReaderChapter
 ) {
-    lateinit var chapter: ReaderChapter
     enum class Status {
         QUEUE,
-        LOAD_PAGE,
-        DOWNLOAD_IMAGE,
         READY,
         ERROR
     }

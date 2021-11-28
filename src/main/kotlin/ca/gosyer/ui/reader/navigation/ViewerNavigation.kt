@@ -6,8 +6,9 @@
 
 package ca.gosyer.ui.reader.navigation
 
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import ca.gosyer.data.reader.model.TappingInvertMode
 import ca.gosyer.ui.reader.model.Navigation
 
@@ -54,9 +55,9 @@ abstract class ViewerNavigation {
 
     var invertMode: TappingInvertMode = TappingInvertMode.NONE
 
-    fun getAction(pos: IntOffset, windowSize: IntSize): Navigation {
-        val realX = pos.x / (windowSize.width * 0.01F)
-        val realY = pos.y / (windowSize.height * 0.01F)
+    fun getAction(pos: Offset, layoutSize: Size): Navigation {
+        val realX = pos.x / (layoutSize.width * 0.01F)
+        val realY = pos.y / (layoutSize.height * 0.01F)
         val realPos = IntOffset(realX.toInt(), realY.toInt())
 
         val region = regions.map { it.invert(invertMode) }

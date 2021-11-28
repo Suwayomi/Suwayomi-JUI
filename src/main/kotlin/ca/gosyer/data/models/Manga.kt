@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.models
 
+import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -29,9 +30,22 @@ data class Manga(
     val inLibraryAt: Long,
     val unreadCount: Int?,
     val downloadCount: Int?
-)
+) {
+    suspend fun updateRemote(
+        mangaHandler: MangaInteractionHandler,
+        readerMode: String = meta.juiReaderMode
+    ) {
+        if (readerMode != meta.juiReaderMode) {
+            mangaHandler.updateMangaMeta(this, "juiReaderMode", readerMode)
+        }
+    }
+}
 
 @Serializable
 data class MangaMeta(
-    val jui: Int? = null
-)
+    val juiReaderMode: String = DEFAULT_READER_MODE
+) {
+    companion object {
+        const val DEFAULT_READER_MODE = "default"
+    }
+}
