@@ -161,7 +161,9 @@ fun MainWindow(modifier: Modifier, rootBundle: Bundle) {
                     }
                     is Routes.Extensions -> ExtensionsMenu()
                     is Routes.Manga -> MangaMenu(routing.mangaId)
-                    is Routes.Downloads -> DownloadsMenu()
+                    is Routes.Downloads -> DownloadsMenu {
+                        menuController.push(Routes.Manga(it))
+                    }
 
                     is Routes.SourceSettings -> SourceSettingsMenu(routing.sourceId)
 
