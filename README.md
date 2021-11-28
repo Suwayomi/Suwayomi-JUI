@@ -24,7 +24,7 @@ These are the versions of [Tachidesk-Server][tachidesk-server] that JUI supports
 #### [Release build][release]
 - [Tachidesk-Server][tachidesk-server] v0.4.5, works up to v0.4.9
 #### [Preview build][preview]
-- [Tachidesk-Server][tachidesk-server] v0.5.3
+- [Tachidesk-Server Preview][tachidesk-server-preview] v0.5.4-r1044
 
 ## Downloading and Running the app
 ### All Operating Systems (x64, Java Not Included)
@@ -107,3 +107,4 @@ You can obtain a copy of `Mozilla Public License v2.0` from https://mozilla.org/
 [release]: https://github.com/Suwayomi/Tachidesk-JUI/releases
 [preview]: https://github.com/Suwayomi/Tachidesk-JUI-preview/releases
 [tachidesk-server]: https://github.com/Suwayomi/Tachidesk-Server
+[tachidesk-server-preview]: https://github.com/Suwayomi/Tachidesk-Server-preview/releases
