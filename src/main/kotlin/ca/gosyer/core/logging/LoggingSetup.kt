@@ -60,11 +60,11 @@ fun initializeLogger(loggingLocation: Path) {
                 newAppender("Rolling", "RollingFile")
                     .addAttribute(
                         "fileName",
-                        loggingLocation.absolutePathString().trimEnd { it == '/' || it == '\\' } + "/rolling.log"
+                        loggingLocation.absolutePathString().trimEnd('/', '\\') + "/rolling.log"
                     )
                     .addAttribute(
                         "filePattern",
-                        loggingLocation.absolutePathString().trimEnd { it == '/' || it == '\\' } + "/archive/rolling-%d{yyyy-MM-dd-}.log.gz"
+                        loggingLocation.absolutePathString().trimEnd('/', '\\') + "/archive/rolling-%d{yyyy-MM-dd-}.log.gz"
                     )
                     .add(
                         newLayout("PatternLayout")

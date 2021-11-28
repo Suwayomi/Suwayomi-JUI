@@ -59,12 +59,12 @@ fun openLibraryMenu() {
 }
 
 @Composable
-fun LibraryScreen(onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
+fun LibraryScreen(onClickManga: (Long) -> Unit = ::openMangaMenu) {
     LibraryScreen(LocalSavedInstanceState.current, onClickManga)
 }
 
 @Composable
-fun LibraryScreen(bundle: Bundle, onClickManga: (Long) -> Unit = { openMangaMenu(it) }) {
+fun LibraryScreen(bundle: Bundle, onClickManga: (Long) -> Unit = ::openMangaMenu) {
     val vm = viewModel<LibraryScreenViewModel> {
         bundle
     }
