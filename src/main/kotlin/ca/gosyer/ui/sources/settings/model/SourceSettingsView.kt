@@ -9,6 +9,7 @@ package ca.gosyer.ui.sources.settings.model
 import ca.gosyer.data.models.sourcepreference.CheckBoxPreference
 import ca.gosyer.data.models.sourcepreference.EditTextPreference
 import ca.gosyer.data.models.sourcepreference.ListPreference
+import ca.gosyer.data.models.sourcepreference.MultiSelectListPreference
 import ca.gosyer.data.models.sourcepreference.SourcePreference
 import ca.gosyer.data.models.sourcepreference.SwitchPreference
 import ca.gosyer.data.models.sourcepreference.TwoStateProps
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Formatter
+import kotlin.collections.List as KtList
 
 sealed class SourceSettingsView<T, R : Any?> {
     abstract val index: Int
@@ -76,12 +78,12 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val title: String?,
         override val subtitle: String?,
         override val props: ListPreference.ListProps
-    ) : SourceSettingsView<ListPreference.ListProps, Pair<String, String>>() {
+    ) : SourceSettingsView<ListPreference.ListProps, String>() {
         private val _state = MutableStateFlow(
-            (props.currentValue ?: props.defaultValue ?: "0") to props.entries[props.entryValues.indexOf(props.currentValue ?: props.defaultValue ?: "0")]
+            props.currentValue ?: props.defaultValue ?: "0"
         )
-        override val state: StateFlow<Pair<String, String>> = _state.asStateFlow()
-        override fun updateState(value: Pair<String, String>) {
+        override val state: StateFlow<String> = _state.asStateFlow()
+        override fun updateState(value: String) {
             _state.value = value
         }
         internal constructor(index: Int, preference: ListPreference) : this(
@@ -92,14 +94,43 @@ sealed class SourceSettingsView<T, R : Any?> {
         )
 
         override val summary: String?
-            get() = subtitle?.let { withFormat(it, state.value.second) }
+            get() = subtitle?.let { withFormat(it, props.entries[props.entryValues.indexOf(state.value)]) }
+
+        fun getOptions() = props.entryValues.mapIndexed { index, s ->
+            s to props.entries[index]
+        }
+    }
+
+    data class MultiSelect internal constructor(
+        override val index: Int,
+        override val title: String?,
+        override val subtitle: String?,
+        override val props: MultiSelectListPreference.MultiSelectListProps
+    ) : SourceSettingsView<MultiSelectListPreference.MultiSelectListProps, KtList<String>?>() {
+        private val _state = MutableStateFlow(
+            props.currentValue ?: props.defaultValue
+        )
+        override val state: StateFlow<KtList<String>?> = _state.asStateFlow()
+        override fun updateState(value: KtList<String>?) {
+            _state.value = value
+        }
+        internal constructor(index: Int, preference: MultiSelectListPreference) : this(
+            index,
+            preference.props.title,
+            preference.props.summary,
+            preference.props
+        )
 
         fun getOptions() = props.entryValues.mapIndexed { index, s ->
             s to props.entries[index]
         }
 
-        fun setValue(value: String) {
-            updateState(value to props.entries[props.entryValues.indexOf(value)])
+        fun toggleOption(key: String) {
+            if (key in state.value.orEmpty()) {
+                updateState(state.value.orEmpty() - key)
+            } else {
+                updateState(state.value.orEmpty() + key)
+            }
         }
     }
 
@@ -138,6 +169,7 @@ fun SourceSettingsView(index: Int, preference: SourcePreference): SourceSettings
         is CheckBoxPreference -> SourceSettingsView.CheckBox(index, preference)
         is SwitchPreference -> SourceSettingsView.Switch(index, preference)
         is ListPreference -> SourceSettingsView.List(index, preference)
+        is MultiSelectListPreference -> SourceSettingsView.MultiSelect(index, preference)
         is EditTextPreference -> SourceSettingsView.EditText(index, preference)
     }
 }

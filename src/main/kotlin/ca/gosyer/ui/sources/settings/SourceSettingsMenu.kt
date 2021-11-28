@@ -28,12 +28,14 @@ import ca.gosyer.ui.base.components.LocalMenuController
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoiceDialog
+import ca.gosyer.ui.base.prefs.MultiSelectDialog
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.CheckBox
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.EditText
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.List
+import ca.gosyer.ui.sources.settings.model.SourceSettingsView.MultiSelect
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.TwoState
 import ca.gosyer.util.compose.ThemedWindow
@@ -70,6 +72,9 @@ fun SourceSettingsMenu(sourceId: Long, menuController: MenuController? = LocalMe
                     }
                     is EditText -> {
                         EditTextPreference(it)
+                    }
+                    is MultiSelect -> {
+                        MultiSelectPreference(it)
                     }
                     else -> Unit
                 }
@@ -120,9 +125,35 @@ private fun ListPreference(list: List) {
         onClick = {
             ChoiceDialog(
                 list.getOptions(),
-                state.first,
-                onSelected = list::setValue,
-                title = "Select choice"
+                state,
+                onSelected = list::updateState,
+                title = title
+            )
+        }
+    )
+}
+
+@Composable
+private fun MultiSelectPreference(multiSelect: MultiSelect) {
+    val state by multiSelect.state.collectAsState()
+    val title = remember(state) { multiSelect.title ?: multiSelect.summary ?: "No title" }
+    val subtitle = remember(state) {
+        if (multiSelect.title == null) {
+            null
+        } else {
+            multiSelect.summary
+        }
+    }
+    val dialogTitle = remember(state) { multiSelect.props.dialogTitle ?: multiSelect.title ?: multiSelect.summary ?: "No title" }
+    PreferenceRow(
+        title,
+        subtitle = subtitle,
+        onClick = {
+            MultiSelectDialog(
+                multiSelect.getOptions(),
+                state,
+                onFinished = multiSelect::updateState,
+                title = dialogTitle
             )
         }
     )

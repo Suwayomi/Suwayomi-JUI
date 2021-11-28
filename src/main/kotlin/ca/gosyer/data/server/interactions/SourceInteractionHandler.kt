@@ -150,6 +150,6 @@ class SourceInteractionHandler @Inject constructor(
 
     suspend fun setSourceSetting(sourceId: Long, position: Int, value: Any) = setSourceSetting(
         sourceId,
-        SourcePreferenceChange(position, value.toString())
+        SourcePreferenceChange(position, value)
     )
 }

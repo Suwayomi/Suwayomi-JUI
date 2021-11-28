@@ -7,6 +7,16 @@
 package ca.gosyer.data.models.sourcepreference
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @Serializable
-data class SourcePreferenceChange(val position: Int, val value: String)
+data class SourcePreferenceChange(val position: Int, val value: String) {
+    constructor(position: Int, value: Any) : this(
+        position,
+        if (value is List<*>) {
+            @Suppress("UNCHECKED_CAST")
+            Json.encodeToString(value as List<String>)
+        } else value.toString()
+    )
+}
