@@ -6,7 +6,7 @@
 
 package ca.gosyer.data.server.requests
 
-@Get
+@WS
 fun downloadsQuery() =
     "/api/v1/downloads"
 

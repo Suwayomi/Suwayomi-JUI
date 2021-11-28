@@ -13,3 +13,5 @@ annotation class Post
 annotation class Delete
 
 annotation class Patch
+
+annotation class WS
