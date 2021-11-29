@@ -11,7 +11,7 @@ plugins {
     kotlin("jvm") version "1.5.31"
     kotlin("kapt") version "1.5.31"
     kotlin("plugin.serialization") version "1.5.31"
-    id("org.jetbrains.compose") version "1.0.0-rc5"
+    id("org.jetbrains.compose") version "1.0.0-rc6"
     id("com.github.gmazzo.buildconfig") version "3.0.3"
     id("org.jmailen.kotlinter") version "3.7.0"
     id("com.github.ben-manes.versions") version "0.39.0"
