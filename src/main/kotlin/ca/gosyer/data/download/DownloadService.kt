@@ -6,45 +6,30 @@
 
 package ca.gosyer.data.download
 
-import ca.gosyer.build.BuildConfig
+import ca.gosyer.core.service.WebsocketService
 import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloadStatus
 import ca.gosyer.data.download.model.DownloaderStatus
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.downloadsQuery
-import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
-import io.ktor.client.features.websocket.ws
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @OptIn(DelicateCoroutinesApi::class)
 class DownloadService @Inject constructor(
-    val serverPreferences: ServerPreferences,
-    val client: Http
-) {
-    private val json = Json {
-        ignoreUnknownKeys = !BuildConfig.DEBUG
-    }
-    private val _status = MutableStateFlow(Status.STARTING)
-    val status = _status.asStateFlow()
+    serverPreferences: ServerPreferences,
+    client: Http
+) : WebsocketService(serverPreferences, client) {
 
-    private val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
     private val _downloaderStatus = MutableStateFlow(DownloaderStatus.Stopped)
     val downloaderStatus = _downloaderStatus.asStateFlow()
 
@@ -52,56 +37,18 @@ class DownloadService @Inject constructor(
     val downloadQueue = _downloadQueue.asStateFlow()
 
     private val watching = mutableMapOf<Long, MutableSharedFlow<Pair<Long, List<DownloadChapter>>>>()
-    private var errorConnectionCount = 0
 
-    private var job: Job? = null
-    init {
-        init()
-    }
+    override val query: String
+        get() = downloadsQuery()
 
-    fun init() {
-        errorConnectionCount = 0
-        job?.cancel()
-        job = serverUrl.mapLatest { serverUrl ->
-            _status.value = Status.STARTING
-            while (true) {
-                if (errorConnectionCount > 3) {
-                    _status.value = Status.STOPPED
-                    throw CancellationException()
-                }
-                runCatching {
-                    client.ws(
-                        host = serverUrl.substringAfter("://"),
-                        path = downloadsQuery()
-                    ) {
-                        errorConnectionCount = 0
-                        _status.value = Status.RUNNING
-                        send(Frame.Text("STATUS"))
-
-                        while (true) {
-                            val frame = incoming.receive()
-                            runCatching {
-                                frame as Frame.Text
-                                val status = json.decodeFromString<DownloadStatus>(frame.readText())
-                                _downloaderStatus.value = status.status
-                                _downloadQueue.value = status.queue
-                                val queue = status.queue.groupBy { it.mangaId }
-                                watching.forEach { (mangaId, flow) ->
-                                    flow.emit(mangaId to queue[mangaId].orEmpty())
-                                }
-                            }.throwIfCancellation()
-                        }
-                    }
-                }.throwIfCancellation().isFailure.let {
-                    _status.value = Status.STARTING
-                    if (it) errorConnectionCount++
-                }
-            }
-        }.catch {
-            _status.value = Status.STOPPED
-            error(it) { "Error while running downloader" }
-            throw it
-        }.launchIn(GlobalScope)
+    override suspend fun onReceived(frame: Frame.Text) {
+        val status = json.decodeFromString<DownloadStatus>(frame.readText())
+        _downloaderStatus.value = status.status
+        _downloadQueue.value = status.queue
+        val queue = status.queue.groupBy { it.mangaId }
+        watching.forEach { (mangaId, flow) ->
+            flow.emit(mangaId to queue[mangaId].orEmpty())
+        }
     }
 
     fun registerWatch(mangaId: Long) =
@@ -114,12 +61,6 @@ class DownloadService @Inject constructor(
     }
     fun removeWatches(mangaIds: Set<Long>) {
         watching -= mangaIds
-    }
-
-    enum class Status {
-        STARTING,
-        RUNNING,
-        STOPPED
     }
 
     private companion object : CKLogger({})

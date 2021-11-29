@@ -11,6 +11,7 @@ import ca.gosyer.data.catalog.CatalogPreferences
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.library.LibraryPreferences
+import ca.gosyer.data.library.LibraryUpdateService
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.HttpProvider
@@ -99,5 +100,8 @@ val DataModule = module {
 
     bind<DownloadService>()
         .toClass<DownloadService>()
+        .singleton()
+    bind<LibraryUpdateService>()
+        .toClass<LibraryUpdateService>()
         .singleton()
 }

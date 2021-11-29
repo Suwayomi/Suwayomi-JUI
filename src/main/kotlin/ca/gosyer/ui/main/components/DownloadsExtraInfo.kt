@@ -17,7 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import ca.gosyer.data.download.DownloadService
+import ca.gosyer.core.service.WebsocketService
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.downloads.DownloadsMenuViewModel
@@ -28,13 +28,13 @@ fun DownloadsExtraInfo() {
     val status by vm.serviceStatus.collectAsState()
     val list by vm.downloadQueue.collectAsState()
     val text = when (status) {
-        DownloadService.Status.STARTING -> stringResource("downloads_loading")
-        DownloadService.Status.RUNNING -> {
+        WebsocketService.Status.STARTING -> stringResource("downloads_loading")
+        WebsocketService.Status.RUNNING -> {
             if (list.isNotEmpty()) {
                 stringResource("downloads_remaining", list.size)
             } else null
         }
-        DownloadService.Status.STOPPED -> null
+        WebsocketService.Status.STOPPED -> null
     }
     if (text != null) {
         Text(
@@ -42,7 +42,7 @@ fun DownloadsExtraInfo() {
             style = MaterialTheme.typography.body2,
             color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
         )
-    } else if (status == DownloadService.Status.STOPPED) {
+    } else if (status == WebsocketService.Status.STOPPED) {
         Surface(onClick = vm::restartDownloader, shape = RoundedCornerShape(4.dp)) {
             Text(
                 stringResource("downloads_stopped"),

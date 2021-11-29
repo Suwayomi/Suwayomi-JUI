@@ -11,6 +11,7 @@ import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
+import ca.gosyer.data.server.interactions.UpdatesInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.util.compose.saveIntInBundle
 import ca.gosyer.util.compose.saveStringInBundle
@@ -72,6 +73,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val bundle: Bundle,
     private val categoryHandler: CategoryInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
+    private val updatesHandler: UpdatesInteractionHandler,
     libraryPreferences: LibraryPreferences
 ) : ViewModel() {
     private val library = Library(MutableStateFlow(emptyList()), mutableMapOf())
@@ -153,6 +155,18 @@ class LibraryScreenViewModel @Inject constructor(
 
     fun updateQuery(query: String) {
         _query.value = query
+    }
+
+    fun updateLibrary() {
+        scope.launch {
+            updatesHandler.updateLibrary()
+        }
+    }
+
+    fun updateCategory(category: Category) {
+        scope.launch {
+            updatesHandler.updateCategory(category)
+        }
     }
 
     companion object {

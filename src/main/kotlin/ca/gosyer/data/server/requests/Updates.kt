@@ -9,3 +9,15 @@ package ca.gosyer.data.server.requests
 @Get
 fun recentUpdatesQuery(pageNum: Int) =
     "/api/v1/update/recentChapters/$pageNum"
+
+@Post
+fun fetchUpdatesRequest() =
+    "/api/v1/update/fetch"
+
+@Get
+fun updatesSummaryQuery() =
+    "/api/v1/update/summary"
+
+@WS
+fun updatesQuery() =
+    "/api/v1/update"
