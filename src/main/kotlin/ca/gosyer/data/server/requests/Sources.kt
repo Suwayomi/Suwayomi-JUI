@@ -23,12 +23,12 @@ fun sourceLatestQuery(sourceId: Long, pageNum: Int) =
     "/api/v1/source/$sourceId/latest/$pageNum"
 
 @Get
-fun globalSearchQuery(searchTerm: String) =
-    "/api/v1/search/$searchTerm"
+fun globalSearchQuery() =
+    "/api/v1/source/all/search"
 
 @Get
-fun sourceSearchQuery(sourceId: Long, searchTerm: String, pageNum: Int) =
-    "/api/v1/source/$sourceId/search/$searchTerm/$pageNum"
+fun sourceSearchQuery(sourceId: Long) =
+    "/api/v1/source/$sourceId/search"
 
 @Get
 fun getFilterListQuery(sourceId: Long) =

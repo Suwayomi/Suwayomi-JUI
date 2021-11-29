@@ -79,14 +79,27 @@ class SourceInteractionHandler @Inject constructor(
     // TODO: 2021-03-14
     suspend fun getGlobalSearchResults(searchTerm: String) = withIOContext {
         client.get<HttpResponse>(
-            serverUrl + globalSearchQuery(searchTerm)
-        )
+            serverUrl + globalSearchQuery()
+        ) {
+            url {
+                if (searchTerm.isNotBlank()) {
+                    parameter("searchTerm", searchTerm)
+                }
+            }
+        }
     }
 
     suspend fun getSearchResults(sourceId: Long, searchTerm: String, pageNum: Int) = withIOContext {
         client.get<MangaPage>(
-            serverUrl + sourceSearchQuery(sourceId, searchTerm, pageNum)
-        )
+            serverUrl + sourceSearchQuery(sourceId)
+        ) {
+            url {
+                parameter("pageNum", pageNum)
+                if (searchTerm.isNotBlank()) {
+                    parameter("searchTerm", searchTerm)
+                }
+            }
+        }
     }
 
     suspend fun getSearchResults(source: Source, searchTerm: String, pageNum: Int) = getSearchResults(
