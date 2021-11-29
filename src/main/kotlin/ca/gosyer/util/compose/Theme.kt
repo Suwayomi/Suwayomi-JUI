@@ -11,13 +11,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.translation.XmlResourceBundle
-import ca.gosyer.ui.base.components.setIcon
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.theme.AppTheme
 
@@ -27,7 +27,7 @@ fun ThemedWindow(
     state: WindowState = rememberWindowState(),
     visible: Boolean = true,
     title: String = "Untitled",
-    icon: Painter? = null,
+    icon: Painter = painterResource("icon.png"),
     undecorated: Boolean = false,
     transparent: Boolean = false,
     resizable: Boolean = true,
@@ -54,7 +54,6 @@ fun ThemedWindow(
         onPreviewKeyEvent = onPreviewKeyEvent,
         onKeyEvent = onKeyEvent
     ) {
-        setIcon()
         CompositionLocalProvider(
             LocalResources provides resources
         ) {

@@ -20,6 +20,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
 import androidx.compose.ui.window.rememberWindowState
@@ -33,8 +34,6 @@ import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.LoadingScreen
-import ca.gosyer.ui.base.components.LocalComposeWindow
-import ca.gosyer.ui.base.components.setIcon
 import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.resources.stringResource
@@ -149,6 +148,8 @@ suspend fun main() {
             placement = placement
         )
 
+        val icon = painterResource("icon.png")
+
         Window(
             onCloseRequest = {
                 if (confirmExit.value) {
@@ -163,6 +164,7 @@ suspend fun main() {
                 }
             },
             title = BuildConfig.NAME,
+            icon = icon,
             state = windowState,
             onKeyEvent = {
                 if (it.type == KeyEventType.KeyUp) {
@@ -179,10 +181,8 @@ suspend fun main() {
                 } else false
             }
         ) {
-            setIcon()
             AppTheme {
                 CompositionLocalProvider(
-                    LocalComposeWindow provides window,
                     LocalBackPressHandler provides backPressHandler,
                     LocalResources provides resources,
                     LocalKamelConfig provides kamelConfig

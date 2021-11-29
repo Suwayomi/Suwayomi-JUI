@@ -45,6 +45,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
@@ -59,9 +60,7 @@ import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.WindowSettings
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
-import ca.gosyer.ui.base.components.LocalComposeWindow
 import ca.gosyer.ui.base.components.mangaAspectRatio
-import ca.gosyer.ui.base.components.setIcon
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppTheme
@@ -95,6 +94,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
     val kamelConfig = AppScope.getInstance<KamelConfig>()
 
     launchApplication {
+        val icon = painterResource("icon.png")
         var shortcuts by remember {
             mutableStateOf(emptyMap<Key, ((KeyEvent) -> Boolean)>())
         }
@@ -116,14 +116,13 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
         Window(
             onCloseRequest = ::exitApplication,
             title = "${BuildConfig.NAME} - Reader",
+            icon = icon,
             state = windowState,
             onKeyEvent = {
                 shortcuts[it.key]?.invoke(it) ?: false
             }
         ) {
-            setIcon()
             CompositionLocalProvider(
-                LocalComposeWindow provides window,
                 LocalResources provides resources,
                 LocalKamelConfig provides kamelConfig
             ) {

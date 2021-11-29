@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -36,7 +37,6 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.common.di.AppScope
 import ca.gosyer.data.translation.XmlResourceBundle
-import ca.gosyer.ui.base.components.setIcon
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.lang.launchApplication
@@ -70,12 +70,14 @@ fun WindowDialog(
         exitApplication()
     }
 
+    val icon = painterResource("icon.png")
     val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
     val kamelConfig = remember { AppScope.getInstance<KamelConfig>() }
     val windowState = rememberWindowState(size = size, position = WindowPosition(Alignment.Center))
 
     Window(
         title = title,
+        icon = icon,
         state = windowState,
         onCloseRequest = ::exitApplication,
         onKeyEvent = {
@@ -96,7 +98,6 @@ fun WindowDialog(
         },
         alwaysOnTop = forceFocus
     ) {
-        setIcon()
         CompositionLocalProvider(
             LocalResources provides resources,
             LocalKamelConfig provides kamelConfig
@@ -147,12 +148,14 @@ fun WindowDialog(
         }
     }
 
+    val icon = painterResource("icon.png")
     val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
     val kamelConfig = remember { AppScope.getInstance<KamelConfig>() }
     val windowState = rememberWindowState(size = size, position = WindowPosition.Aligned(Alignment.Center))
 
     Window(
         title = title,
+        icon = icon,
         state = windowState,
         onCloseRequest = ::exitApplication,
         onKeyEvent = {
@@ -165,7 +168,6 @@ fun WindowDialog(
         },
         alwaysOnTop = forceFocus,
     ) {
-        setIcon()
         CompositionLocalProvider(
             LocalResources provides resources,
             LocalKamelConfig provides kamelConfig
