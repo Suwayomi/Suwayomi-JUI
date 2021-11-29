@@ -76,7 +76,7 @@ jobs:
 
     - name: Build
       if: ${{ matrix.runtime != 'linux-centos-x64' }}
-      uses: gradle/gradle-build-action@v1
+      uses: gradle/gradle-build-action@v2
       with:
         arguments: >
           ${{ matrix.build }}
@@ -85,9 +85,6 @@ jobs:
           -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }}
           -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
           -Pidentity="${{ secrets.APPLE_IDENTITY }}"
-        distributions-cache-enabled: true
-        dependencies-cache-enabled: true
-        configuration-cache-enabled: true
 
     # Upload runner package tar.gz/zip as artifact
     - name: Publish Artifact
