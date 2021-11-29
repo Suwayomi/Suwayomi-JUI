@@ -78,7 +78,6 @@
 
     <!-- Reader Menu -->
     <string name="default_reader_mode">Default</string>
-    <string name="reader_mode">Reader mode</string>
     <string name="no_pages_found">No pages found</string>
     <string name="no_previous_chapter">There is no previous chapter</string>
     <string name="previous_chapter">Previous:\n %1$s</string>
