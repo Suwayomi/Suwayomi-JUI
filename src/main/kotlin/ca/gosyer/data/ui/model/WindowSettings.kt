@@ -46,15 +46,7 @@ data class WindowSettings(
         return WindowGet(
             offset,
             size,
-            when {
-                maximized == true -> {
-                    WindowPlacement.Maximized
-                }
-                fullscreen == true -> {
-                    WindowPlacement.Fullscreen
-                }
-                else -> WindowPlacement.Floating
-            }
+            WindowPlacement.Floating
         )
     }
 
