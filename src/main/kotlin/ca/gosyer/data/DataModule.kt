@@ -12,6 +12,8 @@ import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.library.LibraryUpdateService
+import ca.gosyer.data.migration.MigrationPreferences
+import ca.gosyer.data.migration.Migrations
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.HttpProvider
@@ -65,6 +67,10 @@ val DataModule = module {
         .toProviderInstance { UiPreferences(preferenceFactory.create("ui")) }
         .providesSingleton()
 
+    bind<MigrationPreferences>()
+        .toProviderInstance { MigrationPreferences(preferenceFactory.create("migration")) }
+        .providesSingleton()
+
     bind<Http>()
         .toProvider(HttpProvider::class)
         .providesSingleton()
@@ -103,5 +109,9 @@ val DataModule = module {
         .singleton()
     bind<LibraryUpdateService>()
         .toClass<LibraryUpdateService>()
+        .singleton()
+
+    bind<Migrations>()
+        .toClass<Migrations>()
         .singleton()
 }

@@ -27,6 +27,7 @@ import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.core.logging.initializeLogger
 import ca.gosyer.data.DataModule
+import ca.gosyer.data.migration.Migrations
 import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.ServerService.ServerResult
 import ca.gosyer.data.translation.XmlResourceBundle
@@ -81,6 +82,8 @@ suspend fun main() {
         .installModules(
             DataModule
         )
+
+    scope.getInstance<Migrations>().runMigrations()
 
     val serverService = scope.getInstance<ServerService>()
     val uiPreferences = scope.getInstance<UiPreferences>()

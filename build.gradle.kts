@@ -1,3 +1,4 @@
+import Config.migrationCode
 import Config.serverCode
 import Config.tachideskVersion
 import org.gradle.jvm.tasks.Jar
@@ -228,7 +229,9 @@ buildConfig {
 
     buildConfigField("String", "NAME", project.name.wrap())
     buildConfigField("String", "VERSION", project.version.toString().wrap())
+    buildConfigField("int", "MIGRATION_CODE", migrationCode.toString())
 
+    // Tachidesk
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
     buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion.wrap())
     buildConfigField("int", "SERVER_CODE", serverCode.toString())
