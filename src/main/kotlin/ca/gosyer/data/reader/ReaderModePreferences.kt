@@ -36,7 +36,7 @@ class ReaderModePreferences(private val mode: String, private val preferenceStor
     }
 
     fun imageScale(): Preference<ImageScale> {
-        return preferenceStore.getJsonObject("direction", defaultMode?.imageScale ?: ImageScale.FitScreen, ImageScale.serializer())
+        return preferenceStore.getJsonObject("image_scale", defaultMode?.imageScale ?: ImageScale.FitScreen, ImageScale.serializer())
     }
 
     fun fitSize(): Preference<Boolean> {
