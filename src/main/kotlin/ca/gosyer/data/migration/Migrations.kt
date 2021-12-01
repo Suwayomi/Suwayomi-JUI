@@ -22,6 +22,7 @@ class Migrations @Inject constructor(
                 readerPreferences.getMode(it).direction().delete()
             }
             migrationPreferences.version().set(BuildConfig.MIGRATION_CODE)
+            return
         }
     }
 }
