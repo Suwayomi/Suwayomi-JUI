@@ -12,7 +12,7 @@ import ca.gosyer.data.reader.model.DefaultReaderMode
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 
-class ReaderPreferences(private val preferenceStore: PreferenceStore, val factory: (String) -> PreferenceStore) {
+class ReaderPreferences(private val preferenceStore: PreferenceStore, private val factory: (String) -> PreferenceStore) {
 
     fun preload(): Preference<Int> {
         return preferenceStore.getInt("preload", 3)
