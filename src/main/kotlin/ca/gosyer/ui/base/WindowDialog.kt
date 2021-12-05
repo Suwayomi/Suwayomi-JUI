@@ -57,7 +57,7 @@ fun WindowDialog(
     positiveButtonText: String = "OK",
     onPositiveButton: (() -> Unit)? = null,
     keyboardShortcuts: Map<Key, (KeyEvent) -> Boolean> = emptyMap(),
-    row: @Composable (RowScope.() -> Unit)
+    row: @Composable RowScope.() -> Unit
 ) = launchApplication {
     DisposableEffect(Unit) {
         onDispose {
