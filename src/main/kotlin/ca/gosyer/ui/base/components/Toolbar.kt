@@ -63,6 +63,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ca.gosyer.ui.base.resources.stringResource
 
 @Composable
 fun Toolbar(
@@ -119,7 +120,7 @@ fun Toolbar(
             Row(Modifier.animateContentSize()) {
                 actions()
                 if (closable) {
-                    TextActionIcon(onClick = onClose, "Close", Icons.Rounded.Close)
+                    TextActionIcon(onClick = onClose, stringResource("action_close"), Icons.Rounded.Close)
                 }
             }
         }

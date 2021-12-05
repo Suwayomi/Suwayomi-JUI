@@ -36,6 +36,7 @@
     <string name="action_remove_favorite">Unfavorite</string>
     <string name="action_refresh_manga">Refresh</string>
     <string name="action_retry">Retry</string>
+    <string name="action_close">Close</string>
 
     <!-- Locations -->
     <string name="location_library">Library</string>
