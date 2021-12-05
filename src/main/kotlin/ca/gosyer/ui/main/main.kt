@@ -21,8 +21,10 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
+import androidx.compose.ui.window.rememberTrayState
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.core.logging.initializeLogger
@@ -152,6 +154,16 @@ suspend fun main() {
         )
 
         val icon = painterResource("icon.png")
+
+        val trayState = rememberTrayState()
+        Tray(
+            icon,
+            trayState,
+            tooltip = BuildConfig.NAME,
+            menu = {
+                Item(resources.getStringA("action_close"), onClick = ::exitApplication)
+            }
+        )
 
         Window(
             onCloseRequest = {

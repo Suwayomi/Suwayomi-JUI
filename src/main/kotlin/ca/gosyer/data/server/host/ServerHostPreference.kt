@@ -103,6 +103,7 @@ sealed class ServerHostPreference<T : Any> {
     class SystemTrayEnabled(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
         preferenceStore,
         "systemTrayEnabled",
+        false,
         true
     )
 
