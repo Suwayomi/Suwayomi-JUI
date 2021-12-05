@@ -12,6 +12,8 @@
     <string name="unable_to_start_server">Cannot start server</string>
     <string name="confirm_exit">Confirm exit</string>
     <string name="confirm_exit_message">Are you sure you want to exit?</string>
+    <string name="new_update_title">Tachidesk-JUI update available</string>
+    <string name="new_update_message">%1$s is now available!</string>
 
     <!-- Actions -->
     <string name="action_yes">Yes</string>
@@ -219,4 +221,7 @@
     <string name="digest_auth">Digest auth</string>
     <string name="auth_username">Auth username</string>
     <string name="auth_password">Auth password</string>
+
+    <!-- Advanced Settings -->
+    <string name="update_checker">Check for updates</string>
 </resources>

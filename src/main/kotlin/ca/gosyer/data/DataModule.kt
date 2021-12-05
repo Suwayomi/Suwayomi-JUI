@@ -32,6 +32,8 @@ import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.data.translation.ResourceProvider
 import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
+import ca.gosyer.data.update.UpdateChecker
+import ca.gosyer.data.update.UpdatePreferences
 import io.kamel.core.config.KamelConfig
 import toothpick.ktp.binding.bind
 import toothpick.ktp.binding.module
@@ -69,6 +71,10 @@ val DataModule = module {
 
     bind<MigrationPreferences>()
         .toProviderInstance { MigrationPreferences(preferenceFactory.create("migration")) }
+        .providesSingleton()
+
+    bind<UpdatePreferences>()
+        .toProviderInstance { UpdatePreferences(preferenceFactory.create("update")) }
         .providesSingleton()
 
     bind<Http>()
@@ -113,5 +119,8 @@ val DataModule = module {
 
     bind<Migrations>()
         .toClass<Migrations>()
+        .singleton()
+    bind<UpdateChecker>()
+        .toClass<UpdateChecker>()
         .singleton()
 }

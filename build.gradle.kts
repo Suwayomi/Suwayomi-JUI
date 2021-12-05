@@ -230,9 +230,11 @@ buildConfig {
     buildConfigField("String", "NAME", project.name.wrap())
     buildConfigField("String", "VERSION", project.version.toString().wrap())
     buildConfigField("int", "MIGRATION_CODE", migrationCode.toString())
+    buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
+    buildConfigField("boolean", "IS_PREVIEW", project.hasProperty("preview").toString())
+    buildConfigField("int", "PREVIEW_BUILD", project.properties["preview"]?.toString() ?: 0.toString())
 
     // Tachidesk
-    buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
     buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion.wrap())
     buildConfigField("int", "SERVER_CODE", serverCode.toString())
 }

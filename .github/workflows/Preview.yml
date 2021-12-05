@@ -86,6 +86,7 @@ jobs:
           -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }}
           -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
           -Pidentity="${{ secrets.APPLE_IDENTITY }}"
+          -Ppreview="${{ env.COMMIT_COUNT }}"
           --stacktrace
 
     # Upload runner package tar.gz/zip as artifact
