@@ -26,7 +26,7 @@ jobs:
               },
               {
                 "type": "body",
-                "regex": "(Tachidesk\-JUI version|Operating System|Desktop Environment|Server Type|Client JVM version|Server JVM version):.*(\\(Example:|<usually).*",
+                "regex": "(Tachidesk\\-JUI version|Operating System|Desktop Environment|Server Type|Client JVM version|Server JVM version):.*(\\(Example:|<usually).*",
                 "message": "The requested information was not filled out"
               },
               {
