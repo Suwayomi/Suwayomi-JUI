@@ -12,7 +12,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -22,11 +21,8 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.window.Notification
-import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
-import androidx.compose.ui.window.rememberTrayState
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.core.logging.initializeLogger
@@ -44,6 +40,7 @@ import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppTheme
+import ca.gosyer.ui.main.components.Tray
 import ca.gosyer.util.lang.withUIContext
 import ca.gosyer.util.system.getAsFlow
 import ca.gosyer.util.system.userDataDir
@@ -58,9 +55,7 @@ import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.launch
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
 import toothpick.configuration.Configuration
@@ -161,30 +156,7 @@ suspend fun main() {
 
         val icon = painterResource("icon.png")
 
-        val trayState = rememberTrayState()
-        Tray(
-            icon,
-            trayState,
-            tooltip = BuildConfig.NAME,
-            menu = {
-                Item(resources.getStringA("action_close"), onClick = ::exitApplication)
-            }
-        )
-
-        LaunchedEffect(Unit) {
-            launch {
-                updateChecker.checkForUpdates()
-                updateChecker.updateFound.collect {
-                    trayState.sendNotification(
-                        Notification(
-                            resources.getStringA("new_update_title"),
-                            resources.getString("new_update_message", it.version),
-                            Notification.Type.Info
-                        )
-                    )
-                }
-            }
-        }
+        Tray(icon, resources)
 
         Window(
             onCloseRequest = {

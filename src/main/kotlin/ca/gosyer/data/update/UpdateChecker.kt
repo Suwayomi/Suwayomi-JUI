@@ -14,13 +14,15 @@ import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.get
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import javax.inject.Inject
 
 class UpdateChecker @Inject constructor(
     private val updatePreferences: UpdatePreferences,
     private val client: Http
 ) {
-    val updateFound = MutableSharedFlow<GithubRelease>()
+    private val _updateFound = MutableSharedFlow<GithubRelease>()
+    val updateFound = _updateFound.asSharedFlow()
 
     @OptIn(DelicateCoroutinesApi::class)
     fun checkForUpdates() {
@@ -30,7 +32,7 @@ class UpdateChecker @Inject constructor(
                 client.get<GithubRelease>("https://api.github.com/repos/$GITHUB_REPO/releases/latest")
             }
             if (isNewVersion(latestRelease.version)) {
-                updateFound.emit(latestRelease)
+                _updateFound.emit(latestRelease)
             }
         }
     }
