@@ -7,11 +7,11 @@
 package ca.gosyer.ui.main.components
 
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.lang.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 class DebugOverlayViewModel @Inject constructor() : ViewModel() {
     val runtime: Runtime = Runtime.getRuntime()

@@ -56,7 +56,7 @@ jobs:
     - uses: actions/setup-java@v1
       if: ${{ matrix.runtime != 'linux-centos-x64' }}
       with:
-        java-version: '15'
+        java-version: '17'
         architecture: ${{ matrix.arch }}
 
     - name: Setup Cl
@@ -71,7 +71,7 @@ jobs:
 
     - name: Build rpm Package
       if: ${{ matrix.runtime == 'linux-centos-x64' }}
-      uses: Syer10/CentOS-Java15-Action@v1
+      uses: Syer10/CentOS-Java17-Action@v1
       with:
         command: ./gradlew ${{ matrix.build }} --stacktrace
 

@@ -9,10 +9,10 @@ import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 plugins {
-    kotlin("jvm") version "1.5.31"
-    kotlin("kapt") version "1.5.31"
-    kotlin("plugin.serialization") version "1.5.31"
-    id("org.jetbrains.compose") version "1.0.0"
+    kotlin("jvm") version "1.6.10"
+    kotlin("kapt") version "1.6.10"
+    kotlin("plugin.serialization") version "1.6.10"
+    id("org.jetbrains.compose") version "1.0.1-rc2"
     id("com.github.gmazzo.buildconfig") version "3.0.3"
     id("org.jmailen.kotlinter") version "3.7.0"
     id("com.github.ben-manes.versions") version "0.39.0"
@@ -60,7 +60,7 @@ dependencies {
     kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:$toothpickVersion")
 
     // Http client
-    val ktorVersion = "1.6.5"
+    val ktorVersion = "1.6.7"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
@@ -72,11 +72,11 @@ dependencies {
     val slf4jVersion = "1.7.32"
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     implementation("org.slf4j:jul-to-slf4j:$slf4jVersion")
-    val log4jVersion = "2.14.1"
+    val log4jVersion = "2.16.0"
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.1.0")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.16")
 
     // User storage
     implementation("net.harawata:appdirs:1.2.1")

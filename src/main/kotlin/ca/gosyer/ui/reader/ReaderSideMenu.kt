@@ -46,9 +46,9 @@ import ca.gosyer.data.models.MangaMeta
 import ca.gosyer.ui.base.components.Spinner
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.reader.model.ReaderChapter
-import ca.gosyer.util.lang.milliseconds
 import ca.gosyer.util.system.kLogger
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 private val logger = kLogger {}
 

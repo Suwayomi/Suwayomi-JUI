@@ -76,7 +76,6 @@ fun SourceSettingsMenu(sourceId: Long, menuController: MenuController? = LocalMe
                     is MultiSelect -> {
                         MultiSelectPreference(it)
                     }
-                    else -> Unit
                 }
             }
         }

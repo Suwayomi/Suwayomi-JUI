@@ -34,7 +34,7 @@ sealed class ServerHostPreference<T : Any> {
         const val argPrefix = "-Dsuwayomi.tachidesk.config.server."
     }
 
-    open class StringServerHostPreference(
+    sealed class StringServerHostPreference(
         override val preferenceStore: PreferenceStore,
         override val propertyName: String,
         override val defaultValue: String,
@@ -44,7 +44,7 @@ sealed class ServerHostPreference<T : Any> {
             return preferenceStore.getString(propertyName, defaultValue)
         }
     }
-    open class IntServerHostPreference(
+    sealed class IntServerHostPreference(
         override val preferenceStore: PreferenceStore,
         override val propertyName: String,
         override val defaultValue: Int,
@@ -54,7 +54,7 @@ sealed class ServerHostPreference<T : Any> {
             return preferenceStore.getInt(propertyName, defaultValue)
         }
     }
-    open class BooleanServerHostPreference(
+    sealed class BooleanServerHostPreference(
         override val preferenceStore: PreferenceStore,
         override val propertyName: String,
         override val defaultValue: Boolean,

@@ -31,7 +31,7 @@ sealed class SourceSettingsView<T, R : Any?> {
     open val summary: String?
         get() = subtitle?.let { withFormat(it, state.value) }
 
-    abstract class TwoState(
+    sealed class TwoState(
         props: TwoStateProps,
         private val _state: MutableStateFlow<Boolean> = MutableStateFlow(
             props.currentValue
