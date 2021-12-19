@@ -48,8 +48,8 @@ fun AppTheme(content: @Composable () -> Unit) {
                 thickness = 8.dp,
                 shape = MaterialTheme.shapes.small,
                 hoverDurationMillis = 300,
-                unhoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-                hoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.50f)
+                unhoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.30f),
+                hoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.70f)
             ),
             content = content
         )

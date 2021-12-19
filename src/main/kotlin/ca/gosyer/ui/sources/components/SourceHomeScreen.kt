@@ -96,7 +96,9 @@ fun SourceHomeScreen(
                 }*/
 
                 VerticalScrollbar(
-                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                        .fillMaxHeight()
+                        .padding(horizontal = 4.dp, vertical = 8.dp),
                     adapter = rememberScrollbarAdapter(state)
                 )
             }

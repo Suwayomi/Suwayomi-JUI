@@ -14,6 +14,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,6 +32,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ContentAlpha
@@ -68,6 +70,7 @@ import ca.gosyer.ui.base.prefs.ExpandablePreference
 import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.components.filter.model.SourceFiltersView
+import ca.gosyer.util.compose.persistentLazyListState
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterIsInstance
@@ -105,8 +108,8 @@ fun SourceFiltersMenu(
         exit = fadeOut() + slideOutHorizontally(targetOffsetX = { it * 2 }),
         modifier = modifier
     ) {
-        Surface(elevation = 1.dp) {
-            Column(Modifier.width(360.dp).fillMaxHeight()) {
+        Surface(elevation = 1.dp, modifier = Modifier.width(360.dp).fillMaxHeight()) {
+            Column(Modifier.fillMaxSize()) {
                 Surface(elevation = 4.dp) {
                     Row(
                         Modifier.height(56.dp).fillMaxWidth().padding(horizontal = 16.dp),
@@ -122,19 +125,28 @@ fun SourceFiltersMenu(
                     }
                 }
                 val expandedGroups = remember { mutableStateListOf<Int>() }
-                LazyColumn(Modifier.fillMaxSize()) {
-                    items(
-                        items = filters,
-                        key = { it.filter.hashCode() }
-                    ) { item ->
-                        item.toView(startExpanded = item.index in expandedGroups) { expanded, index ->
-                            if (expanded) {
-                                expandedGroups += index
-                            } else {
-                                expandedGroups -= index
+                Box {
+                    val lazyListState = persistentLazyListState()
+                    LazyColumn(Modifier.fillMaxSize(), lazyListState) {
+                        items(
+                            items = filters,
+                            key = { it.filter.hashCode() }
+                        ) { item ->
+                            item.toView(startExpanded = item.index in expandedGroups) { expanded, index ->
+                                if (expanded) {
+                                    expandedGroups += index
+                                } else {
+                                    expandedGroups -= index
+                                }
                             }
                         }
                     }
+                    VerticalScrollbar(
+                        rememberScrollbarAdapter(lazyListState),
+                        Modifier.align(Alignment.CenterEnd)
+                            .fillMaxHeight()
+                            .padding(horizontal = 4.dp, vertical = 8.dp)
+                    )
                 }
             }
         }

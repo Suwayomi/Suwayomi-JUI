@@ -6,10 +6,17 @@
 
 package ca.gosyer.ui.settings
 
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -200,28 +207,37 @@ fun SettingsBackupScreen(menuController: MenuController) {
 
     Column {
         Toolbar(stringResource("settings_backup_screen"), menuController, true)
-        LazyColumn {
-            item {
-                PreferenceFile(
-                    stringResource("backup_restore"),
-                    stringResource("backup_restore_sub"),
-                    restoring,
-                    restoringProgress,
-                    restoreStatus
-                ) {
-                    filePicker("gz") {
-                        vm.restoreFile(it.selectedFile.toPath())
+        Box {
+            val state = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxSize(), state) {
+                item {
+                    PreferenceFile(
+                        stringResource("backup_restore"),
+                        stringResource("backup_restore_sub"),
+                        restoring,
+                        restoringProgress,
+                        restoreStatus
+                    ) {
+                        filePicker("gz") {
+                            vm.restoreFile(it.selectedFile.toPath())
+                        }
                     }
+                    PreferenceFile(
+                        stringResource("backup_create"),
+                        stringResource("backup_create_sub"),
+                        creating,
+                        creatingProgress,
+                        creatingStatus,
+                        vm::exportBackup
+                    )
                 }
-                PreferenceFile(
-                    stringResource("backup_create"),
-                    stringResource("backup_create_sub"),
-                    creating,
-                    creatingProgress,
-                    creatingStatus,
-                    vm::exportBackup
-                )
             }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

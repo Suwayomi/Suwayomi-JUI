@@ -6,11 +6,15 @@
 
 package ca.gosyer.ui.sources.components
 
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.icons.rounded.FilterList
@@ -35,6 +39,7 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.components.filter.SourceFiltersMenu
 import ca.gosyer.util.compose.persistentLazyListState
 import com.github.zsoltk.compose.savedinstancestate.Bundle
+import com.github.zsoltk.compose.savedinstancestate.BundleScope
 import io.kamel.image.lazyPainterResource
 
 @Composable
@@ -85,23 +90,25 @@ fun SourceScreen(
                 onLoadNextPage = vm::loadNextPage,
                 onMangaClick = onMangaClick,
             )
-            SourceFiltersMenu(
-                bundle = bundle,
-                modifier = Modifier.align(Alignment.TopEnd),
-                sourceId = source.id,
-                showFilters = showingFilters && !isLatest,
-                onSearchClicked = {
-                    vm.setUsingFilters(true)
-                    vm.showingFilters(false)
-                    vm.submitSearch()
-                },
-                onResetClicked = {
-                    vm.setUsingFilters(false)
-                    vm.showingFilters(false)
-                    vm.submitSearch()
-                },
-                showFiltersButton = vm::enableFilters
-            )
+            BundleScope("filters", autoDispose = false) {
+                SourceFiltersMenu(
+                    bundle = bundle,
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    sourceId = source.id,
+                    showFilters = showingFilters && !isLatest,
+                    onSearchClicked = {
+                        vm.setUsingFilters(true)
+                        vm.showingFilters(false)
+                        vm.submitSearch()
+                    },
+                    onResetClicked = {
+                        vm.setUsingFilters(false)
+                        vm.showingFilters(false)
+                        vm.submitSearch()
+                    },
+                    showFiltersButton = vm::enableFilters
+                )
+            }
         }
     }
 }
@@ -186,19 +193,27 @@ private fun MangaTable(
         LoadingScreen(isLoading)
     } else {
         val persistentState = persistentLazyListState(bundle)
-        LazyVerticalGrid(GridCells.Adaptive(160.dp), state = persistentState) {
-            itemsIndexed(mangas) { index, manga ->
-                if (hasNextPage && index == mangas.lastIndex) {
-                    LaunchedEffect(Unit) { onLoadNextPage() }
-                }
-                MangaGridItem(
-                    title = manga.title,
-                    cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium),
-                    onClick = {
-                        onMangaClick(manga.id)
+        Box {
+            LazyVerticalGrid(GridCells.Adaptive(160.dp), state = persistentState) {
+                itemsIndexed(mangas) { index, manga ->
+                    if (hasNextPage && index == mangas.lastIndex) {
+                        LaunchedEffect(Unit) { onLoadNextPage() }
                     }
-                )
+                    MangaGridItem(
+                        title = manga.title,
+                        cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium),
+                        onClick = {
+                            onMangaClick(manga.id)
+                        }
+                    )
+                }
             }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(persistentState),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

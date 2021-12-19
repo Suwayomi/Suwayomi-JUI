@@ -6,10 +6,20 @@
 
 package ca.gosyer.ui.settings
 
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import ca.gosyer.build.BuildResources
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.StartScreen
@@ -82,34 +92,46 @@ fun SettingsGeneralScreen(menuController: MenuController) {
     val vm = viewModel<SettingsGeneralViewModel>()
     Column {
         Toolbar(stringResource("settings_general_screen"), menuController, closable = true)
-        LazyColumn {
-            item {
-                ChoicePreference(
-                    preference = vm.startScreen,
-                    title = stringResource("start_screen"),
-                    choices = vm.getStartScreenChoices()
-                )
+        Box {
+            val state = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxSize(), state) {
+                item {
+                    ChoicePreference(
+                        preference = vm.startScreen,
+                        title = stringResource("start_screen"),
+                        choices = vm.getStartScreenChoices()
+                    )
+                }
+                item {
+                    SwitchPreference(
+                        preference = vm.confirmExit,
+                        title = stringResource("confirm_exit")
+                    )
+                }
+                item {
+                    Divider()
+                }
+                item {
+                    ChoicePreference(
+                        preference = vm.language,
+                        title = stringResource("language"),
+                        choices = vm.getLanguageChoices(),
+                    )
+                }
+                item {
+                    ChoicePreference(
+                        preference = vm.dateFormat,
+                        title = stringResource("date_format"),
+                        choices = vm.getDateChoices()
+                    )
+                }
             }
-            item {
-                SwitchPreference(preference = vm.confirmExit, title = stringResource("confirm_exit"))
-            }
-            item {
-                Divider()
-            }
-            item {
-                ChoicePreference(
-                    preference = vm.language,
-                    title = stringResource("language"),
-                    choices = vm.getLanguageChoices(),
-                )
-            }
-            item {
-                ChoicePreference(
-                    preference = vm.dateFormat,
-                    title = stringResource("date_format"),
-                    choices = vm.getDateChoices()
-                )
-            }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

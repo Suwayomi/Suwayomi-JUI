@@ -6,11 +6,18 @@
 
 package ca.gosyer.ui.sources.settings
 
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Checkbox
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Switch
@@ -19,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -61,23 +69,32 @@ fun SourceSettingsMenu(sourceId: Long, menuController: MenuController? = LocalMe
 
     Column {
         Toolbar(stringResource("location_settings"), menuController, menuController != null)
-        LazyColumn {
-            items(settings, { it.props.hashCode() }) {
-                when (it) {
-                    is CheckBox, is Switch -> {
-                        TwoStatePreference(it as TwoState, it is CheckBox)
-                    }
-                    is List -> {
-                        ListPreference(it)
-                    }
-                    is EditText -> {
-                        EditTextPreference(it)
-                    }
-                    is MultiSelect -> {
-                        MultiSelectPreference(it)
+        Box {
+            val state = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxSize(), state) {
+                items(settings, { it.props.hashCode() }) {
+                    when (it) {
+                        is CheckBox, is Switch -> {
+                            TwoStatePreference(it as TwoState, it is CheckBox)
+                        }
+                        is List -> {
+                            ListPreference(it)
+                        }
+                        is EditText -> {
+                            EditTextPreference(it)
+                        }
+                        is MultiSelect -> {
+                            MultiSelectPreference(it)
+                        }
                     }
                 }
             }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

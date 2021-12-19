@@ -6,8 +6,15 @@
 
 package ca.gosyer.ui.settings
 
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
@@ -16,7 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
 import ca.gosyer.data.server.ServerHostPreferences
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.ServerService
@@ -138,171 +148,208 @@ fun SettingsServerScreen(menuController: MenuController) {
     }
     Column {
         Toolbar(stringResource("settings_server_screen"), menuController, true)
-        LazyColumn {
-            item {
-                SwitchPreference(preference = vm.host, title = stringResource("host_server"))
-            }
-            if (host) {
+        Box {
+            val state = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxSize(), state) {
+                item {
+                    SwitchPreference(preference = vm.host, title = stringResource("host_server"))
+                }
+                if (host) {
+                    item {
+                        PreferenceRow(
+                            stringResource("host_settings"),
+                            Icons.Rounded.Info,
+                            subtitle = stringResource("host_settings_sub")
+                        )
+                    }
+                    item {
+                        val ip by vm.ip.collectAsState()
+                        EditTextPreference(
+                            preference = vm.ip,
+                            title = stringResource("host_ip"),
+                            subtitle = stringResource("host_ip_sub", ip),
+                            changeListener = vm::serverSettingChanged
+                        )
+                    }
+                    item {
+                        val port by vm.port.collectAsState()
+                        EditTextPreference(
+                            preference = vm.port,
+                            title = stringResource("host_port"),
+                            subtitle = stringResource("host_port_sub", port),
+                            changeListener = vm::serverSettingChanged
+                        )
+                    }
+                    item {
+                        SwitchPreference(
+                            preference = vm.socksProxyEnabled,
+                            title = stringResource("host_socks_enabled"),
+                            changeListener = vm::serverSettingChanged
+                        )
+                    }
+                    item {
+                        val proxyHost by vm.socksProxyHost.collectAsState()
+                        EditTextPreference(
+                            preference = vm.socksProxyHost,
+                            title = stringResource("host_socks_host"),
+                            subtitle = stringResource("host_socks_host_sub", proxyHost),
+                            changeListener = vm::serverSettingChanged
+                        )
+                    }
+                    item {
+                        val proxyPort by vm.socksProxyPort.collectAsState()
+                        EditTextPreference(
+                            preference = vm.socksProxyPort,
+                            title = stringResource("host_socks_port"),
+                            subtitle = stringResource("host_socks_port_sub", proxyPort),
+                            changeListener = vm::serverSettingChanged
+                        )
+                    }
+                    item {
+                        SwitchPreference(
+                            preference = vm.debugLogsEnabled,
+                            title = stringResource("host_debug_logging"),
+                            subtitle = stringResource("host_debug_logging_sub"),
+                            changeListener = vm::serverSettingChanged
+                        )
+                    }
+                    item {
+                        SwitchPreference(
+                            preference = vm.systemTrayEnabled,
+                            title = stringResource("host_system_tray"),
+                            subtitle = stringResource("host_system_tray_sub"),
+                            changeListener = vm::serverSettingChanged
+                        )
+                    }
+                    item {
+                        SwitchPreference(
+                            preference = vm.webUIEnabled,
+                            title = stringResource("host_webui"),
+                            subtitle = stringResource("host_webui_sub"),
+                            changeListener = vm::serverSettingChanged
+                        )
+                    }
+                    item {
+                        val webUIEnabled by vm.webUIEnabled.collectAsState()
+                        SwitchPreference(
+                            preference = vm.openInBrowserEnabled,
+                            title = stringResource("host_open_in_browser"),
+                            subtitle = stringResource("host_open_in_browser_sub"),
+                            changeListener = vm::serverSettingChanged,
+                            enabled = webUIEnabled
+                        )
+                    }
+                    item {
+                        SwitchPreference(
+                            preference = vm.basicAuthEnabled,
+                            title = stringResource("basic_auth"),
+                            subtitle = stringResource("host_basic_auth_sub"),
+                            changeListener = vm::serverSettingChanged
+                        )
+                    }
+                    item {
+                        EditTextPreference(
+                            preference = vm.basicAuthUsername,
+                            title = stringResource("host_basic_auth_username"),
+                            changeListener = vm::serverSettingChanged,
+                            enabled = basicAuthEnabled
+                        )
+                    }
+                    item {
+                        EditTextPreference(
+                            preference = vm.basicAuthPassword,
+                            title = stringResource("host_basic_auth_password"),
+                            changeListener = vm::serverSettingChanged,
+                            visualTransformation = PasswordVisualTransformation(),
+                            enabled = basicAuthEnabled
+                        )
+                    }
+                }
+                item {
+                    Divider()
+                }
+                item {
+                    EditTextPreference(
+                        vm.serverUrl,
+                        stringResource("server_url"),
+                        subtitle = vm.serverUrl.collectAsState().value
+                    )
+                }
+                item {
+                    EditTextPreference(
+                        vm.serverPort,
+                        stringResource("server_port"),
+                        subtitle = vm.serverPort.collectAsState().value
+                    )
+                }
+
                 item {
                     PreferenceRow(
-                        stringResource("host_settings"),
-                        Icons.Rounded.Info,
-                        subtitle = stringResource("host_settings_sub")
+                        stringResource("server_preference_warning"),
+                        Icons.Rounded.Warning,
+                        subtitle = stringResource("server_preference_warning_sub")
                     )
                 }
                 item {
-                    val ip by vm.ip.collectAsState()
-                    EditTextPreference(
-                        preference = vm.ip,
-                        title = stringResource("host_ip"),
-                        subtitle = stringResource("host_ip_sub", ip),
-                        changeListener = vm::serverSettingChanged
-                    )
+                    ChoicePreference(vm.proxy, vm.getProxyChoices(), stringResource("server_proxy"))
                 }
-                item {
-                    val port by vm.port.collectAsState()
-                    EditTextPreference(
-                        preference = vm.port,
-                        title = stringResource("host_port"),
-                        subtitle = stringResource("host_port_sub", port),
-                        changeListener = vm::serverSettingChanged
-                    )
-                }
-                item {
-                    SwitchPreference(
-                        preference = vm.socksProxyEnabled,
-                        title = stringResource("host_socks_enabled"),
-                        changeListener = vm::serverSettingChanged
-                    )
-                }
-                item {
-                    val proxyHost by vm.socksProxyHost.collectAsState()
-                    EditTextPreference(
-                        preference = vm.socksProxyHost,
-                        title = stringResource("host_socks_host"),
-                        subtitle = stringResource("host_socks_host_sub", proxyHost),
-                        changeListener = vm::serverSettingChanged
-                    )
-                }
-                item {
-                    val proxyPort by vm.socksProxyPort.collectAsState()
-                    EditTextPreference(
-                        preference = vm.socksProxyPort,
-                        title = stringResource("host_socks_port"),
-                        subtitle = stringResource("host_socks_port_sub", proxyPort),
-                        changeListener = vm::serverSettingChanged
-                    )
-                }
-                item {
-                    SwitchPreference(
-                        preference = vm.debugLogsEnabled,
-                        title = stringResource("host_debug_logging"),
-                        subtitle = stringResource("host_debug_logging_sub"),
-                        changeListener = vm::serverSettingChanged
-                    )
-                }
-                item {
-                    SwitchPreference(
-                        preference = vm.systemTrayEnabled,
-                        title = stringResource("host_system_tray"),
-                        subtitle = stringResource("host_system_tray_sub"),
-                        changeListener = vm::serverSettingChanged
-                    )
-                }
-                item {
-                    SwitchPreference(
-                        preference = vm.webUIEnabled,
-                        title = stringResource("host_webui"),
-                        subtitle = stringResource("host_webui_sub"),
-                        changeListener = vm::serverSettingChanged
-                    )
-                }
-                item {
-                    val webUIEnabled by vm.webUIEnabled.collectAsState()
-                    SwitchPreference(
-                        preference = vm.openInBrowserEnabled,
-                        title = stringResource("host_open_in_browser"),
-                        subtitle = stringResource("host_open_in_browser_sub"),
-                        changeListener = vm::serverSettingChanged,
-                        enabled = webUIEnabled
-                    )
-                }
-                item {
-                    SwitchPreference(
-                        preference = vm.basicAuthEnabled,
-                        title = stringResource("basic_auth"),
-                        subtitle = stringResource("host_basic_auth_sub"),
-                        changeListener = vm::serverSettingChanged
-                    )
-                }
-                item {
-                    EditTextPreference(
-                        preference = vm.basicAuthUsername,
-                        title = stringResource("host_basic_auth_username"),
-                        changeListener = vm::serverSettingChanged,
-                        enabled = basicAuthEnabled
-                    )
-                }
-                item {
-                    EditTextPreference(
-                        preference = vm.basicAuthPassword,
-                        title = stringResource("host_basic_auth_password"),
-                        changeListener = vm::serverSettingChanged,
-                        visualTransformation = PasswordVisualTransformation(),
-                        enabled = basicAuthEnabled
-                    )
-                }
-            }
-            item {
-                Divider()
-            }
-            item {
-                EditTextPreference(vm.serverUrl, stringResource("server_url"), subtitle = vm.serverUrl.collectAsState().value)
-            }
-            item {
-                EditTextPreference(vm.serverPort, stringResource("server_port"), subtitle = vm.serverPort.collectAsState().value)
-            }
-
-            item {
-                PreferenceRow(
-                    stringResource("server_preference_warning"),
-                    Icons.Rounded.Warning,
-                    subtitle = stringResource("server_preference_warning_sub")
-                )
-            }
-            item {
-                ChoicePreference(vm.proxy, vm.getProxyChoices(), stringResource("server_proxy"))
-            }
-            when (proxy) {
-                Proxy.NO_PROXY -> Unit
-                Proxy.HTTP_PROXY -> {
-                    item {
-                        EditTextPreference(vm.httpHost, stringResource("http_proxy"), vm.httpHost.collectAsState().value)
+                when (proxy) {
+                    Proxy.NO_PROXY -> Unit
+                    Proxy.HTTP_PROXY -> {
+                        item {
+                            EditTextPreference(
+                                vm.httpHost,
+                                stringResource("http_proxy"),
+                                vm.httpHost.collectAsState().value
+                            )
+                        }
+                        item {
+                            EditTextPreference(
+                                vm.httpPort,
+                                stringResource("http_port"),
+                                vm.httpPort.collectAsState().value
+                            )
+                        }
                     }
-                    item {
-                        EditTextPreference(vm.httpPort, stringResource("http_port"), vm.httpPort.collectAsState().value)
+                    Proxy.SOCKS_PROXY -> {
+                        item {
+                            EditTextPreference(
+                                vm.socksHost,
+                                stringResource("socks_proxy"),
+                                vm.socksHost.collectAsState().value
+                            )
+                        }
+                        item {
+                            EditTextPreference(
+                                vm.socksPort,
+                                stringResource("socks_port"),
+                                vm.socksPort.collectAsState().value
+                            )
+                        }
                     }
                 }
-                Proxy.SOCKS_PROXY -> {
+                item {
+                    ChoicePreference(vm.auth, vm.getAuthChoices(), stringResource("authentication"))
+                }
+                if (auth != Auth.NONE) {
                     item {
-                        EditTextPreference(vm.socksHost, stringResource("socks_proxy"), vm.socksHost.collectAsState().value)
+                        EditTextPreference(vm.authUsername, stringResource("auth_username"))
                     }
                     item {
-                        EditTextPreference(vm.socksPort, stringResource("socks_port"), vm.socksPort.collectAsState().value)
+                        EditTextPreference(
+                            vm.authPassword,
+                            stringResource("auth_password"),
+                            visualTransformation = PasswordVisualTransformation()
+                        )
                     }
                 }
             }
-            item {
-                ChoicePreference(vm.auth, vm.getAuthChoices(), stringResource("authentication"))
-            }
-            if (auth != Auth.NONE) {
-                item {
-                    EditTextPreference(vm.authUsername, stringResource("auth_username"))
-                }
-                item {
-                    EditTextPreference(vm.authPassword, stringResource("auth_password"), visualTransformation = PasswordVisualTransformation())
-                }
-            }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

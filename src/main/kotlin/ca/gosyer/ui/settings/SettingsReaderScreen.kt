@@ -6,12 +6,22 @@
 
 package ca.gosyer.ui.settings
 
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import ca.gosyer.data.reader.ReaderModePreferences
 import ca.gosyer.data.reader.ReaderPreferences
@@ -121,80 +131,95 @@ fun SettingsReaderScreen(menuController: MenuController) {
     val modeSettings by vm.modeSettings.collectAsState()
     Column {
         Toolbar(stringResource("settings_reader"), menuController, true)
-        LazyColumn {
-            item {
-                ChoicePreference(
-                    vm.selectedMode,
-                    vm.modes.collectAsState().value.associateWith { it },
-                    stringResource("reader_mode")
-                )
-            }
-            item {
-                Divider()
-            }
-            modeSettings.fastForEach {
+        Box {
+            val state = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
-                    ExpandablePreference(it.mode) {
-                        ChoicePreference(
-                            it.direction,
-                            vm.getDirectionChoices(),
-                            stringResource("direction"),
-                            enabled = !it.defaultMode
-                        )
-                        SwitchPreference(
-                            it.continuous,
-                            stringResource("continuous"),
-                            stringResource("continuous_sub"),
-                            enabled = !it.defaultMode
-                        )
-                        val continuous by it.continuous.collectAsState()
-                        if (continuous) {
-                            ChoicePreference(
-                                it.padding,
-                                vm.getPaddingChoices(),
-                                stringResource("page_padding")
-                            )
-                            val direction by it.direction.collectAsState()
-                            val (title, subtitle) = if (direction == Direction.Up || direction == Direction.Down) {
-                                stringResource("force_fit_width") to stringResource("force_fit_width_sub")
-                            } else {
-                                stringResource("force_fit_height") to stringResource("force_fit_height_sub")
-                            }
-                            SwitchPreference(
-                                it.fitSize,
-                                title,
-                                subtitle
-                            )
-                            val maxSize by it.maxSize.collectAsState()
-                            val (maxSizeTitle, maxSizeSubtitle) = if (direction == Direction.Up || direction == Direction.Down) {
-                                stringResource("max_width") to stringResource("max_width_sub", maxSize)
-                            } else {
-                                stringResource("max_height") to stringResource("max_height_sub", maxSize)
-                            }
-                            ChoicePreference(
-                                it.maxSize,
-                                vm.getMaxSizeChoices(direction),
-                                maxSizeTitle,
-                                maxSizeSubtitle
-                            )
-                        } else {
-                            ChoicePreference(
-                                it.imageScale,
-                                vm.getImageScaleChoices(),
-                                stringResource("image_scale")
-                            )
-                        }
-                        ChoicePreference(
-                            it.navigationMode,
-                            vm.getNavigationModeChoices(),
-                            stringResource("navigation_mode")
-                        )
-                    }
+                    ChoicePreference(
+                        vm.selectedMode,
+                        vm.modes.collectAsState().value.associateWith { it },
+                        stringResource("reader_mode")
+                    )
                 }
                 item {
                     Divider()
                 }
+                modeSettings.fastForEach {
+                    item {
+                        ExpandablePreference(it.mode) {
+                            ChoicePreference(
+                                it.direction,
+                                vm.getDirectionChoices(),
+                                stringResource("direction"),
+                                enabled = !it.defaultMode
+                            )
+                            SwitchPreference(
+                                it.continuous,
+                                stringResource("continuous"),
+                                stringResource("continuous_sub"),
+                                enabled = !it.defaultMode
+                            )
+                            val continuous by it.continuous.collectAsState()
+                            if (continuous) {
+                                ChoicePreference(
+                                    it.padding,
+                                    vm.getPaddingChoices(),
+                                    stringResource("page_padding")
+                                )
+                                val direction by it.direction.collectAsState()
+                                val (title, subtitle) = if (direction == Direction.Up || direction == Direction.Down) {
+                                    stringResource("force_fit_width") to stringResource("force_fit_width_sub")
+                                } else {
+                                    stringResource("force_fit_height") to stringResource("force_fit_height_sub")
+                                }
+                                SwitchPreference(
+                                    it.fitSize,
+                                    title,
+                                    subtitle
+                                )
+                                val maxSize by it.maxSize.collectAsState()
+                                val (maxSizeTitle, maxSizeSubtitle) = if (direction == Direction.Up || direction == Direction.Down) {
+                                    stringResource("max_width") to stringResource(
+                                        "max_width_sub",
+                                        maxSize
+                                    )
+                                } else {
+                                    stringResource("max_height") to stringResource(
+                                        "max_height_sub",
+                                        maxSize
+                                    )
+                                }
+                                ChoicePreference(
+                                    it.maxSize,
+                                    vm.getMaxSizeChoices(direction),
+                                    maxSizeTitle,
+                                    maxSizeSubtitle
+                                )
+                            } else {
+                                ChoicePreference(
+                                    it.imageScale,
+                                    vm.getImageScaleChoices(),
+                                    stringResource("image_scale")
+                                )
+                            }
+                            ChoicePreference(
+                                it.navigationMode,
+                                vm.getNavigationModeChoices(),
+                                stringResource("navigation_mode")
+                            )
+                        }
+                    }
+                    item {
+                        Divider()
+                    }
+                }
             }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.extensions
 
-import androidx.compose.foundation.ScrollbarAdapter
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -129,7 +128,9 @@ fun ExtensionsMenu() {
                 }
             }
             VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                modifier = Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp),
                 adapter = rememberScrollbarAdapter(state)
             )
         }
@@ -244,7 +245,12 @@ fun LanguageDialog(enabledLangsFlow: MutableStateFlow<Set<String>>, availableLan
                 }
                 item { Spacer(Modifier.height(70.dp)) }
             }
-            VerticalScrollbar(ScrollbarAdapter(state), Modifier.align(Alignment.CenterEnd).padding(8.dp))
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

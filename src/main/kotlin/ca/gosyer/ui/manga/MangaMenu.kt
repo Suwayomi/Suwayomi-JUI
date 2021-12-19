@@ -164,7 +164,9 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
                             }
                         }
                         VerticalScrollbar(
-                            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                                .fillMaxHeight()
+                                .padding(horizontal = 4.dp, vertical = 8.dp),
                             adapter = rememberScrollbarAdapter(state)
                         )
                     }
@@ -262,26 +264,35 @@ fun openCategorySelectDialog(
         onPositiveButton = { onPositiveClick(enabledCategoriesFlow.value, oldCategories) }
     ) {
         val enabledCategories by enabledCategoriesFlow.collectAsState()
-        LazyColumn {
-            items(categories) { category ->
-                Row(
-                    Modifier.fillMaxWidth().padding(8.dp)
-                        .clickable {
-                            if (category in enabledCategories) {
-                                enabledCategoriesFlow.value -= category
-                            } else {
-                                enabledCategoriesFlow.value += category
-                            }
-                        },
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(category.name, style = MaterialTheme.typography.subtitle1)
-                    Checkbox(
-                        category in enabledCategories,
-                        onCheckedChange = null
-                    )
+        val state = rememberLazyListState()
+        Box {
+            LazyColumn(state = state) {
+                items(categories) { category ->
+                    Row(
+                        Modifier.fillMaxWidth().padding(8.dp)
+                            .clickable {
+                                if (category in enabledCategories) {
+                                    enabledCategoriesFlow.value -= category
+                                } else {
+                                    enabledCategoriesFlow.value += category
+                                }
+                            },
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(category.name, style = MaterialTheme.typography.subtitle1)
+                        Checkbox(
+                            category in enabledCategories,
+                            onCheckedChange = null
+                        )
+                    }
                 }
             }
+            VerticalScrollbar(
+                modifier = Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp),
+                adapter = rememberScrollbarAdapter(state)
+            )
         }
     }
 }

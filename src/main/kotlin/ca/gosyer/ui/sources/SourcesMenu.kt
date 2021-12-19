@@ -9,6 +9,7 @@ package ca.gosyer.ui.sources
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.TooltipPlacement
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -108,51 +111,60 @@ fun SourcesSideMenu(
     onCloseSourceTabClick: (Source) -> Unit
 ) {
     Surface(elevation = 1.dp) {
-        LazyColumn(Modifier.fillMaxHeight().width(64.dp)) {
-            items(sourceTabs) { source ->
-                TooltipArea(
-                    {
-                        Surface(
-                            modifier = Modifier.shadow(4.dp),
-                            shape = RoundedCornerShape(4.dp),
-                            elevation = 4.dp
-                        ) {
-                            Text(source?.name ?: stringResource("sources_home"), modifier = Modifier.padding(10.dp))
-                        }
-                    },
-                    modifier = Modifier.size(64.dp),
-                    tooltipPlacement = TooltipPlacement.CursorPoint(
-                        offset = DpOffset(0.dp, 16.dp)
-                    )
-                ) {
-                    Box(Modifier.fillMaxSize()) {
-                        val modifier = Modifier
-                            .combinedMouseClickable(
-                                onClick = {
-                                    onSourceTabClick(source)
-                                },
-                                onMiddleClick = {
-                                    if (source != null) {
-                                        onCloseSourceTabClick(source)
-                                    }
-                                }
-                            )
-                            .requiredSize(50.dp)
-                            .align(Alignment.Center)
-                        if (source != null) {
-                            Box(Modifier.align(Alignment.Center)) {
-                                KamelImage(
-                                    lazyPainterResource(source, filterQuality = FilterQuality.Medium),
-                                    source.displayName,
-                                    modifier
-                                )
+        Box {
+            val state = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxHeight().width(64.dp), state) {
+                items(sourceTabs) { source ->
+                    TooltipArea(
+                        {
+                            Surface(
+                                modifier = Modifier.shadow(4.dp),
+                                shape = RoundedCornerShape(4.dp),
+                                elevation = 4.dp
+                            ) {
+                                Text(source?.name ?: stringResource("sources_home"), modifier = Modifier.padding(10.dp))
                             }
-                        } else {
-                            Icon(Icons.Rounded.Home, stringResource("sources_home"), modifier = modifier)
+                        },
+                        modifier = Modifier.size(64.dp),
+                        tooltipPlacement = TooltipPlacement.CursorPoint(
+                            offset = DpOffset(0.dp, 16.dp)
+                        )
+                    ) {
+                        Box(Modifier.fillMaxSize()) {
+                            val modifier = Modifier
+                                .combinedMouseClickable(
+                                    onClick = {
+                                        onSourceTabClick(source)
+                                    },
+                                    onMiddleClick = {
+                                        if (source != null) {
+                                            onCloseSourceTabClick(source)
+                                        }
+                                    }
+                                )
+                                .requiredSize(50.dp)
+                                .align(Alignment.Center)
+                            if (source != null) {
+                                Box(Modifier.align(Alignment.Center)) {
+                                    KamelImage(
+                                        lazyPainterResource(source, filterQuality = FilterQuality.Medium),
+                                        source.displayName,
+                                        modifier
+                                    )
+                                }
+                            } else {
+                                Icon(Icons.Rounded.Home, stringResource("sources_home"), modifier = modifier)
+                            }
                         }
                     }
                 }
             }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

@@ -7,7 +7,9 @@
 package ca.gosyer.ui.downloads
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -19,6 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
@@ -34,6 +38,7 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
@@ -90,15 +95,24 @@ fun DownloadsMenu(onMangaClick: (Long) -> Unit) {
                 ActionIcon(onClick = vm::clear, stringResource("action_clear_queue"), Icons.Rounded.ClearAll)
             }
         )
-        LazyColumn(Modifier.fillMaxSize()) {
-            items(downloadQueue) {
-                DownloadsItem(
-                    it,
-                    { onMangaClick(it.mangaId) },
-                    vm::stopDownload,
-                    vm::moveToBottom
-                )
+        Box {
+            val state = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxSize(), state) {
+                items(downloadQueue) {
+                    DownloadsItem(
+                        it,
+                        { onMangaClick(it.mangaId) },
+                        vm::stopDownload,
+                        vm::moveToBottom
+                    )
+                }
             }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

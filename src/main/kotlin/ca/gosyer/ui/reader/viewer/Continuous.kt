@@ -6,6 +6,8 @@
 
 package ca.gosyer.ui.reader.viewer
 
+import androidx.compose.foundation.HorizontalScrollbar
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -21,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -124,6 +127,13 @@ fun ContinuousReader(
                         progress
                     )
                 }
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                        .fillMaxHeight()
+                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                    adapter = rememberScrollbarAdapter(state),
+                    reverseLayout = direction == Direction.Up
+                )
             }
             Direction.Left, Direction.Right -> {
                 LazyRow(
@@ -145,6 +155,13 @@ fun ContinuousReader(
                         progress
                     )
                 }
+                HorizontalScrollbar(
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    adapter = rememberScrollbarAdapter(state),
+                    reverseLayout = direction == Direction.Left
+                )
             }
         }
     }

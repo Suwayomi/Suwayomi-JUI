@@ -6,16 +6,21 @@
 
 package ca.gosyer.ui.settings
 
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -77,59 +82,68 @@ fun SettingsAppearance(menuController: MenuController) {
 
     Column {
         Toolbar(stringResource("settings_appearance_screen"), menuController, true)
-        LazyColumn {
-            item {
-                ChoicePreference(
-                    preference = vm.themeMode,
-                    choices = mapOf(
-                        ThemeMode.System to stringResource("theme_follow_system"),
-                        ThemeMode.Light to stringResource("theme_light"),
-                        ThemeMode.Dark to stringResource("theme_dark")
-                    ),
-                    title = stringResource("theme")
-                )
-            }
-            item {
-                Text(
-                    stringResource("preset_themes"),
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
-                )
-                LazyRow(modifier = Modifier.padding(horizontal = 8.dp)) {
-                    items(themesForCurrentMode) { theme ->
-                        ThemeItem(
-                            theme,
-                            onClick = {
-                                (if (isLight) vm.lightTheme else vm.darkTheme).value = it.id
-                                activeColors.primaryStateFlow.value = it.colors.primary
-                                activeColors.secondaryStateFlow.value = it.colors.secondary
-                            }
-                        )
+        Box {
+            val state = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxSize(), state) {
+                item {
+                    ChoicePreference(
+                        preference = vm.themeMode,
+                        choices = mapOf(
+                            ThemeMode.System to stringResource("theme_follow_system"),
+                            ThemeMode.Light to stringResource("theme_light"),
+                            ThemeMode.Dark to stringResource("theme_dark")
+                        ),
+                        title = stringResource("theme")
+                    )
+                }
+                item {
+                    Text(
+                        stringResource("preset_themes"),
+                        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
+                    )
+                    LazyRow(modifier = Modifier.padding(horizontal = 8.dp)) {
+                        items(themesForCurrentMode) { theme ->
+                            ThemeItem(
+                                theme,
+                                onClick = {
+                                    (if (isLight) vm.lightTheme else vm.darkTheme).value = it.id
+                                    activeColors.primaryStateFlow.value = it.colors.primary
+                                    activeColors.secondaryStateFlow.value = it.colors.secondary
+                                }
+                            )
+                        }
                     }
                 }
+                item {
+                    ColorPreference(
+                        preference = activeColors.primaryStateFlow,
+                        title = stringResource("color_primary"),
+                        subtitle = stringResource("color_primary_sub"),
+                        unsetColor = MaterialTheme.colors.primary
+                    )
+                }
+                item {
+                    ColorPreference(
+                        preference = activeColors.secondaryStateFlow,
+                        title = stringResource("color_secondary"),
+                        subtitle = stringResource("color_secondary_sub"),
+                        unsetColor = MaterialTheme.colors.secondary
+                    )
+                }
+                item {
+                    SwitchPreference(
+                        vm.windowDecorations,
+                        stringResource("window_decorations"),
+                        stringResource("window_decorations_sub")
+                    )
+                }
             }
-            item {
-                ColorPreference(
-                    preference = activeColors.primaryStateFlow,
-                    title = stringResource("color_primary"),
-                    subtitle = stringResource("color_primary_sub"),
-                    unsetColor = MaterialTheme.colors.primary
-                )
-            }
-            item {
-                ColorPreference(
-                    preference = activeColors.secondaryStateFlow,
-                    title = stringResource("color_secondary"),
-                    subtitle = stringResource("color_secondary_sub"),
-                    unsetColor = MaterialTheme.colors.secondary
-                )
-            }
-            item {
-                SwitchPreference(
-                    vm.windowDecorations,
-                    stringResource("window_decorations"),
-                    stringResource("window_decorations_sub")
-                )
-            }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

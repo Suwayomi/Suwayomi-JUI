@@ -6,20 +6,26 @@
 
 package ca.gosyer.ui.updates
 
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -54,24 +60,33 @@ fun UpdatesMenu(
         if (isLoading || updates.isEmpty()) {
             LoadingScreen(isLoading)
         } else {
-            LazyColumn {
-                itemsIndexed(updates) { index, item ->
-                    LaunchedEffect(Unit) {
-                        if (index == updates.lastIndex) {
-                            vm.loadNextPage()
+            Box {
+                val state = rememberLazyListState()
+                LazyColumn(Modifier.fillMaxSize(), state) {
+                    itemsIndexed(updates) { index, item ->
+                        LaunchedEffect(Unit) {
+                            if (index == updates.lastIndex) {
+                                vm.loadNextPage()
+                            }
                         }
+                        val manga = item.manga!!
+                        val chapter = item.chapter
+                        UpdatesItem(
+                            item,
+                            onClickItem = { openChapter(chapter.index, chapter.mangaId) },
+                            onClickCover = { openManga(manga.id) },
+                            onClickDownload = vm::downloadChapter,
+                            onClickDeleteDownload = vm::deleteDownloadedChapter,
+                            onClickStopDownload = vm::stopDownloadingChapter
+                        )
                     }
-                    val manga = item.manga!!
-                    val chapter = item.chapter
-                    UpdatesItem(
-                        item,
-                        onClickItem = { openChapter(chapter.index, chapter.mangaId) },
-                        onClickCover = { openManga(manga.id) },
-                        onClickDownload = vm::downloadChapter,
-                        onClickDeleteDownload = vm::deleteDownloadedChapter,
-                        onClickStopDownload = vm::stopDownloadingChapter
-                    )
                 }
+                VerticalScrollbar(
+                    rememberScrollbarAdapter(state),
+                    Modifier.align(Alignment.CenterEnd)
+                        .fillMaxHeight()
+                        .padding(horizontal = 4.dp, vertical = 8.dp)
+                )
             }
         }
     }

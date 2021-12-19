@@ -20,6 +20,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +33,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,6 +43,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ContentAlpha
@@ -242,7 +246,8 @@ fun <T> ChoiceDialog(
         buttons = buttons,
         title = title
     ) {
-        LazyColumn(Modifier.fillMaxSize()) {
+        val state = rememberLazyListState()
+        LazyColumn(Modifier.fillMaxSize(), state) {
             items(items) { (value, text) ->
                 Row(
                     modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
@@ -264,6 +269,12 @@ fun <T> ChoiceDialog(
                 }
             }
         }
+        VerticalScrollbar(
+            rememberScrollbarAdapter(state),
+            Modifier.align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+        )
     }
 }
 
@@ -283,28 +294,37 @@ fun <T> MultiSelectDialog(
         }
     ) {
         val checked by checkedFlow.collectAsState()
-        LazyColumn(Modifier.fillMaxSize()) {
-            items(items) { (value, text) ->
-                Row(
-                    modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
-                        onClick = {
-                            if (value in checked) {
-                                checkedFlow.value -= value
-                            } else {
-                                checkedFlow.value += value
+        val state = rememberLazyListState()
+        Box {
+            LazyColumn(Modifier.fillMaxSize(), state) {
+                items(items) { (value, text) ->
+                    Row(
+                        modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
+                            onClick = {
+                                if (value in checked) {
+                                    checkedFlow.value -= value
+                                } else {
+                                    checkedFlow.value += value
+                                }
                             }
-                        }
-                    ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = value in checked,
-                        onCheckedChange = null,
-                    )
-                    Text(text = text, modifier = Modifier.padding(start = 24.dp))
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = value in checked,
+                            onCheckedChange = null,
+                        )
+                        Text(text = text, modifier = Modifier.padding(start = 24.dp))
+                    }
                 }
+                item { Spacer(Modifier.height(80.dp)) }
             }
-            item { Spacer(Modifier.height(80.dp)) }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

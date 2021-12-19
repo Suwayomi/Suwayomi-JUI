@@ -7,14 +7,18 @@
 package ca.gosyer.ui.library
 
 import androidx.compose.foundation.ContextMenuItem
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -43,22 +47,32 @@ fun LibraryMangaCompactGrid(
     onClickManga: (Long) -> Unit = {},
     onRemoveMangaClicked: (Long) -> Unit = {}
 ) {
-    LazyVerticalGrid(
-        cells = GridCells.Adaptive(160.dp),
-        modifier = Modifier.fillMaxSize().padding(4.dp)
-    ) {
-        items(library) { manga ->
-            LibraryMangaCompactGridItem(
-                manga = manga,
-                unread = manga.unreadCount,
-                downloaded = manga.downloadCount,
-                onClick = { onClickManga(manga.id) }
-            ) {
-                listOf(
-                    ContextMenuItem("Unfavorite") { onRemoveMangaClicked(manga.id) }
-                )
+    Box {
+        val state = rememberLazyListState()
+        LazyVerticalGrid(
+            cells = GridCells.Adaptive(160.dp),
+            state = state,
+            modifier = Modifier.fillMaxSize().padding(4.dp)
+        ) {
+            items(library) { manga ->
+                LibraryMangaCompactGridItem(
+                    manga = manga,
+                    unread = manga.unreadCount,
+                    downloaded = manga.downloadCount,
+                    onClick = { onClickManga(manga.id) }
+                ) {
+                    listOf(
+                        ContextMenuItem("Unfavorite") { onRemoveMangaClicked(manga.id) }
+                    )
+                }
             }
         }
+        VerticalScrollbar(
+            rememberScrollbarAdapter(state),
+            Modifier.align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+        )
     }
 }
 
