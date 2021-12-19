@@ -72,11 +72,11 @@ dependencies {
     val slf4jVersion = "1.7.32"
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     implementation("org.slf4j:jul-to-slf4j:$slf4jVersion")
-    val log4jVersion = "2.16.0"
+    val log4jVersion = "2.17.0"
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.1.16")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
 
     // User storage
     implementation("net.harawata:appdirs:1.2.1")
