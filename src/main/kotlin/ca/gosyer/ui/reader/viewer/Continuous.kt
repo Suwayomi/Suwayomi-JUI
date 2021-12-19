@@ -92,6 +92,9 @@ fun ContinuousReader(
                 updateLastPageReadOffset(state.firstVisibleItemScrollOffset)
             }
         }
+        LaunchedEffect(state.firstVisibleItemIndex) {
+            progress(state.firstVisibleItemIndex)
+        }
 
         val imageModifier = if (maxSize != 0) {
             when (direction) {
@@ -123,8 +126,7 @@ fun ContinuousReader(
                         imageModifier,
                         loadingModifier,
                         pageContentScale,
-                        retry,
-                        progress
+                        retry
                     )
                 }
                 VerticalScrollbar(
@@ -151,8 +153,7 @@ fun ContinuousReader(
                         imageModifier,
                         loadingModifier,
                         pageContentScale,
-                        retry,
-                        progress
+                        retry
                     )
                 }
                 HorizontalScrollbar(
@@ -176,20 +177,13 @@ private fun LazyListScope.items(
     imageModifier: Modifier,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    retry: (ReaderPage) -> Unit,
-    progress: (Int) -> Unit
+    retry: (ReaderPage) -> Unit
 ) {
     item {
-        LaunchedEffect(Unit) {
-            progress(0)
-        }
         ChapterSeparator(previousChapter, currentChapter)
     }
     items(pages) { image ->
         Box(Modifier.padding(paddingValues)) {
-            LaunchedEffect(image.index) {
-                progress(image.index)
-            }
             ReaderImage(
                 image.index,
                 image.bitmap.collectAsState().value,
@@ -205,9 +199,6 @@ private fun LazyListScope.items(
         }
     }
     item {
-        LaunchedEffect(Unit) {
-            progress(pages.size)
-        }
         ChapterSeparator(currentChapter, nextChapter)
     }
 }
