@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.manga
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -104,7 +105,7 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
                 menuController,
                 menuController != null,
                 actions = {
-                    if (categoriesExist) {
+                    AnimatedVisibility(categoriesExist && manga?.inLibrary == true) {
                         TextActionIcon(
                             vm::setCategories,
                             stringResource("edit_categories"),

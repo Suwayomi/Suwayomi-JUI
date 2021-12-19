@@ -117,7 +117,7 @@ fun Toolbar(
                 }
             }
 
-            Row(Modifier.animateContentSize()) {
+            Row {
                 actions()
                 if (closable) {
                     TextActionIcon(onClick = onClose, stringResource("action_close"), Icons.Rounded.Close)
