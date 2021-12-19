@@ -34,13 +34,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private typealias CategoryItems = Pair<MutableStateFlow<List<Manga>>, MutableStateFlow<List<Manga>>>
-private typealias LibraryMap = MutableMap<Int, CategoryItems>
+private typealias LibraryMap = MutableMap<Long, CategoryItems>
 private data class Library(val categories: MutableStateFlow<List<Category>>, val mangaMap: LibraryMap)
 
-private fun LibraryMap.getManga(order: Int) =
-    getOrPut(order) { MutableStateFlow(emptyList<Manga>()) to MutableStateFlow(emptyList()) }
-private suspend fun LibraryMap.setManga(query: String?, order: Int, manga: List<Manga>) {
-    getManga(order).let { (items, unfilteredItems) ->
+private fun LibraryMap.getManga(id: Long) =
+    getOrPut(id) { MutableStateFlow(emptyList<Manga>()) to MutableStateFlow(emptyList()) }
+private suspend fun LibraryMap.setManga(query: String?, id: Long, manga: List<Manga>) {
+    getManga(id).let { (items, unfilteredItems) ->
         items.value = filterManga(query, manga)
         unfilteredItems.value = manga
     }
@@ -124,15 +124,15 @@ class LibraryScreenViewModel @Inject constructor(
         _selectedCategoryIndex.value = page
     }
 
-    fun getLibraryForCategoryIndex(index: Int): StateFlow<List<Manga>> {
-        return library.mangaMap.getManga(index).first.asStateFlow()
+    fun getLibraryForCategoryId(id: Long): StateFlow<List<Manga>> {
+        return library.mangaMap.getManga(id).first.asStateFlow()
     }
 
     private suspend fun updateCategories(categories: List<Category>) {
         withDefaultContext {
             categories.map {
                 async {
-                    library.mangaMap.setManga(query.value, it.order, categoryHandler.getMangaFromCategory(it))
+                    library.mangaMap.setManga(query.value, it.id, categoryHandler.getMangaFromCategory(it))
                 }
             }.awaitAll()
         }
@@ -143,7 +143,7 @@ class LibraryScreenViewModel @Inject constructor(
             .filter { mangaMapEntry ->
                 mangaMapEntry.value.first.value.firstOrNull { it.id == mangaId } != null
             }
-            .map { library.categories.value[it.key] }
+            .map { (id) -> library.categories.value.first { it.id == id } }
     }
 
     fun removeManga(mangaId: Long) {

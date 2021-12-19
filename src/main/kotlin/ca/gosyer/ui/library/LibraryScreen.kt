@@ -115,7 +115,7 @@ fun LibraryScreen(bundle: Bundle, onClickManga: (Long) -> Unit = ::openMangaMenu
                 categories = categories,
                 displayMode = displayMode,
                 selectedPage = selectedCategoryIndex,
-                getLibraryForPage = { vm.getLibraryForCategoryIndex(it).collectAsState() },
+                getLibraryForPage = { vm.getLibraryForCategoryId(it).collectAsState() },
                 onPageChanged = vm::setSelectedPage,
                 onClickManga = onClickManga,
                 onRemoveMangaClicked = vm::removeManga
@@ -161,7 +161,7 @@ private fun LibraryPager(
     categories: List<Category>,
     displayMode: DisplayMode,
     selectedPage: Int,
-    getLibraryForPage: @Composable (Int) -> State<List<Manga>>,
+    getLibraryForPage: @Composable (Long) -> State<List<Manga>>,
     onPageChanged: (Int) -> Unit,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit
@@ -180,7 +180,7 @@ private fun LibraryPager(
         }
     }
     HorizontalPager(state = state) {
-        val library by getLibraryForPage(it)
+        val library by getLibraryForPage(categories[it].id)
         when (displayMode) {
             DisplayMode.CompactGrid -> LibraryMangaCompactGrid(
                 library = library,
