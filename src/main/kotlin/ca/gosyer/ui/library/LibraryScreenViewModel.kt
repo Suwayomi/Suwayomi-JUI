@@ -52,7 +52,7 @@ private suspend fun LibraryMap.updateMangaFilter(query: String?) {
 }
 
 private suspend fun filterManga(query: String?, mangaList: List<Manga>): List<Manga> {
-    if (query.isNullOrEmpty()) return mangaList
+    if (query.isNullOrBlank()) return mangaList
     val queries = query.split(" ")
     return mangaList.asFlow()
         .filter { manga ->
