@@ -61,7 +61,8 @@ private suspend fun filterManga(query: String?, mangaList: List<Manga>): List<Ma
                     manga.author.orEmpty().contains(query, true) ||
                     manga.artist.orEmpty().contains(query, true) ||
                     manga.genre.any { it.contains(query, true) } ||
-                    manga.description.orEmpty().contains(query, true)
+                    manga.description.orEmpty().contains(query, true) ||
+                    manga.status.contains(query, true)
             }
         }
         .cancellable()
