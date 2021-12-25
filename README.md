@@ -41,7 +41,7 @@ Download the latest msi release from [the releases section][release] (Or from [t
 `winget install tachidesk-jui`
 #### Scoop
 ```shell
-scoop bucket add witchilich https://github.com/Witchilich/scoop-witchilich
+scoop bucket add extras
 scoop install tachidesk-jui
 ```
 
