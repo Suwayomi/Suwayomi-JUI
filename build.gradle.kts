@@ -208,6 +208,7 @@ compose.desktop {
                 shortcut = true
                 menu = true
                 iconFile.set(project.file("resources/icon.ico"))
+                menuGroup = "Suwayomi"
             }
             macOS {
                 bundleID = "ca.gosyer.tachideskjui"
