@@ -21,7 +21,7 @@ data class Manga(
     val author: String?,
     val description: String?,
     val genre: List<String>,
-    val status: String,
+    val status: MangaStatus,
     val inLibrary: Boolean,
     val source: Source?,
     val freshData: Boolean,
@@ -48,4 +48,12 @@ data class MangaMeta(
     companion object {
         const val DEFAULT_READER_MODE = "default"
     }
+}
+
+@Serializable
+enum class MangaStatus(val resId: String) {
+    UNKNOWN("status_unknown"),
+    ONGOING("status_ongoing"),
+    COMPLETED("status_completed"),
+    LICENSED("status_licensed");
 }

@@ -72,6 +72,11 @@
     <string name="failed_manga_fetch">Failed to load manga</string>
     <string name="edit_categories">Categories</string>
 
+    <string name="status_unknown">Unknown</string>
+    <string name="status_ongoing">Ongoing</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_Licensed">Licensed</string>
+
     <!-- Sources Menu -->
     <string name="sources_home">Home</string>
     <string name="move_to_browse">Browse</string>
