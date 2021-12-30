@@ -33,7 +33,6 @@ import ca.gosyer.data.server.ServerService.ServerResult
 import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
-import ca.gosyer.data.update.UpdateChecker
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.prefs.asStateIn
@@ -89,7 +88,6 @@ suspend fun main() {
 
     val serverService = scope.getInstance<ServerService>()
     val uiPreferences = scope.getInstance<UiPreferences>()
-    val updateChecker = scope.getInstance<UpdateChecker>()
 
     // Call setDefault before getting a resource bundle
     val language = uiPreferences.language().get()
