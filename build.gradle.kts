@@ -12,9 +12,9 @@ plugins {
     kotlin("jvm") version "1.6.10"
     kotlin("kapt") version "1.6.10"
     kotlin("plugin.serialization") version "1.6.10"
-    id("org.jetbrains.compose") version "1.0.1-rc2"
+    id("org.jetbrains.compose") version "1.0.1"
     id("com.github.gmazzo.buildconfig") version "3.0.3"
-    id("org.jmailen.kotlinter") version "3.7.0"
+    id("org.jmailen.kotlinter") version "3.8.0"
     id("com.github.ben-manes.versions") version "0.39.0"
 }
 
@@ -47,7 +47,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
 
     // Json
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     // Xml
     val xmlutilVersion = "0.83.0"
@@ -72,7 +72,7 @@ dependencies {
     val slf4jVersion = "1.7.32"
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     implementation("org.slf4j:jul-to-slf4j:$slf4jVersion")
-    val log4jVersion = "2.17.0"
+    val log4jVersion = "2.17.1"
     implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
