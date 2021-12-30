@@ -8,7 +8,6 @@ package ca.gosyer.core.prefs
 
 import ca.gosyer.common.prefs.Preference
 import com.russhwolf.settings.ObservableSettings
-import com.russhwolf.settings.contains
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

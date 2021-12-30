@@ -68,7 +68,6 @@ import com.google.accompanist.flowlayout.FlowRow
 import io.kamel.image.lazyPainterResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 
 @OptIn(DelicateCoroutinesApi::class)
 fun openMangaMenu(mangaId: Long) {

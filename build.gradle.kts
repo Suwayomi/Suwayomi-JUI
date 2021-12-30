@@ -42,7 +42,7 @@ dependencies {
     implementation("com.github.weisj:darklaf-core:2.7.3")
 
     // Threading
-    val coroutinesVersion = "1.5.2"
+    val coroutinesVersion = "1.6.0"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
 

@@ -16,7 +16,6 @@ import androidx.compose.ui.window.rememberTrayState
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.ui.base.vm.viewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @Composable

@@ -72,7 +72,6 @@ import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.components.filter.model.SourceFiltersView
 import ca.gosyer.util.compose.persistentLazyListState
 import com.github.zsoltk.compose.savedinstancestate.Bundle
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 
