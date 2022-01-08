@@ -36,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +44,9 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -79,6 +82,21 @@ import ca.gosyer.util.lang.launchApplication
 import io.kamel.core.config.KamelConfig
 import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
+val supportedKeyList = listOf(
+    Key.W,
+    Key.DirectionUp,
+    Key.S,
+    Key.DirectionDown,
+    Key.A,
+    Key.DirectionLeft,
+    Key.D,
+    Key.DirectionRight
+)
 
 @OptIn(DelicateCoroutinesApi::class)
 fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
@@ -94,10 +112,9 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
     val kamelConfig = AppScope.getInstance<KamelConfig>()
 
     launchApplication {
+        val scope = rememberCoroutineScope()
+        val hotkeyFlow = remember { MutableSharedFlow<KeyEvent>() }
         val icon = painterResource("icon.png")
-        var shortcuts by remember {
-            mutableStateOf(emptyMap<Key, ((KeyEvent) -> Boolean)>())
-        }
         val windowState = rememberWindowState(size = size, position = position, placement = placement)
         DisposableEffect(Unit) {
             onDispose {
@@ -119,7 +136,11 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
             icon = icon,
             state = windowState,
             onKeyEvent = {
-                shortcuts[it.key]?.invoke(it) ?: false
+                if (it.type != KeyEventType.KeyDown) return@Window false
+                scope.launch {
+                    hotkeyFlow.emit(it)
+                }
+                it.key in supportedKeyList
             }
         ) {
             CompositionLocalProvider(
@@ -127,7 +148,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
                 LocalKamelConfig provides kamelConfig
             ) {
                 AppTheme {
-                    ReaderMenu(chapterIndex, mangaId) { shortcuts = it }
+                    ReaderMenu(chapterIndex, mangaId, hotkeyFlow)
                 }
             }
         }
@@ -138,7 +159,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
 fun ReaderMenu(
     chapterIndex: Int,
     mangaId: Long,
-    setHotkeys: (Map<Key, ((KeyEvent) -> Boolean)>) -> Unit
+    hotkeyFlow: SharedFlow<KeyEvent>
 ) {
     val vm = viewModel<ReaderMenuViewModel> {
         ReaderMenuViewModel.Params(chapterIndex, mangaId)
@@ -168,19 +189,15 @@ fun ReaderMenu(
         }
     }
 
-    LaunchedEffect(Unit) {
-        setHotkeys(
-            mapOf(
-                Key.W to hotkey { vm.navigate(Navigation.PREV) },
-                Key.DirectionUp to hotkey { vm.navigate(Navigation.PREV) },
-                Key.S to hotkey { vm.navigate(Navigation.NEXT) },
-                Key.DirectionDown to hotkey { vm.navigate(Navigation.NEXT) },
-                Key.A to hotkey { vm.navigate(Navigation.LEFT) },
-                Key.DirectionLeft to hotkey { vm.navigate(Navigation.LEFT) },
-                Key.D to hotkey { vm.navigate(Navigation.RIGHT) },
-                Key.DirectionRight to hotkey { vm.navigate(Navigation.RIGHT) }
-            )
-        )
+    LaunchedEffect(hotkeyFlow) {
+        hotkeyFlow.collectLatest {
+            when (it.key) {
+                Key.W, Key.DirectionUp -> vm.navigate(Navigation.PREV)
+                Key.S, Key.DirectionDown -> vm.navigate(Navigation.NEXT)
+                Key.A, Key.DirectionLeft -> vm.navigate(Navigation.LEFT)
+                Key.D, Key.DirectionRight -> vm.navigate(Navigation.RIGHT)
+            }
+        }
     }
     DisposableEffect(Unit) {
         onDispose(vm::sendProgress)
