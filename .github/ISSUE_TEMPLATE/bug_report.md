@@ -27,7 +27,7 @@ Note that the issue will be automatically closed if you do not fill out the titl
 - Operating System: (Example: Ubuntu 20.04)
 - Desktop Environment: (Example: Gnome 40)
 - Server Type: (Example: Internal)
-- Client JVM version: (Example: Java 15.0.3 or JUI Installer)
+- Client JVM version: (Example: Java 17.0.1 or JUI Installer)
 - Server JVM version: (Example: Same as Client or OpenJDK 8u281)
 
 ## Steps to reproduce

@@ -28,7 +28,7 @@ These are the versions of [Tachidesk-Server][tachidesk-server] that JUI supports
 
 ## Downloading and Running the app
 ### All Operating Systems (x64, Java Not Included)
-You should have The [Java Runtime Environment(JRE) 15](https://jdk.java.net/15/) or newer.
+You should have The [Java(JRE or JDK) 17](https://adoptium.net/) or newer.
 
 Download the latest jar release for your OS from [the releases section][release] (Or from [the preview releases][preview]).
 
