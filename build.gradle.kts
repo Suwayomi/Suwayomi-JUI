@@ -7,6 +7,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
+import proguard.gradle.ProGuardTask
 
 plugins {
     kotlin("jvm") version "1.6.10"
@@ -16,6 +17,17 @@ plugins {
     id("com.github.gmazzo.buildconfig") version "3.0.3"
     id("org.jmailen.kotlinter") version "3.8.0"
     id("com.github.ben-manes.versions") version "0.39.0"
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.guardsquare:proguard-gradle:7.2.0-beta6") {
+            exclude("com.android.tools.build")
+        }
+    }
 }
 
 group = "ca.gosyer"
@@ -160,6 +172,26 @@ tasks {
         rejectVersionIf {
             isNonStable(candidate.version) && !isNonStable(currentVersion)
         }
+    }
+    register<ProGuardTask>("optimizeUberJar") {
+        group = "compose desktop"
+        val packageUberJarForCurrentOS = getByName("packageUberJarForCurrentOS")
+        dependsOn(packageUberJarForCurrentOS)
+        val uberJars = packageUberJarForCurrentOS.outputs.files
+        injars(uberJars)
+        outjars(
+            uberJars.map { file ->
+                File(file.parentFile, "min/" + file.name)
+            }
+        )
+        val javaHome = System.getProperty("java.home")
+        if (JavaVersion.current().isJava9Compatible) {
+            libraryjars("$javaHome/jmods")
+        } else {
+            libraryjars("$javaHome/lib/rt.jar")
+            libraryjars("$javaHome/lib/jce.jar")
+        }
+        configuration("proguard-rules.pro")
     }
 }
 
