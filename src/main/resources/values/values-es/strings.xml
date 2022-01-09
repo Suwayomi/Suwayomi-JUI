@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="confirm_exit_message">¿Estás seguro de que quieres salir\?</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="unable_to_start_server">No se puede iniciar el servidor</string>
+    <string name="action_add">Añadir</string>
+    <string name="action_clear_queue">Limpiar cola</string>
+    <string name="location_categories">Categorías</string>
+    <string name="downloads_remaining">%1$d restante(s)</string>
+    <string name="edit_categories">Categorías</string>
+    <string name="settings_advanced">Avanzado</string>
+    <string name="settings_appearance">Apariencia</string>
+    <string name="settings_backup">Copia de Seguridad</string>
+    <string name="settings_advanced_screen">Ajustes Avanzados</string>
+    <string name="settings_appearance_screen">Ajustes de Apariencia</string>
+    <string name="settings_browse_screen">Ajustes de Explorar</string>
+    <string name="new_update_message">¡%1$s está disponible!</string>
+    <string name="all">Todo</string>
+    <string name="settings_backup_screen">Ajustes de Copia de Seguridad</string>
+    <string name="move_to_browse">Explorar</string>
+    <string name="settings_browse">Explorar</string>
+    <string name="action_close">Cerrar</string>
+    <string name="update_checker">Buscar actualizaciones</string>
+</resources>

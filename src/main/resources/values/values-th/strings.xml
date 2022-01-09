@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="new_update_message">%1$s พร้อมให้ใช้งานแล้ว</string>
+    <string name="confirm_exit_message">ต้องการออกใช่ไหม\?</string>
+    <string name="action_add">เพิ่ม</string>
+    <string name="downloads_remaining">คงเหลือ %1$d</string>
+    <string name="all">ทั้งหมด</string>
+    <string name="settings_advanced">ขั้นสูง</string>
+    <string name="settings_advanced_screen">การตั้งค่าขั้นสูง</string>
+    <string name="settings_appearance">ลักษณะ</string>
+    <string name="settings_backup">การสำรองข้อมูล</string>
+    <string name="settings_appearance_screen">การตั้งค่าลักษณะ</string>
+    <string name="settings_backup_screen">ตั้งค่าการสำรองข้อมูล</string>
+    <string name="color_secondary_sub">เลือกส่วนของ UI</string>
+    <string name="host_basic_auth_password">รหัสผ่านยืนยันพื้นฐาน</string>
+    <string name="auth_password">รหัสผ่านยืนยัน</string>
+    <string name="auth_username">ชื่อผู้ใช้ยืนยัน</string>
+    <string name="basic_auth">การยืนยันพื้นฐาน</string>
+</resources>
