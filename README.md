@@ -28,7 +28,7 @@ These are the versions of [Tachidesk-Server][tachidesk-server] that JUI supports
 
 ## Downloading and Running the app
 ### All Operating Systems (x64, Java Not Included)
-You should have The [Java(JRE or JDK) 17](https://adoptium.net/) or newer.
+You should have [Java(JRE or JDK) 17](https://adoptium.net/) or newer.
 
 Download the latest jar release for your OS from [the releases section][release] (Or from [the preview releases][preview]).
 
@@ -67,7 +67,7 @@ Make sure you have used either an installer, or you have Java 15 installed.
 Make sure that if you used an installer, that you have at least Java 8 installed.
 
 ## Support and help
-Join Tachidesk's [discord server](https://discord.gg/wgPyb7hE5d) to hang out with the community and receive support and help.
+Join Tachidesk's [discord server](https://discord.gg/DDZdqZWaHA) to hang out with the community and receive support and help.
 
 ## Building from source
 ### Prerequisite: Software dependencies
