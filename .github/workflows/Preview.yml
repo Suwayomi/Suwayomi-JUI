@@ -119,6 +119,17 @@ jobs:
     - name: Download Build Artifacts
       uses: actions/download-artifact@v2
 
+    - name: Fix rpm java dependency
+      uses: Syer10/CentOS-Java16-Action@v1
+      with:
+        command: ./scripts/RpmDependnencyFix.sh
+
+    - name: Fix deb java dependency
+      run: ./scripts/DebDependencyFix.sh
+
+    - name: Fix filenames
+      run: ./scripts/NamingFix.sh
+
     - name: Get previous release
       id: last_release
       uses: Dmagine/get-latest-release@master

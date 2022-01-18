@@ -112,6 +112,17 @@ jobs:
       - name: Download Build Artifacts
         uses: actions/download-artifact@v2
 
+      - name: Fix rpm java dependency
+        uses: Syer10/CentOS-Java16-Action@v1
+        with:
+          command: ./scripts/RpmDependnencyFix.sh
+
+      - name: Fix deb java dependency
+        run: ./scripts/DebDependencyFix.sh
+
+      - name: Fix filenames
+        run: ./scripts/NamingFix.sh
+
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "*/binaries/main/*/*.*,*/jars/*.jar"
