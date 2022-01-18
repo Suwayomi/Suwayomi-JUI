@@ -265,7 +265,7 @@ buildConfig {
     buildConfigField("int", "MIGRATION_CODE", migrationCode.toString())
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
     buildConfigField("boolean", "IS_PREVIEW", project.hasProperty("preview").toString())
-    buildConfigField("int", "PREVIEW_BUILD", project.properties["preview"]?.toString() ?: 0.toString())
+    buildConfigField("int", "PREVIEW_BUILD", project.properties["preview"]?.toString()?.trim('"') ?: 0.toString())
 
     // Tachidesk
     buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion.wrap())
