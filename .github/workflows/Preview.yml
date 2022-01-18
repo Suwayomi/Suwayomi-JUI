@@ -79,6 +79,7 @@ jobs:
       if: ${{ matrix.runtime != 'linux-centos-x64' }}
       uses: gradle/gradle-build-action@v2
       with:
+        cache-disabled: true
         arguments: >
           ${{ matrix.build }}
           -Pcompose.desktop.mac.sign=true
