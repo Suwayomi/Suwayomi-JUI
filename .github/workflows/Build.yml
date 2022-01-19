@@ -109,10 +109,7 @@ jobs:
     needs: [ BuildBinaries ]
     runs-on: ubuntu-latest
     steps:
-
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Download Build Artifacts
         uses: actions/download-artifact@v2
@@ -120,7 +117,7 @@ jobs:
       - name: Fix rpm java dependency
         uses: Syer10/CentOS-Java16-Action@v1
         with:
-          command: ./scripts/RpmDependnencyFix.sh
+          command: ./scripts/RpmDependencyFix.sh
 
       - name: Fix deb java dependency
         run: ./scripts/DebDependencyFix.sh
