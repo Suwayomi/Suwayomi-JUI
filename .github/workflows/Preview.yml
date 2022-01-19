@@ -168,7 +168,6 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "*/binaries/main/*/*.*,*/jars/*.jar"
-          draft: true
           token: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
           repo: Tachidesk-JUI-preview
           tag: r${{ env.COMMIT_COUNT }}
