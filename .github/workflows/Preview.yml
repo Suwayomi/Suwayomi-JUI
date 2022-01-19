@@ -14,7 +14,7 @@ jobs:
     name: Build application packages
     strategy:
       matrix:
-        runtime: [ linux-x64, linux-centos-x64, osx-x64, win-x64 ]
+        runtime: [ linux-x64, linux-fedora-x64, osx-x64, win-x64 ]
         include:
           - runtime: linux-x64
             arch: x64
@@ -23,7 +23,7 @@ jobs:
             build: packageUberJarForCurrentOS packageDeb
             setupCl: ./scripts/SetupClUnix.sh
 
-          - runtime: linux-centos-x64
+          - runtime: linux-fedora-x64
             arch: x64
             os: ubuntu-latest
             shell: bash
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: actions/setup-java@v1
-        if: ${{ matrix.runtime != 'linux-centos-x64' }}
+        if: ${{ matrix.runtime != 'linux-fedora-x64' }}
         with:
           java-version: '16'
           architecture: ${{ matrix.arch }}
@@ -75,13 +75,13 @@ jobs:
           echo "COMMIT_COUNT=$commit_count" >> $GITHUB_ENV
 
       - name: Build rpm Package
-        if: ${{ matrix.runtime == 'linux-centos-x64' }}
-        uses: Syer10/CentOS-Java16-Action@v1
+        if: ${{ matrix.runtime == 'linux-fedora-x64' }}
+        uses: Syer10/Fedora-Java16-Action@v1
         with:
           command: ./gradlew ${{ matrix.build }} -Ppreview="${{ env.COMMIT_COUNT }}" --stacktrace
 
       - name: Build
-        if: ${{ matrix.runtime != 'linux-centos-x64' }}
+        if: ${{ matrix.runtime != 'linux-fedora-x64' }}
         uses: gradle/gradle-build-action@v2
         with:
           arguments: >
@@ -123,7 +123,7 @@ jobs:
         uses: actions/download-artifact@v2
 
       - name: Fix rpm java dependency
-        uses: Syer10/CentOS-Java16-Action@v1
+        uses: Syer10/Fedora-Java16-Action@v1
         with:
           command: ./scripts/RpmDependencyFix.sh
 
