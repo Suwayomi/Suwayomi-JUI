@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rpm="$(find ./build/compose/binaries/main/rpm/*.rpm)"
+rpm="$(find ./ -iname '*.rpm')"
 dir="$(dirname "$rpm")"
 
 echo "Adding java dependency to rpm file $rpm in $dir"

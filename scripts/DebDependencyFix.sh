@@ -1,6 +1,6 @@
 #!/bin/bash
 
-deb="$(find ./build/compose/binaries/main/deb/*.deb)"
+deb="$(find ./ -iname '*.deb')"
 dir="$(dirname "$deb")"
 echo "Found deb file $deb in $dir"
 

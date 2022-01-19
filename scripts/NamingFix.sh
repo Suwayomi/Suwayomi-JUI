@@ -1,6 +1,6 @@
 #!/bin/bash
 
-msi="$(find ./build/compose/binaries/main/msi/*.msi 2>/dev/null)"
+msi="$(find ./ -iname '*.msi' 2>/dev/null)"
 if [ -f "$msi" ]; then
   dir="$(dirname "$msi")"
   version=$(tmp="${msi%.*}" && echo "${tmp##*-}")
@@ -10,7 +10,7 @@ if [ -f "$msi" ]; then
     fi
 fi
 
-dmg="$(find ./build/compose/binaries/main/dmg/*.dmg 2>/dev/null)"
+dmg="$(find ./ -iname '*.dmg' 2>/dev/null)"
 if [ -f "$dmg" ]; then
   dir="$(dirname "$dmg")"
   version=$(tmp="${dmg%.*}" && echo "${tmp##*-}")
