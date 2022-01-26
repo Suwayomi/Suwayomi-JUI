@@ -5,9 +5,9 @@ if [ -f "$msi" ]; then
   dir="$(dirname "$msi")"
   version=$(tmp="${msi%.*}" && echo "${tmp##*-}")
 
-    if [ "$(basename "$msi")" != "Tachidesk-JUI-windows-x64-$version.msi" ]; then
-      mv "$msi" "$dir/Tachidesk-JUI-windows-x64-$version.msi"
-    fi
+  if [ "$(basename "$msi")" != "Tachidesk-JUI-windows-x64-$version.msi" ]; then
+    mv "$msi" "$dir/Tachidesk-JUI-windows-x64-$version.msi"
+  fi
 fi
 
 dmg="$(find ./ -iname '*.dmg' 2>/dev/null)"
