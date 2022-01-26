@@ -8,6 +8,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
 import proguard.gradle.ProGuardTask
+import java.nio.file.Files
+import kotlin.streams.asSequence
 
 plugins {
     kotlin("jvm")
@@ -19,6 +21,9 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":core"))
+    implementation(project(":i18n"))
+
     // UI (Compose)
     implementation(compose.desktop.currentOs)
     implementation(compose.uiTooling)
@@ -63,7 +68,8 @@ dependencies {
     implementation(libs.log4jSlf4j)
     implementation(libs.ktlogging)
 
-    // User storage
+    // Storage
+    implementation(libs.okio)
     implementation(libs.appDirs)
 
     // Preferences
@@ -73,6 +79,10 @@ dependencies {
 
     // Utility
     implementation(libs.krokiCoroutines)
+
+    // Localization
+    implementation(libs.mokoCore)
+    implementation(libs.mokoCompose)
 
     // Testing
     testImplementation(kotlin("test-junit"))
@@ -126,14 +136,13 @@ tasks {
     registerTachideskTasks(project)
 
     task("generateResourceConstants") {
-        val buildResources = buildConfig.forClass(project.group.toString()+ ".build", "BuildResources")
+        val buildResources = buildConfig.forClass("${project.group}.build", "BuildResources")
 
         doFirst {
-            val langs = listOf("en") + sourceSets["main"].resources
-                .filter { it.name == "strings.xml" }
-                .drop(1)
-                .map { it.absolutePath.substringAfter("values-").substringBefore(File.separatorChar) }
-            buildResources.buildConfigField("Array<String>", "LANGUAGES", langs.joinToString(prefix = "arrayOf(", postfix = ")") { it.wrap() })
+            val langs = listOf("en") + Files.list(rootDir.toPath().resolve("i18n/src/commonMain/resources/MR/values")).asSequence()
+                .map { it.fileName.toString().replace("-r", "-") }
+                .toList()
+            buildResources.buildConfigField("ca.gosyer.i18n.StringList", "LANGUAGES", langs.joinToString(prefix = "listOf(", postfix = ")") { it.wrap() })
         }
 
         generateBuildConfig {
@@ -176,6 +185,8 @@ compose.desktop {
         mainClass = "ca.gosyer.ui.main.MainKt"
         nativeDistributions {
             targetFormats(
+                // All
+                TargetFormat.AppImage,
                 // Windows
                 TargetFormat.Msi,
                 TargetFormat.Exe,
@@ -228,7 +239,7 @@ buildConfig {
     packageName(project.group.toString() + ".build")
     useKotlinOutput { internalVisibility = true }
 
-    buildConfigField("String", "NAME", project.name.wrap())
+    buildConfigField("String", "NAME", rootProject.name.wrap())
     buildConfigField("String", "VERSION", project.version.toString().wrap())
     buildConfigField("int", "MIGRATION_CODE", migrationCode.toString())
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())

@@ -57,7 +57,8 @@ import ca.gosyer.ui.base.components.MangaListItemSubtitle
 import ca.gosyer.ui.base.components.MangaListItemTitle
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
@@ -83,16 +84,16 @@ fun DownloadsMenu(onMangaClick: (Long) -> Unit) {
 
     Column {
         Toolbar(
-            stringResource("location_downloads"),
+            stringResource(MR.strings.location_downloads),
             closable = false,
             actions = {
                 val downloadStatus by vm.downloaderStatus.collectAsState()
                 if (downloadStatus == DownloaderStatus.Started) {
-                    ActionIcon(onClick = vm::pause, stringResource("action_pause"), Icons.Rounded.Pause)
+                    ActionIcon(onClick = vm::pause, stringResource(MR.strings.action_pause), Icons.Rounded.Pause)
                 } else {
-                    ActionIcon(onClick = vm::start, stringResource("action_continue"), Icons.Rounded.PlayArrow)
+                    ActionIcon(onClick = vm::start, stringResource(MR.strings.action_continue), Icons.Rounded.PlayArrow)
                 }
-                ActionIcon(onClick = vm::clear, stringResource("action_clear_queue"), Icons.Rounded.ClearAll)
+                ActionIcon(onClick = vm::clear, stringResource(MR.strings.action_clear_queue), Icons.Rounded.ClearAll)
             }
         )
         Box {
@@ -170,10 +171,10 @@ fun DownloadsItem(
             item.mangaId to item.chapterIndex,
             {
                 DropdownMenuItem(onClick = { onClickCancel(item.chapter) }) {
-                    Text(stringResource("action_cancel"))
+                    Text(stringResource(MR.strings.action_cancel))
                 }
                 DropdownMenuItem(onClick = { onClickMoveToBottom(item.chapter) }) {
-                    Text(stringResource("action_move_to_bottom"))
+                    Text(stringResource(MR.strings.action_move_to_bottom))
                 }
             }
         ) {

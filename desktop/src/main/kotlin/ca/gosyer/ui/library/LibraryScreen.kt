@@ -32,7 +32,8 @@ import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
@@ -100,7 +101,7 @@ fun LibraryScreen(bundle: Bundle, onClickManga: (Long) -> Unit = ::openMangaMenu
                 }
             )*/
             Toolbar(
-                stringResource("location_library"),
+                stringResource(MR.strings.location_library),
                 closable = false,
                 searchText = query,
                 search = vm::updateQuery

@@ -37,7 +37,8 @@ import ca.gosyer.data.download.model.DownloadState
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -143,7 +144,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
         downloadChapter?.mangaId to downloadChapter?.chapterIndex,
         {
             DropdownMenuItem(onClick = onClick) {
-                Text(stringResource("action_cancel"))
+                Text(stringResource(MR.strings.action_cancel))
             }
         }
     ) {
@@ -215,7 +216,7 @@ private fun DownloadedIconButton(chapter: Pair<Long, Int?>, onClick: () -> Unit)
         chapter,
         {
             DropdownMenuItem(onClick = onClick) {
-                Text(stringResource("action_delete"))
+                Text(stringResource(MR.strings.action_delete))
             }
         }
     ) {

@@ -29,10 +29,11 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.ChapterDownloadIcon
 import ca.gosyer.ui.base.components.ChapterDownloadItem
 import ca.gosyer.ui.base.components.contextMenuClickable
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
 import java.time.Instant
 
 @Composable
@@ -90,7 +91,7 @@ fun ChapterItem(
                             if (length > 0) append(" • ")
                             append(
                                 AnnotatedString(
-                                    stringResource("page_progress", (chapter.lastPageRead + 1)),
+                                    stringResource(MR.strings.page_progress, (chapter.lastPageRead + 1)),
                                     SpanStyle(color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled))
                                 )
                             )

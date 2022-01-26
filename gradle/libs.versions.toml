@@ -27,6 +27,7 @@ log4j = "2.17.1"
 ktlogging = "2.1.21"
 
 # Storage
+okio = "3.0.0"
 appDirs = "1.2.1"
 
 # Preferences
@@ -34,6 +35,9 @@ multiplatformSettings = "0.8.1"
 
 # Utility
 kroki = "1.22"
+
+# Localization
+moko = "0.18.0"
 
 [libraries]
 # Kotlin
@@ -43,8 +47,8 @@ coroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", ver
 
 # Serialization
 json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "json" }
-xmlUtilCore = { module = "io.github.pdvrieze.xmlutil:core-jvm", version.ref = "xmlUtil" }
-xmlUtilSerialization = { module = "io.github.pdvrieze.xmlutil:serialization-jvm", version.ref = "xmlUtil" }
+xmlUtilCore = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "xmlUtil" }
+xmlUtilSerialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlUtil" }
 
 # Compose
 composeRouter = { module = "ca.gosyer:compose-router", version.ref = "composeRouter" }
@@ -73,15 +77,20 @@ slf4jJul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
 log4jApi = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 log4jCore = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4jSlf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
-ktlogging = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "ktlogging" }
+ktlogging = { module = "io.github.microutils:kotlin-logging", version.ref = "ktlogging" }
 
 # Storage
 appDirs = { module = "net.harawata:appdirs", version.ref = "appDirs" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 
 # Preferences
-multiplatformSettingsCore = { module = "com.russhwolf:multiplatform-settings-jvm", version.ref = "multiplatformSettings" }
-multiplatformSettingsSerialization = { module = "com.russhwolf:multiplatform-settings-serialization-jvm", version.ref = "multiplatformSettings" }
-multiplatformSettingsCoroutines = { module = "com.russhwolf:multiplatform-settings-coroutines-jvm", version.ref = "multiplatformSettings" }
+multiplatformSettingsCore = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+multiplatformSettingsSerialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatformSettings" }
+multiplatformSettingsCoroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettings" }
 
 # Utility
 krokiCoroutines = { module = "io.github.kerubistan.kroki:kroki-coroutines", version.ref = "kroki" }
+
+# Localization
+mokoCore = { module = "dev.icerock.moko:resources", version.ref = "moko" }
+mokoCompose= { module = "dev.icerock.moko:resources-compose", version.ref = "moko" }

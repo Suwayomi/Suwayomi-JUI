@@ -6,8 +6,8 @@
 
 package ca.gosyer.data.library
 
-import ca.gosyer.common.prefs.Preference
-import ca.gosyer.common.prefs.PreferenceStore
+import ca.gosyer.core.prefs.Preference
+import ca.gosyer.core.prefs.PreferenceStore
 import ca.gosyer.data.library.model.DisplayMode
 
 class LibraryPreferences(private val preferenceStore: PreferenceStore) {

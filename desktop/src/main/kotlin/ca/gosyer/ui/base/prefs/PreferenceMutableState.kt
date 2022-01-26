@@ -6,7 +6,7 @@
 
 package ca.gosyer.ui.base.prefs
 
-import ca.gosyer.common.prefs.Preference
+import ca.gosyer.core.prefs.Preference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn

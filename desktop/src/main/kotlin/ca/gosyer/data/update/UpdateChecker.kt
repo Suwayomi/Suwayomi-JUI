@@ -7,10 +7,10 @@
 package ca.gosyer.data.update
 
 import ca.gosyer.build.BuildConfig
+import ca.gosyer.core.lang.launch
+import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.update.model.GithubRelease
-import ca.gosyer.util.lang.launch
-import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.get
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow

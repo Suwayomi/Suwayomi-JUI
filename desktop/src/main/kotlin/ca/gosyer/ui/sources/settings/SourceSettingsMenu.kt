@@ -38,7 +38,8 @@ import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoiceDialog
 import ca.gosyer.ui.base.prefs.MultiSelectDialog
 import ca.gosyer.ui.base.prefs.PreferenceRow
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.CheckBox
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.EditText
@@ -68,7 +69,7 @@ fun SourceSettingsMenu(sourceId: Long, menuController: MenuController? = LocalMe
     val settings by vm.sourceSettings.collectAsState()
 
     Column {
-        Toolbar(stringResource("location_settings"), menuController, menuController != null)
+        Toolbar(stringResource(MR.strings.location_settings), menuController, menuController != null)
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {

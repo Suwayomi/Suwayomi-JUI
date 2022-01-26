@@ -6,8 +6,8 @@
 
 package ca.gosyer.data.reader
 
-import ca.gosyer.common.prefs.Preference
-import ca.gosyer.common.prefs.PreferenceStore
+import ca.gosyer.core.prefs.Preference
+import ca.gosyer.core.prefs.PreferenceStore
 import ca.gosyer.data.reader.model.DefaultReaderMode
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale

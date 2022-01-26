@@ -41,7 +41,8 @@ import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ColorPreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.theme.AppColorsPreferenceState
 import ca.gosyer.ui.base.theme.Theme
 import ca.gosyer.ui.base.theme.asStateFlow
@@ -81,7 +82,7 @@ fun SettingsAppearance(menuController: MenuController) {
     }
 
     Column {
-        Toolbar(stringResource("settings_appearance_screen"), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_appearance_screen), menuController, true)
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
@@ -89,16 +90,16 @@ fun SettingsAppearance(menuController: MenuController) {
                     ChoicePreference(
                         preference = vm.themeMode,
                         choices = mapOf(
-                            ThemeMode.System to stringResource("theme_follow_system"),
-                            ThemeMode.Light to stringResource("theme_light"),
-                            ThemeMode.Dark to stringResource("theme_dark")
+                            ThemeMode.System to stringResource(MR.strings.theme_follow_system),
+                            ThemeMode.Light to stringResource(MR.strings.theme_light),
+                            ThemeMode.Dark to stringResource(MR.strings.theme_dark)
                         ),
-                        title = stringResource("theme")
+                        title = stringResource(MR.strings.theme)
                     )
                 }
                 item {
                     Text(
-                        stringResource("preset_themes"),
+                        stringResource(MR.strings.preset_themes),
                         modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
                     )
                     LazyRow(modifier = Modifier.padding(horizontal = 8.dp)) {
@@ -117,24 +118,24 @@ fun SettingsAppearance(menuController: MenuController) {
                 item {
                     ColorPreference(
                         preference = activeColors.primaryStateFlow,
-                        title = stringResource("color_primary"),
-                        subtitle = stringResource("color_primary_sub"),
+                        title = stringResource(MR.strings.color_primary),
+                        subtitle = stringResource(MR.strings.color_primary_sub),
                         unsetColor = MaterialTheme.colors.primary
                     )
                 }
                 item {
                     ColorPreference(
                         preference = activeColors.secondaryStateFlow,
-                        title = stringResource("color_secondary"),
-                        subtitle = stringResource("color_secondary_sub"),
+                        title = stringResource(MR.strings.color_secondary),
+                        subtitle = stringResource(MR.strings.color_secondary_sub),
                         unsetColor = MaterialTheme.colors.secondary
                     )
                 }
                 item {
                     SwitchPreference(
                         vm.windowDecorations,
-                        stringResource("window_decorations"),
-                        stringResource("window_decorations_sub")
+                        stringResource(MR.strings.window_decorations),
+                        stringResource(MR.strings.window_decorations_sub)
                     )
                 }
             }
@@ -176,7 +177,7 @@ private fun ThemeItem(
                     .weight(1f)
                     .padding(6.dp)
             ) {
-                Text(stringResource("theme_text"), fontSize = 11.sp)
+                Text(stringResource(MR.strings.theme_text), fontSize = 11.sp)
                 Button(
                     onClick = {},
                     enabled = false,

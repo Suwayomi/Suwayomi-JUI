@@ -31,96 +31,97 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.main.Routes
 
 @Composable
 fun SettingsScreen(menuController: MenuController) {
     Column {
-        Toolbar(stringResource("location_settings"), closable = false)
+        Toolbar(stringResource(MR.strings.location_settings), closable = false)
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
                     PreferenceRow(
-                        title = stringResource("settings_general"),
+                        title = stringResource(MR.strings.settings_general),
                         icon = Icons.Rounded.Tune,
                         onClick = { menuController.push(Routes.SettingsGeneral) }
                     )
                 }
                 item {
                     PreferenceRow(
-                        title = stringResource("settings_appearance"),
+                        title = stringResource(MR.strings.settings_appearance),
                         icon = Icons.Rounded.Palette,
                         onClick = { menuController.push(Routes.SettingsAppearance) }
                     )
                 }
                 item {
                     PreferenceRow(
-                        title = stringResource("settings_server"),
+                        title = stringResource(MR.strings.settings_server),
                         icon = Icons.Rounded.Computer,
                         onClick = { menuController.push(Routes.SettingsServer) }
                     )
                 }
                 item {
                     PreferenceRow(
-                        title = stringResource("settings_library"),
+                        title = stringResource(MR.strings.settings_library),
                         icon = Icons.Rounded.CollectionsBookmark,
                         onClick = { menuController.push(Routes.SettingsLibrary) }
                     )
                 }
                 item {
                     PreferenceRow(
-                        title = stringResource("settings_reader"),
+                        title = stringResource(MR.strings.settings_reader),
                         icon = Icons.Rounded.ChromeReaderMode,
                         onClick = { menuController.push(Routes.SettingsReader) }
                     )
                 }
                 /*item {
                     Pref(
-                        title = stringResource("settings_download"),
+                        title = stringResource(MR.strings.settings_download),
                         icon = Icons.Rounded.GetApp,
                         onClick = { navController.push(Route.SettingsDownloads) }
                     )
                 }
                 item {
                     Pref(
-                        title = stringResource("settings_tracking"),
+                        title = stringResource(MR.strings.settings_tracking),
                         icon = Icons.Rounded.Sync,
                         onClick = { navController.push(Route.SettingsTracking) }
                     )
                 }*/
                 item {
                     PreferenceRow(
-                        title = stringResource("settings_browse"),
+                        title = stringResource(MR.strings.settings_browse),
                         icon = Icons.Rounded.Explore,
                         onClick = { menuController.push(Routes.SettingsBrowse) }
                     )
                 }
                 item {
                     PreferenceRow(
-                        title = stringResource("settings_backup"),
+                        title = stringResource(MR.strings.settings_backup),
                         icon = Icons.Rounded.Backup,
                         onClick = { menuController.push(Routes.SettingsBackup) }
                     )
                 }
                 /*item {
                     Pref(
-                        title = stringResource("settings_security"),
+                        title = stringResource(MR.strings.settings_security),
                         icon = Icons.Rounded.Security,
                         onClick = { navController.push(Route.SettingsSecurity) }
                     )
                 }
                 item {
                     Pref(
-                        title = stringResource("settings_parental_controls"),
+                        title = stringResource(MR.strings.settings_parental_controls),
                         icon = Icons.Rounded.PeopleOutline,
                         onClick = { navController.push(Route.SettingsParentalControls) }
                     )
                 }*/
                 item {
                     PreferenceRow(
-                        title = stringResource("settings_advanced"),
+                        title = stringResource(MR.strings.settings_advanced),
                         icon = Icons.Rounded.Code,
                         onClick = { menuController.push(Routes.SettingsAdvanced) }
                     )

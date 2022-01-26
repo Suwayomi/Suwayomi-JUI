@@ -18,9 +18,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ca.gosyer.core.service.WebsocketService
-import ca.gosyer.ui.base.resources.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.downloads.DownloadsMenuViewModel
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun DownloadsExtraInfo() {
@@ -28,10 +29,10 @@ fun DownloadsExtraInfo() {
     val status by vm.serviceStatus.collectAsState()
     val list by vm.downloadQueue.collectAsState()
     val text = when (status) {
-        WebsocketService.Status.STARTING -> stringResource("downloads_loading")
+        WebsocketService.Status.STARTING -> stringResource(MR.strings.downloads_loading)
         WebsocketService.Status.RUNNING -> {
             if (list.isNotEmpty()) {
-                stringResource("downloads_remaining", list.size)
+                stringResource(MR.strings.downloads_remaining, list.size)
             } else null
         }
         WebsocketService.Status.STOPPED -> null
@@ -45,7 +46,7 @@ fun DownloadsExtraInfo() {
     } else if (status == WebsocketService.Status.STOPPED) {
         Surface(onClick = vm::restartDownloader, shape = RoundedCornerShape(4.dp)) {
             Text(
-                stringResource("downloads_stopped"),
+                stringResource(MR.strings.downloads_stopped),
                 style = MaterialTheme.typography.body2,
                 color = Color.Red.copy(alpha = ContentAlpha.disabled)
             )

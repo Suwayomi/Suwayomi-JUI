@@ -42,7 +42,8 @@ import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.combinedMouseClickable
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.ui.sources.components.SourceHomeScreen
@@ -122,7 +123,7 @@ fun SourcesSideMenu(
                                 shape = RoundedCornerShape(4.dp),
                                 elevation = 4.dp
                             ) {
-                                Text(source?.name ?: stringResource("sources_home"), modifier = Modifier.padding(10.dp))
+                                Text(source?.name ?: stringResource(MR.strings.sources_home), modifier = Modifier.padding(10.dp))
                             }
                         },
                         modifier = Modifier.size(64.dp),
@@ -153,7 +154,7 @@ fun SourcesSideMenu(
                                     )
                                 }
                             } else {
-                                Icon(Icons.Rounded.Home, stringResource("sources_home"), modifier = modifier)
+                                Icon(Icons.Rounded.Home, stringResource(MR.strings.sources_home), modifier = modifier)
                             }
                         }
                     }

@@ -14,12 +14,13 @@ import androidx.compose.ui.window.Notification
 import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.rememberTrayState
 import ca.gosyer.build.BuildConfig
-import ca.gosyer.data.translation.XmlResourceBundle
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Composable
-fun ApplicationScope.Tray(icon: Painter, resources: XmlResourceBundle) {
+fun ApplicationScope.Tray(icon: Painter) {
     val vm = viewModel<TrayViewModel>()
     val trayState = rememberTrayState()
     Tray(
@@ -27,7 +28,7 @@ fun ApplicationScope.Tray(icon: Painter, resources: XmlResourceBundle) {
         trayState,
         tooltip = BuildConfig.NAME,
         menu = {
-            Item(resources.getStringA("action_close"), onClick = ::exitApplication)
+            Item(MR.strings.action_close.localized(), onClick = ::exitApplication)
         }
     )
 
@@ -36,8 +37,8 @@ fun ApplicationScope.Tray(icon: Painter, resources: XmlResourceBundle) {
             vm.updateFound.collect {
                 trayState.sendNotification(
                     Notification(
-                        resources.getStringA("new_update_title"),
-                        resources.getString("new_update_message", it.version),
+                        MR.strings.new_update_title.localized(),
+                        MR.strings.new_update_message.localized(Locale.getDefault(), it.version),
                         Notification.Type.Info
                     )
                 )

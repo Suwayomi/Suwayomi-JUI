@@ -43,7 +43,8 @@ import ca.gosyer.ui.base.components.MangaListItemSubtitle
 import ca.gosyer.ui.base.components.MangaListItemTitle
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import io.kamel.image.lazyPainterResource
 
@@ -56,7 +57,7 @@ fun UpdatesMenu(
     val isLoading by vm.isLoading.collectAsState()
     val updates by vm.updates.collectAsState()
     Column {
-        Toolbar(stringResource("location_updates"), closable = false)
+        Toolbar(stringResource(MR.strings.location_updates), closable = false)
         if (isLoading || updates.isEmpty()) {
             LoadingScreen(isLoading)
         } else {

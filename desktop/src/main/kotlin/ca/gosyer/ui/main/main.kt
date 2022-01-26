@@ -25,22 +25,20 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.build.BuildConfig
+import ca.gosyer.core.lang.withUIContext
 import ca.gosyer.core.logging.initializeLogger
 import ca.gosyer.data.DataModule
 import ca.gosyer.data.migration.Migrations
 import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.ServerService.ServerResult
-import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.prefs.asStateIn
-import ca.gosyer.ui.base.resources.LocalResources
-import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.main.components.Tray
-import ca.gosyer.util.lang.withUIContext
 import ca.gosyer.util.system.getAsFlow
 import ca.gosyer.util.system.userDataDir
 import com.github.weisj.darklaf.LafManager
@@ -49,6 +47,7 @@ import com.github.weisj.darklaf.theme.IntelliJTheme
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.github.zsoltk.compose.savedinstancestate.Bundle
+import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.core.config.KamelConfig
 import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -98,7 +97,6 @@ suspend fun main() {
         }
     }
 
-    val resources = scope.getInstance<XmlResourceBundle>()
     val kamelConfig = scope.getInstance<KamelConfig>()
 
     // Set the Compose constants before any
@@ -154,16 +152,16 @@ suspend fun main() {
 
         val icon = painterResource("icon.png")
 
-        Tray(icon, resources)
+        Tray(icon)
 
         Window(
             onCloseRequest = {
                 if (confirmExit.value) {
                     WindowDialog(
-                        title = resources.getStringA("confirm_exit"),
+                        title = MR.strings.confirm_exit.localized(),
                         onPositiveButton = ::exitApplication
                     ) {
-                        Text(stringResource("confirm_exit_message"))
+                        Text(stringResource(MR.strings.confirm_exit_message))
                     }
                 } else {
                     exitApplication()
@@ -190,7 +188,6 @@ suspend fun main() {
             AppTheme {
                 CompositionLocalProvider(
                     LocalBackPressHandler provides backPressHandler,
-                    LocalResources provides resources,
                     LocalKamelConfig provides kamelConfig
                 ) {
                     Crossfade(serverService.initialized.collectAsState().value) { initialized ->
@@ -208,8 +205,8 @@ suspend fun main() {
                                 Surface {
                                     LoadingScreen(
                                         initialized == ServerResult.STARTING,
-                                        errorMessage = stringResource("unable_to_start_server"),
-                                        retryMessage = stringResource("action_start_anyway"),
+                                        errorMessage = stringResource(MR.strings.unable_to_start_server),
+                                        retryMessage = stringResource(MR.strings.action_start_anyway),
                                         retry = serverService::startAnyway
                                     )
                                 }

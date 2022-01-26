@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.reader
 
+import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.MangaMeta
@@ -22,7 +23,6 @@ import ca.gosyer.ui.reader.model.PageMove
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.ui.reader.model.ViewerChapters
-import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.getAsFlow
 import kotlinx.coroutines.DelicateCoroutinesApi

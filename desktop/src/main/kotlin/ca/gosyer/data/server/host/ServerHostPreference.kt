@@ -6,8 +6,8 @@
 
 package ca.gosyer.data.server.host
 
-import ca.gosyer.common.prefs.Preference
-import ca.gosyer.common.prefs.PreferenceStore
+import ca.gosyer.core.prefs.Preference
+import ca.gosyer.core.prefs.PreferenceStore
 
 sealed class ServerHostPreference<T : Any> {
     protected abstract val propertyName: String

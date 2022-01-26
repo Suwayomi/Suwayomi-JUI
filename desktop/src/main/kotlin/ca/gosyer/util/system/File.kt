@@ -7,7 +7,7 @@
 package ca.gosyer.util.system
 
 import ca.gosyer.build.BuildConfig
-import ca.gosyer.util.lang.launchUI
+import ca.gosyer.core.lang.launchUI
 import kotlinx.coroutines.DelicateCoroutinesApi
 import mu.KotlinLogging
 import net.harawata.appdirs.AppDirs

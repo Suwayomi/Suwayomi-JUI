@@ -6,13 +6,13 @@
 
 package ca.gosyer.data.server.interactions
 
+import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Updates
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.fetchUpdatesRequest
 import ca.gosyer.data.server.requests.recentUpdatesQuery
-import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.post

@@ -6,11 +6,11 @@
 
 package ca.gosyer.ui.sources.settings
 
+import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.data.models.sourcepreference.SourcePreference
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView
-import ca.gosyer.util.lang.throwIfCancellation
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

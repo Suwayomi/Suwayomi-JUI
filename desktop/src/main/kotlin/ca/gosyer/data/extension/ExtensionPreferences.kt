@@ -6,8 +6,8 @@
 
 package ca.gosyer.data.extension
 
-import ca.gosyer.common.prefs.Preference
-import ca.gosyer.common.prefs.PreferenceStore
+import ca.gosyer.core.prefs.Preference
+import ca.gosyer.core.prefs.PreferenceStore
 import java.util.Locale
 
 class ExtensionPreferences(private val preferenceStore: PreferenceStore) {

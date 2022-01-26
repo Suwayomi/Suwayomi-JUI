@@ -23,13 +23,14 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.build.BuildResources
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.StartScreen
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
-import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
+import dev.icerock.moko.resources.compose.stringResource
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -51,16 +52,16 @@ class SettingsGeneralViewModel @Inject constructor(
 
     @Composable
     fun getStartScreenChoices() = mapOf(
-        StartScreen.Library to stringResource("location_library"),
-        StartScreen.Updates to stringResource("location_updates"),
-        StartScreen.Sources to stringResource("location_sources"),
-        StartScreen.Extensions to stringResource("location_extensions")
+        StartScreen.Library to stringResource(MR.strings.location_library),
+        StartScreen.Updates to stringResource(MR.strings.location_updates),
+        StartScreen.Sources to stringResource(MR.strings.location_sources),
+        StartScreen.Extensions to stringResource(MR.strings.location_extensions)
     )
 
     @Composable
     fun getLanguageChoices(): Map<String, String> = (
         mapOf(
-            "" to stringResource("language_system_default", currentLocale.getDisplayName(currentLocale))
+            "" to stringResource(MR.strings.language_system_default, currentLocale.getDisplayName(currentLocale))
         ) + BuildResources.LANGUAGES
             .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
         )
@@ -69,7 +70,7 @@ class SettingsGeneralViewModel @Inject constructor(
     @Composable
     fun getDateChoices(): Map<String, String> {
         return mapOf(
-            "" to stringResource("date_system_default"),
+            "" to stringResource(MR.strings.date_system_default),
             "MM/dd/yy" to "MM/dd/yy",
             "dd/MM/yy" to "dd/MM/yy",
             "yyyy-MM-dd" to "yyyy-MM-dd"
@@ -91,21 +92,21 @@ class SettingsGeneralViewModel @Inject constructor(
 fun SettingsGeneralScreen(menuController: MenuController) {
     val vm = viewModel<SettingsGeneralViewModel>()
     Column {
-        Toolbar(stringResource("settings_general_screen"), menuController, closable = true)
+        Toolbar(stringResource(MR.strings.settings_general_screen), menuController, closable = true)
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
                     ChoicePreference(
                         preference = vm.startScreen,
-                        title = stringResource("start_screen"),
+                        title = stringResource(MR.strings.start_screen),
                         choices = vm.getStartScreenChoices()
                     )
                 }
                 item {
                     SwitchPreference(
                         preference = vm.confirmExit,
-                        title = stringResource("confirm_exit")
+                        title = stringResource(MR.strings.confirm_exit)
                     )
                 }
                 item {
@@ -114,14 +115,14 @@ fun SettingsGeneralScreen(menuController: MenuController) {
                 item {
                     ChoicePreference(
                         preference = vm.language,
-                        title = stringResource("language"),
+                        title = stringResource(MR.strings.language),
                         choices = vm.getLanguageChoices(),
                     )
                 }
                 item {
                     ChoicePreference(
                         preference = vm.dateFormat,
-                        title = stringResource("date_format"),
+                        title = stringResource(MR.strings.date_format),
                         choices = vm.getDateChoices()
                     )
                 }

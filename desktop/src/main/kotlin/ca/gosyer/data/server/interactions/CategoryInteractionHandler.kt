@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.server.interactions
 
+import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.Http
@@ -19,7 +20,6 @@ import ca.gosyer.data.server.requests.getCategoriesQuery
 import ca.gosyer.data.server.requests.getMangaCategoriesQuery
 import ca.gosyer.data.server.requests.getMangaInCategoryQuery
 import ca.gosyer.data.server.requests.removeMangaFromCategoryRequest
-import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get

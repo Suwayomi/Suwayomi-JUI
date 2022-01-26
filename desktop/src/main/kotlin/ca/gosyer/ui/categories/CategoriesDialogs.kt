@@ -12,8 +12,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.input.TextFieldValue
 import ca.gosyer.build.BuildConfig
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.WindowDialog
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 
 fun openRenameDialog(
@@ -54,7 +55,7 @@ fun openDeleteDialog(
         },
         negativeButtonText = "No"
     ) {
-        Text(stringResource("categories_delete_confirm", category.name))
+        Text(stringResource(MR.strings.categories_delete_confirm, category.name))
     }
 }
 

@@ -6,7 +6,7 @@
 
 package ca.gosyer.data.server
 
-import ca.gosyer.common.prefs.Preference
+import ca.gosyer.core.prefs.Preference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted

@@ -32,15 +32,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.filePicker
 import ca.gosyer.util.system.fileSaver
@@ -205,14 +206,14 @@ fun SettingsBackupScreen(menuController: MenuController) {
     }
 
     Column {
-        Toolbar(stringResource("settings_backup_screen"), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_backup_screen), menuController, true)
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
                     PreferenceFile(
-                        stringResource("backup_restore"),
-                        stringResource("backup_restore_sub"),
+                        stringResource(MR.strings.backup_restore),
+                        stringResource(MR.strings.backup_restore_sub),
                         restoring,
                         restoringProgress,
                         restoreStatus
@@ -222,8 +223,8 @@ fun SettingsBackupScreen(menuController: MenuController) {
                         }
                     }
                     PreferenceFile(
-                        stringResource("backup_create"),
-                        stringResource("backup_create_sub"),
+                        stringResource(MR.strings.backup_create),
+                        stringResource(MR.strings.backup_create_sub),
                         creating,
                         creatingProgress,
                         creatingStatus,
@@ -249,7 +250,7 @@ private fun openMissingSourcesDialog(missingSources: List<String>, onPositiveCli
     ) {
         LazyColumn {
             item {
-                Text(stringResource("missing_sources"), style = MaterialTheme.typography.subtitle2)
+                Text(stringResource(MR.strings.missing_sources), style = MaterialTheme.typography.subtitle2)
             }
             items(missingSources) {
                 Text(it)

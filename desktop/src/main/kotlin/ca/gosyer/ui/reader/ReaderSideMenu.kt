@@ -39,12 +39,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.common.util.replace
+import ca.gosyer.core.util.replace
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.ChapterMeta
 import ca.gosyer.data.models.MangaMeta
 import ca.gosyer.ui.base.components.Spinner
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.util.system.kLogger
 import kotlin.math.roundToInt
@@ -78,7 +79,7 @@ fun ReaderSideMenu(
 @Composable
 fun ReaderModeSetting(readerModes: List<String>, selectedMode: String, onSetReaderMode: (String) -> Unit) {
     val modes = remember(readerModes) { listOf(MangaMeta.DEFAULT_READER_MODE) + readerModes }
-    val defaultModeString = stringResource("default_reader_mode")
+    val defaultModeString = stringResource(MR.strings.default_reader_mode)
     val displayModes = remember(modes, defaultModeString) { modes.replace(0, defaultModeString) }
     val selectedModeIndex = remember(modes, selectedMode) { modes.indexOf(selectedMode) }
     Row(
@@ -88,7 +89,7 @@ fun ReaderModeSetting(readerModes: List<String>, selectedMode: String, onSetRead
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(stringResource("reader_mode"), Modifier.weight(0.25f), maxLines = 2, fontSize = 14.sp)
+        Text(stringResource(MR.strings.reader_mode), Modifier.weight(0.25f), maxLines = 2, fontSize = 14.sp)
         Spacer(Modifier.width(8.dp))
         Spinner(
             modifier = Modifier.weight(0.75f),
@@ -144,14 +145,14 @@ private fun NavigateChapters(loadPrevChapter: () -> Unit, loadNextChapter: () ->
     Row(horizontalArrangement = Arrangement.SpaceBetween,) {
         OutlinedButton(loadPrevChapter, Modifier.weight(0.5F)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                val nextChapter = stringResource("nav_prev_chapter")
+                val nextChapter = stringResource(MR.strings.nav_prev_chapter)
                 Icon(Icons.Rounded.NavigateBefore, nextChapter)
                 Text(nextChapter, fontSize = 10.sp)
             }
         }
         OutlinedButton(loadNextChapter, Modifier.weight(0.5F)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                val nextChapter = stringResource("nav_next_chapter")
+                val nextChapter = stringResource(MR.strings.nav_next_chapter)
                 Text(nextChapter, fontSize = 10.sp)
                 Icon(Icons.Rounded.NavigateNext, nextChapter)
             }

@@ -6,7 +6,7 @@
 
 package ca.gosyer.ui.base.vm
 
-import ca.gosyer.common.prefs.Preference
+import ca.gosyer.core.prefs.Preference
 import ca.gosyer.ui.base.prefs.PreferenceMutableStateFlow
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel

@@ -6,12 +6,12 @@
 
 package ca.gosyer.data.server.interactions
 
+import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.downloadsClearRequest
 import ca.gosyer.data.server.requests.downloadsStartRequest
 import ca.gosyer.data.server.requests.downloadsStopRequest
-import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import javax.inject.Inject

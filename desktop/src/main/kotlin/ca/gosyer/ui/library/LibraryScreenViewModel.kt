@@ -6,6 +6,8 @@
 
 package ca.gosyer.ui.library
 
+import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.lang.withDefaultContext
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
@@ -15,8 +17,6 @@ import ca.gosyer.data.server.interactions.UpdatesInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.util.compose.saveIntInBundle
 import ca.gosyer.util.compose.saveStringInBundle
-import ca.gosyer.util.lang.throwIfCancellation
-import ca.gosyer.util.lang.withDefaultContext
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

@@ -6,11 +6,11 @@
 
 package ca.gosyer.ui.reader.loader
 
+import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
-import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import io.github.kerubistan.kroki.coroutines.priorityChannel
 import io.ktor.client.features.onDownload

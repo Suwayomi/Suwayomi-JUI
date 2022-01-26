@@ -51,6 +51,7 @@ import androidx.compose.ui.util.fastForEach
 import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.KamelImage
@@ -59,12 +60,12 @@ import ca.gosyer.ui.base.components.LocalMenuController
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.TextActionIcon
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
 import com.google.accompanist.flowlayout.FlowRow
+import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.lazyPainterResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -100,20 +101,20 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
     Box {
         Column {
             Toolbar(
-                stringResource("location_manga"),
+                stringResource(MR.strings.location_manga),
                 menuController,
                 menuController != null,
                 actions = {
                     AnimatedVisibility(categoriesExist && manga?.inLibrary == true) {
                         TextActionIcon(
                             vm::setCategories,
-                            stringResource("edit_categories"),
+                            stringResource(MR.strings.edit_categories),
                             Icons.Rounded.Label
                         )
                     }
                     TextActionIcon(
                         vm::toggleFavorite,
-                        stringResource(if (manga?.inLibrary == true) "action_remove_favorite" else "action_favorite"),
+                        stringResource(if (manga?.inLibrary == true) MR.strings.action_remove_favorite else MR.strings.action_favorite),
                         if (manga?.inLibrary == true) {
                             Icons.Rounded.Favorite
                         } else {
@@ -123,7 +124,7 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
                     )
                     TextActionIcon(
                         vm::refreshManga,
-                        stringResource("action_refresh_manga"),
+                        stringResource(MR.strings.action_refresh_manga),
                         Icons.Rounded.Refresh,
                         !isLoading
                     )
@@ -155,7 +156,7 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
                             } else if (!isLoading) {
                                 item {
                                     ErrorScreen(
-                                        stringResource("no_chapters_found"),
+                                        stringResource(MR.strings.no_chapters_found),
                                         Modifier.height(400.dp).fillMaxWidth(),
                                         retry = vm::loadChapters
                                     )
@@ -170,7 +171,7 @@ fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuControll
                         )
                     }
                 } else if (!isLoading) {
-                    ErrorScreen(stringResource("failed_manga_fetch"), retry = vm::loadManga)
+                    ErrorScreen(stringResource(MR.strings.failed_manga_fetch), retry = vm::loadManga)
                 }
             }
         }

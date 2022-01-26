@@ -7,8 +7,6 @@
 package ca.gosyer.util.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.res.painterResource
@@ -16,9 +14,6 @@ import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.rememberWindowState
-import ca.gosyer.common.di.AppScope
-import ca.gosyer.data.translation.XmlResourceBundle
-import ca.gosyer.ui.base.resources.LocalResources
 import ca.gosyer.ui.base.theme.AppTheme
 
 @Composable
@@ -38,7 +33,6 @@ fun ThemedWindow(
     onKeyEvent: (KeyEvent) -> Boolean = { false },
     content: @Composable FrameWindowScope.() -> Unit = { }
 ) {
-    val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
     Window(
         onCloseRequest = onCloseRequest,
         state = state,
@@ -54,12 +48,8 @@ fun ThemedWindow(
         onPreviewKeyEvent = onPreviewKeyEvent,
         onKeyEvent = onKeyEvent
     ) {
-        CompositionLocalProvider(
-            LocalResources provides resources
-        ) {
-            AppTheme {
-                content()
-            }
+        AppTheme {
+            content()
         }
     }
 }

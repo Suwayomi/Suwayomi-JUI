@@ -21,12 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 
 @Composable
 fun SettingsParentalControlsScreen(menuController: MenuController) {
     Column {
-        Toolbar(stringResource("settings_parental_control_screen"), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_parental_control_screen), menuController, true)
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {

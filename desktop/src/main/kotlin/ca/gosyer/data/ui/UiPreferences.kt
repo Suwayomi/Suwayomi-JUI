@@ -6,8 +6,8 @@
 
 package ca.gosyer.data.ui
 
-import ca.gosyer.common.prefs.Preference
-import ca.gosyer.common.prefs.PreferenceStore
+import ca.gosyer.core.prefs.Preference
+import ca.gosyer.core.prefs.PreferenceStore
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.data.ui.model.WindowSettings

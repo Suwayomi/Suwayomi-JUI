@@ -6,8 +6,8 @@
 
 package ca.gosyer.data.migration
 
-import ca.gosyer.common.prefs.Preference
-import ca.gosyer.common.prefs.PreferenceStore
+import ca.gosyer.core.prefs.Preference
+import ca.gosyer.core.prefs.PreferenceStore
 
 class MigrationPreferences(private val preferenceStore: PreferenceStore) {
     fun version(): Preference<Int> {

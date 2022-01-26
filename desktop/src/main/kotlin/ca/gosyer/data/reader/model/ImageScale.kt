@@ -6,14 +6,17 @@
 
 package ca.gosyer.data.reader.model
 
+import ca.gosyer.i18n.MR
+import dev.icerock.moko.resources.StringResource
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
-enum class ImageScale(val res: String) {
-    FitScreen("scale_fit_screen"),
-    Stretch("scale_stretch"),
-    FitWidth("scale_fit_width"),
-    FitHeight("scale_fit_height"),
-    OriginalSize("scale_original"),
-    SmartFit("scale_smart"),
+enum class ImageScale(@Transient val res: StringResource) {
+    FitScreen(MR.strings.scale_fit_screen),
+    Stretch(MR.strings.scale_stretch),
+    FitWidth(MR.strings.scale_fit_width),
+    FitHeight(MR.strings.scale_fit_height),
+    OriginalSize(MR.strings.scale_original),
+    SmartFit(MR.strings.scale_smart),
 }

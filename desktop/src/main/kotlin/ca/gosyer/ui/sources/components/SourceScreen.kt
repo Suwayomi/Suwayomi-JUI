@@ -30,16 +30,17 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.MangaGridItem
 import ca.gosyer.ui.base.components.TextActionIcon
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.components.filter.SourceFiltersMenu
 import ca.gosyer.util.compose.persistentLazyListState
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
+import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.lazyPainterResource
 
 @Composable
@@ -143,7 +144,7 @@ fun SourceToolbar(
                     {
                         onSourceSettingsClick(source.id)
                     },
-                    stringResource("location_settings"),
+                    stringResource(MR.strings.location_settings),
                     Icons.Rounded.Settings
                 )
             }
@@ -152,7 +153,7 @@ fun SourceToolbar(
                     {
                         onToggleFiltersClick(!showingFilters)
                     },
-                    stringResource("filter_source"),
+                    stringResource(MR.strings.filter_source),
                     Icons.Rounded.FilterList,
                     !isLatest
                 )
@@ -164,9 +165,9 @@ fun SourceToolbar(
                     },
                     stringResource(
                         if (isLatest) {
-                            "move_to_browse"
+                            MR.strings.move_to_browse
                         } else {
-                            "move_to_latest"
+                            MR.strings.move_to_latest
                         }
                     ),
                     if (isLatest) {

@@ -54,18 +54,16 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.build.BuildConfig
-import ca.gosyer.common.di.AppScope
+import ca.gosyer.core.di.AppScope
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
 import ca.gosyer.data.reader.model.NavigationMode
-import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.WindowSettings
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.mangaAspectRatio
-import ca.gosyer.ui.base.resources.LocalResources
-import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.reader.model.Navigation
@@ -79,6 +77,7 @@ import ca.gosyer.ui.reader.navigation.navigationClickable
 import ca.gosyer.ui.reader.viewer.ContinuousReader
 import ca.gosyer.ui.reader.viewer.PagerReader
 import ca.gosyer.util.lang.launchApplication
+import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.core.config.KamelConfig
 import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -108,7 +107,6 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
         placement
     ) = windowSettings.get().get()
 
-    val resources = AppScope.getInstance<XmlResourceBundle>()
     val kamelConfig = AppScope.getInstance<KamelConfig>()
 
     launchApplication {
@@ -144,7 +142,6 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
             }
         ) {
             CompositionLocalProvider(
-                LocalResources provides resources,
                 LocalKamelConfig provides kamelConfig
             ) {
                 AppTheme {
@@ -292,7 +289,7 @@ fun ReaderMenu(
                         SideMenuButton(sideMenuOpen, onOpenSideMenuClicked = { sideMenuOpen = true })
                     }
                 } else {
-                    ErrorScreen(stringResource("no_pages_found"))
+                    ErrorScreen(stringResource(MR.strings.no_pages_found))
                 }
             } else {
                 LoadingScreen(
@@ -354,15 +351,15 @@ fun ChapterSeparator(
         Column {
             when {
                 previousChapter == null && nextChapter != null -> {
-                    Text(stringResource("no_previous_chapter"))
+                    Text(stringResource(MR.strings.no_previous_chapter))
                 }
                 previousChapter != null && nextChapter != null -> {
-                    Text(stringResource("previous_chapter", previousChapter.chapter.name))
+                    Text(stringResource(MR.strings.previous_chapter, previousChapter.chapter.name))
                     Spacer(Modifier.height(8.dp))
-                    Text(stringResource("next_chapter", nextChapter.chapter.name))
+                    Text(stringResource(MR.strings.next_chapter, nextChapter.chapter.name))
                 }
                 previousChapter != null && nextChapter == null -> {
-                    Text(stringResource("no_next_chapter"))
+                    Text(stringResource(MR.strings.no_next_chapter))
                 }
             }
         }

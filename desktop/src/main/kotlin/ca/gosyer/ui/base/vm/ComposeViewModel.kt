@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import ca.gosyer.common.di.AppScope
+import ca.gosyer.core.di.AppScope
 import toothpick.Toothpick
 import toothpick.ktp.binding.module
 import toothpick.ktp.extension.getInstance

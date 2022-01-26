@@ -35,9 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
-import ca.gosyer.common.di.AppScope
-import ca.gosyer.data.translation.XmlResourceBundle
-import ca.gosyer.ui.base.resources.LocalResources
+import ca.gosyer.core.di.AppScope
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.lang.launchApplication
 import io.kamel.core.config.KamelConfig
@@ -71,7 +69,6 @@ fun WindowDialog(
     }
 
     val icon = painterResource("icon.png")
-    val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
     val kamelConfig = remember { AppScope.getInstance<KamelConfig>() }
     val windowState = rememberWindowState(size = size, position = WindowPosition(Alignment.Center))
 
@@ -99,7 +96,6 @@ fun WindowDialog(
         alwaysOnTop = forceFocus
     ) {
         CompositionLocalProvider(
-            LocalResources provides resources,
             LocalKamelConfig provides kamelConfig
         ) {
             AppTheme {
@@ -149,7 +145,6 @@ fun WindowDialog(
     }
 
     val icon = painterResource("icon.png")
-    val resources = remember { AppScope.getInstance<XmlResourceBundle>() }
     val kamelConfig = remember { AppScope.getInstance<KamelConfig>() }
     val windowState = rememberWindowState(size = size, position = WindowPosition.Aligned(Alignment.Center))
 
@@ -169,7 +164,6 @@ fun WindowDialog(
         alwaysOnTop = forceFocus,
     ) {
         CompositionLocalProvider(
-            LocalResources provides resources,
             LocalKamelConfig provides kamelConfig
         ) {
             AppTheme {

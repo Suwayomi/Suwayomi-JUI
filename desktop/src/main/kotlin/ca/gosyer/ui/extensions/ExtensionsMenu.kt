@@ -53,7 +53,8 @@ import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.TextActionIcon
 import ca.gosyer.ui.base.components.Toolbar
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.compose.persistentLazyListState
@@ -146,7 +147,7 @@ fun ExtensionsToolbar(
     setEnabledLanguages: (Set<String>) -> Unit
 ) {
     Toolbar(
-        stringResource("location_extensions"),
+        stringResource(MR.strings.location_extensions),
         closable = false,
         searchText = searchText,
         search = search,
@@ -158,7 +159,7 @@ fun ExtensionsToolbar(
                         setEnabledLanguages(enabledLangs.value)
                     }
                 },
-                stringResource("enabled_languages"),
+                stringResource(MR.strings.enabled_languages),
                 Icons.Rounded.Translate
             )
         }
@@ -209,9 +210,9 @@ fun ExtensionItem(
         ) {
             Text(
                 when {
-                    extension.hasUpdate -> stringResource("action_update")
-                    extension.installed -> stringResource("action_uninstall")
-                    else -> stringResource("action_install")
+                    extension.hasUpdate -> stringResource(MR.strings.action_update)
+                    extension.installed -> stringResource(MR.strings.action_uninstall)
+                    else -> stringResource(MR.strings.action_install)
                 }
             )
         }

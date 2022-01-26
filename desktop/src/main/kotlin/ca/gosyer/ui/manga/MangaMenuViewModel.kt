@@ -6,6 +6,8 @@
 
 package ca.gosyer.ui.manga
 
+import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Chapter
@@ -17,8 +19,6 @@ import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.ui.base.components.ChapterDownloadItem
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.lang.throwIfCancellation
-import ca.gosyer.util.lang.withIOContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

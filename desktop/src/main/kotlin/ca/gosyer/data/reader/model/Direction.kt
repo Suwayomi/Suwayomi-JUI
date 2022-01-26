@@ -6,12 +6,15 @@
 
 package ca.gosyer.data.reader.model
 
+import ca.gosyer.i18n.MR
+import dev.icerock.moko.resources.StringResource
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
-enum class Direction(val res: String) {
-    Down("dir_down"),
-    Left("dir_rtl"),
-    Right("dir_ltr"),
-    Up("dir_up")
+enum class Direction(@Transient val res: StringResource) {
+    Down(MR.strings.dir_down),
+    Left(MR.strings.dir_rtl),
+    Right(MR.strings.dir_ltr),
+    Up(MR.strings.dir_up)
 }

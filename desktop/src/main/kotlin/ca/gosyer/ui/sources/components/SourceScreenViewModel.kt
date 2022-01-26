@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.sources.components
 
+import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.MangaPage
 import ca.gosyer.data.models.Source
@@ -15,7 +16,6 @@ import ca.gosyer.util.compose.saveBooleanInBundle
 import ca.gosyer.util.compose.saveIntInBundle
 import ca.gosyer.util.compose.saveObjectInBundle
 import ca.gosyer.util.compose.saveStringInBundle
-import ca.gosyer.util.lang.throwIfCancellation
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

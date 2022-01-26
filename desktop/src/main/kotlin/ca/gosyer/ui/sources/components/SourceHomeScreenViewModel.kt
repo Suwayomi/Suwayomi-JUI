@@ -6,11 +6,11 @@
 
 package ca.gosyer.ui.sources.components
 
+import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.data.catalog.CatalogPreferences
 import ca.gosyer.data.models.Source
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow

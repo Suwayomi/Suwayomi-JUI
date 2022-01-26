@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.server.interactions
 
+import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
@@ -13,7 +14,6 @@ import ca.gosyer.data.server.requests.mangaQuery
 import ca.gosyer.data.server.requests.mangaThumbnailQuery
 import ca.gosyer.data.server.requests.updateMangaMetaRequest
 import ca.gosyer.util.compose.imageFromUrl
-import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get

@@ -29,8 +29,6 @@ import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
-import ca.gosyer.data.translation.ResourceProvider
-import ca.gosyer.data.translation.XmlResourceBundle
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.update.UpdateChecker
 import ca.gosyer.data.update.UpdatePreferences
@@ -83,10 +81,6 @@ val DataModule = module {
 
     bind<KamelConfig>()
         .toProvider(KamelConfigProvider::class)
-        .providesSingleton()
-
-    bind<XmlResourceBundle>()
-        .toProvider(ResourceProvider::class)
         .providesSingleton()
 
     bind<BackupInteractionHandler>()

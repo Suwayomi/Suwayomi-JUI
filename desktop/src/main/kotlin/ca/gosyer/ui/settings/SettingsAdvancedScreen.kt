@@ -23,7 +23,8 @@ import ca.gosyer.data.update.UpdatePreferences
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.SwitchPreference
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import javax.inject.Inject
@@ -38,12 +39,12 @@ class SettingsAdvancedViewModel @Inject constructor(
 fun SettingsAdvancedScreen(menuController: MenuController) {
     val vm = viewModel<SettingsAdvancedViewModel>()
     Column {
-        Toolbar(stringResource("settings_advanced_screen"), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_advanced_screen), menuController, true)
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
-                    SwitchPreference(preference = vm.updatesEnabled, title = stringResource("update_checker"))
+                    SwitchPreference(preference = vm.updatesEnabled, title = stringResource(MR.strings.update_checker))
                 }
             }
             VerticalScrollbar(

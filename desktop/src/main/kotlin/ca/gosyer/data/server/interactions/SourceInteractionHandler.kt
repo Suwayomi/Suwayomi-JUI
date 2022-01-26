@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.server.interactions
 
+import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.MangaPage
 import ca.gosyer.data.models.Source
 import ca.gosyer.data.models.sourcefilters.SourceFilter
@@ -24,7 +25,6 @@ import ca.gosyer.data.server.requests.sourceListQuery
 import ca.gosyer.data.server.requests.sourcePopularQuery
 import ca.gosyer.data.server.requests.sourceSearchQuery
 import ca.gosyer.data.server.requests.updateSourceSettingQuery
-import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post

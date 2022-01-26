@@ -7,9 +7,9 @@
 package ca.gosyer.core.service
 
 import ca.gosyer.build.BuildConfig
+import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
-import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import io.ktor.client.features.websocket.ws
 import io.ktor.http.cio.websocket.Frame

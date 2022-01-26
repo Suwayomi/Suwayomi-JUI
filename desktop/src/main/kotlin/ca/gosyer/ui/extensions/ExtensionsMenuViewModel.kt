@@ -6,12 +6,12 @@
 
 package ca.gosyer.ui.extensions
 
+import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.models.Extension
 import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
-import ca.gosyer.data.translation.XmlResourceBundle
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.lang.throwIfCancellation
 import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +24,6 @@ import javax.inject.Inject
 
 class ExtensionsMenuViewModel @Inject constructor(
     private val extensionHandler: ExtensionInteractionHandler,
-    private val resources: XmlResourceBundle,
     extensionPreferences: ExtensionPreferences
 ) : ViewModel() {
     private val _enabledLangs = extensionPreferences.languages().asStateFlow()
@@ -129,10 +128,10 @@ class ExtensionsMenuViewModel @Inject constructor(
         val available = filter { !it.installed }.sortedWith(comparator)
 
         return mapOf(
-            resources.getStringA("installed") to (obsolete + updates + installed),
+            MR.strings.installed.localized() to (obsolete + updates + installed),
         ).filterNot { it.value.isEmpty() } + available.groupBy { it.lang }.mapKeys {
             if (it.key == "all") {
-                resources.getStringA("all")
+                MR.strings.all.localized()
             } else {
                 Locale.forLanguageTag(it.key).displayName
             }

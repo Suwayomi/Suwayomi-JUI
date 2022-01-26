@@ -6,13 +6,13 @@
 
 package ca.gosyer.ui.updates
 
+import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.data.server.interactions.UpdatesInteractionHandler
 import ca.gosyer.ui.base.components.ChapterDownloadItem
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.lang.throwIfCancellation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn

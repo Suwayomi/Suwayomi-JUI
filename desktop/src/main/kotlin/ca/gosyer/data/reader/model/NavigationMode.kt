@@ -6,12 +6,15 @@
 
 package ca.gosyer.data.reader.model
 
+import ca.gosyer.i18n.MR
+import dev.icerock.moko.resources.StringResource
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
-enum class NavigationMode(val res: String) {
-    LNavigation("nav_l_shaped"),
-    KindlishNavigation("nav_kindle_ish"),
-    EdgeNavigation("nav_edge"),
-    RightAndLeftNavigation("nav_left_right"),
+enum class NavigationMode(@Transient val res: StringResource) {
+    LNavigation(MR.strings.nav_l_shaped),
+    KindlishNavigation(MR.strings.nav_kindle_ish),
+    EdgeNavigation(MR.strings.nav_edge),
+    RightAndLeftNavigation(MR.strings.nav_left_right),
 }

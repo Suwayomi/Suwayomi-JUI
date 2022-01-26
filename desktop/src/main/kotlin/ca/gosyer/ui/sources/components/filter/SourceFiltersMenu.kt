@@ -67,7 +67,8 @@ import androidx.compose.ui.util.fastForEach
 import ca.gosyer.data.models.sourcefilters.SortFilter
 import ca.gosyer.ui.base.components.Spinner
 import ca.gosyer.ui.base.prefs.ExpandablePreference
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.components.filter.model.SourceFiltersView
 import ca.gosyer.util.compose.persistentLazyListState
@@ -116,10 +117,10 @@ fun SourceFiltersMenu(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         TextButton(vm::resetFilters) {
-                            Text(stringResource("reset_filters"))
+                            Text(stringResource(MR.strings.reset_filters))
                         }
                         Button(onSearchClicked) {
-                            Text(stringResource("filter_source"))
+                            Text(stringResource(MR.strings.filter_source))
                         }
                     }
                 }

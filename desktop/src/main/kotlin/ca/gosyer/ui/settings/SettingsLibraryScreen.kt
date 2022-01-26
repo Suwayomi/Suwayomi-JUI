@@ -26,7 +26,8 @@ import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.prefs.SwitchPreference
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.categories.openCategoriesMenu
@@ -60,19 +61,19 @@ fun SettingsLibraryScreen(menuController: MenuController) {
     val vm = viewModel<SettingsLibraryViewModel>()
 
     Column {
-        Toolbar(stringResource("settings_library_screen"), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_library_screen), menuController, true)
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
                     SwitchPreference(
                         preference = vm.showAllCategory,
-                        title = stringResource("show_all_category")
+                        title = stringResource(MR.strings.show_all_category)
                     )
                 }
                 item {
                     PreferenceRow(
-                        stringResource("location_categories"),
+                        stringResource(MR.strings.location_categories),
                         onClick = { openCategoriesMenu(vm::refreshCategoryCount) },
                         subtitle = vm.categories.collectAsState().value.toString()
                     )

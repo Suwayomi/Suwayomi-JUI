@@ -46,7 +46,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.build.BuildConfig
-import ca.gosyer.ui.base.resources.stringResource
+import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
@@ -114,7 +115,7 @@ fun CategoriesMenu(notifyFinished: (() -> Unit)? = null) {
                 }
             }
             ExtendedFloatingActionButton(
-                text = { Text(text = stringResource("action_add")) },
+                text = { Text(text = stringResource(MR.strings.action_add)) },
                 icon = { Icon(imageVector = Icons.Rounded.Add, contentDescription = null) },
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 onClick = {

@@ -32,6 +32,7 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.ServerService
 import ca.gosyer.data.server.model.Auth
 import ca.gosyer.data.server.model.Proxy
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
@@ -40,10 +41,10 @@ import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.prefs.asStringStateIn
-import ca.gosyer.ui.base.resources.stringResource
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.system.CKLogger
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -85,9 +86,9 @@ class SettingsServerViewModel @Inject constructor(
 
     @Composable
     fun getProxyChoices() = mapOf(
-        Proxy.NO_PROXY to stringResource("no_proxy"),
-        Proxy.HTTP_PROXY to stringResource("http_proxy"),
-        Proxy.SOCKS_PROXY to stringResource("socks_proxy")
+        Proxy.NO_PROXY to stringResource(MR.strings.no_proxy),
+        Proxy.HTTP_PROXY to stringResource(MR.strings.http_proxy),
+        Proxy.SOCKS_PROXY to stringResource(MR.strings.socks_proxy)
     )
 
     val httpHost = serverPreferences.proxyHttpHost().asStateIn(scope)
@@ -99,9 +100,9 @@ class SettingsServerViewModel @Inject constructor(
 
     @Composable
     fun getAuthChoices() = mapOf(
-        Auth.NONE to stringResource("no_auth"),
-        Auth.BASIC to stringResource("basic_auth"),
-        Auth.DIGEST to stringResource("digest_auth")
+        Auth.NONE to stringResource(MR.strings.no_auth),
+        Auth.BASIC to stringResource(MR.strings.basic_auth),
+        Auth.DIGEST to stringResource(MR.strings.digest_auth)
     )
     val authUsername = serverPreferences.authUsername().asStateIn(scope)
     val authPassword = serverPreferences.authPassword().asStateIn(scope)
@@ -147,27 +148,27 @@ fun SettingsServerScreen(menuController: MenuController) {
         }
     }
     Column {
-        Toolbar(stringResource("settings_server_screen"), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_server_screen), menuController, true)
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
-                    SwitchPreference(preference = vm.host, title = stringResource("host_server"))
+                    SwitchPreference(preference = vm.host, title = stringResource(MR.strings.host_server))
                 }
                 if (host) {
                     item {
                         PreferenceRow(
-                            stringResource("host_settings"),
+                            stringResource(MR.strings.host_settings),
                             Icons.Rounded.Info,
-                            subtitle = stringResource("host_settings_sub")
+                            subtitle = stringResource(MR.strings.host_settings_sub)
                         )
                     }
                     item {
                         val ip by vm.ip.collectAsState()
                         EditTextPreference(
                             preference = vm.ip,
-                            title = stringResource("host_ip"),
-                            subtitle = stringResource("host_ip_sub", ip),
+                            title = stringResource(MR.strings.host_ip),
+                            subtitle = stringResource(MR.strings.host_ip_sub, ip),
                             changeListener = vm::serverSettingChanged
                         )
                     }
@@ -175,15 +176,15 @@ fun SettingsServerScreen(menuController: MenuController) {
                         val port by vm.port.collectAsState()
                         EditTextPreference(
                             preference = vm.port,
-                            title = stringResource("host_port"),
-                            subtitle = stringResource("host_port_sub", port),
+                            title = stringResource(MR.strings.host_port),
+                            subtitle = stringResource(MR.strings.host_port_sub, port),
                             changeListener = vm::serverSettingChanged
                         )
                     }
                     item {
                         SwitchPreference(
                             preference = vm.socksProxyEnabled,
-                            title = stringResource("host_socks_enabled"),
+                            title = stringResource(MR.strings.host_socks_enabled),
                             changeListener = vm::serverSettingChanged
                         )
                     }
@@ -191,8 +192,8 @@ fun SettingsServerScreen(menuController: MenuController) {
                         val proxyHost by vm.socksProxyHost.collectAsState()
                         EditTextPreference(
                             preference = vm.socksProxyHost,
-                            title = stringResource("host_socks_host"),
-                            subtitle = stringResource("host_socks_host_sub", proxyHost),
+                            title = stringResource(MR.strings.host_socks_host),
+                            subtitle = stringResource(MR.strings.host_socks_host_sub, proxyHost),
                             changeListener = vm::serverSettingChanged
                         )
                     }
@@ -200,32 +201,32 @@ fun SettingsServerScreen(menuController: MenuController) {
                         val proxyPort by vm.socksProxyPort.collectAsState()
                         EditTextPreference(
                             preference = vm.socksProxyPort,
-                            title = stringResource("host_socks_port"),
-                            subtitle = stringResource("host_socks_port_sub", proxyPort),
+                            title = stringResource(MR.strings.host_socks_port),
+                            subtitle = stringResource(MR.strings.host_socks_port_sub, proxyPort),
                             changeListener = vm::serverSettingChanged
                         )
                     }
                     item {
                         SwitchPreference(
                             preference = vm.debugLogsEnabled,
-                            title = stringResource("host_debug_logging"),
-                            subtitle = stringResource("host_debug_logging_sub"),
+                            title = stringResource(MR.strings.host_debug_logging),
+                            subtitle = stringResource(MR.strings.host_debug_logging_sub),
                             changeListener = vm::serverSettingChanged
                         )
                     }
                     item {
                         SwitchPreference(
                             preference = vm.systemTrayEnabled,
-                            title = stringResource("host_system_tray"),
-                            subtitle = stringResource("host_system_tray_sub"),
+                            title = stringResource(MR.strings.host_system_tray),
+                            subtitle = stringResource(MR.strings.host_system_tray_sub),
                             changeListener = vm::serverSettingChanged
                         )
                     }
                     item {
                         SwitchPreference(
                             preference = vm.webUIEnabled,
-                            title = stringResource("host_webui"),
-                            subtitle = stringResource("host_webui_sub"),
+                            title = stringResource(MR.strings.host_webui),
+                            subtitle = stringResource(MR.strings.host_webui_sub),
                             changeListener = vm::serverSettingChanged
                         )
                     }
@@ -233,8 +234,8 @@ fun SettingsServerScreen(menuController: MenuController) {
                         val webUIEnabled by vm.webUIEnabled.collectAsState()
                         SwitchPreference(
                             preference = vm.openInBrowserEnabled,
-                            title = stringResource("host_open_in_browser"),
-                            subtitle = stringResource("host_open_in_browser_sub"),
+                            title = stringResource(MR.strings.host_open_in_browser),
+                            subtitle = stringResource(MR.strings.host_open_in_browser_sub),
                             changeListener = vm::serverSettingChanged,
                             enabled = webUIEnabled
                         )
@@ -242,15 +243,15 @@ fun SettingsServerScreen(menuController: MenuController) {
                     item {
                         SwitchPreference(
                             preference = vm.basicAuthEnabled,
-                            title = stringResource("basic_auth"),
-                            subtitle = stringResource("host_basic_auth_sub"),
+                            title = stringResource(MR.strings.basic_auth),
+                            subtitle = stringResource(MR.strings.host_basic_auth_sub),
                             changeListener = vm::serverSettingChanged
                         )
                     }
                     item {
                         EditTextPreference(
                             preference = vm.basicAuthUsername,
-                            title = stringResource("host_basic_auth_username"),
+                            title = stringResource(MR.strings.host_basic_auth_username),
                             changeListener = vm::serverSettingChanged,
                             enabled = basicAuthEnabled
                         )
@@ -258,7 +259,7 @@ fun SettingsServerScreen(menuController: MenuController) {
                     item {
                         EditTextPreference(
                             preference = vm.basicAuthPassword,
-                            title = stringResource("host_basic_auth_password"),
+                            title = stringResource(MR.strings.host_basic_auth_password),
                             changeListener = vm::serverSettingChanged,
                             visualTransformation = PasswordVisualTransformation(),
                             enabled = basicAuthEnabled
@@ -271,27 +272,27 @@ fun SettingsServerScreen(menuController: MenuController) {
                 item {
                     EditTextPreference(
                         vm.serverUrl,
-                        stringResource("server_url"),
+                        stringResource(MR.strings.server_url),
                         subtitle = vm.serverUrl.collectAsState().value
                     )
                 }
                 item {
                     EditTextPreference(
                         vm.serverPort,
-                        stringResource("server_port"),
+                        stringResource(MR.strings.server_port),
                         subtitle = vm.serverPort.collectAsState().value
                     )
                 }
 
                 item {
                     PreferenceRow(
-                        stringResource("server_preference_warning"),
+                        stringResource(MR.strings.server_preference_warning),
                         Icons.Rounded.Warning,
-                        subtitle = stringResource("server_preference_warning_sub")
+                        subtitle = stringResource(MR.strings.server_preference_warning_sub)
                     )
                 }
                 item {
-                    ChoicePreference(vm.proxy, vm.getProxyChoices(), stringResource("server_proxy"))
+                    ChoicePreference(vm.proxy, vm.getProxyChoices(), stringResource(MR.strings.server_proxy))
                 }
                 when (proxy) {
                     Proxy.NO_PROXY -> Unit
@@ -299,14 +300,14 @@ fun SettingsServerScreen(menuController: MenuController) {
                         item {
                             EditTextPreference(
                                 vm.httpHost,
-                                stringResource("http_proxy"),
+                                stringResource(MR.strings.http_proxy),
                                 vm.httpHost.collectAsState().value
                             )
                         }
                         item {
                             EditTextPreference(
                                 vm.httpPort,
-                                stringResource("http_port"),
+                                stringResource(MR.strings.http_port),
                                 vm.httpPort.collectAsState().value
                             )
                         }
@@ -315,30 +316,30 @@ fun SettingsServerScreen(menuController: MenuController) {
                         item {
                             EditTextPreference(
                                 vm.socksHost,
-                                stringResource("socks_proxy"),
+                                stringResource(MR.strings.socks_proxy),
                                 vm.socksHost.collectAsState().value
                             )
                         }
                         item {
                             EditTextPreference(
                                 vm.socksPort,
-                                stringResource("socks_port"),
+                                stringResource(MR.strings.socks_port),
                                 vm.socksPort.collectAsState().value
                             )
                         }
                     }
                 }
                 item {
-                    ChoicePreference(vm.auth, vm.getAuthChoices(), stringResource("authentication"))
+                    ChoicePreference(vm.auth, vm.getAuthChoices(), stringResource(MR.strings.authentication))
                 }
                 if (auth != Auth.NONE) {
                     item {
-                        EditTextPreference(vm.authUsername, stringResource("auth_username"))
+                        EditTextPreference(vm.authUsername, stringResource(MR.strings.auth_username))
                     }
                     item {
                         EditTextPreference(
                             vm.authPassword,
-                            stringResource("auth_password"),
+                            stringResource(MR.strings.auth_password),
                             visualTransformation = PasswordVisualTransformation()
                         )
                     }

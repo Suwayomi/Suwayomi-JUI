@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.server.interactions
 
+import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.Extension
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
@@ -15,7 +16,6 @@ import ca.gosyer.data.server.requests.apkUninstallQuery
 import ca.gosyer.data.server.requests.apkUpdateQuery
 import ca.gosyer.data.server.requests.extensionListQuery
 import ca.gosyer.util.compose.imageFromUrl
-import ca.gosyer.util.lang.withIOContext
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
