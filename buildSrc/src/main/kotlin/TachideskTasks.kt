@@ -40,10 +40,10 @@ fun String?.anyEquals(vararg others: String?, ignoreCase: Boolean = false): Bool
     return others.any { this.equals(it, ignoreCase) }
 }
 
-private fun tachideskExists(rootDir: File) = File(rootDir, "src/main/resources/Tachidesk.jar").exists()
+private fun tachideskExists(projectDir: File) = File(projectDir, "src/main/resources/Tachidesk.jar").exists()
 
-private fun Task.onlyIfTachideskDoesntExist(rootDir: File) {
-    onlyIf { !tachideskExists(rootDir) }
+private fun Task.onlyIfTachideskDoesntExist(projectDir: File) {
+    onlyIf { !tachideskExists(projectDir) }
 }
 private fun Task.onlyIfSigning(project: Project) {
     with(project){
@@ -93,9 +93,9 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Download>(downloadTask) {
             group = tachideskGroup
             mustRunAfter(deleteOldTachideskTask)
-            onlyIf { !tachideskExists(rootDir) && !file(tmpTar).exists() }
+            onlyIf { !tachideskExists(projectDir) && !file(tmpTar).exists() }
 
-            onlyIfTachideskDoesntExist(rootDir)
+            onlyIfTachideskDoesntExist(projectDir)
 
             src(tarUrl)
             dest(tmpTar)
@@ -103,9 +103,9 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Copy>(extractTask) {
             group = tachideskGroup
             mustRunAfter(downloadTask)
-            onlyIf { !tachideskExists(rootDir) && !file(tmpServerFolder).exists() }
+            onlyIf { !tachideskExists(projectDir) && !file(tmpServerFolder).exists() }
 
-            onlyIfTachideskDoesntExist(rootDir)
+            onlyIfTachideskDoesntExist(projectDir)
 
             from(tarTree(tmpTar))
             into(tmpPath)
@@ -113,7 +113,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Copy>(setupCITask) {
             group = tachideskGroup
             mustRunAfter(extractTask)
-            onlyIfTachideskDoesntExist(rootDir)
+            onlyIfTachideskDoesntExist(projectDir)
 
             from(file("$tmpServerFolder.github/runner-files/ci-gradle.properties"))
             into(file("$tmpServerFolder.gradle/"))
@@ -124,7 +124,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Exec>(buildTachideskTask) {
             group = tachideskGroup
             mustRunAfter(setupCITask)
-            onlyIfTachideskDoesntExist(rootDir)
+            onlyIfTachideskDoesntExist(projectDir)
 
             workingDir(tmpServerFolder)
             val os = DefaultNativePlatform.getCurrentOperatingSystem()
@@ -136,7 +136,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
         register<Copy>(copyTachideskJarTask) {
             group = tachideskGroup
             mustRunAfter(buildTachideskTask)
-            onlyIfTachideskDoesntExist(rootDir)
+            onlyIfTachideskDoesntExist(projectDir)
 
             from("${tmpServerFolder}server/build/")
             include("Tachidesk-Server-$tachideskVersion-r*.jar")

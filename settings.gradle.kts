@@ -8,4 +8,4 @@ pluginManagement {
 }
 rootProject.name = "Tachidesk-JUI"
 
-
+include("desktop")

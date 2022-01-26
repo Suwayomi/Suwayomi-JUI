@@ -94,9 +94,9 @@ jobs:
         with:
           name: runner-package-${{ matrix.runtime }}
           path: |
-            build/compose/binaries/main/*/
-            build/compose/jars/
-            !build/compose/binaries/main/app/
+            desktop/build/compose/binaries/main/*/
+            desktop/build/compose/jars/
+            !desktop/build/compose/binaries/main/app/
 
         # Upload runner errors
       - name: Upload error logs
@@ -105,7 +105,7 @@ jobs:
         with:
           name: runner-errors-${{ matrix.runtime }}
           path: |
-            build/compose/logs/
+            desktop/build/compose/logs/
   ReleaseBinaries:
     name: Make a release
     needs: [ BuildBinaries ]
