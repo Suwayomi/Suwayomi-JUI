@@ -9,3 +9,5 @@ pluginManagement {
 rootProject.name = "Tachidesk-JUI"
 
 include("desktop")
+
+enableFeaturePreview("VERSION_CATALOGS")

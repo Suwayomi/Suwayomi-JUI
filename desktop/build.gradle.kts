@@ -24,67 +24,60 @@ dependencies {
     implementation(compose.uiTooling)
     implementation(compose.materialIconsExtended)
     implementation(compose("org.jetbrains.compose.ui:ui-util"))
-    implementation("ca.gosyer:compose-router:0.24.2-jetbrains-2")
-    implementation("ca.gosyer:accompanist-pager:0.18.1")
-    implementation("ca.gosyer:accompanist-flowlayout:0.18.1")
-    implementation("com.alialbaali.kamel:kamel-image:0.3.0")
+    implementation(libs.composeRouter)
+    implementation(libs.accompanistPager)
+    implementation(libs.accompanistFlowLayout)
+    implementation(libs.kamel)
 
     // UI (Swing)
-    implementation("com.github.weisj:darklaf-core:2.7.3")
+    implementation(libs.darklaf)
 
     // Threading
-    val coroutinesVersion = "1.6.0"
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
+    implementation(libs.coroutinesCore)
+    implementation(libs.coroutinesSwing)
 
     // Json
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation(libs.json)
 
     // Xml
-    val xmlutilVersion = "0.84.0"
-    implementation("io.github.pdvrieze.xmlutil:core-jvm:$xmlutilVersion")
-    implementation("io.github.pdvrieze.xmlutil:serialization-jvm:$xmlutilVersion")
+    implementation(libs.xmlUtilCore)
+    implementation(libs.xmlUtilSerialization)
 
     // Dependency Injection
-    val toothpickVersion = "3.1.0"
-    implementation("com.github.stephanenicolas.toothpick:ktp:$toothpickVersion")
-    kapt("com.github.stephanenicolas.toothpick:toothpick-compiler:$toothpickVersion")
+    implementation(libs.toothpickKsp)
+    kapt(libs.toothpickCompiler)
 
     // Http client
-    val ktorVersion = "1.6.7"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-    implementation("io.ktor:ktor-client-serialization:$ktorVersion")
-    implementation("io.ktor:ktor-client-logging:$ktorVersion")
-    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
-    implementation("io.ktor:ktor-client-auth:$ktorVersion")
+    implementation(libs.ktorCore)
+    implementation(libs.ktorOkHttp)
+    implementation(libs.ktorSerialization)
+    implementation(libs.ktorLogging)
+    implementation(libs.ktorWebsockets)
+    implementation(libs.ktorAuth)
 
     // Logging
-    val slf4jVersion = "1.7.32"
-    implementation("org.slf4j:slf4j-api:$slf4jVersion")
-    implementation("org.slf4j:jul-to-slf4j:$slf4jVersion")
-    val log4jVersion = "2.17.1"
-    implementation("org.apache.logging.log4j:log4j-api:$log4jVersion")
-    implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
+    implementation(libs.slf4jApi)
+    implementation(libs.slf4jJul)
+    implementation(libs.log4jApi)
+    implementation(libs.log4jCore)
+    implementation(libs.log4jSlf4j)
+    implementation(libs.ktlogging)
 
     // User storage
-    implementation("net.harawata:appdirs:1.2.1")
+    implementation(libs.appDirs)
 
     // Preferences
-    val multiplatformSettingsVersion = "0.8.1"
-    implementation("com.russhwolf:multiplatform-settings-jvm:$multiplatformSettingsVersion")
-    implementation("com.russhwolf:multiplatform-settings-serialization-jvm:$multiplatformSettingsVersion")
-    implementation("com.russhwolf:multiplatform-settings-coroutines-jvm:$multiplatformSettingsVersion")
+    implementation(libs.multiplatformSettingsCore)
+    implementation(libs.multiplatformSettingsSerialization)
+    implementation(libs.multiplatformSettingsCoroutines)
 
     // Utility
-    implementation("io.github.kerubistan.kroki:kroki-coroutines:1.22")
+    implementation(libs.krokiCoroutines)
 
     // Testing
     testImplementation(kotlin("test-junit"))
     testImplementation(compose("org.jetbrains.compose.ui:ui-test-junit4"))
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
+    testImplementation(libs.coroutinesTest)
 }
 
 java {

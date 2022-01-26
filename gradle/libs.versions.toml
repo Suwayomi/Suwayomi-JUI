@@ -1,0 +1,87 @@
+[versions]
+# Kotlin
+kotlin = "1.6.10"
+coroutines = "1.6.0"
+
+# Serialization
+json = "1.3.2"
+xmlUtil = "0.84.0"
+
+# Compose
+composeRouter = "0.24.2-jetbrains-2"
+accompanist = "0.18.1"
+kamel = "0.3.0"
+
+# Swing
+darklaf = "2.7.3"
+
+# Dependency Injection
+toothpick = "3.1.0"
+
+# Network
+ktor = "1.6.7"
+
+# Logging
+slf4j = "1.7.32"
+log4j = "2.17.1"
+ktlogging = "2.1.21"
+
+# Storage
+appDirs = "1.2.1"
+
+# Preferences
+multiplatformSettings = "0.8.1"
+
+# Utility
+kroki = "1.22"
+
+[libraries]
+# Kotlin
+coroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+coroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+# Serialization
+json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "json" }
+xmlUtilCore = { module = "io.github.pdvrieze.xmlutil:core-jvm", version.ref = "xmlUtil" }
+xmlUtilSerialization = { module = "io.github.pdvrieze.xmlutil:serialization-jvm", version.ref = "xmlUtil" }
+
+# Compose
+composeRouter = { module = "ca.gosyer:compose-router", version.ref = "composeRouter" }
+accompanistPager = { module = "ca.gosyer:accompanist-pager", version.ref = "accompanist" }
+accompanistFlowLayout = { module = "ca.gosyer:accompanist-flowlayout", version.ref = "accompanist" }
+kamel = { module = "com.alialbaali.kamel:kamel-image", version.ref = "kamel" }
+
+# Swing
+darklaf = { module = "com.github.weisj:darklaf-core", version.ref = "darklaf" }
+
+# Dependency Injection
+toothpickKsp = { module = "com.github.stephanenicolas.toothpick:ktp", version.ref = "toothpick" }
+toothpickCompiler = { module = "com.github.stephanenicolas.toothpick:toothpick-compiler", version.ref = "toothpick" }
+
+# Network
+ktorCore = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktorOkHttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktorSerialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+ktorLogging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktorWebsockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
+ktorAuth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+
+# Logging
+slf4jApi = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4jJul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
+log4jApi = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4jCore = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4jSlf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+ktlogging = { module = "io.github.microutils:kotlin-logging-jvm", version.ref = "ktlogging" }
+
+# Storage
+appDirs = { module = "net.harawata:appdirs", version.ref = "appDirs" }
+
+# Preferences
+multiplatformSettingsCore = { module = "com.russhwolf:multiplatform-settings-jvm", version.ref = "multiplatformSettings" }
+multiplatformSettingsSerialization = { module = "com.russhwolf:multiplatform-settings-serialization-jvm", version.ref = "multiplatformSettings" }
+multiplatformSettingsCoroutines = { module = "com.russhwolf:multiplatform-settings-coroutines-jvm", version.ref = "multiplatformSettings" }
+
+# Utility
+krokiCoroutines = { module = "io.github.kerubistan.kroki:kroki-coroutines", version.ref = "kroki" }
