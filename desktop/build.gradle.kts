@@ -182,8 +182,6 @@ compose.desktop {
         mainClass = "ca.gosyer.ui.main.MainKt"
         nativeDistributions {
             targetFormats(
-                // All
-                TargetFormat.AppImage,
                 // Windows
                 TargetFormat.Msi,
                 TargetFormat.Exe,
