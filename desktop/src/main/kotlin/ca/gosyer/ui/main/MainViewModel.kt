@@ -8,7 +8,7 @@ package ca.gosyer.ui.main
 
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.ui.base.vm.ViewModel
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class MainViewModel @Inject constructor(
     uiPreferences: UiPreferences

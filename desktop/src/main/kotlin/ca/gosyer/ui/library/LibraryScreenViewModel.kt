@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 private typealias CategoryItems = Pair<MutableStateFlow<List<Manga>>, MutableStateFlow<List<Manga>>>
 private typealias LibraryMap = MutableMap<Long, CategoryItems>
@@ -71,11 +71,11 @@ private suspend fun filterManga(query: String?, mangaList: List<Manga>): List<Ma
 }
 
 class LibraryScreenViewModel @Inject constructor(
-    private val bundle: Bundle,
     private val categoryHandler: CategoryInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
     private val updatesHandler: UpdatesInteractionHandler,
-    libraryPreferences: LibraryPreferences
+    libraryPreferences: LibraryPreferences,
+    private val bundle: Bundle,
 ) : ViewModel() {
     private val library = Library(MutableStateFlow(emptyList()), mutableMapOf())
     val categories = library.categories.asStateFlow()

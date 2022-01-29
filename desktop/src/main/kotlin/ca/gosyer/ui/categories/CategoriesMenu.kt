@@ -45,12 +45,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ca.gosyer.build.BuildConfig
-import dev.icerock.moko.resources.compose.stringResource
+import ca.gosyer.desktop.build.BuildConfig
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope

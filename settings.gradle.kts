@@ -12,6 +12,7 @@ rootProject.name = "Tachidesk-JUI"
 include("desktop")
 include("core")
 include("i18n")
+include("data")
 
 enableFeaturePreview("VERSION_CATALOGS")
 

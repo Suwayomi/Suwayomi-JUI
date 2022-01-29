@@ -65,14 +65,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import ca.gosyer.data.models.sourcefilters.SortFilter
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.Spinner
 import ca.gosyer.ui.base.prefs.ExpandablePreference
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.components.filter.model.SourceFiltersView
 import ca.gosyer.util.compose.persistentLazyListState
 import com.github.zsoltk.compose.savedinstancestate.Bundle
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 
@@ -86,8 +86,8 @@ fun SourceFiltersMenu(
     onResetClicked: () -> Unit,
     showFiltersButton: (Boolean) -> Unit
 ) {
-    val vm = viewModel<SourceFiltersViewModel>(sourceId) {
-        SourceFiltersViewModel.Params(bundle, sourceId)
+    val vm = viewModel(sourceId) {
+        instantiate<SourceFiltersViewModel>(SourceFiltersViewModel.Params(bundle, sourceId))
     }
     val filters by vm.filters.collectAsState()
     DisposableEffect(filters) {

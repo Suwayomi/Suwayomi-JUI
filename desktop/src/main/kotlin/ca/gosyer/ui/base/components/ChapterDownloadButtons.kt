@@ -37,8 +37,8 @@ import ca.gosyer.data.download.model.DownloadState
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
-import dev.icerock.moko.resources.compose.stringResource
 import ca.gosyer.i18n.MR
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 

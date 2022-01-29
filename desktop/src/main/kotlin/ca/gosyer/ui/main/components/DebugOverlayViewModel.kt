@@ -10,7 +10,7 @@ import ca.gosyer.ui.base.vm.ViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
 class DebugOverlayViewModel @Inject constructor() : ViewModel() {

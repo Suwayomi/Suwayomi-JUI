@@ -19,12 +19,12 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Inject
 import java.util.concurrent.CopyOnWriteArrayList
-import javax.inject.Inject
 
 class SourceSettingsViewModel @Inject constructor(
-    private val params: Params,
-    private val sourceHandler: SourceInteractionHandler
+    private val sourceHandler: SourceInteractionHandler,
+    private val params: Params
 ) : ViewModel() {
     private val _loading = MutableStateFlow(true)
     val loading = _loading.asStateFlow()

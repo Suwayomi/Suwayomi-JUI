@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.server.ServerHostPreferences
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.ServerService
@@ -43,13 +44,12 @@ import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.prefs.asStringStateIn
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.util.system.CKLogger
 import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class SettingsServerViewModel @Inject constructor(
     serverPreferences: ServerPreferences,

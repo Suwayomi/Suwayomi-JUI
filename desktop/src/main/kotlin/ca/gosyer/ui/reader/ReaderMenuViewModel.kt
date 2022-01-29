@@ -7,6 +7,8 @@
 package ca.gosyer.ui.reader
 
 import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
+import ca.gosyer.core.prefs.getAsFlow
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.MangaMeta
@@ -23,8 +25,6 @@ import ca.gosyer.ui.reader.model.PageMove
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.ui.reader.model.ViewerChapters
-import ca.gosyer.util.system.CKLogger
-import ca.gosyer.util.system.getAsFlow
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -39,13 +39,13 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class ReaderMenuViewModel @Inject constructor(
-    private val params: Params,
     private val readerPreferences: ReaderPreferences,
     private val mangaHandler: MangaInteractionHandler,
-    private val chapterHandler: ChapterInteractionHandler
+    private val chapterHandler: ChapterInteractionHandler,
+    private val params: Params,
 ) : ViewModel() {
     private val _manga = MutableStateFlow<Manga?>(null)
     private val viewerChapters = ViewerChapters(

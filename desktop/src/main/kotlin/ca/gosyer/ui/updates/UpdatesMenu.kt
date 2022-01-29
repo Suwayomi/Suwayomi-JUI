@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Chapter
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.ChapterDownloadIcon
 import ca.gosyer.ui.base.components.ChapterDownloadItem
 import ca.gosyer.ui.base.components.LoadingScreen
@@ -43,9 +44,8 @@ import ca.gosyer.ui.base.components.MangaListItemSubtitle
 import ca.gosyer.ui.base.components.MangaListItemTitle
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
+import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.lazyPainterResource
 
 @Composable

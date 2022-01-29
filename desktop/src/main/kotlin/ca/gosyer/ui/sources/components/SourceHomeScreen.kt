@@ -42,15 +42,15 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.TextActionIcon
 import ca.gosyer.ui.base.components.Toolbar
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.extensions.LanguageDialog
 import com.github.zsoltk.compose.savedinstancestate.Bundle
+import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.lazyPainterResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,8 +61,8 @@ fun SourceHomeScreen(
     onAddSource: (Source) -> Unit,
     onLoadSources: (List<Source>) -> Unit
 ) {
-    val vm = viewModel<SourceHomeScreenViewModel> {
-        bundle
+    val vm = viewModel {
+        instantiate<SourceHomeScreenViewModel>(bundle)
     }
     val sources by vm.sources.collectAsState()
     val isLoading by vm.isLoading.collectAsState()

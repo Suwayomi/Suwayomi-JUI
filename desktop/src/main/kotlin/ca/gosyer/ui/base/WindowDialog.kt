@@ -23,7 +23,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
@@ -35,11 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
-import ca.gosyer.core.di.AppScope
+import ca.gosyer.AppComponent
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.util.lang.launchApplication
-import io.kamel.core.config.KamelConfig
-import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -69,7 +66,7 @@ fun WindowDialog(
     }
 
     val icon = painterResource("icon.png")
-    val kamelConfig = remember { AppScope.getInstance<KamelConfig>() }
+    val hooks = AppComponent.getInstance().uiComponent.getHooks()
     val windowState = rememberWindowState(size = size, position = WindowPosition(Alignment.Center))
 
     Window(
@@ -96,7 +93,7 @@ fun WindowDialog(
         alwaysOnTop = forceFocus
     ) {
         CompositionLocalProvider(
-            LocalKamelConfig provides kamelConfig
+            *hooks
         ) {
             AppTheme {
                 Surface {
@@ -145,7 +142,7 @@ fun WindowDialog(
     }
 
     val icon = painterResource("icon.png")
-    val kamelConfig = remember { AppScope.getInstance<KamelConfig>() }
+    val hooks = AppComponent.getInstance().uiComponent.getHooks()
     val windowState = rememberWindowState(size = size, position = WindowPosition.Aligned(Alignment.Center))
 
     Window(
@@ -164,7 +161,7 @@ fun WindowDialog(
         alwaysOnTop = forceFocus,
     ) {
         CompositionLocalProvider(
-            LocalKamelConfig provides kamelConfig
+            *hooks
         ) {
             AppTheme {
                 Surface {

@@ -5,17 +5,14 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jmailen.gradle.kotlinter.tasks.FormatTask
-import org.jmailen.gradle.kotlinter.tasks.LintTask
 import proguard.gradle.ProGuardTask
 import java.nio.file.Files
 import kotlin.streams.asSequence
 
 plugins {
     kotlin("jvm")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
     id("org.jetbrains.compose")
+    id("com.google.devtools.ksp")
     id("com.github.gmazzo.buildconfig")
     id("org.jmailen.kotlinter")
 }
@@ -23,6 +20,7 @@ plugins {
 dependencies {
     implementation(project(":core"))
     implementation(project(":i18n"))
+    implementation(project(":data"))
 
     // UI (Compose)
     implementation(compose.desktop.currentOs)
@@ -49,8 +47,8 @@ dependencies {
     implementation(libs.xmlUtilSerialization)
 
     // Dependency Injection
-    implementation(libs.toothpickKsp)
-    kapt(libs.toothpickCompiler)
+    implementation(libs.kotlinInjectRuntime)
+    ksp(libs.kotlinInjectCompiler)
 
     // Http client
     implementation(libs.ktorCore)
@@ -91,15 +89,14 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = Config.jvmTarget
-    targetCompatibility = Config.jvmTarget
+    sourceCompatibility = Config.desktopJvmTarget
+    targetCompatibility = Config.desktopJvmTarget
 }
 
 tasks {
     withType<KotlinCompile> {
-        //dependsOn(formatKotlinMain)
         kotlinOptions {
-            jvmTarget = Config.jvmTarget.toString()
+            jvmTarget = Config.desktopJvmTarget.toString()
             freeCompilerArgs = listOf(
                 "-Xopt-in=kotlin.RequiresOptIn",
                 "-Xopt-in=kotlin.time.ExperimentalTime",
@@ -123,16 +120,6 @@ tasks {
         exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
     }
 
-    withType<LintTask> {
-        source(files("src"))
-        exclude("ca/gosyer/build")
-    }
-
-    withType<FormatTask> {
-        source(files("src"))
-        exclude("ca/gosyer/build")
-    }
-
     registerTachideskTasks(project)
 
     task("generateResourceConstants") {
@@ -141,6 +128,7 @@ tasks {
         doFirst {
             val langs = listOf("en") + Files.list(rootDir.toPath().resolve("i18n/src/commonMain/resources/MR/values")).asSequence()
                 .map { it.fileName.toString().replace("-r", "-") }
+                .filter { it != "base" }
                 .toList()
             buildResources.buildConfigField("ca.gosyer.i18n.StringList", "LANGUAGES", langs.joinToString(prefix = "listOf(", postfix = ")") { it.wrap() })
         }
@@ -169,6 +157,15 @@ tasks {
             libraryjars("$javaHome/lib/jce.jar")
         }
         configuration("proguard-rules.pro")
+    }
+}
+
+kotlin {
+    sourceSets.main {
+        kotlin.srcDir("build/generated/ksp/main/kotlin")
+    }
+    sourceSets.test {
+        kotlin.srcDir("build/generated/ksp/test/kotlin")
     }
 }
 
@@ -236,7 +233,7 @@ compose.desktop {
 fun String.wrap() = """"$this""""
 buildConfig {
     className("BuildConfig")
-    packageName(project.group.toString() + ".build")
+    packageName(project.group.toString() + ".desktop.build")
     useKotlinOutput { internalVisibility = true }
 
     buildConfigField("String", "NAME", rootProject.name.wrap())
@@ -249,13 +246,4 @@ buildConfig {
     // Tachidesk
     buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion.wrap())
     buildConfigField("int", "SERVER_CODE", serverCode.toString())
-}
-
-kotlinter {
-    experimentalRules = true
-    disabledRules = arrayOf("experimental:argument-list-wrapping", "experimental:trailing-comma")
-}
-
-kapt {
-    includeCompileClasspath = false
 }

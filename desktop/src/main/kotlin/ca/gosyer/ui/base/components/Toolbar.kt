@@ -63,8 +63,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.icerock.moko.resources.compose.stringResource
 import ca.gosyer.i18n.MR
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun Toolbar(

@@ -31,12 +31,12 @@ import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
 import dev.icerock.moko.resources.compose.stringResource
+import me.tatarka.inject.annotations.Inject
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
-import javax.inject.Inject
 
 class SettingsGeneralViewModel @Inject constructor(
     uiPreferences: UiPreferences,

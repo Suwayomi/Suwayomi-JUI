@@ -26,14 +26,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
-import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
+import ca.gosyer.desktop.build.BuildConfig
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.components.Toolbar
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
@@ -42,6 +41,7 @@ import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -66,8 +66,8 @@ fun LibraryScreen(onClickManga: (Long) -> Unit = ::openMangaMenu) {
 
 @Composable
 fun LibraryScreen(bundle: Bundle, onClickManga: (Long) -> Unit = ::openMangaMenu) {
-    val vm = viewModel<LibraryScreenViewModel> {
-        bundle
+    val vm = viewModel {
+        instantiate<LibraryScreenViewModel>(bundle)
     }
     val categories by vm.categories.collectAsState()
     val selectedCategoryIndex by vm.selectedCategoryIndex.collectAsState()

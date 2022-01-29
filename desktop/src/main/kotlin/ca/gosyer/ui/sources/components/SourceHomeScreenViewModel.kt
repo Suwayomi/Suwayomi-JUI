@@ -7,21 +7,21 @@
 package ca.gosyer.ui.sources.components
 
 import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.catalog.CatalogPreferences
 import ca.gosyer.data.models.Source
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.CKLogger
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class SourceHomeScreenViewModel @Inject constructor(
-    private val bundle: Bundle,
     private val sourceHandler: SourceInteractionHandler,
-    catalogPreferences: CatalogPreferences
+    catalogPreferences: CatalogPreferences,
+    private val bundle: Bundle,
 ) : ViewModel() {
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()

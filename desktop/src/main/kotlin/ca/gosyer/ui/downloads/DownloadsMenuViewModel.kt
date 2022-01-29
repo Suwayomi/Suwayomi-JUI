@@ -12,7 +12,7 @@ import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.data.server.interactions.DownloadInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class DownloadsMenuViewModel @Inject constructor(
     private val downloadService: DownloadService,

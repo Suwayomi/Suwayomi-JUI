@@ -38,12 +38,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Source
+import ca.gosyer.desktop.build.BuildConfig
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.KamelImage
 import ca.gosyer.ui.base.components.combinedMouseClickable
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.ui.sources.components.SourceHomeScreen
@@ -54,6 +53,7 @@ import ca.gosyer.util.lang.launchApplication
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import com.github.zsoltk.compose.savedinstancestate.BundleScope
 import com.github.zsoltk.compose.savedinstancestate.LocalSavedInstanceState
+import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.lazyPainterResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 
@@ -82,8 +82,8 @@ fun SourcesMenu(onSourceSettingsClick: (Long) -> Unit, onMangaClick: (Long) -> U
 
 @Composable
 fun SourcesMenu(bundle: Bundle, onSourceSettingsClick: (Long) -> Unit, onMangaClick: (Long) -> Unit) {
-    val vm = viewModel<SourcesMenuViewModel> {
-        bundle
+    val vm = viewModel {
+        instantiate<SourcesMenuViewModel>(bundle)
     }
     val sourceTabs by vm.sourceTabs.collectAsState()
     val selectedSourceTab by vm.selectedSourceTab.collectAsState()

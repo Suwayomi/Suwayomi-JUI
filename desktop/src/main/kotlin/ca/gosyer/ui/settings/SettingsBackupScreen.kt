@@ -32,33 +32,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ca.gosyer.core.io.copyTo
 import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import ca.gosyer.util.system.CKLogger
 import ca.gosyer.util.system.filePicker
 import ca.gosyer.util.system.fileSaver
+import dev.icerock.moko.resources.compose.stringResource
 import io.ktor.client.features.onDownload
 import io.ktor.client.features.onUpload
 import io.ktor.http.isSuccess
-import io.ktor.utils.io.jvm.javaio.copyTo
+import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.nio.file.Path
-import javax.inject.Inject
-import kotlin.io.path.absolutePathString
-import kotlin.io.path.notExists
-import kotlin.io.path.outputStream
+import me.tatarka.inject.annotations.Inject
+import okio.FileSystem
+import okio.Path
+import okio.Path.Companion.toOkioPath
+import okio.buffer
+import okio.source
 
 class SettingsBackupViewModel @Inject constructor(
     private val backupHandler: BackupInteractionHandler
@@ -83,8 +85,8 @@ class SettingsBackupViewModel @Inject constructor(
 
     fun restoreFile(file: Path?) {
         scope.launch {
-            if (file == null || file.notExists()) {
-                info { "Invalid file ${file?.absolutePathString()}" }
+            if (file == null || !FileSystem.SYSTEM.exists(file)) {
+                info { "Invalid file ${file?.toString()}" }
                 _restoreStatus.value = Status.Error
                 _restoring.value = false
             } else {
@@ -154,9 +156,11 @@ class SettingsBackupViewModel @Inject constructor(
                     (backup.headers["content-disposition"]?.substringAfter("filename=")?.trim('"') ?: "backup") to {
                         scope.launch {
                             try {
-                                it.outputStream().use {
-                                    backup.content.copyTo(it)
-                                }
+                                backup.content.toInputStream()
+                                    .source()
+                                    .copyTo(
+                                        FileSystem.SYSTEM.sink(it).buffer()
+                                    )
                                 _creatingStatus.value = Status.Success
                             } catch (e: Exception) {
                                 e.throwIfCancellation()
@@ -199,7 +203,7 @@ fun SettingsBackupScreen(menuController: MenuController) {
         launch {
             vm.createFlow.collect { (filename, function) ->
                 fileSaver(filename, "proto.gz") {
-                    function(it.selectedFile.toPath())
+                    function(it.selectedFile.toOkioPath())
                 }
             }
         }
@@ -219,7 +223,7 @@ fun SettingsBackupScreen(menuController: MenuController) {
                         restoreStatus
                     ) {
                         filePicker("gz") {
-                            vm.restoreFile(it.selectedFile.toPath())
+                            vm.restoreFile(it.selectedFile.toOkioPath())
                         }
                     }
                     PreferenceFile(

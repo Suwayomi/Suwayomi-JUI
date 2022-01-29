@@ -26,10 +26,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.components.combinedMouseClickable
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.main.Routes
 import ca.gosyer.ui.main.TopLevelMenus
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun SideMenuItem(selected: Boolean, topLevelMenu: TopLevelMenus, newRoot: (Routes) -> Unit) {

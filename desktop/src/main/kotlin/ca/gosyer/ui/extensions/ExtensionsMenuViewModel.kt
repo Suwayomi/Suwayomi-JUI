@@ -7,20 +7,20 @@
 package ca.gosyer.ui.extensions
 
 import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.models.Extension
 import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Inject
 import java.util.Locale
-import javax.inject.Inject
 
 class ExtensionsMenuViewModel @Inject constructor(
     private val extensionHandler: ExtensionInteractionHandler,

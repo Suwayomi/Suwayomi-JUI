@@ -27,20 +27,20 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Inject
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
-import javax.inject.Inject
 
 class MangaMenuViewModel @Inject constructor(
-    private val params: Params,
     private val mangaHandler: MangaInteractionHandler,
     private val chapterHandler: ChapterInteractionHandler,
     private val categoryHandler: CategoryInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
     private val downloadService: DownloadService,
     uiPreferences: UiPreferences,
+    private val params: Params,
 ) : ViewModel() {
     private val downloadingChapters = downloadService.registerWatch(params.mangaId)
 

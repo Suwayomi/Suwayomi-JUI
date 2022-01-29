@@ -23,8 +23,12 @@ fun imageFromFile(file: Path): ImageBitmap {
 }
 
 suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
+    return client.get<ByteReadChannel>(url, block).toImageBitmap()
+}
+
+suspend fun ByteReadChannel.toImageBitmap(): ImageBitmap {
     val bytes = ByteArrayOutputStream().use {
-        client.get<ByteReadChannel>(url, block).copyTo(it)
+        this.copyTo(it)
         it.toByteArray()
     }
     return Image.makeFromEncoded(bytes).toComposeImageBitmap()

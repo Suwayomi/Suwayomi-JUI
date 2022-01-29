@@ -30,7 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import ca.gosyer.build.BuildConfig
+import ca.gosyer.desktop.build.BuildConfig
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.LocalMenuController
 import ca.gosyer.ui.base.components.MenuController
@@ -38,8 +39,6 @@ import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoiceDialog
 import ca.gosyer.ui.base.prefs.MultiSelectDialog
 import ca.gosyer.ui.base.prefs.PreferenceRow
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.CheckBox
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.EditText
@@ -49,6 +48,7 @@ import ca.gosyer.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.TwoState
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -63,8 +63,8 @@ fun openSourceSettingsMenu(sourceId: Long) {
 
 @Composable
 fun SourceSettingsMenu(sourceId: Long, menuController: MenuController? = LocalMenuController.current) {
-    val vm = viewModel<SourceSettingsViewModel> {
-        SourceSettingsViewModel.Params(sourceId)
+    val vm = viewModel {
+        instantiate<SourceSettingsViewModel>(SourceSettingsViewModel.Params(sourceId))
     }
     val settings by vm.sourceSettings.collectAsState()
 

@@ -39,15 +39,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ca.gosyer.core.logging.kLogger
 import ca.gosyer.core.util.replace
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.models.ChapterMeta
 import ca.gosyer.data.models.MangaMeta
-import ca.gosyer.ui.base.components.Spinner
-import dev.icerock.moko.resources.compose.stringResource
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.Spinner
 import ca.gosyer.ui.reader.model.ReaderChapter
-import ca.gosyer.util.system.kLogger
+import dev.icerock.moko.resources.compose.stringResource
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 

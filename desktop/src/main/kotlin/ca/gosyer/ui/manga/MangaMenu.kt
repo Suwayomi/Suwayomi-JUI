@@ -48,9 +48,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEach
-import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
+import ca.gosyer.desktop.build.BuildConfig
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.ErrorScreen
@@ -83,8 +83,8 @@ fun openMangaMenu(mangaId: Long) {
 
 @Composable
 fun MangaMenu(mangaId: Long, menuController: MenuController? = LocalMenuController.current) {
-    val vm = viewModel<MangaMenuViewModel> {
-        MangaMenuViewModel.Params(mangaId)
+    val vm = viewModel {
+        instantiate<MangaMenuViewModel>(MangaMenuViewModel.Params(mangaId))
     }
     val manga by vm.manga.collectAsState()
     val chapters by vm.chapters.collectAsState()
@@ -221,13 +221,13 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
         Column(modifier) {
             Text(manga.title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
             if (!manga.author.isNullOrEmpty()) {
-                Text(manga.author, fontSize = 18.sp)
+                Text(manga.author!!, fontSize = 18.sp)
             }
             if (!manga.artist.isNullOrEmpty() && manga.artist != manga.author) {
-                Text(manga.artist, fontSize = 18.sp)
+                Text(manga.artist!!, fontSize = 18.sp)
             }
             if (!manga.description.isNullOrEmpty()) {
-                Text(manga.description)
+                Text(manga.description!!)
             }
             if (manga.genre.isNotEmpty()) {
                 FlowRow {

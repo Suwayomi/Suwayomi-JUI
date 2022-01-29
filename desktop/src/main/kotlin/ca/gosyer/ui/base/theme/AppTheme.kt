@@ -29,7 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 /**
  * Composable used to apply the application colors to [content].
@@ -56,7 +56,7 @@ fun AppTheme(content: @Composable () -> Unit) {
     }
 }
 
-private class AppThemeViewModel @Inject constructor(
+class AppThemeViewModel @Inject constructor(
     private val uiPreferences: UiPreferences
 ) : ViewModel() {
     private val themeMode = uiPreferences.themeMode().asStateFlow()

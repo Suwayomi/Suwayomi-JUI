@@ -8,7 +8,7 @@ package ca.gosyer.ui.main.components
 
 import ca.gosyer.data.update.UpdateChecker
 import ca.gosyer.ui.base.vm.ViewModel
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class TrayViewModel @Inject constructor(
     private val updateChecker: UpdateChecker

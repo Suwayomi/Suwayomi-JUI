@@ -53,13 +53,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.rememberWindowState
-import ca.gosyer.build.BuildConfig
-import ca.gosyer.core.di.AppScope
+import ca.gosyer.AppComponent
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
 import ca.gosyer.data.reader.model.NavigationMode
-import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.WindowSettings
+import ca.gosyer.desktop.build.BuildConfig
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.ErrorScreen
 import ca.gosyer.ui.base.components.LoadingScreen
@@ -76,10 +75,9 @@ import ca.gosyer.ui.reader.navigation.RightAndLeftNavigation
 import ca.gosyer.ui.reader.navigation.navigationClickable
 import ca.gosyer.ui.reader.viewer.ContinuousReader
 import ca.gosyer.ui.reader.viewer.PagerReader
+import ca.gosyer.util.compose.WindowGet
 import ca.gosyer.util.lang.launchApplication
 import dev.icerock.moko.resources.compose.stringResource
-import io.kamel.core.config.KamelConfig
-import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -99,15 +97,15 @@ val supportedKeyList = listOf(
 
 @OptIn(DelicateCoroutinesApi::class)
 fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
-    val windowSettings = AppScope.getInstance<UiPreferences>()
+    val windowSettings = AppComponent.getInstance().dataComponent.uiPreferences
         .readerWindow()
     val (
         position,
         size,
         placement
-    ) = windowSettings.get().get()
+    ) = WindowGet.from(windowSettings.get())
 
-    val kamelConfig = AppScope.getInstance<KamelConfig>()
+    val hooks = AppComponent.getInstance().uiComponent.getHooks()
 
     launchApplication {
         val scope = rememberCoroutineScope()
@@ -142,7 +140,7 @@ fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
             }
         ) {
             CompositionLocalProvider(
-                LocalKamelConfig provides kamelConfig
+                *hooks
             ) {
                 AppTheme {
                     ReaderMenu(chapterIndex, mangaId, hotkeyFlow)
@@ -158,8 +156,8 @@ fun ReaderMenu(
     mangaId: Long,
     hotkeyFlow: SharedFlow<KeyEvent>
 ) {
-    val vm = viewModel<ReaderMenuViewModel> {
-        ReaderMenuViewModel.Params(chapterIndex, mangaId)
+    val vm = viewModel {
+        instantiate<ReaderMenuViewModel>(ReaderMenuViewModel.Params(chapterIndex, mangaId))
     }
 
     val state by vm.state.collectAsState()

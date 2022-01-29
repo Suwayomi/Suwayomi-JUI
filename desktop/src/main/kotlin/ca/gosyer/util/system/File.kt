@@ -6,32 +6,11 @@
 
 package ca.gosyer.util.system
 
-import ca.gosyer.build.BuildConfig
 import ca.gosyer.core.lang.launchUI
 import kotlinx.coroutines.DelicateCoroutinesApi
-import mu.KotlinLogging
-import net.harawata.appdirs.AppDirs
-import net.harawata.appdirs.AppDirsFactory
-import java.nio.file.Path
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.io.path.Path
-import kotlin.io.path.createDirectories
-import kotlin.io.path.exists
-
-private val logger = KotlinLogging.logger {}
-
-val appDirs: AppDirs by lazy {
-    AppDirsFactory.getInstance()
-}
-
-val userDataDir: Path by lazy {
-    Path(appDirs.getUserDataDir(BuildConfig.NAME, null, null)).also {
-        if (!it.exists()) {
-            logger.info("Attempted to create app data dir, result: {}", it.createDirectories())
-        }
-    }
-}
 
 fun filePicker(
     vararg extensions: String,

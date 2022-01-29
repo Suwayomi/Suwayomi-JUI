@@ -16,7 +16,7 @@ kamel = "0.3.0"
 darklaf = "2.7.3"
 
 # Dependency Injection
-toothpick = "3.1.0"
+kotlinInject = "0.4.1"
 
 # Network
 ktor = "1.6.7"
@@ -35,6 +35,7 @@ multiplatformSettings = "0.8.1"
 
 # Utility
 kroki = "1.22"
+desugarJdkLibs = "1.1.5"
 
 # Localization
 moko = "0.18.0"
@@ -60,8 +61,8 @@ kamel = { module = "com.alialbaali.kamel:kamel-image", version.ref = "kamel" }
 darklaf = { module = "com.github.weisj:darklaf-core", version.ref = "darklaf" }
 
 # Dependency Injection
-toothpickKsp = { module = "com.github.stephanenicolas.toothpick:ktp", version.ref = "toothpick" }
-toothpickCompiler = { module = "com.github.stephanenicolas.toothpick:toothpick-compiler", version.ref = "toothpick" }
+kotlinInjectRuntime = { module = "me.tatarka.inject:kotlin-inject-runtime", version.ref = "kotlinInject" }
+kotlinInjectCompiler = { module = "me.tatarka.inject:kotlin-inject-compiler-ksp", version.ref = "kotlinInject" }
 
 # Network
 ktorCore = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -90,6 +91,7 @@ multiplatformSettingsCoroutines = { module = "com.russhwolf:multiplatform-settin
 
 # Utility
 krokiCoroutines = { module = "io.github.kerubistan.kroki:kroki-coroutines", version.ref = "kroki" }
+desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 
 # Localization
 mokoCore = { module = "dev.icerock.moko:resources", version.ref = "moko" }

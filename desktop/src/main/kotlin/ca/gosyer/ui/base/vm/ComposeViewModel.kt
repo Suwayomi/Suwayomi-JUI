@@ -10,15 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import ca.gosyer.core.di.AppScope
-import toothpick.Toothpick
-import toothpick.ktp.binding.module
-import toothpick.ktp.extension.getInstance
+import ca.gosyer.ui.base.LocalViewModelFactory
 
 @Composable
 inline fun <reified VM : ViewModel> viewModel(key: Any? = Unit): VM {
+    val viewModelFactory = LocalViewModelFactory.current
     val viewModel = remember(key) {
-        AppScope.getInstance<VM>()
+        viewModelFactory.instantiate<VM>()
     }
     DisposableEffect(viewModel) {
         onDispose {
@@ -31,22 +29,15 @@ inline fun <reified VM : ViewModel> viewModel(key: Any? = Unit): VM {
 @Composable
 inline fun <reified VM : ViewModel> viewModel(
     key: Any? = Unit,
-    crossinline binding: @DisallowComposableCalls () -> Any,
+    crossinline factory: @DisallowComposableCalls ViewModelFactory.() -> VM
 ): VM {
-    val (viewModel, submodule) = remember(key) {
-        val submodule = module {
-            binding().let { bind(it.javaClass).toInstance(it) }
-        }
-        val subscope = AppScope.subscope(submodule).also {
-            it.installModules(submodule)
-        }
-        val viewModel = subscope.getInstance<VM>()
-        Pair(viewModel, submodule)
+    val viewModelFactory = LocalViewModelFactory.current
+    val viewModel = remember(key) {
+        viewModelFactory.factory()
     }
     DisposableEffect(viewModel) {
         onDispose {
             viewModel.destroy()
-            Toothpick.closeScope(submodule)
         }
     }
     return viewModel

@@ -6,9 +6,10 @@
 
 package ca.gosyer.core.logging
 
-import ca.gosyer.build.BuildConfig
+import ca.gosyer.desktop.build.BuildConfig
 import com.github.weisj.darklaf.LafManager
 import mu.KotlinLogging
+import okio.Path
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.LoggerContext
@@ -16,8 +17,6 @@ import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
-import java.nio.file.Path
-import kotlin.io.path.absolutePathString
 import java.util.logging.LogManager as JLogManager
 
 const val consolePattern =
@@ -60,11 +59,11 @@ fun initializeLogger(loggingLocation: Path) {
                 newAppender("Rolling", "RollingFile")
                     .addAttribute(
                         "fileName",
-                        loggingLocation.absolutePathString().trimEnd('/', '\\') + "/rolling.log"
+                        loggingLocation.toString().trimEnd('/', '\\') + "/rolling.log"
                     )
                     .addAttribute(
                         "filePattern",
-                        loggingLocation.absolutePathString().trimEnd('/', '\\') + "/archive/rolling-%d{yyyy-MM-dd-}.log.gz"
+                        loggingLocation.toString().trimEnd('/', '\\') + "/archive/rolling-%d{yyyy-MM-dd-}.log.gz"
                     )
                     .add(
                         newLayout("PatternLayout")

@@ -51,8 +51,8 @@ fun SourceScreen(
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit
 ) {
-    val vm = viewModel<SourceScreenViewModel>(source.id) {
-        SourceScreenViewModel.Params(source, bundle)
+    val vm = viewModel(source.id) {
+        instantiate<SourceScreenViewModel>(SourceScreenViewModel.Params(source, bundle))
     }
     val mangas by vm.mangas.collectAsState()
     val hasNextPage by vm.hasNextPage.collectAsState()

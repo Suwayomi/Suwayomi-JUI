@@ -11,7 +11,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.input.TextFieldValue
-import ca.gosyer.build.BuildConfig
+import ca.gosyer.desktop.build.BuildConfig
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.WindowDialog
 import dev.icerock.moko.resources.compose.stringResource

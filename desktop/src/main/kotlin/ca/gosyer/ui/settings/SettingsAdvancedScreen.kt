@@ -20,14 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.update.UpdatePreferences
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.SwitchPreference
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import javax.inject.Inject
+import dev.icerock.moko.resources.compose.stringResource
+import me.tatarka.inject.annotations.Inject
 
 class SettingsAdvancedViewModel @Inject constructor(
     updatePreferences: UpdatePreferences,

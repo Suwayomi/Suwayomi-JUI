@@ -15,8 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import dev.icerock.moko.resources.compose.stringResource
 import ca.gosyer.i18n.MR
+import dev.icerock.moko.resources.compose.stringResource
 
 @Composable
 fun LoadingScreen(

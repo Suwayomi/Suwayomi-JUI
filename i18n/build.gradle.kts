@@ -9,7 +9,13 @@ plugins {
 
 kotlin {
     android()
-    jvm("desktop")
+    jvm("desktop") {
+        compilations {
+            all {
+                kotlinOptions.jvmTarget = Config.desktopJvmTarget.toString()
+            }
+        }
+    }
 
     sourceSets {
         val commonMain by getting {

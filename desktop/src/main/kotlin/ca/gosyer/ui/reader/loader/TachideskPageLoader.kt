@@ -7,11 +7,12 @@
 package ca.gosyer.ui.reader.loader
 
 import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
-import ca.gosyer.util.system.CKLogger
+import ca.gosyer.util.compose.toImageBitmap
 import io.github.kerubistan.kroki.coroutines.priorityChannel
 import io.ktor.client.features.onDownload
 import kotlinx.coroutines.CoroutineScope
@@ -62,7 +63,7 @@ class TachideskPageLoader(
                                         onDownload { bytesSentTotal, contentLength ->
                                             page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                                         }
-                                    }
+                                    }.toImageBitmap()
                                     page.status.value = ReaderPage.Status.READY
                                     page.error.value = null
                                 } catch (e: Exception) {

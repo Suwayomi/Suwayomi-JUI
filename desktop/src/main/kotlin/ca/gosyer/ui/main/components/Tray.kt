@@ -13,7 +13,7 @@ import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Notification
 import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.rememberTrayState
-import ca.gosyer.build.BuildConfig
+import ca.gosyer.desktop.build.BuildConfig
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import kotlinx.coroutines.launch

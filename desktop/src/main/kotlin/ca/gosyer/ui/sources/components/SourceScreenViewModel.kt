@@ -20,7 +20,7 @@ import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class SourceScreenViewModel(
     private val source: Source,
@@ -29,8 +29,8 @@ class SourceScreenViewModel(
 ) : ViewModel() {
 
     @Inject constructor(
-        params: Params,
-        sourceHandler: SourceInteractionHandler
+        sourceHandler: SourceInteractionHandler,
+        params: Params
     ) : this(
         params.source,
         params.bundle,

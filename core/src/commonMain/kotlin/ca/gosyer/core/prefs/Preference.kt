@@ -9,6 +9,9 @@ package ca.gosyer.core.prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 
 /**
  * A wrapper around application preferences without knowing implementation details. Instances of
@@ -56,4 +59,11 @@ interface Preference<T> {
      * current value and receive preference updates.
      */
     fun stateIn(scope: CoroutineScope): StateFlow<T>
+}
+
+fun <T> Preference<T>.getAsFlow(action: (suspend (T) -> Unit)? = null): Flow<T> {
+    val flow = merge(flowOf(get()), changes())
+    return if (action != null) {
+        flow.onEach(action = action)
+    } else flow
 }

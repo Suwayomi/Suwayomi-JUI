@@ -36,13 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ColorPreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.theme.AppColorsPreferenceState
 import ca.gosyer.ui.base.theme.Theme
 import ca.gosyer.ui.base.theme.asStateFlow
@@ -51,7 +50,8 @@ import ca.gosyer.ui.base.theme.getLightColors
 import ca.gosyer.ui.base.theme.themes
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.base.vm.viewModel
-import javax.inject.Inject
+import dev.icerock.moko.resources.compose.stringResource
+import me.tatarka.inject.annotations.Inject
 
 class ThemesViewModel @Inject constructor(
     private val uiPreferences: UiPreferences,

@@ -24,23 +24,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
 import androidx.compose.ui.window.rememberWindowState
-import ca.gosyer.build.BuildConfig
+import ca.gosyer.AppComponent
+import ca.gosyer.core.io.userDataDir
 import ca.gosyer.core.lang.withUIContext
 import ca.gosyer.core.logging.initializeLogger
-import ca.gosyer.data.DataModule
-import ca.gosyer.data.migration.Migrations
-import ca.gosyer.data.server.ServerService
+import ca.gosyer.core.prefs.getAsFlow
 import ca.gosyer.data.server.ServerService.ServerResult
-import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
+import ca.gosyer.desktop.build.BuildConfig
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.components.LoadingScreen
 import ca.gosyer.ui.base.prefs.asStateIn
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.main.components.Tray
-import ca.gosyer.util.system.getAsFlow
-import ca.gosyer.util.system.userDataDir
+import ca.gosyer.util.compose.WindowGet
 import com.github.weisj.darklaf.LafManager
 import com.github.weisj.darklaf.theme.DarculaTheme
 import com.github.weisj.darklaf.theme.IntelliJTheme
@@ -48,17 +46,12 @@ import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import dev.icerock.moko.resources.compose.stringResource
-import io.kamel.core.config.KamelConfig
-import io.kamel.image.config.LocalKamelConfig
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
-import toothpick.configuration.Configuration
-import toothpick.ktp.KTP
-import toothpick.ktp.extension.getInstance
 import java.util.Locale
 import kotlin.system.exitProcess
 
@@ -70,23 +63,13 @@ suspend fun main() {
         System.setProperty("kotlinx.coroutines.debug", "on")
     }
 
-    KTP.setConfiguration(
-        if (BuildConfig.DEBUG) {
-            Configuration.forDevelopment()
-        } else {
-            Configuration.forProduction()
-        }
-    )
-
-    val scope = KTP.openRootScope()
-        .installModules(
-            DataModule
-        )
-
-    scope.getInstance<Migrations>().runMigrations()
-
-    val serverService = scope.getInstance<ServerService>()
-    val uiPreferences = scope.getInstance<UiPreferences>()
+    val appComponent = AppComponent.getInstance()
+    val dataComponent = appComponent.dataComponent
+    val uiComponent = appComponent.uiComponent
+    dataComponent.migrations.runMigrations()
+    val serverService = dataComponent.serverService
+    val uiPreferences = dataComponent.uiPreferences
+    val uiHooks = uiComponent.getHooks()
 
     // Call setDefault before getting a resource bundle
     val language = uiPreferences.language().get()
@@ -96,8 +79,6 @@ suspend fun main() {
             Locale.setDefault(locale)
         }
     }
-
-    val kamelConfig = scope.getInstance<KamelConfig>()
 
     // Set the Compose constants before any
     // Swing functions are called
@@ -127,88 +108,89 @@ suspend fun main() {
         position,
         size,
         placement
-    ) = windowSettings.get().get()
+    ) = WindowGet.from(windowSettings.get())
 
     val confirmExit = uiPreferences.confirmExit().asStateIn(GlobalScope)
 
     val displayDebugInfoFlow = MutableStateFlow(false)
 
     awaitApplication {
-        // Exit the whole application when this window closes
-        DisposableEffect(Unit) {
-            onDispose {
-                exitProcess(0)
-            }
-        }
-
-        val backPressHandler = remember { BackPressHandler() }
-
-        val rootBundle = remember { Bundle() }
-        val windowState = rememberWindowState(
-            size = size,
-            position = position,
-            placement = placement
-        )
-
-        val icon = painterResource("icon.png")
-
-        Tray(icon)
-
-        Window(
-            onCloseRequest = {
-                if (confirmExit.value) {
-                    WindowDialog(
-                        title = MR.strings.confirm_exit.localized(),
-                        onPositiveButton = ::exitApplication
-                    ) {
-                        Text(stringResource(MR.strings.confirm_exit_message))
-                    }
-                } else {
-                    exitApplication()
+        CompositionLocalProvider(*uiHooks) {
+            // Exit the whole application when this window closes
+            DisposableEffect(Unit) {
+                onDispose {
+                    exitProcess(0)
                 }
-            },
-            title = BuildConfig.NAME,
-            icon = icon,
-            state = windowState,
-            onKeyEvent = {
-                if (it.type == KeyEventType.KeyUp) {
-                    when (it.key) {
-                        Key.Home -> {
-                            backPressHandler.handle()
-                        }
-                        Key.F3 -> {
-                            displayDebugInfoFlow.value = !displayDebugInfoFlow.value
-                            true
-                        }
-                        else -> false
-                    }
-                } else false
             }
-        ) {
-            AppTheme {
-                CompositionLocalProvider(
-                    LocalBackPressHandler provides backPressHandler,
-                    LocalKamelConfig provides kamelConfig
-                ) {
-                    Crossfade(serverService.initialized.collectAsState().value) { initialized ->
-                        when (initialized) {
-                            ServerResult.STARTED, ServerResult.UNUSED -> {
-                                Box {
-                                    MainMenu(rootBundle)
-                                    val displayDebugInfo by displayDebugInfoFlow.collectAsState()
-                                    if (displayDebugInfo) {
-                                        DebugOverlay()
+
+            val backPressHandler = remember { BackPressHandler() }
+
+            val rootBundle = remember { Bundle() }
+            val windowState = rememberWindowState(
+                size = size,
+                position = position,
+                placement = placement
+            )
+
+            val icon = painterResource("icon.png")
+
+            Tray(icon)
+
+            Window(
+                onCloseRequest = {
+                    if (confirmExit.value) {
+                        WindowDialog(
+                            title = MR.strings.confirm_exit.localized(),
+                            onPositiveButton = ::exitApplication
+                        ) {
+                            Text(stringResource(MR.strings.confirm_exit_message))
+                        }
+                    } else {
+                        exitApplication()
+                    }
+                },
+                title = BuildConfig.NAME,
+                icon = icon,
+                state = windowState,
+                onKeyEvent = {
+                    if (it.type == KeyEventType.KeyUp) {
+                        when (it.key) {
+                            Key.Home -> {
+                                backPressHandler.handle()
+                            }
+                            Key.F3 -> {
+                                displayDebugInfoFlow.value = !displayDebugInfoFlow.value
+                                true
+                            }
+                            else -> false
+                        }
+                    } else false
+                }
+            ) {
+                AppTheme {
+                    CompositionLocalProvider(
+                        LocalBackPressHandler provides backPressHandler,
+                    ) {
+                        Crossfade(serverService.initialized.collectAsState().value) { initialized ->
+                            when (initialized) {
+                                ServerResult.STARTED, ServerResult.UNUSED -> {
+                                    Box {
+                                        MainMenu(rootBundle)
+                                        val displayDebugInfo by displayDebugInfoFlow.collectAsState()
+                                        if (displayDebugInfo) {
+                                            DebugOverlay()
+                                        }
                                     }
                                 }
-                            }
-                            ServerResult.STARTING, ServerResult.FAILED -> {
-                                Surface {
-                                    LoadingScreen(
-                                        initialized == ServerResult.STARTING,
-                                        errorMessage = stringResource(MR.strings.unable_to_start_server),
-                                        retryMessage = stringResource(MR.strings.action_start_anyway),
-                                        retry = serverService::startAnyway
-                                    )
+                                ServerResult.STARTING, ServerResult.FAILED -> {
+                                    Surface {
+                                        LoadingScreen(
+                                            initialized == ServerResult.STARTING,
+                                            errorMessage = stringResource(MR.strings.unable_to_start_server),
+                                            retryMessage = stringResource(MR.strings.action_start_anyway),
+                                            retry = serverService::startAnyway
+                                        )
+                                    }
                                 }
                             }
                         }

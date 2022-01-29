@@ -6,25 +6,8 @@
 
 package ca.gosyer.core.di
 
-import toothpick.Scope
-import toothpick.ktp.KTP
+import me.tatarka.inject.annotations.Scope
 
-/**
- * The global scope for dependency injection that will provide all the application level components.
- */
-object AppScope : Scope by KTP.openRootScope() {
-
-    /**
-     * Returns a new subscope inheriting the root scope.
-     */
-    fun subscope(any: Any): Scope {
-        return openSubScope(any)
-    }
-
-    /**
-     * Returns an instance of [T] from the root scope.
-     */
-    inline fun <reified T> getInstance(): T {
-        return getInstance(T::class.java)
-    }
-}
+@Scope
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER)
+annotation class AppScope

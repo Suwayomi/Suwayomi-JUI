@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class UpdatesMenuViewModel @Inject constructor(
     private val chapterHandler: ChapterInteractionHandler,

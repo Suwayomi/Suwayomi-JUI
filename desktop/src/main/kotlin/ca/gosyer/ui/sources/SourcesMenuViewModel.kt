@@ -6,16 +6,16 @@
 
 package ca.gosyer.ui.sources
 
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.models.Source
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.CKLogger
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class SourcesMenuViewModel @Inject constructor(
     private val bundle: Bundle

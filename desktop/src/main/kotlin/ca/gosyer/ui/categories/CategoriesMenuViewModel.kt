@@ -7,14 +7,14 @@
 package ca.gosyer.ui.categories
 
 import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
-import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import me.tatarka.inject.annotations.Inject
 
 class CategoriesMenuViewModel @Inject constructor(
     private val categoryHandler: CategoryInteractionHandler

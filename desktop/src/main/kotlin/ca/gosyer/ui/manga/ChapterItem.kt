@@ -98,7 +98,7 @@ fun ChapterItem(
                         }
                         if (!chapter.scanlator.isNullOrBlank()) {
                             if (length > 0) append(" • ")
-                            append(chapter.scanlator)
+                            append(chapter.scanlator!!)
                         }
                     }
                     SelectionContainer {

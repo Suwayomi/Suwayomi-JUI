@@ -6,9 +6,9 @@
 
 package ca.gosyer.ui.reader.model
 
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.ui.reader.loader.PageLoader
-import ca.gosyer.util.system.CKLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

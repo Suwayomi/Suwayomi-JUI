@@ -19,10 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.MenuController
 import ca.gosyer.ui.base.components.Toolbar
 import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 
 @Composable
 fun SettingsSecurityScreen(menuController: MenuController) {

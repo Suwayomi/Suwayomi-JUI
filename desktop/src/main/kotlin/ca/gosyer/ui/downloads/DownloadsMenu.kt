@@ -44,10 +44,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import ca.gosyer.build.BuildConfig
 import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloaderStatus
 import ca.gosyer.data.models.Chapter
+import ca.gosyer.desktop.build.BuildConfig
+import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.ActionIcon
 import ca.gosyer.ui.base.components.DropdownIconButton
 import ca.gosyer.ui.base.components.MangaListItem
@@ -57,12 +58,11 @@ import ca.gosyer.ui.base.components.MangaListItemSubtitle
 import ca.gosyer.ui.base.components.MangaListItemTitle
 import ca.gosyer.ui.base.components.Toolbar
 import ca.gosyer.ui.base.components.mangaAspectRatio
-import dev.icerock.moko.resources.compose.stringResource
-import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.vm.viewModel
 import ca.gosyer.ui.manga.openMangaMenu
 import ca.gosyer.util.compose.ThemedWindow
 import ca.gosyer.util.lang.launchApplication
+import dev.icerock.moko.resources.compose.stringResource
 import io.kamel.image.lazyPainterResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 
@@ -151,7 +151,7 @@ fun DownloadsItem(
                 fontWeight = FontWeight.SemiBold
             )
             val progress = if (item.chapter.pageCount != null && item.chapter.pageCount != -1) {
-                " - " + "${(item.chapter.pageCount * item.progress).toInt()}/${item.chapter.pageCount}"
+                " - " + "${(item.chapter.pageCount!! * item.progress).toInt()}/${item.chapter.pageCount}"
             } else ""
             MangaListItemSubtitle(
                 text = item.chapter.name + progress

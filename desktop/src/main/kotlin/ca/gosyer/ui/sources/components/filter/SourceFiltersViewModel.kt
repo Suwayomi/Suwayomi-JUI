@@ -7,11 +7,11 @@
 package ca.gosyer.ui.sources.components.filter
 
 import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.models.sourcefilters.SourceFilter
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.base.vm.ViewModel
 import ca.gosyer.ui.sources.components.filter.model.SourceFiltersView
-import ca.gosyer.util.system.CKLogger
 import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,8 +23,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Inject
 import java.util.concurrent.CopyOnWriteArrayList
-import javax.inject.Inject
 
 class SourceFiltersViewModel(
     private val bundle: Bundle,
@@ -32,8 +32,8 @@ class SourceFiltersViewModel(
     private val sourceHandler: SourceInteractionHandler
 ) : ViewModel() {
     @Inject constructor(
+        sourceHandler: SourceInteractionHandler,
         params: Params,
-        sourceHandler: SourceInteractionHandler
     ) : this(
         params.bundle,
         params.sourceId,
