@@ -9,11 +9,11 @@ package ca.gosyer.core.prefs
 import com.russhwolf.settings.JvmPreferencesSettings
 import java.util.prefs.Preferences
 
-class PreferenceStoreFactory {
+actual class PreferenceStoreFactory {
     private val rootNode: Preferences = Preferences.userRoot()
         .node("ca/gosyer/tachideskjui")
 
-    fun create(vararg names: String): PreferenceStore {
+    actual fun create(vararg names: String): PreferenceStore {
         return JvmPreferenceStore(
             JvmPreferencesSettings(
                 rootNode.node(names.joinToString(separator = "/"))

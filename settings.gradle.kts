@@ -15,4 +15,5 @@ include("i18n")
 include("data")
 
 enableFeaturePreview("VERSION_CATALOGS")
-
+include("ui-core")
+include("presentation")

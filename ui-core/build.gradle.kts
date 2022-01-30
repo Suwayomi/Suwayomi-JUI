@@ -1,8 +1,7 @@
 plugins {
     kotlin("multiplatform")
-    id("com.google.devtools.ksp")
-    kotlin("plugin.serialization")
     id("com.android.library")
+    id("org.jetbrains.compose")
     id("com.codingfeline.buildkonfig")
     id("org.jmailen.kotlinter")
 }
@@ -21,7 +20,9 @@ kotlin {
         all {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
-                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                optIn("androidx.compose.foundation.ExperimentalFoundationApi")
+                optIn("androidx.compose.material.ExperimentalMaterialApi")
+                optIn("androidx.compose.ui.ExperimentalComposeUiApi")
             }
         }
         val commonMain by getting {
@@ -29,17 +30,11 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib-common"))
                 api(libs.coroutinesCore)
-                api(libs.json)
-                api(libs.kotlinInjectRuntime)
-                api(libs.ktorCore)
-                api(libs.ktorSerialization)
-                api(libs.ktorAuth)
-                api(libs.ktorLogging)
-                api(libs.ktorWebsockets)
-                api(libs.ktorOkHttp)
-                api(libs.okio)
+                api(libs.kamel)
                 api(project(":core"))
                 api(project(":i18n"))
+                api(compose.desktop.currentOs)
+                api(compose.materialIconsExtended)
             }
         }
         val commonTest by getting {
@@ -55,6 +50,7 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/desktopMain/kotlin")
             dependencies {
                 api(kotlin("stdlib-jdk8"))
+                api(libs.coroutinesSwing)
             }
         }
         val desktopTest by getting {
@@ -76,11 +72,6 @@ kotlin {
     }
 }
 
-dependencies {
-    add("kspDesktop", libs.kotlinInjectCompiler)
-    add("kspAndroid", libs.kotlinInjectCompiler)
-}
-
 buildkonfig {
-    packageName = "ca.gosyer.data.build"
+    packageName = "ca.gosyer.uicore.build"
 }

@@ -21,6 +21,8 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":i18n"))
     implementation(project(":data"))
+    implementation(project(":ui-core"))
+    implementation(project(":presentation"))
 
     // UI (Compose)
     implementation(compose.desktop.currentOs)
@@ -179,7 +181,7 @@ fun isNonStable(version: String): Boolean {
 
 compose.desktop {
     application {
-        mainClass = "ca.gosyer.ui.main.MainKt"
+        mainClass = "ca.gosyer.MainKt"
         nativeDistributions {
             targetFormats(
                 // Windows
