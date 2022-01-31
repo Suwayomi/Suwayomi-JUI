@@ -22,7 +22,7 @@ kotlinInject = "0.4.1"
 ktor = "1.6.7"
 
 # Logging
-slf4j = "1.7.32"
+slf4j = "1.7.35"
 log4j = "2.17.1"
 ktlogging = "2.1.21"
 
