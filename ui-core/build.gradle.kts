@@ -31,6 +31,7 @@ kotlin {
                 api(kotlin("stdlib-common"))
                 api(libs.coroutinesCore)
                 api(libs.kamel)
+                api(libs.voyagerCore)
                 api(project(":core"))
                 api(project(":i18n"))
                 api(compose.desktop.currentOs)

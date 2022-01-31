@@ -15,17 +15,19 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.base.WebsocketService
 import ca.gosyer.i18n.MR
-import ca.gosyer.uicore.vm.viewModel
-import ca.gosyer.ui.downloads.DownloadsMenuViewModel
+import ca.gosyer.ui.downloads.DownloadsScreenViewModel
 import ca.gosyer.uicore.resources.stringResource
+import ca.gosyer.uicore.vm.LocalViewModelFactory
 
 @Composable
 fun DownloadsExtraInfo() {
-    val vm = viewModel<DownloadsMenuViewModel>()
+    val vmFactory = LocalViewModelFactory.current
+    val vm = remember { vmFactory.instantiate<DownloadsScreenViewModel>(true) }
     val status by vm.serviceStatus.collectAsState()
     val list by vm.downloadQueue.collectAsState()
     val text = when (status) {

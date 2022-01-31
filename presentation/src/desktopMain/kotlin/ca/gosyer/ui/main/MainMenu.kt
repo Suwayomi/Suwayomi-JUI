@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.main
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
@@ -26,45 +25,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ca.gosyer.ui.base.navigation.LocalMenuController
-import ca.gosyer.ui.base.navigation.MenuController
-import ca.gosyer.ui.base.navigation.withMenuController
-import ca.gosyer.uicore.vm.viewModel
-import ca.gosyer.ui.downloads.DownloadsMenu
-import ca.gosyer.ui.extensions.ExtensionsMenu
-import ca.gosyer.ui.library.LibraryScreen
+import ca.gosyer.ui.base.navigation.DisplayController
+import ca.gosyer.ui.base.navigation.withDisplayController
 import ca.gosyer.ui.main.components.SideMenu
-import ca.gosyer.ui.manga.MangaMenu
-import ca.gosyer.ui.reader.openReaderMenu
-import ca.gosyer.ui.settings.SettingsAdvancedScreen
-import ca.gosyer.ui.settings.SettingsAppearance
-import ca.gosyer.ui.settings.SettingsBackupScreen
-import ca.gosyer.ui.settings.SettingsBrowseScreen
-import ca.gosyer.ui.settings.SettingsGeneralScreen
-import ca.gosyer.ui.settings.SettingsLibraryScreen
-import ca.gosyer.ui.settings.SettingsReaderScreen
-import ca.gosyer.ui.settings.SettingsScreen
-import ca.gosyer.ui.settings.SettingsServerScreen
-import ca.gosyer.ui.sources.SourcesMenu
-import ca.gosyer.ui.sources.settings.SourceSettingsMenu
-import ca.gosyer.ui.updates.UpdatesMenu
-import com.github.zsoltk.compose.router.Router
-import com.github.zsoltk.compose.savedinstancestate.Bundle
-import com.github.zsoltk.compose.savedinstancestate.BundleScope
+import ca.gosyer.uicore.vm.LocalViewModelFactory
+import cafe.adriel.voyager.navigator.CurrentScreen
+import cafe.adriel.voyager.navigator.Navigator
 
 const val SIDE_MENU_EXPAND_DURATION = 500
 
 @Composable
-fun MainMenu(rootBundle: Bundle) {
-    val vm = viewModel<MainViewModel>()
+fun MainMenu() {
+    val vmFactory = LocalViewModelFactory.current
+    val vm = remember { vmFactory.instantiate<MainViewModel>() }
     Surface {
-        Router("TopLevel", vm.startScreen.toRoute()) { backStack ->
-            val controller = remember {
-                MenuController(backStack)
-            }
+        Navigator(vm.startScreen.toScreen()) { navigator ->
+            val controller = remember { DisplayController() }
             BoxWithConstraints {
                 // if (maxWidth > 720.dp) {
-                WideMainMenu(rootBundle, controller)
+                WideMainMenu(navigator, controller)
                 // } else {
                 // SkinnyMainMenu(rootBundle, controller)
                 // }
@@ -75,8 +54,8 @@ fun MainMenu(rootBundle: Bundle) {
 
 @Composable
 fun SkinnyMainMenu(
-    rootBundle: Bundle,
-    controller: MenuController
+    navigator: Navigator,
+    controller: DisplayController
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     LaunchedEffect(controller.sideMenuVisible) {
@@ -104,21 +83,21 @@ fun SkinnyMainMenu(
 
     ModalDrawer(
         {
-            SideMenu(Modifier.fillMaxWidth(), controller)
+            SideMenu(Modifier.fillMaxWidth(), controller, navigator)
         },
         drawerState = drawerState,
         gesturesEnabled = drawerState.isOpen
     ) {
-        withMenuController(controller) {
-            MainWindow(Modifier, rootBundle)
+        withDisplayController(controller) {
+            MainWindow(Modifier)
         }
     }
 }
 
 @Composable
 fun WideMainMenu(
-    rootBundle: Bundle,
-    controller: MenuController
+    navigator: Navigator,
+    controller: DisplayController
 ) {
     Box {
         val startPadding by animateDpAsState(
@@ -130,72 +109,17 @@ fun WideMainMenu(
             animationSpec = tween(SIDE_MENU_EXPAND_DURATION)
         )
         if (startPadding != 0.dp) {
-            SideMenu(Modifier.width(200.dp), controller)
+            SideMenu(Modifier.width(200.dp), controller, navigator)
         }
-        withMenuController(controller) {
-            MainWindow(Modifier.padding(start = startPadding), rootBundle)
+        withDisplayController(controller) {
+            MainWindow(Modifier.padding(start = startPadding))
         }
     }
 }
 
 @Composable
-fun MainWindow(modifier: Modifier, rootBundle: Bundle) {
-    Surface(Modifier.fillMaxSize().then(modifier)) {
-        val menuController = LocalMenuController.current!!
-        BundleScope("K${menuController.backStack.lastIndex}", rootBundle, false) {
-            Crossfade(menuController.backStack.last()) { routing ->
-                when (routing) {
-                    is Routes.Library -> LibraryScreen {
-                        menuController.push(Routes.Manga(it))
-                    }
-                    is Routes.Updates -> UpdatesMenu(
-                        openChapter = ::openReaderMenu,
-                        openManga = { menuController.push(Routes.Manga(it)) }
-                    )
-                    is Routes.Sources -> SourcesMenu(
-                        {
-                            menuController.push(Routes.SourceSettings(it))
-                        }
-                    ) {
-                        menuController.push(Routes.Manga(it))
-                    }
-                    is Routes.Extensions -> ExtensionsMenu()
-                    is Routes.Manga -> MangaMenu(routing.mangaId)
-                    is Routes.Downloads -> DownloadsMenu {
-                        menuController.push(Routes.Manga(it))
-                    }
-
-                    is Routes.SourceSettings -> SourceSettingsMenu(routing.sourceId)
-
-                    is Routes.Settings -> SettingsScreen(menuController)
-                    is Routes.SettingsGeneral -> SettingsGeneralScreen(menuController)
-                    is Routes.SettingsAppearance -> SettingsAppearance(menuController)
-                    is Routes.SettingsServer -> SettingsServerScreen(menuController)
-                    is Routes.SettingsLibrary -> SettingsLibraryScreen(menuController)
-                    is Routes.SettingsReader -> SettingsReaderScreen(menuController)
-                    /*is Route.SettingsDownloads -> SettingsDownloadsScreen(menuController)
-                    is Route.SettingsTracking -> SettingsTrackingScreen(menuController)*/
-                    is Routes.SettingsBrowse -> SettingsBrowseScreen(menuController)
-                    is Routes.SettingsBackup -> SettingsBackupScreen(menuController)
-                    /*is Route.SettingsSecurity -> SettingsSecurityScreen(menuController)
-                    is Route.SettingsParentalControls -> SettingsParentalControlsScreen(menuController)*/
-                    is Routes.SettingsAdvanced -> SettingsAdvancedScreen(menuController)
-                }
-            }
-        }
-        /*Box(Modifier.padding(bottom = 32.dp).align(Alignment.BottomCenter)) {
-            val shape = RoundedCornerShape(50.dp)
-            Box(
-                Modifier
-                    .width(200.dp)
-                    .defaultMinSize(minHeight = 64.dp)
-                    .shadow(4.dp, shape)
-                    .background(SolidColor(Color.Gray), alpha = 0.2F)
-                    .clip(shape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Test text")
-            }
-        }*/
+fun MainWindow(modifier: Modifier) {
+    Surface(Modifier.fillMaxSize() then modifier) {
+        CurrentScreen()
     }
 }

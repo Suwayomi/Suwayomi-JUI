@@ -8,23 +8,17 @@ package ca.gosyer.uicore.vm
 
 import ca.gosyer.core.prefs.Preference
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-abstract class ViewModel {
+abstract class ViewModel : ScreenModel {
 
-    protected val scope = MainScope()
-
-    fun destroy() {
-        scope.cancel()
-        onDestroy()
-    }
-
-    open fun onDestroy() {}
+    protected open val scope
+        get() = coroutineScope
 
     fun <T> Preference<T>.asStateFlow() = PreferenceMutableStateFlow(this, scope)
 

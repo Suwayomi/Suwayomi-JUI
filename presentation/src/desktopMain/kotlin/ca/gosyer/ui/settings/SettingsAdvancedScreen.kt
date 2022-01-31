@@ -21,13 +21,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.update.UpdatePreferences
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.MenuController
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.SwitchPreference
+import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
+import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ViewModel
 import ca.gosyer.uicore.vm.viewModel
-import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import me.tatarka.inject.annotations.Inject
+
+class SettingsAdvancedScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
+
+    @Composable
+    override fun Content() {
+        val vm = viewModel<SettingsAdvancedViewModel>()
+        SettingsAdvancedScreenContent(
+            updatesEnabled = vm.updatesEnabled
+        )
+    }
+}
 
 class SettingsAdvancedViewModel @Inject constructor(
     updatePreferences: UpdatePreferences,
@@ -36,15 +51,16 @@ class SettingsAdvancedViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsAdvancedScreen(menuController: MenuController) {
-    val vm = viewModel<SettingsAdvancedViewModel>()
+fun SettingsAdvancedScreenContent(
+    updatesEnabled: PreferenceMutableStateFlow<Boolean>
+) {
     Column {
-        Toolbar(stringResource(MR.strings.settings_advanced_screen), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_advanced_screen))
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
-                    SwitchPreference(preference = vm.updatesEnabled, title = stringResource(MR.strings.update_checker))
+                    SwitchPreference(preference = updatesEnabled, title = stringResource(MR.strings.update_checker))
                 }
             }
             VerticalScrollbar(

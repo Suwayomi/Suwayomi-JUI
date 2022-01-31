@@ -23,13 +23,16 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.MenuController
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
+import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
+import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ViewModel
 import ca.gosyer.uicore.vm.viewModel
-import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import me.tatarka.inject.annotations.Inject
 import okio.Path.Companion.toPath
 import okio.asResourceFileSystem
@@ -38,6 +41,24 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
+
+class SettingsGeneralScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
+
+    @Composable
+    override fun Content() {
+        val vm = viewModel<SettingsGeneralViewModel>()
+        SettingsGeneralScreenContent(
+            startScreen = vm.startScreen,
+            startScreenChoices = vm.getStartScreenChoices(),
+            confirmExit = vm.confirmExit,
+            language = vm.language,
+            languageChoices = vm.getLanguageChoices(),
+            dateFormat = vm.dateFormat,
+            dateFormatChoices = vm.getDateChoices()
+        )
+    }
+}
 
 class SettingsGeneralViewModel @Inject constructor(
     uiPreferences: UiPreferences,
@@ -97,23 +118,30 @@ class SettingsGeneralViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsGeneralScreen(menuController: MenuController) {
-    val vm = viewModel<SettingsGeneralViewModel>()
+fun SettingsGeneralScreenContent(
+    startScreen: PreferenceMutableStateFlow<StartScreen>,
+    startScreenChoices: Map<StartScreen, String>,
+    confirmExit: PreferenceMutableStateFlow<Boolean>,
+    language: PreferenceMutableStateFlow<String>,
+    languageChoices: Map<String, String>,
+    dateFormat: PreferenceMutableStateFlow<String>,
+    dateFormatChoices: Map<String, String>
+) {
     Column {
-        Toolbar(stringResource(MR.strings.settings_general_screen), menuController, closable = true)
+        Toolbar(stringResource(MR.strings.settings_general_screen))
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
                     ChoicePreference(
-                        preference = vm.startScreen,
+                        preference = startScreen,
                         title = stringResource(MR.strings.start_screen),
-                        choices = vm.getStartScreenChoices()
+                        choices = startScreenChoices
                     )
                 }
                 item {
                     SwitchPreference(
-                        preference = vm.confirmExit,
+                        preference = confirmExit,
                         title = stringResource(MR.strings.confirm_exit)
                     )
                 }
@@ -122,16 +150,16 @@ fun SettingsGeneralScreen(menuController: MenuController) {
                 }
                 item {
                     ChoicePreference(
-                        preference = vm.language,
+                        preference = language,
                         title = stringResource(MR.strings.language),
-                        choices = vm.getLanguageChoices(),
+                        choices = languageChoices,
                     )
                 }
                 item {
                     ChoicePreference(
-                        preference = vm.dateFormat,
+                        preference = dateFormat,
                         title = stringResource(MR.strings.date_format),
-                        choices = vm.getDateChoices()
+                        choices = dateFormatChoices
                     )
                 }
             }

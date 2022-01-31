@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.toSize
 import ca.gosyer.ui.reader.model.Navigation
-import ca.gosyer.util.compose.contains
+import ca.gosyer.ui.util.compose.contains
 
 fun Modifier.navigationClickable(
     navigation: ViewerNavigation,

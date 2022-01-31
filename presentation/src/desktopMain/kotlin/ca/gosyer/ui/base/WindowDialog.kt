@@ -36,7 +36,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.ui.AppComponent
 import ca.gosyer.ui.base.theme.AppTheme
-import ca.gosyer.util.lang.launchApplication
+import ca.gosyer.ui.util.lang.launchApplication
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @OptIn(DelicateCoroutinesApi::class)

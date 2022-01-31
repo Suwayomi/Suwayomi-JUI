@@ -29,11 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.presentation.build.BuildKonfig
-import ca.gosyer.ui.base.navigation.MenuController
+import ca.gosyer.ui.base.navigation.DisplayController
 import ca.gosyer.ui.main.TopLevelMenus
+import cafe.adriel.voyager.navigator.Navigator
 
 @Composable
-fun SideMenu(modifier: Modifier, controller: MenuController) {
+fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navigator) {
     Surface(modifier then Modifier.fillMaxHeight(), elevation = 2.dp) {
         Box(Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize().padding(horizontal = 4.dp)) {
@@ -54,19 +55,17 @@ fun SideMenu(modifier: Modifier, controller: MenuController) {
                 Spacer(Modifier.height(20.dp))
                 remember { TopLevelMenus.values().filter(TopLevelMenus::top) }.forEach { topLevelMenu ->
                     SideMenuItem(
-                        topLevelMenu.isSelected(controller.backStack),
-                        topLevelMenu,
-                        controller::newRoot
-                    )
+                        topLevelMenu.isSelected(navigator),
+                        topLevelMenu
+                    ) { navigator replaceAll it }
                 }
                 Box(Modifier.fillMaxSize()) {
                     Column(Modifier.align(Alignment.BottomStart).padding(bottom = 8.dp)) {
                         remember { TopLevelMenus.values().filterNot(TopLevelMenus::top) }.forEach { topLevelMenu ->
                             SideMenuItem(
-                                topLevelMenu.isSelected(controller.backStack),
+                                topLevelMenu.isSelected(navigator),
                                 topLevelMenu,
-                                controller::newRoot
-                            )
+                            ) { navigator replaceAll it }
                         }
                     }
                 }

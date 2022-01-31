@@ -66,13 +66,16 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.i18n.MR
 import ca.gosyer.uicore.components.BoxWithTooltipSurface
 import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 
 @Composable
 fun Toolbar(
     name: String,
-    menuController: MenuController? = LocalMenuController.current,
-    closable: Boolean,
-    onClose: () -> Unit = { menuController?.backStack?.pop() },
+    displayController: DisplayController? = LocalDisplayController.current,
+    navigator: Navigator? = LocalNavigator.current,
+    closable: Boolean = (navigator?.size ?: 0) > 1,
+    onClose: () -> Unit = { navigator?.pop() },
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     backgroundColor: Color = MaterialTheme.colors.surface, // CustomColors.current.bars,
@@ -98,14 +101,14 @@ fun Toolbar(
                 Modifier.fillMaxHeight().animateContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (menuController != null) {
-                    if (menuController.isDrawer) {
-                        ActionIcon(menuController::openSideMenu, "Open nav", Icons.Rounded.Menu)
+                if (displayController != null) {
+                    if (displayController.isDrawer) {
+                        ActionIcon(displayController::openSideMenu, "Open nav", Icons.Rounded.Menu)
                     } else {
                         AnimatedVisibility(
-                            !menuController.sideMenuVisible
+                            !displayController.sideMenuVisible
                         ) {
-                            ActionIcon(menuController::openSideMenu, "Open nav", Icons.Rounded.Sort)
+                            ActionIcon(displayController::openSideMenu, "Open nav", Icons.Rounded.Sort)
                         }
                     }
                 }

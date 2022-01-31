@@ -25,17 +25,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import ca.gosyer.ui.main.Routes
 import ca.gosyer.ui.main.TopLevelMenus
 import ca.gosyer.uicore.components.combinedMouseClickable
 import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.core.screen.Screen
 
 @Composable
-fun SideMenuItem(selected: Boolean, topLevelMenu: TopLevelMenus, newRoot: (Routes) -> Unit) {
+fun SideMenuItem(selected: Boolean, topLevelMenu: TopLevelMenus, newRoot: (Screen) -> Unit) {
     SideMenuItem(
         selected,
         stringResource(topLevelMenu.textKey),
-        topLevelMenu.menu,
+        topLevelMenu.createScreen,
         topLevelMenu.selectedIcon,
         topLevelMenu.unselectedIcon,
         topLevelMenu.openInNewWindow,
@@ -48,12 +48,12 @@ fun SideMenuItem(selected: Boolean, topLevelMenu: TopLevelMenus, newRoot: (Route
 private fun SideMenuItem(
     selected: Boolean,
     text: String,
-    menu: Routes,
+    createScreen: () -> Screen,
     selectedIcon: ImageVector,
     unselectedIcon: ImageVector,
     onMiddleClick: () -> Unit,
     extraInfo: (@Composable () -> Unit)? = null,
-    onClick: (Routes) -> Unit
+    onClick: (Screen) -> Unit
 ) {
     Card(
         Modifier.fillMaxWidth(),
@@ -70,7 +70,7 @@ private fun SideMenuItem(
             modifier = Modifier.fillMaxWidth()
                 .height(40.dp)
                 .combinedMouseClickable(
-                    onClick = { onClick(menu) },
+                    onClick = { onClick(createScreen()) },
                     onMiddleClick = { onMiddleClick() }
                 )
         ) {

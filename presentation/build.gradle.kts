@@ -23,6 +23,7 @@ kotlin {
         all {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 optIn("com.google.accompanist.pager.ExperimentalPagerApi")
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")
                 optIn("androidx.compose.material.ExperimentalMaterialApi")
@@ -35,6 +36,8 @@ kotlin {
                 api(kotlin("stdlib-common"))
                 api(libs.coroutinesCore)
                 api(libs.kamel)
+                api(libs.voyagerCore)
+                api(libs.voyagerNavigation)
                 api(project(":core"))
                 api(project(":i18n"))
                 api(project(":data"))
@@ -60,7 +63,6 @@ kotlin {
                 api(libs.coroutinesSwing)
                 api(libs.accompanistPager)
                 api(libs.accompanistFlowLayout)
-                api(libs.composeRouter)
                 api(libs.krokiCoroutines)
             }
         }

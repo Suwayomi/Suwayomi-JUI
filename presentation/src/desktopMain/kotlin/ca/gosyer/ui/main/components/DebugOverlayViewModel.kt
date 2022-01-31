@@ -7,6 +7,7 @@
 package ca.gosyer.ui.main.components
 
 import ca.gosyer.uicore.vm.ViewModel
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -14,6 +15,8 @@ import me.tatarka.inject.annotations.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
 class DebugOverlayViewModel @Inject constructor() : ViewModel() {
+    override val scope = MainScope()
+
     val runtime: Runtime = Runtime.getRuntime()
     val maxMemory = runtime.maxMemory().formatSize()
     val usedMemoryFlow = MutableStateFlow(runtime.usedMemory().formatSize())

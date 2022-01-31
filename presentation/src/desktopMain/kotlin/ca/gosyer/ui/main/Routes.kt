@@ -7,37 +7,14 @@
 package ca.gosyer.ui.main
 
 import ca.gosyer.data.ui.model.StartScreen
+import ca.gosyer.ui.extensions.ExtensionsScreen
+import ca.gosyer.ui.library.LibraryScreen
+import ca.gosyer.ui.sources.SourcesScreen
+import ca.gosyer.ui.updates.UpdatesScreen
 
-sealed class Routes {
-    object Library : Routes()
-    object Updates : Routes()
-    object Sources : Routes()
-    object Extensions : Routes()
-    data class Manga(val mangaId: Long) : Routes()
-    object Downloads : Routes()
-
-    data class SourceSettings(val sourceId: Long) : Routes()
-
-    object Settings : Routes()
-    object SettingsGeneral : Routes()
-    object SettingsAppearance : Routes()
-    object SettingsLibrary : Routes()
-    object SettingsReader : Routes()
-
-    /*object SettingsDownloads : Route()
-    object SettingsTracking : Route()*/
-    object SettingsBrowse : Routes()
-    object SettingsBackup : Routes()
-    object SettingsServer : Routes()
-
-    /*object SettingsSecurity : Route()
-    object SettingsParentalControls : Route()*/
-    object SettingsAdvanced : Routes()
-}
-
-fun StartScreen.toRoute() = when (this) {
-    StartScreen.Library -> Routes.Library
-    StartScreen.Updates -> Routes.Updates
-    StartScreen.Sources -> Routes.Sources
-    StartScreen.Extensions -> Routes.Extensions
+fun StartScreen.toScreen() = when (this) {
+    StartScreen.Library -> LibraryScreen()
+    StartScreen.Updates -> UpdatesScreen()
+    StartScreen.Sources -> SourcesScreen()
+    StartScreen.Extensions -> ExtensionsScreen()
 }

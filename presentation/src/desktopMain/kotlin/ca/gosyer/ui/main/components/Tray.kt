@@ -8,6 +8,7 @@ package ca.gosyer.ui.main.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Notification
@@ -15,13 +16,14 @@ import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.rememberTrayState
 import ca.gosyer.i18n.MR
 import ca.gosyer.presentation.build.BuildKonfig
-import ca.gosyer.uicore.vm.viewModel
+import ca.gosyer.uicore.vm.LocalViewModelFactory
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
 fun ApplicationScope.Tray(icon: Painter) {
-    val vm = viewModel<TrayViewModel>()
+    val vmFactory = LocalViewModelFactory.current
+    val vm = remember { vmFactory.instantiate<TrayViewModel>() }
     val trayState = rememberTrayState()
     Tray(
         icon,

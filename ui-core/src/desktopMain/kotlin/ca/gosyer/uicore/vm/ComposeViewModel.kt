@@ -8,36 +8,20 @@ package ca.gosyer.uicore.vm
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.screen.Screen
 
 @Composable
-inline fun <reified VM : ViewModel> viewModel(key: Any? = Unit): VM {
+inline fun <reified VM : ViewModel> Screen.viewModel(tag: String? = null): VM {
     val viewModelFactory = LocalViewModelFactory.current
-    val viewModel = remember(key) {
-        viewModelFactory.instantiate<VM>()
-    }
-    DisposableEffect(viewModel) {
-        onDispose {
-            viewModel.destroy()
-        }
-    }
-    return viewModel
+    return rememberScreenModel(tag) { viewModelFactory.instantiate() }
 }
 
 @Composable
-inline fun <reified VM : ViewModel> viewModel(
-    key: Any? = Unit,
+inline fun <reified VM : ViewModel> Screen.viewModel(
+    tag: String? = null,
     crossinline factory: @DisallowComposableCalls ViewModelFactory.() -> VM
 ): VM {
     val viewModelFactory = LocalViewModelFactory.current
-    val viewModel = remember(key) {
-        viewModelFactory.factory()
-    }
-    DisposableEffect(viewModel) {
-        onDispose {
-            viewModel.destroy()
-        }
-    }
-    return viewModel
+    return rememberScreenModel(tag) { viewModelFactory.factory() }
 }

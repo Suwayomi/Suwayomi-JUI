@@ -8,7 +8,7 @@ json = "1.3.2"
 xmlUtil = "0.84.0"
 
 # Compose
-composeRouter = "0.24.2-jetbrains-2"
+voyager = "1.0.0-beta15"
 accompanist = "0.18.1"
 kamel = "0.3.0"
 
@@ -52,7 +52,8 @@ xmlUtilCore = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "xmlUt
 xmlUtilSerialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlUtil" }
 
 # Compose
-composeRouter = { module = "ca.gosyer:compose-router", version.ref = "composeRouter" }
+voyagerCore = { module = "cafe.adriel.voyager:voyager-core", version.ref = "voyager" }
+voyagerNavigation = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 accompanistPager = { module = "ca.gosyer:accompanist-pager", version.ref = "accompanist" }
 accompanistFlowLayout = { module = "ca.gosyer:accompanist-flowlayout", version.ref = "accompanist" }
 kamel = { module = "com.alialbaali.kamel:kamel-image", version.ref = "kamel" }

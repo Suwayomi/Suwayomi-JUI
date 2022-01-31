@@ -29,14 +29,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.MenuController
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
-import ca.gosyer.ui.main.Routes
 import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+
+class SettingsScreen : Screen {
+
+    override val key: ScreenKey = uniqueScreenKey
+
+    @Composable
+    override fun Content() {
+        SettingsScreenContent(navigator = LocalNavigator.currentOrThrow)
+    }
+}
 
 @Composable
-fun SettingsScreen(menuController: MenuController) {
+fun SettingsScreenContent(navigator: Navigator) {
     Column {
         Toolbar(stringResource(MR.strings.location_settings), closable = false)
         Box {
@@ -46,84 +60,84 @@ fun SettingsScreen(menuController: MenuController) {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_general),
                         icon = Icons.Rounded.Tune,
-                        onClick = { menuController.push(Routes.SettingsGeneral) }
+                        onClick = { navigator push SettingsGeneralScreen() }
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_appearance),
                         icon = Icons.Rounded.Palette,
-                        onClick = { menuController.push(Routes.SettingsAppearance) }
+                        onClick = { navigator push SettingsAppearanceScreen() }
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_server),
                         icon = Icons.Rounded.Computer,
-                        onClick = { menuController.push(Routes.SettingsServer) }
+                        onClick = { navigator push SettingsServerScreen() }
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_library),
                         icon = Icons.Rounded.CollectionsBookmark,
-                        onClick = { menuController.push(Routes.SettingsLibrary) }
+                        onClick = { navigator push SettingsLibraryScreen() }
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_reader),
                         icon = Icons.Rounded.ChromeReaderMode,
-                        onClick = { menuController.push(Routes.SettingsReader) }
+                        onClick = { navigator push SettingsReaderScreen() }
                     )
                 }
                 /*item {
                     Pref(
                         title = stringResource(MR.strings.settings_download),
                         icon = Icons.Rounded.GetApp,
-                        onClick = { navController.push(Route.SettingsDownloads) }
+                        onClick = { navigator push SettingsDownloadsScreen() }
                     )
                 }
                 item {
                     Pref(
                         title = stringResource(MR.strings.settings_tracking),
                         icon = Icons.Rounded.Sync,
-                        onClick = { navController.push(Route.SettingsTracking) }
+                        onClick = { navigator push SettingsTrackingScreen() }
                     )
                 }*/
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_browse),
                         icon = Icons.Rounded.Explore,
-                        onClick = { menuController.push(Routes.SettingsBrowse) }
+                        onClick = { navigator push SettingsBrowseScreen() }
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_backup),
                         icon = Icons.Rounded.Backup,
-                        onClick = { menuController.push(Routes.SettingsBackup) }
+                        onClick = { navigator push SettingsBackupScreen() }
                     )
                 }
                 /*item {
                     Pref(
                         title = stringResource(MR.strings.settings_security),
                         icon = Icons.Rounded.Security,
-                        onClick = { navController.push(Route.SettingsSecurity) }
+                        onClick = { navigator push SettingsSecurityScreen() }
                     )
                 }
                 item {
                     Pref(
                         title = stringResource(MR.strings.settings_parental_controls),
                         icon = Icons.Rounded.PeopleOutline,
-                        onClick = { navController.push(Route.SettingsParentalControls) }
+                        onClick = { navigator push SettingsParentalControlsScreen() }
                     )
                 }*/
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_advanced),
                         icon = Icons.Rounded.Code,
-                        onClick = { menuController.push(Routes.SettingsAdvanced) }
+                        onClick = { navigator push SettingsAdvancedScreen() }
                     )
                 }
             }

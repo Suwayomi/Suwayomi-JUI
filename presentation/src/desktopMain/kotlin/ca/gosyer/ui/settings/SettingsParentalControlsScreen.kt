@@ -20,14 +20,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.MenuController
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
+
+class SettingsParentalControlsScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
+
+    @Composable
+    override fun Content() {
+        SettingsParentalControlsScreenContent()
+    }
+}
 
 @Composable
-fun SettingsParentalControlsScreen(menuController: MenuController) {
+fun SettingsParentalControlsScreenContent() {
     Column {
-        Toolbar(stringResource(MR.strings.settings_parental_control_screen), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_parental_control_screen))
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {

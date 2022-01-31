@@ -29,22 +29,43 @@ import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
 import ca.gosyer.data.reader.model.NavigationMode
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.MenuController
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ExpandablePreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.uicore.prefs.asStateIn
+import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ViewModel
 import ca.gosyer.uicore.vm.viewModel
-import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
+
+class SettingsReaderScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
+
+    @Composable
+    override fun Content() {
+        val vm = viewModel<SettingsReaderViewModel>()
+        SettingsReaderScreenContent(
+            modes = vm.modes.collectAsState().value.associateWith { it },
+            selectedMode = vm.selectedMode,
+            modeSettings = vm.modeSettings.collectAsState().value,
+            directionChoices = vm.getDirectionChoices(),
+            paddingChoices = vm.getPaddingChoices(),
+            getMaxSizeChoices = vm::getMaxSizeChoices,
+            imageScaleChoices = vm.getImageScaleChoices(),
+            navigationModeChoices = vm.getNavigationModeChoices()
+        )
+    }
+}
 
 class SettingsReaderViewModel @Inject constructor(
     readerPreferences: ReaderPreferences
@@ -125,18 +146,25 @@ data class ReaderModePreference(
 }
 
 @Composable
-fun SettingsReaderScreen(menuController: MenuController) {
-    val vm = viewModel<SettingsReaderViewModel>()
-    val modeSettings by vm.modeSettings.collectAsState()
+fun SettingsReaderScreenContent(
+    modes: Map<String, String>,
+    selectedMode: PreferenceMutableStateFlow<String>,
+    modeSettings: List<ReaderModePreference>,
+    directionChoices: Map<Direction, String>,
+    paddingChoices: Map<Int, String>,
+    getMaxSizeChoices: (Direction) -> Map<Int, String>,
+    imageScaleChoices: Map<ImageScale, String>,
+    navigationModeChoices: Map<NavigationMode, String>
+) {
     Column {
-        Toolbar(stringResource(MR.strings.settings_reader), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_reader))
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
                     ChoicePreference(
-                        vm.selectedMode,
-                        vm.modes.collectAsState().value.associateWith { it },
+                        selectedMode,
+                        modes,
                         stringResource(MR.strings.reader_mode)
                     )
                 }
@@ -148,7 +176,7 @@ fun SettingsReaderScreen(menuController: MenuController) {
                         ExpandablePreference(it.mode) {
                             ChoicePreference(
                                 it.direction,
-                                vm.getDirectionChoices(),
+                                directionChoices,
                                 stringResource(MR.strings.direction),
                                 enabled = !it.defaultMode
                             )
@@ -162,7 +190,7 @@ fun SettingsReaderScreen(menuController: MenuController) {
                             if (continuous) {
                                 ChoicePreference(
                                     it.padding,
-                                    vm.getPaddingChoices(),
+                                    paddingChoices,
                                     stringResource(MR.strings.page_padding)
                                 )
                                 val direction by it.direction.collectAsState()
@@ -190,20 +218,20 @@ fun SettingsReaderScreen(menuController: MenuController) {
                                 }
                                 ChoicePreference(
                                     it.maxSize,
-                                    vm.getMaxSizeChoices(direction),
+                                    getMaxSizeChoices(direction),
                                     maxSizeTitle,
                                     maxSizeSubtitle
                                 )
                             } else {
                                 ChoicePreference(
                                     it.imageScale,
-                                    vm.getImageScaleChoices(),
+                                    imageScaleChoices,
                                     stringResource(MR.strings.image_scale)
                                 )
                             }
                             ChoicePreference(
                                 it.navigationMode,
-                                vm.getNavigationModeChoices(),
+                                navigationModeChoices,
                                 stringResource(MR.strings.navigation_mode)
                             )
                         }

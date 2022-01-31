@@ -14,7 +14,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.configureSwingGlobalsForCompose
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -35,19 +34,16 @@ import ca.gosyer.i18n.MR
 import ca.gosyer.ui.AppComponent
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.base.theme.AppTheme
-import ca.gosyer.ui.main.DebugOverlay
 import ca.gosyer.ui.main.MainMenu
+import ca.gosyer.ui.main.components.DebugOverlay
 import ca.gosyer.ui.main.components.Tray
+import ca.gosyer.ui.util.compose.WindowGet
 import ca.gosyer.uicore.components.LoadingScreen
 import ca.gosyer.uicore.prefs.asStateIn
-import ca.gosyer.util.compose.WindowGet
+import ca.gosyer.uicore.resources.stringResource
 import com.github.weisj.darklaf.LafManager
 import com.github.weisj.darklaf.theme.DarculaTheme
 import com.github.weisj.darklaf.theme.IntelliJTheme
-import com.github.zsoltk.compose.backpress.BackPressHandler
-import com.github.zsoltk.compose.backpress.LocalBackPressHandler
-import com.github.zsoltk.compose.savedinstancestate.Bundle
-import ca.gosyer.uicore.resources.stringResource
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -124,10 +120,6 @@ suspend fun main() {
                     exitProcess(0)
                 }
             }
-
-            val backPressHandler = remember { BackPressHandler() }
-
-            val rootBundle = remember { Bundle() }
             val windowState = rememberWindowState(
                 size = size,
                 position = position,
@@ -158,7 +150,8 @@ suspend fun main() {
                     if (it.type == KeyEventType.KeyUp) {
                         when (it.key) {
                             Key.Home -> {
-                                backPressHandler.handle()
+                                // backPressHandler.handle()
+                                false
                             }
                             Key.F3 -> {
                                 displayDebugInfoFlow.value = !displayDebugInfoFlow.value
@@ -170,29 +163,25 @@ suspend fun main() {
                 }
             ) {
                 AppTheme {
-                    CompositionLocalProvider(
-                        LocalBackPressHandler provides backPressHandler,
-                    ) {
-                        Crossfade(serverService.initialized.collectAsState().value) { initialized ->
-                            when (initialized) {
-                                ServerResult.STARTED, ServerResult.UNUSED -> {
-                                    Box {
-                                        MainMenu(rootBundle)
-                                        val displayDebugInfo by displayDebugInfoFlow.collectAsState()
-                                        if (displayDebugInfo) {
-                                            DebugOverlay()
-                                        }
+                    Crossfade(serverService.initialized.collectAsState().value) { initialized ->
+                        when (initialized) {
+                            ServerResult.STARTED, ServerResult.UNUSED -> {
+                                Box {
+                                    MainMenu()
+                                    val displayDebugInfo by displayDebugInfoFlow.collectAsState()
+                                    if (displayDebugInfo) {
+                                        DebugOverlay()
                                     }
                                 }
-                                ServerResult.STARTING, ServerResult.FAILED -> {
-                                    Surface {
-                                        LoadingScreen(
-                                            initialized == ServerResult.STARTING,
-                                            errorMessage = stringResource(MR.strings.unable_to_start_server),
-                                            retryMessage = stringResource(MR.strings.action_start_anyway),
-                                            retry = serverService::startAnyway
-                                        )
-                                    }
+                            }
+                            ServerResult.STARTING, ServerResult.FAILED -> {
+                                Surface {
+                                    LoadingScreen(
+                                        initialized == ServerResult.STARTING,
+                                        errorMessage = stringResource(MR.strings.unable_to_start_server),
+                                        retryMessage = stringResource(MR.strings.action_start_anyway),
+                                        retry = serverService::startAnyway
+                                    )
                                 }
                             }
                         }

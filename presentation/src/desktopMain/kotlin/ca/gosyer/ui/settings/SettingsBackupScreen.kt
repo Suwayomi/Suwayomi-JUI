@@ -27,7 +27,6 @@ import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,20 +37,23 @@ import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.WindowDialog
-import ca.gosyer.ui.base.navigation.MenuController
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
+import ca.gosyer.ui.util.system.filePicker
+import ca.gosyer.ui.util.system.fileSaver
+import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ViewModel
 import ca.gosyer.uicore.vm.viewModel
-import ca.gosyer.util.system.filePicker
-import ca.gosyer.util.system.fileSaver
-import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import io.ktor.client.features.onDownload
 import io.ktor.client.features.onUpload
 import io.ktor.http.isSuccess
 import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -61,6 +63,29 @@ import okio.Path
 import okio.Path.Companion.toOkioPath
 import okio.buffer
 import okio.source
+
+class SettingsBackupScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
+
+    @Composable
+    override fun Content() {
+        val vm = viewModel<SettingsBackupViewModel>()
+        SettingsBackupScreenContent(
+            restoring = vm.restoring.collectAsState().value,
+            restoringProgress = vm.restoringProgress.collectAsState().value,
+            restoreStatus = vm.restoreStatus.collectAsState().value,
+            creating = vm.creating.collectAsState().value,
+            creatingProgress = vm.creatingProgress.collectAsState().value,
+            creatingStatus = vm.creatingStatus.collectAsState().value,
+            missingSourceFlow = vm.missingSourceFlow,
+            createFlow = vm.createFlow,
+            restoreFile = vm::restoreFile,
+            restoreBackup = vm::restoreBackup,
+            stopRestore = vm::stopRestore,
+            exportBackup = vm::exportBackup
+        )
+    }
+}
 
 class SettingsBackupViewModel @Inject constructor(
     private val backupHandler: BackupInteractionHandler
@@ -186,22 +211,28 @@ class SettingsBackupViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsBackupScreen(menuController: MenuController) {
-    val vm = viewModel<SettingsBackupViewModel>()
-    val restoring by vm.restoring.collectAsState()
-    val restoringProgress by vm.restoringProgress.collectAsState()
-    val restoreStatus by vm.restoreStatus.collectAsState()
-    val creating by vm.creating.collectAsState()
-    val creatingProgress by vm.creatingProgress.collectAsState()
-    val creatingStatus by vm.creatingStatus.collectAsState()
+private fun SettingsBackupScreenContent(
+    restoring: Boolean,
+    restoringProgress: Float?,
+    restoreStatus: SettingsBackupViewModel.Status,
+    creating: Boolean,
+    creatingProgress: Float?,
+    creatingStatus: SettingsBackupViewModel.Status,
+    missingSourceFlow: SharedFlow<Pair<Path, List<String>>>,
+    createFlow: SharedFlow<Pair<String, (Path) -> Unit>>,
+    restoreFile: (Path?) -> Unit,
+    restoreBackup: (Path) -> Unit,
+    stopRestore: () -> Unit,
+    exportBackup: () -> Unit
+) {
     LaunchedEffect(Unit) {
         launch {
-            vm.missingSourceFlow.collect { (backup, sources) ->
-                openMissingSourcesDialog(sources, { vm.restoreBackup(backup) }, vm::stopRestore)
+            missingSourceFlow.collect { (backup, sources) ->
+                openMissingSourcesDialog(sources, { restoreBackup(backup) }, stopRestore)
             }
         }
         launch {
-            vm.createFlow.collect { (filename, function) ->
+            createFlow.collect { (filename, function) ->
                 fileSaver(filename, "proto.gz") {
                     function(it.selectedFile.toOkioPath())
                 }
@@ -210,7 +241,7 @@ fun SettingsBackupScreen(menuController: MenuController) {
     }
 
     Column {
-        Toolbar(stringResource(MR.strings.settings_backup_screen), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_backup_screen))
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
@@ -223,7 +254,7 @@ fun SettingsBackupScreen(menuController: MenuController) {
                         restoreStatus
                     ) {
                         filePicker("gz") {
-                            vm.restoreFile(it.selectedFile.toOkioPath())
+                            restoreFile(it.selectedFile.toOkioPath())
                         }
                     }
                     PreferenceFile(
@@ -232,7 +263,7 @@ fun SettingsBackupScreen(menuController: MenuController) {
                         creating,
                         creatingProgress,
                         creatingStatus,
-                        vm::exportBackup
+                        exportBackup
                     )
                 }
             }

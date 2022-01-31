@@ -12,7 +12,7 @@ import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
-import ca.gosyer.util.compose.toImageBitmap
+import ca.gosyer.ui.util.compose.toImageBitmap
 import io.github.kerubistan.kroki.coroutines.priorityChannel
 import io.ktor.client.features.onDownload
 import kotlinx.coroutines.CoroutineScope

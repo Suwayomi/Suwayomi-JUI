@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.util.lang
+package ca.gosyer.ui.util.lang
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.ApplicationScope

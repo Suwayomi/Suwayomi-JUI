@@ -15,9 +15,6 @@ import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.UpdatesInteractionHandler
 import ca.gosyer.uicore.vm.ViewModel
-import ca.gosyer.util.compose.saveIntInBundle
-import ca.gosyer.util.compose.saveStringInBundle
-import com.github.zsoltk.compose.savedinstancestate.Bundle
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,13 +71,12 @@ class LibraryScreenViewModel @Inject constructor(
     private val categoryHandler: CategoryInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
     private val updatesHandler: UpdatesInteractionHandler,
-    libraryPreferences: LibraryPreferences,
-    private val bundle: Bundle,
+    libraryPreferences: LibraryPreferences
 ) : ViewModel() {
     private val library = Library(MutableStateFlow(emptyList()), mutableMapOf())
     val categories = library.categories.asStateFlow()
 
-    private val _selectedCategoryIndex = saveIntInBundle(scope, bundle, SELECTED_CATEGORY_KEY, 0)
+    private val _selectedCategoryIndex = MutableStateFlow(0)
     val selectedCategoryIndex = _selectedCategoryIndex.asStateFlow()
 
     val displayMode = libraryPreferences.displayMode().stateIn(scope)
@@ -91,7 +87,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error = _error.asStateFlow()
 
-    private val _query = saveStringInBundle(scope, bundle, QUERY_KEY)
+    private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()
 
     init {

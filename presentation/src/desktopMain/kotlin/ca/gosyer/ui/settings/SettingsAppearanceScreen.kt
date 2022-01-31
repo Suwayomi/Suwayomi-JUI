@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.MenuController
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ColorPreference
@@ -46,12 +45,32 @@ import ca.gosyer.ui.base.theme.AppColorsPreferenceState
 import ca.gosyer.ui.base.theme.asStateFlow
 import ca.gosyer.ui.base.theme.getDarkColors
 import ca.gosyer.ui.base.theme.getLightColors
+import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
+import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.theme.Theme
 import ca.gosyer.uicore.theme.themes
 import ca.gosyer.uicore.vm.ViewModel
 import ca.gosyer.uicore.vm.viewModel
-import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import me.tatarka.inject.annotations.Inject
+
+class SettingsAppearanceScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
+
+    @Composable
+    override fun Content() {
+        val vm = viewModel<ThemesViewModel>()
+        SettingsAppearanceScreenContent(
+            activeColors = vm.getActiveColors(),
+            themeMode = vm.themeMode,
+            lightTheme = vm.lightTheme,
+            darkTheme = vm.darkTheme,
+            windowDecorations = vm.windowDecorations
+        )
+    }
+}
 
 class ThemesViewModel @Inject constructor(
     private val uiPreferences: UiPreferences,
@@ -72,23 +91,26 @@ class ThemesViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsAppearance(menuController: MenuController) {
-    val vm = viewModel<ThemesViewModel>()
-
-    val activeColors = vm.getActiveColors()
+fun SettingsAppearanceScreenContent(
+    activeColors: AppColorsPreferenceState,
+    themeMode: PreferenceMutableStateFlow<ThemeMode>,
+    lightTheme: PreferenceMutableStateFlow<Int>,
+    darkTheme: PreferenceMutableStateFlow<Int>,
+    windowDecorations: PreferenceMutableStateFlow<Boolean>
+) {
     val isLight = MaterialTheme.colors.isLight
     val themesForCurrentMode = remember(isLight) {
         themes.filter { it.colors.isLight == isLight }
     }
 
     Column {
-        Toolbar(stringResource(MR.strings.settings_appearance_screen), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_appearance_screen))
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
                     ChoicePreference(
-                        preference = vm.themeMode,
+                        preference = themeMode,
                         choices = mapOf(
                             ThemeMode.System to stringResource(MR.strings.theme_follow_system),
                             ThemeMode.Light to stringResource(MR.strings.theme_light),
@@ -107,7 +129,7 @@ fun SettingsAppearance(menuController: MenuController) {
                             ThemeItem(
                                 theme,
                                 onClick = {
-                                    (if (isLight) vm.lightTheme else vm.darkTheme).value = it.id
+                                    (if (isLight) lightTheme else darkTheme).value = it.id
                                     activeColors.primaryStateFlow.value = it.colors.primary
                                     activeColors.secondaryStateFlow.value = it.colors.secondary
                                 }
@@ -133,7 +155,7 @@ fun SettingsAppearance(menuController: MenuController) {
                 }
                 item {
                     SwitchPreference(
-                        vm.windowDecorations,
+                        windowDecorations,
                         stringResource(MR.strings.window_decorations),
                         stringResource(MR.strings.window_decorations_sub)
                     )

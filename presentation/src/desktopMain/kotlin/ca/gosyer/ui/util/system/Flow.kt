@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.util.system
+package ca.gosyer.ui.util.system
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

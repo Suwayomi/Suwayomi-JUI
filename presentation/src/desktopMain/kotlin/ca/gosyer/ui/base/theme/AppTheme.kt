@@ -25,9 +25,10 @@ import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.uicore.theme.Theme
 import ca.gosyer.uicore.theme.themes
+import ca.gosyer.uicore.vm.LocalViewModelFactory
 import ca.gosyer.uicore.vm.ViewModel
-import ca.gosyer.uicore.vm.viewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
@@ -39,7 +40,8 @@ import me.tatarka.inject.annotations.Inject
  */
 @Composable
 fun AppTheme(content: @Composable () -> Unit) {
-    val vm = viewModel<AppThemeViewModel>()
+    val vmFactory = LocalViewModelFactory.current
+    val vm = remember { vmFactory.instantiate<AppThemeViewModel>() }
     val colors = vm.getColors()
     /*val systemUiController = rememberSystemUiController()*/
 
@@ -61,6 +63,8 @@ fun AppTheme(content: @Composable () -> Unit) {
 class AppThemeViewModel @Inject constructor(
     private val uiPreferences: UiPreferences
 ) : ViewModel() {
+    override val scope = MainScope()
+
     private val themeMode = uiPreferences.themeMode().asStateFlow()
     private val lightTheme = uiPreferences.lightTheme().asStateFlow()
     private val darkTheme = uiPreferences.darkTheme().asStateFlow()
@@ -130,7 +134,8 @@ class AppThemeViewModel @Inject constructor(
         )
     }
 
-    override fun onDestroy() {
+    override fun onDispose() {
         baseThemeScope.cancel()
+        scope.cancel()
     }
 }

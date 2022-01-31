@@ -23,18 +23,35 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.MenuController
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.prefs.SwitchPreference
+import ca.gosyer.ui.categories.openCategoriesMenu
+import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
+import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ViewModel
 import ca.gosyer.uicore.vm.viewModel
-import ca.gosyer.ui.categories.openCategoriesMenu
-import ca.gosyer.uicore.resources.stringResource
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
+
+class SettingsLibraryScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
+
+    @Composable
+    override fun Content() {
+        val vm = viewModel<SettingsLibraryViewModel>()
+        SettingsLibraryScreenContent(
+            showAllCategory = vm.showAllCategory,
+            refreshCategoryCount = vm::refreshCategoryCount,
+            categoriesSize = vm.categories.collectAsState().value
+        )
+    }
+}
 
 class SettingsLibraryViewModel @Inject constructor(
     libraryPreferences: LibraryPreferences,
@@ -57,25 +74,27 @@ class SettingsLibraryViewModel @Inject constructor(
 }
 
 @Composable
-fun SettingsLibraryScreen(menuController: MenuController) {
-    val vm = viewModel<SettingsLibraryViewModel>()
-
+fun SettingsLibraryScreenContent(
+    showAllCategory: PreferenceMutableStateFlow<Boolean>,
+    refreshCategoryCount: () -> Unit,
+    categoriesSize: Int
+) {
     Column {
-        Toolbar(stringResource(MR.strings.settings_library_screen), menuController, true)
+        Toolbar(stringResource(MR.strings.settings_library_screen))
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {
                     SwitchPreference(
-                        preference = vm.showAllCategory,
+                        preference = showAllCategory,
                         title = stringResource(MR.strings.show_all_category)
                     )
                 }
                 item {
                     PreferenceRow(
                         stringResource(MR.strings.location_categories),
-                        onClick = { openCategoriesMenu(vm::refreshCategoryCount) },
-                        subtitle = vm.categories.collectAsState().value.toString()
+                        onClick = { openCategoriesMenu(refreshCategoryCount) },
+                        subtitle = categoriesSize.toString()
                     )
                 }
             }

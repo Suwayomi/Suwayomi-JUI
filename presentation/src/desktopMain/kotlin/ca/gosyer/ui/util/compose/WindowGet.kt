@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.util.compose
+package ca.gosyer.ui.util.compose
 
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp

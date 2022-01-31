@@ -71,13 +71,13 @@ import ca.gosyer.ui.reader.navigation.RightAndLeftNavigation
 import ca.gosyer.ui.reader.navigation.navigationClickable
 import ca.gosyer.ui.reader.viewer.ContinuousReader
 import ca.gosyer.ui.reader.viewer.PagerReader
+import ca.gosyer.ui.util.compose.WindowGet
+import ca.gosyer.ui.util.lang.launchApplication
 import ca.gosyer.uicore.components.ErrorScreen
 import ca.gosyer.uicore.components.LoadingScreen
 import ca.gosyer.uicore.components.mangaAspectRatio
-import ca.gosyer.uicore.vm.viewModel
-import ca.gosyer.util.compose.WindowGet
-import ca.gosyer.util.lang.launchApplication
 import ca.gosyer.uicore.resources.stringResource
+import ca.gosyer.uicore.vm.LocalViewModelFactory
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -156,9 +156,8 @@ fun ReaderMenu(
     mangaId: Long,
     hotkeyFlow: SharedFlow<KeyEvent>
 ) {
-    val vm = viewModel {
-        instantiate<ReaderMenuViewModel>(ReaderMenuViewModel.Params(chapterIndex, mangaId))
-    }
+    val vmFactory = LocalViewModelFactory.current
+    val vm = remember { vmFactory.instantiate<ReaderMenuViewModel>(ReaderMenuViewModel.Params(chapterIndex, mangaId)) }
 
     val state by vm.state.collectAsState()
     val previousChapter by vm.previousChapter.collectAsState()

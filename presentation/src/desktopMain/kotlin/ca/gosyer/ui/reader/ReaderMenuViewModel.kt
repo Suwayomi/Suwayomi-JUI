@@ -17,7 +17,6 @@ import ca.gosyer.data.reader.ReaderPreferences
 import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
-import ca.gosyer.uicore.vm.ViewModel
 import ca.gosyer.ui.reader.model.MoveTo
 import ca.gosyer.ui.reader.model.Navigation
 import ca.gosyer.ui.reader.model.PageMove
@@ -25,6 +24,7 @@ import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.ui.reader.model.ViewerChapters
 import ca.gosyer.uicore.prefs.asStateIn
+import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -279,7 +279,7 @@ class ReaderMenuViewModel @Inject constructor(
         }
     }
 
-    override fun onDestroy() {
+    override fun onDispose() {
         viewerChapters.recycle()
     }
 
