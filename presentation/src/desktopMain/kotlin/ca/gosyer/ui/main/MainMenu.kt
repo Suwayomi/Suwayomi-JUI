@@ -29,8 +29,8 @@ import ca.gosyer.ui.base.navigation.DisplayController
 import ca.gosyer.ui.base.navigation.withDisplayController
 import ca.gosyer.ui.main.components.SideMenu
 import ca.gosyer.uicore.vm.LocalViewModelFactory
-import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.FadeTransition
 
 const val SIDE_MENU_EXPAND_DURATION = 500
 
@@ -89,7 +89,7 @@ fun SkinnyMainMenu(
         gesturesEnabled = drawerState.isOpen
     ) {
         withDisplayController(controller) {
-            MainWindow(Modifier)
+            MainWindow(navigator, Modifier)
         }
     }
 }
@@ -112,14 +112,14 @@ fun WideMainMenu(
             SideMenu(Modifier.width(200.dp), controller, navigator)
         }
         withDisplayController(controller) {
-            MainWindow(Modifier.padding(start = startPadding))
+            MainWindow(navigator, Modifier.padding(start = startPadding))
         }
     }
 }
 
 @Composable
-fun MainWindow(modifier: Modifier) {
+fun MainWindow(navigator: Navigator, modifier: Modifier) {
     Surface(Modifier.fillMaxSize() then modifier) {
-        CurrentScreen()
+        FadeTransition(navigator)
     }
 }

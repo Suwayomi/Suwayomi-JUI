@@ -29,6 +29,7 @@ dependencies {
     implementation(compose("org.jetbrains.compose.ui:ui-util"))
     implementation(libs.voyagerCore)
     implementation(libs.voyagerNavigation)
+    implementation(libs.voyagerTransitions)
     implementation(libs.accompanistPager)
     implementation(libs.accompanistFlowLayout)
     implementation(libs.kamel)
