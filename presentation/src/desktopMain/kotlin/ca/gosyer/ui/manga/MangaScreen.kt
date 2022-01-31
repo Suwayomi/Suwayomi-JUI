@@ -8,9 +8,11 @@ package ca.gosyer.ui.manga
 
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import ca.gosyer.presentation.build.BuildKonfig
+import ca.gosyer.ui.AppComponent
 import ca.gosyer.ui.manga.components.MangaScreenContent
 import ca.gosyer.ui.util.compose.ThemedWindow
 import ca.gosyer.ui.util.lang.launchApplication
@@ -24,9 +26,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 @OptIn(DelicateCoroutinesApi::class)
 fun openMangaMenu(mangaId: Long) {
     launchApplication {
-        ThemedWindow(::exitApplication, title = BuildKonfig.NAME) {
-            Surface {
-                Navigator(remember { MangaScreen(mangaId) })
+        CompositionLocalProvider(*remember { AppComponent.getInstance().uiComponent.getHooks() }) {
+            ThemedWindow(::exitApplication, title = BuildKonfig.NAME) {
+                Surface {
+                    Navigator(remember { MangaScreen(mangaId) })
+                }
             }
         }
     }

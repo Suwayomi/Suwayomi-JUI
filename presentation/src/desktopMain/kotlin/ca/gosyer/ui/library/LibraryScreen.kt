@@ -8,9 +8,11 @@ package ca.gosyer.ui.library
 
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import ca.gosyer.presentation.build.BuildKonfig
+import ca.gosyer.ui.AppComponent
 import ca.gosyer.ui.library.components.LibraryScreenContent
 import ca.gosyer.ui.manga.MangaScreen
 import ca.gosyer.ui.util.compose.ThemedWindow
@@ -27,9 +29,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 @OptIn(DelicateCoroutinesApi::class)
 fun openLibraryMenu() {
     launchApplication {
-        ThemedWindow(::exitApplication, title = BuildKonfig.NAME) {
-            Surface {
-                Navigator(remember { LibraryScreen() })
+        CompositionLocalProvider(*remember { AppComponent.getInstance().uiComponent.getHooks() }) {
+            ThemedWindow(::exitApplication, title = BuildKonfig.NAME) {
+                Surface {
+                    Navigator(remember { LibraryScreen() })
+                }
             }
         }
     }

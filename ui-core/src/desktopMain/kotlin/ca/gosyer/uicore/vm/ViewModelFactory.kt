@@ -18,4 +18,4 @@ abstract class ViewModelFactory {
 }
 
 val LocalViewModelFactory =
-    compositionLocalOf<ViewModelFactory> { throw IllegalArgumentException("Unset") }
+    compositionLocalOf<ViewModelFactory> { throw IllegalArgumentException("ViewModelFactory not found") }
