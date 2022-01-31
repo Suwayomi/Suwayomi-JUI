@@ -39,6 +39,12 @@ allprojects {
     }
 }
 
+tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
+}
+
 subprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile> {
         kotlinOptions {
@@ -116,4 +122,17 @@ subprojects {
             }
         }
     }
+
+    plugins.withType<JacocoPlugin> {
+        configure<JacocoPluginExtension> {
+            toolVersion = "0.8.7"
+        }
+    }
+}
+
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.contains(it, true) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
 }

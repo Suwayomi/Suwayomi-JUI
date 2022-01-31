@@ -6,8 +6,6 @@ import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
-import java.nio.file.Files
-import kotlin.streams.asSequence
 
 plugins {
     kotlin("jvm")
@@ -102,15 +100,6 @@ tasks {
             jvmTarget = Config.desktopJvmTarget.toString()
             freeCompilerArgs = listOf(
                 "-Xopt-in=kotlin.RequiresOptIn",
-                "-Xopt-in=kotlin.time.ExperimentalTime",
-                "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-                "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
-                "-Xopt-in=com.russhwolf.settings.ExperimentalSettingsApi",
-                "-Xopt-in=com.russhwolf.settings.ExperimentalSettingsImplementation",
-                "-Xopt-in=com.google.accompanist.pager.ExperimentalPagerApi",
-                "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
-                "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
                 "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi"
             )
         }
@@ -125,26 +114,6 @@ tasks {
 
     registerTachideskTasks(project)
 
-    task("generateResourceConstants") {
-        val buildResources = buildConfig.forClass("${project.group}.build", "BuildResources")
-
-        doFirst {
-            val langs = listOf("en") + Files.list(rootDir.toPath().resolve("i18n/src/commonMain/resources/MR/values")).asSequence()
-                .map { it.fileName.toString().replace("-r", "-") }
-                .filter { it != "base" }
-                .toList()
-            buildResources.buildConfigField("ca.gosyer.i18n.StringList", "LANGUAGES", langs.joinToString(prefix = "listOf(", postfix = ")") { it.wrap() })
-        }
-
-        generateBuildConfig {
-            dependsOn(this@task)
-        }
-    }
-    withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
-        rejectVersionIf {
-            isNonStable(candidate.version) && !isNonStable(currentVersion)
-        }
-    }
     register<ProGuardTask>("optimizeUberJar") {
         group = "compose desktop"
         val packageUberJarForCurrentOS = getByName("packageUberJarForCurrentOS")
@@ -171,14 +140,6 @@ kotlin {
         kotlin.srcDir("build/generated/ksp/test/kotlin")
     }
 }
-
-fun isNonStable(version: String): Boolean {
-    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.contains(it, true) }
-    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
-    val isStable = stableKeyword || regex.matches(version)
-    return isStable.not()
-}
-
 
 compose.desktop {
     application {
