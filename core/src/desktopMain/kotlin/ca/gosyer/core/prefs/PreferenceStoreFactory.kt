@@ -7,9 +7,10 @@
 package ca.gosyer.core.prefs
 
 import com.russhwolf.settings.JvmPreferencesSettings
+import me.tatarka.inject.annotations.Inject
 import java.util.prefs.Preferences
 
-actual class PreferenceStoreFactory {
+actual class PreferenceStoreFactory @Inject constructor() {
     private val rootNode: Preferences = Preferences.userRoot()
         .node("ca/gosyer/tachideskjui")
 

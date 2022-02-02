@@ -6,6 +6,6 @@
 
 package ca.gosyer.core.prefs
 
-expect class PreferenceStoreFactory() {
+expect class PreferenceStoreFactory {
     fun create(vararg names: String): PreferenceStore
 }

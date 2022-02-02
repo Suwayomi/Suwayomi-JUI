@@ -16,17 +16,17 @@ import dev.icerock.moko.resources.desc.ResourceFormatted
 import dev.icerock.moko.resources.desc.StringDesc
 
 @Composable
-fun stringResource(resource: StringResource): String =
+actual fun stringResource(resource: StringResource): String =
     StringDesc.Resource(resource).localized()
 
 @Composable
-fun stringResource(resource: StringResource, vararg args: Any): String =
+actual fun stringResource(resource: StringResource, vararg args: Any): String =
     StringDesc.ResourceFormatted(resource, *args).localized()
 
 @Composable
-fun stringResource(resource: PluralsResource, quantity: Int): String =
+actual fun stringResource(resource: PluralsResource, quantity: Int): String =
     StringDesc.Plural(resource, quantity).localized()
 
 @Composable
-fun stringResource(resource: PluralsResource, quantity: Int, vararg args: Any): String =
+actual fun stringResource(resource: PluralsResource, quantity: Int, vararg args: Any): String =
     StringDesc.PluralFormatted(resource, quantity, *args).localized()

@@ -8,7 +8,13 @@ plugins {
 }
 
 kotlin {
-    android()
+    android {
+        compilations {
+            all {
+                kotlinOptions.jvmTarget = Config.androidJvmTarget.toString()
+            }
+        }
+    }
     jvm("desktop") {
         compilations {
             all {

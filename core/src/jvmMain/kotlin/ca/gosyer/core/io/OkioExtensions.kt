@@ -8,16 +8,19 @@ package ca.gosyer.core.io
 
 import ca.gosyer.core.lang.withIOContext
 import okio.BufferedSink
+import okio.FileSystem
+import okio.Path
 import okio.Source
 import okio.buffer
-import okio.sink
 import okio.use
-import java.nio.file.Path
 
 suspend fun Source.saveTo(path: Path) {
     withIOContext {
         use { source ->
-            path.sink().buffer().use { it.writeAll(source) }
+            FileSystem.SYSTEM
+                .sink(path)
+                .buffer()
+                .use { it.writeAll(source) }
         }
     }
 }

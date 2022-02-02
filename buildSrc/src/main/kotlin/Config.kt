@@ -11,4 +11,5 @@ object Config {
     const val previewCommit = "b714abddae9f13e91bc53c5daac54aeae564cd2a"
 
     val desktopJvmTarget = JavaVersion.VERSION_16
+    val androidJvmTarget = JavaVersion.VERSION_11
 }

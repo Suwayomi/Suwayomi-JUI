@@ -13,13 +13,15 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.jvm.javaio.copyTo
+import okio.FileSystem
+import okio.Path
+import okio.buffer
 import org.jetbrains.skia.Image
 import java.io.ByteArrayOutputStream
-import java.nio.file.Path
-import kotlin.io.path.readBytes
 
 fun imageFromFile(file: Path): ImageBitmap {
-    return Image.makeFromEncoded(file.readBytes()).toComposeImageBitmap()
+    return Image.makeFromEncoded(FileSystem.SYSTEM.source(file).buffer().readByteArray())
+        .toComposeImageBitmap()
 }
 
 suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
