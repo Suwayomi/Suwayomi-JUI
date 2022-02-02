@@ -6,32 +6,31 @@
 
 package ca.gosyer.ui.main.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import ca.gosyer.ui.main.TopLevelMenus
+import ca.gosyer.ui.main.Menu
 import ca.gosyer.uicore.components.combinedMouseClickable
 import ca.gosyer.uicore.resources.stringResource
 import cafe.adriel.voyager.core.screen.Screen
 
 @Composable
-fun SideMenuItem(selected: Boolean, topLevelMenu: TopLevelMenus, newRoot: (Screen) -> Unit) {
+fun SideMenuItem(selected: Boolean, topLevelMenu: Menu, newRoot: (Screen) -> Unit) {
     SideMenuItem(
         selected,
         stringResource(topLevelMenu.textKey),
@@ -51,7 +50,7 @@ private fun SideMenuItem(
     createScreen: () -> Screen,
     selectedIcon: ImageVector,
     unselectedIcon: ImageVector,
-    onMiddleClick: () -> Unit,
+    onMiddleClick: (() -> Unit)?,
     extraInfo: (@Composable () -> Unit)? = null,
     onClick: (Screen) -> Unit
 ) {
@@ -68,22 +67,22 @@ private fun SideMenuItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
-                .height(40.dp)
+                .defaultMinSize(minHeight = 40.dp)
                 .combinedMouseClickable(
                     onClick = { onClick(createScreen()) },
-                    onMiddleClick = { onMiddleClick() }
+                    onMiddleClick = { onMiddleClick?.invoke() }
                 )
         ) {
             Spacer(Modifier.width(16.dp))
-            Image(
-                if (selected) {
+            Icon(
+                imageVector = if (selected) {
                     selectedIcon
                 } else {
                     unselectedIcon
                 },
-                text,
-                Modifier.size(20.dp),
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+                contentDescription = text,
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colors.onSurface
             )
             Spacer(Modifier.width(16.dp))
             Column {
