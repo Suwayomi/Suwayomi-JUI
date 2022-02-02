@@ -6,27 +6,26 @@
 
 package ca.gosyer.ui.main
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.DrawerValue
-import androidx.compose.material.ModalDrawer
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.navigation.DisplayController
 import ca.gosyer.ui.base.navigation.withDisplayController
+import ca.gosyer.ui.main.components.BottomNav
 import ca.gosyer.ui.main.components.SideMenu
 import ca.gosyer.uicore.vm.LocalViewModelFactory
 import cafe.adriel.voyager.navigator.Navigator
@@ -42,11 +41,11 @@ fun MainMenu() {
         Navigator(vm.startScreen.toScreen()) { navigator ->
             val controller = remember { DisplayController() }
             BoxWithConstraints {
-                // if (maxWidth > 720.dp) {
-                WideMainMenu(navigator, controller)
-                // } else {
-                // SkinnyMainMenu(rootBundle, controller)
-                // }
+                if (maxWidth > 720.dp) {
+                    WideMainMenu(navigator, controller)
+                } else {
+                    SkinnyMainMenu(navigator)
+                }
             }
         }
     }
@@ -54,41 +53,20 @@ fun MainMenu() {
 
 @Composable
 fun SkinnyMainMenu(
-    navigator: Navigator,
-    controller: DisplayController
+    navigator: Navigator
 ) {
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    LaunchedEffect(controller.sideMenuVisible) {
-        if (controller.sideMenuVisible) {
-            drawerState.open()
-        } else {
-            drawerState.close()
-        }
-    }
-    DisposableEffect(drawerState.isOpen) {
-        onDispose {
-            if (drawerState.isOpen) {
-                controller.openSideMenu()
-            } else {
-                controller.closeSideMenu()
+    Scaffold(
+        bottomBar = {
+            AnimatedVisibility(
+                navigator.size <= 1,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it }),
+            ) {
+                BottomNav(navigator)
             }
         }
-    }
-    DisposableEffect(Unit) {
-        controller.setAsDrawer()
-        onDispose {
-            controller.setAsNotDrawer()
-        }
-    }
-
-    ModalDrawer(
-        {
-            SideMenu(Modifier.fillMaxWidth(), controller, navigator)
-        },
-        drawerState = drawerState,
-        gesturesEnabled = drawerState.isOpen
     ) {
-        withDisplayController(controller) {
+        Box(Modifier.padding(it)) {
             MainWindow(navigator, Modifier)
         }
     }

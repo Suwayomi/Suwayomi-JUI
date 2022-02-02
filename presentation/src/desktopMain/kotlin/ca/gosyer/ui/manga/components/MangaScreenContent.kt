@@ -9,7 +9,6 @@ package ca.gosyer.ui.manga.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
@@ -68,8 +68,8 @@ fun MangaScreenContent(
         }
     }
 
-    Box {
-        Column {
+    Scaffold(
+        topBar = {
             Toolbar(
                 stringResource(MR.strings.location_manga),
                 actions = {
@@ -98,7 +98,9 @@ fun MangaScreenContent(
                     )
                 }
             )
-
+        }
+    ) {
+        Box(Modifier.padding(it)) {
             manga.let { manga ->
                 if (manga != null) {
                     Box {
@@ -142,9 +144,9 @@ fun MangaScreenContent(
                     ErrorScreen(stringResource(MR.strings.failed_manga_fetch), retry = loadManga)
                 }
             }
-        }
-        if (isLoading) {
-            LoadingScreen()
+            if (isLoading) {
+                LoadingScreen()
+            }
         }
     }
 }

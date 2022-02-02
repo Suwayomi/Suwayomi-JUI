@@ -27,6 +27,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -59,16 +60,19 @@ fun SourceHomeScreenContent(
     getSourceLanguages: () -> Set<String>,
     setEnabledLanguages: (Set<String>) -> Unit
 ) {
-    if (sources.isEmpty()) {
-        LoadingScreen(isLoading)
-    } else {
-        Column {
+    Scaffold(
+        topBar = {
             SourceHomeScreenToolbar(
                 languages,
                 getSourceLanguages,
                 setEnabledLanguages
             )
-            Box(Modifier.fillMaxSize(), Alignment.TopCenter) {
+        }
+    ) {
+        if (sources.isEmpty()) {
+            LoadingScreen(isLoading)
+        } else {
+            Box(Modifier.fillMaxSize().padding(it), Alignment.TopCenter) {
                 val state = rememberLazyListState()
                 SourceCategory(sources, onAddSource, state)
                 /*val sourcesByLang = sources.groupBy { it.lang.toLowerCase() }.toList()
@@ -90,8 +94,10 @@ fun SourceHomeScreenContent(
                     adapter = rememberScrollbarAdapter(state)
                 )
             }
+
         }
     }
+
 }
 
 @Composable
@@ -102,7 +108,6 @@ fun SourceHomeScreenToolbar(
 ) {
     Toolbar(
         stringResource(MR.strings.location_sources),
-        closable = false,
         actions = {
             TextActionIcon(
                 {

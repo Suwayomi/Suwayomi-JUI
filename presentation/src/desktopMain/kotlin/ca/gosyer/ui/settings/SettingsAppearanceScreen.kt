@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -103,9 +104,12 @@ fun SettingsAppearanceScreenContent(
         themes.filter { it.colors.isLight == isLight }
     }
 
-    Column {
-        Toolbar(stringResource(MR.strings.settings_appearance_screen))
-        Box {
+    Scaffold(
+        topBar = {
+            Toolbar(stringResource(MR.strings.settings_appearance_screen))
+        }
+    ) {
+        Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {

@@ -28,8 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastForEach
 import ca.gosyer.presentation.build.BuildKonfig
 import ca.gosyer.ui.base.navigation.DisplayController
+import ca.gosyer.ui.main.MoreMenus
 import ca.gosyer.ui.main.TopLevelMenus
 import cafe.adriel.voyager.navigator.Navigator
 
@@ -53,7 +55,7 @@ fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navig
                     }
                 }
                 Spacer(Modifier.height(20.dp))
-                remember { TopLevelMenus.values().filter(TopLevelMenus::top) }.forEach { topLevelMenu ->
+                remember { TopLevelMenus.values().asList().dropLast(1) }.fastForEach { topLevelMenu ->
                     SideMenuItem(
                         topLevelMenu.isSelected(navigator),
                         topLevelMenu
@@ -61,7 +63,7 @@ fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navig
                 }
                 Box(Modifier.fillMaxSize()) {
                     Column(Modifier.align(Alignment.BottomStart).padding(bottom = 8.dp)) {
-                        remember { TopLevelMenus.values().filterNot(TopLevelMenus::top) }.forEach { topLevelMenu ->
+                        remember { MoreMenus.values() }.forEach { topLevelMenu ->
                             SideMenuItem(
                                 topLevelMenu.isSelected(navigator),
                                 topLevelMenu,

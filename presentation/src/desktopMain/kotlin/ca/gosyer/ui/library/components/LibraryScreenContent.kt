@@ -60,7 +60,6 @@ fun LibraryScreenContent(
             )*/
             Toolbar(
                 stringResource(MR.strings.location_library),
-                closable = false,
                 searchText = query,
                 search = updateQuery
             )

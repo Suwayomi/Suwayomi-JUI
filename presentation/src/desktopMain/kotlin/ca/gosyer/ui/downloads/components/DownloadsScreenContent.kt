@@ -10,7 +10,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -28,6 +27,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProgressIndicatorDefaults
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ClearAll
@@ -69,20 +69,22 @@ fun DownloadsScreenContent(
     stopDownload: (Chapter) -> Unit,
     moveDownloadToBottom: (Chapter) -> Unit
 ) {
-    Column {
-        Toolbar(
-            stringResource(MR.strings.location_downloads),
-            closable = false,
-            actions = {
-                if (downloadStatus == DownloaderStatus.Started) {
-                    ActionIcon(onClick = pauseDownloading, stringResource(MR.strings.action_pause), Icons.Rounded.Pause)
-                } else {
-                    ActionIcon(onClick = startDownloading, stringResource(MR.strings.action_continue), Icons.Rounded.PlayArrow)
+    Scaffold(
+        topBar = {
+            Toolbar(
+                stringResource(MR.strings.location_downloads),
+                actions = {
+                    if (downloadStatus == DownloaderStatus.Started) {
+                        ActionIcon(onClick = pauseDownloading, stringResource(MR.strings.action_pause), Icons.Rounded.Pause)
+                    } else {
+                        ActionIcon(onClick = startDownloading, stringResource(MR.strings.action_continue), Icons.Rounded.PlayArrow)
+                    }
+                    ActionIcon(onClick = clearQueue, stringResource(MR.strings.action_clear_queue), Icons.Rounded.ClearAll)
                 }
-                ActionIcon(onClick = clearQueue, stringResource(MR.strings.action_clear_queue), Icons.Rounded.ClearAll)
-            }
-        )
-        Box {
+            )
+        }
+    ) {
+        Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 items(downloadQueue) {

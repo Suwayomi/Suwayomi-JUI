@@ -8,13 +8,13 @@ package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.ChromeReaderMode
@@ -51,9 +51,12 @@ class SettingsScreen : Screen {
 
 @Composable
 fun SettingsScreenContent(navigator: Navigator) {
-    Column {
-        Toolbar(stringResource(MR.strings.location_settings), closable = false)
-        Box {
+    Scaffold(
+        topBar = {
+            Toolbar(stringResource(MR.strings.location_settings))
+        }
+    ) {
+        Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {

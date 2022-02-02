@@ -9,7 +9,6 @@ package ca.gosyer.ui.updates.components
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +20,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -56,12 +56,15 @@ fun UpdatesScreenContent(
     deleteDownloadedChapter: (Chapter) -> Unit,
     stopDownloadingChapter: (Chapter) -> Unit
 ) {
-    Column {
-        Toolbar(stringResource(MR.strings.location_updates), closable = false)
+    Scaffold(
+        topBar = {
+            Toolbar(stringResource(MR.strings.location_updates))
+        }
+    ) {
         if (isLoading || updates.isEmpty()) {
             LoadingScreen(isLoading)
         } else {
-            Box {
+            Box(Modifier.padding(it)) {
                 val state = rememberLazyListState()
                 LazyColumn(Modifier.fillMaxSize(), state) {
                     itemsIndexed(updates) { index, item ->

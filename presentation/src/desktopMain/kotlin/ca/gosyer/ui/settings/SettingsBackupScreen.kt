@@ -8,7 +8,6 @@ package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,6 +19,7 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
@@ -240,9 +240,12 @@ private fun SettingsBackupScreenContent(
         }
     }
 
-    Column {
-        Toolbar(stringResource(MR.strings.settings_backup_screen))
-        Box {
+    Scaffold(
+        topBar = {
+            Toolbar(stringResource(MR.strings.settings_backup_screen))
+        }
+    ) {
+        Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {

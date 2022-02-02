@@ -8,7 +8,6 @@ package ca.gosyer.ui.sources.settings.components
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +19,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Checkbox
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -52,9 +52,12 @@ import kotlin.collections.List as KtList
 fun SourceSettingsScreenContent(
     settings: KtList<SourceSettingsView<*, *>>
 ) {
-    Column {
-        Toolbar(stringResource(MR.strings.location_settings))
-        Box {
+    Scaffold(
+        topBar = {
+            Toolbar(stringResource(MR.strings.location_settings))
+        }
+    ) {
+        Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 items(settings, { it.props.hashCode() }) {

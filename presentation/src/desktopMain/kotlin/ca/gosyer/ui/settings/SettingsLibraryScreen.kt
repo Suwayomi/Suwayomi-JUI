@@ -8,13 +8,13 @@ package ca.gosyer.ui.settings
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -79,9 +79,12 @@ fun SettingsLibraryScreenContent(
     refreshCategoryCount: () -> Unit,
     categoriesSize: Int
 ) {
-    Column {
-        Toolbar(stringResource(MR.strings.settings_library_screen))
-        Box {
+    Scaffold(
+        topBar = {
+            Toolbar(stringResource(MR.strings.settings_library_screen))
+        }
+    ) {
+        Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 item {

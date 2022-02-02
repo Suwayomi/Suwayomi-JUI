@@ -39,7 +39,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
@@ -72,7 +71,6 @@ import cafe.adriel.voyager.navigator.Navigator
 @Composable
 fun Toolbar(
     name: String,
-    displayController: DisplayController? = LocalDisplayController.current,
     navigator: Navigator? = LocalNavigator.current,
     closable: Boolean = (navigator?.size ?: 0) > 1,
     onClose: () -> Unit = { navigator?.pop() },
@@ -101,15 +99,12 @@ fun Toolbar(
                 Modifier.fillMaxHeight().animateContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val displayController = LocalDisplayController.current
                 if (displayController != null) {
-                    if (displayController.isDrawer) {
-                        ActionIcon(displayController::openSideMenu, "Open nav", Icons.Rounded.Menu)
-                    } else {
-                        AnimatedVisibility(
-                            !displayController.sideMenuVisible
-                        ) {
-                            ActionIcon(displayController::openSideMenu, "Open nav", Icons.Rounded.Sort)
-                        }
+                    AnimatedVisibility(
+                        !displayController.sideMenuVisible
+                    ) {
+                        ActionIcon(displayController::openSideMenu, "Open nav", Icons.Rounded.Sort)
                     }
                 }
 

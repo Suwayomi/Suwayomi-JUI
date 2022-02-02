@@ -49,6 +49,7 @@
     <string name="location_settings">Settings</string>
     <string name="location_categories">Categories</string>
     <string name="location_manga">Manga</string>
+    <string name="location_more">More</string>
 
     <!-- Categories Menu -->
     <string name="categories_delete_confirm">Delete the %1$s category?</string>
@@ -57,6 +58,7 @@
     <string name="downloads_loading">Loading…</string>
     <string name="downloads_remaining">%1$d remaining</string>
     <string name="downloads_stopped">Stopped</string>
+    <string name="downloads_paused">Paused</string>
 
     <!-- Extensions Menu -->
     <string name="enabled_languages">Languages</string>

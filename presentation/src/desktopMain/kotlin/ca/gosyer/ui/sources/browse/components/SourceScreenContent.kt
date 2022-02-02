@@ -10,7 +10,6 @@ import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.icons.rounded.FilterList
@@ -72,22 +72,25 @@ fun SourceScreenContent(
         enableLatest(source.supportsLatest)
     }
 
-    Column {
-        SourceToolbar(
-            source = source,
-            onCloseSourceTabClick = onCloseSourceTabClick,
-            sourceSearchQuery = sourceSearchQuery,
-            onSearch = search,
-            onSubmitSearch = submitSearch,
-            onSourceSettingsClick = onSourceSettingsClick,
-            showFilterButton = showFilterButton,
-            showLatestButton = showLatestButton,
-            isLatest = isLatest,
-            showingFilters = showingFilters,
-            onClickMode = setMode,
-            onToggleFiltersClick = setShowingFilters,
-        )
-        Box {
+    Scaffold(
+        topBar = {
+            SourceToolbar(
+                source = source,
+                onCloseSourceTabClick = onCloseSourceTabClick,
+                sourceSearchQuery = sourceSearchQuery,
+                onSearch = search,
+                onSubmitSearch = submitSearch,
+                onSourceSettingsClick = onSourceSettingsClick,
+                showFilterButton = showFilterButton,
+                showLatestButton = showLatestButton,
+                isLatest = isLatest,
+                showingFilters = showingFilters,
+                onClickMode = setMode,
+                onToggleFiltersClick = setShowingFilters,
+            )
+        }
+    ) {
+        Box(Modifier.padding(it)) {
             MangaTable(
                 mangas = mangas,
                 isLoading = loading,

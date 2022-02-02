@@ -26,6 +26,7 @@ import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -70,8 +71,8 @@ fun ExtensionsScreenContent(
     updateExtension: (Extension) -> Unit,
     uninstallExtension: (Extension) -> Unit
 ) {
-    if (isLoading) {
-        Column {
+    Scaffold(
+        topBar = {
             ExtensionsToolbar(
                 query,
                 setQuery,
@@ -79,47 +80,41 @@ fun ExtensionsScreenContent(
                 getSourceLanguages,
                 setEnabledLanguages
             )
-            LoadingScreen(isLoading)
         }
-    } else {
-        val state = rememberLazyListState()
+    ) {
+        if (isLoading) {
+            LoadingScreen(isLoading)
+        } else {
+            val state = rememberLazyListState()
 
-        Box(Modifier.fillMaxSize()) {
-            LazyColumn(Modifier.fillMaxSize(), state) {
-                item {
-                    ExtensionsToolbar(
-                        query,
-                        setQuery,
-                        enabledLangs,
-                        getSourceLanguages,
-                        setEnabledLanguages
-                    )
-                }
-                extensions.forEach { (header, items) ->
-                    item {
-                        Text(
-                            header,
-                            style = MaterialTheme.typography.h6,
-                            modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 4.dp)
-                        )
-                    }
-                    items(items) { extension ->
-                        ExtensionItem(
-                            extension,
-                            onInstallClicked = installExtension,
-                            onUpdateClicked = updateExtension,
-                            onUninstallClicked = uninstallExtension
-                        )
-                        Spacer(Modifier.height(8.dp))
+            Box(Modifier.fillMaxSize().padding(it)) {
+                LazyColumn(Modifier.fillMaxSize(), state) {
+                    extensions.forEach { (header, items) ->
+                        item {
+                            Text(
+                                header,
+                                style = MaterialTheme.typography.h6,
+                                modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 4.dp)
+                            )
+                        }
+                        items(items) { extension ->
+                            ExtensionItem(
+                                extension,
+                                onInstallClicked = installExtension,
+                                onUpdateClicked = updateExtension,
+                                onUninstallClicked = uninstallExtension
+                            )
+                            Spacer(Modifier.height(8.dp))
+                        }
                     }
                 }
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                        .fillMaxHeight()
+                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                    adapter = rememberScrollbarAdapter(state)
+                )
             }
-            VerticalScrollbar(
-                modifier = Modifier.align(Alignment.CenterEnd)
-                    .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp),
-                adapter = rememberScrollbarAdapter(state)
-            )
         }
     }
 }
@@ -134,7 +129,6 @@ fun ExtensionsToolbar(
 ) {
     Toolbar(
         stringResource(MR.strings.location_extensions),
-        closable = false,
         searchText = searchText,
         search = search,
         actions = {
