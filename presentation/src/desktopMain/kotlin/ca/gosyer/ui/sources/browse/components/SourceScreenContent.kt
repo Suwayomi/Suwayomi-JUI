@@ -7,9 +7,12 @@
 package ca.gosyer.ui.sources.browse.components
 
 import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -26,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
@@ -91,6 +95,17 @@ fun SourceScreenContent(
                 onLoadNextPage = loadNextPage,
                 onMangaClick = onMangaClick,
             )
+            if (showingFilters && !isLatest) {
+                Box(
+                    Modifier.fillMaxSize().pointerInput(loading) {
+                        forEachGesture {
+                            detectTapGestures {
+                                setShowingFilters(false)
+                            }
+                        }
+                    }
+                )
+            }
             SourceFiltersMenu(
                 modifier = Modifier.align(Alignment.TopEnd),
                 showFilters = showingFilters && !isLatest,
