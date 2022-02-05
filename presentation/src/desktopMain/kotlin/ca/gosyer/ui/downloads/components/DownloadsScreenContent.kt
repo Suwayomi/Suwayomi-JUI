@@ -183,7 +183,7 @@ private fun getActionItems(
     startDownloading: () -> Unit,
     pauseDownloading: () -> Unit,
     clearQueue: () -> Unit,
-) : List<ActionItem> {
+): List<ActionItem> {
     return listOf(
         if (downloadStatus == DownloaderStatus.Started) {
             ActionItem(

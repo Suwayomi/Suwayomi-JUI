@@ -95,10 +95,8 @@ fun SourceHomeScreenContent(
                     adapter = rememberScrollbarAdapter(state)
                 )
             }
-
         }
     }
-
 }
 
 @Composable
