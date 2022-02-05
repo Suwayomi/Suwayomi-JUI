@@ -10,11 +10,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import ca.gosyer.i18n.MR
 import ca.gosyer.presentation.build.BuildKonfig
 import ca.gosyer.ui.base.WindowDialog
 import ca.gosyer.ui.categories.CategoriesScreenViewModel
+import ca.gosyer.uicore.components.keyboardHandler
 import ca.gosyer.uicore.resources.stringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -39,7 +41,8 @@ fun openRenameDialog(
             newNameState,
             onValueChange = {
                 newName.value = it
-            }
+            },
+            modifier = Modifier.keyboardHandler(singleLine = true)
         )
     }
 }
@@ -78,7 +81,9 @@ fun openCreateDialog(
             nameState,
             onValueChange = {
                 name.value = it
-            }
+            },
+            singleLine = true,
+            modifier = Modifier.keyboardHandler(singleLine = true)
         )
     }
 }

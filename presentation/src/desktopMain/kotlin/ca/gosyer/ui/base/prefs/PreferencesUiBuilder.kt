@@ -78,6 +78,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.uicore.components.keyboardHandler
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -197,7 +198,8 @@ fun EditTextPreference(
                     onValueChange = {
                         editText = it
                     },
-                    visualTransformation = visualTransformation
+                    visualTransformation = visualTransformation,
+                    modifier = Modifier.keyboardHandler()
                 )
             }
         },

@@ -44,6 +44,7 @@ import ca.gosyer.ui.sources.settings.model.SourceSettingsView.List
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.MultiSelect
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.TwoState
+import ca.gosyer.uicore.components.keyboardHandler
 import ca.gosyer.uicore.resources.stringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.collections.List as KtList
@@ -195,7 +196,8 @@ private fun EditTextPreference(editText: EditText) {
                     text,
                     onValueChange = {
                         editTextFlow.value = it
-                    }
+                    },
+                    modifier = Modifier.keyboardHandler(singleLine = true)
                 )
             }
         }

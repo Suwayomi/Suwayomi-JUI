@@ -67,6 +67,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.uicore.components.keyboardHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.round
 
@@ -374,7 +375,10 @@ fun ColorPalette(
                         textFieldHex = it
                     }
                 },
-                singleLine = true
+                singleLine = true,
+                modifier = Modifier.keyboardHandler(singleLine = true) {
+                    it.clearFocus()
+                }
             )
         }
     }
