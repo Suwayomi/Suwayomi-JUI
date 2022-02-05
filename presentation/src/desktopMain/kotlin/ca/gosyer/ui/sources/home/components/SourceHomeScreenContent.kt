@@ -33,6 +33,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -41,7 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.TextActionIcon
+import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.extensions.components.LanguageDialog
 import ca.gosyer.uicore.components.LoadingScreen
@@ -109,15 +110,13 @@ fun SourceHomeScreenToolbar(
     Toolbar(
         stringResource(MR.strings.location_sources),
         actions = {
-            TextActionIcon(
-                {
+            getActionItems(
+                onEnabledLanguagesClick = {
                     val enabledLangs = MutableStateFlow(sourceLanguages.value)
                     LanguageDialog(enabledLangs, onGetEnabledLanguages().toList()) {
                         onSetEnabledLanguages(enabledLangs.value)
                     }
-                },
-                stringResource(MR.strings.enabled_languages),
-                Icons.Rounded.Translate
+                }
             )
         }
     )
@@ -175,4 +174,18 @@ fun SourceItem(
             )
         }
     }
+}
+
+@Composable
+@Stable
+private fun getActionItems(
+    onEnabledLanguagesClick: () -> Unit
+): List<ActionItem> {
+    return listOf(
+        ActionItem(
+            stringResource(MR.strings.enabled_languages),
+            Icons.Rounded.Translate,
+            doAction = onEnabledLanguagesClick
+        )
+    )
 }

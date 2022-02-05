@@ -35,6 +35,7 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +47,7 @@ import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloaderStatus
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.ActionIcon
+import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.uicore.components.DropdownIconButton
 import ca.gosyer.uicore.components.MangaListItem
@@ -74,12 +75,12 @@ fun DownloadsScreenContent(
             Toolbar(
                 stringResource(MR.strings.location_downloads),
                 actions = {
-                    if (downloadStatus == DownloaderStatus.Started) {
-                        ActionIcon(onClick = pauseDownloading, stringResource(MR.strings.action_pause), Icons.Rounded.Pause)
-                    } else {
-                        ActionIcon(onClick = startDownloading, stringResource(MR.strings.action_continue), Icons.Rounded.PlayArrow)
-                    }
-                    ActionIcon(onClick = clearQueue, stringResource(MR.strings.action_clear_queue), Icons.Rounded.ClearAll)
+                    getActionItems(
+                        downloadStatus = downloadStatus,
+                        startDownloading = startDownloading,
+                        pauseDownloading = pauseDownloading,
+                        clearQueue = clearQueue
+                    )
                 }
             )
         }
@@ -173,4 +174,30 @@ fun DownloadsItem(
         }
         Spacer(Modifier.width(16.dp))
     }
+}
+
+@Stable
+@Composable
+private fun getActionItems(
+    downloadStatus: DownloaderStatus,
+    startDownloading: () -> Unit,
+    pauseDownloading: () -> Unit,
+    clearQueue: () -> Unit,
+) : List<ActionItem> {
+    return listOf(
+        if (downloadStatus == DownloaderStatus.Started) {
+            ActionItem(
+                stringResource(MR.strings.action_pause),
+                Icons.Rounded.Pause,
+                doAction = pauseDownloading
+            )
+        } else {
+            ActionItem(
+                stringResource(MR.strings.action_continue),
+                Icons.Rounded.PlayArrow,
+                doAction = startDownloading
+            )
+        },
+        ActionItem(stringResource(MR.strings.action_clear_queue), Icons.Rounded.ClearAll, doAction = clearQueue)
+    )
 }

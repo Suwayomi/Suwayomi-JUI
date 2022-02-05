@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.manga.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,6 +24,7 @@ import androidx.compose.material.icons.rounded.Label
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,7 +32,7 @@ import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.chapter.ChapterDownloadItem
-import ca.gosyer.ui.base.navigation.TextActionIcon
+import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.uicore.components.ErrorScreen
@@ -73,28 +73,14 @@ fun MangaScreenContent(
             Toolbar(
                 stringResource(MR.strings.location_manga),
                 actions = {
-                    AnimatedVisibility(categoriesExist && manga?.inLibrary == true) {
-                        TextActionIcon(
-                            setCategories,
-                            stringResource(MR.strings.edit_categories),
-                            Icons.Rounded.Label
-                        )
-                    }
-                    TextActionIcon(
-                        toggleFavorite,
-                        stringResource(if (manga?.inLibrary == true) MR.strings.action_remove_favorite else MR.strings.action_favorite),
-                        if (manga?.inLibrary == true) {
-                            Icons.Rounded.Favorite
-                        } else {
-                            Icons.Rounded.FavoriteBorder
-                        },
-                        manga != null
-                    )
-                    TextActionIcon(
-                        refreshManga,
-                        stringResource(MR.strings.action_refresh_manga),
-                        Icons.Rounded.Refresh,
-                        !isLoading
+                    getActionItems(
+                        refreshManga = refreshManga,
+                        refreshMangaEnabled = !isLoading,
+                        categoryItemVisible = categoriesExist && manga?.inLibrary == true,
+                        setCategories = setCategories,
+                        inLibrary = manga?.inLibrary == true,
+                        toggleFavorite = toggleFavorite,
+                        favoritesButtonEnabled = manga != null
                     )
                 }
             )
@@ -149,4 +135,42 @@ fun MangaScreenContent(
             }
         }
     }
+}
+
+@Composable
+@Stable
+private fun getActionItems(
+    refreshManga: () -> Unit,
+    refreshMangaEnabled: Boolean,
+    categoryItemVisible: Boolean,
+    setCategories: () -> Unit,
+    inLibrary: Boolean,
+    toggleFavorite: () -> Unit,
+    favoritesButtonEnabled: Boolean
+): List<ActionItem> {
+    return listOfNotNull(
+        ActionItem(
+            name = stringResource(MR.strings.action_refresh_manga),
+            icon = Icons.Rounded.Refresh,
+            doAction = refreshManga,
+            enabled = refreshMangaEnabled
+        ),
+        if (categoryItemVisible) {
+            ActionItem(
+                name = stringResource(MR.strings.edit_categories),
+                icon = Icons.Rounded.Label,
+                doAction = setCategories
+            )
+        } else null,
+        ActionItem(
+            name = stringResource(if (inLibrary) MR.strings.action_remove_favorite else MR.strings.action_favorite),
+            icon = if (inLibrary) {
+                Icons.Rounded.Favorite
+            } else {
+                Icons.Rounded.FavoriteBorder
+            },
+            doAction = toggleFavorite,
+            enabled = favoritesButtonEnabled
+        )
+    )
 }

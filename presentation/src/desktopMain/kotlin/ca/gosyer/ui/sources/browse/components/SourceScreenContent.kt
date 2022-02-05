@@ -26,6 +26,7 @@ import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.FilterQuality
@@ -34,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.navigation.TextActionIcon
+import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.sources.browse.filter.SourceFiltersMenu
 import ca.gosyer.ui.sources.browse.filter.model.SourceFiltersView
@@ -149,44 +150,21 @@ fun SourceToolbar(
         search = onSearch,
         searchSubmit = onSubmitSearch,
         actions = {
-            if (source.isConfigurable) {
-                TextActionIcon(
-                    {
-                        onSourceSettingsClick(source.id)
-                    },
-                    stringResource(MR.strings.location_settings),
-                    Icons.Rounded.Settings
-                )
-            }
-            if (showFilterButton) {
-                TextActionIcon(
-                    {
-                        onToggleFiltersClick(!showingFilters)
-                    },
-                    stringResource(MR.strings.filter_source),
-                    Icons.Rounded.FilterList,
-                    !isLatest
-                )
-            }
-            if (showLatestButton) {
-                TextActionIcon(
-                    {
-                        onClickMode(!isLatest)
-                    },
-                    stringResource(
-                        if (isLatest) {
-                            MR.strings.move_to_browse
-                        } else {
-                            MR.strings.move_to_latest
-                        }
-                    ),
-                    if (isLatest) {
-                        Icons.Rounded.Explore
-                    } else {
-                        Icons.Rounded.NewReleases
-                    }
-                )
-            }
+            getActionItems(
+                isConfigurable = source.isConfigurable,
+                onSourceSettingsClick = {
+                    onSourceSettingsClick(source.id)
+                },
+                isLatest = isLatest,
+                showLatestButton = showLatestButton,
+                showFilterButton = showFilterButton,
+                onToggleFiltersClick = {
+                    onToggleFiltersClick(!showingFilters)
+                },
+                onClickMode = {
+                    onClickMode(!isLatest)
+                }
+            )
         }
     )
 }
@@ -226,4 +204,51 @@ private fun MangaTable(
             )
         }
     }
+}
+
+@Composable
+@Stable
+private fun getActionItems(
+    isConfigurable: Boolean,
+    onSourceSettingsClick: () -> Unit,
+    isLatest: Boolean,
+    showLatestButton: Boolean,
+    showFilterButton: Boolean,
+    onToggleFiltersClick: () -> Unit,
+    onClickMode: () -> Unit
+): List<ActionItem> {
+    return listOfNotNull(
+        if (isConfigurable) {
+            ActionItem(
+                name = stringResource(MR.strings.location_settings),
+                icon = Icons.Rounded.Settings,
+                doAction = onSourceSettingsClick
+            )
+        } else null,
+        if (showFilterButton) {
+            ActionItem(
+                name = stringResource(MR.strings.filter_source),
+                icon = Icons.Rounded.FilterList,
+                doAction = onToggleFiltersClick,
+                enabled = !isLatest
+            )
+        } else null,
+        if (showLatestButton) {
+            ActionItem(
+                name = stringResource(
+                    if (isLatest) {
+                        MR.strings.move_to_browse
+                    } else {
+                        MR.strings.move_to_latest
+                    }
+                ),
+                icon = if (isLatest) {
+                    Icons.Rounded.Explore
+                } else {
+                    Icons.Rounded.NewReleases
+                },
+                doAction = onClickMode
+            )
+        } else null
+    )
 }

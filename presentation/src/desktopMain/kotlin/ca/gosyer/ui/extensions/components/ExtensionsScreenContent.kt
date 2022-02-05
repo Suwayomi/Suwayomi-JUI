@@ -32,6 +32,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -48,7 +49,7 @@ import ca.gosyer.data.models.Extension
 import ca.gosyer.i18n.MR
 import ca.gosyer.presentation.build.BuildKonfig
 import ca.gosyer.ui.base.WindowDialog
-import ca.gosyer.ui.base.navigation.TextActionIcon
+import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.uicore.components.LoadingScreen
 import ca.gosyer.uicore.image.KamelImage
@@ -132,15 +133,10 @@ fun ExtensionsToolbar(
         searchText = searchText,
         search = search,
         actions = {
-            TextActionIcon(
-                {
-                    val enabledLangs = MutableStateFlow(currentEnabledLangs.value)
-                    LanguageDialog(enabledLangs, getSourceLanguages().toList()) {
-                        setEnabledLanguages(enabledLangs.value)
-                    }
-                },
-                stringResource(MR.strings.enabled_languages),
-                Icons.Rounded.Translate
+            getActionItems(
+                currentEnabledLangs = currentEnabledLangs,
+                getSourceLanguages = getSourceLanguages,
+                setEnabledLanguages = setEnabledLanguages
             )
         }
     )
@@ -234,4 +230,24 @@ fun LanguageDialog(enabledLangsFlow: MutableStateFlow<Set<String>>, availableLan
             )
         }
     }
+}
+
+@Stable
+@Composable
+private fun getActionItems(
+    currentEnabledLangs: StateFlow<Set<String>>,
+    getSourceLanguages: () -> Set<String>,
+    setEnabledLanguages: (Set<String>) -> Unit
+): List<ActionItem> {
+    return listOf(
+        ActionItem(
+            stringResource(MR.strings.enabled_languages),
+            Icons.Rounded.Translate
+        ) {
+            val enabledLangs = MutableStateFlow(currentEnabledLangs.value)
+            LanguageDialog(enabledLangs, getSourceLanguages().toList()) {
+                setEnabledLanguages(enabledLangs.value)
+            }
+        }
+    )
 }

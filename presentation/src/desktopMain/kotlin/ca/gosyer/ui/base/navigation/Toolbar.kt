@@ -14,9 +14,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,34 +27,39 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onPreviewKeyEvent
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -64,6 +70,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.i18n.MR
 import ca.gosyer.uicore.components.BoxWithTooltipSurface
+import ca.gosyer.uicore.components.keyboardHandler
 import ca.gosyer.uicore.resources.stringResource
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
@@ -75,13 +82,60 @@ fun Toolbar(
     closable: Boolean = (navigator?.size ?: 0) > 1,
     onClose: () -> Unit = { navigator?.pop() },
     modifier: Modifier = Modifier,
-    actions: @Composable RowScope.() -> Unit = {},
+    actions: @Composable () -> List<ActionItem> = { emptyList() },
     backgroundColor: Color = MaterialTheme.colors.surface, // CustomColors.current.bars,
     contentColor: Color = contentColorFor(backgroundColor), // CustomColors.current.onBars,
-    elevation: Dp = AppBarDefaults.TopAppBarElevation,
+    elevation: Dp = Dp.Hairline,
     searchText: String? = null,
     search: ((String) -> Unit)? = null,
     searchSubmit: (() -> Unit)? = null,
+) {
+    BoxWithConstraints {
+        if (maxWidth > 600.dp) {
+            WideToolbar(
+                name = name,
+                closable = closable,
+                onClose = onClose,
+                modifier = modifier,
+                actions = actions,
+                backgroundColor = backgroundColor,
+                contentColor = contentColor,
+                elevation = elevation,
+                searchText = searchText,
+                search = search,
+                searchSubmit = searchSubmit
+            )
+        } else {
+            ThinToolbar(
+                name = name,
+                closable = closable,
+                onClose = onClose,
+                modifier = modifier,
+                actions = actions,
+                backgroundColor = backgroundColor,
+                contentColor = contentColor,
+                elevation = elevation,
+                searchText = searchText,
+                search = search,
+                searchSubmit = searchSubmit
+            )
+        }
+    }
+}
+
+@Composable
+private fun WideToolbar(
+    name: String,
+    closable: Boolean,
+    onClose: () -> Unit,
+    modifier: Modifier,
+    actions: @Composable () -> List<ActionItem> = { emptyList() },
+    backgroundColor: Color,
+    contentColor: Color,
+    elevation: Dp,
+    searchText: String?,
+    search: ((String) -> Unit)?,
+    searchSubmit: (() -> Unit)?,
 ) {
     Surface(
         modifier = modifier,
@@ -118,9 +172,153 @@ fun Toolbar(
             }
 
             Row {
-                actions()
+                ActionMenu(actions()) { onClick: () -> Unit, name: String, icon: ImageVector, enabled: Boolean ->
+                    TextActionIcon(
+                        onClick = onClick,
+                        text = name,
+                        icon = icon,
+                        enabled = enabled
+                    )
+                }
                 if (closable) {
-                    TextActionIcon(onClick = onClose, stringResource(MR.strings.action_close), Icons.Rounded.Close)
+                    TextActionIcon(
+                        onClick = onClose,
+                        text = stringResource(MR.strings.action_close),
+                        icon = Icons.Rounded.Close
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+
+@Composable
+private fun ThinToolbar(
+    name: String,
+    closable: Boolean,
+    onClose: () -> Unit,
+    modifier: Modifier,
+    actions: @Composable () -> List<ActionItem> = { emptyList() },
+    backgroundColor: Color,
+    contentColor: Color,
+    elevation: Dp,
+    searchText: String?,
+    search: ((String) -> Unit)?,
+    searchSubmit: (() -> Unit)?,
+) {
+    var searchMode by remember { mutableStateOf(!searchText.isNullOrEmpty()) }
+    Surface(
+        color = backgroundColor,
+        contentColor = contentColor,
+        elevation = elevation,
+        shape = RectangleShape,
+        modifier = modifier
+    ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Row(
+                Modifier.fillMaxWidth()
+                    .padding(AppBarDefaults.ContentPadding)
+                    .height(56.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (!closable && !searchMode) {
+                    Spacer(Modifier.width(12.dp))
+                } else {
+                    Row(Modifier.width(68.dp), verticalAlignment = Alignment.CenterVertically) {
+                        CompositionLocalProvider(
+                            LocalContentAlpha provides ContentAlpha.high,
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    if (searchMode) {
+                                        search?.invoke("")
+                                        searchSubmit?.invoke()
+                                        searchMode = false
+                                    } else {
+                                        onClose()
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    Icons.Rounded.ArrowBack,
+                                    stringResource(MR.strings.action_close)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (searchMode) {
+                    Row(
+                        Modifier.fillMaxHeight().weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        BasicTextField(
+                            value = searchText.orEmpty(),
+                            onValueChange = search ?: {},
+                            modifier = Modifier.fillMaxWidth()
+                                .keyboardHandler(singleLine = true) {
+                                    searchSubmit?.invoke()
+                                    it.clearFocus()
+                                },
+                            textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium)),
+                            cursorBrush = SolidColor(MaterialTheme.colors.primary),
+                            keyboardActions = KeyboardActions { searchSubmit?.invoke() },
+                            maxLines = 1,
+                            singleLine = true,
+                            decorationBox = { innerTextField ->
+                                Box(contentAlignment = Alignment.CenterStart) {
+                                    if (searchText.isNullOrEmpty()) {
+                                        Text(stringResource(MR.strings.action_searching))
+                                    }
+                                    innerTextField()
+                                }
+                            },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)
+                        )
+                    }
+                } else {
+                    Row(
+                        Modifier.fillMaxHeight().weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ProvideTextStyle(value = MaterialTheme.typography.h6) {
+                            CompositionLocalProvider(
+                                LocalContentAlpha provides ContentAlpha.high,
+                            ) {
+                                Text(name)
+                            }
+                        }
+                    }
+                }
+
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                    Row(
+                        Modifier.fillMaxHeight(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (search != null && !searchMode) {
+                            IconButton(onClick = { searchMode = true }) {
+                                Icon(Icons.Rounded.Search, stringResource(MR.strings.action_search))
+                            }
+                        }
+                        ActionMenu(
+                            actions(),
+                            if (searchMode) {
+                                1
+                            } else {
+                                3
+                            }
+                        ) { onClick: () -> Unit, name: String, icon: ImageVector, enabled: Boolean ->
+                            IconButton(onClick = onClick, enabled = enabled) {
+                                Icon(icon, name)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -147,17 +345,11 @@ private fun SearchBox(
                 searchText.orEmpty(),
                 onValueChange = { search?.invoke(it) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth().then(
-                    if (searchSubmit != null) {
-                        Modifier.onPreviewKeyEvent { event ->
-                            (event.key == Key.Enter && event.type == KeyEventType.KeyDown).also {
-                                if (it) {
-                                    searchSubmit()
-                                }
-                            }
-                        }
-                    } else Modifier
-                ),
+                modifier = Modifier.fillMaxWidth()
+                    .keyboardHandler(singleLine = true) {
+                        searchSubmit?.invoke()
+                        it.clearFocus()
+                    },
                 textStyle = TextStyle(contentColor, 18.sp),
                 cursorBrush = SolidColor(contentColor.copy(alpha = 0.50F)),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)

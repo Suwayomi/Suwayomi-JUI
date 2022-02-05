@@ -39,6 +39,8 @@
     <string name="action_refresh_manga">Refresh</string>
     <string name="action_retry">Retry</string>
     <string name="action_close">Close</string>
+    <string name="action_search">Search</string>
+    <string name="action_searching">Search…</string>
 
     <!-- Locations -->
     <string name="location_library">Library</string>
