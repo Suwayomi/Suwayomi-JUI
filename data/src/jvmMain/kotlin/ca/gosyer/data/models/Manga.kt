@@ -7,7 +7,10 @@
 package ca.gosyer.data.models
 
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
+import ca.gosyer.i18n.MR
+import dev.icerock.moko.resources.StringResource
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class Manga(
@@ -51,9 +54,9 @@ data class MangaMeta(
 }
 
 @Serializable
-enum class MangaStatus(val resId: String) {
-    UNKNOWN("status_unknown"),
-    ONGOING("status_ongoing"),
-    COMPLETED("status_completed"),
-    LICENSED("status_licensed");
+enum class MangaStatus(@Transient val res: StringResource) {
+    UNKNOWN(MR.strings.status_unknown),
+    ONGOING(MR.strings.status_ongoing),
+    COMPLETED(MR.strings.status_completed),
+    LICENSED(MR.strings.status_Licensed);
 }
