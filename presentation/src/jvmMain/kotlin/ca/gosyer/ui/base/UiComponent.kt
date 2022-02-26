@@ -25,9 +25,11 @@ abstract class UiComponent(
 
     abstract val viewModelFactory: ViewModelFactoryImpl
 
+    abstract val kamelConfig: KamelConfig
+
     @get:AppScope
     @get:Provides
-    val kamelConfig: KamelConfig
+    protected val kamelConfigFactory: KamelConfig
         get() = kamelConfigProvider.get()
 
     fun getHooks() = arrayOf(
