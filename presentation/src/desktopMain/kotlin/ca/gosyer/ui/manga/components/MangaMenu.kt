@@ -149,15 +149,18 @@ fun CategorySelectDialog(
             LazyColumn(state = listState) {
                 items(categories) { category ->
                     Row(
-                        Modifier.fillMaxWidth().padding(8.dp)
+                        Modifier.fillMaxWidth()
+                            .height(48.dp)
                             .clickable {
                                 if (category in enabledCategories) {
                                     enabledCategories -= category
                                 } else {
                                     enabledCategories += category
                                 }
-                            },
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            }
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(category.name, style = MaterialTheme.typography.subtitle1)
                         Checkbox(
