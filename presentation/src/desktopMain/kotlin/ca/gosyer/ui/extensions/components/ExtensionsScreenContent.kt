@@ -8,6 +8,8 @@ package ca.gosyer.ui.extensions.components
 
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +35,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -214,24 +218,30 @@ fun LanguageDialog(
             val listState = rememberLazyListState()
             LazyColumn(Modifier.fillMaxWidth(), listState) {
                 items(availableLangs.toList()) { lang ->
-                    Row {
-                        val langName = remember(lang) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .height(48.dp)
+                            .clickable {
+                                if (lang in modifiedLangs) {
+                                    modifiedLangs -= lang
+                                } else {
+                                    modifiedLangs += lang
+                                }
+                            }
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        val langName by derivedStateOf {
                             Locale.forLanguageTag(lang)?.getDisplayName(locale) ?: lang
                         }
                         Text(langName)
                         Switch(
                             checked = lang in modifiedLangs,
-                            onCheckedChange = {
-                                if (it) {
-                                    modifiedLangs += lang
-                                } else {
-                                    modifiedLangs -= lang
-                                }
-                            }
+                            onCheckedChange = null
                         )
                     }
                 }
-                item { Spacer(Modifier.height(70.dp)) }
             }
             VerticalScrollbar(
                 rememberScrollbarAdapter(listState),

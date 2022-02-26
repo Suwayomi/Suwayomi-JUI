@@ -94,7 +94,7 @@ fun ColorPickerDialog(
             )
         },
         properties = getMaterialDialogProperties(
-            size = DpSize(300.dp, 520.dp)
+            size = DpSize(300.dp, 580.dp)
         ),
         onCloseRequest = {
             it.hide()
