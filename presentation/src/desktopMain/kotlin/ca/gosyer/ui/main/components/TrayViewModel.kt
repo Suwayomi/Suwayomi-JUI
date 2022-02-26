@@ -9,6 +9,7 @@ package ca.gosyer.ui.main.components
 import ca.gosyer.data.update.UpdateChecker
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import me.tatarka.inject.annotations.Inject
 
 class TrayViewModel @Inject constructor(
@@ -21,4 +22,9 @@ class TrayViewModel @Inject constructor(
     }
     val updateFound
         get() = updateChecker.updateFound
+
+    override fun onDispose() {
+        super.onDispose()
+        scope.cancel()
+    }
 }

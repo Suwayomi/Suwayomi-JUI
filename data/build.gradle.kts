@@ -44,8 +44,8 @@ kotlin {
                 api(libs.ktorWebsockets)
                 api(libs.ktorOkHttp)
                 api(libs.okio)
-                api(project(":core"))
-                api(project(":i18n"))
+                api(projects.core)
+                api(projects.i18n)
             }
         }
         val commonTest by getting {

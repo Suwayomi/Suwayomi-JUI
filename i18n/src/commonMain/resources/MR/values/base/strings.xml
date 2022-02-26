@@ -41,6 +41,8 @@
     <string name="action_close">Close</string>
     <string name="action_search">Search</string>
     <string name="action_searching">Search…</string>
+    <string name="action_more_actions">More actions</string>
+    <string name="action_ok">Ok</string>
 
     <!-- Locations -->
     <string name="location_library">Library</string>

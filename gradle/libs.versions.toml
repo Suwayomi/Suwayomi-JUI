@@ -9,8 +9,9 @@ xmlUtil = "0.84.0"
 
 # Compose
 voyager = "1.0.0-beta15"
-accompanist = "0.18.1"
+accompanist = "0.20.1"
 kamel = "0.3.0"
+materialDialogs = "0.6.4"
 
 # Swing
 darklaf = "2.7.3"
@@ -58,6 +59,7 @@ voyagerTransitions = { module = "cafe.adriel.voyager:voyager-transitions", versi
 accompanistPager = { module = "ca.gosyer:accompanist-pager", version.ref = "accompanist" }
 accompanistFlowLayout = { module = "ca.gosyer:accompanist-flowlayout", version.ref = "accompanist" }
 kamel = { module = "com.alialbaali.kamel:kamel-image", version.ref = "kamel" }
+materialDialogsCore = { module = "ca.gosyer:compose-material-dialogs-core", version.ref = "materialDialogs" }
 
 # Swing
 darklaf = { module = "com.github.weisj:darklaf-core", version.ref = "darklaf" }

@@ -16,11 +16,11 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":i18n"))
-    implementation(project(":data"))
-    implementation(project(":ui-core"))
-    implementation(project(":presentation"))
+    implementation(projects.core)
+    implementation(projects.i18n)
+    implementation(projects.data)
+    implementation(projects.uiCore)
+    implementation(projects.presentation)
 
     // UI (Compose)
     implementation(compose.desktop.currentOs)
@@ -33,6 +33,7 @@ dependencies {
     implementation(libs.accompanistPager)
     implementation(libs.accompanistFlowLayout)
     implementation(libs.kamel)
+    implementation(libs.materialDialogsCore)
 
     // UI (Swing)
     implementation(libs.darklaf)

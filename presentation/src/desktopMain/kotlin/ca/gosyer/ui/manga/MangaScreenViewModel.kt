@@ -22,10 +22,12 @@ import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import java.time.ZoneId
@@ -53,10 +55,16 @@ class MangaScreenViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _categoriesExist = MutableStateFlow(true)
-    val categoriesExist = _categoriesExist.asStateFlow()
+    private val _categories = MutableStateFlow(emptyList<Category>())
+    val categories = _categories.asStateFlow()
 
-    val chooseCategoriesFlow = MutableSharedFlow<Pair<List<Category>, List<Category>>>()
+    private val _mangaCategories = MutableStateFlow(emptyList<Category>())
+    val mangaCategories = _mangaCategories.asStateFlow()
+
+    val categoriesExist = categories.map { it.isNotEmpty() }
+        .stateIn(scope, SharingStarted.Eagerly, true)
+
+    val chooseCategoriesFlow = MutableSharedFlow<Unit>()
 
     val dateTimeFormatter = uiPreferences.dateFormat().changes()
         .map {
@@ -77,7 +85,7 @@ class MangaScreenViewModel @Inject constructor(
         }
 
         scope.launch {
-            _categoriesExist.value = categoryHandler.getCategories(true).isNotEmpty()
+            _categories.value = categoryHandler.getCategories(true)
         }
     }
 
@@ -108,9 +116,7 @@ class MangaScreenViewModel @Inject constructor(
     fun setCategories() {
         scope.launch {
             manga.value?.let { manga ->
-                val categories = async { categoryHandler.getCategories(true) }
-                val oldCategories = async { categoryHandler.getMangaCategories(manga) }
-                chooseCategoriesFlow.emit(categories.await() to oldCategories.await())
+                chooseCategoriesFlow.emit(Unit)
             }
         }
     }
@@ -119,6 +125,7 @@ class MangaScreenViewModel @Inject constructor(
         async {
             try {
                 _manga.value = mangaHandler.getManga(mangaId, refresh)
+                _mangaCategories.value = categoryHandler.getMangaCategories(mangaId)
             } catch (e: Exception) {
                 e.throwIfCancellation()
             }
@@ -142,11 +149,10 @@ class MangaScreenViewModel @Inject constructor(
                     libraryHandler.removeMangaFromLibrary(manga)
                     refreshMangaAsync(manga.id).await()
                 } else {
-                    val categories = categoryHandler.getCategories(true)
-                    if (categories.isEmpty()) {
+                    if (categories.value.isEmpty()) {
                         addFavorite(emptyList(), emptyList())
                     } else {
-                        chooseCategoriesFlow.emit(categories to emptyList())
+                        chooseCategoriesFlow.emit(Unit)
                     }
                 }
             }

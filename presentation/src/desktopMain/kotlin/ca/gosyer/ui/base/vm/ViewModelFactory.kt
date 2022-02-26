@@ -21,6 +21,7 @@ import ca.gosyer.ui.settings.SettingsBackupViewModel
 import ca.gosyer.ui.settings.SettingsGeneralViewModel
 import ca.gosyer.ui.settings.SettingsLibraryViewModel
 import ca.gosyer.ui.settings.SettingsReaderViewModel
+import ca.gosyer.ui.settings.SettingsServerHostViewModel
 import ca.gosyer.ui.settings.SettingsServerViewModel
 import ca.gosyer.ui.settings.ThemesViewModel
 import ca.gosyer.ui.sources.SourcesScreenViewModel
@@ -35,7 +36,7 @@ import me.tatarka.inject.annotations.Inject
 import kotlin.reflect.KClass
 
 @Inject
-class ViewModelFactoryImpl(
+actual class ViewModelFactoryImpl(
     private val appThemeFactory: () -> AppThemeViewModel,
     private val categoryFactory: () -> CategoriesScreenViewModel,
     private val downloadsFactory: (Boolean) -> DownloadsScreenViewModel,
@@ -53,6 +54,7 @@ class ViewModelFactoryImpl(
     private val settingsLibraryFactory: () -> SettingsLibraryViewModel,
     private val settingsReaderFactory: () -> SettingsReaderViewModel,
     private val settingsServerFactory: () -> SettingsServerViewModel,
+    private val settingsServerHostFactory: () -> SettingsServerHostViewModel,
     private val sourceFiltersFactory: (params: SourceFiltersViewModel.Params) -> SourceFiltersViewModel,
     private val sourceSettingsFactory: (params: SourceSettingsScreenViewModel.Params) -> SourceSettingsScreenViewModel,
     private val sourceHomeFactory: () -> SourceHomeScreenViewModel,
@@ -81,6 +83,7 @@ class ViewModelFactoryImpl(
             SettingsLibraryViewModel::class -> settingsLibraryFactory()
             SettingsReaderViewModel::class -> settingsReaderFactory()
             SettingsServerViewModel::class -> settingsServerFactory()
+            SettingsServerHostViewModel::class -> settingsServerHostFactory()
             SourceFiltersViewModel::class -> sourceFiltersFactory(arg1 as SourceFiltersViewModel.Params)
             SourceSettingsScreenViewModel::class -> sourceSettingsFactory(arg1 as SourceSettingsScreenViewModel.Params)
             SourceHomeScreenViewModel::class -> sourceHomeFactory()

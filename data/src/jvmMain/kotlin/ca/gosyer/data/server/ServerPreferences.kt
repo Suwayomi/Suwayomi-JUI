@@ -13,10 +13,6 @@ import ca.gosyer.data.server.model.Proxy
 
 class ServerPreferences(private val preferenceStore: PreferenceStore) {
 
-    fun host(): Preference<Boolean> {
-        return preferenceStore.getBoolean("host", true)
-    }
-
     fun server(): Preference<String> {
         return preferenceStore.getString("server_url", "http://localhost")
     }

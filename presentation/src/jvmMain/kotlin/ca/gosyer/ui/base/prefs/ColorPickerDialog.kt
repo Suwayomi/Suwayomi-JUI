@@ -34,11 +34,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,62 +64,56 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
-import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.uicore.components.keyboardHandler
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.title
 import kotlin.math.round
 
+@Composable
 fun ColorPickerDialog(
+    state: MaterialDialogState,
     title: String,
     onCloseRequest: () -> Unit = {},
     onSelected: (Color) -> Unit,
     initialColor: Color = Color.Unspecified,
 ) {
-    val currentColor = MutableStateFlow(initialColor)
-    val showPresets = MutableStateFlow(true)
+    var currentColor by remember(initialColor) { mutableStateOf(initialColor) }
+    var showPresets by remember { mutableStateOf(true) }
 
-    WindowDialog(
-        onCloseRequest = onCloseRequest,
-        size = DpSize(300.dp, 520.dp),
-        title = title,
-        content = {
-            val showPresetsState by showPresets.collectAsState()
-            val currentColorState by currentColor.collectAsState()
-            if (showPresetsState) {
-                ColorPresets(
-                    initialColor = currentColorState,
-                    onColorChanged = { currentColor.value = it }
-                )
-            } else {
-                ColorPalette(
-                    initialColor = currentColorState,
-                    onColorChanged = { currentColor.value = it }
-                )
-            }
-        },
+    MaterialDialog(
+        state,
         buttons = {
-            val showPresetsState by showPresets.collectAsState()
-            val currentColorState by currentColor.collectAsState()
-            Row(Modifier.fillMaxWidth().padding(8.dp).align(Alignment.BottomCenter)) {
-                TextButton(
-                    onClick = {
-                        showPresets.value = !showPresetsState
-                    }
-                ) {
-                    Text(if (showPresetsState) "Custom" else "Presets")
+            positiveButton("Select", onClick = { onSelected(currentColor) })
+            button(
+                if (showPresets) "Custom" else "Presets",
+                onClick = {
+                    showPresets = !showPresets
                 }
-                Spacer(Modifier.weight(1f))
-                TextButton(
-                    onClick = {
-                        onSelected(currentColorState)
-                        it()
-                    }
-                ) {
-                    Text("Select")
-                }
-            }
+            )
+        },
+        properties = getMaterialDialogProperties(
+            size = DpSize(300.dp, 520.dp)
+        ),
+        onCloseRequest = {
+            it.hide()
+            onCloseRequest()
         }
-    )
+    ) {
+        title(title)
+        if (showPresets) {
+            ColorPresets(
+                initialColor = currentColor,
+                onColorChanged = { currentColor = it }
+            )
+        } else {
+            ColorPalette(
+                initialColor = currentColor,
+                onColorChanged = { currentColor = it }
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)

@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.main.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import ca.gosyer.ui.main.Menu
-import ca.gosyer.uicore.components.combinedMouseClickable
 import ca.gosyer.uicore.resources.stringResource
 import cafe.adriel.voyager.core.screen.Screen
 
@@ -37,7 +37,6 @@ fun SideMenuItem(selected: Boolean, topLevelMenu: Menu, newRoot: (Screen) -> Uni
         topLevelMenu.createScreen,
         topLevelMenu.selectedIcon,
         topLevelMenu.unselectedIcon,
-        topLevelMenu.openInNewWindow,
         topLevelMenu.extraInfo,
         newRoot
     )
@@ -50,7 +49,6 @@ private fun SideMenuItem(
     createScreen: () -> Screen,
     selectedIcon: ImageVector,
     unselectedIcon: ImageVector,
-    onMiddleClick: (() -> Unit)?,
     extraInfo: (@Composable () -> Unit)? = null,
     onClick: (Screen) -> Unit
 ) {
@@ -68,9 +66,9 @@ private fun SideMenuItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
                 .defaultMinSize(minHeight = 40.dp)
-                .combinedMouseClickable(
+                .clickable(
                     onClick = { onClick(createScreen()) },
-                    onMiddleClick = { onMiddleClick?.invoke() }
+                    // onMiddleClick = { onMiddleClick?.invoke() } todo
                 )
         ) {
             Spacer(Modifier.width(16.dp))

@@ -9,7 +9,6 @@ package ca.gosyer
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -20,6 +19,8 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.awaitApplication
 import androidx.compose.ui.window.rememberWindowState
@@ -32,7 +33,7 @@ import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.desktop.build.BuildConfig
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.AppComponent
-import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.main.MainMenu
 import ca.gosyer.ui.main.components.DebugOverlay
@@ -44,6 +45,10 @@ import ca.gosyer.uicore.resources.stringResource
 import com.github.weisj.darklaf.LafManager
 import com.github.weisj.darklaf.theme.DarculaTheme
 import com.github.weisj.darklaf.theme.IntelliJTheme
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.message
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.vanpra.composematerialdialogs.title
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -130,15 +135,12 @@ suspend fun main() {
 
             Tray(icon)
 
+            val confirmExitDialogState = rememberMaterialDialogState()
+
             Window(
                 onCloseRequest = {
                     if (confirmExit.value) {
-                        WindowDialog(
-                            title = MR.strings.confirm_exit.localized(),
-                            onPositiveButton = ::exitApplication
-                        ) {
-                            Text(stringResource(MR.strings.confirm_exit_message))
-                        }
+                        confirmExitDialogState.show()
                     } else {
                         exitApplication()
                     }
@@ -185,6 +187,20 @@ suspend fun main() {
                                 }
                             }
                         }
+                    }
+
+                    MaterialDialog(
+                        confirmExitDialogState,
+                        buttons = {
+                            positiveButton(stringResource(MR.strings.action_ok), onClick = ::exitApplication)
+                            negativeButton(stringResource(MR.strings.action_cancel))
+                        },
+                        properties = getMaterialDialogProperties(
+                            size = DpSize(400.dp, 200.dp)
+                        ),
+                    ) {
+                        title(stringResource(MR.strings.confirm_exit))
+                        message(stringResource(MR.strings.confirm_exit_message))
                     }
                 }
             }

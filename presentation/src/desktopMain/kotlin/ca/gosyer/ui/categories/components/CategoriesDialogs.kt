@@ -6,81 +6,98 @@
 
 package ca.gosyer.ui.categories.components
 
-import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import ca.gosyer.i18n.MR
-import ca.gosyer.presentation.build.BuildKonfig
-import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.categories.CategoriesScreenViewModel
 import ca.gosyer.uicore.components.keyboardHandler
 import ca.gosyer.uicore.resources.stringResource
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.message
+import com.vanpra.composematerialdialogs.title
 
-fun openRenameDialog(
+@Composable
+fun RenameDialog(
+    state: MaterialDialogState,
     category: CategoriesScreenViewModel.MenuCategory,
     onRename: (String) -> Unit
 ) {
-    val newName = MutableStateFlow(TextFieldValue(category.name))
+    var newName by remember { mutableStateOf(TextFieldValue(category.name)) }
 
-    WindowDialog(
-        title = "${BuildKonfig.NAME} - Categories - Rename Dialog",
-        positiveButtonText = "Rename",
-        onPositiveButton = {
-            if (newName.value.text != category.name) {
-                onRename(newName.value.text)
+    MaterialDialog(
+        state,
+        buttons = {
+            positiveButton(stringResource(MR.strings.action_rename)) {
+                if (newName.text != category.name) {
+                    onRename(newName.text)
+                }
             }
-        }
+            negativeButton(stringResource(MR.strings.action_cancel))
+        },
+        properties = getMaterialDialogProperties(),
     ) {
-        val newNameState by newName.collectAsState()
-
+        title("Rename Category")
         TextField(
-            newNameState,
+            newName,
             onValueChange = {
-                newName.value = it
+                newName = it
             },
             modifier = Modifier.keyboardHandler(singleLine = true)
         )
     }
 }
 
-fun openDeleteDialog(
+@Composable
+fun DeleteDialog(
+    state: MaterialDialogState,
     category: CategoriesScreenViewModel.MenuCategory,
     onDelete: (CategoriesScreenViewModel.MenuCategory) -> Unit
 ) {
-    WindowDialog(
-        title = "${BuildKonfig.NAME} - Categories - Delete Dialog",
-        positiveButtonText = "Yes",
-        onPositiveButton = {
-            onDelete(category)
+    MaterialDialog(
+        state,
+        buttons = {
+            positiveButton(stringResource(MR.strings.action_yes)) {
+                onDelete(category)
+            }
+            negativeButton(stringResource(MR.strings.action_no))
         },
-        negativeButtonText = "No"
+        properties = getMaterialDialogProperties(),
     ) {
-        Text(stringResource(MR.strings.categories_delete_confirm, category.name))
+        title("Delete Category")
+        message(stringResource(MR.strings.categories_delete_confirm, category.name))
     }
 }
 
-fun openCreateDialog(
+@Composable
+fun CreateDialog(
+    state: MaterialDialogState,
     onCreate: (String) -> Unit
 ) {
-    val name = MutableStateFlow(TextFieldValue(""))
+    var name by remember { mutableStateOf(TextFieldValue("")) }
 
-    WindowDialog(
-        title = "${BuildKonfig.NAME} - Categories - Create Dialog",
-        positiveButtonText = "Create",
-        onPositiveButton = {
-            onCreate(name.value.text)
-        }
+    MaterialDialog(
+        state,
+        buttons = {
+            positiveButton(stringResource(MR.strings.action_create)) {
+                onCreate(name.text)
+            }
+            negativeButton(stringResource(MR.strings.action_cancel))
+        },
+        properties = getMaterialDialogProperties(),
     ) {
-        val nameState by name.collectAsState()
-
+        title("Create Category")
         TextField(
-            nameState,
+            name,
             onValueChange = {
-                name.value = it
+                name = it
             },
             singleLine = true,
             modifier = Modifier.keyboardHandler(singleLine = true)

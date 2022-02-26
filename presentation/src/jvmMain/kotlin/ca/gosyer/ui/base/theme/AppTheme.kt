@@ -4,11 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:JvmName("ThemeScrollbarStyleKt")
+
 package ca.gosyer.ui.base.theme
 
-import androidx.compose.desktop.DesktopMaterialTheme
-import androidx.compose.foundation.LocalScrollbarStyle
-import androidx.compose.foundation.ScrollbarStyle
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -20,9 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.takeOrElse
-import androidx.compose.ui.unit.dp
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
+import ca.gosyer.ui.base.components.LocalScrollbarStyle
+import ca.gosyer.ui.base.theme.ThemeScrollbarStyle.getScrollbarStyle
 import ca.gosyer.uicore.theme.Theme
 import ca.gosyer.uicore.theme.themes
 import ca.gosyer.uicore.vm.LocalViewModelFactory
@@ -47,14 +47,7 @@ fun AppTheme(content: @Composable () -> Unit) {
 
     MaterialTheme(colors = colors) {
         CompositionLocalProvider(
-            LocalScrollbarStyle provides ScrollbarStyle(
-                minimalHeight = 16.dp,
-                thickness = 8.dp,
-                shape = MaterialTheme.shapes.small,
-                hoverDurationMillis = 300,
-                unhoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.30f),
-                hoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.70f)
-            ),
+            LocalScrollbarStyle provides getScrollbarStyle(),
             content = content
         )
     }

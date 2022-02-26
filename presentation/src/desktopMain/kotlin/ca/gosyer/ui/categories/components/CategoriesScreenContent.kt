@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.categories.CategoriesScreenViewModel.MenuCategory
 import ca.gosyer.uicore.resources.stringResource
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -77,11 +78,16 @@ fun CategoriesScreenContent(
         }
     }
 
+
+    val createDialogState = rememberMaterialDialogState()
+
     Surface {
         Box {
             val state = rememberLazyListState()
             LazyColumn(modifier = Modifier.fillMaxSize(), state = state,) {
                 itemsIndexed(categories) { i, category ->
+                    val renameDialogState = rememberMaterialDialogState()
+                    val deleteDialogState = rememberMaterialDialogState()
                     CategoryRow(
                         category = category,
                         moveUpEnabled = i != 0,
@@ -89,16 +95,18 @@ fun CategoriesScreenContent(
                         onMoveUp = { moveCategoryUp(category) },
                         onMoveDown = { moveCategoryDown(category) },
                         onRename = {
-                            openRenameDialog(category) {
-                                renameCategory(category, it)
-                            }
+                            renameDialogState.show()
                         },
                         onDelete = {
-                            openDeleteDialog(category) {
-                                deleteCategory(category)
-                            }
+                            deleteDialogState.show()
                         },
                     )
+                    RenameDialog(renameDialogState, category) {
+                        renameCategory(category, it)
+                    }
+                    DeleteDialog(deleteDialogState, category) {
+                        deleteCategory(category)
+                    }
                 }
                 item {
                     Spacer(Modifier.height(80.dp).fillMaxWidth())
@@ -109,9 +117,7 @@ fun CategoriesScreenContent(
                 icon = { Icon(imageVector = Icons.Rounded.Add, contentDescription = null) },
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 onClick = {
-                    openCreateDialog {
-                        createCategory(it)
-                    }
+                    createDialogState.show()
                 }
             )
             VerticalScrollbar(
@@ -122,6 +128,7 @@ fun CategoriesScreenContent(
             )
         }
     }
+    CreateDialog(createDialogState, createCategory)
 }
 
 @Composable

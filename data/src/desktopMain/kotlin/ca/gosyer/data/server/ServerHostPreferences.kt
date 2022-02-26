@@ -10,7 +10,11 @@ import ca.gosyer.core.prefs.Preference
 import ca.gosyer.core.prefs.PreferenceStore
 import ca.gosyer.data.server.host.ServerHostPreference
 
-class ServerHostPreferences(preferenceStore: PreferenceStore) {
+class ServerHostPreferences(private val preferenceStore: PreferenceStore) {
+
+    fun host(): Preference<Boolean> {
+        return preferenceStore.getBoolean("host", true)
+    }
 
     private val ip = ServerHostPreference.IP(preferenceStore)
     fun ip(): Preference<String> {

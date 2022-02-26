@@ -48,25 +48,23 @@ import ca.gosyer.ui.extensions.components.LanguageDialog
 import ca.gosyer.uicore.components.LoadingScreen
 import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import io.kamel.image.lazyPainterResource
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun SourceHomeScreenContent(
     onAddSource: (Source) -> Unit,
     isLoading: Boolean,
     sources: List<Source>,
-    languages: StateFlow<Set<String>>,
-    getSourceLanguages: () -> Set<String>,
+    languages: Set<String>,
+    sourceLanguages: Set<String>,
     setEnabledLanguages: (Set<String>) -> Unit
 ) {
+    val languageDialogState = rememberMaterialDialogState()
     Scaffold(
         topBar = {
             SourceHomeScreenToolbar(
-                languages,
-                getSourceLanguages,
-                setEnabledLanguages
+                languageDialogState::show
             )
         }
     ) {
@@ -97,24 +95,18 @@ fun SourceHomeScreenContent(
             }
         }
     }
+    LanguageDialog(languageDialogState, languages, sourceLanguages, setEnabledLanguages)
 }
 
 @Composable
 fun SourceHomeScreenToolbar(
-    sourceLanguages: StateFlow<Set<String>>,
-    onGetEnabledLanguages: () -> Set<String>,
-    onSetEnabledLanguages: (Set<String>) -> Unit
+    openEnabledLanguagesClick: () -> Unit
 ) {
     Toolbar(
         stringResource(MR.strings.location_sources),
         actions = {
             getActionItems(
-                onEnabledLanguagesClick = {
-                    val enabledLangs = MutableStateFlow(sourceLanguages.value)
-                    LanguageDialog(enabledLangs, onGetEnabledLanguages().toList()) {
-                        onSetEnabledLanguages(enabledLangs.value)
-                    }
-                }
+                openEnabledLanguagesClick = openEnabledLanguagesClick
             )
         }
     )
@@ -177,13 +169,13 @@ fun SourceItem(
 @Composable
 @Stable
 private fun getActionItems(
-    onEnabledLanguagesClick: () -> Unit
+    openEnabledLanguagesClick: () -> Unit
 ): List<ActionItem> {
     return listOf(
         ActionItem(
             stringResource(MR.strings.enabled_languages),
             Icons.Rounded.Translate,
-            doAction = onEnabledLanguagesClick
+            doAction = openEnabledLanguagesClick
         )
     )
 }

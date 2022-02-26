@@ -14,10 +14,12 @@ import ca.gosyer.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.i18n.MR
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import java.util.Locale
@@ -26,36 +28,43 @@ class ExtensionsScreenViewModel @Inject constructor(
     private val extensionHandler: ExtensionInteractionHandler,
     extensionPreferences: ExtensionPreferences
 ) : ViewModel() {
+    private val extensionList = MutableStateFlow<List<Extension>?>(null)
+
     private val _enabledLangs = extensionPreferences.languages().asStateFlow()
     val enabledLangs = _enabledLangs.asStateFlow()
 
-    private var extensionList: List<Extension>? = null
+    private val _searchQuery = MutableStateFlow<String?>(null)
+    val searchQuery = _searchQuery.asStateFlow()
 
-    private val _extensions = MutableStateFlow(emptyMap<String, List<Extension>>())
-    val extensions = _extensions.asStateFlow()
+    val extensions = combine(
+        searchQuery,
+        extensionList,
+        enabledLangs
+    ) { searchQuery, extensions, enabledLangs ->
+        search(searchQuery, extensions, enabledLangs)
+    }.stateIn(scope, SharingStarted.Eagerly, emptyMap())
+
+    val availableLangs = extensionList.filterNotNull().map { langs ->
+        langs.map { it.lang }.toSet()
+    }.stateIn(scope, SharingStarted.Eagerly, emptySet())
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
-    val searchQuery = MutableStateFlow<String?>(null)
+
 
     init {
         scope.launch {
             getExtensions()
         }
-
-        enabledLangs.drop(1).onEach {
-            search(searchQuery.value.orEmpty())
-        }.launchIn(scope)
     }
 
     private suspend fun getExtensions() {
         try {
             _isLoading.value = true
-            extensionList = extensionHandler.getExtensionList()
-            search(searchQuery.value.orEmpty())
+            extensionList.value = extensionHandler.getExtensionList()
         } catch (e: Exception) {
             e.throwIfCancellation()
-            extensionList = emptyList()
+            extensionList.value = emptyList()
         } finally {
             _isLoading.value = false
         }
@@ -97,26 +106,26 @@ class ExtensionsScreenViewModel @Inject constructor(
         }
     }
 
-    fun getSourceLanguages() = extensionList?.map { it.lang }?.toSet().orEmpty()
-
     fun setEnabledLanguages(langs: Set<String>) {
-        info { langs }
         _enabledLangs.value = langs
     }
 
-    fun search(searchQuery: String) {
-        this.searchQuery.value = searchQuery.takeUnless { it.isBlank() }
-        val extensionList = extensionList?.filter { it.lang in enabledLangs.value }
+    fun setQuery(query: String) {
+        _searchQuery.value = query
+    }
+
+    private fun search(searchQuery: String?, extensionList: List<Extension>?, enabledLangs: Set<String>): Map<String, List<Extension>> {
+        val extensions = extensionList?.filter { it.lang in enabledLangs }
             .orEmpty()
-        if (searchQuery.isBlank()) {
-            _extensions.value = extensionList.splitSort()
+        return if (searchQuery.isNullOrBlank()) {
+            extensions.splitSort()
         } else {
             val queries = searchQuery.split(" ")
-            val extensions = extensionList.toMutableList()
+            val filteredExtensions = extensions.toMutableList()
             queries.forEach { query ->
-                extensions.removeIf { !it.name.contains(query, true) }
+                filteredExtensions.removeIf { !it.name.contains(query, true) }
             }
-            _extensions.value = extensions.toList().splitSort()
+            filteredExtensions.toList().splitSort()
         }
     }
 

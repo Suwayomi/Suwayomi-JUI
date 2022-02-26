@@ -40,11 +40,10 @@ import kotlin.io.path.isExecutable
 
 @OptIn(DelicateCoroutinesApi::class)
 class ServerService @Inject constructor(
-    serverPreferences: ServerPreferences,
     private val serverHostPreferences: ServerHostPreferences
 ) {
     private val restartServerFlow = MutableSharedFlow<Unit>()
-    private val host = serverPreferences.host().stateIn(GlobalScope)
+    private val host = serverHostPreferences.host().stateIn(GlobalScope)
     private val _initialized = MutableStateFlow(
         if (host.value) {
             ServerResult.STARTING

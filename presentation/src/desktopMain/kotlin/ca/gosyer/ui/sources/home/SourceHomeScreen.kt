@@ -27,8 +27,8 @@ class SourceHomeScreen : Screen {
             onAddSource = sourcesNavigator::select,
             isLoading = vm.isLoading.collectAsState().value,
             sources = vm.sources.collectAsState().value,
-            languages = vm.languages,
-            getSourceLanguages = vm::getSourceLanguages,
+            languages = vm.languages.collectAsState().value,
+            sourceLanguages = vm.sourceLanguages.collectAsState().value,
             setEnabledLanguages = vm::setEnabledLanguages
         )
     }

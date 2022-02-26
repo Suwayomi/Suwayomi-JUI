@@ -20,14 +20,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -44,7 +42,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ContentAlpha
@@ -65,6 +62,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -77,10 +75,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
+import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.uicore.components.keyboardHandler
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import ca.gosyer.uicore.resources.stringResource
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogButtons
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.vanpra.composematerialdialogs.title
 
 @Composable
 fun PreferenceRow(
@@ -180,31 +186,39 @@ fun EditTextPreference(
     enabled: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
+    val dialogState = rememberMaterialDialogState()
     PreferenceRow(
         title = title,
         subtitle = subtitle,
         icon = icon,
         onClick = {
-            var editText by mutableStateOf(TextFieldValue(preference.value))
-            WindowDialog(
-                title,
-                onPositiveButton = {
-                    preference.value = editText.text
-                    changeListener()
-                }
-            ) {
-                OutlinedTextField(
-                    editText,
-                    onValueChange = {
-                        editText = it
-                    },
-                    visualTransformation = visualTransformation,
-                    modifier = Modifier.keyboardHandler()
-                )
-            }
+            dialogState.show()
         },
         enabled = enabled
     )
+    val value by preference.collectAsState()
+    var editText by remember(value) { mutableStateOf(TextFieldValue(preference.value)) }
+    MaterialDialog(
+        dialogState,
+        buttons = {
+            positiveButton(stringResource(MR.strings.action_ok)) {
+                preference.value = editText.text
+                changeListener()
+            }
+            negativeButton(stringResource(MR.strings.action_cancel))
+        },
+        properties = getMaterialDialogProperties(),
+    ) {
+        title(title)
+        OutlinedTextField(
+            editText,
+            onValueChange = {
+                editText = it
+            },
+            visualTransformation = visualTransformation,
+            modifier = Modifier.keyboardHandler()
+        )
+    }
 }
 
 @Composable
@@ -217,96 +231,117 @@ fun <Key> ChoicePreference(
     enabled: Boolean = true
 ) {
     val prefValue by preference.collectAsState()
+    val dialogState = rememberMaterialDialogState()
     PreferenceRow(
         title = title,
         subtitle = subtitle ?: choices[prefValue],
         onClick = {
-            ChoiceDialog(
-                items = choices.toList(),
-                selected = prefValue,
-                title = title,
-                onSelected = { selected ->
-                    preference.value = selected
-                    changeListener()
-                }
-            )
+            dialogState.show()
         },
         enabled = enabled
     )
+    ChoiceDialog(
+        state = dialogState,
+        items = choices.toList(),
+        selected = prefValue,
+        title = title,
+        onSelected = { selected ->
+            preference.value = selected
+            changeListener()
+        }
+    )
 }
 
+@Composable
 fun <T> ChoiceDialog(
+    state: MaterialDialogState,
     items: List<Pair<T, String>>,
     selected: T?,
     onCloseRequest: () -> Unit = {},
     onSelected: (T) -> Unit,
     title: String,
-    buttons: @Composable BoxWithConstraintsScope.(() -> Unit) -> Unit = { }
+    buttons: @Composable MaterialDialogButtons.() -> Unit = { }
 ) {
-    WindowDialog(
-        onCloseRequest = onCloseRequest,
+    MaterialDialog(
+        state,
         buttons = buttons,
-        title = title
+        properties = getMaterialDialogProperties(),
+        onCloseRequest = {
+            state.hide()
+            onCloseRequest()
+        }
     ) {
-        val state = rememberLazyListState()
-        LazyColumn(Modifier.fillMaxSize(), state) {
-            items(items) { (value, text) ->
-                Row(
-                    modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
-                        onClick = {
-                            onSelected(value)
-                            it()
-                        }
-                    ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = value == selected,
-                        onClick = {
-                            onSelected(value)
-                            it()
-                        },
-                    )
-                    Text(text = text, modifier = Modifier.padding(start = 24.dp))
+        title(title)
+        Box {
+            val listState = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxSize(), listState) {
+                items(items) { (value, text) ->
+                    Row(
+                        modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
+                            onClick = {
+                                onSelected(value)
+                                state.hide()
+                            }
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = value == selected,
+                            onClick = {
+                                onSelected(value)
+                                state.hide()
+                            },
+                        )
+                        Text(text = text, modifier = Modifier.padding(start = 24.dp))
+                    }
                 }
             }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(listState),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
-        VerticalScrollbar(
-            rememberScrollbarAdapter(state),
-            Modifier.align(Alignment.CenterEnd)
-                .fillMaxHeight()
-                .padding(horizontal = 4.dp, vertical = 8.dp)
-        )
     }
 }
 
+@Composable
 fun <T> MultiSelectDialog(
+    state: MaterialDialogState,
     items: List<Pair<T, String>>,
     selected: List<T>?,
     onCloseRequest: () -> Unit = {},
     onFinished: (List<T>) -> Unit,
     title: String,
 ) {
-    val checkedFlow = MutableStateFlow(selected.orEmpty())
-    WindowDialog(
-        onCloseRequest = onCloseRequest,
-        title = title,
-        onPositiveButton = {
-            onFinished(checkedFlow.value)
+    val checked = remember(selected) { selected.orEmpty().toMutableStateList() }
+    MaterialDialog(
+        state,
+        buttons = {
+            positiveButton(stringResource(MR.strings.action_ok)) {
+                onFinished(checked)
+            }
+            negativeButton(stringResource(MR.strings.action_cancel))
+        },
+        properties = getMaterialDialogProperties(),
+        onCloseRequest = {
+            state.hide()
+            onCloseRequest()
         }
     ) {
-        val checked by checkedFlow.collectAsState()
-        val state = rememberLazyListState()
+        title(title)
+        val listState = rememberLazyListState()
         Box {
-            LazyColumn(Modifier.fillMaxSize(), state) {
+            LazyColumn(Modifier.fillMaxSize(), listState) {
                 items(items) { (value, text) ->
                     Row(
                         modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
                             onClick = {
                                 if (value in checked) {
-                                    checkedFlow.value -= value
+                                    checked -= value
                                 } else {
-                                    checkedFlow.value += value
+                                    checked += value
                                 }
                             }
                         ),
@@ -322,7 +357,7 @@ fun <T> MultiSelectDialog(
                 item { Spacer(Modifier.height(80.dp)) }
             }
             VerticalScrollbar(
-                rememberScrollbarAdapter(state),
+                rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
                     .padding(horizontal = 4.dp, vertical = 8.dp)
@@ -340,17 +375,12 @@ fun ColorPreference(
     unsetColor: Color = Color.Unspecified
 ) {
     val initialColor = preference.value.takeOrElse { unsetColor }
+    val dialogState = rememberMaterialDialogState()
     PreferenceRow(
         title = title,
         subtitle = subtitle,
         onClick = {
-            ColorPickerDialog(
-                title = title,
-                onSelected = {
-                    preference.value = it
-                },
-                initialColor = initialColor
-            )
+            dialogState.show()
         },
         onLongClick = { preference.value = Color.Unspecified },
         action = {
@@ -368,6 +398,14 @@ fun ColorPreference(
             }
         },
         enabled = enabled
+    )
+    ColorPickerDialog(
+        state = dialogState,
+        title = title,
+        onSelected = {
+            preference.value = it
+        },
+        initialColor = initialColor
     )
 }
 

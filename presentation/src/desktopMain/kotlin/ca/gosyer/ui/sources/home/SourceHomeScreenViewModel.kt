@@ -13,7 +13,11 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 
@@ -24,13 +28,21 @@ class SourceHomeScreenViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
+    private val installedSources = MutableStateFlow(emptyList<Source>())
+
     private val _languages = catalogPreferences.languages().asStateFlow()
     val languages = _languages.asStateFlow()
 
-    private val _sources = MutableStateFlow(emptyList<Source>())
-    val sources = _sources.asStateFlow()
+    val sources = combine(installedSources, languages) { installedSources, languages ->
+        installedSources.filter {
+            it.lang in languages || it.lang == Source.LOCAL_SOURCE_LANG
+        }
+    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
-    private var installedSources = emptyList<Source>()
+    val sourceLanguages = installedSources.map { sources ->
+        sources.map { it.lang }.toSet() - setOf(Source.LOCAL_SOURCE_LANG)
+    }.stateIn(scope, SharingStarted.Eagerly, emptySet())
+
 
     init {
         getSources()
@@ -39,9 +51,7 @@ class SourceHomeScreenViewModel @Inject constructor(
     private fun getSources() {
         scope.launch {
             try {
-                installedSources = sourceHandler.getSourceList()
-                setSources(_languages.value)
-                info { _sources.value }
+                installedSources.value = sourceHandler.getSourceList()
             } catch (e: Exception) {
                 e.throwIfCancellation()
             } finally {
@@ -50,18 +60,9 @@ class SourceHomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun setSources(langs: Set<String>) {
-        _sources.value = installedSources.filter { it.lang in langs || it.lang == Source.LOCAL_SOURCE_LANG }
-    }
-
-    fun getSourceLanguages(): Set<String> {
-        return installedSources.map { it.lang }.toSet() - setOf(Source.LOCAL_SOURCE_LANG)
-    }
-
     fun setEnabledLanguages(langs: Set<String>) {
         info { langs }
         _languages.value = langs
-        setSources(langs)
     }
 
     private companion object : CKLogger({})

@@ -38,8 +38,8 @@ kotlin {
                 api(libs.coroutinesCore)
                 api(libs.kamel)
                 api(libs.voyagerCore)
-                api(project(":core"))
-                api(project(":i18n"))
+                api(projects.core)
+                api(projects.i18n)
                 api(compose.desktop.currentOs)
                 api(compose.materialIconsExtended)
             }

@@ -29,7 +29,7 @@ fun LibraryPager(
 ) {
     if (categories.isEmpty()) return
 
-    val state = rememberPagerState(categories.size, selectedPage)
+    val state = rememberPagerState(selectedPage)
     LaunchedEffect(state.currentPage) {
         if (state.currentPage != selectedPage) {
             onPageChanged(state.currentPage)
@@ -40,7 +40,7 @@ fun LibraryPager(
             state.animateScrollToPage(selectedPage)
         }
     }
-    HorizontalPager(state = state) {
+    HorizontalPager(categories.size, state = state) {
         val library by getLibraryForPage(categories[it].id)
         when (displayMode) {
             DisplayMode.CompactGrid -> LibraryMangaCompactGrid(

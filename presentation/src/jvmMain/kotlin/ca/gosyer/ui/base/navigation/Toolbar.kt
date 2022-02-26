@@ -69,7 +69,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.i18n.MR
-import ca.gosyer.uicore.components.BoxWithTooltipSurface
 import ca.gosyer.uicore.components.keyboardHandler
 import ca.gosyer.uicore.resources.stringResource
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -191,8 +190,6 @@ private fun WideToolbar(
         }
     }
 }
-
-
 
 @Composable
 private fun ThinToolbar(
@@ -354,19 +351,6 @@ private fun SearchBox(
                 cursorBrush = SolidColor(contentColor.copy(alpha = 0.50F)),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)
             )
-        }
-    }
-}
-
-@Composable
-fun ActionIcon(onClick: () -> Unit, contentDescription: String, icon: ImageVector) {
-    BoxWithTooltipSurface(
-        {
-            Text(contentDescription, modifier = Modifier.padding(10.dp))
-        }
-    ) {
-        IconButton(onClick = onClick) {
-            Icon(icon, contentDescription)
         }
     }
 }

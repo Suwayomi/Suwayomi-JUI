@@ -33,9 +33,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,15 +47,17 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Extension
 import ca.gosyer.i18n.MR
 import ca.gosyer.presentation.build.BuildKonfig
-import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.uicore.components.LoadingScreen
 import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.vanpra.composematerialdialogs.title
 import io.kamel.image.lazyPainterResource
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
 
 @Composable
@@ -65,26 +66,25 @@ fun ExtensionsScreenContent(
     isLoading: Boolean,
     query: String?,
     setQuery: (String) -> Unit,
-    enabledLangs: StateFlow<Set<String>>,
-    getSourceLanguages: () -> Set<String>,
+    enabledLangs: Set<String>,
+    availableLangs: Set<String>,
     setEnabledLanguages: (Set<String>) -> Unit,
     installExtension: (Extension) -> Unit,
     updateExtension: (Extension) -> Unit,
     uninstallExtension: (Extension) -> Unit
 ) {
+    val languageDialogState = rememberMaterialDialogState()
     Scaffold(
         topBar = {
             ExtensionsToolbar(
                 query,
                 setQuery,
-                enabledLangs,
-                getSourceLanguages,
-                setEnabledLanguages
+                languageDialogState::show
             )
         }
     ) {
         if (isLoading) {
-            LoadingScreen(isLoading)
+            LoadingScreen()
         } else {
             val state = rememberLazyListState()
 
@@ -118,26 +118,21 @@ fun ExtensionsScreenContent(
             }
         }
     }
+    LanguageDialog(languageDialogState, enabledLangs, availableLangs, setEnabledLanguages)
 }
 
 @Composable
 fun ExtensionsToolbar(
     searchText: String?,
     search: (String) -> Unit,
-    currentEnabledLangs: StateFlow<Set<String>>,
-    getSourceLanguages: () -> Set<String>,
-    setEnabledLanguages: (Set<String>) -> Unit
+    openLanguageDialog: () -> Unit
 ) {
     Toolbar(
         stringResource(MR.strings.location_extensions),
         searchText = searchText,
         search = search,
         actions = {
-            getActionItems(
-                currentEnabledLangs = currentEnabledLangs,
-                getSourceLanguages = getSourceLanguages,
-                setEnabledLanguages = setEnabledLanguages
-            )
+            getActionItems(openLanguageDialog)
         }
     )
 }
@@ -195,26 +190,42 @@ fun ExtensionItem(
     }
 }
 
-fun LanguageDialog(enabledLangsFlow: MutableStateFlow<Set<String>>, availableLangs: List<String>, setLangs: () -> Unit) {
-    WindowDialog(BuildKonfig.NAME, onPositiveButton = setLangs) {
-        val locale = Locale.getDefault()
-        val enabledLangs by enabledLangsFlow.collectAsState()
-        val state = rememberLazyListState()
+@Composable
+fun LanguageDialog(
+    state: MaterialDialogState,
+    enabledLangs: Set<String>,
+    availableLangs: Set<String>,
+    setLangs: (Set<String>) -> Unit
+) {
+    val modifiedLangs = remember(enabledLangs) { enabledLangs.toMutableStateList() }
+    MaterialDialog(
+        state,
+        buttons = {
+            positiveButton(stringResource(MR.strings.action_ok)) {
+                setLangs(modifiedLangs.toSet())
+            }
+            negativeButton(stringResource(MR.strings.action_cancel))
+        },
+        properties = getMaterialDialogProperties(),
+    ) {
+        title(BuildKonfig.NAME)
         Box {
-            LazyColumn(Modifier.fillMaxWidth(), state) {
-                items(availableLangs) { lang ->
+            val locale = remember { Locale.getDefault() }
+            val listState = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxWidth(), listState) {
+                items(availableLangs.toList()) { lang ->
                     Row {
                         val langName = remember(lang) {
                             Locale.forLanguageTag(lang)?.getDisplayName(locale) ?: lang
                         }
                         Text(langName)
                         Switch(
-                            lang in enabledLangs,
-                            {
+                            checked = lang in modifiedLangs,
+                            onCheckedChange = {
                                 if (it) {
-                                    enabledLangsFlow.value += lang
+                                    modifiedLangs += lang
                                 } else {
-                                    enabledLangsFlow.value -= lang
+                                    modifiedLangs -= lang
                                 }
                             }
                         )
@@ -223,7 +234,7 @@ fun LanguageDialog(enabledLangsFlow: MutableStateFlow<Set<String>>, availableLan
                 item { Spacer(Modifier.height(70.dp)) }
             }
             VerticalScrollbar(
-                rememberScrollbarAdapter(state),
+                rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
                     .padding(horizontal = 4.dp, vertical = 8.dp)
@@ -235,19 +246,13 @@ fun LanguageDialog(enabledLangsFlow: MutableStateFlow<Set<String>>, availableLan
 @Stable
 @Composable
 private fun getActionItems(
-    currentEnabledLangs: StateFlow<Set<String>>,
-    getSourceLanguages: () -> Set<String>,
-    setEnabledLanguages: (Set<String>) -> Unit
+    openLanguageDialog: () -> Unit
 ): List<ActionItem> {
     return listOf(
         ActionItem(
             stringResource(MR.strings.enabled_languages),
-            Icons.Rounded.Translate
-        ) {
-            val enabledLangs = MutableStateFlow(currentEnabledLangs.value)
-            LanguageDialog(enabledLangs, getSourceLanguages().toList()) {
-                setEnabledLanguages(enabledLangs.value)
-            }
-        }
+            Icons.Rounded.Translate,
+            doAction = openLanguageDialog
+        )
     )
 }

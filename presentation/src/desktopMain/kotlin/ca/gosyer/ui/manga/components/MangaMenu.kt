@@ -32,8 +32,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.FilterQuality
@@ -43,11 +43,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEach
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
-import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.uicore.image.KamelImage
+import ca.gosyer.uicore.resources.stringResource
 import com.google.accompanist.flowlayout.FlowRow
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.title
 import io.kamel.image.lazyPainterResource
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun MangaItem(manga: Manga) {
@@ -121,28 +125,36 @@ private fun Chip(text: String) {
     }
 }
 
-fun openCategorySelectDialog(
+@Composable
+fun CategorySelectDialog(
+    state: MaterialDialogState,
     categories: List<Category>,
     oldCategories: List<Category>,
     onPositiveClick: (List<Category>, List<Category>) -> Unit
 ) {
-    val enabledCategoriesFlow = MutableStateFlow(oldCategories)
-    WindowDialog(
-        "Select Categories",
-        onPositiveButton = { onPositiveClick(enabledCategoriesFlow.value, oldCategories) }
+    val enabledCategories = remember(oldCategories) { oldCategories.toMutableStateList() }
+    MaterialDialog(
+        state,
+        buttons = {
+            positiveButton(stringResource(MR.strings.action_ok)) {
+                onPositiveClick(enabledCategories.toList(), oldCategories)
+            }
+            negativeButton(stringResource(MR.strings.action_cancel))
+        },
+        properties = getMaterialDialogProperties(),
     ) {
-        val enabledCategories by enabledCategoriesFlow.collectAsState()
-        val state = rememberLazyListState()
+        title("Select Categories")
+        val listState = rememberLazyListState()
         Box {
-            LazyColumn(state = state) {
+            LazyColumn(state = listState) {
                 items(categories) { category ->
                     Row(
                         Modifier.fillMaxWidth().padding(8.dp)
                             .clickable {
                                 if (category in enabledCategories) {
-                                    enabledCategoriesFlow.value -= category
+                                    enabledCategories -= category
                                 } else {
-                                    enabledCategoriesFlow.value += category
+                                    enabledCategories += category
                                 }
                             },
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -159,7 +171,7 @@ fun openCategorySelectDialog(
                 modifier = Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
                     .padding(horizontal = 4.dp, vertical = 8.dp),
-                adapter = rememberScrollbarAdapter(state)
+                adapter = rememberScrollbarAdapter(listState)
             )
         }
     }

@@ -38,6 +38,7 @@ import ca.gosyer.ui.reader.openReaderMenu
 import ca.gosyer.uicore.components.ErrorScreen
 import ca.gosyer.uicore.components.LoadingScreen
 import ca.gosyer.uicore.resources.stringResource
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.flow.SharedFlow
 import java.time.format.DateTimeFormatter
 
@@ -48,7 +49,9 @@ fun MangaScreenContent(
     chapters: List<ChapterDownloadItem>,
     dateTimeFormatter: DateTimeFormatter,
     categoriesExist: Boolean,
-    chooseCategoriesFlow: SharedFlow<Pair<List<Category>, List<Category>>>,
+    chooseCategoriesFlow: SharedFlow<Unit>,
+    availableCategories: List<Category>,
+    mangaCategories: List<Category>,
     addFavorite: (List<Category>, List<Category>) -> Unit,
     setCategories: () -> Unit,
     toggleFavorite: () -> Unit,
@@ -62,9 +65,10 @@ fun MangaScreenContent(
     loadChapters: () -> Unit,
     loadManga: () -> Unit
 ) {
+    val categoryDialogState = rememberMaterialDialogState()
     LaunchedEffect(Unit) {
-        chooseCategoriesFlow.collect { (availableCategories, usedCategories) ->
-            openCategorySelectDialog(availableCategories, usedCategories, addFavorite)
+        chooseCategoriesFlow.collect {
+            categoryDialogState.show()
         }
     }
 
@@ -135,6 +139,7 @@ fun MangaScreenContent(
             }
         }
     }
+    CategorySelectDialog(categoryDialogState, availableCategories, mangaCategories, addFavorite)
 }
 
 @Composable

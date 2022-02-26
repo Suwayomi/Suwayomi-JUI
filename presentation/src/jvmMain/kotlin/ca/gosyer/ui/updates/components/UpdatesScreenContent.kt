@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.updates.components
 
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -34,6 +32,8 @@ import ca.gosyer.data.models.Chapter
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.chapter.ChapterDownloadIcon
 import ca.gosyer.ui.base.chapter.ChapterDownloadItem
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.uicore.components.LoadingScreen
 import ca.gosyer.uicore.components.MangaListItem

@@ -27,6 +27,10 @@ import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,7 +40,7 @@ import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.WindowDialog
+import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.util.system.filePicker
@@ -47,6 +51,10 @@ import ca.gosyer.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.vanpra.composematerialdialogs.title
 import io.ktor.client.features.onDownload
 import io.ktor.client.features.onUpload
 import io.ktor.http.isSuccess
@@ -225,10 +233,15 @@ private fun SettingsBackupScreenContent(
     stopRestore: () -> Unit,
     exportBackup: () -> Unit
 ) {
+    var backupFile by remember { mutableStateOf<Path?>(null) }
+    var missingSources by remember { mutableStateOf(emptyList<String>()) }
+    val dialogState = rememberMaterialDialogState()
     LaunchedEffect(Unit) {
         launch {
             missingSourceFlow.collect { (backup, sources) ->
-                openMissingSourcesDialog(sources, { restoreBackup(backup) }, stopRestore)
+                backupFile = backup
+                missingSources = sources
+                dialogState.show()
             }
         }
         launch {
@@ -278,21 +291,48 @@ private fun SettingsBackupScreenContent(
             )
         }
     }
+    MissingSourcesDialog(
+        dialogState,
+        missingSources,
+        onPositiveClick = {
+            restoreBackup(backupFile ?: return@MissingSourcesDialog)
+        },
+        onNegativeClick = stopRestore
+    )
 }
 
-private fun openMissingSourcesDialog(missingSources: List<String>, onPositiveClick: () -> Unit, onNegativeClick: () -> Unit) {
-    WindowDialog(
-        "Missing Sources",
-        onPositiveButton = onPositiveClick,
-        onNegativeButton = onNegativeClick
+@Composable
+private fun MissingSourcesDialog(
+    state: MaterialDialogState,
+    missingSources: List<String>,
+    onPositiveClick: () -> Unit,
+    onNegativeClick: () -> Unit
+) {
+    MaterialDialog(
+        state,
+        buttons = {
+            positiveButton(stringResource(MR.strings.action_ok), onClick = onPositiveClick)
+            negativeButton(stringResource(MR.strings.action_cancel), onClick = onNegativeClick)
+        },
+        properties = getMaterialDialogProperties(),
     ) {
-        LazyColumn {
-            item {
-                Text(stringResource(MR.strings.missing_sources), style = MaterialTheme.typography.subtitle2)
+        title("Missing Sources")
+        Box {
+            val listState = rememberLazyListState()
+            LazyColumn(Modifier.fillMaxSize(), state = listState) {
+                item {
+                    Text(stringResource(MR.strings.missing_sources), style = MaterialTheme.typography.subtitle2)
+                }
+                items(missingSources) {
+                    Text(it)
+                }
             }
-            items(missingSources) {
-                Text(it)
-            }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(listState),
+                Modifier.align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+            )
         }
     }
 }

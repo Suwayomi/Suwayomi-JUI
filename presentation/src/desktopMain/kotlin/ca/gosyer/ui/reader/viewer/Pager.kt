@@ -41,7 +41,7 @@ fun PagerReader(
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit
 ) {
-    val state = rememberPagerState(pages.size + 2, initialPage = currentPage)
+    val state = rememberPagerState(initialPage = currentPage)
 
     LaunchedEffect(Unit) {
         val pageRange = 0..(pages.size + 1)
@@ -77,7 +77,12 @@ fun PagerReader(
     val modifier = parentModifier then Modifier.fillMaxSize()
 
     if (direction == Direction.Down || direction == Direction.Up) {
-        VerticalPager(state, reverseLayout = direction == Direction.Up, modifier = modifier) {
+        VerticalPager(
+            count = pages.size + 2,
+            state = state,
+            reverseLayout = direction == Direction.Up,
+            modifier = modifier
+        ) {
             HandlePager(
                 pages,
                 it,
@@ -90,7 +95,12 @@ fun PagerReader(
             )
         }
     } else {
-        HorizontalPager(state, reverseLayout = direction == Direction.Left, modifier = modifier) {
+        HorizontalPager(
+            count = pages.size + 2,
+            state = state,
+            reverseLayout = direction == Direction.Left,
+            modifier = modifier
+        ) {
             HandlePager(
                 pages,
                 it,

@@ -8,8 +8,6 @@ package ca.gosyer.ui.base.navigation
 
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -25,6 +23,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.util.fastForEach
+import ca.gosyer.i18n.MR
+import ca.gosyer.uicore.resources.stringResource
 
 // Originally from https://gist.github.com/MachFour/369ebb56a66e2f583ebfb988dda2decf
 
@@ -82,9 +82,12 @@ fun ActionMenu(
     }
 
     if (overflowActions.isNotEmpty()) {
-        IconButton(onClick = { menuVisible.value = true }) {
-            Icon(Icons.Default.MoreVert, "More actions")
-        }
+        iconItem(
+            { menuVisible.value = true },
+            stringResource(MR.strings.action_more_actions),
+            Icons.Default.MoreVert,
+            true
+        )
         DropdownMenu(
             expanded = menuVisible.value,
             onDismissRequest = { menuVisible.value = false },
@@ -98,7 +101,7 @@ fun ActionMenu(
                         },
                         enabled = item.enabled
                     ) {
-                        //Icon(item.icon, item.name) just have text in the overflow menu
+                        // Icon(item.icon, item.name) just have text in the overflow menu
                         Text(item.name)
                     }
                 }

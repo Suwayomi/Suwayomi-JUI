@@ -59,71 +59,47 @@ class SettingsServerScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<SettingsServerViewModel>()
+        val connectionVM = viewModel<SettingsServerViewModel>()
+        val serverVm = viewModel<SettingsServerHostViewModel>()
         SettingsServerScreenContent(
-            hostValue = vm.host.collectAsState().value,
-            basicAuthEnabledValue = vm.basicAuthEnabled.collectAsState().value,
-            proxyValue = vm.proxy.collectAsState().value,
-            authValue = vm.auth.collectAsState().value,
-            restartServer = vm::restartServer,
-            serverSettingChanged = vm::serverSettingChanged,
-            host = vm.host,
-            ip = vm.ip,
-            port = vm.port,
-            socksProxyEnabled = vm.socksProxyEnabled,
-            socksProxyHost = vm.socksProxyHost,
-            socksProxyPort = vm.socksProxyPort,
-            debugLogsEnabled = vm.debugLogsEnabled,
-            systemTrayEnabled = vm.systemTrayEnabled,
-            webUIEnabled = vm.webUIEnabled,
-            openInBrowserEnabled = vm.openInBrowserEnabled,
-            basicAuthEnabled = vm.basicAuthEnabled,
-            basicAuthUsername = vm.basicAuthUsername,
-            basicAuthPassword = vm.basicAuthPassword,
-            serverUrl = vm.serverUrl,
-            serverPort = vm.serverPort,
-            proxy = vm.proxy,
-            proxyChoices = vm.getProxyChoices(),
-            httpHost = vm.httpHost,
-            httpPort = vm.httpPort,
-            socksHost = vm.socksHost,
-            socksPort = vm.socksPort,
-            auth = vm.auth,
-            authChoices = vm.getAuthChoices(),
-            authUsername = vm.authUsername,
-            authPassword = vm.authPassword
+            hostValue = serverVm.host.collectAsState().value,
+            basicAuthEnabledValue = serverVm.basicAuthEnabled.collectAsState().value,
+            proxyValue = connectionVM.proxy.collectAsState().value,
+            authValue = connectionVM.auth.collectAsState().value,
+            restartServer = serverVm::restartServer,
+            serverSettingChanged = serverVm::serverSettingChanged,
+            host = serverVm.host,
+            ip = serverVm.ip,
+            port = serverVm.port,
+            socksProxyEnabled = serverVm.socksProxyEnabled,
+            socksProxyHost = serverVm.socksProxyHost,
+            socksProxyPort = serverVm.socksProxyPort,
+            debugLogsEnabled = serverVm.debugLogsEnabled,
+            systemTrayEnabled = serverVm.systemTrayEnabled,
+            webUIEnabled = serverVm.webUIEnabled,
+            openInBrowserEnabled = serverVm.openInBrowserEnabled,
+            basicAuthEnabled = serverVm.basicAuthEnabled,
+            basicAuthUsername = serverVm.basicAuthUsername,
+            basicAuthPassword = serverVm.basicAuthPassword,
+            serverUrl = connectionVM.serverUrl,
+            serverPort = connectionVM.serverPort,
+            proxy = connectionVM.proxy,
+            proxyChoices = connectionVM.getProxyChoices(),
+            httpHost = connectionVM.httpHost,
+            httpPort = connectionVM.httpPort,
+            socksHost = connectionVM.socksHost,
+            socksPort = connectionVM.socksPort,
+            auth = connectionVM.auth,
+            authChoices = connectionVM.getAuthChoices(),
+            authUsername = connectionVM.authUsername,
+            authPassword = connectionVM.authPassword
         )
     }
 }
 
 class SettingsServerViewModel @Inject constructor(
-    serverPreferences: ServerPreferences,
-    serverHostPreferences: ServerHostPreferences,
-    private val serverService: ServerService
+    serverPreferences: ServerPreferences
 ) : ViewModel() {
-    val host = serverPreferences.host().asStateIn(scope)
-    val ip = serverHostPreferences.ip().asStateIn(scope)
-    val port = serverHostPreferences.port().asStringStateIn(scope)
-
-    // Proxy
-    val socksProxyEnabled = serverHostPreferences.socksProxyEnabled().asStateIn(scope)
-    val socksProxyHost = serverHostPreferences.socksProxyHost().asStateIn(scope)
-    val socksProxyPort = serverHostPreferences.socksProxyPort().asStringStateIn(scope)
-
-    // Misc
-    val debugLogsEnabled = serverHostPreferences.debugLogsEnabled().asStateIn(scope)
-    val systemTrayEnabled = serverHostPreferences.systemTrayEnabled().asStateIn(scope)
-
-    // WebUI
-    val webUIEnabled = serverHostPreferences.webUIEnabled().asStateIn(scope)
-    val openInBrowserEnabled = serverHostPreferences.openInBrowserEnabled().asStateIn(scope)
-
-    // Authentication
-    val basicAuthEnabled = serverHostPreferences.basicAuthEnabled().asStateIn(scope)
-    val basicAuthUsername = serverHostPreferences.basicAuthUsername().asStateIn(scope)
-    val basicAuthPassword = serverHostPreferences.basicAuthPassword().asStateIn(scope)
-
-    // JUI connection
     val serverUrl = serverPreferences.server().asStateIn(scope)
     val serverPort = serverPreferences.port().asStringStateIn(scope)
 
@@ -158,11 +134,52 @@ class SettingsServerViewModel @Inject constructor(
         _serverSettingChanged.value = true
     }
 
+    private companion object : CKLogger({})
+}
+
+class SettingsServerHostViewModel @Inject constructor(
+    serverPreferences: ServerPreferences,
+    serverHostPreferences: ServerHostPreferences,
+    private val serverService: ServerService
+) : ViewModel() {
+    val host = serverHostPreferences.host().asStateIn(scope)
+    val ip = serverHostPreferences.ip().asStateIn(scope)
+    val port = serverHostPreferences.port().asStringStateIn(scope)
+
+    // Proxy
+    val socksProxyEnabled = serverHostPreferences.socksProxyEnabled().asStateIn(scope)
+    val socksProxyHost = serverHostPreferences.socksProxyHost().asStateIn(scope)
+    val socksProxyPort = serverHostPreferences.socksProxyPort().asStringStateIn(scope)
+
+    // Misc
+    val debugLogsEnabled = serverHostPreferences.debugLogsEnabled().asStateIn(scope)
+    val systemTrayEnabled = serverHostPreferences.systemTrayEnabled().asStateIn(scope)
+
+    // WebUI
+    val webUIEnabled = serverHostPreferences.webUIEnabled().asStateIn(scope)
+    val openInBrowserEnabled = serverHostPreferences.openInBrowserEnabled().asStateIn(scope)
+
+    // Authentication
+    val basicAuthEnabled = serverHostPreferences.basicAuthEnabled().asStateIn(scope)
+    val basicAuthUsername = serverHostPreferences.basicAuthUsername().asStateIn(scope)
+    val basicAuthPassword = serverHostPreferences.basicAuthPassword().asStateIn(scope)
+
+    private val _serverSettingChanged = MutableStateFlow(false)
+    val serverSettingChanged = _serverSettingChanged.asStateFlow()
+    fun serverSettingChanged() {
+        _serverSettingChanged.value = true
+    }
+
     fun restartServer() {
         if (serverSettingChanged.value) {
             serverService.restartServer()
         }
     }
+
+    // Handle password connection to hosted server
+    val auth = serverPreferences.auth().asStateIn(scope)
+    val authUsername = serverPreferences.authUsername().asStateIn(scope)
+    val authPassword = serverPreferences.authPassword().asStateIn(scope)
 
     init {
         combine(basicAuthEnabled, basicAuthUsername, basicAuthPassword) { enabled, username, password ->

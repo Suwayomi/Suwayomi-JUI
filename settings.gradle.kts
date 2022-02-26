@@ -13,7 +13,8 @@ include("desktop")
 include("core")
 include("i18n")
 include("data")
-
-enableFeaturePreview("VERSION_CATALOGS")
 include("ui-core")
 include("presentation")
+
+enableFeaturePreview("VERSION_CATALOGS")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
