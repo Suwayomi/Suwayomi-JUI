@@ -25,6 +25,7 @@ import ca.gosyer.ui.base.components.LocalScrollbarStyle
 import ca.gosyer.ui.base.theme.ThemeScrollbarStyle.getScrollbarStyle
 import ca.gosyer.uicore.theme.Theme
 import ca.gosyer.uicore.theme.themes
+import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.LocalViewModelFactory
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -54,8 +55,9 @@ fun AppTheme(content: @Composable () -> Unit) {
 }
 
 class AppThemeViewModel @Inject constructor(
-    private val uiPreferences: UiPreferences
-) : ViewModel() {
+    private val uiPreferences: UiPreferences,
+    contextWrapper: ContextWrapper
+) : ViewModel(contextWrapper) {
     override val scope = MainScope()
 
     private val themeMode = uiPreferences.themeMode().asStateFlow()

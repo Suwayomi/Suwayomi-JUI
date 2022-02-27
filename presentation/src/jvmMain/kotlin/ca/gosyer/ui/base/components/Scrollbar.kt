@@ -11,6 +11,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
 expect interface ScrollbarAdapter
@@ -28,6 +29,34 @@ expect fun VerticalScrollbar(
     interactionSource: MutableInteractionSource,
 )
 
+@Composable
+expect fun HorizontalScrollbar(
+    adapter: ScrollbarAdapter,
+    modifier: Modifier,
+    reverseLayout: Boolean,
+    style: ScrollbarStyle,
+    interactionSource: MutableInteractionSource,
+)
+
+@Composable
+fun VerticalScrollbar(
+    adapter: ScrollbarAdapter,
+    modifier: Modifier = Modifier,
+    reverseLayout: Boolean = false,
+    style: ScrollbarStyle = LocalScrollbarStyle.current,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    real: Boolean = false
+) = VerticalScrollbar(adapter, modifier, reverseLayout, style, interactionSource)
+
+@Composable
+fun HorizontalScrollbar(
+    adapter: ScrollbarAdapter,
+    modifier: Modifier = Modifier,
+    reverseLayout: Boolean = false,
+    style: ScrollbarStyle = LocalScrollbarStyle.current,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    real: Boolean = false
+) = HorizontalScrollbar(adapter, modifier, reverseLayout, style, interactionSource)
 
 @Composable
 expect fun rememberScrollbarAdapter(

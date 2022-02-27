@@ -28,7 +28,7 @@ suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.()
     return client.get<ByteReadChannel>(url, block).toImageBitmap()
 }
 
-suspend fun ByteReadChannel.toImageBitmap(): ImageBitmap {
+actual suspend fun ByteReadChannel.toImageBitmap(): ImageBitmap {
     val bytes = ByteArrayOutputStream().use {
         this.copyTo(it)
         it.toByteArray()

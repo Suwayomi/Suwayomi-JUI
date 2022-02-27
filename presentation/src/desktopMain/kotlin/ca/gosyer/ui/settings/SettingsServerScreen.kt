@@ -43,6 +43,7 @@ import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.uicore.prefs.asStateIn
 import ca.gosyer.uicore.prefs.asStringStateIn
 import ca.gosyer.uicore.resources.stringResource
+import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import ca.gosyer.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -98,8 +99,9 @@ class SettingsServerScreen : Screen {
 }
 
 class SettingsServerViewModel @Inject constructor(
-    serverPreferences: ServerPreferences
-) : ViewModel() {
+    serverPreferences: ServerPreferences,
+    contextWrapper: ContextWrapper
+) : ViewModel(contextWrapper) {
     val serverUrl = serverPreferences.server().asStateIn(scope)
     val serverPort = serverPreferences.port().asStringStateIn(scope)
 
@@ -140,8 +142,9 @@ class SettingsServerViewModel @Inject constructor(
 class SettingsServerHostViewModel @Inject constructor(
     serverPreferences: ServerPreferences,
     serverHostPreferences: ServerHostPreferences,
-    private val serverService: ServerService
-) : ViewModel() {
+    private val serverService: ServerService,
+    contextWrapper: ContextWrapper
+) : ViewModel(contextWrapper) {
     val host = serverHostPreferences.host().asStateIn(scope)
     val ip = serverHostPreferences.ip().asStateIn(scope)
     val port = serverHostPreferences.port().asStringStateIn(scope)

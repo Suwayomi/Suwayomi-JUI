@@ -12,6 +12,7 @@ import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.data.server.interactions.UpdatesInteractionHandler
 import ca.gosyer.ui.base.chapter.ChapterDownloadItem
+import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,8 +26,9 @@ import me.tatarka.inject.annotations.Inject
 class UpdatesScreenViewModel @Inject constructor(
     private val chapterHandler: ChapterInteractionHandler,
     private val updatesHandler: UpdatesInteractionHandler,
-    private val downloadService: DownloadService
-) : ViewModel() {
+    private val downloadService: DownloadService,
+    contextWrapper: ContextWrapper
+) : ViewModel(contextWrapper) {
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()

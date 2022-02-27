@@ -7,14 +7,13 @@
 package ca.gosyer.ui.base.dialog
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.toPainter
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
 import ca.gosyer.presentation.build.BuildKonfig
+import ca.gosyer.uicore.resources.toPainter
 import com.vanpra.composematerialdialogs.DesktopWindowPosition
 import com.vanpra.composematerialdialogs.MaterialDialogProperties
 import com.vanpra.composematerialdialogs.SecurePolicy
@@ -28,7 +27,7 @@ fun getMaterialDialogProperties(
     position: DesktopWindowPosition = DesktopWindowPosition(Alignment.Center),
     size: DpSize = DpSize(400.dp, 300.dp),
     title: String = BuildKonfig.NAME,
-    icon: Painter = remember { MR.images.icon.image.toPainter() },
+    icon: Painter = MR.images.icon.toPainter(),
     resizable: Boolean = true
 ): MaterialDialogProperties {
     return MaterialDialogProperties(

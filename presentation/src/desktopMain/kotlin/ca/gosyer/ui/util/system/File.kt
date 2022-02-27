@@ -8,28 +8,27 @@ package ca.gosyer.ui.util.system
 
 import ca.gosyer.core.lang.launchUI
 import kotlinx.coroutines.DelicateCoroutinesApi
+import okio.Path
+import okio.Path.Companion.toOkioPath
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.io.path.Path
 
 fun filePicker(
     vararg extensions: String,
-    builder: JFileChooser.() -> Unit = {},
-    onCancel: (JFileChooser) -> Unit = {},
-    onError: (JFileChooser) -> Unit = {},
-    onApprove: (JFileChooser) -> Unit
-) = fileChooser(false, builder, onCancel, onError, onApprove, extensions = extensions)
+    onCancel: () -> Unit = {},
+    onError: () -> Unit = {},
+    onApprove: (Path) -> Unit
+) = fileChooser(false, onCancel, onError, onApprove, extensions = extensions)
 
 fun fileSaver(
     defaultFileName: String,
     extension: String,
-    builder: JFileChooser.() -> Unit = {},
-    onCancel: (JFileChooser) -> Unit = {},
-    onError: (JFileChooser) -> Unit = {},
-    onApprove: (JFileChooser) -> Unit
+    onCancel: () -> Unit = {},
+    onError: () -> Unit = {},
+    onApprove: (Path) -> Unit
 ) = fileChooser(
     true,
-    builder,
     onCancel,
     onError,
     onApprove,
@@ -41,18 +40,16 @@ fun fileSaver(
  * Opens a swing file picker, in the details view by default
  *
  * @param saving true if the dialog is going to save a file, false if its going to open a file
- * @param builder invokes this builder before launching the file picker, such as adding a action listener
  * @param onCancel the listener that is called when picking a file is canceled
  * @param onError the listener that is called when picking a file exited with a error
  * @param onApprove the listener that is called when picking a file is completed
  */
 @OptIn(DelicateCoroutinesApi::class)
-private fun fileChooser(
+internal fun fileChooser(
     saving: Boolean = false,
-    builder: JFileChooser.() -> Unit = {},
-    onCancel: (JFileChooser) -> Unit = {},
-    onError: (JFileChooser) -> Unit = {},
-    onApprove: (JFileChooser) -> Unit,
+    onCancel: () -> Unit = {},
+    onError: () -> Unit = {},
+    onApprove: (Path) -> Unit,
     defaultFileName: String = "",
     vararg extensions: String,
 ) = launchUI {
@@ -67,7 +64,6 @@ private fun fileChooser(
                 selectedFile = Path(defaultFileName).toFile()
             }
         }
-        .apply(builder)
 
     val result = fileChooser.let {
         if (saving) {
@@ -78,8 +74,8 @@ private fun fileChooser(
     }
 
     when (result) {
-        JFileChooser.APPROVE_OPTION -> onApprove(fileChooser)
-        JFileChooser.CANCEL_OPTION -> onCancel(fileChooser)
-        JFileChooser.ERROR_OPTION -> onError(fileChooser)
+        JFileChooser.APPROVE_OPTION -> onApprove(fileChooser.selectedFile.toOkioPath())
+        JFileChooser.CANCEL_OPTION -> onCancel()
+        JFileChooser.ERROR_OPTION -> onError()
     }
 }

@@ -10,12 +10,13 @@ import ca.gosyer.core.prefs.Preference
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
+import dev.icerock.moko.resources.StringResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-abstract class ViewModel : ScreenModel {
+abstract class ViewModel(private val contextWrapper: ContextWrapper) : ScreenModel {
 
     protected open val scope
         get() = coroutineScope
@@ -28,5 +29,12 @@ abstract class ViewModel : ScreenModel {
             collect { state.value = it }
         }
         return state
+    }
+
+    fun StringResource.toPlatformString(): String {
+        return contextWrapper.toPlatformString(this)
+    }
+    fun StringResource.toPlatformString(vararg args: Any): String {
+        return contextWrapper.toPlatformString(this, *args)
     }
 }

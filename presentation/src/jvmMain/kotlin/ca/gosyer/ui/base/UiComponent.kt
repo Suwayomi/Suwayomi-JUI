@@ -6,36 +6,23 @@
 
 package ca.gosyer.ui.base
 
-import ca.gosyer.core.di.AppScope
+import androidx.compose.runtime.ProvidedValue
 import ca.gosyer.data.DataComponent
 import ca.gosyer.ui.base.image.KamelConfigProvider
 import ca.gosyer.ui.base.vm.ViewModelFactoryImpl
-import ca.gosyer.uicore.vm.LocalViewModelFactory
 import io.kamel.core.config.KamelConfig
-import io.kamel.image.config.LocalKamelConfig
-import me.tatarka.inject.annotations.Component
-import me.tatarka.inject.annotations.Provides
 
-@AppScope
-@Component
-abstract class UiComponent(
-    @Component protected val dataComponent: DataComponent
-) {
+expect abstract class UiComponent {
+    protected val dataComponent: DataComponent
     protected abstract val kamelConfigProvider: KamelConfigProvider
 
     abstract val viewModelFactory: ViewModelFactoryImpl
 
     abstract val kamelConfig: KamelConfig
 
-    @get:AppScope
-    @get:Provides
     protected val kamelConfigFactory: KamelConfig
-        get() = kamelConfigProvider.get()
 
-    fun getHooks() = arrayOf(
-        LocalViewModelFactory provides viewModelFactory,
-        LocalKamelConfig provides kamelConfig
-    )
+    fun getHooks(): Array<ProvidedValue<out Any>>
 
     companion object
 }

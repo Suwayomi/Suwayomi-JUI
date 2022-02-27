@@ -416,12 +416,7 @@ fun hsvToColor(hue: Float, saturation: Float, value: Float): Color {
     return Color.hsv(hue, saturation, value)
 }
 
-private fun Color.toHsv(): FloatArray {
-    fun Float.toIntColor() = (this * 256).toInt()
-    val result = floatArrayOf(0f, 0f, 0f)
-    java.awt.Color.RGBtoHSB(red.toIntColor(), green.toIntColor(), blue.toIntColor(), result)
-    return result
-}
+internal expect fun Color.toHsv(): FloatArray
 
 private fun hueToColor(hue: Float): Color {
     return hsvToColor(hue, 1f, 1f)
@@ -431,14 +426,7 @@ private fun Color.toHexString(): String {
     return String.format("#%06X", (0xFFFFFF and toArgb()))
 }
 
-private fun hexStringToColor(hex: String): Color? {
-    return try {
-        val color = java.awt.Color.decode(hex)
-        Color(color.red, color.green, color.blue, color.alpha)
-    } catch (e: Exception) {
-        null
-    }
-}
+internal expect fun hexStringToColor(hex: String): Color?
 
 private val presetColors = listOf(
     Color(0xFFF44336), // RED 500

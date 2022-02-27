@@ -63,7 +63,6 @@ kotlin {
         }
 
         val desktopMain by getting {
-            kotlin.srcDir("src/jvmMain/kotlin")
             kotlin.srcDir("build/generated/ksp/desktopMain/kotlin")
             dependencies {
                 api(kotlin("stdlib-jdk8"))
@@ -71,20 +70,17 @@ kotlin {
             }
         }
         val desktopTest by getting {
-            kotlin.srcDir("src/jvmTest/kotlin")
             kotlin.srcDir("build/generated/ksp/desktopTest/kotlin")
         }
 
         val androidMain by getting {
-            kotlin.srcDir("src/jvmMain/kotlin")
-            kotlin.srcDir("build/generated/ksp/androidMain/kotlin")
+            kotlin.srcDir("build/generated/ksp/androidRelease/kotlin")
             dependencies {
                 api(kotlin("stdlib-jdk8"))
             }
         }
         val androidTest by getting {
-            kotlin.srcDir("src/jvmTest/kotlin")
-            kotlin.srcDir("build/generated/ksp/androidTest/kotlin")
+            kotlin.srcDir("build/generated/ksp/androidReleaseTest/kotlin")
         }
     }
 }

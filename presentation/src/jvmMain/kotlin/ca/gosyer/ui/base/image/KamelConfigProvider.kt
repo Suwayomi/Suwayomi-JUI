@@ -14,6 +14,7 @@ import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.uicore.prefs.asStateIn
 import io.kamel.core.config.DefaultCacheSize
 import io.kamel.core.config.KamelConfig
+import io.kamel.core.config.KamelConfigBuilder
 import io.kamel.core.config.fileFetcher
 import io.kamel.core.config.httpFetcher
 import io.kamel.core.config.stringMapper
@@ -21,7 +22,6 @@ import io.kamel.core.config.uriMapper
 import io.kamel.core.config.urlMapper
 import io.kamel.core.mapper.Mapper
 import io.kamel.image.config.imageBitmapDecoder
-import io.kamel.image.config.resourcesFetcher
 import io.ktor.http.Url
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -36,7 +36,7 @@ class KamelConfigProvider @Inject constructor(
     @OptIn(DelicateCoroutinesApi::class)
     val serverUrl = serverPreferences.serverUrl().asStateIn(GlobalScope)
 
-    fun get(): KamelConfig {
+    fun get(resourcesFetcher: KamelConfigBuilder.() -> Unit): KamelConfig {
         return KamelConfig {
             // Default config
             imageBitmapCacheSize = DefaultCacheSize
