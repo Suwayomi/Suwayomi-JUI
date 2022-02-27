@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.manga.components
 
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
@@ -32,9 +30,11 @@ import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.chapter.ChapterDownloadItem
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
-import ca.gosyer.ui.reader.openReaderMenu
+import ca.gosyer.ui.reader.rememberReaderLauncher
 import ca.gosyer.uicore.components.ErrorScreen
 import ca.gosyer.uicore.components.LoadingScreen
 import ca.gosyer.uicore.resources.stringResource
@@ -71,6 +71,7 @@ fun MangaScreenContent(
             categoryDialogState.show()
         }
     }
+    val readerLauncher = rememberReaderLauncher()
 
     Scaffold(
         topBar = {
@@ -104,7 +105,7 @@ fun MangaScreenContent(
                                     ChapterItem(
                                         chapter,
                                         dateTimeFormatter::format,
-                                        onClick = { openReaderMenu(it, manga.id) },
+                                        onClick = { readerLauncher.launch(it, manga.id) },
                                         toggleRead = toggleRead,
                                         toggleBookmarked = toggleBookmarked,
                                         markPreviousAsRead = markPreviousRead,

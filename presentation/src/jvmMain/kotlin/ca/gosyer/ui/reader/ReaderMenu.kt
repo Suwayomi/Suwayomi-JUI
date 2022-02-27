@@ -78,7 +78,14 @@ val supportedKeyList = listOf(
     Key.DirectionRight
 )
 
-expect fun openReaderMenu(chapterIndex: Int, mangaId: Long)
+expect class ReaderLauncher {
+    fun launch(
+        chapterIndex: Int,
+        mangaId: Long
+    )
+}
+@Composable
+expect fun rememberReaderLauncher(): ReaderLauncher
 
 @Composable
 fun ReaderMenu(
@@ -105,13 +112,6 @@ fun ReaderMenu(
     val navigationMode by vm.readerModeSettings.navigationMode.collectAsState()
     val currentPage by vm.currentPage.collectAsState()
     val currentPageOffset by vm.currentPageOffset.collectAsState()
-
-    fun hotkey(block: () -> Unit): (KeyEvent) -> Boolean {
-        return {
-            block()
-            true
-        }
-    }
 
     LaunchedEffect(hotkeyFlow) {
         hotkeyFlow.collectLatest {

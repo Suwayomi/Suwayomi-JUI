@@ -9,7 +9,7 @@ package ca.gosyer.ui.updates
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.ui.manga.MangaScreen
-import ca.gosyer.ui.reader.openReaderMenu
+import ca.gosyer.ui.reader.rememberReaderLauncher
 import ca.gosyer.ui.updates.components.UpdatesScreenContent
 import ca.gosyer.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -26,11 +26,12 @@ class UpdatesScreen : Screen {
     override fun Content() {
         val vm = viewModel<UpdatesScreenViewModel>()
         val navigator = LocalNavigator.currentOrThrow
+        val readerLauncher = rememberReaderLauncher()
         UpdatesScreenContent(
             isLoading = vm.isLoading.collectAsState().value,
             updates = vm.updates.collectAsState().value,
             loadNextPage = vm::loadNextPage,
-            openChapter = ::openReaderMenu,
+            openChapter = readerLauncher::launch,
             openManga = { navigator push MangaScreen(it) },
             downloadChapter = vm::downloadChapter,
             deleteDownloadedChapter = vm::deleteDownloadedChapter,

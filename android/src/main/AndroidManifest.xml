@@ -22,5 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+                android:name=".ReaderActivity"
+                android:launchMode="singleTask"
+                android:exported="false">
+        </activity>
     </application>
 </manifest>

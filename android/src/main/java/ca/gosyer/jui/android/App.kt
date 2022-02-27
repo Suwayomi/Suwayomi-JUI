@@ -21,9 +21,9 @@ class App : Application(), DefaultLifecycleObserver {
     override fun onCreate() {
         super<Application>.onCreate()
 
-        /*if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             System.setProperty("kotlinx.coroutines.debug", "on")
-        }*/
+        }
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 

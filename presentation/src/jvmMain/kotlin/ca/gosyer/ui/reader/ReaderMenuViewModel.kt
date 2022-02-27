@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.reader
 
+import ca.gosyer.core.lang.launchDefault
 import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.core.prefs.getAsFlow
@@ -27,7 +28,6 @@ import ca.gosyer.uicore.prefs.asStateIn
 import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -96,9 +96,11 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     fun init() {
-        scope.launch(Dispatchers.Default) {
-            initManga(params.mangaId)
-            initChapters(params.mangaId, params.chapterIndex)
+        scope.launchDefault {
+            runCatching {
+                initManga(params.mangaId)
+                initChapters(params.mangaId, params.chapterIndex)
+            }
         }
     }
 
@@ -147,7 +149,7 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     fun setMangaReaderMode(mode: String) {
-        scope.launch(Dispatchers.Default) {
+        scope.launchDefault {
             _manga.value?.updateRemote(
                 mangaHandler,
                 mode
@@ -157,8 +159,8 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     fun prevChapter() {
-        scope.launch(Dispatchers.Default) {
-            val prevChapter = previousChapter.value ?: return@launch
+        scope.launchDefault {
+            val prevChapter = previousChapter.value ?: return@launchDefault
             try {
                 _state.value = ReaderChapter.State.Wait
                 sendProgress()
@@ -170,8 +172,8 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     fun nextChapter() {
-        scope.launch(Dispatchers.Default) {
-            val nextChapter = nextChapter.value ?: return@launch
+        scope.launchDefault {
+            val nextChapter = nextChapter.value ?: return@launchDefault
             try {
                 _state.value = ReaderChapter.State.Wait
                 sendProgress()
@@ -205,7 +207,7 @@ class ReaderMenuViewModel @Inject constructor(
         )
         val pages = loader.loadChapter(chapter)
         viewerChapters.currChapter.value = chapter
-        scope.launch(Dispatchers.Default) {
+        scope.launchDefault {
             val chapters = try {
                 chapterHandler.getChapters(mangaId)
             } catch (e: Exception) {
@@ -265,7 +267,7 @@ class ReaderMenuViewModel @Inject constructor(
     fun sendProgress(chapter: Chapter? = this.chapter.value?.chapter, lastPageRead: Int = currentPage.value) {
         chapter ?: return
         if (chapter.read) return
-        GlobalScope.launch {
+        GlobalScope.launchDefault {
             chapterHandler.updateChapter(chapter.mangaId, chapter.index, lastPageRead = lastPageRead)
         }
     }
@@ -276,7 +278,7 @@ class ReaderMenuViewModel @Inject constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun updateLastPageReadOffset(chapter: Chapter, offset: Int) {
-        GlobalScope.launch {
+        GlobalScope.launchDefault {
             chapter.updateRemote(chapterHandler, offset)
         }
     }

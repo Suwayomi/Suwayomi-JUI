@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.reader
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -28,8 +29,21 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
+actual class ReaderLauncher {
+    actual fun launch(
+        chapterIndex: Int,
+        mangaId: Long
+    ) {
+        openReaderMenu(chapterIndex, mangaId)
+    }
+}
+@Composable
+actual fun rememberReaderLauncher(): ReaderLauncher {
+    return remember { ReaderLauncher() }
+}
+
 @OptIn(DelicateCoroutinesApi::class)
-actual fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
+fun openReaderMenu(chapterIndex: Int, mangaId: Long) {
     val windowSettings = AppComponent.getInstance().dataComponent.uiPreferences
         .readerWindow()
     val (
