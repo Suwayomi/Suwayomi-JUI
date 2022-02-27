@@ -13,6 +13,9 @@ accompanist = "0.20.1"
 kamel = "0.3.0"
 materialDialogs = "0.6.4"
 
+# Android
+activityCompose = "1.3.1"
+
 # Swing
 darklaf = "2.7.3"
 
@@ -61,6 +64,9 @@ accompanistFlowLayout = { module = "ca.gosyer:accompanist-flowlayout", version.r
 kamel = { module = "com.alialbaali.kamel:kamel-image", version.ref = "kamel" }
 materialDialogsCore = { module = "ca.gosyer:compose-material-dialogs-core", version.ref = "materialDialogs" }
 
+# Android
+activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+
 # Swing
 darklaf = { module = "com.github.weisj:darklaf-core", version.ref = "darklaf" }
 
@@ -99,4 +105,4 @@ desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = 
 
 # Localization
 mokoCore = { module = "dev.icerock.moko:resources", version.ref = "moko" }
-mokoCompose= { module = "dev.icerock.moko:resources-compose", version.ref = "moko" }
+mokoCompose = { module = "dev.icerock.moko:resources-compose", version.ref = "moko" }

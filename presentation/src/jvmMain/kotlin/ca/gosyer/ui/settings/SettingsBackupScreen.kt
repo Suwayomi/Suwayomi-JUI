@@ -41,10 +41,10 @@ import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.VerticalScrollbar
 import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
+import ca.gosyer.ui.base.file.rememberFileChooser
+import ca.gosyer.ui.base.file.rememberFileSaver
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
-import ca.gosyer.ui.util.system.filePicker
-import ca.gosyer.ui.util.system.fileSaver
 import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
@@ -66,6 +66,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Path
@@ -90,7 +92,8 @@ class SettingsBackupScreen : Screen {
             restoreFile = vm::restoreFile,
             restoreBackup = vm::restoreBackup,
             stopRestore = vm::stopRestore,
-            exportBackup = vm::exportBackup
+            exportBackup = vm::exportBackup,
+            exportBackupFileFound = vm::exportBackupFileFound
         )
     }
 }
@@ -114,13 +117,13 @@ class SettingsBackupViewModel @Inject constructor(
     val creatingProgress = _creatingProgress.asStateFlow()
     private val _creatingStatus = MutableStateFlow<Status>(Status.Nothing)
     internal val creatingStatus = _creatingStatus.asStateFlow()
-    private val _createFlow = MutableSharedFlow<Pair<String, (Path) -> Unit>>()
+    private val _createFlow = MutableSharedFlow<String>()
     val createFlow = _createFlow.asSharedFlow()
 
-    fun restoreFile(file: Path?) {
+    fun restoreFile(file: Path) {
         scope.launch {
-            if (file == null || !FileSystem.SYSTEM.exists(file)) {
-                info { "Invalid file ${file?.toString()}" }
+            if (!FileSystem.SYSTEM.exists(file)) {
+                info { "Invalid file ${file.toString()}" }
                 _restoreStatus.value = Status.Error
                 _restoring.value = false
             } else {
@@ -167,6 +170,9 @@ class SettingsBackupViewModel @Inject constructor(
         _restoring.value = false
     }
 
+    private val tempFile =  MutableStateFlow<Path?>(null)
+    private val mutex = Mutex()
+
     fun exportBackup() {
         scope.launch {
             _creatingStatus.value = Status.Nothing
@@ -181,31 +187,56 @@ class SettingsBackupViewModel @Inject constructor(
             } catch (e: Exception) {
                 info(e) { "Error exporting backup" }
                 _creatingStatus.value = Status.Error
+                _creating.value = false
                 e.throwIfCancellation()
                 null
             }
             _creatingProgress.value = 1.0F
             if (backup != null && backup.status.isSuccess()) {
-                _createFlow.emit(
-                    (backup.headers["content-disposition"]?.substringAfter("filename=")?.trim('"') ?: "backup") to {
-                        scope.launch {
-                            try {
-                                backup.content.toInputStream()
-                                    .source()
-                                    .copyTo(
-                                        FileSystem.SYSTEM.sink(it).buffer()
-                                    )
-                                _creatingStatus.value = Status.Success
-                            } catch (e: Exception) {
-                                e.throwIfCancellation()
-                                error(e) { "Error creating backup" }
-                                _creatingStatus.value = Status.Error
-                            } finally {
-                                _creating.value = false
-                            }
+                val filename = backup.headers["content-disposition"]?.substringAfter("filename=")?.trim('"') ?: "backup"
+                tempFile.value = FileSystem.SYSTEM_TEMPORARY_DIRECTORY.resolve(filename).also {
+                    launch {
+                        try {
+                            backup.content.toInputStream()
+                                .source()
+                                .copyTo(
+                                    FileSystem.SYSTEM.sink(it).buffer()
+                                )
+                        } catch (e: Exception) {
+                            e.throwIfCancellation()
+                            error(e) { "Error creating backup" }
+                            _creatingStatus.value = Status.Error
+                            _creating.value = false
+                        } finally {
+                            mutex.unlock()
                         }
                     }
-                )
+                }
+                mutex.tryLock()
+                _createFlow.emit(filename)
+            }
+        }
+    }
+
+    fun exportBackupFileFound(backupPath: Path) {
+        scope.launch {
+            mutex.withLock {
+                val tempFile = tempFile.value
+                if (_creating.value && tempFile != null) {
+                    try {
+                        FileSystem.SYSTEM.atomicMove(tempFile, backupPath)
+                        _creatingStatus.value = Status.Success
+                    } catch (e: Exception) {
+                        e.throwIfCancellation()
+                        error(e) { "Error moving created backup" }
+                        _creatingStatus.value = Status.Error
+                    } finally {
+                        _creating.value = false
+                    }
+                } else {
+                    _creatingStatus.value = Status.Error
+                    _creating.value = false
+                }
             }
         }
     }
@@ -228,15 +259,18 @@ private fun SettingsBackupScreenContent(
     creatingProgress: Float?,
     creatingStatus: SettingsBackupViewModel.Status,
     missingSourceFlow: SharedFlow<Pair<Path, List<String>>>,
-    createFlow: SharedFlow<Pair<String, (Path) -> Unit>>,
-    restoreFile: (Path?) -> Unit,
+    createFlow: SharedFlow<String>,
+    restoreFile: (Path) -> Unit,
     restoreBackup: (Path) -> Unit,
     stopRestore: () -> Unit,
-    exportBackup: () -> Unit
+    exportBackup: () -> Unit,
+    exportBackupFileFound: (Path) -> Unit
 ) {
     var backupFile by remember { mutableStateOf<Path?>(null) }
     var missingSources by remember { mutableStateOf(emptyList<String>()) }
     val dialogState = rememberMaterialDialogState()
+    val fileSaver = rememberFileSaver(exportBackupFileFound)
+    val fileChooser = rememberFileChooser(restoreFile)
     LaunchedEffect(Unit) {
         launch {
             missingSourceFlow.collect { (backup, sources) ->
@@ -246,11 +280,13 @@ private fun SettingsBackupScreenContent(
             }
         }
         launch {
-            createFlow.collect { (filename, function) ->
-                fileSaver(filename, "proto.gz", onApprove = function)
+            createFlow.collect { filename ->
+                fileSaver.save(filename)
             }
         }
     }
+
+
 
     Scaffold(
         topBar = {
@@ -268,7 +304,7 @@ private fun SettingsBackupScreenContent(
                         restoringProgress,
                         restoreStatus
                     ) {
-                        filePicker("gz", onApprove = restoreFile)
+                        fileChooser.launch("gz")
                     }
                     PreferenceFile(
                         stringResource(MR.strings.backup_create),

@@ -82,6 +82,7 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/androidRelease/kotlin")
             dependencies {
                 api(kotlin("stdlib-jdk8"))
+                api(libs.activityCompose)
             }
         }
         val androidTest by getting {

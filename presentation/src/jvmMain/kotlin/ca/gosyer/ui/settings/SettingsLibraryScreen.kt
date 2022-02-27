@@ -6,14 +6,12 @@
 
 package ca.gosyer.ui.settings
 
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.prefs.SwitchPreference
@@ -35,6 +35,8 @@ import ca.gosyer.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -46,10 +48,11 @@ class SettingsLibraryScreen : Screen {
     @Composable
     override fun Content() {
         val vm = viewModel<SettingsLibraryViewModel>()
+        val navigator = LocalNavigator.currentOrThrow
         SettingsLibraryScreenContent(
             showAllCategory = vm.showAllCategory,
-            refreshCategoryCount = vm::refreshCategoryCount,
-            categoriesSize = vm.categories.collectAsState().value
+            categoriesSize = vm.categories.collectAsState().value,
+            openCategoriesScreen = { openCategoriesMenu(vm::refreshCategoryCount, navigator) }
         )
     }
 }
@@ -78,8 +81,8 @@ class SettingsLibraryViewModel @Inject constructor(
 @Composable
 fun SettingsLibraryScreenContent(
     showAllCategory: PreferenceMutableStateFlow<Boolean>,
-    refreshCategoryCount: () -> Unit,
-    categoriesSize: Int
+    categoriesSize: Int,
+    openCategoriesScreen: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -98,7 +101,7 @@ fun SettingsLibraryScreenContent(
                 item {
                     PreferenceRow(
                         stringResource(MR.strings.location_categories),
-                        onClick = { openCategoriesMenu(refreshCategoryCount) },
+                        onClick = { openCategoriesScreen() },
                         subtitle = categoriesSize.toString()
                     )
                 }

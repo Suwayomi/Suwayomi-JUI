@@ -16,7 +16,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @OptIn(DelicateCoroutinesApi::class)
-fun openCategoriesMenu(notifyFinished: (() -> Unit)? = null) {
+actual fun openCategoriesMenu(notifyFinished: () -> Unit, navigator: Navigator) {
     launchApplication {
         CompositionLocalProvider(*remember { AppComponent.getInstance().uiComponent.getHooks() }) {
             ThemedWindow(::exitApplication, title = "${BuildKonfig.NAME} - Categories") {

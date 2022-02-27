@@ -13,6 +13,9 @@ import ca.gosyer.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.navigator.Navigator
+
+expect fun openCategoriesMenu(notifyFinished: () -> Unit, navigator: Navigator)
 
 class CategoriesScreen(
     @Transient
