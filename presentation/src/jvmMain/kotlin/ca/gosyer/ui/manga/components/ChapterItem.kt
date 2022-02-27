@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.manga.components
 
-import androidx.compose.foundation.ContextMenuItem
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -32,9 +31,15 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.chapter.ChapterDownloadIcon
 import ca.gosyer.ui.base.chapter.ChapterDownloadItem
-import ca.gosyer.uicore.components.contextMenuClickable
 import ca.gosyer.uicore.resources.stringResource
 import java.time.Instant
+
+expect fun Modifier.chapterItemModifier(
+    onClick: () -> Unit,
+    toggleRead: () -> Unit,
+    toggleBookmarked: () -> Unit,
+    markPreviousAsRead: () -> Unit
+): Modifier
 
 @Composable
 fun ChapterItem(
@@ -55,15 +60,11 @@ fun ChapterItem(
         shape = RoundedCornerShape(4.dp)
     ) {
         BoxWithConstraints(
-            Modifier.contextMenuClickable(
-                {
-                    listOf(
-                        ContextMenuItem("Toggle read") { toggleRead(chapter.index) },
-                        ContextMenuItem("Mark previous as read") { markPreviousAsRead(chapter.index) },
-                        ContextMenuItem("Toggle bookmarked") { toggleBookmarked(chapter.index) }
-                    )
-                },
-                onClick = { onClick(chapter.index) }
+            Modifier.chapterItemModifier(
+                onClick = { onClick(chapter.index) },
+                toggleRead = { toggleRead(chapter.index) },
+                toggleBookmarked = { toggleBookmarked(chapter.index) },
+                markPreviousAsRead = { markPreviousAsRead(chapter.index) }
             )
         ) {
             Row(

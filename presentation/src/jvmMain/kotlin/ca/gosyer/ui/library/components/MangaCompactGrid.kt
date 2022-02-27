@@ -6,8 +6,6 @@
 
 package ca.gosyer.ui.library.components
 
-import androidx.compose.foundation.ContextMenuItem
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,7 +16,6 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -37,9 +34,15 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Manga
-import ca.gosyer.uicore.components.contextMenuClickable
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.image.KamelImage
 import io.kamel.image.lazyPainterResource
+
+expect fun Modifier.libraryMangaModifier(
+    onClickManga: () -> Unit,
+    onClickRemoveManga: () -> Unit
+): Modifier
 
 @Composable
 fun LibraryMangaCompactGrid(
@@ -56,15 +59,14 @@ fun LibraryMangaCompactGrid(
         ) {
             items(library) { manga ->
                 LibraryMangaCompactGridItem(
+                    modifier = Modifier.libraryMangaModifier(
+                        { onClickManga(manga.id) },
+                        { onRemoveMangaClicked(manga.id) }
+                    ),
                     manga = manga,
                     unread = manga.unreadCount,
-                    downloaded = manga.downloadCount,
-                    onClick = { onClickManga(manga.id) }
-                ) {
-                    listOf(
-                        ContextMenuItem("Unfavorite") { onRemoveMangaClicked(manga.id) }
-                    )
-                }
+                    downloaded = manga.downloadCount
+                )
             }
         }
         VerticalScrollbar(
@@ -78,11 +80,10 @@ fun LibraryMangaCompactGrid(
 
 @Composable
 private fun LibraryMangaCompactGridItem(
+    modifier: Modifier,
     manga: Manga,
     unread: Int?,
     downloaded: Int?,
-    onClick: () -> Unit = {},
-    contextMenuItems: () -> List<ContextMenuItem> = { emptyList() }
 ) {
     val cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium)
     val fontStyle = LocalTextStyle.current.merge(
@@ -93,11 +94,7 @@ private fun LibraryMangaCompactGridItem(
         modifier = Modifier.padding(4.dp)
             .fillMaxWidth()
             .aspectRatio(3f / 4f)
-            .clip(MaterialTheme.shapes.medium)
-            .contextMenuClickable(
-                onClick = { onClick() },
-                items = contextMenuItems
-            )
+            .clip(MaterialTheme.shapes.medium) then modifier
     ) {
         KamelImage(cover, manga.title, contentScale = ContentScale.Crop)
         Box(modifier = Modifier.fillMaxSize().then(shadowGradient))

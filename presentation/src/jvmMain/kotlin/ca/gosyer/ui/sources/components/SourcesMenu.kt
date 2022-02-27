@@ -6,9 +6,6 @@
 
 package ca.gosyer.ui.sources.components
 
-import androidx.compose.foundation.TooltipArea
-import androidx.compose.foundation.TooltipPlacement
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -20,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -38,12 +34,20 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.CursorPoint
+import ca.gosyer.ui.base.components.TooltipArea
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.sources.browse.SourceScreen
 import ca.gosyer.ui.sources.home.SourceHomeScreen
-import ca.gosyer.uicore.components.combinedMouseClickable
 import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource
 import io.kamel.image.lazyPainterResource
+
+expect fun Modifier.sourceSideMenuItem(
+    onSourceTabClick: () -> Unit,
+    onSourceCloseTabClick: () -> Unit
+): Modifier
 
 @Composable
 fun SourcesMenu(
@@ -100,17 +104,17 @@ fun SourcesSideMenu(
                             }
                         },
                         modifier = Modifier.size(64.dp),
-                        tooltipPlacement = TooltipPlacement.CursorPoint(
+                        tooltipPlacement = CursorPoint(
                             offset = DpOffset(0.dp, 16.dp)
                         )
                     ) {
                         Box(Modifier.fillMaxSize()) {
                             val modifier = Modifier
-                                .combinedMouseClickable(
-                                    onClick = {
+                                .sourceSideMenuItem(
+                                    onSourceTabClick = {
                                         onSourceTabClick(source)
                                     },
-                                    onMiddleClick = {
+                                    onSourceCloseTabClick = {
                                         if (source != null) {
                                             onCloseSourceTabClick(source)
                                         }
