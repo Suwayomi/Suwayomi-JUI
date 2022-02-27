@@ -14,7 +14,7 @@ actual class PreferenceStoreFactory @Inject constructor(private val context: Con
     actual fun create(vararg names: String): PreferenceStore {
         return AndroidPreferenceStore(
             AndroidSettings(
-                context.getSharedPreferences(names.joinToString(separator = "/"), Context.MODE_PRIVATE)
+                context.getSharedPreferences(names.joinToString(separator = "_"), Context.MODE_PRIVATE)
             )
         )
     }

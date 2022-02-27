@@ -133,11 +133,26 @@ subprojects {
         plugins.withType<org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper> {
             configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
                 if (!Config.androidDev) {
-                    sourceSets.addSrcDir("desktopMain", "jvmMain")
-                    sourceSets.addSrcDir("desktopTest", "jvmTest")
+                    sourceSets.addSrcDir("desktopMain", "src/jvmMain/kotlin")
+                    sourceSets.addSrcDir("desktopTest", "src/jvmTest/kotlin")
                 }
-                sourceSets.addSrcDir("androidMain", "jvmMain")
-                sourceSets.addSrcDir("androidTest", "jvmTest")
+                sourceSets.addSrcDir("androidMain", "src/jvmMain/kotlin")
+                sourceSets.addSrcDir("androidTest", "src/jvmTest/kotlin")
+                plugins.withType<com.google.devtools.ksp.gradle.KspGradleSubplugin> {
+                    sourceSets.addSrcDir("commonMain", "build/generated/ksp/commonMain/kotlin")
+                    sourceSets.addSrcDir("commonTest", "build/generated/ksp/commonTest/kotlin")
+
+                    sourceSets.addSrcDir("desktopMain", "build/generated/ksp/desktopMain/kotlin")
+                    sourceSets.addSrcDir("desktopTest", "build/generated/ksp/desktopTest/kotlin")
+
+                    if (gradle.startParameter.taskRequests.toString().contains("Release")) {
+                        sourceSets.addSrcDir("androidMain", "build/generated/ksp/androidRelease/kotlin")
+                        sourceSets.addSrcDir("androidTest", "build/generated/ksp/androidRelease/kotlin")
+                    } else {
+                        sourceSets.addSrcDir("androidMain", "build/generated/ksp/androidDebug/kotlin")
+                        sourceSets.addSrcDir("androidTest", "build/generated/ksp/androidDebug/kotlin")
+                    }
+                }
             }
         }
     }
@@ -146,7 +161,7 @@ subprojects {
 fun NamedDomainObjectContainer<org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet>.addSrcDir(configuration: String, srcDir: String) {
     filter { it.name.contains(configuration) }
         .forEach {
-            it.kotlin.srcDir("src/$srcDir/kotlin")
+            it.kotlin.srcDir(srcDir)
         }
 }
 

@@ -32,7 +32,6 @@ kotlin {
             }
         }
         val commonMain by getting {
-            kotlin.srcDir("build/generated/ksp/commonMain/kotlin")
             dependencies {
                 api(kotlin("stdlib-common"))
                 api(libs.coroutinesCore)
@@ -45,7 +44,6 @@ kotlin {
             }
         }
         val commonTest by getting {
-            kotlin.srcDir("build/generated/ksp/commonTest/kotlin")
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
@@ -53,24 +51,19 @@ kotlin {
         }
 
         val desktopMain by getting {
-            kotlin.srcDir("build/generated/ksp/desktopMain/kotlin")
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                api(libs.coroutinesSwing)
             }
         }
         val desktopTest by getting {
-            kotlin.srcDir("build/generated/ksp/desktopTest/kotlin")
         }
 
         val androidMain by getting {
-            kotlin.srcDir("build/generated/ksp/androidRelease/kotlin")
             dependencies {
                 api(kotlin("stdlib-jdk8"))
             }
         }
         val androidTest by getting {
-            kotlin.srcDir("build/generated/ksp/androidReleaseTest/kotlin")
         }
     }
 }

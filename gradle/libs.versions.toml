@@ -14,7 +14,11 @@ kamel = "0.3.0"
 materialDialogs = "0.6.4"
 
 # Android
+appCompat = "1.4.1"
 activityCompose = "1.3.1"
+
+# Android Lifecycle
+lifecycle = "2.4.1"
 
 # Swing
 darklaf = "2.7.3"
@@ -27,6 +31,7 @@ ktor = "1.6.7"
 
 # Logging
 slf4j = "1.7.35"
+slf4jAndroid = "1.7.35-0"
 log4j = "2.17.1"
 ktlogging = "2.1.21"
 
@@ -48,6 +53,7 @@ moko = "0.18.0"
 # Kotlin
 coroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+coroutinesAndroid = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 # Serialization
@@ -65,7 +71,13 @@ kamel = { module = "com.alialbaali.kamel:kamel-image", version.ref = "kamel" }
 materialDialogsCore = { module = "ca.gosyer:compose-material-dialogs-core", version.ref = "materialDialogs" }
 
 # Android
+appCompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat" }
 activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+
+# Android Lifecycle
+lifecycleCommon = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycle" }
+lifecycleProcess = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycle" }
+lifecycleRuntime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
 # Swing
 darklaf = { module = "com.github.weisj:darklaf-core", version.ref = "darklaf" }
@@ -85,6 +97,7 @@ ktorAuth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 # Logging
 slf4jApi = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4jJul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
+slf4jAndroid = { module = "uk.uuid.slf4j:slf4j-android", version.ref = "slf4jAndroid" }
 log4jApi = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 log4jCore = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4jSlf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }

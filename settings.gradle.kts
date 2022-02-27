@@ -15,6 +15,7 @@ include("i18n")
 include("data")
 include("ui-core")
 include("presentation")
+include("android")
 
 enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
