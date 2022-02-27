@@ -12,6 +12,8 @@ internal actual fun Color.toHsv(): FloatArray {
     fun Float.toIntColor() = (this * 256).toInt()
     val result = floatArrayOf(0f, 0f, 0f)
     java.awt.Color.RGBtoHSB(red.toIntColor(), green.toIntColor(), blue.toIntColor(), result)
+    // HSB to HSV
+    result[0] = result[0] * 360
     return result
 }
 
