@@ -7,7 +7,6 @@
 package ca.gosyer.ui.downloads.components
 
 import androidx.compose.animation.core.animateFloatAsState
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
@@ -47,6 +45,8 @@ import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloaderStatus
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.uicore.components.DropdownIconButton

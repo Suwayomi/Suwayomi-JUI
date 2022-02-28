@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.sources.settings.components
 
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.material.Checkbox
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
@@ -31,6 +29,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
 import ca.gosyer.presentation.build.BuildKonfig
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.ChoiceDialog

@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.extensions.components
 
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +23,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -51,6 +49,8 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Extension
 import ca.gosyer.i18n.MR
 import ca.gosyer.presentation.build.BuildKonfig
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar

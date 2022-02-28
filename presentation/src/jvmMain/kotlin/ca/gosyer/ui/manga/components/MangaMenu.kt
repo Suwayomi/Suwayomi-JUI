@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.manga.components
 
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Card
@@ -44,6 +42,8 @@ import androidx.compose.ui.util.fastForEach
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource

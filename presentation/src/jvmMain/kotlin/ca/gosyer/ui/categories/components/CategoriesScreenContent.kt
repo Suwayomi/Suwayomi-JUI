@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.categories.components
 
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExtendedFloatingActionButton
@@ -44,6 +42,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.categories.CategoriesScreenViewModel.MenuCategory
 import ca.gosyer.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState

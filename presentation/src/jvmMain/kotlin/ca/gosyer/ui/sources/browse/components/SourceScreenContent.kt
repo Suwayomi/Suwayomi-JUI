@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.sources.browse.components
 
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
@@ -17,7 +16,6 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Explore
@@ -35,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.sources.browse.filter.SourceFiltersMenu

@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.settings
 
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.VerticalScrollbar
 import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.uicore.resources.stringResource
