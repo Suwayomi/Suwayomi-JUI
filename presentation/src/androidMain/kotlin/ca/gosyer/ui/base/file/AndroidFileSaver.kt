@@ -12,9 +12,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.core.net.toFile
-import okio.Path
-import okio.Path.Companion.toOkioPath
+import androidx.compose.ui.platform.LocalContext
+import okio.Sink
+import okio.sink
 
 actual class FileSaver(
     private val resultLauncher: ManagedActivityResultLauncher<String, Uri?>,
@@ -26,13 +26,14 @@ actual class FileSaver(
 
 @Composable
 actual fun rememberFileSaver(
-    onFileSelected: (Path) -> Unit,
+    onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit,
     onError: () -> Unit,
 ): FileSaver {
+    val context = LocalContext.current
     val result = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument()) {
         if (it != null) {
-            it.toFile().toOkioPath().let(onFileSelected)
+            context.contentResolver.openOutputStream(it)?.sink()?.let(onFileSelected)
         } else {
             onCancel()
         }

@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ca.gosyer.core.io.copyTo
+import ca.gosyer.core.io.saveTo
 import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
@@ -71,8 +72,11 @@ import kotlinx.coroutines.sync.withLock
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Path
+import okio.Sink
+import okio.Source
 import okio.buffer
 import okio.source
+import kotlin.random.Random
 
 class SettingsBackupScreen : Screen {
     override val key: ScreenKey = uniqueScreenKey
@@ -119,26 +123,24 @@ class SettingsBackupViewModel @Inject constructor(
     internal val creatingStatus = _creatingStatus.asStateFlow()
     private val _createFlow = MutableSharedFlow<String>()
     val createFlow = _createFlow.asSharedFlow()
-
-    fun restoreFile(file: Path) {
+    fun restoreFile(source: Source) {
         scope.launch {
-            if (!FileSystem.SYSTEM.exists(file)) {
-                info { "Invalid file ${file.toString()}" }
-                _restoreStatus.value = Status.Error
-                _restoring.value = false
-            } else {
-                try {
-                    val (missingSources) = backupHandler.validateBackupFile(file)
-                    if (missingSources.isEmpty()) {
-                        restoreBackup(file)
-                    } else {
-                        _missingSourceFlow.emit(file to missingSources)
+            try {
+                FileSystem.SYSTEM_TEMPORARY_DIRECTORY
+                    .resolve("tachidesk.${Random.nextLong()}.proto.gz")
+                    .also { file ->
+                        source.saveTo(file)
+                        val (missingSources) = backupHandler.validateBackupFile(file)
+                        if (missingSources.isEmpty()) {
+                            restoreBackup(file)
+                        } else {
+                            _missingSourceFlow.emit(file to missingSources)
+                        }
                     }
-                } catch (e: Exception) {
-                    info(e) { "Error importing backup" }
-                    _restoreStatus.value = Status.Error
-                    e.throwIfCancellation()
-                }
+            } catch (e: Exception) {
+                info(e) { "Error importing backup" }
+                _restoreStatus.value = Status.Error
+                e.throwIfCancellation()
             }
         }
     }
@@ -199,9 +201,7 @@ class SettingsBackupViewModel @Inject constructor(
                         try {
                             backup.content.toInputStream()
                                 .source()
-                                .copyTo(
-                                    FileSystem.SYSTEM.sink(it).buffer()
-                                )
+                                .saveTo(it)
                         } catch (e: Exception) {
                             e.throwIfCancellation()
                             error(e) { "Error creating backup" }
@@ -218,13 +218,13 @@ class SettingsBackupViewModel @Inject constructor(
         }
     }
 
-    fun exportBackupFileFound(backupPath: Path) {
+    fun exportBackupFileFound(backupSink: Sink) {
         scope.launch {
             mutex.withLock {
                 val tempFile = tempFile.value
                 if (_creating.value && tempFile != null) {
                     try {
-                        FileSystem.SYSTEM.atomicMove(tempFile, backupPath)
+                        FileSystem.SYSTEM.source(tempFile).copyTo(backupSink.buffer())
                         _creatingStatus.value = Status.Success
                     } catch (e: Exception) {
                         e.throwIfCancellation()
@@ -260,11 +260,11 @@ private fun SettingsBackupScreenContent(
     creatingStatus: SettingsBackupViewModel.Status,
     missingSourceFlow: SharedFlow<Pair<Path, List<String>>>,
     createFlow: SharedFlow<String>,
-    restoreFile: (Path) -> Unit,
+    restoreFile: (Source) -> Unit,
     restoreBackup: (Path) -> Unit,
     stopRestore: () -> Unit,
     exportBackup: () -> Unit,
-    exportBackupFileFound: (Path) -> Unit
+    exportBackupFileFound: (Sink) -> Unit
 ) {
     var backupFile by remember { mutableStateOf<Path?>(null) }
     var missingSources by remember { mutableStateOf(emptyList<String>()) }
@@ -285,8 +285,6 @@ private fun SettingsBackupScreenContent(
             }
         }
     }
-
-
 
     Scaffold(
         topBar = {

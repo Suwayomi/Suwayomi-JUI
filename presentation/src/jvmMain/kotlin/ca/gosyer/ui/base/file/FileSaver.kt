@@ -7,7 +7,7 @@
 package ca.gosyer.ui.base.file
 
 import androidx.compose.runtime.Composable
-import okio.Path
+import okio.Sink
 
 expect class FileSaver {
     fun save(name: String)
@@ -15,7 +15,7 @@ expect class FileSaver {
 
 @Composable
 expect fun rememberFileSaver(
-    onFileSelected: (Path) -> Unit,
+    onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit = {},
     onError: () -> Unit = {},
 ): FileSaver

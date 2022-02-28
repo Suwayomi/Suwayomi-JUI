@@ -7,11 +7,11 @@
 package ca.gosyer.ui.base.file
 
 import androidx.compose.runtime.Composable
-import okio.Path
+import okio.Source
 
 expect class FileChooser {
     fun launch(extension: String)
 }
 
 @Composable
-expect fun rememberFileChooser(onFileFound: (Path) -> Unit): FileChooser
+expect fun rememberFileChooser(onFileFound: (Source) -> Unit): FileChooser

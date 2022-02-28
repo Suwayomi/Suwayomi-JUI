@@ -13,9 +13,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.core.net.toFile
-import okio.Path
-import okio.Path.Companion.toOkioPath
+import androidx.compose.ui.platform.LocalContext
+import okio.Source
+import okio.source
 
 actual class FileChooser(private val resultLauncher: ManagedActivityResultLauncher<String, Uri?>) {
     actual fun launch(extension: String) {
@@ -24,9 +24,12 @@ actual class FileChooser(private val resultLauncher: ManagedActivityResultLaunch
 }
 
 @Composable
-actual fun rememberFileChooser(onFileFound: (Path) -> Unit): FileChooser {
+actual fun rememberFileChooser(onFileFound: (Source) -> Unit): FileChooser {
+    val context = LocalContext.current
     val result = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-        it?.toFile()?.toOkioPath()?.let(onFileFound)
+        if (it != null) {
+            context.contentResolver.openInputStream(it)?.source()?.let(onFileFound)
+        }
     }
 
     return remember { FileChooser(result) }

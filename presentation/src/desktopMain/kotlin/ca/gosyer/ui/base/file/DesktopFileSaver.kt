@@ -11,12 +11,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import ca.gosyer.core.lang.launchDefault
 import kotlinx.coroutines.CoroutineScope
-import okio.Path
-import okio.Path.Companion.toOkioPath
+import okio.Sink
+import okio.sink
 import javax.swing.JFileChooser
 
 actual class FileSaver(
-    private val onFileSelected: (Path) -> Unit,
+    private val onFileSelected: (Sink) -> Unit,
     private val onCancel: () -> Unit,
     private val onError: () -> Unit,
     private val scope: CoroutineScope
@@ -31,7 +31,7 @@ actual class FileSaver(
         scope.launchDefault {
             fileChooser.selectedFile = fileChooser.currentDirectory.resolve(name)
             when (fileChooser.showSaveDialog(null)) {
-                JFileChooser.APPROVE_OPTION -> onFileSelected(fileChooser.selectedFile.toOkioPath())
+                JFileChooser.APPROVE_OPTION -> onFileSelected(fileChooser.selectedFile.sink())
                 JFileChooser.CANCEL_OPTION -> onCancel()
                 JFileChooser.ERROR_OPTION -> onError()
             }
@@ -41,7 +41,7 @@ actual class FileSaver(
 
 @Composable
 actual fun rememberFileSaver(
-    onFileSelected: (Path) -> Unit,
+    onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit,
     onError: () -> Unit,
 ): FileSaver {

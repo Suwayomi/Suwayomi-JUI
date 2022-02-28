@@ -11,12 +11,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import ca.gosyer.core.lang.launchDefault
 import kotlinx.coroutines.CoroutineScope
-import okio.Path
-import okio.Path.Companion.toOkioPath
+import okio.Source
+import okio.source
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
-actual class FileChooser(private val onFileFound: (Path) -> Unit, private val scope: CoroutineScope) {
+actual class FileChooser(private val onFileFound: (Source) -> Unit, private val scope: CoroutineScope) {
     private val fileChooser = JFileChooser()
         .apply {
             val details = actionMap.get("viewTypeDetails")
@@ -28,14 +28,14 @@ actual class FileChooser(private val onFileFound: (Path) -> Unit, private val sc
         scope.launchDefault {
             fileChooser.fileFilter = FileNameExtensionFilter("$extension file", extension)
             when (fileChooser.showOpenDialog(null)) {
-                JFileChooser.APPROVE_OPTION -> onFileFound(fileChooser.selectedFile.toOkioPath())
+                JFileChooser.APPROVE_OPTION -> onFileFound(fileChooser.selectedFile.source())
             }
         }
     }
 }
 
 @Composable
-actual fun rememberFileChooser(onFileFound: (Path) -> Unit): FileChooser {
+actual fun rememberFileChooser(onFileFound: (Source) -> Unit): FileChooser {
     val coroutineScope = rememberCoroutineScope()
     return remember { FileChooser(onFileFound, coroutineScope)  }
 }
