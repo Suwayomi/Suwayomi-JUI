@@ -12,6 +12,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.util.fastForEach
 import ca.gosyer.ui.main.TopLevelMenus
 import ca.gosyer.uicore.resources.stringResource
@@ -35,7 +36,13 @@ fun BottomNav(navigator: Navigator) {
                         Icon(it.unselectedIcon, stringResource(it.textKey))
                     }
                 },
-                label = { Text(stringResource(it.textKey)) },
+                label = {
+                    Text(
+                        text = stringResource(it.textKey),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 alwaysShowLabel = true
             )
         }
