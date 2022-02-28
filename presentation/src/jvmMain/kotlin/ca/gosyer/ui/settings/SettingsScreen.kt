@@ -6,14 +6,12 @@
 
 package ca.gosyer.ui.settings
 
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Backup
@@ -21,7 +19,6 @@ import androidx.compose.material.icons.rounded.ChromeReaderMode
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.CollectionsBookmark
 import androidx.compose.material.icons.rounded.Computer
-import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.runtime.Composable
@@ -29,6 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.uicore.resources.stringResource
@@ -107,14 +106,14 @@ fun SettingsScreenContent(navigator: Navigator) {
                         icon = Icons.Rounded.Sync,
                         onClick = { navigator push SettingsTrackingScreen() }
                     )
-                }*/
+                }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_browse),
                         icon = Icons.Rounded.Explore,
                         onClick = { navigator push SettingsBrowseScreen() }
                     )
-                }
+                }*/
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_backup),
