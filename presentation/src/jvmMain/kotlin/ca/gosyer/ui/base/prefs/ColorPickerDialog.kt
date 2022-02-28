@@ -413,7 +413,7 @@ private fun hueToCoordinate(hue: Float, size: IntSize): Float {
 
 @OptIn(ExperimentalGraphicsApi::class)
 fun hsvToColor(hue: Float, saturation: Float, value: Float): Color {
-    return Color.hsv(hue, saturation, value)
+    return Color.hsv(hue, saturation.coerceIn(0F, 1F), value.coerceIn(0F, 1F))
 }
 
 internal expect fun Color.toHsv(): FloatArray

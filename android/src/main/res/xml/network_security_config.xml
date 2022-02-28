@@ -8,7 +8,7 @@
             <!-- Trust preinstalled CAs -->
             <certificates src="system" />
 
-            <!-- Additionally trust user added CAs -->
+            <!-- Additionally, trust user added CAs -->
             <certificates
                 src="user"
                 tools:ignore="AcceptsUserCertificates" />

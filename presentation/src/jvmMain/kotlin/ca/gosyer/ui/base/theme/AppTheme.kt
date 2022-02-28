@@ -13,6 +13,7 @@ import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -45,6 +46,9 @@ fun AppTheme(content: @Composable () -> Unit) {
     val vm = remember { vmFactory.instantiate<AppThemeViewModel>() }
     val colors = vm.getColors()
     /*val systemUiController = rememberSystemUiController()*/
+    DisposableEffect(Unit) {
+        onDispose(vm::onDispose)
+    }
 
     MaterialTheme(colors = colors) {
         CompositionLocalProvider(

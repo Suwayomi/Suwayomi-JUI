@@ -45,52 +45,90 @@ actual abstract class DataComponent(
 
     abstract val updateChecker: UpdateChecker
 
+    abstract val http: Http
+
+    abstract val serverPreferences: ServerPreferences
+
+    abstract val extensionPreferences: ExtensionPreferences
+
+    abstract val catalogPreferences: CatalogPreferences
+
+    abstract val libraryPreferences: LibraryPreferences
+
+    abstract val readerPreferences: ReaderPreferences
+
+    abstract val uiPreferences: UiPreferences
+
+    abstract val migrationPreferences: MigrationPreferences
+
+    abstract val updatePreferences: UpdatePreferences
+
     @get:AppScope
     @get:Provides
-    val serverPreferences: ServerPreferences
+    protected val serverPreferencesFactory: ServerPreferences
         get() = ServerPreferences(preferenceFactory.create("server"))
 
     @get:AppScope
     @get:Provides
-    val extensionPreferences: ExtensionPreferences
+    protected val extensionPreferencesFactory: ExtensionPreferences
         get() = ExtensionPreferences(preferenceFactory.create("extension"))
 
     @get:AppScope
     @get:Provides
-    val catalogPreferences: CatalogPreferences
+    protected val catalogPreferencesFactory: CatalogPreferences
         get() = CatalogPreferences(preferenceFactory.create("catalog"))
 
     @get:AppScope
     @get:Provides
-    val libraryPreferences: LibraryPreferences
+    protected val libraryPreferencesFactory: LibraryPreferences
         get() = LibraryPreferences(preferenceFactory.create("library"))
 
     @get:AppScope
     @get:Provides
-    val readerPreferences: ReaderPreferences
+    protected val readerPreferencesFactory: ReaderPreferences
         get() = ReaderPreferences(preferenceFactory.create("reader")) { name ->
             preferenceFactory.create("reader", name)
         }
 
     @get:AppScope
     @get:Provides
-    val uiPreferences: UiPreferences
+    protected val uiPreferencesFactory: UiPreferences
         get() = UiPreferences(preferenceFactory.create("ui"))
 
     @get:AppScope
     @get:Provides
-    val migrationPreferences: MigrationPreferences
+    protected val migrationPreferencesFactory: MigrationPreferences
         get() = MigrationPreferences(preferenceFactory.create("migration"))
 
     @get:AppScope
     @get:Provides
-    val updatePreferences: UpdatePreferences
+    protected val updatePreferencesFactory: UpdatePreferences
         get() = UpdatePreferences(preferenceFactory.create("update"))
 
     @get:AppScope
     @get:Provides
-    val http: Http
+    protected val httpFactory: Http
         get() = httpProvider.get(serverPreferences)
+
+    @get:AppScope
+    @get:Provides
+    protected val libraryUpdateServiceFactory: LibraryUpdateService
+        get() = LibraryUpdateService(serverPreferences, http)
+
+    @get:AppScope
+    @get:Provides
+    protected val downloadServiceFactory: DownloadService
+        get() = DownloadService(serverPreferences, http)
+
+    @get:AppScope
+    @get:Provides
+    protected val migrationsFactory: Migrations
+        get() = Migrations(migrationPreferences, readerPreferences)
+
+    @get:AppScope
+    @get:Provides
+    protected val updateCheckerFactory: UpdateChecker
+        get() = UpdateChecker(updatePreferences, http)
 
     companion object
 }
