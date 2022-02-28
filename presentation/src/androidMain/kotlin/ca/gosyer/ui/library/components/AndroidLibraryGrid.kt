@@ -6,12 +6,46 @@
 
 package ca.gosyer.ui.library.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import ca.gosyer.i18n.MR
+import ca.gosyer.uicore.resources.stringResource
 
 actual fun Modifier.libraryMangaModifier(
     onClickManga: () -> Unit,
     onClickRemoveManga: () -> Unit
-): Modifier = Modifier.clickable(
-    onClick = { onClickManga() }
-)
+): Modifier = composed {
+    var expanded by remember { mutableStateOf(false) }
+    DropdownMenu(
+        expanded,
+        onDismissRequest = { expanded = false }
+    ) {
+        listOf(
+            stringResource(MR.strings.action_remove_favorite) to onClickRemoveManga
+        ).forEach { (label, onClick) ->
+            DropdownMenuItem(
+                onClick = {
+                    expanded = false
+                    onClick()
+                }
+            ) {
+                Text(text = label)
+            }
+        }
+    }
+
+    Modifier.combinedClickable(
+        onClick = { onClickManga() },
+        onLongClick = {
+            expanded = true
+        }
+    )
+}
