@@ -8,7 +8,7 @@ json = "1.3.2"
 xmlUtil = "0.84.0"
 
 # Compose
-voyager = "1.0.0-beta15"
+voyager = "1.0.0-beta16"
 accompanist = "0.20.1"
 kamel = "0.3.0"
 materialDialogs = "0.6.4"
@@ -16,7 +16,7 @@ materialDialogs = "0.6.4"
 # Android
 core = "1.7.0"
 appCompat = "1.4.1"
-activityCompose = "1.3.1"
+activityCompose = "1.4.0"
 
 # Android Lifecycle
 lifecycle = "2.4.1"
@@ -31,9 +31,9 @@ kotlinInject = "0.4.1"
 ktor = "1.6.7"
 
 # Logging
-slf4j = "1.7.35"
-slf4jAndroid = "1.7.35-0"
-log4j = "2.17.1"
+slf4j = "1.7.36"
+slf4jAndroid = "1.7.36-0"
+log4j = "2.17.2"
 ktlogging = "2.1.21"
 
 # Storage

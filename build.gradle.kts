@@ -8,13 +8,13 @@ plugins {
     kotlin("plugin.serialization") version "1.6.10" apply false
     id("com.android.library") version "7.0.4" apply false
     id("com.android.application") version "7.0.4" apply false
-    id("org.jetbrains.compose") version "1.1.0-alpha03" apply false
-    id("com.google.devtools.ksp") version "1.6.10-1.0.2"
+    id("org.jetbrains.compose") version "1.1.0" apply false
+    id("com.google.devtools.ksp") version "1.6.10-1.0.4"
     id("com.github.gmazzo.buildconfig") version "3.0.3" apply false
     id("com.codingfeline.buildkonfig") version "0.11.0" apply false
     id("dev.icerock.mobile.multiplatform-resources") version "0.18.0" apply false
-    id("org.jmailen.kotlinter") version "3.8.0" apply false
-    id("com.github.ben-manes.versions") version "0.41.0"
+    id("org.jmailen.kotlinter") version "3.9.0" apply false
+    id("com.github.ben-manes.versions") version "0.42.0"
 }
 
 buildscript {
@@ -22,7 +22,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.guardsquare:proguard-gradle:7.2.0-beta6") {
+        classpath("com.guardsquare:proguard-gradle:7.2.1") {
             exclude("com.android.tools.build")
         }
     }
@@ -75,8 +75,8 @@ subprojects {
             }
             compileOptions {
                 isCoreLibraryDesugaringEnabled = true
-                sourceCompatibility(JavaVersion.VERSION_11)
-                targetCompatibility(JavaVersion.VERSION_11)
+                sourceCompatibility(Config.androidJvmTarget)
+                targetCompatibility(Config.androidJvmTarget)
             }
             sourceSets {
                 named("main") {
@@ -138,21 +138,6 @@ subprojects {
                 }
                 sourceSets.addSrcDir("androidMain", "src/jvmMain/kotlin")
                 sourceSets.addSrcDir("androidTest", "src/jvmTest/kotlin")
-                plugins.withType<com.google.devtools.ksp.gradle.KspGradleSubplugin> {
-                    sourceSets.addSrcDir("commonMain", "build/generated/ksp/commonMain/kotlin")
-                    sourceSets.addSrcDir("commonTest", "build/generated/ksp/commonTest/kotlin")
-
-                    sourceSets.addSrcDir("desktopMain", "build/generated/ksp/desktopMain/kotlin")
-                    sourceSets.addSrcDir("desktopTest", "build/generated/ksp/desktopTest/kotlin")
-
-                    if (gradle.startParameter.taskRequests.toString().contains("Release")) {
-                        sourceSets.addSrcDir("androidMain", "build/generated/ksp/androidRelease/kotlin")
-                        sourceSets.addSrcDir("androidTest", "build/generated/ksp/androidRelease/kotlin")
-                    } else {
-                        sourceSets.addSrcDir("androidMain", "build/generated/ksp/androidDebug/kotlin")
-                        sourceSets.addSrcDir("androidTest", "build/generated/ksp/androidDebug/kotlin")
-                    }
-                }
             }
         }
     }
