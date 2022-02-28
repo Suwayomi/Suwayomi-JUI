@@ -93,6 +93,8 @@ class ThemesViewModel @Inject constructor(
     }
 }
 
+expect val showWindowDecorationsOption: Boolean
+
 @Composable
 fun SettingsAppearanceScreenContent(
     activeColors: AppColorsPreferenceState,
@@ -159,12 +161,14 @@ fun SettingsAppearanceScreenContent(
                         unsetColor = MaterialTheme.colors.secondary
                     )
                 }
-                item {
-                    SwitchPreference(
-                        windowDecorations,
-                        stringResource(MR.strings.window_decorations),
-                        stringResource(MR.strings.window_decorations_sub)
-                    )
+                if (showWindowDecorationsOption) {
+                    item {
+                        SwitchPreference(
+                            windowDecorations,
+                            stringResource(MR.strings.window_decorations),
+                            stringResource(MR.strings.window_decorations_sub)
+                        )
+                    }
                 }
             }
             VerticalScrollbar(
