@@ -12,6 +12,7 @@ import androidx.compose.foundation.mouseClickable
 import androidx.compose.material.CursorDropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +29,7 @@ import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.semantics
 
 fun Modifier.contextMenuClickable(
-    items: () -> List<ContextMenuItem>,
+    items: @Composable () -> List<ContextMenuItem>,
     onClickLabel: String? = null,
     onMiddleClickLabel: String? = null,
     onRightClickLabel: String? = null,
