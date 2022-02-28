@@ -25,6 +25,7 @@ dependencies {
     implementation(libs.materialDialogsCore)
 
     // Android
+    implementation(libs.core)
     implementation(libs.appCompat)
     implementation(libs.activityCompose)
 

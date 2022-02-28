@@ -77,6 +77,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
+                api(libs.core)
+                api(libs.appCompat)
                 api(libs.activityCompose)
             }
         }
