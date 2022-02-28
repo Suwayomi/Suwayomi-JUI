@@ -35,8 +35,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import me.tatarka.inject.annotations.Inject
-import okio.Path.Companion.toPath
-import okio.asResourceFileSystem
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -60,6 +58,8 @@ class SettingsGeneralScreen : Screen {
         )
     }
 }
+
+expect fun Any.getResourceLanguages(): Map<String, String>
 
 class SettingsGeneralViewModel @Inject constructor(
     uiPreferences: UiPreferences,
@@ -86,15 +86,7 @@ class SettingsGeneralViewModel @Inject constructor(
     fun getLanguageChoices(): Map<String, String> = (
         mapOf(
             "" to stringResource(MR.strings.language_system_default, currentLocale.getDisplayName(currentLocale))
-        ) + this::class.java.classLoader.asResourceFileSystem().list("/localization/".toPath())
-            .asSequence()
-            .drop(1)
-            .map { it.name.substringBeforeLast('.') }
-            .map { it.substringAfter("mokoBundle_") }
-            .map(String::trim)
-            .map { it.replace("-r", "-") }
-            .filterNot(String::isBlank)
-            .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
+        ) + getResourceLanguages()
         )
         .toSortedMap(compareBy { it.lowercase() })
 
