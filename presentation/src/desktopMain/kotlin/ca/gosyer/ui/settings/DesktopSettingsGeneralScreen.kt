@@ -10,13 +10,15 @@ import okio.Path.Companion.toPath
 import okio.asResourceFileSystem
 import java.util.Locale
 
-actual fun Any.getResourceLanguages(): Map<String, String> = this::class.java.classLoader.asResourceFileSystem().list("/localization/".toPath())
-    .asSequence()
-    .drop(1)
-    .map { it.name.substringBeforeLast('.') }
-    .map { it.substringAfter("mokoBundle_") }
-    .map(String::trim)
-    .map { it.replace("-r", "-") }
-    .filterNot(String::isBlank)
-    .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
-)
+actual fun Any.getResourceLanguages(): Map<String, String> {
+    val currentLocale = Locale.getDefault()
+    return this::class.java.classLoader.asResourceFileSystem().list("/localization/".toPath())
+        .asSequence()
+        .drop(1)
+        .map { it.name.substringBeforeLast('.') }
+        .map { it.substringAfter("mokoBundle_") }
+        .map(String::trim)
+        .map { it.replace("-r", "-") }
+        .filterNot(String::isBlank)
+        .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
+}
