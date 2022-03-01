@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.sources.home
 
-import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.catalog.CatalogPreferences
 import ca.gosyer.data.models.Source
@@ -16,10 +15,12 @@ import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 
 class SourceHomeScreenViewModel @Inject constructor(
@@ -51,15 +52,16 @@ class SourceHomeScreenViewModel @Inject constructor(
     }
 
     private fun getSources() {
-        scope.launch {
-            try {
-                installedSources.value = sourceHandler.getSourceList()
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-            } finally {
+        sourceHandler.getSourceList()
+            .onEach {
+                installedSources.value = it
                 _isLoading.value = false
             }
-        }
+            .catch {
+                info(it) { "Error getting sources" }
+                _isLoading.value = false
+            }
+            .launchIn(scope)
     }
 
     fun setEnabledLanguages(langs: Set<String>) {

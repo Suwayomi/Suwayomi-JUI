@@ -6,7 +6,6 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.Http
@@ -26,6 +25,9 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import me.tatarka.inject.annotations.Inject
 
 class CategoryInteractionHandler @Inject constructor(
@@ -33,53 +35,58 @@ class CategoryInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getMangaCategories(mangaId: Long) = withIOContext {
-        client.get<List<Category>>(
+    fun getMangaCategories(mangaId: Long) = flow {
+        val response = client.get<List<Category>>(
             serverUrl + getMangaCategoriesQuery(mangaId)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getMangaCategories(manga: Manga) = getMangaCategories(manga.id)
+    fun getMangaCategories(manga: Manga) = getMangaCategories(manga.id)
 
-    suspend fun addMangaToCategory(mangaId: Long, categoryId: Long) = withIOContext {
-        client.get<HttpResponse>(
+    fun addMangaToCategory(mangaId: Long, categoryId: Long) = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + addMangaToCategoryQuery(mangaId, categoryId)
         )
-    }
-    suspend fun addMangaToCategory(manga: Manga, category: Category) = addMangaToCategory(manga.id, category.id)
-    suspend fun addMangaToCategory(manga: Manga, categoryId: Long) = addMangaToCategory(manga.id, categoryId)
-    suspend fun addMangaToCategory(mangaId: Long, category: Category) = addMangaToCategory(mangaId, category.id)
+        emit(response)
+    }.flowOn(Dispatchers.IO)
+    fun addMangaToCategory(manga: Manga, category: Category) = addMangaToCategory(manga.id, category.id)
+    fun addMangaToCategory(manga: Manga, categoryId: Long) = addMangaToCategory(manga.id, categoryId)
+    fun addMangaToCategory(mangaId: Long, category: Category) = addMangaToCategory(mangaId, category.id)
 
-    suspend fun removeMangaFromCategory(mangaId: Long, categoryId: Long) = withIOContext {
-        client.delete<HttpResponse>(
+    fun removeMangaFromCategory(mangaId: Long, categoryId: Long) = flow {
+        val response = client.delete<HttpResponse>(
             serverUrl + removeMangaFromCategoryRequest(mangaId, categoryId)
         )
-    }
-    suspend fun removeMangaFromCategory(manga: Manga, category: Category) = removeMangaFromCategory(manga.id, category.id)
-    suspend fun removeMangaFromCategory(manga: Manga, categoryId: Long) = removeMangaFromCategory(manga.id, categoryId)
-    suspend fun removeMangaFromCategory(mangaId: Long, category: Category) = removeMangaFromCategory(mangaId, category.id)
+        emit(response)
+    }.flowOn(Dispatchers.IO)
+    fun removeMangaFromCategory(manga: Manga, category: Category) = removeMangaFromCategory(manga.id, category.id)
+    fun removeMangaFromCategory(manga: Manga, categoryId: Long) = removeMangaFromCategory(manga.id, categoryId)
+    fun removeMangaFromCategory(mangaId: Long, category: Category) = removeMangaFromCategory(mangaId, category.id)
 
-    suspend fun getCategories(dropDefault: Boolean = false) = withIOContext {
-        client.get<List<Category>>(
+    fun getCategories(dropDefault: Boolean = false) = flow {
+        val response = client.get<List<Category>>(
             serverUrl + getCategoriesQuery()
         ).let { categories ->
             if (dropDefault) {
                 categories.filterNot { it.name.equals("default", true) }
             } else categories
         }
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun createCategory(name: String) = withIOContext {
-        client.submitForm<HttpResponse>(
+    fun createCategory(name: String) = flow {
+        val response = client.submitForm<HttpResponse>(
             serverUrl + createCategoryRequest(),
             formParameters = Parameters.build {
                 append("name", name)
             }
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun modifyCategory(categoryId: Long, name: String? = null, isLanding: Boolean? = null) = withIOContext {
-        client.submitForm<HttpResponse>(
+    fun modifyCategory(categoryId: Long, name: String? = null, isLanding: Boolean? = null) = flow {
+        val response = client.submitForm<HttpResponse>(
             serverUrl + categoryModifyRequest(categoryId),
             formParameters = Parameters.build {
                 if (name != null) {
@@ -92,11 +99,12 @@ class CategoryInteractionHandler @Inject constructor(
         ) {
             method = HttpMethod.Patch
         }
-    }
-    suspend fun modifyCategory(category: Category, name: String? = null, isLanding: Boolean? = null) = modifyCategory(category.id, name, isLanding)
+        emit(response)
+    }.flowOn(Dispatchers.IO)
+    fun modifyCategory(category: Category, name: String? = null, isLanding: Boolean? = null) = modifyCategory(category.id, name, isLanding)
 
-    suspend fun reorderCategory(to: Int, from: Int) = withIOContext {
-        client.submitForm<HttpResponse>(
+    fun reorderCategory(to: Int, from: Int) = flow {
+        val response = client.submitForm<HttpResponse>(
             serverUrl + categoryReorderRequest(),
             formParameters = Parameters.build {
                 append("to", to.toString())
@@ -105,19 +113,22 @@ class CategoryInteractionHandler @Inject constructor(
         ) {
             method = HttpMethod.Patch
         }
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun deleteCategory(categoryId: Long) = withIOContext {
-        client.delete<HttpResponse>(
+    fun deleteCategory(categoryId: Long) = flow {
+        val response = client.delete<HttpResponse>(
             serverUrl + categoryDeleteRequest(categoryId)
         )
-    }
-    suspend fun deleteCategory(category: Category) = deleteCategory(category.id)
+        emit(response)
+    }.flowOn(Dispatchers.IO)
+    fun deleteCategory(category: Category) = deleteCategory(category.id)
 
-    suspend fun getMangaFromCategory(categoryId: Long) = withIOContext {
-        client.get<List<Manga>>(
+    fun getMangaFromCategory(categoryId: Long) = flow {
+        val response = client.get<List<Manga>>(
             serverUrl + getMangaInCategoryQuery(categoryId)
         )
-    }
-    suspend fun getMangaFromCategory(category: Category) = getMangaFromCategory(category.id)
+        emit(response)
+    }.flowOn(Dispatchers.IO)
+    fun getMangaFromCategory(category: Category) = getMangaFromCategory(category.id)
 }

@@ -6,7 +6,7 @@
 
 package ca.gosyer.ui.sources.settings
 
-import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.models.sourcepreference.SourcePreference
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView
@@ -14,12 +14,13 @@ import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import me.tatarka.inject.annotations.Inject
 
@@ -43,6 +44,10 @@ class SourceSettingsScreenViewModel @Inject constructor(
                         .filterNotNull()
                         .onEach {
                             sourceHandler.setSourceSetting(params.sourceId, setting.index, it)
+                                .catch {
+                                    info(it) { "Error setting source setting" }
+                                }
+                                .collect()
                             getSourceSettings()
                         }
                         .launchIn(this)
@@ -53,15 +58,16 @@ class SourceSettingsScreenViewModel @Inject constructor(
     }
 
     private fun getSourceSettings() {
-        scope.launch {
-            try {
-                _sourceSettings.value = sourceHandler.getSourceSettings(params.sourceId).toView()
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-            } finally {
+        sourceHandler.getSourceSettings(params.sourceId)
+            .onEach {
+                _sourceSettings.value = it.toView()
                 _loading.value = false
             }
-        }
+            .catch {
+                info(it) { "Error setting source setting" }
+                _loading.value = false
+            }
+            .launchIn(scope)
     }
 
     data class Params(val sourceId: Long)
@@ -69,4 +75,6 @@ class SourceSettingsScreenViewModel @Inject constructor(
     private fun List<SourcePreference>.toView() = mapIndexed { index, sourcePreference ->
         SourceSettingsView(index, sourcePreference)
     }
+
+    private companion object : CKLogger({})
 }

@@ -6,8 +6,8 @@
 
 package ca.gosyer.ui.library
 
-import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.lang.withDefaultContext
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
@@ -24,11 +24,13 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 
 private typealias CategoryItems = Pair<MutableStateFlow<List<Manga>>, MutableStateFlow<List<Manga>>>
@@ -101,22 +103,22 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     private fun getLibrary() {
-        scope.launch {
-            _isLoading.value = true
-            try {
-                val categories = categoryHandler.getCategories()
+        _isLoading.value = true
+        categoryHandler.getCategories()
+            .onEach { categories ->
                 if (categories.isEmpty()) {
                     throw Exception("Library is empty")
                 }
                 library.categories.value = categories.sortedBy { it.order }
                 updateCategories(categories)
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-                _error.value = e.message
-            } finally {
                 _isLoading.value = false
             }
-        }
+            .catch {
+                _error.value = it.message
+                info(it) { "Error getting categories" }
+                _isLoading.value = false
+            }
+            .launchIn(scope)
     }
 
     fun setSelectedPage(page: Int) {
@@ -129,9 +131,18 @@ class LibraryScreenViewModel @Inject constructor(
 
     private suspend fun updateCategories(categories: List<Category>) {
         withDefaultContext {
-            categories.map {
+            categories.map { category ->
                 async {
-                    library.mangaMap.setManga(query.value, it.id, categoryHandler.getMangaFromCategory(it))
+                    library.mangaMap.setManga(
+                        query.value,
+                        category.id,
+                        categoryHandler.getMangaFromCategory(category)
+                            .catch {
+                                info { "Error getting manga for category $category" }
+                                emit(emptyList())
+                            }
+                            .single()
+                    )
                 }
             }.awaitAll()
         }
@@ -146,10 +157,14 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     fun removeManga(mangaId: Long) {
-        scope.launch {
-            libraryHandler.removeMangaFromLibrary(mangaId)
-            updateCategories(getCategoriesToUpdate(mangaId))
-        }
+        libraryHandler.removeMangaFromLibrary(mangaId)
+            .onEach {
+                updateCategories(getCategoriesToUpdate(mangaId))
+            }
+            .catch {
+                info(it) { "Error removing manga from library" }
+            }
+            .launchIn(scope)
     }
 
     fun updateQuery(query: String) {
@@ -157,19 +172,20 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     fun updateLibrary() {
-        scope.launch {
-            updatesHandler.updateLibrary()
-        }
+        updatesHandler.updateLibrary()
+            .catch {
+                info(it) { "Error updating library" }
+            }
+            .launchIn(scope)
     }
 
     fun updateCategory(category: Category) {
-        scope.launch {
-            updatesHandler.updateCategory(category)
-        }
+        updatesHandler.updateCategory(category)
+            .catch {
+                info(it) { "Error updating category" }
+            }
+            .launchIn(scope)
     }
 
-    companion object {
-        const val QUERY_KEY = "query"
-        const val SELECTED_CATEGORY_KEY = "selected_category"
-    }
+    private companion object : CKLogger({})
 }

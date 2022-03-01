@@ -9,6 +9,8 @@ package ca.gosyer.data.models
 import ca.gosyer.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.i18n.MR
 import dev.icerock.moko.resources.StringResource
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -37,10 +39,12 @@ data class Manga(
     suspend fun updateRemote(
         mangaHandler: MangaInteractionHandler,
         readerMode: String = meta.juiReaderMode
-    ) {
+    ) = flow {
         if (readerMode != meta.juiReaderMode) {
-            mangaHandler.updateMangaMeta(this, "juiReaderMode", readerMode)
+            mangaHandler.updateMangaMeta(this@Manga, "juiReaderMode", readerMode)
+                .collect()
         }
+        emit(Unit)
     }
 }
 

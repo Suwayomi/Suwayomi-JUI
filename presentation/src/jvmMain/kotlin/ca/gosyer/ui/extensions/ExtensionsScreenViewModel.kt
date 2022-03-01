@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.extensions
 
-import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.models.Extension
@@ -17,11 +16,13 @@ import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import java.util.Locale
 
@@ -55,57 +56,61 @@ class ExtensionsScreenViewModel @Inject constructor(
 
 
     init {
-        scope.launch {
-            getExtensions()
-        }
+        getExtensions()
     }
 
-    private suspend fun getExtensions() {
-        try {
-            _isLoading.value = true
-            extensionList.value = extensionHandler.getExtensionList()
-        } catch (e: Exception) {
-            e.throwIfCancellation()
-            extensionList.value = emptyList()
-        } finally {
-            _isLoading.value = false
-        }
+    private fun getExtensions() {
+        extensionHandler.getExtensionList()
+            .onEach {
+                extensionList.value = it
+                _isLoading.value = false
+            }
+            .catch {
+                info(it) { "Error getting extensions" }
+                emit(emptyList())
+                _isLoading.value = false
+            }
+            .launchIn(scope)
     }
 
     fun install(extension: Extension) {
         info { "Install clicked" }
-        scope.launch {
-            try {
-                extensionHandler.installExtension(extension)
-            } catch (e: Exception) {
-                e.throwIfCancellation()
+        extensionHandler.installExtension(extension)
+            .onEach {
+                getExtensions()
             }
-            getExtensions()
-        }
+            .catch {
+                info(it) { "Error installing extension ${extension.apkName}" }
+                getExtensions()
+            }
+            .launchIn(scope)
+
     }
 
     fun update(extension: Extension) {
         info { "Update clicked" }
-        scope.launch {
-            try {
-                extensionHandler.updateExtension(extension)
-            } catch (e: Exception) {
-                e.throwIfCancellation()
+        extensionHandler.updateExtension(extension)
+            .onEach {
+                getExtensions()
             }
-            getExtensions()
-        }
+            .catch {
+                info(it) { "Error updating extension ${extension.apkName}" }
+                getExtensions()
+            }
+            .launchIn(scope)
     }
 
     fun uninstall(extension: Extension) {
         info { "Uninstall clicked" }
-        scope.launch {
-            try {
-                extensionHandler.uninstallExtension(extension)
-            } catch (e: Exception) {
-                e.throwIfCancellation()
+        extensionHandler.uninstallExtension(extension)
+            .onEach {
+                getExtensions()
             }
-            getExtensions()
-        }
+            .catch {
+                info(it) { "Error uninstalling extension ${extension.apkName}" }
+                getExtensions()
+            }
+            .launchIn(scope)
     }
 
     fun setEnabledLanguages(langs: Set<String>) {

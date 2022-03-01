@@ -6,7 +6,6 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
@@ -21,6 +20,9 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
 import io.ktor.utils.io.ByteReadChannel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import me.tatarka.inject.annotations.Inject
 
 class MangaInteractionHandler @Inject constructor(
@@ -28,8 +30,8 @@ class MangaInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getManga(mangaId: Long, refresh: Boolean = false) = withIOContext {
-        client.get<Manga>(
+    fun getManga(mangaId: Long, refresh: Boolean = false) = flow {
+        val response = client.get<Manga>(
             serverUrl + mangaQuery(mangaId)
         ) {
             url {
@@ -38,19 +40,21 @@ class MangaInteractionHandler @Inject constructor(
                 }
             }
         }
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getManga(manga: Manga, refresh: Boolean = false) = getManga(manga.id, refresh)
+    fun getManga(manga: Manga, refresh: Boolean = false) = getManga(manga.id, refresh)
 
-    suspend fun getMangaThumbnail(mangaId: Long, block: HttpRequestBuilder.() -> Unit) = withIOContext {
-        client.get<ByteReadChannel>(
+    fun getMangaThumbnail(mangaId: Long, block: HttpRequestBuilder.() -> Unit) = flow {
+        val response = client.get<ByteReadChannel>(
             serverUrl + mangaThumbnailQuery(mangaId),
             block
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun updateMangaMeta(mangaId: Long, key: String, value: String) = withIOContext {
-        client.submitForm<HttpResponse>(
+    fun updateMangaMeta(mangaId: Long, key: String, value: String) = flow {
+        val response = client.submitForm<HttpResponse>(
             serverUrl + updateMangaMetaRequest(mangaId),
             formParameters = Parameters.build {
                 append("key", key)
@@ -59,7 +63,8 @@ class MangaInteractionHandler @Inject constructor(
         ) {
             method = HttpMethod.Patch
         }
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun updateMangaMeta(manga: Manga, key: String, value: String) = updateMangaMeta(manga.id, key, value)
+    fun updateMangaMeta(manga: Manga, key: String, value: String) = updateMangaMeta(manga.id, key, value)
 }

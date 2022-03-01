@@ -6,6 +6,7 @@
 
 package ca.gosyer.ui.downloads
 
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
@@ -14,7 +15,10 @@ import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
 
 class DownloadsScreenViewModel @Inject constructor(
@@ -36,35 +40,53 @@ class DownloadsScreenViewModel @Inject constructor(
     val downloadQueue get() = downloadService.downloadQueue
 
     fun start() {
-        scope.launch {
-            downloadsHandler.startDownloading()
-        }
+        downloadsHandler.startDownloading()
+            .catch {
+                info(it) { "Error starting download" }
+            }
+            .launchIn(scope)
     }
 
     fun pause() {
-        scope.launch {
-            downloadsHandler.stopDownloading()
-        }
+        downloadsHandler.stopDownloading()
+            .catch {
+                info(it) { "Error stopping download" }
+            }
+            .launchIn(scope)
     }
 
     fun clear() {
-        scope.launch {
-            downloadsHandler.clearDownloadQueue()
-        }
+        downloadsHandler.clearDownloadQueue()
+            .catch {
+                info(it) { "Error clearing download" }
+            }
+            .launchIn(scope)
     }
 
     fun stopDownload(chapter: Chapter) {
-        scope.launch {
-            chapterHandler.stopChapterDownload(chapter)
-        }
+        chapterHandler.stopChapterDownload(chapter)
+            .catch {
+                info(it) { "Error stop chapter download" }
+            }
+            .launchIn(scope)
     }
 
     fun moveToBottom(chapter: Chapter) {
-        scope.launch {
-            chapterHandler.stopChapterDownload(chapter)
-            chapterHandler.queueChapterDownload(chapter)
-        }
+        chapterHandler.stopChapterDownload(chapter)
+            .onEach {
+                chapterHandler.queueChapterDownload(chapter)
+                    .catch {
+                        info(it) { "Error adding download" }
+                    }
+                    .collect()
+            }
+            .catch {
+                info(it) { "Error stop chapter download" }
+            }
+            .launchIn(scope)
     }
 
     fun restartDownloader() = downloadService.init()
+
+    private companion object : CKLogger({})
 }

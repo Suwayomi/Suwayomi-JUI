@@ -6,7 +6,6 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Updates
 import ca.gosyer.data.server.Http
@@ -18,6 +17,9 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Parameters
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import me.tatarka.inject.annotations.Inject
 
 class UpdatesInteractionHandler @Inject constructor(
@@ -25,26 +27,29 @@ class UpdatesInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getRecentUpdates(pageNum: Int) = withIOContext {
-        client.get<Updates>(
+    fun getRecentUpdates(pageNum: Int) = flow {
+        val response = client.get<Updates>(
             serverUrl + recentUpdatesQuery(pageNum)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun updateLibrary() = withIOContext {
-        client.post<HttpResponse>(
+    fun updateLibrary() = flow {
+        val response = client.post<HttpResponse>(
             serverUrl + fetchUpdatesRequest()
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun updateCategory(categoryId: Long) = withIOContext {
-        client.submitForm<HttpResponse>(
+    fun updateCategory(categoryId: Long) = flow {
+        val response = client.submitForm<HttpResponse>(
             serverUrl + fetchUpdatesRequest(),
             formParameters = Parameters.build {
                 append("category", categoryId.toString())
             }
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun updateCategory(category: Category) = updateCategory(category.id)
+    fun updateCategory(category: Category) = updateCategory(category.id)
 }

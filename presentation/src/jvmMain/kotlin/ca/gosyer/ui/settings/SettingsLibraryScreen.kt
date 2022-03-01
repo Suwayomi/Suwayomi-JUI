@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.i18n.MR
@@ -39,7 +40,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
 
 class SettingsLibraryScreen : Screen {
@@ -72,10 +75,17 @@ class SettingsLibraryViewModel @Inject constructor(
     }
 
     fun refreshCategoryCount() {
-        scope.launch {
-            _categories.value = categoryHandler.getCategories(true).size
-        }
+        categoryHandler.getCategories(true)
+            .onEach {
+                _categories.value = it.size
+            }
+            .catch {
+                info(it) { "Error getting categories" }
+            }
+            .launchIn(scope)
     }
+
+    private companion object : CKLogger({})
 }
 
 @Composable

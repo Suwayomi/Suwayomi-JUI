@@ -6,7 +6,6 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.MangaPage
 import ca.gosyer.data.models.Source
 import ca.gosyer.data.models.sourcefilters.SourceFilter
@@ -31,6 +30,9 @@ import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Inject
@@ -40,45 +42,49 @@ class SourceInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getSourceList() = withIOContext {
-        client.get<List<Source>>(
+    fun getSourceList() = flow {
+        val response = client.get<List<Source>>(
             serverUrl + sourceListQuery()
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getSourceInfo(sourceId: Long) = withIOContext {
-        client.get<Source>(
+    fun getSourceInfo(sourceId: Long) = flow {
+        val response = client.get<Source>(
             serverUrl + sourceInfoQuery(sourceId)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getSourceInfo(source: Source) = getSourceInfo(source.id)
+    fun getSourceInfo(source: Source) = getSourceInfo(source.id)
 
-    suspend fun getPopularManga(sourceId: Long, pageNum: Int) = withIOContext {
-        client.get<MangaPage>(
+    fun getPopularManga(sourceId: Long, pageNum: Int) = flow {
+        val response = client.get<MangaPage>(
             serverUrl + sourcePopularQuery(sourceId, pageNum)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getPopularManga(source: Source, pageNum: Int) = getPopularManga(
+    fun getPopularManga(source: Source, pageNum: Int) = getPopularManga(
         source.id,
         pageNum
     )
 
-    suspend fun getLatestManga(sourceId: Long, pageNum: Int) = withIOContext {
-        client.get<MangaPage>(
+    fun getLatestManga(sourceId: Long, pageNum: Int) = flow {
+        val response = client.get<MangaPage>(
             serverUrl + sourceLatestQuery(sourceId, pageNum)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getLatestManga(source: Source, pageNum: Int) = getLatestManga(
+    fun getLatestManga(source: Source, pageNum: Int) = getLatestManga(
         source.id,
         pageNum
     )
 
     // TODO: 2021-03-14
-    suspend fun getGlobalSearchResults(searchTerm: String) = withIOContext {
-        client.get<HttpResponse>(
+    fun getGlobalSearchResults(searchTerm: String) = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + globalSearchQuery()
         ) {
             url {
@@ -87,10 +93,11 @@ class SourceInteractionHandler @Inject constructor(
                 }
             }
         }
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getSearchResults(sourceId: Long, searchTerm: String, pageNum: Int) = withIOContext {
-        client.get<MangaPage>(
+    fun getSearchResults(sourceId: Long, searchTerm: String, pageNum: Int) = flow {
+        val response = client.get<MangaPage>(
             serverUrl + sourceSearchQuery(sourceId)
         ) {
             url {
@@ -100,16 +107,17 @@ class SourceInteractionHandler @Inject constructor(
                 }
             }
         }
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getSearchResults(source: Source, searchTerm: String, pageNum: Int) = getSearchResults(
+    fun getSearchResults(source: Source, searchTerm: String, pageNum: Int) = getSearchResults(
         source.id,
         searchTerm,
         pageNum
     )
 
-    suspend fun getFilterList(sourceId: Long, reset: Boolean = false) = withIOContext {
-        client.get<List<SourceFilter>>(
+    fun getFilterList(sourceId: Long, reset: Boolean = false) = flow {
+        val response = client.get<List<SourceFilter>>(
             serverUrl + getFilterListQuery(sourceId)
         ) {
             url {
@@ -118,25 +126,27 @@ class SourceInteractionHandler @Inject constructor(
                 }
             }
         }
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getFilterList(source: Source, reset: Boolean = false) = getFilterList(source.id, reset)
+    fun getFilterList(source: Source, reset: Boolean = false) = getFilterList(source.id, reset)
 
-    suspend fun setFilter(sourceId: Long, sourceFilter: SourceFilterChange) = withIOContext {
-        client.post<HttpResponse>(
+    fun setFilter(sourceId: Long, sourceFilter: SourceFilterChange) = flow {
+        val response = client.post<HttpResponse>(
             serverUrl + setFilterRequest(sourceId)
         ) {
             contentType(ContentType.Application.Json)
             body = sourceFilter
         }
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun setFilter(sourceId: Long, position: Int, value: Any) = setFilter(
+    fun setFilter(sourceId: Long, position: Int, value: Any) = setFilter(
         sourceId,
         SourceFilterChange(position, value)
     )
 
-    suspend fun setFilter(sourceId: Long, parentPosition: Int, childPosition: Int, value: Any) = setFilter(
+    fun setFilter(sourceId: Long, parentPosition: Int, childPosition: Int, value: Any) = setFilter(
         sourceId,
         SourceFilterChange(
             parentPosition,
@@ -144,24 +154,26 @@ class SourceInteractionHandler @Inject constructor(
         )
     )
 
-    suspend fun getSourceSettings(sourceId: Long) = withIOContext {
-        client.get<List<SourcePreference>>(
+    fun getSourceSettings(sourceId: Long) = flow {
+        val response = client.get<List<SourcePreference>>(
             serverUrl + getSourceSettingsQuery(sourceId)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getSourceSettings(source: Source) = getSourceSettings(source.id)
+    fun getSourceSettings(source: Source) = getSourceSettings(source.id)
 
-    suspend fun setSourceSetting(sourceId: Long, sourcePreference: SourcePreferenceChange) = withIOContext {
-        client.post<HttpResponse>(
+    fun setSourceSetting(sourceId: Long, sourcePreference: SourcePreferenceChange) = flow {
+        val response = client.post<HttpResponse>(
             serverUrl + updateSourceSettingQuery(sourceId)
         ) {
             contentType(ContentType.Application.Json)
             body = sourcePreference
         }
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun setSourceSetting(sourceId: Long, position: Int, value: Any) = setSourceSetting(
+    fun setSourceSetting(sourceId: Long, position: Int, value: Any) = setSourceSetting(
         sourceId,
         SourcePreferenceChange(position, value)
     )

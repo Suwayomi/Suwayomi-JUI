@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.sources.browse.filter
 
-import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.models.sourcefilters.SourceFilter
 import ca.gosyer.data.server.interactions.SourceInteractionHandler
@@ -15,12 +14,13 @@ import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import me.tatarka.inject.annotations.Inject
 
@@ -69,6 +69,7 @@ class SourceFiltersViewModel(
                                         childFilter.index,
                                         it
                                     )
+                                        .collect()
                                     getFilters()
                                 }
                                 .launchIn(this)
@@ -77,13 +78,18 @@ class SourceFiltersViewModel(
                         filter.state.drop(1).filterNotNull()
                             .onEach {
                                 sourceHandler.setFilter(sourceId, filter.index, it)
+                                    .collect()
                                 getFilters()
                             }
                             .launchIn(this)
                     }
                 }
             }
-        }.launchIn(scope)
+        }
+            .catch {
+                info(it) { "Error with filters" }
+            }
+            .launchIn(scope)
     }
 
     fun showingFilters(show: Boolean) {
@@ -91,21 +97,20 @@ class SourceFiltersViewModel(
     }
 
     private fun getFilters(initialLoad: Boolean = false) {
-        scope.launch {
-            try {
-                _filters.value = sourceHandler.getFilterList(sourceId, reset = initialLoad).toView()
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-            } finally {
+        sourceHandler.getFilterList(sourceId, reset = initialLoad)
+            .onEach {
+                _filters.value = it.toView()
                 _loading.value = false
             }
-        }
+            .catch {
+                info(it) { "Error getting filters" }
+                _loading.value = false
+            }
+            .launchIn(scope)
     }
 
     fun resetFilters() {
-        scope.launch {
-            getFilters(initialLoad = true)
-        }
+        getFilters(initialLoad = true)
     }
 
     data class Params(val sourceId: Long)

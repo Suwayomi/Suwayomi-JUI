@@ -6,7 +6,7 @@
 
 package ca.gosyer.ui.sources.browse
 
-import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.MangaPage
 import ca.gosyer.data.models.Source
@@ -15,7 +15,10 @@ import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import me.tatarka.inject.annotations.Inject
 
 class SourceScreenViewModel(
@@ -59,36 +62,33 @@ class SourceScreenViewModel(
     private val _pageNum = MutableStateFlow(1)
     val pageNum = _pageNum.asStateFlow()
 
+    private val sourceMutex = Mutex()
+
     init {
         scope.launch {
-            try {
-                val (mangas, hasNextPage) = getPage()
+            getPage()?.let { (mangas, hasNextPage) ->
                 _mangas.value = mangas
                 _hasNextPage.value = hasNextPage
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-            } finally {
-                _loading.value = false
             }
+
+            _loading.value = false
         }
     }
 
     fun loadNextPage() {
         scope.launch {
-            val hasNextPage = hasNextPage.value
-            val pageNum = pageNum.value
-            try {
-                _hasNextPage.value = false
+            if (hasNextPage.value && sourceMutex.tryLock()) {
                 _pageNum.value++
                 val page = getPage()
-                _mangas.value += page.mangaList
-                _hasNextPage.value = page.hasNextPage
-            } catch (e: Exception) {
-                _hasNextPage.value = hasNextPage
-                _pageNum.value = pageNum
-            } finally {
-                _loading.value = false
+                if (page != null) {
+                    _mangas.value += page.mangaList
+                    _hasNextPage.value = page.hasNextPage
+                } else {
+                    _pageNum.value--
+                }
+                sourceMutex.unlock()
             }
+            _loading.value = false
         }
     }
 
@@ -104,12 +104,16 @@ class SourceScreenViewModel(
         }
     }
 
-    private suspend fun getPage(): MangaPage {
+    private suspend fun getPage(): MangaPage? {
         return when {
             isLatest.value -> sourceHandler.getLatestManga(source, pageNum.value)
             _query.value != null || _usingFilters.value -> sourceHandler.getSearchResults(source, _query.value.orEmpty(), pageNum.value)
             else -> sourceHandler.getPopularManga(source, pageNum.value)
         }
+            .catch {
+                info(it) { "Error getting source page" }
+            }
+            .singleOrNull()
     }
 
     fun startSearch(query: String?) {
@@ -136,4 +140,6 @@ class SourceScreenViewModel(
     }
 
     data class Params(val source: Source)
+
+    private companion object : CKLogger({})
 }

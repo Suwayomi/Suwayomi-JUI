@@ -6,7 +6,6 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.Extension
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
@@ -19,6 +18,9 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.utils.io.ByteReadChannel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import me.tatarka.inject.annotations.Inject
 
 class ExtensionInteractionHandler @Inject constructor(
@@ -26,34 +28,39 @@ class ExtensionInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun getExtensionList() = withIOContext {
-        client.get<List<Extension>>(
+    fun getExtensionList() = flow {
+        val response = client.get<List<Extension>>(
             serverUrl + extensionListQuery()
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun installExtension(extension: Extension) = withIOContext {
-        client.get<HttpResponse>(
+    fun installExtension(extension: Extension) = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + apkInstallQuery(extension.pkgName)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun updateExtension(extension: Extension) = withIOContext {
-        client.get<HttpResponse>(
+    fun updateExtension(extension: Extension) = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + apkUpdateQuery(extension.pkgName)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun uninstallExtension(extension: Extension) = withIOContext {
-        client.get<HttpResponse>(
+    fun uninstallExtension(extension: Extension) = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + apkUninstallQuery(extension.pkgName)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getApkIcon(extension: Extension, block: HttpRequestBuilder.() -> Unit) = withIOContext {
-        client.get<ByteReadChannel>(
+    fun getApkIcon(extension: Extension, block: HttpRequestBuilder.() -> Unit) = flow {
+        val response = client.get<ByteReadChannel>(
             serverUrl + apkIconQuery(extension.apkName),
             block
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 }

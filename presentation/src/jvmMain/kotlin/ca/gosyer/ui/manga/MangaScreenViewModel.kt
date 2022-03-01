@@ -6,8 +6,8 @@
 
 package ca.gosyer.ui.manga
 
-import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.lang.withIOContext
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Chapter
@@ -25,9 +25,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -86,9 +90,14 @@ class MangaScreenViewModel @Inject constructor(
             _isLoading.value = false
         }
 
-        scope.launch {
-            _categories.value = categoryHandler.getCategories(true)
-        }
+        categoryHandler.getCategories(true)
+            .onEach {
+                _categories.value = it
+            }
+            .catch {
+                info(it) { "Error getting categories" }
+            }
+            .launchIn(scope)
     }
 
     fun loadManga() {
@@ -124,22 +133,34 @@ class MangaScreenViewModel @Inject constructor(
 
     private suspend fun refreshMangaAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
-            try {
-                _manga.value = mangaHandler.getManga(mangaId, refresh)
-                _mangaCategories.value = categoryHandler.getMangaCategories(mangaId)
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-            }
+            mangaHandler.getManga(mangaId, refresh)
+                .onEach {
+                    _manga.value = it
+                }
+                .catch {
+                    info(it) { "Error getting manga" }
+                }
+                .collect()
+            categoryHandler.getMangaCategories(mangaId)
+                .onEach {
+                    _mangaCategories.value = it
+                }
+                .catch {
+                    info(it) { "Error getting manga" }
+                }
+                .collect()
         }
     }
 
     private suspend fun refreshChaptersAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
-            try {
-                _chapters.value = chapterHandler.getChapters(mangaId, refresh).toDownloadChapters()
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-            }
+            _chapters.value = chapterHandler.getChapters(mangaId, refresh)
+                .catch {
+                    info(it) { "Error getting chapters" }
+                    emit(emptyList())
+                }
+                .single()
+                .toDownloadChapters()
         }
     }
 
@@ -148,6 +169,10 @@ class MangaScreenViewModel @Inject constructor(
             manga.value?.let { manga ->
                 if (manga.inLibrary) {
                     libraryHandler.removeMangaFromLibrary(manga)
+                        .catch {
+                            info(it) { "Error toggling favorite" }
+                        }
+                        .collect()
                     refreshMangaAsync(manga.id).await()
                 } else {
                     if (categories.value.isEmpty()) {
@@ -166,12 +191,24 @@ class MangaScreenViewModel @Inject constructor(
                 if (manga.inLibrary) {
                     oldCategories.filterNot { it in categories }.forEach {
                         categoryHandler.removeMangaFromCategory(manga, it)
+                            .catch {
+                                info(it) { "Error removing manga from category" }
+                            }
+                            .collect()
                     }
                 } else {
                     libraryHandler.addMangaToLibrary(manga)
+                        .catch {
+                            info(it) { "Error Adding manga to library" }
+                        }
+                        .collect()
                 }
                 categories.filterNot { it in oldCategories }.forEach {
                     categoryHandler.addMangaToCategory(manga, it)
+                        .catch {
+                            info(it) { "Error adding manga to category" }
+                        }
+                        .collect()
                 }
                 refreshMangaAsync(manga.id).await()
             }
@@ -189,8 +226,22 @@ class MangaScreenViewModel @Inject constructor(
     fun toggleRead(index: Int) {
         scope.launch {
             manga.value?.let { manga ->
-                chapterHandler.updateChapter(manga, index, read = !_chapters.value.first { it.chapter.index == index }.chapter.read)
-                _chapters.value = chapterHandler.getChapters(manga).toDownloadChapters()
+                chapterHandler.updateChapter(
+                    manga,
+                    index,
+                    read = !_chapters.value.first { it.chapter.index == index }.chapter.read
+                )
+                    .catch {
+                        info(it) { "Error toggling read" }
+                    }
+                    .collect()
+                _chapters.value = chapterHandler.getChapters(manga)
+                    .catch {
+                        info(it) { "Error getting new chapters after toggling read" }
+                        emit(emptyList())
+                    }
+                    .single()
+                    .toDownloadChapters()
             }
         }
     }
@@ -198,8 +249,22 @@ class MangaScreenViewModel @Inject constructor(
     fun toggleBookmarked(index: Int) {
         scope.launch {
             manga.value?.let { manga ->
-                chapterHandler.updateChapter(manga, index, bookmarked = !_chapters.value.first { it.chapter.index == index }.chapter.bookmarked)
-                _chapters.value = chapterHandler.getChapters(manga).toDownloadChapters()
+                chapterHandler.updateChapter(
+                    manga,
+                    index,
+                    bookmarked = !_chapters.value.first { it.chapter.index == index }.chapter.bookmarked
+                )
+                    .catch {
+                        info(it) { "Error toggling bookmarked" }
+                    }
+                    .collect()
+                _chapters.value = chapterHandler.getChapters(manga)
+                    .catch {
+                        info(it) { "Error getting new chapters after toggling bookmarked" }
+                        emit(emptyList())
+                    }
+                    .single()
+                    .toDownloadChapters()
             }
         }
     }
@@ -208,29 +273,48 @@ class MangaScreenViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 chapterHandler.updateChapter(manga, index, markPreviousRead = true)
-                _chapters.value = chapterHandler.getChapters(manga).toDownloadChapters()
+                    .catch {
+                        info(it) { "Error marking previous as read" }
+                    }
+                    .collect()
+                _chapters.value = chapterHandler.getChapters(manga)
+                    .catch {
+                        info(it) { "Error getting new chapters after marking previous as read" }
+                        emit(emptyList())
+                    }
+                    .single()
+                    .toDownloadChapters()
             }
         }
     }
 
     fun downloadChapter(index: Int) {
-        scope.launch {
-            manga.value?.let { manga ->
-                chapterHandler.queueChapterDownload(manga, index)
-            }
+        manga.value?.let { manga ->
+            chapterHandler.queueChapterDownload(manga, index)
+                .catch {
+                    info(it) { "Error downloading chapter" }
+                }
+                .launchIn(scope)
         }
     }
 
     fun deleteDownload(index: Int) {
-        scope.launch {
-            chapters.value.find { it.chapter.index == index }?.deleteDownload(chapterHandler)
-        }
+        chapters.value.find { it.chapter.index == index }
+            ?.deleteDownload(chapterHandler)
+            ?.catch {
+                info(it) { "Error deleting download" }
+            }
+            ?.launchIn(scope)
+
     }
 
     fun stopDownloadingChapter(index: Int) {
-        scope.launch {
-            chapters.value.find { it.chapter.index == index }?.stopDownloading(chapterHandler)
-        }
+        chapters.value.find { it.chapter.index == index }
+            ?.stopDownloading(chapterHandler)
+            ?.catch {
+                info(it) { "Error stopping download" }
+            }
+            ?.launchIn(scope)
     }
 
     override fun onDispose() {
@@ -242,4 +326,6 @@ class MangaScreenViewModel @Inject constructor(
     }
 
     data class Params(val mangaId: Long)
+
+    private companion object : CKLogger({})
 }

@@ -22,6 +22,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -58,24 +62,30 @@ class TachideskPageLoader(
                             val page = priorityPage.page
                             debug { "Loading page ${page.index}" }
                             if (page.status.value == ReaderPage.Status.QUEUE) {
-                                try {
-                                    page.bitmap.value = chapterHandler.getPage(chapter.chapter, page.index) {
+                                chapterHandler
+                                    .getPage(chapter.chapter, page.index) {
                                         onDownload { bytesSentTotal, contentLength ->
                                             page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                                         }
-                                    }.toImageBitmap()
-                                    page.status.value = ReaderPage.Status.READY
-                                    page.error.value = null
-                                } catch (e: Exception) {
-                                    e.throwIfCancellation()
-                                    page.bitmap.value = null
-                                    page.status.value = ReaderPage.Status.ERROR
-                                    page.error.value = e.message
-                                }
+                                    }
+                                    .onEach {
+                                        page.bitmap.value = it.toImageBitmap()
+                                        page.status.value = ReaderPage.Status.READY
+                                        page.error.value = null
+                                    }
+                                    .catch {
+                                        page.bitmap.value = null
+                                        page.status.value = ReaderPage.Status.ERROR
+                                        page.error.value = it.message
+                                        info(it) { "Error getting image" }
+                                    }
+                                    .flowOn(Dispatchers.IO)
+                                    .collect()
                             }
                         }
                     } catch (e: Exception) {
                         e.throwIfCancellation()
+                        info(e) { "Error in loop" }
                     }
                 }
             }

@@ -6,7 +6,6 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.BackupValidationResult
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
@@ -21,6 +20,9 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Path
@@ -31,8 +33,8 @@ class BackupInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun importBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
-        client.submitFormWithBinaryData<HttpResponse>(
+    fun importBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = flow {
+        val response = client.submitFormWithBinaryData<HttpResponse>(
             serverUrl + backupFileImportRequest(),
             formData = formData {
                 append(
@@ -45,10 +47,11 @@ class BackupInteractionHandler @Inject constructor(
             },
             block = block
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun validateBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
-        client.submitFormWithBinaryData<BackupValidationResult>(
+    fun validateBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = flow {
+        val response = client.submitFormWithBinaryData<BackupValidationResult>(
             serverUrl + validateBackupFileRequest(),
             formData = formData {
                 append(
@@ -61,12 +64,14 @@ class BackupInteractionHandler @Inject constructor(
             },
             block = block
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun exportBackupFile(block: HttpRequestBuilder.() -> Unit = {}) = withIOContext {
-        client.get<HttpResponse>(
+    fun exportBackupFile(block: HttpRequestBuilder.() -> Unit = {}) = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + backupFileExportRequest(),
             block
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 }

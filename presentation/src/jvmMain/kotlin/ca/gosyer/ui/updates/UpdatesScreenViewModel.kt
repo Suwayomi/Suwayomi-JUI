@@ -6,7 +6,7 @@
 
 package ca.gosyer.ui.updates
 
-import ca.gosyer.core.lang.throwIfCancellation
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
@@ -16,6 +16,8 @@ import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
@@ -45,77 +47,89 @@ class UpdatesScreenViewModel @Inject constructor(
 
     init {
         scope.launch {
-            try {
-                getUpdates(1)
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-            } finally {
-                _isLoading.value = false
-            }
+            getUpdates()
         }
     }
 
     fun loadNextPage() {
         scope.launch {
             if (hasNextPage.value && updatesMutex.tryLock()) {
-                try {
-                    getUpdates(currentPage.value++)
-                } catch (e: Exception) {
-                    e.throwIfCancellation()
-                    currentPage.value--
-                }
+                getUpdates()
                 updatesMutex.unlock()
             }
         }
     }
 
-    private suspend fun getUpdates(pageNum: Int) {
-        val updates = updatesHandler.getRecentUpdates(pageNum)
-        mangaIds = updates.page.map { it.manga.id }.toSet()
+    private suspend fun getUpdates() {
+        updatesHandler.getRecentUpdates(currentPage.value)
+            .onEach { updates ->
+                mangaIds = updates.page.map { it.manga.id }.toSet()
 
-        _updates.value += updates.page.map {
-            ChapterDownloadItem(
-                it.manga,
-                it.chapter
-            )
-        }
-        downloadService.registerWatches(mangaIds).merge()
-            .onEach { (mangaId, chapters) ->
-                _updates.value.filter { it.chapter.mangaId == mangaId }
-                    .forEach {
-                        it.updateFrom(chapters)
+                _updates.value += updates.page.map {
+                    ChapterDownloadItem(
+                        it.manga,
+                        it.chapter
+                    )
+                }
+                downloadService.registerWatches(mangaIds).merge()
+                    .onEach { (mangaId, chapters) ->
+                        _updates.value.filter { it.chapter.mangaId == mangaId }
+                            .forEach {
+                                it.updateFrom(chapters)
+                            }
                     }
-            }
-            .launchIn(scope)
+                    .launchIn(scope)
 
-        hasNextPage.value = updates.hasNextPage
+                hasNextPage.value = updates.hasNextPage
+                _isLoading.value = false
+            }
+            .catch {
+                info(it) { "Error getting updates" }
+                if (currentPage.value > 1) {
+                    currentPage.value--
+                }
+                _isLoading.value = false
+            }
+            .collect()
     }
 
     fun downloadChapter(chapter: Chapter) {
-        scope.launch {
-            chapterHandler.queueChapterDownload(chapter)
-        }
+        chapterHandler.queueChapterDownload(chapter)
+            .catch {
+                info(it) { "Error queueing chapter" }
+            }
+            .launchIn(scope)
     }
 
     fun deleteDownloadedChapter(chapter: Chapter) {
-        scope.launch {
-            updates.value.find {
+        updates.value
+            .find {
                 it.chapter.mangaId == chapter.mangaId &&
                     it.chapter.index == chapter.index
-            }?.deleteDownload(chapterHandler)
-        }
+            }
+            ?.deleteDownload(chapterHandler)
+            ?.catch {
+                info(it) { "Error deleting download" }
+            }
+            ?.launchIn(scope)
     }
 
     fun stopDownloadingChapter(chapter: Chapter) {
-        scope.launch {
-            updates.value.find {
+        updates.value
+            .find {
                 it.chapter.mangaId == chapter.mangaId &&
                     it.chapter.index == chapter.index
-            }?.stopDownloading(chapterHandler)
-        }
+            }
+            ?.stopDownloading(chapterHandler)
+            ?.catch {
+                info(it) { "Error stopping download" }
+            }
+            ?.launchIn(scope)
     }
 
     override fun onDispose() {
         downloadService.removeWatches(mangaIds)
     }
+
+    private companion object : CKLogger({})
 }

@@ -66,6 +66,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -125,23 +129,33 @@ class SettingsBackupViewModel @Inject constructor(
     val createFlow = _createFlow.asSharedFlow()
     fun restoreFile(source: Source) {
         scope.launch {
-            try {
+            val file = try {
                 FileSystem.SYSTEM_TEMPORARY_DIRECTORY
                     .resolve("tachidesk.${Random.nextLong()}.proto.gz")
                     .also { file ->
                         source.saveTo(file)
-                        val (missingSources) = backupHandler.validateBackupFile(file)
-                        if (missingSources.isEmpty()) {
-                            restoreBackup(file)
-                        } else {
-                            _missingSourceFlow.emit(file to missingSources)
-                        }
                     }
             } catch (e: Exception) {
-                info(e) { "Error importing backup" }
+                info(e) { "Error creating backup file" }
                 _restoreStatus.value = Status.Error
                 e.throwIfCancellation()
+                null
             }
+            file ?: return@launch
+
+            backupHandler.validateBackupFile(file)
+                .onEach { (missingSources) ->
+                    if (missingSources.isEmpty()) {
+                        restoreBackup(file)
+                    } else {
+                        _missingSourceFlow.emit(file to missingSources)
+                    }
+                }
+                .catch {
+                    info(it) { "Error importing backup" }
+                    _restoreStatus.value = Status.Error
+                }
+                .collect()
         }
     }
 
@@ -150,20 +164,20 @@ class SettingsBackupViewModel @Inject constructor(
             _restoreStatus.value = Status.Nothing
             _restoringProgress.value = null
             _restoring.value = true
-            try {
-                backupHandler.importBackupFile(file) {
-                    onUpload { bytesSentTotal, contentLength ->
-                        _restoringProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
-                    }
+            backupHandler.importBackupFile(file) {
+                onUpload { bytesSentTotal, contentLength ->
+                    _restoringProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                 }
-                _restoreStatus.value = Status.Success
-            } catch (e: Exception) {
-                info(e) { "Error importing backup" }
-                _restoreStatus.value = Status.Error
-                e.throwIfCancellation()
-            } finally {
-                _restoring.value = false
             }
+                .onEach {
+                    _restoreStatus.value = Status.Success
+                }
+                .catch {
+                    info(it) { "Error importing backup" }
+                    _restoreStatus.value = Status.Error
+                }
+                .collect()
+            _restoring.value = false
         }
     }
 
@@ -176,46 +190,47 @@ class SettingsBackupViewModel @Inject constructor(
     private val mutex = Mutex()
 
     fun exportBackup() {
-        scope.launch {
-            _creatingStatus.value = Status.Nothing
-            _creatingProgress.value = null
-            _creating.value = true
-            val backup = try {
-                backupHandler.exportBackupFile {
-                    onDownload { bytesSentTotal, contentLength ->
-                        _creatingProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(0.99F)
-                    }
+        _creatingStatus.value = Status.Nothing
+        _creatingProgress.value = null
+        _creating.value = true
+        backupHandler
+            .exportBackupFile {
+                onDownload { bytesSentTotal, contentLength ->
+                    _creatingProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(0.99F)
                 }
-            } catch (e: Exception) {
-                info(e) { "Error exporting backup" }
-                _creatingStatus.value = Status.Error
-                _creating.value = false
-                e.throwIfCancellation()
-                null
             }
-            _creatingProgress.value = 1.0F
-            if (backup != null && backup.status.isSuccess()) {
-                val filename = backup.headers["content-disposition"]?.substringAfter("filename=")?.trim('"') ?: "backup"
-                tempFile.value = FileSystem.SYSTEM_TEMPORARY_DIRECTORY.resolve(filename).also {
-                    launch {
-                        try {
-                            backup.content.toInputStream()
-                                .source()
-                                .saveTo(it)
-                        } catch (e: Exception) {
-                            e.throwIfCancellation()
-                            error(e) { "Error creating backup" }
-                            _creatingStatus.value = Status.Error
-                            _creating.value = false
-                        } finally {
-                            mutex.unlock()
+            .onEach { backup ->
+                if (backup.status.isSuccess()) {
+                    val filename =
+                        backup.headers["content-disposition"]?.substringAfter("filename=")
+                            ?.trim('"') ?: "backup"
+                    tempFile.value = FileSystem.SYSTEM_TEMPORARY_DIRECTORY.resolve(filename).also {
+                        mutex.tryLock()
+                        scope.launch {
+                            try {
+                                backup.content.toInputStream()
+                                    .source()
+                                    .saveTo(it)
+                            } catch (e: Exception) {
+                                e.throwIfCancellation()
+                                info(e) { "Error creating backup" }
+                                _creatingStatus.value = Status.Error
+                                _creating.value = false
+                            } finally {
+                                mutex.unlock()
+                            }
                         }
                     }
+                    _createFlow.emit(filename)
                 }
-                mutex.tryLock()
-                _createFlow.emit(filename)
             }
-        }
+            .catch {
+                info(it) { "Error exporting backup" }
+                _creatingStatus.value = Status.Error
+                _creating.value = false
+            }
+            .launchIn(scope)
+
     }
 
     fun exportBackupFileFound(backupSink: Sink) {

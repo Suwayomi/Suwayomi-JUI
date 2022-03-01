@@ -7,6 +7,8 @@
 package ca.gosyer.data.models
 
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -28,13 +30,15 @@ data class Chapter(
     val downloaded: Boolean,
     val meta: ChapterMeta
 ) {
-    suspend fun updateRemote(
+    fun updateRemote(
         chapterHandler: ChapterInteractionHandler,
         pageOffset: Int = meta.juiPageOffset
-    ) {
+    ) = flow {
         if (pageOffset != meta.juiPageOffset) {
-            chapterHandler.updateChapterMeta(this, "juiPageOffset", pageOffset.toString())
+            chapterHandler.updateChapterMeta(this@Chapter, "juiPageOffset", pageOffset.toString())
+                .collect()
         }
+        emit(Unit)
     }
 }
 

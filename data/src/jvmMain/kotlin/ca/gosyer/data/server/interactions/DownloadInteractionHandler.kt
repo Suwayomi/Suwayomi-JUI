@@ -6,7 +6,6 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.downloadsClearRequest
@@ -14,6 +13,9 @@ import ca.gosyer.data.server.requests.downloadsStartRequest
 import ca.gosyer.data.server.requests.downloadsStopRequest
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import me.tatarka.inject.annotations.Inject
 
 class DownloadInteractionHandler @Inject constructor(
@@ -21,21 +23,24 @@ class DownloadInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun startDownloading() = withIOContext {
-        client.get<HttpResponse>(
+    fun startDownloading() = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + downloadsStartRequest()
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun stopDownloading() = withIOContext {
-        client.get<HttpResponse>(
+    fun stopDownloading() = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + downloadsStopRequest()
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun clearDownloadQueue() = withIOContext {
-        client.get<HttpResponse>(
+    fun clearDownloadQueue() = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + downloadsClearRequest()
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 }

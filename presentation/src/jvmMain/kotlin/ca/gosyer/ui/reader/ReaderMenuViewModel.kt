@@ -7,7 +7,6 @@
 package ca.gosyer.ui.reader
 
 import ca.gosyer.core.lang.launchDefault
-import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.core.prefs.getAsFlow
 import ca.gosyer.data.models.Chapter
@@ -34,10 +33,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -150,10 +153,15 @@ class ReaderMenuViewModel @Inject constructor(
 
     fun setMangaReaderMode(mode: String) {
         scope.launchDefault {
-            _manga.value?.updateRemote(
-                mangaHandler,
-                mode
-            )
+            _manga.value
+                ?.updateRemote(
+                    mangaHandler,
+                    mode
+                )
+                ?.catch {
+                    info(it) { "Error updating manga reader mode" }
+                }
+                ?.collect()
             initManga(params.mangaId)
         }
     }
@@ -185,35 +193,37 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     private suspend fun initManga(mangaId: Long) {
-        try {
-            _manga.value = mangaHandler.getManga(mangaId)
-        } catch (e: Exception) {
-            e.throwIfCancellation()
-            _state.value = ReaderChapter.State.Error(e)
-            throw e
-        }
+        mangaHandler.getManga(mangaId)
+            .onEach {
+                _manga.value = it
+            }
+            .catch {
+                _state.value = ReaderChapter.State.Error(it)
+                info(it) { "Error loading manga" }
+            }
+            .collect()
     }
 
     private suspend fun initChapters(mangaId: Long, chapterIndex: Int) {
         resetValues()
         val chapter = ReaderChapter(
-            try {
-                chapterHandler.getChapter(mangaId, chapterIndex)
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-                _state.value = ReaderChapter.State.Error(e)
-                throw e
-            }
+            chapterHandler.getChapter(mangaId, chapterIndex)
+                .catch {
+                    _state.value = ReaderChapter.State.Error(it)
+                    info(it) { "Error getting chapter" }
+                }
+                .singleOrNull() ?: return
         )
         val pages = loader.loadChapter(chapter)
         viewerChapters.currChapter.value = chapter
         scope.launchDefault {
-            val chapters = try {
-                chapterHandler.getChapters(mangaId)
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-                emptyList()
-            }
+            val chapters = chapterHandler.getChapters(mangaId)
+                .catch {
+                    info(it) { "Error getting chapter list" }
+                    emit(emptyList())
+                }
+                .single()
+
             val nextChapter = chapters.find { it.index == chapterIndex + 1 }
             if (nextChapter != null) {
                 viewerChapters.nextChapter.value = ReaderChapter(
@@ -259,17 +269,23 @@ class ReaderMenuViewModel @Inject constructor(
             .launchIn(chapter.scope)
     }
 
-    private suspend fun markChapterRead(mangaId: Long, chapter: ReaderChapter) {
+    private fun markChapterRead(mangaId: Long, chapter: ReaderChapter) {
         chapterHandler.updateChapter(mangaId, chapter.chapter.index, true)
+            .catch {
+                info(it) { "Error marking chapter read" }
+            }
+            .launchIn(scope)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun sendProgress(chapter: Chapter? = this.chapter.value?.chapter, lastPageRead: Int = currentPage.value) {
         chapter ?: return
         if (chapter.read) return
-        GlobalScope.launchDefault {
-            chapterHandler.updateChapter(chapter.mangaId, chapter.index, lastPageRead = lastPageRead)
-        }
+        chapterHandler.updateChapter(chapter.mangaId, chapter.index, lastPageRead = lastPageRead)
+            .catch {
+                info(it) { "Error sending progress" }
+            }
+            .launchIn(GlobalScope)
     }
 
     fun updateLastPageReadOffset(offset: Int) {
@@ -278,9 +294,11 @@ class ReaderMenuViewModel @Inject constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun updateLastPageReadOffset(chapter: Chapter, offset: Int) {
-        GlobalScope.launchDefault {
-            chapter.updateRemote(chapterHandler, offset)
-        }
+        chapter.updateRemote(chapterHandler, offset)
+            .catch {
+                info(it) { "Error updating chapter offset" }
+            }
+            .launchIn(GlobalScope)
     }
 
     override fun onDispose() {

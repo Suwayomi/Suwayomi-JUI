@@ -40,8 +40,11 @@ import ca.gosyer.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.i18n.MR
 import ca.gosyer.uicore.components.DropdownIconButton
 import ca.gosyer.uicore.resources.stringResource
+import io.ktor.client.statement.HttpResponse
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
 
 data class ChapterDownloadItem(
     val manga: Manga?,
@@ -71,14 +74,18 @@ data class ChapterDownloadItem(
         _downloadChapterFlow.value = downloadingChapter
     }
 
-    suspend fun deleteDownload(chapterHandler: ChapterInteractionHandler) {
-        chapterHandler.deleteChapterDownload(chapter)
-        _downloadState.value = ChapterDownloadState.NotDownloaded
+    fun deleteDownload(chapterHandler: ChapterInteractionHandler): Flow<HttpResponse> {
+        return chapterHandler.deleteChapterDownload(chapter)
+            .onEach {
+                _downloadState.value = ChapterDownloadState.NotDownloaded
+            }
     }
 
-    suspend fun stopDownloading(chapterHandler: ChapterInteractionHandler) {
-        chapterHandler.stopChapterDownload(chapter)
-        _downloadState.value = ChapterDownloadState.NotDownloaded
+    fun stopDownloading(chapterHandler: ChapterInteractionHandler): Flow<HttpResponse> {
+        return chapterHandler.stopChapterDownload(chapter)
+            .onEach {
+                _downloadState.value = ChapterDownloadState.NotDownloaded
+            }
     }
 }
 

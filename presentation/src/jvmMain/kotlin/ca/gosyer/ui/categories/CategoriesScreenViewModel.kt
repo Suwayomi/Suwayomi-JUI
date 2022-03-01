@@ -6,7 +6,6 @@
 
 package ca.gosyer.ui.categories
 
-import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
@@ -14,7 +13,11 @@ import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 
 class CategoriesScreenViewModel @Inject constructor(
@@ -32,21 +35,22 @@ class CategoriesScreenViewModel @Inject constructor(
         getCategories()
     }
 
-    fun getCategories() {
-        scope.launch {
-            _categories.value = emptyList()
-            _isLoading.value = true
-            try {
-                _categories.value = categoryHandler.getCategories(true)
+    private fun getCategories() {
+        _categories.value = emptyList()
+        _isLoading.value = true
+        categoryHandler.getCategories(true)
+            .onEach {
+                _categories.value = it
                     .sortedBy { it.order }
                     .also { originalCategories = it }
                     .map { it.toMenuCategory() }
-            } catch (e: Exception) {
-                e.throwIfCancellation()
-            } finally {
                 _isLoading.value = false
             }
-        }
+            .catch {
+                info(it) { "Error getting categories" }
+                _isLoading.value = false
+            }
+            .launchIn(scope)
     }
 
     suspend fun updateRemoteCategories(manualUpdate: Boolean = false) {
@@ -54,23 +58,47 @@ class CategoriesScreenViewModel @Inject constructor(
         val newCategories = categories.filter { it.id == null }
         newCategories.forEach {
             categoryHandler.createCategory(it.name)
+                .catch {
+                    info(it) { "Error creating category" }
+                }
+                .collect()
         }
         originalCategories.forEach { originalCategory ->
             val category = categories.find { it.id == originalCategory.id }
             if (category == null) {
                 categoryHandler.deleteCategory(originalCategory)
+                    .catch {
+                        info(it) { "Error deleting category $originalCategory" }
+                    }
+                    .collect()
             } else if (category.name != originalCategory.name) {
                 categoryHandler.modifyCategory(originalCategory, category.name)
+                    .catch {
+                        info(it) { "Error modifying category $category" }
+                    }
+                    .collect()
             }
         }
         var updatedCategories = categoryHandler.getCategories(true)
+            .catch {
+                info(it) { "Error getting updated categories" }
+            }
+            .singleOrNull()
         categories.forEach { category ->
-            val updatedCategory = updatedCategories.find { it.id == category.id || it.name == category.name } ?: return@forEach
+            val updatedCategory = updatedCategories?.find { it.id == category.id || it.name == category.name } ?: return@forEach
             if (category.order != updatedCategory.order) {
                 debug { "${category.name}: ${updatedCategory.order} to ${category.order}" }
                 categoryHandler.reorderCategory(category.order, updatedCategory.order)
+                    .catch {
+                        info(it) { "Error re-ordering categories" }
+                    }
+                    .singleOrNull()
             }
             updatedCategories = categoryHandler.getCategories(true)
+                .catch {
+                    info(it) { "Error getting updated categories" }
+                }
+                .singleOrNull()
         }
 
         if (manualUpdate) {

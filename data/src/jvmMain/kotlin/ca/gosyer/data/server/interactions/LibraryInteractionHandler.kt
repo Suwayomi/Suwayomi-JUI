@@ -6,7 +6,6 @@
 
 package ca.gosyer.data.server.interactions
 
-import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
@@ -15,6 +14,9 @@ import ca.gosyer.data.server.requests.removeMangaFromLibraryRequest
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import me.tatarka.inject.annotations.Inject
 
 class LibraryInteractionHandler @Inject constructor(
@@ -22,19 +24,21 @@ class LibraryInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
-    suspend fun addMangaToLibrary(mangaId: Long) = withIOContext {
-        client.get<HttpResponse>(
+    fun addMangaToLibrary(mangaId: Long) = flow {
+        val response = client.get<HttpResponse>(
             serverUrl + addMangaToLibraryQuery(mangaId)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun addMangaToLibrary(manga: Manga) = addMangaToLibrary(manga.id)
+    fun addMangaToLibrary(manga: Manga) = addMangaToLibrary(manga.id)
 
-    suspend fun removeMangaFromLibrary(mangaId: Long) = withIOContext {
-        client.delete<HttpResponse>(
+    fun removeMangaFromLibrary(mangaId: Long) = flow {
+        val response = client.delete<HttpResponse>(
             serverUrl + removeMangaFromLibraryRequest(mangaId)
         )
-    }
+        emit(response)
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun removeMangaFromLibrary(manga: Manga) = removeMangaFromLibrary(manga.id)
+    fun removeMangaFromLibrary(manga: Manga) = removeMangaFromLibrary(manga.id)
 }
