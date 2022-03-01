@@ -12,16 +12,16 @@ import ca.gosyer.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView
 import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import me.tatarka.inject.annotations.Inject
-import java.util.concurrent.CopyOnWriteArrayList
 
 class SourceSettingsScreenViewModel @Inject constructor(
     private val sourceHandler: SourceInteractionHandler,
@@ -34,20 +34,21 @@ class SourceSettingsScreenViewModel @Inject constructor(
     private val _sourceSettings = MutableStateFlow<List<SourceSettingsView<*, *>>>(emptyList())
     val sourceSettings = _sourceSettings.asStateFlow()
 
-    private val subscriptions: CopyOnWriteArrayList<Job> = CopyOnWriteArrayList()
-
     init {
         getSourceSettings()
-
-        sourceSettings.onEach { settings ->
-            subscriptions.forEach { it.cancel() }
-            subscriptions.clear()
-            subscriptions += settings.map { setting ->
-                setting.state.drop(1).filterNotNull().onEach {
-                    sourceHandler.setSourceSetting(params.sourceId, setting.index, it)
-                    getSourceSettings()
-                }.launchIn(scope)
+        sourceSettings.mapLatest { settings ->
+            supervisorScope {
+                settings.forEach { setting ->
+                    setting.state.drop(1)
+                        .filterNotNull()
+                        .onEach {
+                            sourceHandler.setSourceSetting(params.sourceId, setting.index, it)
+                            getSourceSettings()
+                        }
+                        .launchIn(this)
+                }
             }
+
         }.launchIn(scope)
     }
 
