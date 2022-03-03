@@ -6,22 +6,36 @@
 
 package ca.gosyer.ui.sources.browse.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetState
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -78,6 +92,85 @@ fun SourceScreenContent(
         onCloseSourceTabClick(source)
     }
 
+    BackHandler(showingFilters) {
+        setShowingFilters(false)
+    }
+
+    BoxWithConstraints {
+        if (maxWidth > 720.dp) {
+            SourceWideScreenContent(
+                source = source,
+                onMangaClick = onMangaClick,
+                onCloseSourceTabClick = onCloseSourceTabClick,
+                onSourceSettingsClick = onSourceSettingsClick,
+                mangas = mangas,
+                hasNextPage = hasNextPage,
+                loading = loading,
+                isLatest = isLatest,
+                showLatestButton = showLatestButton,
+                sourceSearchQuery = sourceSearchQuery,
+                search = search,
+                submitSearch = submitSearch,
+                setMode = setMode,
+                loadNextPage = loadNextPage,
+                setUsingFilters = setUsingFilters,
+                filters = filters,
+                showingFilters = showingFilters,
+                showFilterButton = showFilterButton,
+                setShowingFilters = setShowingFilters,
+                resetFiltersClicked = resetFiltersClicked
+            )
+        } else {
+            SourceThinScreenContent(
+                source = source,
+                onMangaClick = onMangaClick,
+                onCloseSourceTabClick = onCloseSourceTabClick,
+                onSourceSettingsClick = onSourceSettingsClick,
+                mangas = mangas,
+                hasNextPage = hasNextPage,
+                loading = loading,
+                isLatest = isLatest,
+                showLatestButton = showLatestButton,
+                sourceSearchQuery = sourceSearchQuery,
+                search = search,
+                submitSearch = submitSearch,
+                setMode = setMode,
+                loadNextPage = loadNextPage,
+                setUsingFilters = setUsingFilters,
+                filters = filters,
+                showingFilters = showingFilters,
+                showFilterButton = showFilterButton,
+                setShowingFilters = setShowingFilters,
+                resetFiltersClicked = resetFiltersClicked
+            )
+        }
+    }
+}
+
+@Composable
+private fun SourceWideScreenContent(
+    source: Source,
+    onMangaClick: (Long) -> Unit,
+    onCloseSourceTabClick: (Source) -> Unit,
+    onSourceSettingsClick: (Long) -> Unit,
+    mangas: List<Manga>,
+    hasNextPage: Boolean,
+    loading: Boolean,
+    isLatest: Boolean,
+    showLatestButton: Boolean,
+    sourceSearchQuery: String?,
+    search: (String) -> Unit,
+    submitSearch: () -> Unit,
+    setMode: (Boolean) -> Unit,
+    loadNextPage: () -> Unit,
+    setUsingFilters: (Boolean) -> Unit,
+    // filter
+    filters: List<SourceFiltersView<*, *>>,
+    showingFilters: Boolean,
+    showFilterButton: Boolean,
+    setShowingFilters: (Boolean) -> Unit,
+    resetFiltersClicked: () -> Unit
+) {
     Scaffold(
         topBar = {
             SourceToolbar(
@@ -94,9 +187,9 @@ fun SourceScreenContent(
                 onClickMode = setMode,
                 onToggleFiltersClick = setShowingFilters,
             )
-        }
-    ) {
-        Box(Modifier.padding(it)) {
+        },
+    ) { padding ->
+        Box(Modifier.padding(padding)) {
             MangaTable(
                 mangas = mangas,
                 isLoading = loading,
@@ -115,9 +208,91 @@ fun SourceScreenContent(
                     }
                 )
             }
+            AnimatedVisibility(
+                showingFilters && !isLatest,
+                enter = fadeIn() + slideInHorizontally(initialOffsetX = { it * 2 }),
+                exit = fadeOut() + slideOutHorizontally(targetOffsetX = { it * 2 }),
+                modifier = Modifier.align(Alignment.TopEnd)
+            ) {
+                SourceFiltersMenu(
+                    modifier = Modifier.width(360.dp),
+                    filters = filters,
+                    onSearchClicked = {
+                        setUsingFilters(true)
+                        setShowingFilters(false)
+                        submitSearch()
+                    },
+                    resetFiltersClicked = resetFiltersClicked
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SourceThinScreenContent(
+    source: Source,
+    onMangaClick: (Long) -> Unit,
+    onCloseSourceTabClick: (Source) -> Unit,
+    onSourceSettingsClick: (Long) -> Unit,
+    mangas: List<Manga>,
+    hasNextPage: Boolean,
+    loading: Boolean,
+    isLatest: Boolean,
+    showLatestButton: Boolean,
+    sourceSearchQuery: String?,
+    search: (String) -> Unit,
+    submitSearch: () -> Unit,
+    setMode: (Boolean) -> Unit,
+    loadNextPage: () -> Unit,
+    setUsingFilters: (Boolean) -> Unit,
+    // filter
+    filters: List<SourceFiltersView<*, *>>,
+    showingFilters: Boolean,
+    showFilterButton: Boolean,
+    setShowingFilters: (Boolean) -> Unit,
+    resetFiltersClicked: () -> Unit
+) {
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = BottomSheetState(
+            BottomSheetValue.Collapsed,
+            confirmStateChange = {
+                when (it) {
+                    BottomSheetValue.Collapsed -> setShowingFilters(false)
+                    BottomSheetValue.Expanded -> setShowingFilters(true)
+                }
+                false
+            }
+        )
+    )
+    LaunchedEffect(showingFilters) {
+        if (showingFilters) {
+            bottomSheetScaffoldState.bottomSheetState.expand()
+        } else {
+            bottomSheetScaffoldState.bottomSheetState.collapse()
+        }
+    }
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        topBar = {
+            SourceToolbar(
+                source = source,
+                onCloseSourceTabClick = onCloseSourceTabClick,
+                sourceSearchQuery = sourceSearchQuery,
+                onSearch = search,
+                onSubmitSearch = submitSearch,
+                onSourceSettingsClick = onSourceSettingsClick,
+                showFilterButton = false,
+                showLatestButton = showLatestButton,
+                isLatest = isLatest,
+                showingFilters = showingFilters,
+                onClickMode = setMode,
+                onToggleFiltersClick = setShowingFilters,
+            )
+        },
+        sheetContent = {
             SourceFiltersMenu(
-                modifier = Modifier.align(Alignment.TopEnd),
-                showFilters = showingFilters && !isLatest,
+                modifier = Modifier,
                 filters = filters,
                 onSearchClicked = {
                     setUsingFilters(true)
@@ -126,6 +301,46 @@ fun SourceScreenContent(
                 },
                 resetFiltersClicked = resetFiltersClicked
             )
+        },
+        sheetPeekHeight = 0.dp
+    ) {  padding ->
+        Box(Modifier.padding(padding)) {
+            MangaTable(
+                mangas = mangas,
+                isLoading = loading,
+                hasNextPage = hasNextPage,
+                onLoadNextPage = loadNextPage,
+                onMangaClick = onMangaClick,
+            )
+            if (showingFilters && !isLatest) {
+                Box(
+                    Modifier.fillMaxSize().pointerInput(loading) {
+                        forEachGesture {
+                            detectTapGestures {
+                                setShowingFilters(false)
+                            }
+                        }
+                    }
+                )
+            }
+            if (showFilterButton && !isLatest) {
+                ExtendedFloatingActionButton(
+                    text = {
+                        Text(stringResource(MR.strings.filter_source))
+                    },
+                    onClick = {
+                        setShowingFilters(true)
+                    },
+                    icon = {
+                        Icon(
+                            Icons.Rounded.FilterList,
+                            stringResource(MR.strings.filter_source)
+                        )
+                    },
+                    modifier = Modifier.align(Alignment.BottomEnd)
+                        .padding(bottom = 16.dp, end = 16.dp)
+                )
+            }
         }
     }
 }

@@ -6,14 +6,9 @@
 
 package ca.gosyer.ui.sources.browse.filter
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -75,57 +69,49 @@ import kotlinx.coroutines.flow.filterIsInstance
 @Composable
 fun SourceFiltersMenu(
     modifier: Modifier,
-    showFilters: Boolean,
     filters: List<SourceFiltersView<*, *>>,
     onSearchClicked: () -> Unit,
     resetFiltersClicked: () -> Unit
 ) {
-    AnimatedVisibility(
-        showFilters,
-        enter = fadeIn() + slideInHorizontally(initialOffsetX = { it * 2 }),
-        exit = fadeOut() + slideOutHorizontally(targetOffsetX = { it * 2 }),
-        modifier = modifier
-    ) {
-        Surface(elevation = 1.dp, modifier = Modifier.width(360.dp).fillMaxHeight()) {
-            Column(Modifier.fillMaxSize()) {
-                Surface(elevation = 4.dp) {
-                    Row(
-                        Modifier.height(56.dp).fillMaxWidth().padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        TextButton(resetFiltersClicked) {
-                            Text(stringResource(MR.strings.reset_filters))
-                        }
-                        Button(onSearchClicked) {
-                            Text(stringResource(MR.strings.filter_source))
-                        }
+    Surface(elevation = 1.dp, modifier = modifier then Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            Surface(elevation = 4.dp) {
+                Row(
+                    Modifier.height(56.dp).fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextButton(resetFiltersClicked) {
+                        Text(stringResource(MR.strings.reset_filters))
+                    }
+                    Button(onSearchClicked) {
+                        Text(stringResource(MR.strings.filter_source))
                     }
                 }
-                val expandedGroups = remember { mutableStateListOf<Int>() }
-                Box {
-                    val lazyListState = rememberLazyListState()
-                    LazyColumn(Modifier.fillMaxSize(), lazyListState) {
-                        items(
-                            items = filters,
-                            key = { it.filter.hashCode() }
-                        ) { item ->
-                            item.toView(startExpanded = item.index in expandedGroups) { expanded, index ->
-                                if (expanded) {
-                                    expandedGroups += index
-                                } else {
-                                    expandedGroups -= index
-                                }
+            }
+            val expandedGroups = remember { mutableStateListOf<Int>() }
+            Box {
+                val lazyListState = rememberLazyListState()
+                LazyColumn(Modifier.fillMaxSize(), lazyListState) {
+                    items(
+                        items = filters,
+                        key = { it.filter.hashCode() }
+                    ) { item ->
+                        item.toView(startExpanded = item.index in expandedGroups) { expanded, index ->
+                            if (expanded) {
+                                expandedGroups += index
+                            } else {
+                                expandedGroups -= index
                             }
                         }
                     }
-                    VerticalScrollbar(
-                        rememberScrollbarAdapter(lazyListState),
-                        Modifier.align(Alignment.CenterEnd)
-                            .fillMaxHeight()
-                            .padding(horizontal = 4.dp, vertical = 8.dp)
-                    )
                 }
+                VerticalScrollbar(
+                    rememberScrollbarAdapter(lazyListState),
+                    Modifier.align(Alignment.CenterEnd)
+                        .fillMaxHeight()
+                        .padding(horizontal = 4.dp, vertical = 8.dp)
+                )
             }
         }
     }
