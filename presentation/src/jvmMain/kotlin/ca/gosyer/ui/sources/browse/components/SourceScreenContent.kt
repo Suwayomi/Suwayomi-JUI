@@ -36,6 +36,7 @@ import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.VerticalScrollbar
 import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.ActionItem
+import ca.gosyer.ui.base.navigation.BackHandler
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.sources.browse.filter.SourceFiltersMenu
 import ca.gosyer.ui.sources.browse.filter.model.SourceFiltersView
@@ -71,6 +72,10 @@ fun SourceScreenContent(
 ) {
     LaunchedEffect(source) {
         enableLatest(source.supportsLatest)
+    }
+
+    BackHandler {
+        onCloseSourceTabClick(source)
     }
 
     Scaffold(
