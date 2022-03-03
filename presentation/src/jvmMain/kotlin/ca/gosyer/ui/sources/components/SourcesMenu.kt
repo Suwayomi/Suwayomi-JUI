@@ -7,6 +7,7 @@
 package ca.gosyer.ui.sources.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -67,18 +68,25 @@ fun SourcesMenu(
                 homeScreen
             } else SourceScreen(selectedSourceTab)
         }
-        Row {
-            SourcesSideMenu(
-                sourceTabs = sourceTabs,
-                onSourceTabClick = selectTab,
-                onCloseSourceTabClick = {
-                    closeTab(it)
-                    navigator.stateHolder.removeState(it.id)
-                }
-            )
+        BoxWithConstraints {
+            if (maxWidth > 720.dp) {
+                Row {
+                    SourcesSideMenu(
+                        sourceTabs = sourceTabs,
+                        onSourceTabClick = selectTab,
+                        onCloseSourceTabClick = {
+                            closeTab(it)
+                            navigator.stateHolder.removeState(it.id)
+                        }
+                    )
 
-            CurrentSource()
+                    CurrentSource()
+                }
+            } else {
+                CurrentSource()
+            }
         }
+
     }
 }
 
