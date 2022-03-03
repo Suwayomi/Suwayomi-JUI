@@ -235,4 +235,14 @@
 
     <!-- Advanced Settings -->
     <string name="update_checker">Check for updates</string>
+
+    <!-- Android notifications -->
+    <string name="group_downloader">Downloader</string>
+    <string name="group_downloader_channel_running">Running</string>
+    <string name="group_downloader_channel_progress">Progress</string>
+    <string name="group_updates">Updates</string>
+    <string name="group_updates_channel_app">App updates</string>
+    <string name="group_updates_channel_ext">Extension Updates</string>
+    <string name="downloader_running">Downloader running</string>
+    <string name="chapter_downloading_progress">Downloading (%1$d/%2$d)</string>
 </resources>

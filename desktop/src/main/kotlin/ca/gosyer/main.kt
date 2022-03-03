@@ -70,6 +70,8 @@ suspend fun main() {
     val dataComponent = appComponent.dataComponent
     val uiComponent = appComponent.uiComponent
     dataComponent.migrations.runMigrations()
+    dataComponent.downloadService.init()
+    // dataComponent.libraryUpdateService.init()
     val serverService = dataComponent.serverService
     val uiPreferences = dataComponent.uiPreferences
     val uiHooks = uiComponent.getHooks()

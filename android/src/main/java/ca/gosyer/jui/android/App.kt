@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.core.prefs.getAsFlow
 import ca.gosyer.data.ui.model.ThemeMode
+import ca.gosyer.jui.android.data.Notifications
 import ca.gosyer.ui.AppComponent
 import kotlinx.coroutines.flow.launchIn
 
@@ -28,6 +30,9 @@ class App : Application(), DefaultLifecycleObserver {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         val appComponent = AppComponent.getInstance(this)
+
+        setupNotificationChannels()
+
         appComponent.dataComponent.uiPreferences.themeMode()
             .getAsFlow {
                 AppCompatDelegate.setDefaultNightMode(
@@ -39,6 +44,15 @@ class App : Application(), DefaultLifecycleObserver {
                 )
             }
             .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
-
     }
+
+    private fun setupNotificationChannels() {
+        try {
+            Notifications.createChannels(this)
+        } catch (e: Exception) {
+            error(e) { "Failed to modify notification channels" }
+        }
+    }
+
+    protected companion object : CKLogger({})
 }

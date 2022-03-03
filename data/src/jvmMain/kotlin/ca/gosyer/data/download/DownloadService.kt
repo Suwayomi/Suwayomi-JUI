@@ -17,10 +17,8 @@ import ca.gosyer.data.server.requests.downloadsQuery
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.decodeFromString
 import me.tatarka.inject.annotations.Inject
 
@@ -29,39 +27,32 @@ class DownloadService @Inject constructor(
     serverPreferences: ServerPreferences,
     client: Http
 ) : WebsocketService(serverPreferences, client) {
-
-    private val _downloaderStatus = MutableStateFlow(DownloaderStatus.Stopped)
-    val downloaderStatus = _downloaderStatus.asStateFlow()
-
-    private val _downloadQueue = MutableStateFlow(emptyList<DownloadChapter>())
-    val downloadQueue = _downloadQueue.asStateFlow()
-
-    private val watching = mutableMapOf<Long, MutableSharedFlow<Pair<Long, List<DownloadChapter>>>>()
+    override val _status: MutableStateFlow<Status>
+        get() = status
 
     override val query: String
         get() = downloadsQuery()
 
     override suspend fun onReceived(frame: Frame.Text) {
         val status = json.decodeFromString<DownloadStatus>(frame.readText())
-        _downloaderStatus.value = status.status
-        _downloadQueue.value = status.queue
-        val queue = status.queue.groupBy { it.mangaId }
-        watching.forEach { (mangaId, flow) ->
-            flow.emit(mangaId to queue[mangaId].orEmpty())
-        }
+        downloaderStatus.value = status.status
+        downloadQueue.value = status.queue
     }
 
-    fun registerWatch(mangaId: Long) =
-        MutableSharedFlow<Pair<Long, List<DownloadChapter>>>().also { watching[mangaId] = it }.asSharedFlow()
-    fun registerWatches(mangaIds: Set<Long>) =
-        mangaIds.map { registerWatch(it) }
+    companion object : CKLogger({}) {
+        val status = MutableStateFlow(Status.STARTING)
+        val downloadQueue = MutableStateFlow(emptyList<DownloadChapter>())
+        val downloaderStatus = MutableStateFlow(DownloaderStatus.Stopped)
 
-    fun removeWatch(mangaId: Long) {
-        watching -= mangaId
+        fun registerWatch(mangaId: Long) =
+            downloadQueue
+                .map {
+                    it.filter { it.mangaId == mangaId }
+                }
+        fun registerWatches(mangaIds: Set<Long>) =
+            downloadQueue
+                .map {
+                    it.filter { it.mangaId in mangaIds }
+                }
     }
-    fun removeWatches(mangaIds: Set<Long>) {
-        watching -= mangaIds
-    }
-
-    private companion object : CKLogger({})
 }

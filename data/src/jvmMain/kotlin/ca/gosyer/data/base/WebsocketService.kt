@@ -18,7 +18,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterIsInstance
@@ -35,8 +34,7 @@ abstract class WebsocketService(
     protected val json = Json {
         ignoreUnknownKeys = !BuildKonfig.DEBUG
     }
-    private val _status = MutableStateFlow(Status.STARTING)
-    val status = _status.asStateFlow()
+    protected abstract val _status: MutableStateFlow<Status>
 
     protected val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
 
@@ -44,45 +42,45 @@ abstract class WebsocketService(
 
     private var job: Job? = null
 
-    init {
-        init()
-    }
-
     fun init() {
         errorConnectionCount = 0
         job?.cancel()
-        job = serverUrl.mapLatest { serverUrl ->
-            _status.value = Status.STARTING
-            while (true) {
-                if (errorConnectionCount > 3) {
-                    _status.value = Status.STOPPED
-                    throw CancellationException()
-                }
-                runCatching {
-                    client.ws(
-                        host = serverUrl.substringAfter("://"),
-                        path = query
-                    ) {
-                        errorConnectionCount = 0
-                        _status.value = Status.RUNNING
-                        send(Frame.Text("STATUS"))
-
-                        incoming.receiveAsFlow()
-                            .filterIsInstance<Frame.Text>()
-                            .mapLatest(::onReceived)
-                            .catch { it.throwIfCancellation() }
-                            .collect()
+        job = serverUrl
+            .mapLatest { serverUrl ->
+                _status.value = Status.STARTING
+                while (true) {
+                    if (errorConnectionCount > 3) {
+                        _status.value = Status.STOPPED
+                        throw CancellationException()
                     }
-                }.throwIfCancellation().isFailure.let {
-                    _status.value = Status.STARTING
-                    if (it) errorConnectionCount++
+                    runCatching {
+                        client.ws(
+                            host = serverUrl.substringAfter("://"),
+                            path = query
+                        ) {
+                            errorConnectionCount = 0
+                            _status.value = Status.RUNNING
+                            send(Frame.Text("STATUS"))
+
+                            incoming.receiveAsFlow()
+                                .filterIsInstance<Frame.Text>()
+                                .mapLatest(::onReceived)
+                                .catch {
+                                    info(it) { "Error running websocket" }
+                                }
+                                .collect()
+                        }
+                    }.throwIfCancellation().isFailure.let {
+                        _status.value = Status.STARTING
+                        if (it) errorConnectionCount++
+                    }
                 }
             }
-        }.catch {
-            _status.value = Status.STOPPED
-            error(it) { "Error while running websocket service" }
-            throw it
-        }.launchIn(GlobalScope)
+            .catch {
+                _status.value = Status.STOPPED
+                error(it) { "Error while running websocket service" }
+            }
+            .launchIn(GlobalScope)
     }
 
     abstract val query: String

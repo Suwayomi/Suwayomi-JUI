@@ -14,12 +14,12 @@ import ca.gosyer.data.server.interactions.UpdatesInteractionHandler
 import ca.gosyer.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -28,7 +28,6 @@ import me.tatarka.inject.annotations.Inject
 class UpdatesScreenViewModel @Inject constructor(
     private val chapterHandler: ChapterInteractionHandler,
     private val updatesHandler: UpdatesInteractionHandler,
-    private val downloadService: DownloadService,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
 
@@ -44,6 +43,7 @@ class UpdatesScreenViewModel @Inject constructor(
     private val hasNextPage = MutableStateFlow(false)
 
     private val updatesMutex = Mutex()
+    private var downloadServiceJob: Job? = null
 
     init {
         scope.launch {
@@ -71,9 +71,10 @@ class UpdatesScreenViewModel @Inject constructor(
                         it.chapter
                     )
                 }
-                downloadService.registerWatches(mangaIds).merge()
-                    .onEach { (mangaId, chapters) ->
-                        _updates.value.filter { it.chapter.mangaId == mangaId }
+                downloadServiceJob?.cancel()
+                downloadServiceJob = DownloadService.registerWatches(mangaIds)
+                    .onEach { chapters ->
+                        _updates.value
                             .forEach {
                                 it.updateFrom(chapters)
                             }
@@ -125,10 +126,6 @@ class UpdatesScreenViewModel @Inject constructor(
                 info(it) { "Error stopping download" }
             }
             ?.launchIn(scope)
-    }
-
-    override fun onDispose() {
-        downloadService.removeWatches(mangaIds)
     }
 
     private companion object : CKLogger({})

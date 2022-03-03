@@ -63,7 +63,7 @@ data class ChapterDownloadItem(
 
     fun updateFrom(downloadingChapters: List<DownloadChapter>) {
         val downloadingChapter = downloadingChapters.find {
-            it.chapterIndex == chapter.index
+            it.chapterIndex == chapter.index && it.mangaId == chapter.mangaId
         }
         if (downloadingChapter != null && downloadState.value != ChapterDownloadState.Downloading) {
             _downloadState.value = ChapterDownloadState.Downloading

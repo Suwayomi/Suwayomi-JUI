@@ -15,6 +15,7 @@ import ca.gosyer.data.server.requests.updatesQuery
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.decodeFromString
 import me.tatarka.inject.annotations.Inject
 
@@ -23,6 +24,8 @@ class LibraryUpdateService @Inject constructor(
     serverPreferences: ServerPreferences,
     client: Http
 ) : WebsocketService(serverPreferences, client) {
+
+    override val _status: MutableStateFlow<Status> = MutableStateFlow(Status.STARTING)
 
     override val query: String
         get() = updatesQuery()

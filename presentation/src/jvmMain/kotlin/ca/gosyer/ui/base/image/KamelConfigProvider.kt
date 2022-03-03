@@ -11,7 +11,6 @@ import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
-import ca.gosyer.uicore.prefs.asStateIn
 import io.kamel.core.config.DefaultCacheSize
 import io.kamel.core.config.KamelConfig
 import io.kamel.core.config.KamelConfigBuilder
@@ -26,7 +25,6 @@ import io.ktor.http.Url
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import me.tatarka.inject.annotations.Inject
 
 class KamelConfigProvider @Inject constructor(
@@ -34,7 +32,7 @@ class KamelConfigProvider @Inject constructor(
     serverPreferences: ServerPreferences
 ) {
     @OptIn(DelicateCoroutinesApi::class)
-    val serverUrl = serverPreferences.serverUrl().asStateIn(GlobalScope)
+    val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
 
     fun get(resourcesFetcher: KamelConfigBuilder.() -> Unit): KamelConfig {
         return KamelConfig {
@@ -52,7 +50,6 @@ class KamelConfigProvider @Inject constructor(
                 install(http)
             }
             resourcesFetcher()
-            val serverUrl = serverUrl.asStateFlow()
             mapper(MangaCoverMapper(serverUrl))
             mapper(ExtensionIconMapper(serverUrl))
             mapper(SourceIconMapper(serverUrl))

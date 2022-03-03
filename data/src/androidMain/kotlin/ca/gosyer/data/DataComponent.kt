@@ -10,7 +10,6 @@ import android.content.Context
 import ca.gosyer.core.di.AppScope
 import ca.gosyer.core.prefs.PreferenceStoreFactory
 import ca.gosyer.data.catalog.CatalogPreferences
-import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.extension.ExtensionPreferences
 import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.library.LibraryUpdateService
@@ -36,8 +35,6 @@ actual abstract class DataComponent(
     protected abstract val preferenceFactory: PreferenceStoreFactory
 
     protected abstract val httpProvider: HttpProvider
-
-    abstract val downloadService: DownloadService
 
     abstract val libraryUpdateService: LibraryUpdateService
 
@@ -114,11 +111,6 @@ actual abstract class DataComponent(
     @get:Provides
     protected val libraryUpdateServiceFactory: LibraryUpdateService
         get() = LibraryUpdateService(serverPreferences, http)
-
-    @get:AppScope
-    @get:Provides
-    protected val downloadServiceFactory: DownloadService
-        get() = DownloadService(serverPreferences, http)
 
     @get:AppScope
     @get:Provides

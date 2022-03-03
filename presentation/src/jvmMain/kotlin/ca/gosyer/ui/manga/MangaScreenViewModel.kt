@@ -45,13 +45,10 @@ class MangaScreenViewModel @Inject constructor(
     private val chapterHandler: ChapterInteractionHandler,
     private val categoryHandler: CategoryInteractionHandler,
     private val libraryHandler: LibraryInteractionHandler,
-    private val downloadService: DownloadService,
     uiPreferences: UiPreferences,
     contextWrapper: ContextWrapper,
     private val params: Params,
 ) : ViewModel(contextWrapper) {
-    private val downloadingChapters = downloadService.registerWatch(params.mangaId)
-
     private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()
 
@@ -79,11 +76,13 @@ class MangaScreenViewModel @Inject constructor(
         .asStateFlow(getDateFormat(uiPreferences.dateFormat().get()))
 
     init {
-        downloadingChapters.mapLatest { (_, downloadingChapters) ->
-            chapters.value.forEach { chapter ->
-                chapter.updateFrom(downloadingChapters)
+        DownloadService.registerWatch(params.mangaId)
+            .mapLatest { downloadingChapters->
+                chapters.value.forEach { chapter ->
+                    chapter.updateFrom(downloadingChapters)
+                }
             }
-        }.launchIn(scope)
+            .launchIn(scope)
 
         scope.launch {
             refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
@@ -315,10 +314,6 @@ class MangaScreenViewModel @Inject constructor(
                 info(it) { "Error stopping download" }
             }
             ?.launchIn(scope)
-    }
-
-    override fun onDispose() {
-        downloadService.removeWatch(params.mangaId)
     }
 
     private fun List<Chapter>.toDownloadChapters() = map {

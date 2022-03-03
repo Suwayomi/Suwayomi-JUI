@@ -15,6 +15,7 @@ import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
@@ -35,9 +36,9 @@ class DownloadsScreenViewModel @Inject constructor(
     override val scope: CoroutineScope
         get() = uiScope ?: super.scope
 
-    val serviceStatus get() = downloadService.status
-    val downloaderStatus get() = downloadService.downloaderStatus
-    val downloadQueue get() = downloadService.downloadQueue
+    val serviceStatus get() = DownloadService.status.asStateFlow()
+    val downloaderStatus get() = DownloadService.downloaderStatus.asStateFlow()
+    val downloadQueue get() = DownloadService.downloadQueue.asStateFlow()
 
     fun start() {
         downloadsHandler.startDownloading()
