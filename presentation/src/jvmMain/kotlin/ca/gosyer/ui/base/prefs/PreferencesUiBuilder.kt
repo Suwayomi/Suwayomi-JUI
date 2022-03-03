@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -274,15 +273,19 @@ fun <T> ChoiceDialog(
         title(title)
         Box {
             val listState = rememberLazyListState()
-            LazyColumn(Modifier.fillMaxSize(), listState) {
+            LazyColumn(Modifier.defaultMinSize(minHeight = 64.dp).fillMaxWidth(), listState) {
                 items(items) { (value, text) ->
                     Row(
-                        modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
-                            onClick = {
-                                onSelected(value)
-                                state.hide()
-                            }
-                        ),
+                        modifier = Modifier
+                            .requiredHeight(48.dp)
+                            .fillMaxWidth()
+                            .clickable(
+                                onClick = {
+                                    onSelected(value)
+                                    state.hide()
+                                }
+                            )
+                            .padding(horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
@@ -333,18 +336,22 @@ fun <T> MultiSelectDialog(
         title(title)
         val listState = rememberLazyListState()
         Box {
-            LazyColumn(Modifier.fillMaxSize(), listState) {
+            LazyColumn(Modifier.defaultMinSize(minHeight = 64.dp).fillMaxWidth(), listState) {
                 items(items) { (value, text) ->
                     Row(
-                        modifier = Modifier.requiredHeight(48.dp).fillMaxWidth().clickable(
-                            onClick = {
-                                if (value in checked) {
-                                    checked -= value
-                                } else {
-                                    checked += value
+                        modifier = Modifier
+                            .requiredHeight(48.dp)
+                            .fillMaxWidth()
+                            .clickable(
+                                onClick = {
+                                    if (value in checked) {
+                                        checked -= value
+                                    } else {
+                                        checked += value
+                                    }
                                 }
-                            }
-                        ),
+                            )
+                            .padding(horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(

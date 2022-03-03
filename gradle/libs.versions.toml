@@ -9,9 +9,9 @@ xmlUtil = "0.84.0"
 
 # Compose
 voyager = "1.0.0-beta16"
-accompanist = "0.20.1"
+accompanist = "0.24.4"
 kamel = "0.3.0"
-materialDialogs = "0.6.4"
+materialDialogs = "0.6.6"
 
 # Android
 core = "1.7.0"
