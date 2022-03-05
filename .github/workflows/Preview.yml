@@ -107,7 +107,7 @@ jobs:
         uses: r0adkll/sign-android-release@v1
         if: ${{ matrix.runtime == 'android' }}
         with:
-          releaseDirectory: android/build/outputs/apk/standard/release
+          releaseDirectory: android/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
