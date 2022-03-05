@@ -149,6 +149,6 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "*/binaries/main/*/*.*,*/jars/*.jar,*/*.apk"
+          artifacts: "*/binaries/main/*/*.*,*/jars/*.jar,android/build/outputs/apk/release/*.apk"
           draft: true
           token: ${{ secrets.GITHUB_TOKEN }}
