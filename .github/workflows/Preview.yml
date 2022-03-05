@@ -14,7 +14,7 @@ jobs:
     name: Build application packages
     strategy:
       matrix:
-        runtime: [ linux-x64, linux-fedora-x64, osx-x64, win-x64 ]
+        runtime: [ linux-x64, linux-fedora-x64, osx-x64, win-x64, android ]
         include:
           - runtime: linux-x64
             arch: x64
@@ -43,6 +43,13 @@ jobs:
             shell: powershell
             build: packageUberJarForCurrentOS packageMsi
             setupCl: ./scripts/SetupClWindows.ps1
+
+          - runtime: android
+            arch: x64
+            os: ubuntu-latest
+            shell: bash
+            build: :android:assembleRelease
+            setupCl: ./scripts/SetupClUnix.sh
 
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
@@ -96,6 +103,16 @@ jobs:
             -Ppreview="${{ env.COMMIT_COUNT }}"
             --stacktrace
 
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+        if: ${{ matrix.runtime == 'android' }}
+        with:
+          releaseDirectory: android/build/outputs/apk/standard/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
       # Upload runner package tar.gz/zip as artifact
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
@@ -105,6 +122,7 @@ jobs:
             desktop/build/compose/binaries/main/*/
             desktop/build/compose/jars/
             !desktop/build/compose/binaries/main/app/
+            ${{ env.SIGNED_RELEASE_FILE }}
 
         # Upload runner errors
       - name: Upload error logs
@@ -167,7 +185,7 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "*/binaries/main/*/*.*,*/jars/*.jar"
+          artifacts: "*/binaries/main/*/*.*,*/jars/*.jar,*/*.apk"
           token: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
           repo: Tachidesk-JUI-preview
           tag: r${{ env.COMMIT_COUNT }}
