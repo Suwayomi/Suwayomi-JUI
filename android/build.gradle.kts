@@ -87,10 +87,9 @@ dependencies {
 android {
     defaultConfig {
         applicationId = "ca.gosyer.tachidesk.jui.android"
-        versionCode = 1
+        versionCode = migrationCode
         versionName = version.toString()
 
-        buildConfigField("int", "MIGRATION_CODE", migrationCode.toString())
         buildConfigField("boolean", "IS_PREVIEW", project.hasProperty("preview").toString())
         buildConfigField("int", "PREVIEW_BUILD", project.properties["preview"]?.toString()?.trim('"') ?: 0.toString())
     }
