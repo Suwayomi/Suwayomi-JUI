@@ -133,16 +133,19 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                 os.isLinux || os.isMacOsX -> commandLine("./gradlew", ":server:shadowJar", "--no-daemon")
             }
         }
-        register<Copy>(copyTachideskJarTask) {
+        register(copyTachideskJarTask) {
             group = tachideskGroup
             mustRunAfter(buildTachideskTask)
             onlyIfTachideskDoesntExist(projectDir)
 
-            from("${tmpServerFolder}server/build/")
-            include("Tachidesk-Server-$tachideskVersion-r*.jar")
-            into(destination)
-            rename {
-                "Tachidesk.jar"
+            doFirst {
+                file("${tmpServerFolder}server/build/").listFiles()
+                    .orEmpty()
+                    .find {
+                        it.nameWithoutExtension.startsWith("Tachidesk-Server-$tachideskVersion-r") &&
+                            it.extension == "jar"
+                    }
+                    ?.copyTo(file("${destination}Tachidesk.jar"))
             }
         }
         register(signTachideskJar) {
