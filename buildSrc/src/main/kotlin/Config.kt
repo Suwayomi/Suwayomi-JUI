@@ -4,11 +4,11 @@ object Config {
     const val migrationCode = 1
 
     // Tachidesk
-    const val tachideskVersion = "v0.6.0"
+    const val tachideskVersion = "v0.6.2"
     // Match this to the Tachidesk-Server commit count
-    const val serverCode = 1058
+    const val serverCode = 1074
     const val preview = true
-    const val previewCommit = "b714abddae9f13e91bc53c5daac54aeae564cd2a"
+    const val previewCommit = "858784857e8b4ba7d2a88a8128bb31dc53673852"
 
     val desktopJvmTarget = JavaVersion.VERSION_16
     val androidJvmTarget = JavaVersion.VERSION_11
