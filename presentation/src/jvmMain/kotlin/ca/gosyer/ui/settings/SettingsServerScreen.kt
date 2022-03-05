@@ -77,7 +77,6 @@ expect class SettingsServerHostViewModel : ViewModel
 
 expect fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostViewModel): LazyListScope.() -> Unit
 
-
 class SettingsServerViewModel @Inject constructor(
     serverPreferences: ServerPreferences,
     contextWrapper: ContextWrapper
@@ -118,7 +117,6 @@ class SettingsServerViewModel @Inject constructor(
 
     private companion object : CKLogger({})
 }
-
 
 @Composable
 fun SettingsServerScreenContent(

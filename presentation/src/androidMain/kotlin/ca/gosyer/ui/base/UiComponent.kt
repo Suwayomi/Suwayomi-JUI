@@ -30,7 +30,7 @@ actual abstract class UiComponent(
 
     @get:AppScope
     @get:Provides
-    actual protected val kamelConfigFactory: KamelConfig
+    protected actual val kamelConfigFactory: KamelConfig
         get() = kamelConfigProvider.get { resourcesFetcher(dataComponent.context) }
 
     actual fun getHooks() = arrayOf(

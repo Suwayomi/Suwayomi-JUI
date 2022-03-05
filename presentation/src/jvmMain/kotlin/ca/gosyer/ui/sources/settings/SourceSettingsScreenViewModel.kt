@@ -53,7 +53,6 @@ class SourceSettingsScreenViewModel @Inject constructor(
                         .launchIn(this)
                 }
             }
-
         }.launchIn(scope)
     }
 

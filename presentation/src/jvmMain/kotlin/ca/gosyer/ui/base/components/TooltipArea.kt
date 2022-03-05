@@ -28,7 +28,7 @@ expect class CursorPoint(
     offset: DpOffset = DpOffset.Zero,
     alignment: Alignment = Alignment.BottomEnd,
     windowMargin: Dp = 4.dp
-): TooltipPlacement
+) : TooltipPlacement
 
 fun TooltipPlacement.ComponentRect(
     anchor: Alignment = Alignment.BottomCenter,
@@ -41,7 +41,7 @@ expect class ComponentRect(
     anchor: Alignment = Alignment.BottomCenter,
     alignment: Alignment = Alignment.BottomCenter,
     offset: DpOffset = DpOffset.Zero
-): TooltipPlacement
+) : TooltipPlacement
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

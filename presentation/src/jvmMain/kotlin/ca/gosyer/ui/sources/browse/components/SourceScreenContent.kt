@@ -303,7 +303,7 @@ private fun SourceThinScreenContent(
             )
         },
         sheetPeekHeight = 0.dp
-    ) {  padding ->
+    ) { padding ->
         Box(Modifier.padding(padding)) {
             MangaTable(
                 mangas = mangas,

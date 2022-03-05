@@ -37,6 +37,7 @@ actual class ReaderLauncher {
         openReaderMenu(chapterIndex, mangaId)
     }
 }
+
 @Composable
 actual fun rememberReaderLauncher(): ReaderLauncher {
     return remember { ReaderLauncher() }

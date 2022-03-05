@@ -20,13 +20,13 @@ actual class CursorPoint actual constructor(
     offset: DpOffset,
     alignment: Alignment,
     windowMargin: Dp
-): TooltipPlacement
+) : TooltipPlacement
 
 actual class ComponentRect actual constructor(
     anchor: Alignment,
     alignment: Alignment,
     offset: DpOffset
-): TooltipPlacement
+) : TooltipPlacement
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

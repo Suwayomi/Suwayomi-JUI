@@ -86,7 +86,6 @@ fun SourcesMenu(
                 CurrentSource()
             }
         }
-
     }
 }
 

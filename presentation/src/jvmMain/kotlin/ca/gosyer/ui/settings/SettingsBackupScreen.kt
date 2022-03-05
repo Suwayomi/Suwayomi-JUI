@@ -186,7 +186,7 @@ class SettingsBackupViewModel @Inject constructor(
         _restoring.value = false
     }
 
-    private val tempFile =  MutableStateFlow<Path?>(null)
+    private val tempFile = MutableStateFlow<Path?>(null)
     private val mutex = Mutex()
 
     fun exportBackup() {
@@ -230,7 +230,6 @@ class SettingsBackupViewModel @Inject constructor(
                 _creating.value = false
             }
             .launchIn(scope)
-
     }
 
     fun exportBackupFileFound(backupSink: Sink) {

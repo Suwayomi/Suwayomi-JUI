@@ -77,7 +77,7 @@ class MangaScreenViewModel @Inject constructor(
 
     init {
         DownloadService.registerWatch(params.mangaId)
-            .mapLatest { downloadingChapters->
+            .mapLatest { downloadingChapters ->
                 chapters.value.forEach { chapter ->
                     chapter.updateFrom(downloadingChapters)
                 }
@@ -304,7 +304,6 @@ class MangaScreenViewModel @Inject constructor(
                 info(it) { "Error deleting download" }
             }
             ?.launchIn(scope)
-
     }
 
     fun stopDownloadingChapter(index: Int) {

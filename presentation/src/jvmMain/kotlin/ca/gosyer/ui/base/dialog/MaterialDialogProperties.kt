@@ -23,7 +23,7 @@ fun getMaterialDialogProperties(
     dismissOnBackPress: Boolean = true,
     dismissOnClickOutside: Boolean = true,
     securePolicy: SecurePolicy = SecurePolicy.Inherit,
-    usePlatformDefaultWidth : Boolean = false,
+    usePlatformDefaultWidth: Boolean = false,
     position: DesktopWindowPosition = DesktopWindowPosition(Alignment.Center),
     size: DpSize = DpSize(400.dp, 300.dp),
     title: String = BuildKonfig.NAME,

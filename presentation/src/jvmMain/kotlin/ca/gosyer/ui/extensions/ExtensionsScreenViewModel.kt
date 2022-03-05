@@ -54,7 +54,6 @@ class ExtensionsScreenViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-
     init {
         getExtensions()
     }
@@ -84,7 +83,6 @@ class ExtensionsScreenViewModel @Inject constructor(
                 getExtensions()
             }
             .launchIn(scope)
-
     }
 
     fun update(extension: Extension) {

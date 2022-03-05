@@ -42,8 +42,6 @@ actual fun HorizontalScrollbar(
     adapter, modifier, reverseLayout, style, interactionSource
 )
 
-
-
 @Composable
 actual fun rememberScrollbarAdapter(
     scrollState: ScrollState

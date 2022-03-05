@@ -78,7 +78,6 @@ fun CategoriesScreenContent(
         }
     }
 
-
     val createDialogState = rememberMaterialDialogState()
 
     Surface {

@@ -21,7 +21,6 @@ actual class FileChooser(private val onFileFound: (Source) -> Unit, private val 
         .apply {
             val details = actionMap.get("viewTypeDetails")
             details?.actionPerformed(null)
-
         }
 
     actual fun launch(extension: String) {
@@ -37,5 +36,5 @@ actual class FileChooser(private val onFileFound: (Source) -> Unit, private val 
 @Composable
 actual fun rememberFileChooser(onFileFound: (Source) -> Unit): FileChooser {
     val coroutineScope = rememberCoroutineScope()
-    return remember { FileChooser(onFileFound, coroutineScope)  }
+    return remember { FileChooser(onFileFound, coroutineScope) }
 }

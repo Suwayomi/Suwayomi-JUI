@@ -31,8 +31,8 @@ actual fun Modifier.chapterItemModifier(
         onDismissRequest = { expanded = false }
     ) {
         listOf(
-            stringResource(MR.strings.action_toggle_read) to toggleRead ,
-            stringResource(MR.strings.action_mark_previous_read) to markPreviousAsRead ,
+            stringResource(MR.strings.action_toggle_read) to toggleRead,
+            stringResource(MR.strings.action_mark_previous_read) to markPreviousAsRead,
             stringResource(MR.strings.action_toggle_bookmarked) to toggleBookmarked
         ).forEach { (label, onClick) ->
             DropdownMenuItem(

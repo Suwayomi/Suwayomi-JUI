@@ -64,7 +64,6 @@ class AndroidDownloadService : Service() {
 
         private var instance: AndroidDownloadService? = null
 
-
         fun start(context: Context, actions: Actions) {
             if (!isRunning() && actions != Actions.STOP) {
                 val intent = Intent(context, AndroidDownloadService::class.java).apply {

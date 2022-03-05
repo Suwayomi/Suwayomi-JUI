@@ -24,6 +24,7 @@ actual class ReaderLauncher(private val context: Context) {
         }.let(context::startActivity)
     }
 }
+
 @Composable
 actual fun rememberReaderLauncher(): ReaderLauncher {
     val context = LocalContext.current

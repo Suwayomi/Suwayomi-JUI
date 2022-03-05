@@ -39,13 +39,12 @@ fun Context.acquireWakeLock(tag: String): PowerManager.WakeLock {
  */
 fun Context.notificationBuilder(channelId: String, block: (NotificationCompat.Builder.() -> Unit)? = null): NotificationCompat.Builder {
     val builder = NotificationCompat.Builder(this, channelId)
-        //.setColor(getColor(R.color.accent_blue))
+    // .setColor(getColor(R.color.accent_blue))
     if (block != null) {
         builder.block()
     }
     return builder
 }
-
 
 /**
  * Helper method to create a notification.

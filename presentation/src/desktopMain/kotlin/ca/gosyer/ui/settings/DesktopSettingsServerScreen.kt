@@ -70,7 +70,6 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
     }
 }
 
-
 actual class SettingsServerHostViewModel @Inject constructor(
     serverPreferences: ServerPreferences,
     serverHostPreferences: ServerHostPreferences,
@@ -268,4 +267,3 @@ fun LazyListScope.ServerHostItems(
         Divider()
     }
 }
-

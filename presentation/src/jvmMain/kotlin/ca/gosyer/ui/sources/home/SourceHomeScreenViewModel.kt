@@ -46,7 +46,6 @@ class SourceHomeScreenViewModel @Inject constructor(
         sources.map { it.lang }.toSet() - setOf(Source.LOCAL_SOURCE_LANG)
     }.stateIn(scope, SharingStarted.Eagerly, emptySet())
 
-
     init {
         getSources()
     }

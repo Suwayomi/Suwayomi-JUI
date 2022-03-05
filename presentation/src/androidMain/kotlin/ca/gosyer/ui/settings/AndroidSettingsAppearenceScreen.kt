@@ -6,5 +6,4 @@
 
 package ca.gosyer.ui.settings
 
-
 actual val showWindowDecorationsOption: Boolean = false
