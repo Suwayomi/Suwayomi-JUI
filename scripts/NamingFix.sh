@@ -19,3 +19,12 @@ if [ -f "$dmg" ]; then
     mv "$dmg" "$dir/Tachidesk-JUI-macos-x64-$version.dmg"
   fi
 fi
+
+apk="$(find ./ -iname '*.apk' 2>/dev/null)"
+if [ -f "$apk" ]; then
+  dir="$(dirname "$apk")"
+
+  if [ "$(basename "$apk")" != "Tachidesk-JUI-android.apk" ]; then
+    mv "$apk" "$dir/Tachidesk-JUI-android.apk"
+  fi
+fi
