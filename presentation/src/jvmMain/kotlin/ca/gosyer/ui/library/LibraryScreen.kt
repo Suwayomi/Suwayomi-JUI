@@ -29,6 +29,8 @@ class LibraryScreen : Screen {
             categories = vm.categories.collectAsState().value,
             selectedCategoryIndex = vm.selectedCategoryIndex.collectAsState().value,
             displayMode = vm.displayMode.collectAsState().value,
+            gridColumns = vm.gridColumns.collectAsState().value,
+            gridSize = vm.gridSize.collectAsState().value,
             isLoading = vm.isLoading.collectAsState().value,
             error = vm.error.collectAsState().value,
             query = vm.query.collectAsState().value,

@@ -16,6 +16,14 @@ class LibraryPreferences(private val preferenceStore: PreferenceStore) {
         return preferenceStore.getJsonObject("display_mode", DisplayMode.CompactGrid, DisplayMode.serializer())
     }
 
+    fun gridColumns(): Preference<Int> {
+        return preferenceStore.getInt("grid_columns", 0)
+    }
+
+    fun gridSize(): Preference<Int> {
+        return preferenceStore.getInt("grid_size", 160)
+    }
+
     fun showAllCategory(): Preference<Boolean> {
         return preferenceStore.getBoolean("show_all_category", false)
     }

@@ -21,6 +21,8 @@ fun LibraryPager(
     pagerState: PagerState,
     categories: List<Category>,
     displayMode: DisplayMode,
+    gridColumns: Int,
+    gridSize: Int,
     getLibraryForPage: @Composable (Long) -> State<List<Manga>>,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit
@@ -32,17 +34,30 @@ fun LibraryPager(
         when (displayMode) {
             DisplayMode.CompactGrid -> LibraryMangaCompactGrid(
                 library = library,
+                gridColumns = gridColumns,
+                gridSize = gridSize,
                 onClickManga = onClickManga,
                 onRemoveMangaClicked = onRemoveMangaClicked
             )
-            /*DisplayMode.ComfortableGrid -> LibraryMangaComfortableGrid(
+            DisplayMode.ComfortableGrid -> LibraryMangaComfortableGrid(
                 library = library,
-                onClickManga = onClickManga
+                gridColumns = gridColumns,
+                gridSize = gridSize,
+                onClickManga = onClickManga,
+                onRemoveMangaClicked = onRemoveMangaClicked
+            )
+            DisplayMode.CoverOnlyGrid -> LibraryMangaCoverOnlyGrid(
+                library = library,
+                gridColumns = gridColumns,
+                gridSize = gridSize,
+                onClickManga = onClickManga,
+                onRemoveMangaClicked = onRemoveMangaClicked
             )
             DisplayMode.List -> LibraryMangaList(
                 library = library,
-                onClickManga = onClickManga
-            )*/
+                onClickManga = onClickManga,
+                onRemoveMangaClicked = onRemoveMangaClicked
+            )
             else -> Box {}
         }
     }

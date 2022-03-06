@@ -16,36 +16,22 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.VerticalScrollbar
 import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.image.KamelImage
 import io.kamel.image.lazyPainterResource
 
-expect fun Modifier.libraryMangaModifier(
-    onClickManga: () -> Unit,
-    onClickRemoveManga: () -> Unit
-): Modifier
-
 @Composable
-fun LibraryMangaCompactGrid(
+fun LibraryMangaCoverOnlyGrid(
     library: List<Manga>,
     gridColumns: Int,
     gridSize: Int,
@@ -65,7 +51,7 @@ fun LibraryMangaCompactGrid(
             modifier = Modifier.fillMaxSize().padding(4.dp)
         ) {
             items(library) { manga ->
-                LibraryMangaCompactGridItem(
+                LibraryMangaCoverOnlyGridItem(
                     modifier = Modifier.libraryMangaModifier(
                         { onClickManga(manga.id) },
                         { onRemoveMangaClicked(manga.id) }
@@ -86,16 +72,13 @@ fun LibraryMangaCompactGrid(
 }
 
 @Composable
-private fun LibraryMangaCompactGridItem(
+private fun LibraryMangaCoverOnlyGridItem(
     modifier: Modifier,
     manga: Manga,
     unread: Int?,
-    downloaded: Int?,
+    downloaded: Int?
 ) {
     val cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium)
-    val fontStyle = LocalTextStyle.current.merge(
-        TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
-    )
 
     Box(
         modifier = Modifier.padding(4.dp)
@@ -105,34 +88,14 @@ private fun LibraryMangaCompactGridItem(
     ) {
         KamelImage(
             cover,
-            manga.title,
+            contentDescription = manga.title,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
-        )
-        Box(modifier = Modifier.fillMaxSize().then(shadowGradient))
-        Text(
-            text = manga.title,
-            color = Color.White,
-            style = fontStyle,
-            maxLines = 2,
-            modifier = Modifier.align(Alignment.BottomStart).padding(8.dp)
         )
         LibraryMangaBadges(
             unread = unread,
             downloaded = downloaded,
             modifier = Modifier.padding(4.dp)
         )
-    }
-}
-
-private val shadowGradient = Modifier.drawWithCache {
-    val gradient = Brush.linearGradient(
-        0.75f to Color.Transparent,
-        1.0f to Color(0xAA000000),
-        start = Offset(0f, 0f),
-        end = Offset(0f, size.height)
-    )
-    onDrawBehind {
-        drawRect(gradient)
     }
 }

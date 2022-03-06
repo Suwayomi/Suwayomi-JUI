@@ -158,6 +158,17 @@
 
     <!-- Library Settings -->
     <string name="show_all_category">Show all category</string>
+    <string name="display_mode">Display mode</string>
+    <string name="display_compact">Compact grid</string>
+    <string name="display_comfortable">Comfortable grid</string>
+    <string name="display_cover_only">Cover-only grid</string>
+    <string name="display_list">List</string>
+    <string name="items_per_row">Items per row</string>
+    <string name="items_per_row_sub">Columns: %1$d</string>
+    <string name="items_per_row_sub_adaptive">Columns: Adaptive, Size: %1$d</string>
+    <string name="adaptive">Adaptive</string>
+    <string name="grid_columns">Columns</string>
+    <string name="grid_size">Size</string>
 
     <!-- Reader Settings -->
     <string name="reader_mode">Reader Mode</string>

@@ -84,6 +84,8 @@ class LibraryScreenViewModel @Inject constructor(
     val selectedCategoryIndex = _selectedCategoryIndex.asStateFlow()
 
     val displayMode = libraryPreferences.displayMode().stateIn(scope)
+    val gridColumns = libraryPreferences.gridColumns().stateIn(scope)
+    val gridSize = libraryPreferences.gridSize().stateIn(scope)
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
