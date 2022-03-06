@@ -12,15 +12,20 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
+import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import ca.gosyer.data.models.Category
+import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.pagerTabIndicatorOffset
 
 @Composable
 fun LibraryTabs(
     visible: Boolean,
+    pagerState: PagerState,
     categories: List<Category>,
     selectedPage: Int,
     onPageChanged: (Int) -> Unit
@@ -36,7 +41,12 @@ fun LibraryTabs(
             selectedTabIndex = selectedPage,
             backgroundColor = MaterialTheme.colors.surface,
             // contentColor = CustomColors.current.onBars,
-            edgePadding = 0.dp
+            edgePadding = 0.dp,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                )
+            }
         ) {
             categories.fastForEachIndexed { i, category ->
                 Tab(

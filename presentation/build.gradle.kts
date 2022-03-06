@@ -47,6 +47,7 @@ kotlin {
                 api(libs.voyagerTransitions)
                 api(libs.materialDialogsCore)
                 api(libs.accompanistPager)
+                api(libs.accompanistPagerIndicators)
                 api(libs.accompanistFlowLayout)
                 api(libs.krokiCoroutines)
                 api(projects.core)

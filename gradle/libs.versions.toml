@@ -68,6 +68,7 @@ voyagerCore = { module = "cafe.adriel.voyager:voyager-core", version.ref = "voya
 voyagerNavigation = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyagerTransitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 accompanistPager = { module = "ca.gosyer:accompanist-pager", version.ref = "accompanist" }
+accompanistPagerIndicators = { module = "ca.gosyer:accompanist-pager-indicators", version.ref = "accompanist" }
 accompanistFlowLayout = { module = "ca.gosyer:accompanist-flowlayout", version.ref = "accompanist" }
 kamel = { module = "com.alialbaali.kamel:kamel-image", version.ref = "kamel" }
 materialDialogsCore = { module = "ca.gosyer:compose-material-dialogs-core", version.ref = "materialDialogs" }

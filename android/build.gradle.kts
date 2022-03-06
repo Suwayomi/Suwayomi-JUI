@@ -21,6 +21,7 @@ dependencies {
     implementation(libs.voyagerNavigation)
     implementation(libs.voyagerTransitions)
     implementation(libs.accompanistPager)
+    implementation(libs.accompanistPagerIndicators)
     implementation(libs.accompanistFlowLayout)
     implementation(libs.kamel)
     implementation(libs.materialDialogsCore)
