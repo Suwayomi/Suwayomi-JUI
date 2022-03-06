@@ -15,17 +15,14 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetState
 import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -35,29 +32,31 @@ import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.ViewModule
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
+import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.BackHandler
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.sources.browse.filter.SourceFiltersMenu
 import ca.gosyer.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.uicore.components.LoadingScreen
-import ca.gosyer.uicore.components.MangaGridItem
 import ca.gosyer.uicore.resources.stringResource
-import io.kamel.image.lazyPainterResource
 
 @Composable
 fun SourceScreenContent(
@@ -65,6 +64,9 @@ fun SourceScreenContent(
     onMangaClick: (Long) -> Unit,
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit,
+    displayMode: DisplayMode,
+    gridColumns: Int,
+    gridSize: Int,
     mangas: List<Manga>,
     hasNextPage: Boolean,
     loading: Boolean,
@@ -77,6 +79,7 @@ fun SourceScreenContent(
     setMode: (Boolean) -> Unit,
     loadNextPage: () -> Unit,
     setUsingFilters: (Boolean) -> Unit,
+    onSelectDisplayMode: (DisplayMode) -> Unit,
     // filter
     filters: List<SourceFiltersView<*, *>>,
     showingFilters: Boolean,
@@ -103,6 +106,9 @@ fun SourceScreenContent(
                 onMangaClick = onMangaClick,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 onSourceSettingsClick = onSourceSettingsClick,
+                displayMode = displayMode,
+                gridColumns = gridColumns,
+                gridSize = gridSize,
                 mangas = mangas,
                 hasNextPage = hasNextPage,
                 loading = loading,
@@ -118,6 +124,7 @@ fun SourceScreenContent(
                 showingFilters = showingFilters,
                 showFilterButton = showFilterButton,
                 setShowingFilters = setShowingFilters,
+                onSelectDisplayMode = onSelectDisplayMode,
                 resetFiltersClicked = resetFiltersClicked
             )
         } else {
@@ -126,6 +133,9 @@ fun SourceScreenContent(
                 onMangaClick = onMangaClick,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 onSourceSettingsClick = onSourceSettingsClick,
+                displayMode = displayMode,
+                gridColumns = gridColumns,
+                gridSize = gridSize,
                 mangas = mangas,
                 hasNextPage = hasNextPage,
                 loading = loading,
@@ -141,6 +151,7 @@ fun SourceScreenContent(
                 showingFilters = showingFilters,
                 showFilterButton = showFilterButton,
                 setShowingFilters = setShowingFilters,
+                onSelectDisplayMode = onSelectDisplayMode,
                 resetFiltersClicked = resetFiltersClicked
             )
         }
@@ -153,6 +164,9 @@ private fun SourceWideScreenContent(
     onMangaClick: (Long) -> Unit,
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit,
+    displayMode: DisplayMode,
+    gridColumns: Int,
+    gridSize: Int,
     mangas: List<Manga>,
     hasNextPage: Boolean,
     loading: Boolean,
@@ -169,6 +183,7 @@ private fun SourceWideScreenContent(
     showingFilters: Boolean,
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
+    onSelectDisplayMode: (DisplayMode) -> Unit,
     resetFiltersClicked: () -> Unit
 ) {
     Scaffold(
@@ -186,11 +201,15 @@ private fun SourceWideScreenContent(
                 showingFilters = showingFilters,
                 onClickMode = setMode,
                 onToggleFiltersClick = setShowingFilters,
+                onSelectDisplayMode = onSelectDisplayMode
             )
         },
     ) { padding ->
         Box(Modifier.padding(padding)) {
             MangaTable(
+                displayMode = displayMode,
+                gridColumns = gridColumns,
+                gridSize = gridSize,
                 mangas = mangas,
                 isLoading = loading,
                 hasNextPage = hasNextPage,
@@ -235,6 +254,9 @@ private fun SourceThinScreenContent(
     onMangaClick: (Long) -> Unit,
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit,
+    displayMode: DisplayMode,
+    gridColumns: Int,
+    gridSize: Int,
     mangas: List<Manga>,
     hasNextPage: Boolean,
     loading: Boolean,
@@ -251,6 +273,7 @@ private fun SourceThinScreenContent(
     showingFilters: Boolean,
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
+    onSelectDisplayMode: (DisplayMode) -> Unit,
     resetFiltersClicked: () -> Unit
 ) {
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
@@ -288,6 +311,7 @@ private fun SourceThinScreenContent(
                 showingFilters = showingFilters,
                 onClickMode = setMode,
                 onToggleFiltersClick = setShowingFilters,
+                onSelectDisplayMode = onSelectDisplayMode
             )
         },
         sheetContent = {
@@ -306,6 +330,9 @@ private fun SourceThinScreenContent(
     ) { padding ->
         Box(Modifier.padding(padding)) {
             MangaTable(
+                displayMode = displayMode,
+                gridColumns = gridColumns,
+                gridSize = gridSize,
                 mangas = mangas,
                 isLoading = loading,
                 hasNextPage = hasNextPage,
@@ -358,7 +385,8 @@ fun SourceToolbar(
     isLatest: Boolean,
     showingFilters: Boolean,
     onClickMode: (Boolean) -> Unit,
-    onToggleFiltersClick: (Boolean) -> Unit
+    onToggleFiltersClick: (Boolean) -> Unit,
+    onSelectDisplayMode: (DisplayMode) -> Unit,
 ) {
     Toolbar(
         source.name,
@@ -370,6 +398,12 @@ fun SourceToolbar(
         search = onSearch,
         searchSubmit = onSubmitSearch,
         actions = {
+            var displayModeSelectOpen by remember { mutableStateOf(false) }
+            DisplayModeSelect(
+                isVisible = displayModeSelectOpen,
+                onSelectDisplayMode = onSelectDisplayMode,
+                onDismissRequest = { displayModeSelectOpen = false }
+            )
             getActionItems(
                 isConfigurable = source.isConfigurable,
                 onSourceSettingsClick = {
@@ -383,14 +417,44 @@ fun SourceToolbar(
                 },
                 onClickMode = {
                     onClickMode(!isLatest)
-                }
+                },
+                openDisplayModeSelect = { displayModeSelectOpen = true }
             )
+
         }
     )
 }
 
 @Composable
+fun DisplayModeSelect(
+    isVisible: Boolean,
+    onSelectDisplayMode: (DisplayMode) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    DropdownMenu(
+        isVisible,
+        onDismissRequest
+    ) {
+        val list = DisplayMode.values().toList() - DisplayMode.CoverOnlyGrid
+        list.fastForEach {
+            DropdownMenuItem(
+                onClick = {
+                    onSelectDisplayMode(it)
+                    onDismissRequest()
+                }
+            ) {
+                Text(stringResource(it.res))
+            }
+        }
+
+    }
+}
+
+@Composable
 private fun MangaTable(
+    displayMode: DisplayMode,
+    gridColumns: Int,
+    gridSize: Int,
     mangas: List<Manga>,
     isLoading: Boolean = false,
     hasNextPage: Boolean = false,
@@ -400,28 +464,30 @@ private fun MangaTable(
     if (isLoading || mangas.isEmpty()) {
         LoadingScreen(isLoading)
     } else {
-        val lazyListState = rememberLazyListState()
-        Box {
-            LazyVerticalGrid(GridCells.Adaptive(160.dp), state = lazyListState) {
-                itemsIndexed(mangas) { index, manga ->
-                    if (hasNextPage && index == mangas.lastIndex) {
-                        LaunchedEffect(Unit) { onLoadNextPage() }
-                    }
-                    MangaGridItem(
-                        title = manga.title,
-                        cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium),
-                        onClick = {
-                            onMangaClick(manga.id)
-                        }
-                    )
-                }
-            }
-            VerticalScrollbar(
-                rememberScrollbarAdapter(lazyListState),
-                Modifier.align(Alignment.CenterEnd)
-                    .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+        when (displayMode) {
+            DisplayMode.CompactGrid -> SourceMangaCompactGrid(
+                mangas = mangas,
+                gridColumns = gridColumns,
+                gridSize = gridSize,
+                onClickManga = onMangaClick,
+                hasNextPage = hasNextPage,
+                onLoadNextPage = onLoadNextPage
             )
+            DisplayMode.ComfortableGrid -> SourceMangaComfortableGrid(
+                mangas = mangas,
+                gridColumns = gridColumns,
+                gridSize = gridSize,
+                onClickManga = onMangaClick,
+                hasNextPage = hasNextPage,
+                onLoadNextPage = onLoadNextPage
+            )
+            DisplayMode.List -> SourceMangaList(
+                mangas = mangas,
+                onClickManga = onMangaClick,
+                hasNextPage = hasNextPage,
+                onLoadNextPage = onLoadNextPage
+            )
+            else -> Box {}
         }
     }
 }
@@ -435,16 +501,10 @@ private fun getActionItems(
     showLatestButton: Boolean,
     showFilterButton: Boolean,
     onToggleFiltersClick: () -> Unit,
-    onClickMode: () -> Unit
+    onClickMode: () -> Unit,
+    openDisplayModeSelect: () -> Unit
 ): List<ActionItem> {
     return listOfNotNull(
-        if (isConfigurable) {
-            ActionItem(
-                name = stringResource(MR.strings.location_settings),
-                icon = Icons.Rounded.Settings,
-                doAction = onSourceSettingsClick
-            )
-        } else null,
         if (showFilterButton) {
             ActionItem(
                 name = stringResource(MR.strings.filter_source),
@@ -469,6 +529,18 @@ private fun getActionItems(
                 },
                 doAction = onClickMode
             )
-        } else null
+        } else null,
+        ActionItem(
+            name = stringResource(MR.strings.display_mode),
+            icon = Icons.Rounded.ViewModule,
+            doAction = openDisplayModeSelect
+        ),
+        if (isConfigurable) {
+            ActionItem(
+                name = stringResource(MR.strings.location_settings),
+                icon = Icons.Rounded.Settings,
+                doAction = onSourceSettingsClick
+            )
+        } else null,
     )
 }

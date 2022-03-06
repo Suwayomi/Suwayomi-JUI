@@ -89,6 +89,7 @@
     <string name="move_to_latest">Latest</string>
     <string name="reset_filters">Reset</string>
     <string name="filter_source">Filter</string>
+    <string name="in_library">In library</string>
 
     <!-- Reader Menu -->
     <string name="default_reader_mode">Default</string>

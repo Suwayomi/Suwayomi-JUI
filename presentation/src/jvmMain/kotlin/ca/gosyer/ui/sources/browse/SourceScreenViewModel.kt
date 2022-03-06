@@ -7,6 +7,9 @@
 package ca.gosyer.ui.sources.browse
 
 import ca.gosyer.core.logging.CKLogger
+import ca.gosyer.data.catalog.CatalogPreferences
+import ca.gosyer.data.library.LibraryPreferences
+import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.MangaPage
 import ca.gosyer.data.models.Source
@@ -24,18 +27,28 @@ import me.tatarka.inject.annotations.Inject
 class SourceScreenViewModel(
     private val source: Source,
     private val sourceHandler: SourceInteractionHandler,
+    private val catalogPreferences: CatalogPreferences,
+    private val libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
 
     @Inject constructor(
         sourceHandler: SourceInteractionHandler,
+        catalogPreferences: CatalogPreferences,
+        libraryPreferences: LibraryPreferences,
         contextWrapper: ContextWrapper,
         params: Params
     ) : this(
         params.source,
         sourceHandler,
+        catalogPreferences,
+        libraryPreferences,
         contextWrapper
     )
+
+    val displayMode = catalogPreferences.displayMode().stateIn(scope)
+    val gridColumns = libraryPreferences.gridColumns().stateIn(scope)
+    val gridSize = libraryPreferences.gridSize().stateIn(scope)
 
     private val _mangas = MutableStateFlow(emptyList<Manga>())
     val mangas = _mangas.asStateFlow()
@@ -137,6 +150,10 @@ class SourceScreenViewModel(
     }
     fun submitSearch() {
         startSearch(sourceSearchQuery.value)
+    }
+
+    fun selectDisplayMode(displayMode: DisplayMode) {
+        catalogPreferences.displayMode().set(displayMode)
     }
 
     data class Params(val source: Source)

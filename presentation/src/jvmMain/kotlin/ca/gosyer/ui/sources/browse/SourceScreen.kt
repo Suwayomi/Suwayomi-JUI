@@ -39,6 +39,9 @@ class SourceScreen(val source: Source) : Screen {
             onMangaClick = { navigator push MangaScreen(it) },
             onCloseSourceTabClick = sourcesNavigator::remove,
             onSourceSettingsClick = { navigator push SourceSettingsScreen(it) },
+            displayMode = sourceVM.displayMode.collectAsState().value,
+            gridColumns = sourceVM.gridColumns.collectAsState().value,
+            gridSize = sourceVM.gridSize.collectAsState().value,
             mangas = sourceVM.mangas.collectAsState().value,
             hasNextPage = sourceVM.hasNextPage.collectAsState().value,
             loading = sourceVM.loading.collectAsState().value,
@@ -51,6 +54,7 @@ class SourceScreen(val source: Source) : Screen {
             setMode = sourceVM::setMode,
             loadNextPage = sourceVM::loadNextPage,
             setUsingFilters = sourceVM::setUsingFilters,
+            onSelectDisplayMode = sourceVM::selectDisplayMode,
             // FilterVM
             filters = filterVM.filters.collectAsState().value,
             showingFilters = filterVM.showingFilters.collectAsState().value,
