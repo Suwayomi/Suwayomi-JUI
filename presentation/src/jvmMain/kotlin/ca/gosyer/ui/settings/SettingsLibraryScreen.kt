@@ -27,7 +27,7 @@ import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.base.prefs.SwitchPreference
-import ca.gosyer.ui.categories.openCategoriesMenu
+import ca.gosyer.ui.categories.rememberCategoriesLauncher
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ContextWrapper
@@ -36,8 +36,6 @@ import ca.gosyer.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -51,12 +49,13 @@ class SettingsLibraryScreen : Screen {
     @Composable
     override fun Content() {
         val vm = viewModel<SettingsLibraryViewModel>()
-        val navigator = LocalNavigator.currentOrThrow
+        val categoriesLauncher = rememberCategoriesLauncher(vm::refreshCategoryCount)
         SettingsLibraryScreenContent(
             showAllCategory = vm.showAllCategory,
             categoriesSize = vm.categories.collectAsState().value,
-            openCategoriesScreen = { openCategoriesMenu(vm::refreshCategoryCount, navigator) }
+            openCategoriesScreen = categoriesLauncher::open
         )
+        categoriesLauncher.CategoriesWindow()
     }
 }
 

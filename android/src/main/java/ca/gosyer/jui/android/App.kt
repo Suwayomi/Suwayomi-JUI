@@ -14,8 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.core.prefs.getAsFlow
 import ca.gosyer.data.ui.model.ThemeMode
-import ca.gosyer.jui.android.data.Notifications
-import ca.gosyer.ui.AppComponent
+import ca.gosyer.jui.android.data.notification.Notifications
 import kotlinx.coroutines.flow.launchIn
 
 class App : Application(), DefaultLifecycleObserver {

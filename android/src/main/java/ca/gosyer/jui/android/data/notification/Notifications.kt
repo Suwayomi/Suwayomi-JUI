@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.android.data
+package ca.gosyer.jui.android.data.notification
 
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat

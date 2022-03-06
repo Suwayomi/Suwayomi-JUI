@@ -13,4 +13,7 @@ class MigrationPreferences(private val preferenceStore: PreferenceStore) {
     fun version(): Preference<Int> {
         return preferenceStore.getInt("version", 0)
     }
+    fun appVersion(): Preference<Int> {
+        return preferenceStore.getInt("app_version", 0)
+    }
 }

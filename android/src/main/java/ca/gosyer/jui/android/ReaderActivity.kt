@@ -16,7 +16,6 @@ import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.NativeKeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.lifecycle.lifecycleScope
-import ca.gosyer.ui.AppComponent
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.reader.ReaderMenu
 import ca.gosyer.ui.reader.supportedKeyList

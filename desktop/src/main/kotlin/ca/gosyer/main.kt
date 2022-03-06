@@ -32,7 +32,6 @@ import ca.gosyer.data.server.ServerService.ServerResult
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.desktop.build.BuildConfig
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.AppComponent
 import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.main.MainMenu
@@ -70,6 +69,7 @@ suspend fun main() {
     val dataComponent = appComponent.dataComponent
     val uiComponent = appComponent.uiComponent
     dataComponent.migrations.runMigrations()
+    appComponent.appMigrations.runMigrations()
     dataComponent.downloadService.init()
     // dataComponent.libraryUpdateService.init()
     val serverService = dataComponent.serverService

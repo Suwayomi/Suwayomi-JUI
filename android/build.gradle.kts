@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.core)
     implementation(libs.appCompat)
     implementation(libs.activityCompose)
+    implementation(libs.work)
 
     // Android Lifecycle
     implementation(libs.lifecycleCommon)

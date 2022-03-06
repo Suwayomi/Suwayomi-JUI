@@ -83,6 +83,9 @@ expect class ReaderLauncher {
         chapterIndex: Int,
         mangaId: Long
     )
+
+    @Composable
+    fun Reader()
 }
 
 @Composable

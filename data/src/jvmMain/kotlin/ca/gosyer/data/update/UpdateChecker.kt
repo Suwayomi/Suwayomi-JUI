@@ -6,35 +6,35 @@
 
 package ca.gosyer.data.update
 
-import ca.gosyer.core.lang.launch
-import ca.gosyer.core.lang.withIOContext
 import ca.gosyer.data.build.BuildKonfig
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.update.model.GithubRelease
 import io.ktor.client.request.get
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import me.tatarka.inject.annotations.Inject
 
 class UpdateChecker @Inject constructor(
     private val updatePreferences: UpdatePreferences,
     private val client: Http
 ) {
-    private val _updateFound = MutableSharedFlow<GithubRelease>()
-    val updateFound = _updateFound.asSharedFlow()
+    fun checkForUpdates() = flow {
+        // if (!updatePreferences.enabled().get()) return
+        val latestRelease = client.get<GithubRelease>(
+            "https://api.github.com/repos/$GITHUB_REPO/releases/latest"
+        )
 
-    @OptIn(DelicateCoroutinesApi::class)
-    fun checkForUpdates() {
-        if (!updatePreferences.enabled().get()) return
-        launch {
-            val latestRelease = withIOContext {
-                client.get<GithubRelease>("https://api.github.com/repos/$GITHUB_REPO/releases/latest")
-            }
-            if (isNewVersion(latestRelease.version)) {
-                _updateFound.emit(latestRelease)
-            }
+        if (isNewVersion(latestRelease.version)) {
+            emit(Update.UpdateFound(latestRelease))
+        } else {
+            emit(Update.NoUpdatesFound)
         }
+    }.flowOn(Dispatchers.IO)
+
+    sealed class Update {
+        data class UpdateFound(val release: GithubRelease) : Update()
+        object NoUpdatesFound : Update()
     }
 
     // Thanks to Tachiyomi for inspiration

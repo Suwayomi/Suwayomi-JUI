@@ -17,6 +17,7 @@ materialDialogs = "0.6.6"
 core = "1.7.0"
 appCompat = "1.4.1"
 activityCompose = "1.4.0"
+work = "2.6.0"
 
 # Android Lifecycle
 lifecycle = "2.4.1"
@@ -75,6 +76,7 @@ materialDialogsCore = { module = "ca.gosyer:compose-material-dialogs-core", vers
 core = { module = "androidx.core:core-ktx", version.ref = "core" }
 appCompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat" }
 activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+work = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 
 # Android Lifecycle
 lifecycleCommon = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycle" }

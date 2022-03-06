@@ -6,22 +6,39 @@
 
 package ca.gosyer.ui.categories
 
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.window.Window
 import ca.gosyer.presentation.build.BuildKonfig
-import ca.gosyer.ui.AppComponent
-import ca.gosyer.ui.util.compose.ThemedWindow
-import ca.gosyer.ui.util.lang.launchApplication
 import cafe.adriel.voyager.navigator.Navigator
-import kotlinx.coroutines.DelicateCoroutinesApi
 
-@OptIn(DelicateCoroutinesApi::class)
-actual fun openCategoriesMenu(notifyFinished: () -> Unit, navigator: Navigator) {
-    launchApplication {
-        CompositionLocalProvider(*remember { AppComponent.getInstance().uiComponent.getHooks() }) {
-            ThemedWindow(::exitApplication, title = "${BuildKonfig.NAME} - Categories") {
+actual class CategoriesLauncher(private val notifyFinished: () -> Unit) {
+
+    private var isOpen by mutableStateOf(false)
+
+    actual fun open() {
+        isOpen = true
+    }
+
+    @Composable
+    actual fun CategoriesWindow() {
+        if (isOpen) {
+            Window(
+                onCloseRequest = { isOpen = false },
+                title = "${BuildKonfig.NAME} - Categories",
+                icon = painterResource("icon.png")
+            ) {
                 Navigator(remember { CategoriesScreen(notifyFinished) })
             }
         }
     }
+}
+
+@Composable
+actual fun rememberCategoriesLauncher(notifyFinished: () -> Unit): CategoriesLauncher {
+    return remember(notifyFinished) { CategoriesLauncher(notifyFinished) }
 }

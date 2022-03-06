@@ -4,24 +4,31 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.ui
+package ca.gosyer
 
 import ca.gosyer.core.di.AppScope
 import ca.gosyer.data.DataComponent
 import ca.gosyer.data.create
 import ca.gosyer.ui.base.UiComponent
 import ca.gosyer.ui.base.create
-import ca.gosyer.uicore.vm.ContextWrapper
 import me.tatarka.inject.annotations.Component
+import me.tatarka.inject.annotations.Provides
 
 @AppScope
 @Component
-actual abstract class AppComponent constructor(
-    actual val dataComponent: DataComponent = DataComponent.create(),
+abstract class AppComponent constructor(
+    val dataComponent: DataComponent = DataComponent.create(),
     @Component
-    actual val uiComponent: UiComponent = UiComponent.create(dataComponent)
+    val uiComponent: UiComponent = UiComponent.create(dataComponent)
 ) {
-    actual abstract val contextWrapper: ContextWrapper
+
+    abstract val appMigrations: AppMigrations
+
+    @get:AppScope
+    @get:Provides
+    protected val appMigrationsFactory: AppMigrations
+        get() = AppMigrations(dataComponent.migrationPreferences, uiComponent.contextWrapper)
+
     companion object {
         private var appComponentInstance: AppComponent? = null
 

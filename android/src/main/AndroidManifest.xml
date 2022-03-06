@@ -34,7 +34,7 @@
         </activity>
 
         <service
-            android:name=".data.AndroidDownloadService"
+            android:name=".data.download.AndroidDownloadService"
             android:exported="false" />
     </application>
 </manifest>

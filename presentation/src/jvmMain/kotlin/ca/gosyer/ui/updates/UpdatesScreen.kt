@@ -37,5 +37,6 @@ class UpdatesScreen : Screen {
             deleteDownloadedChapter = vm::deleteDownloadedChapter,
             stopDownloadingChapter = vm::stopDownloadingChapter
         )
+        readerLauncher.Reader()
     }
 }

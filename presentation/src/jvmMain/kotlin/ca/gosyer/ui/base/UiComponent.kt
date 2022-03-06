@@ -10,6 +10,7 @@ import androidx.compose.runtime.ProvidedValue
 import ca.gosyer.data.DataComponent
 import ca.gosyer.ui.base.image.KamelConfigProvider
 import ca.gosyer.ui.base.vm.ViewModelFactoryImpl
+import ca.gosyer.uicore.vm.ContextWrapper
 import io.kamel.core.config.KamelConfig
 
 expect abstract class UiComponent {
@@ -19,6 +20,8 @@ expect abstract class UiComponent {
     abstract val viewModelFactory: ViewModelFactoryImpl
 
     abstract val kamelConfig: KamelConfig
+
+    abstract val contextWrapper: ContextWrapper
 
     protected val kamelConfigFactory: KamelConfig
 

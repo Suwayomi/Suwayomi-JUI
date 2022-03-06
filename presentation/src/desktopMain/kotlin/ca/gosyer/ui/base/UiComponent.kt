@@ -10,6 +10,7 @@ import ca.gosyer.core.di.AppScope
 import ca.gosyer.data.DataComponent
 import ca.gosyer.ui.base.image.KamelConfigProvider
 import ca.gosyer.ui.base.vm.ViewModelFactoryImpl
+import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.LocalViewModelFactory
 import io.kamel.core.config.KamelConfig
 import io.kamel.image.config.LocalKamelConfig
@@ -27,6 +28,8 @@ actual abstract class UiComponent(
     actual abstract val viewModelFactory: ViewModelFactoryImpl
 
     actual abstract val kamelConfig: KamelConfig
+
+    actual abstract val contextWrapper: ContextWrapper
 
     @get:AppScope
     @get:Provides

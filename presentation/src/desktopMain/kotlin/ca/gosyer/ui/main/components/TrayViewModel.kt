@@ -7,23 +7,39 @@
 package ca.gosyer.ui.main.components
 
 import ca.gosyer.data.update.UpdateChecker
+import ca.gosyer.data.update.UpdatePreferences
+import ca.gosyer.data.update.model.GithubRelease
 import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
 
 class TrayViewModel @Inject constructor(
-    private val updateChecker: UpdateChecker,
+    updateChecker: UpdateChecker,
+    updatePreferences: UpdatePreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()
 
+    private val _updateFound = MutableSharedFlow<GithubRelease>()
+    val updateFound = _updateFound.asSharedFlow()
+
     init {
-        updateChecker.checkForUpdates()
+        if (updatePreferences.enabled().get()) {
+            updateChecker.checkForUpdates()
+                .onEach {
+                    if (it is UpdateChecker.Update.UpdateFound) {
+                        _updateFound.emit(it.release)
+                    }
+                }
+                .launchIn(scope)
+        }
     }
-    val updateFound
-        get() = updateChecker.updateFound
 
     override fun onDispose() {
         super.onDispose()

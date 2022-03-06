@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.android.data
+package ca.gosyer.jui.android.data.download
 
 import android.app.Notification
 import android.app.Service
@@ -23,12 +23,13 @@ import ca.gosyer.data.download.model.DownloadState
 import ca.gosyer.data.download.model.DownloadStatus
 import ca.gosyer.data.server.requests.downloadsQuery
 import ca.gosyer.i18n.MR
+import ca.gosyer.jui.android.AppComponent
 import ca.gosyer.jui.android.R
+import ca.gosyer.jui.android.data.notification.Notifications
 import ca.gosyer.jui.android.util.acquireWakeLock
 import ca.gosyer.jui.android.util.notification
 import ca.gosyer.jui.android.util.notificationBuilder
 import ca.gosyer.jui.android.util.notificationManager
-import ca.gosyer.ui.AppComponent
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
 import io.ktor.client.features.websocket.ws

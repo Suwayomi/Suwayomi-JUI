@@ -72,6 +72,7 @@ fun MangaScreenContent(
         }
     }
     val readerLauncher = rememberReaderLauncher()
+    readerLauncher.Reader()
 
     Scaffold(
         topBar = {

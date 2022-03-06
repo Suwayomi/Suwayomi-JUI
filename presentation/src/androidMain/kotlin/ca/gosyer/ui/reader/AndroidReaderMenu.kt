@@ -23,6 +23,10 @@ actual class ReaderLauncher(private val context: Context) {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }.let(context::startActivity)
     }
+
+    @Composable
+    actual fun Reader() {
+    }
 }
 
 @Composable
