@@ -8,14 +8,20 @@ package ca.gosyer.ui.sources.home.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
@@ -35,6 +41,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.TooltipArea
@@ -48,6 +55,7 @@ import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import io.kamel.image.lazyPainterResource
+import java.util.Locale
 
 @Composable
 fun SourceHomeScreenContent(
@@ -116,18 +124,31 @@ fun SourceCategory(
     onSourceClicked: (Source) -> Unit,
     state: LazyListState
 ) {
-    LazyVerticalGrid(GridCells.Adaptive(120.dp), state = state) {
-        items(sources) { source ->
-            SourceItem(
-                source,
-                onSourceClicked = onSourceClicked
-            )
+    BoxWithConstraints {
+        if (maxWidth > 720.dp) {
+            LazyVerticalGrid(GridCells.Adaptive(120.dp), state = state) {
+                items(sources) { source ->
+                    WideSourceItem(
+                        source,
+                        onSourceClicked = onSourceClicked
+                    )
+                }
+            }
+        } else {
+            LazyColumn(state = state) {
+                items(sources) { source ->
+                    ThinSourceItem(
+                        source,
+                        onSourceClicked = onSourceClicked
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-fun SourceItem(
+fun WideSourceItem(
     source: Source,
     onSourceClicked: (Source) -> Unit
 ) {
@@ -156,6 +177,47 @@ fun SourceItem(
                 color = MaterialTheme.colors.onBackground,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+fun ThinSourceItem(
+    source: Source,
+    onSourceClicked: (Source) -> Unit
+) {
+    Row(
+        Modifier.fillMaxWidth()
+            .height(64.dp)
+            .clickable(onClick = { onSourceClicked(source) })
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        KamelImage(
+            lazyPainterResource(source, filterQuality = FilterQuality.Medium),
+            source.displayName,
+            Modifier.fillMaxHeight()
+                .aspectRatio(1F, true)
+        )
+        Spacer(Modifier.width(8.dp))
+        Column {
+            Text(
+                source.name,
+                color = MaterialTheme.colors.onBackground,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 14.sp
+            )
+            Text(
+                Locale.forLanguageTag(source.lang)
+                    ?.getDisplayLanguage(Locale.getDefault())
+                    ?.ifBlank { null }
+                    ?: source.lang.uppercase(),
+                color = MaterialTheme.colors.onBackground,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 12.sp
             )
         }
     }
