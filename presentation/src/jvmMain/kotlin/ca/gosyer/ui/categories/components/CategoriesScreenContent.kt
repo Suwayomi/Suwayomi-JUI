@@ -26,7 +26,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.List
@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.VerticalScrollbar
 import ca.gosyer.ui.base.components.rememberScrollbarAdapter
+import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.categories.CategoriesScreenViewModel.MenuCategory
 import ca.gosyer.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
@@ -80,8 +81,14 @@ fun CategoriesScreenContent(
 
     val createDialogState = rememberMaterialDialogState()
 
-    Surface {
-        Box {
+    Scaffold(
+        topBar = {
+            Toolbar(
+                stringResource(MR.strings.location_categories)
+            )
+        }
+    ) {
+        Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
             LazyColumn(modifier = Modifier.fillMaxSize(), state = state,) {
                 itemsIndexed(categories) { i, category ->
