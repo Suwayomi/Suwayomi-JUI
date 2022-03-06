@@ -60,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -253,6 +254,7 @@ private fun ThinToolbar(
                         Modifier.fillMaxHeight().weight(1f),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val focusManager = LocalFocusManager.current
                         BasicTextField(
                             value = searchText.orEmpty(),
                             onValueChange = search ?: {},
@@ -263,7 +265,10 @@ private fun ThinToolbar(
                                 },
                             textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium)),
                             cursorBrush = SolidColor(MaterialTheme.colors.primary),
-                            keyboardActions = KeyboardActions { searchSubmit?.invoke() },
+                            keyboardActions = KeyboardActions {
+                                searchSubmit?.invoke()
+                                focusManager.clearFocus()
+                            },
                             maxLines = 1,
                             singleLine = true,
                             decorationBox = { innerTextField ->
