@@ -19,10 +19,8 @@ object Notifications {
      * Notification channel and ids used by the downloader.
      */
     private const val GROUP_DOWNLOADER = "group_downloader"
-    const val CHANNEL_DOWNLOADER_RUNNING = "downloader_running_channel"
-    const val ID_DOWNLOAD_CHAPTER_RUNNING = -101
-    const val CHANNEL_DOWNLOADER_PROGRESS = "downloader_progress_channel"
-    const val ID_DOWNLOAD_CHAPTER_PROGRESS = -102
+    const val CHANNEL_DOWNLOADER = "downloader_channel"
+    const val ID_DOWNLOAD_CHAPTER = -101
 
     /**
      * Notification channel and ids used for app updates.
@@ -50,18 +48,10 @@ object Notifications {
         notificationService.createNotificationChannelsCompat(
             listOf(
                 buildNotificationChannel(
-                    CHANNEL_DOWNLOADER_RUNNING,
-                    NotificationManagerCompat.IMPORTANCE_MIN
-                ) {
-                    setName(MR.strings.group_downloader_channel_running.desc().toString(context))
-                    setGroup(GROUP_DOWNLOADER)
-                    setShowBadge(false)
-                },
-                buildNotificationChannel(
-                    CHANNEL_DOWNLOADER_PROGRESS,
+                    CHANNEL_DOWNLOADER,
                     NotificationManagerCompat.IMPORTANCE_LOW
                 ) {
-                    setName(MR.strings.group_downloader_channel_progress.desc().toString(context))
+                    setName(MR.strings.group_downloader_channel.desc().toString(context))
                     setGroup(GROUP_DOWNLOADER)
                     setShowBadge(false)
                 },

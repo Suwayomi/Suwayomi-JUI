@@ -251,8 +251,7 @@
 
     <!-- Android notifications -->
     <string name="group_downloader">Downloader</string>
-    <string name="group_downloader_channel_running">Running</string>
-    <string name="group_downloader_channel_progress">Progress</string>
+    <string name="group_downloader_channel">Progress</string>
     <string name="group_updates">Updates</string>
     <string name="group_updates_channel_app">App updates</string>
     <string name="group_updates_channel_ext">Extension Updates</string>

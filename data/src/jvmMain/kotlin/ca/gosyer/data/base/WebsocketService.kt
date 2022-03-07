@@ -93,5 +93,11 @@ abstract class WebsocketService(
         STOPPED
     }
 
+    enum class Actions {
+        STOP,
+        START,
+        RESTART
+    }
+
     private companion object : CKLogger({})
 }

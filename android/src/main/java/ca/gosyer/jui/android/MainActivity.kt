@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
+import ca.gosyer.data.base.WebsocketService.Actions
 import ca.gosyer.jui.android.data.download.AndroidDownloadService
 import ca.gosyer.ui.base.theme.AppTheme
 import ca.gosyer.ui.main.MainMenu
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
             appComponent.appMigrations.runMigrations()
         }
 
-        AndroidDownloadService.start(this, AndroidDownloadService.Actions.START)
+        AndroidDownloadService.start(this, Actions.START)
 
         val uiHooks = appComponent.uiComponent.getHooks()
         setContent {

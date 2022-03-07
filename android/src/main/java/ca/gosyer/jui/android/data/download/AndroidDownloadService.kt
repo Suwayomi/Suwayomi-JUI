@@ -6,19 +6,19 @@
 
 package ca.gosyer.jui.android.data.download
 
-import android.app.Notification
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.IBinder
-import android.os.PowerManager
 import androidx.core.content.ContextCompat
+import ca.gosyer.core.lang.chop
 import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.core.prefs.getAsFlow
-import ca.gosyer.data.base.WebsocketService
+import ca.gosyer.data.base.WebsocketService.Actions
+import ca.gosyer.data.base.WebsocketService.Status
 import ca.gosyer.data.download.DownloadService
+import ca.gosyer.data.download.DownloadService.Companion.status
 import ca.gosyer.data.download.model.DownloadState
 import ca.gosyer.data.download.model.DownloadStatus
 import ca.gosyer.data.server.requests.downloadsQuery
@@ -26,7 +26,6 @@ import ca.gosyer.i18n.MR
 import ca.gosyer.jui.android.AppComponent
 import ca.gosyer.jui.android.R
 import ca.gosyer.jui.android.data.notification.Notifications
-import ca.gosyer.jui.android.util.acquireWakeLock
 import ca.gosyer.jui.android.util.notification
 import ca.gosyer.jui.android.util.notificationBuilder
 import ca.gosyer.jui.android.util.notificationManager
@@ -41,7 +40,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterIsInstance
@@ -51,18 +49,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.job
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import java.util.regex.Pattern
 
 class AndroidDownloadService : Service() {
 
-    enum class Actions {
-        STOP,
-        START,
-        RESTART
-    }
-
     companion object : CKLogger({}) {
-        val running = MutableStateFlow(true)
-
         private var instance: AndroidDownloadService? = null
 
         fun start(context: Context, actions: Actions) {
@@ -83,11 +74,6 @@ class AndroidDownloadService : Service() {
         }
     }
 
-    /**
-     * Wake lock to prevent the device to enter sleep mode.
-     */
-    private lateinit var wakeLock: PowerManager.WakeLock
-
     private lateinit var ioScope: CoroutineScope
 
     override fun onBind(intent: Intent): IBinder? {
@@ -97,16 +83,14 @@ class AndroidDownloadService : Service() {
     override fun onCreate() {
         super.onCreate()
         ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-        startForeground(Notifications.ID_DOWNLOAD_CHAPTER_RUNNING, getPlaceholderNotification())
-        wakeLock = acquireWakeLock(javaClass.name)
-        running.value = true
+        startForeground(Notifications.ID_DOWNLOAD_CHAPTER, placeholderNotification)
+        status.value = Status.STARTING
     }
 
     override fun onDestroy() {
         ioScope.cancel()
-        running.value = false
-        wakeLock.releaseIfNeeded()
-        notificationManager.cancel(Notifications.ID_DOWNLOAD_CHAPTER_PROGRESS)
+        status.value = Status.STOPPED
+        notificationManager.cancel(Notifications.ID_DOWNLOAD_CHAPTER)
         if (instance == this) {
             instance = null
         }
@@ -121,7 +105,8 @@ class AndroidDownloadService : Service() {
             val action = intent.action
             info("using an intent with action $action")
             when (action) {
-                Actions.START.name -> startWebsocket()
+                Actions.START.name,
+                Actions.RESTART.name -> startWebsocket()
                 Actions.STOP.name -> stopSelf()
                 else -> info("This should never happen. No action in the received intent")
             }
@@ -152,10 +137,10 @@ class AndroidDownloadService : Service() {
             .serverUrl()
             .getAsFlow()
             .mapLatest { serverUrl ->
-                DownloadService.status.value = WebsocketService.Status.STARTING
+                status.value = Status.STARTING
                 while (true) {
                     if (errorConnectionCount > 3) {
-                        DownloadService.status.value = WebsocketService.Status.STOPPED
+                        status.value = Status.STOPPED
                         throw CancellationException()
                     }
                     runCatching {
@@ -164,7 +149,7 @@ class AndroidDownloadService : Service() {
                             path = downloadsQuery()
                         ) {
                             errorConnectionCount = 0
-                            DownloadService.status.value = WebsocketService.Status.RUNNING
+                            status.value = Status.RUNNING
                             send(Frame.Text("STATUS"))
 
                             incoming.receiveAsFlow()
@@ -176,13 +161,13 @@ class AndroidDownloadService : Service() {
                                 .collect()
                         }
                     }.throwIfCancellation().isFailure.let {
-                        DownloadService.status.value = WebsocketService.Status.STARTING
+                        status.value = Status.STARTING
                         if (it) errorConnectionCount++
                     }
                 }
             }
             .catch {
-                DownloadService.status.value = WebsocketService.Status.STOPPED
+                status.value = Status.STOPPED
                 error(it) { "Error while running websocket service" }
                 stopSelf()
             }
@@ -197,8 +182,14 @@ class AndroidDownloadService : Service() {
         if (downloadingChapter != null) {
             val notification = with(progressNotificationBuilder) {
                 val max = downloadingChapter.chapter.pageCount ?: 0
-                val current = downloadingChapter.progress.toInt().coerceAtMost(max)
+                val current = (max * downloadingChapter.progress).toInt().coerceIn(0, max)
                 setProgress(max, current, false)
+
+                val title = downloadingChapter.manga.title.chop(15)
+                val quotedTitle = Pattern.quote(title)
+                val chapter = downloadingChapter.chapter.name.replaceFirst("$quotedTitle[\\s]*[-]*[\\s]*".toRegex(RegexOption.IGNORE_CASE), "")
+                setContentTitle("$title - $chapter".chop(30))
+
                 setContentText(
                     MR.strings.chapter_downloading_progress
                         .format(
@@ -209,36 +200,22 @@ class AndroidDownloadService : Service() {
                 )
             }.build()
             notificationManager.notify(
-                Notifications.ID_DOWNLOAD_CHAPTER_PROGRESS,
+                Notifications.ID_DOWNLOAD_CHAPTER,
                 notification
             )
         } else {
-            notificationManager.cancel(Notifications.ID_DOWNLOAD_CHAPTER_PROGRESS)
+            notificationManager.notify(Notifications.ID_DOWNLOAD_CHAPTER, placeholderNotification)
         }
     }
 
-    private fun PowerManager.WakeLock.releaseIfNeeded() {
-        if (isHeld) release()
-    }
-
-    private fun PowerManager.WakeLock.acquireIfNeeded() {
-        if (!isHeld) acquire()
-    }
-
-    private val icon by lazy {
-        BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-    }
-
-    private fun getPlaceholderNotification(): Notification {
-        return notification(Notifications.CHANNEL_DOWNLOADER_RUNNING) {
+    private val placeholderNotification by lazy {
+        notification(Notifications.CHANNEL_DOWNLOADER) {
             setContentTitle(MR.strings.downloader_running.desc().toString(this@AndroidDownloadService))
             setSmallIcon(R.drawable.ic_round_get_app_24)
         }
     }
-
     private val progressNotificationBuilder by lazy {
-        notificationBuilder(Notifications.CHANNEL_DOWNLOADER_PROGRESS) {
-            setLargeIcon(icon)
+        notificationBuilder(Notifications.CHANNEL_DOWNLOADER) {
             setSmallIcon(R.drawable.ic_round_get_app_24)
             setAutoCancel(false)
             setOnlyAlertOnce(true)

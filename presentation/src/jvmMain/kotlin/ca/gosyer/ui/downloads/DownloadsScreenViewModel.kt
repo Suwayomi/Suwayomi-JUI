@@ -7,6 +7,7 @@
 package ca.gosyer.ui.downloads
 
 import ca.gosyer.core.logging.CKLogger
+import ca.gosyer.data.base.WebsocketService.Actions
 import ca.gosyer.data.download.DownloadService
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.data.server.interactions.ChapterInteractionHandler
@@ -26,7 +27,7 @@ class DownloadsScreenViewModel @Inject constructor(
     private val downloadService: DownloadService,
     private val downloadsHandler: DownloadInteractionHandler,
     private val chapterHandler: ChapterInteractionHandler,
-    contextWrapper: ContextWrapper,
+    private val contextWrapper: ContextWrapper,
     standalone: Boolean
 ) : ViewModel(contextWrapper) {
     private val uiScope = if (standalone) {
@@ -87,7 +88,7 @@ class DownloadsScreenViewModel @Inject constructor(
             .launchIn(scope)
     }
 
-    fun restartDownloader() = downloadService.init()
+    fun restartDownloader() = startDownloadService(contextWrapper, downloadService, Actions.RESTART)
 
     private companion object : CKLogger({})
 }
