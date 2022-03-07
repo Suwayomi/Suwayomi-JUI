@@ -18,13 +18,12 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetState
-import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -33,7 +32,7 @@ import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.ViewModule
-import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -276,27 +275,25 @@ private fun SourceThinScreenContent(
     onSelectDisplayMode: (DisplayMode) -> Unit,
     resetFiltersClicked: () -> Unit
 ) {
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(
-            BottomSheetValue.Collapsed,
-            confirmStateChange = {
-                when (it) {
-                    BottomSheetValue.Collapsed -> setShowingFilters(false)
-                    BottomSheetValue.Expanded -> setShowingFilters(true)
-                }
-                false
+    val bottomSheetState = rememberModalBottomSheetState(
+        ModalBottomSheetValue.Hidden,
+        confirmStateChange = {
+            when (it) {
+                ModalBottomSheetValue.Hidden -> setShowingFilters(false)
+                ModalBottomSheetValue.Expanded,
+                ModalBottomSheetValue.HalfExpanded -> setShowingFilters(true)
             }
-        )
+            true
+        }
     )
     LaunchedEffect(showingFilters) {
         if (showingFilters) {
-            bottomSheetScaffoldState.bottomSheetState.expand()
+            bottomSheetState.show()
         } else {
-            bottomSheetScaffoldState.bottomSheetState.collapse()
+            bottomSheetState.hide()
         }
     }
-    BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
+    Scaffold(
         topBar = {
             SourceToolbar(
                 source = source,
@@ -313,60 +310,64 @@ private fun SourceThinScreenContent(
                 onToggleFiltersClick = setShowingFilters,
                 onSelectDisplayMode = onSelectDisplayMode
             )
-        },
-        sheetContent = {
-            SourceFiltersMenu(
-                modifier = Modifier,
-                filters = filters,
-                onSearchClicked = {
-                    setUsingFilters(true)
-                    setShowingFilters(false)
-                    submitSearch()
-                },
-                resetFiltersClicked = resetFiltersClicked
-            )
-        },
-        sheetPeekHeight = 0.dp
+        }
     ) { padding ->
-        Box(Modifier.padding(padding)) {
-            MangaTable(
-                displayMode = displayMode,
-                gridColumns = gridColumns,
-                gridSize = gridSize,
-                mangas = mangas,
-                isLoading = loading,
-                hasNextPage = hasNextPage,
-                onLoadNextPage = loadNextPage,
-                onMangaClick = onMangaClick,
-            )
-            if (showingFilters && !isLatest) {
-                Box(
-                    Modifier.fillMaxSize().pointerInput(loading) {
-                        forEachGesture {
-                            detectTapGestures {
-                                setShowingFilters(false)
-                            }
-                        }
-                    }
+        ModalBottomSheetLayout(
+            sheetState = bottomSheetState,
+            modifier = Modifier.padding(padding),
+            sheetContent = {
+                SourceFiltersMenu(
+                    modifier = Modifier,
+                    filters = filters,
+                    onSearchClicked = {
+                        setUsingFilters(true)
+                        setShowingFilters(false)
+                        submitSearch()
+                    },
+                    resetFiltersClicked = resetFiltersClicked
                 )
             }
-            if (showFilterButton && !isLatest) {
-                ExtendedFloatingActionButton(
-                    text = {
-                        Text(stringResource(MR.strings.filter_source))
-                    },
-                    onClick = {
-                        setShowingFilters(true)
-                    },
-                    icon = {
-                        Icon(
-                            Icons.Rounded.FilterList,
-                            stringResource(MR.strings.filter_source)
-                        )
-                    },
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                        .padding(bottom = 16.dp, end = 16.dp)
+        ) {
+            Box {
+                MangaTable(
+                    displayMode = displayMode,
+                    gridColumns = gridColumns,
+                    gridSize = gridSize,
+                    mangas = mangas,
+                    isLoading = loading,
+                    hasNextPage = hasNextPage,
+                    onLoadNextPage = loadNextPage,
+                    onMangaClick = onMangaClick,
                 )
+                if (showingFilters && !isLatest) {
+                    Box(
+                        Modifier.fillMaxSize().pointerInput(loading) {
+                            forEachGesture {
+                                detectTapGestures {
+                                    setShowingFilters(false)
+                                }
+                            }
+                        }
+                    )
+                }
+                if (showFilterButton && !isLatest) {
+                    ExtendedFloatingActionButton(
+                        text = {
+                            Text(stringResource(MR.strings.filter_source))
+                        },
+                        onClick = {
+                            setShowingFilters(true)
+                        },
+                        icon = {
+                            Icon(
+                                Icons.Rounded.FilterList,
+                                stringResource(MR.strings.filter_source)
+                            )
+                        },
+                        modifier = Modifier.align(Alignment.BottomEnd)
+                            .padding(bottom = 16.dp, end = 16.dp)
+                    )
+                }
             }
         }
     }
