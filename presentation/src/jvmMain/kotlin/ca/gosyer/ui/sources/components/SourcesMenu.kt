@@ -58,18 +58,19 @@ fun SourcesMenu(
     closeTab: (Source) -> Unit
 ) {
     val homeScreen = remember { SourceHomeScreen() }
-    SourcesNavigator(
-        homeScreen,
-        removeSource = closeTab,
-        selectSource = selectTab
-    ) { navigator ->
-        LaunchedEffect(selectedSourceTab) {
-            navigator.current = if (selectedSourceTab == null) {
-                homeScreen
-            } else SourceScreen(selectedSourceTab)
-        }
-        BoxWithConstraints {
-            if (maxWidth > 720.dp) {
+    BoxWithConstraints {
+        if (maxWidth > 720.dp) {
+            SourcesNavigator(
+                homeScreen,
+                removeSource = closeTab,
+                selectSource = selectTab
+            ) { navigator ->
+                LaunchedEffect(selectedSourceTab) {
+                    navigator.current = if (selectedSourceTab == null) {
+                        homeScreen
+                    } else SourceScreen(selectedSourceTab)
+                }
+
                 Row {
                     SourcesSideMenu(
                         sourceTabs = sourceTabs,
@@ -82,9 +83,9 @@ fun SourcesMenu(
 
                     CurrentSource()
                 }
-            } else {
-                CurrentSource()
             }
+        } else {
+            homeScreen.Content()
         }
     }
 }

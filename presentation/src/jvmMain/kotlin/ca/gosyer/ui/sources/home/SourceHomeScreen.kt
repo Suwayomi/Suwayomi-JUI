@@ -8,12 +8,15 @@ package ca.gosyer.ui.sources.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import ca.gosyer.ui.sources.browse.SourceScreen
 import ca.gosyer.ui.sources.components.LocalSourcesNavigator
 import ca.gosyer.ui.sources.home.components.SourceHomeScreenContent
 import ca.gosyer.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 
 class SourceHomeScreen : Screen {
 
@@ -23,8 +26,13 @@ class SourceHomeScreen : Screen {
     override fun Content() {
         val vm = viewModel<SourceHomeScreenViewModel>()
         val sourcesNavigator = LocalSourcesNavigator.current
+        val navigator = LocalNavigator.currentOrThrow
         SourceHomeScreenContent(
-            onAddSource = sourcesNavigator::select,
+            onAddSource = if (sourcesNavigator != null) {
+                sourcesNavigator::select
+            } else {
+                { navigator push SourceScreen(it) }
+            },
             isLoading = vm.isLoading.collectAsState().value,
             sources = vm.sources.collectAsState().value,
             languages = vm.languages.collectAsState().value,

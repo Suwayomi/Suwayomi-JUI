@@ -16,11 +16,12 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.ui.sources.browse.SourceScreen
 import ca.gosyer.ui.sources.home.SourceHomeScreen
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 
 typealias SourcesNavigatorContent = @Composable (sourcesNavigator: SourcesNavigator) -> Unit
 
-val LocalSourcesNavigator: ProvidableCompositionLocal<SourcesNavigator> =
-    staticCompositionLocalOf { error("SourcesNavigator not initialized") }
+val LocalSourcesNavigator: ProvidableCompositionLocal<SourcesNavigator?> =
+    staticCompositionLocalOf { null }
 
 @Composable
 fun SourcesNavigator(
@@ -66,7 +67,7 @@ class SourcesNavigator internal constructor(
 
 @Composable
 fun CurrentSource() {
-    val sourcesNavigator = LocalSourcesNavigator.current
+    val sourcesNavigator = LocalSourcesNavigator.currentOrThrow
     val currentSource = sourcesNavigator.current
 
     sourcesNavigator.stateHolder.SaveableStateProvider(currentSource.key) {

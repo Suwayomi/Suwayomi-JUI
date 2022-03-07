@@ -32,12 +32,18 @@ class SourceScreen(val source: Source) : Screen {
         val filterVM = viewModel {
             instantiate<SourceFiltersViewModel>(SourceFiltersViewModel.Params(source.id))
         }
-        val navigator = LocalNavigator.currentOrThrow
         val sourcesNavigator = LocalSourcesNavigator.current
+        val navigator = LocalNavigator.currentOrThrow
         SourceScreenContent(
             source = source,
             onMangaClick = { navigator push MangaScreen(it) },
-            onCloseSourceTabClick = sourcesNavigator::remove,
+            onCloseSourceTabClick = if (sourcesNavigator != null) {
+                { sourcesNavigator.remove(it) }
+            } else {
+                {
+                    navigator.pop()
+                }
+            },
             onSourceSettingsClick = { navigator push SourceSettingsScreen(it) },
             displayMode = sourceVM.displayMode.collectAsState().value,
             gridColumns = sourceVM.gridColumns.collectAsState().value,
