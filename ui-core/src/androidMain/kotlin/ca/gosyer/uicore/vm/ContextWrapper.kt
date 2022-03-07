@@ -7,6 +7,7 @@
 package ca.gosyer.uicore.vm
 
 import android.content.Context
+import android.widget.Toast
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
@@ -19,5 +20,16 @@ actual class ContextWrapper @Inject constructor(val context: Context) {
 
     actual fun toPlatformString(stringResource: StringResource, vararg args: Any): String {
         return stringResource.format(*args).toString(context)
+    }
+
+    actual fun toast(string: String, length: Length) {
+        Toast.makeText(
+            context,
+            string,
+            when (length) {
+                Length.SHORT -> Toast.LENGTH_SHORT
+                Length.LONG -> Toast.LENGTH_LONG
+            }
+        ).show()
     }
 }

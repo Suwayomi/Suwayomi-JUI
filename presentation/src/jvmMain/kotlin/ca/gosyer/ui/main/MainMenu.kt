@@ -19,10 +19,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ca.gosyer.ui.base.navigation.BackHandler
 import ca.gosyer.ui.base.navigation.DisplayController
 import ca.gosyer.ui.base.navigation.withDisplayController
 import ca.gosyer.ui.main.components.BottomNav
@@ -30,6 +35,8 @@ import ca.gosyer.ui.main.components.SideMenu
 import ca.gosyer.uicore.vm.LocalViewModelFactory
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.FadeTransition
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 const val SIDE_MENU_EXPAND_DURATION = 500
 
@@ -37,6 +44,7 @@ const val SIDE_MENU_EXPAND_DURATION = 500
 fun MainMenu() {
     val vmFactory = LocalViewModelFactory.current
     val vm = remember { vmFactory.instantiate<MainViewModel>() }
+    val confirmExit by vm.confirmExit.collectAsState()
     Surface {
         Navigator(vm.startScreen.toScreen()) { navigator ->
             val controller = remember { DisplayController() }
@@ -46,6 +54,23 @@ fun MainMenu() {
                 } else {
                     SkinnyMainMenu(navigator)
                 }
+            }
+            BackHandler(navigator.size == 1 && navigator.lastItem::class != vm.startScreen.toScreenClazz()) {
+                navigator replaceAll vm.startScreen.toScreen()
+            }
+            var exitConfirmed by remember { mutableStateOf(false) }
+            LaunchedEffect(exitConfirmed) {
+                delay(2.seconds)
+                exitConfirmed = false
+            }
+            BackHandler(
+                confirmExit &&
+                    navigator.size == 1 &&
+                    navigator.lastItem::class == vm.startScreen.toScreenClazz() &&
+                    !exitConfirmed
+            ) {
+                exitConfirmed = true
+                vm.confirmExitToast()
             }
         }
     }

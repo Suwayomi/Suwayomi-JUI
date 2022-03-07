@@ -12,6 +12,7 @@
     <string name="unable_to_start_server">Cannot start server</string>
     <string name="confirm_exit">Confirm exit</string>
     <string name="confirm_exit_message">Are you sure you want to exit?</string>
+    <string name="confirm_exit_toast">Press back again to exit</string>
     <string name="new_update_title">Tachidesk-JUI update available</string>
     <string name="new_update_message">%1$s is now available!</string>
 

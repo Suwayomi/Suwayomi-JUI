@@ -6,6 +6,7 @@
 
 package ca.gosyer.uicore.vm
 
+import ca.gosyer.core.lang.launchUI
 import ca.gosyer.core.prefs.Preference
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -36,5 +37,10 @@ abstract class ViewModel(private val contextWrapper: ContextWrapper) : ScreenMod
     }
     fun StringResource.toPlatformString(vararg args: Any): String {
         return contextWrapper.toPlatformString(this, *args)
+    }
+    fun toast(string: String, length: Length) {
+        scope.launchUI {
+            contextWrapper.toast(string, length)
+        }
     }
 }

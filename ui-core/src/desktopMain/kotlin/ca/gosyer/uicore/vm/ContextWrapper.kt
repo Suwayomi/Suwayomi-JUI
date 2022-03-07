@@ -17,4 +17,6 @@ actual class ContextWrapper @Inject constructor() {
     actual fun toPlatformString(stringResource: StringResource, vararg args: Any): String {
         return stringResource.format(*args).localized()
     }
+    actual fun toast(string: String, length: Length) {
+    }
 }

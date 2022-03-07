@@ -18,3 +18,10 @@ fun StartScreen.toScreen() = when (this) {
     StartScreen.Sources -> SourcesScreen()
     StartScreen.Extensions -> ExtensionsScreen()
 }
+
+fun StartScreen.toScreenClazz() = when (this) {
+    StartScreen.Library -> LibraryScreen::class
+    StartScreen.Updates -> UpdatesScreen::class
+    StartScreen.Sources -> SourcesScreen::class
+    StartScreen.Extensions -> ExtensionsScreen::class
+}

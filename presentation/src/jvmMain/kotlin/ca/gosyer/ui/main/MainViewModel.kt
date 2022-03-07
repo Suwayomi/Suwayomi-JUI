@@ -7,7 +7,9 @@
 package ca.gosyer.ui.main
 
 import ca.gosyer.data.ui.UiPreferences
+import ca.gosyer.i18n.MR
 import ca.gosyer.uicore.vm.ContextWrapper
+import ca.gosyer.uicore.vm.Length
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -20,9 +22,14 @@ class MainViewModel @Inject constructor(
     override val scope = MainScope()
 
     val startScreen = uiPreferences.startScreen().get()
+    val confirmExit = uiPreferences.confirmExit().stateIn(scope)
 
     override fun onDispose() {
         super.onDispose()
         scope.cancel()
+    }
+
+    fun confirmExitToast() {
+        toast(MR.strings.confirm_exit_toast.toPlatformString(), Length.SHORT)
     }
 }
