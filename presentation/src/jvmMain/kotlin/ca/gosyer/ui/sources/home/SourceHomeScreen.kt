@@ -30,7 +30,7 @@ class SourceHomeScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         SourceHomeScreenContent(
             onAddSource = if (sourcesNavigator != null) {
-                sourcesNavigator::select
+                { sourcesNavigator.open(it) }
             } else {
                 { navigator push SourceScreen(it) }
             },
@@ -41,8 +41,10 @@ class SourceHomeScreen : Screen {
             setEnabledLanguages = vm::setEnabledLanguages,
             query = vm.query.collectAsState().value,
             setQuery = vm::setQuery,
-            submitSearch = {
-                navigator push GlobalSearchScreen(it)
+            submitSearch = if (sourcesNavigator != null) {
+                { sourcesNavigator.search(it) }
+            } else {
+                { navigator push GlobalSearchScreen(it) }
             }
         )
     }

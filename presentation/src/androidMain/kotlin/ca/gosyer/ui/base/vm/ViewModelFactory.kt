@@ -23,7 +23,6 @@ import ca.gosyer.ui.settings.SettingsReaderViewModel
 import ca.gosyer.ui.settings.SettingsServerHostViewModel
 import ca.gosyer.ui.settings.SettingsServerViewModel
 import ca.gosyer.ui.settings.ThemesViewModel
-import ca.gosyer.ui.sources.SourcesScreenViewModel
 import ca.gosyer.ui.sources.browse.SourceScreenViewModel
 import ca.gosyer.ui.sources.browse.filter.SourceFiltersViewModel
 import ca.gosyer.ui.sources.globalsearch.GlobalSearchViewModel
@@ -59,7 +58,6 @@ actual class ViewModelFactoryImpl(
     private val sourceHomeFactory: () -> SourceHomeScreenViewModel,
     private val globalSearchFactory: (params: GlobalSearchViewModel.Params) -> GlobalSearchViewModel,
     private val sourceFactory: (params: SourceScreenViewModel.Params) -> SourceScreenViewModel,
-    private val sourcesFactory: () -> SourcesScreenViewModel,
     private val updatesFactory: () -> UpdatesScreenViewModel
 ) : ViewModelFactory() {
 
@@ -88,7 +86,6 @@ actual class ViewModelFactoryImpl(
             SourceHomeScreenViewModel::class -> sourceHomeFactory()
             GlobalSearchViewModel::class -> globalSearchFactory(arg1 as GlobalSearchViewModel.Params)
             SourceScreenViewModel::class -> sourceFactory(arg1 as SourceScreenViewModel.Params)
-            SourcesScreenViewModel::class -> sourcesFactory()
             UpdatesScreenViewModel::class -> updatesFactory()
             else -> throw IllegalArgumentException("Unknown ViewModel $klass")
         } as VM

@@ -40,7 +40,7 @@ class GlobalSearchScreen(private val initialQuery: String) : Screen {
             submitSearch = vm::startSearch,
             onSourceClick = {
                 if (sourcesNavigator != null) {
-                    sourcesNavigator.select(it, vm.query.value)
+                    sourcesNavigator.open(it, vm.query.value)
                 } else {
                     navigator push SourceScreen(it, vm.query.value)
                 }

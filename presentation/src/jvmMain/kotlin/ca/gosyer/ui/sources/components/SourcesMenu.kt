@@ -24,8 +24,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,13 +33,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.CursorPoint
 import ca.gosyer.ui.base.components.TooltipArea
 import ca.gosyer.ui.base.components.VerticalScrollbar
 import ca.gosyer.ui.base.components.rememberScrollbarAdapter
-import ca.gosyer.ui.sources.browse.SourceScreen
 import ca.gosyer.ui.sources.home.SourceHomeScreen
 import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource
@@ -51,33 +49,25 @@ expect fun Modifier.sourceSideMenuItem(
 ): Modifier
 
 @Composable
-fun SourcesMenu(
-    sourceTabs: List<Source?>,
-    selectedSourceTab: Source?,
-    selectTab: (Source?) -> Unit,
-    closeTab: (Source) -> Unit
-) {
+fun SourcesMenu() {
     val homeScreen = remember { SourceHomeScreen() }
     BoxWithConstraints {
         if (maxWidth > 720.dp) {
             SourcesNavigator(
                 homeScreen,
-                removeSource = closeTab,
-                selectSource = selectTab
             ) { navigator ->
-                LaunchedEffect(selectedSourceTab) {
-                    navigator.current = if (selectedSourceTab == null) {
-                        homeScreen
-                    } else SourceScreen(selectedSourceTab)
-                }
-
                 Row {
                     SourcesSideMenu(
-                        sourceTabs = sourceTabs,
-                        onSourceTabClick = selectTab,
+                        sourceTabs = navigator.tabs,
+                        onSourceTabClick = {
+                            when (it) {
+                                SourceNavigatorScreen.HomeScreen -> navigator.goHome()
+                                SourceNavigatorScreen.SearchScreen -> navigator.goToSearch()
+                                is SourceNavigatorScreen.SourceScreen -> navigator.select(it.source)
+                            }
+                        },
                         onCloseSourceTabClick = {
-                            closeTab(it)
-                            navigator.stateHolder.removeState(it.id)
+                            navigator.remove(it.source)
                         }
                     )
 
@@ -92,15 +82,15 @@ fun SourcesMenu(
 
 @Composable
 fun SourcesSideMenu(
-    sourceTabs: List<Source?>,
-    onSourceTabClick: (Source?) -> Unit,
-    onCloseSourceTabClick: (Source) -> Unit
+    sourceTabs: List<SourceNavigatorScreen>,
+    onSourceTabClick: (SourceNavigatorScreen) -> Unit,
+    onCloseSourceTabClick: (SourceNavigatorScreen.SourceScreen) -> Unit
 ) {
     Surface(elevation = 1.dp) {
         Box {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxHeight().width(64.dp), state) {
-                items(sourceTabs) { source ->
+                items(sourceTabs) { screen ->
                     TooltipArea(
                         {
                             Surface(
@@ -108,7 +98,14 @@ fun SourcesSideMenu(
                                 shape = RoundedCornerShape(4.dp),
                                 elevation = 4.dp
                             ) {
-                                Text(source?.name ?: stringResource(MR.strings.sources_home), modifier = Modifier.padding(10.dp))
+                                Text(
+                                    when (screen) {
+                                        SourceNavigatorScreen.HomeScreen -> stringResource(MR.strings.sources_home)
+                                        SourceNavigatorScreen.SearchScreen -> stringResource(MR.strings.location_global_search)
+                                        is SourceNavigatorScreen.SourceScreen -> screen.source.name
+                                    },
+                                    modifier = Modifier.padding(10.dp)
+                                )
                             }
                         },
                         modifier = Modifier.size(64.dp),
@@ -120,26 +117,26 @@ fun SourcesSideMenu(
                             val modifier = Modifier
                                 .sourceSideMenuItem(
                                     onSourceTabClick = {
-                                        onSourceTabClick(source)
+                                        onSourceTabClick(screen)
                                     },
                                     onSourceCloseTabClick = {
-                                        if (source != null) {
-                                            onCloseSourceTabClick(source)
+                                        if (screen is SourceNavigatorScreen.SourceScreen) {
+                                            onCloseSourceTabClick(screen)
                                         }
                                     }
                                 )
                                 .requiredSize(50.dp)
                                 .align(Alignment.Center)
-                            if (source != null) {
-                                Box(Modifier.align(Alignment.Center)) {
+                            when (screen) {
+                                SourceNavigatorScreen.HomeScreen -> Icon(Icons.Rounded.Home, stringResource(MR.strings.sources_home), modifier = modifier)
+                                SourceNavigatorScreen.SearchScreen -> Icon(Icons.Rounded.Search, stringResource(MR.strings.sources_home), modifier = modifier)
+                                is SourceNavigatorScreen.SourceScreen -> Box(Modifier.align(Alignment.Center)) {
                                     KamelImage(
-                                        lazyPainterResource(source, filterQuality = FilterQuality.Medium),
-                                        source.displayName,
+                                        lazyPainterResource(screen.source, filterQuality = FilterQuality.Medium),
+                                        screen.source.displayName,
                                         modifier
                                     )
                                 }
-                            } else {
-                                Icon(Icons.Rounded.Home, stringResource(MR.strings.sources_home), modifier = modifier)
                             }
                         }
                     }
