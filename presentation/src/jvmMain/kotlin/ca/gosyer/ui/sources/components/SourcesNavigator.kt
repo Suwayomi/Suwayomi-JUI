@@ -20,8 +20,11 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.ui.sources.browse.SourceScreen
 import ca.gosyer.ui.sources.globalsearch.GlobalSearchScreen
 import ca.gosyer.ui.sources.home.SourceHomeScreen
+import cafe.adriel.voyager.core.lifecycle.ScreenLifecycleStore
+import cafe.adriel.voyager.core.lifecycle.rememberScreenLifecycleOwner
 import cafe.adriel.voyager.core.model.ScreenModelStore
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
@@ -44,8 +47,39 @@ fun SourcesNavigator(
             onDispose(sourcesNavigator::dispose)
         }
 
+        SourceNavigatorDisposableEffect(sourcesNavigator)
+
         CompositionLocalProvider(LocalSourcesNavigator provides sourcesNavigator) {
             content(sourcesNavigator)
+        }
+    }
+}
+
+private val disposableEvents: Set<StackEvent> =
+    setOf(StackEvent.Pop, StackEvent.Replace)
+
+@Composable
+private fun SourceNavigatorDisposableEffect(
+    navigator: SourcesNavigator
+) {
+    val currentScreen = navigator.current
+    val lifecycle = rememberScreenLifecycleOwner(currentScreen)
+    val hooks = lifecycle.getHooks()
+
+    DisposableEffect(currentScreen.key) {
+        onDispose {
+            if (
+                navigator.lastEvent in disposableEvents &&
+                currentScreen !is SourceScreen &&
+                currentScreen !is SourceHomeScreen &&
+                currentScreen !is GlobalSearchScreen
+            ) {
+                hooks.onDispose()
+                ScreenModelStore.remove(currentScreen)
+                ScreenLifecycleStore.remove(currentScreen)
+                navigator.stateHolder.removeState(currentScreen.key)
+                navigator.clearEvent()
+            }
         }
     }
 }
@@ -83,8 +117,9 @@ class SourcesNavigator internal constructor(
     }
 
     private fun cleanup(screen: Screen) {
-        stateHolder.removeState(screen.key)
         ScreenModelStore.remove(screen)
+        ScreenLifecycleStore.remove(screen)
+        stateHolder.removeState(screen.key)
     }
 
     fun goHome() {
@@ -113,8 +148,12 @@ class SourcesNavigator internal constructor(
         }
     }
 
+    fun clearEvent() = navigator.clearEvent()
+
     val current
         get() = navigator.lastItem
+    val lastEvent
+        get() = navigator.lastEvent
 }
 
 @Composable
