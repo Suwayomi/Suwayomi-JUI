@@ -38,7 +38,7 @@ class SourceHomeScreenViewModel @Inject constructor(
 
     val sources = combine(installedSources, languages) { installedSources, languages ->
         installedSources.filter {
-            it.lang in languages || it.lang == Source.LOCAL_SOURCE_LANG
+            it.lang in languages || it.id == Source.LOCAL_SOURCE_ID
         }
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
@@ -53,7 +53,12 @@ class SourceHomeScreenViewModel @Inject constructor(
     private fun getSources() {
         sourceHandler.getSourceList()
             .onEach {
-                installedSources.value = it
+                installedSources.value = it.sortedWith(
+                    compareBy<Source, String>(String.CASE_INSENSITIVE_ORDER) { it.displayLang }
+                        .thenBy(String.CASE_INSENSITIVE_ORDER) {
+                            it.name
+                        }
+                )
                 _isLoading.value = false
             }
             .catch {

@@ -46,6 +46,7 @@ import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.TooltipArea
 import ca.gosyer.ui.base.components.VerticalScrollbar
+import ca.gosyer.ui.base.components.localeToString
 import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
@@ -55,7 +56,6 @@ import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import io.kamel.image.lazyPainterResource
-import java.util.Locale
 
 @Composable
 fun SourceHomeScreenContent(
@@ -173,7 +173,7 @@ fun WideSourceItem(
             KamelImage(lazyPainterResource(source, filterQuality = FilterQuality.Medium), source.displayName, Modifier.size(96.dp))
             Spacer(Modifier.height(4.dp))
             Text(
-                "${source.name} (${source.lang.uppercase()})",
+                "${source.name} (${source.displayLang.uppercase()})",
                 color = MaterialTheme.colors.onBackground,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -210,10 +210,7 @@ fun ThinSourceItem(
                 fontSize = 14.sp
             )
             Text(
-                Locale.forLanguageTag(source.lang)
-                    ?.getDisplayLanguage(Locale.getDefault())
-                    ?.ifBlank { null }
-                    ?: source.lang.uppercase(),
+                localeToString(source.displayLang),
                 color = MaterialTheme.colors.onBackground,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
