@@ -17,7 +17,7 @@ import ca.gosyer.uicore.resources.stringResource
 actual fun Modifier.libraryMangaModifier(
     onClickManga: () -> Unit,
     onClickRemoveManga: () -> Unit
-): Modifier = Modifier.contextMenuClickable(
+): Modifier = contextMenuClickable(
     {
         getContextItems(onClickRemoveManga)
     },

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -50,6 +51,9 @@ fun MoreContent() {
                         modifier = Modifier.height(140.dp).padding(vertical = 8.dp)
                     )
                 }
+            }
+            item {
+                Divider()
             }
             MoreMenus.values().asList().fastForEach {
                 item {

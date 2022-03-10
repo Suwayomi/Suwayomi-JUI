@@ -46,7 +46,7 @@ fun DownloadsExtraInfo() {
         }
         WebsocketService.Status.STOPPED -> null
     }
-    if (text != null) {
+    if (!text.isNullOrBlank()) {
         Text(
             text,
             style = MaterialTheme.typography.body2,

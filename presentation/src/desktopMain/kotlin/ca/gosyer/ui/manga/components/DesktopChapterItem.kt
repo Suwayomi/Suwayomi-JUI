@@ -19,7 +19,7 @@ actual fun Modifier.chapterItemModifier(
     toggleRead: () -> Unit,
     toggleBookmarked: () -> Unit,
     markPreviousAsRead: () -> Unit
-): Modifier = Modifier.contextMenuClickable(
+): Modifier = contextMenuClickable(
     {
         getContextItems(
             toggleRead,
