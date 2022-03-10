@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Manga
 import ca.gosyer.ui.base.components.VerticalScrollbar
 import ca.gosyer.ui.base.components.rememberScrollbarAdapter
+import ca.gosyer.uicore.components.mangaAspectRatio
 import ca.gosyer.uicore.image.KamelImage
 import io.kamel.image.lazyPainterResource
 
@@ -98,7 +99,7 @@ private fun SourceMangaCompactGridItem(
     Box(
         modifier = Modifier.padding(4.dp)
             .fillMaxWidth()
-            .aspectRatio(3f / 4f)
+            .aspectRatio(mangaAspectRatio)
             .clip(MaterialTheme.shapes.medium) then modifier
     ) {
         KamelImage(
