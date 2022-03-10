@@ -12,8 +12,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.SaveableStateHolder
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.runtime.staticCompositionLocalOf
 import ca.gosyer.data.models.Source
@@ -39,9 +41,7 @@ fun SourcesNavigator(
     content: SourcesNavigatorContent = { CurrentSource() }
 ) {
     Navigator(homeScreen, autoDispose = false, onBackPressed = null) { navigator ->
-        val sourcesNavigator = remember(navigator) {
-            SourcesNavigator(navigator, homeScreen)
-        }
+        val sourcesNavigator = rememberNavigator(navigator, homeScreen)
 
         DisposableEffect(sourcesNavigator) {
             onDispose(sourcesNavigator::dispose)
@@ -57,6 +57,35 @@ fun SourcesNavigator(
 
 private val disposableEvents: Set<StackEvent> =
     setOf(StackEvent.Pop, StackEvent.Replace)
+
+@Composable
+private fun rememberNavigator(
+    parent: Navigator,
+    homeScreen: SourceHomeScreen
+): SourcesNavigator {
+    return rememberSaveable(saver = navigatorSaver(parent.stateHolder, parent, homeScreen)) {
+        SourcesNavigator(parent, homeScreen)
+    }
+}
+
+private fun navigatorSaver(
+    stateHolder: SaveableStateHolder,
+    parent: Navigator,
+    homeScreen: SourceHomeScreen
+): Saver<SourcesNavigator, Any> =
+    mapSaver(
+        save = { navigator -> navigator.screens.mapKeys { it.toString() } },
+        restore = { items ->
+            SourcesNavigator(
+                parent,
+                homeScreen,
+                SnapshotStateMap<Long, Screen>().also { map ->
+                    map.putAll(items.map { it.key.toLong() to (it.value as Screen) })
+                },
+                stateHolder
+            )
+        }
+    )
 
 @Composable
 private fun SourceNavigatorDisposableEffect(
@@ -93,9 +122,10 @@ sealed class SourceNavigatorScreen {
 class SourcesNavigator internal constructor(
     private val navigator: Navigator,
     homeScreen: SourceHomeScreen,
+    val screens: SnapshotStateMap<Long, Screen> = SnapshotStateMap<Long, Screen>()
+        .also { it[-1] = homeScreen },
     val stateHolder: SaveableStateHolder = navigator.stateHolder
 ) {
-    private var screens = SnapshotStateMap<Long, Screen>().also { it[-1] = homeScreen }
 
     fun remove(source: Source) {
         navigator replaceAll screens[-1]!!
