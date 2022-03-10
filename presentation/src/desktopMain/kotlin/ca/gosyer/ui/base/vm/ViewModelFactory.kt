@@ -27,6 +27,7 @@ import ca.gosyer.ui.settings.ThemesViewModel
 import ca.gosyer.ui.sources.SourcesScreenViewModel
 import ca.gosyer.ui.sources.browse.SourceScreenViewModel
 import ca.gosyer.ui.sources.browse.filter.SourceFiltersViewModel
+import ca.gosyer.ui.sources.globalsearch.GlobalSearchViewModel
 import ca.gosyer.ui.sources.home.SourceHomeScreenViewModel
 import ca.gosyer.ui.sources.settings.SourceSettingsScreenViewModel
 import ca.gosyer.ui.updates.UpdatesScreenViewModel
@@ -58,6 +59,7 @@ actual class ViewModelFactoryImpl(
     private val sourceFiltersFactory: (params: SourceFiltersViewModel.Params) -> SourceFiltersViewModel,
     private val sourceSettingsFactory: (params: SourceSettingsScreenViewModel.Params) -> SourceSettingsScreenViewModel,
     private val sourceHomeFactory: () -> SourceHomeScreenViewModel,
+    private val globalSearchFactory: (params: GlobalSearchViewModel.Params) -> GlobalSearchViewModel,
     private val sourceFactory: (params: SourceScreenViewModel.Params) -> SourceScreenViewModel,
     private val sourcesFactory: () -> SourcesScreenViewModel,
     private val updatesFactory: () -> UpdatesScreenViewModel
@@ -87,6 +89,7 @@ actual class ViewModelFactoryImpl(
             SourceFiltersViewModel::class -> sourceFiltersFactory(arg1 as SourceFiltersViewModel.Params)
             SourceSettingsScreenViewModel::class -> sourceSettingsFactory(arg1 as SourceSettingsScreenViewModel.Params)
             SourceHomeScreenViewModel::class -> sourceHomeFactory()
+            GlobalSearchViewModel::class -> globalSearchFactory(arg1 as GlobalSearchViewModel.Params)
             SourceScreenViewModel::class -> sourceFactory(arg1 as SourceScreenViewModel.Params)
             SourcesScreenViewModel::class -> sourcesFactory()
             UpdatesScreenViewModel::class -> updatesFactory()

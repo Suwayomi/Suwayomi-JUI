@@ -64,13 +64,19 @@ fun SourceHomeScreenContent(
     sources: List<Source>,
     languages: Set<String>,
     sourceLanguages: Set<String>,
-    setEnabledLanguages: (Set<String>) -> Unit
+    setEnabledLanguages: (Set<String>) -> Unit,
+    query: String,
+    setQuery: (String) -> Unit,
+    submitSearch: (String) -> Unit
 ) {
     val languageDialogState = rememberMaterialDialogState()
     Scaffold(
         topBar = {
             SourceHomeScreenToolbar(
-                languageDialogState::show
+                openEnabledLanguagesClick = languageDialogState::show,
+                query = query,
+                setQuery = setQuery,
+                submitSearch = submitSearch
             )
         }
     ) {
@@ -106,7 +112,10 @@ fun SourceHomeScreenContent(
 
 @Composable
 fun SourceHomeScreenToolbar(
-    openEnabledLanguagesClick: () -> Unit
+    openEnabledLanguagesClick: () -> Unit,
+    query: String,
+    setQuery: (String) -> Unit,
+    submitSearch: (String) -> Unit
 ) {
     Toolbar(
         stringResource(MR.strings.location_sources),
@@ -114,6 +123,11 @@ fun SourceHomeScreenToolbar(
             getActionItems(
                 openEnabledLanguagesClick = openEnabledLanguagesClick
             )
+        },
+        searchText = query,
+        search = setQuery,
+        searchSubmit = {
+            submitSearch(query)
         }
     )
 }

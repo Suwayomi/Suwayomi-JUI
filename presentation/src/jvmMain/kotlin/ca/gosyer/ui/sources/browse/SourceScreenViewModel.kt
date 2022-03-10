@@ -29,7 +29,8 @@ class SourceScreenViewModel(
     private val sourceHandler: SourceInteractionHandler,
     private val catalogPreferences: CatalogPreferences,
     private val libraryPreferences: LibraryPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
+    initialQuery: String?
 ) : ViewModel(contextWrapper) {
 
     @Inject constructor(
@@ -43,7 +44,8 @@ class SourceScreenViewModel(
         sourceHandler,
         catalogPreferences,
         libraryPreferences,
-        contextWrapper
+        contextWrapper,
+        params.initialQuery
     )
 
     val displayMode = catalogPreferences.displayMode().stateIn(scope)
@@ -67,10 +69,10 @@ class SourceScreenViewModel(
 
     private val _usingFilters = MutableStateFlow(false)
 
-    private val _sourceSearchQuery = MutableStateFlow<String?>(null)
+    private val _sourceSearchQuery = MutableStateFlow(initialQuery)
     val sourceSearchQuery = _sourceSearchQuery.asStateFlow()
 
-    private val _query = MutableStateFlow<String?>(null)
+    private val _query = MutableStateFlow(sourceSearchQuery.value)
 
     private val _pageNum = MutableStateFlow(1)
     val pageNum = _pageNum.asStateFlow()
@@ -156,7 +158,7 @@ class SourceScreenViewModel(
         catalogPreferences.displayMode().set(displayMode)
     }
 
-    data class Params(val source: Source)
+    data class Params(val source: Source, val initialQuery: String?)
 
     private companion object : CKLogger({})
 }

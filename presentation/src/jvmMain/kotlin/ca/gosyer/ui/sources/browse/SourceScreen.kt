@@ -20,14 +20,14 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
-class SourceScreen(val source: Source) : Screen {
+class SourceScreen(val source: Source, val initialQuery: String? = null) : Screen {
 
     override val key: ScreenKey = source.id.toString()
 
     @Composable
     override fun Content() {
         val sourceVM = viewModel {
-            instantiate<SourceScreenViewModel>(SourceScreenViewModel.Params(source))
+            instantiate<SourceScreenViewModel>(SourceScreenViewModel.Params(source, initialQuery))
         }
         val filterVM = viewModel {
             instantiate<SourceFiltersViewModel>(SourceFiltersViewModel.Params(source.id))

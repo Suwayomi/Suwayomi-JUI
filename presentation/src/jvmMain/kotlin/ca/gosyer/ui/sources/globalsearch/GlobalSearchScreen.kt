@@ -4,14 +4,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.ui.sources.home
+package ca.gosyer.ui.sources.globalsearch
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import ca.gosyer.ui.manga.MangaScreen
 import ca.gosyer.ui.sources.browse.SourceScreen
 import ca.gosyer.ui.sources.components.LocalSourcesNavigator
-import ca.gosyer.ui.sources.globalsearch.GlobalSearchScreen
-import ca.gosyer.ui.sources.home.components.SourceHomeScreenContent
+import ca.gosyer.ui.sources.globalsearch.components.GlobalSearchScreenContent
 import ca.gosyer.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -19,30 +19,34 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
-class SourceHomeScreen : Screen {
+class GlobalSearchScreen(private val initialQuery: String) : Screen {
 
     override val key: ScreenKey = uniqueScreenKey
 
     @Composable
     override fun Content() {
-        val vm = viewModel<SourceHomeScreenViewModel>()
+        val vm = viewModel {
+            instantiate<GlobalSearchViewModel>(GlobalSearchViewModel.Params(initialQuery))
+        }
         val sourcesNavigator = LocalSourcesNavigator.current
         val navigator = LocalNavigator.currentOrThrow
-        SourceHomeScreenContent(
-            onAddSource = if (sourcesNavigator != null) {
-                sourcesNavigator::select
-            } else {
-                { navigator push SourceScreen(it) }
-            },
-            isLoading = vm.isLoading.collectAsState().value,
+
+        GlobalSearchScreenContent(
             sources = vm.sources.collectAsState().value,
-            languages = vm.languages.collectAsState().value,
-            sourceLanguages = vm.sourceLanguages.collectAsState().value,
-            setEnabledLanguages = vm::setEnabledLanguages,
+            results = vm.results,
+            displayMode = vm.displayMode.collectAsState().value,
             query = vm.query.collectAsState().value,
             setQuery = vm::setQuery,
-            submitSearch = {
-                navigator push GlobalSearchScreen(it)
+            submitSearch = vm::startSearch,
+            onSourceClick = {
+                if (sourcesNavigator != null) {
+                    sourcesNavigator.select(it, vm.query.value)
+                } else {
+                    navigator push SourceScreen(it, vm.query.value)
+                }
+            },
+            onMangaClick = {
+                navigator push MangaScreen(it.id)
             }
         )
     }

@@ -46,6 +46,9 @@ class SourceHomeScreenViewModel @Inject constructor(
         sources.map { it.lang }.toSet() - setOf(Source.LOCAL_SOURCE_LANG)
     }.stateIn(scope, SharingStarted.Eagerly, emptySet())
 
+    private val _query = MutableStateFlow("")
+    val query = _query.asStateFlow()
+
     init {
         getSources()
     }
@@ -71,6 +74,10 @@ class SourceHomeScreenViewModel @Inject constructor(
     fun setEnabledLanguages(langs: Set<String>) {
         info { langs }
         _languages.value = langs
+    }
+
+    fun setQuery(query: String) {
+        _query.value = query
     }
 
     private companion object : CKLogger({})
