@@ -4,6 +4,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.ui.settings
+package ca.gosyer.uicore.resources
 
-actual fun Any.getResourceLanguages(): Map<String, String> = mapOf()
+import androidx.compose.runtime.Composable
+import dev.icerock.moko.resources.FileResource
+
+@Composable
+expect fun FileResource.rememberReadText(): String

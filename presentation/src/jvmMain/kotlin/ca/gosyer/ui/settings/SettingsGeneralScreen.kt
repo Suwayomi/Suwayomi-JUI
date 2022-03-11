@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
+import ca.gosyer.uicore.resources.rememberReadText
 import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
@@ -34,6 +36,11 @@ import ca.gosyer.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonPrimitive
 import me.tatarka.inject.annotations.Inject
 import java.time.Instant
 import java.time.ZoneId
@@ -59,8 +66,6 @@ class SettingsGeneralScreen : Screen {
     }
 }
 
-expect fun Any.getResourceLanguages(): Map<String, String>
-
 class SettingsGeneralViewModel @Inject constructor(
     uiPreferences: UiPreferences,
     contextWrapper: ContextWrapper
@@ -83,12 +88,18 @@ class SettingsGeneralViewModel @Inject constructor(
     )
 
     @Composable
-    fun getLanguageChoices(): Map<String, String> = (
-        mapOf(
-            "" to stringResource(MR.strings.language_system_default, currentLocale.getDisplayName(currentLocale))
-        ) + getResourceLanguages()
-        )
-        .toSortedMap(compareBy { it.lowercase() })
+    fun getLanguageChoices(): Map<String, String> {
+        val langJson = MR.files.languages.rememberReadText()
+        val langs = remember {
+            Json.decodeFromString<JsonObject>(langJson)["langs"]!!
+                .jsonArray
+                .map { it.jsonPrimitive.content }
+                .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
+        }
+        return mapOf("" to stringResource(MR.strings.language_system_default, currentLocale.getDisplayName(currentLocale)))
+            .plus(langs)
+            .toSortedMap(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
+    }
 
     @Composable
     fun getDateChoices(): Map<String, String> {

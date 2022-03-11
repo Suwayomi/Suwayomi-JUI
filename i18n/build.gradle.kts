@@ -41,6 +41,10 @@ kotlin {
     }
 }
 
+tasks {
+    registerLocalizationTask(project)
+}
+
 multiplatformResources {
     multiplatformResourcesPackage = "ca.gosyer.i18n"
 }
