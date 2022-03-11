@@ -58,6 +58,9 @@
     <string name="location_more">More</string>
 
     <!-- Categories Menu -->
+    <string name="categories_create">Create Category</string>
+    <string name="categories_rename">Rename Category</string>
+    <string name="categories_delete">Delete Category</string>
     <string name="categories_delete_confirm">Delete the %1$s category?</string>
 
     <!-- Downloads Menu -->
@@ -70,6 +73,7 @@
     <string name="enabled_languages">Languages</string>
     <string name="installed">Installed</string>
     <string name="all">All</string>
+    <string name="obsolete">Obsolete</string>
 
     <!-- Library Menu -->
     <string name="default_category">Default</string>

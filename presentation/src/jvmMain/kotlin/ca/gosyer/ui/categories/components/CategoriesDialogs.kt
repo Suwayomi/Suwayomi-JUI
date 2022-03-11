@@ -44,7 +44,7 @@ fun RenameDialog(
         },
         properties = getMaterialDialogProperties(),
     ) {
-        title("Rename Category")
+        title(stringResource(MR.strings.categories_rename))
         TextField(
             newName,
             onValueChange = {
@@ -71,7 +71,7 @@ fun DeleteDialog(
         },
         properties = getMaterialDialogProperties(),
     ) {
-        title("Delete Category")
+        title(stringResource(MR.strings.categories_delete))
         message(stringResource(MR.strings.categories_delete_confirm, category.name))
     }
 }
@@ -93,7 +93,7 @@ fun CreateDialog(
         },
         properties = getMaterialDialogProperties(),
     ) {
-        title("Create Category")
+        title(stringResource(MR.strings.categories_create))
         TextField(
             name,
             onValueChange = {

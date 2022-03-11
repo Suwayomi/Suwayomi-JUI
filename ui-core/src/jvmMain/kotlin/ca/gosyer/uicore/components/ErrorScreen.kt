@@ -17,13 +17,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import ca.gosyer.i18n.MR
+import ca.gosyer.uicore.resources.stringResource
 import kotlin.random.Random
 
 @Composable
 fun ErrorScreen(
     errorMessage: String? = null,
     modifier: Modifier = Modifier,
-    retryMessage: String = "Retry",
+    retryMessage: String = stringResource(MR.strings.action_retry),
     retry: (() -> Unit)? = null
 ) {
     Box(modifier then Modifier.fillMaxSize()) {

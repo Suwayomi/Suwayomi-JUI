@@ -168,7 +168,7 @@ fun ExtensionItem(
                     }
                     if (extension.obsolete) {
                         Spacer(Modifier.width(4.dp))
-                        Text("Obsolete", fontSize = 14.sp, color = Color.Red)
+                        Text(stringResource(MR.strings.obsolete), fontSize = 14.sp, color = Color.Red)
                     }
                 }
             }
