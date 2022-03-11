@@ -10,6 +10,11 @@ plugins {
 }
 
 dependencies {
+    modules {
+        module("androidx.lifecycle:lifecycle-viewmodel-ktx") {
+            replacedBy("androidx.lifecycle:lifecycle-viewmodel")
+        }
+    }
     implementation(projects.core)
     implementation(projects.i18n)
     implementation(projects.data)
