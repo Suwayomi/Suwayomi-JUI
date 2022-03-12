@@ -4,39 +4,30 @@ import Config.tachideskVersion
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
 
 plugins {
-    kotlin("multiplatform") version "1.6.10" apply false
-    kotlin("plugin.serialization") version "1.6.10" apply false
-    id("com.android.library") version "7.0.4" apply false
-    id("com.android.application") version "7.0.4" apply false
-    id("org.jetbrains.compose") version "1.1.0" apply false
-    id("com.google.devtools.ksp") version "1.6.10-1.0.4"
-    id("com.github.gmazzo.buildconfig") version "3.0.3" apply false
-    id("com.codingfeline.buildkonfig") version "0.11.0" apply false
-    id("dev.icerock.mobile.multiplatform-resources") version "0.18.0" apply false
-    id("org.jmailen.kotlinter") version "3.9.0" apply false
-    id("com.github.ben-manes.versions") version "0.42.0"
+    val libs = libs
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.compose) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.buildconfig) apply false
+    alias(libs.plugins.buildkonfig) apply false
+    alias(libs.plugins.moko.gradle) apply false
+    alias(libs.plugins.kotlinter) apply false
+    alias(libs.plugins.versions)
 }
 
 buildscript {
-    repositories {
-        mavenCentral()
-    }
     dependencies {
-        classpath("com.guardsquare:proguard-gradle:7.2.1") {
-            exclude("com.android.tools.build")
-        }
+        // Waiting on https://github.com/Guardsquare/proguard/issues/225
+        classpath(libs.proguard)
     }
 }
 
 allprojects {
     group = "ca.gosyer"
     version = "1.2.1"
-
-    repositories {
-        mavenCentral()
-        google()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    }
 }
 
 tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {

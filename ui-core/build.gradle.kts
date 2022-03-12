@@ -34,9 +34,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(kotlin("stdlib-common"))
-                api(libs.coroutinesCore)
+                api(libs.coroutines.core)
                 api(libs.kamel)
-                api(libs.voyagerCore)
+                api(libs.voyager.core)
                 api(projects.core)
                 api(projects.i18n)
                 api(compose.desktop.currentOs)

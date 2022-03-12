@@ -29,7 +29,7 @@ kotlin {
                 api(kotlin("stdlib-common"))
                 compileOnly(compose.runtime)
                 compileOnly(compose.ui)
-                api(libs.mokoCore)
+                api(libs.moko.core)
             }
         }
         val commonTest by getting {

@@ -40,15 +40,15 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(kotlin("stdlib-common"))
-                api(libs.coroutinesCore)
+                api(libs.coroutines.core)
                 api(libs.kamel)
-                api(libs.voyagerCore)
-                api(libs.voyagerNavigation)
-                api(libs.voyagerTransitions)
-                api(libs.materialDialogsCore)
-                api(libs.accompanistPager)
-                api(libs.accompanistPagerIndicators)
-                api(libs.accompanistFlowLayout)
+                api(libs.voyager.core)
+                api(libs.voyager.navigation)
+                api(libs.voyager.transitions)
+                api(libs.materialDialogs.core)
+                api(libs.accompanist.pager)
+                api(libs.accompanist.pagerIndicators)
+                api(libs.accompanist.flowLayout)
                 api(libs.krokiCoroutines)
                 api(projects.core)
                 api(projects.i18n)
@@ -69,7 +69,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                api(libs.coroutinesSwing)
+                api(libs.coroutines.swing)
             }
         }
         val desktopTest by getting {
@@ -78,9 +78,9 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                api(libs.core)
-                api(libs.appCompat)
-                api(libs.activityCompose)
+                api(libs.androidx.core)
+                api(libs.androidx.appCompat)
+                api(libs.androidx.activity.compose)
             }
         }
         val androidTest by getting {
@@ -89,8 +89,8 @@ kotlin {
 }
 
 dependencies {
-    add("kspDesktop", libs.kotlinInjectCompiler)
-    add("kspAndroid", libs.kotlinInjectCompiler)
+    add("kspDesktop", libs.kotlinInject.compiler)
+    add("kspAndroid", libs.kotlinInject.compiler)
 }
 
 buildkonfig {

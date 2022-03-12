@@ -22,73 +22,73 @@ dependencies {
     implementation(projects.presentation)
 
     // UI (Compose)
-    implementation(libs.voyagerCore)
-    implementation(libs.voyagerNavigation)
-    implementation(libs.voyagerTransitions)
-    implementation(libs.accompanistPager)
-    implementation(libs.accompanistPagerIndicators)
-    implementation(libs.accompanistFlowLayout)
+    implementation(libs.voyager.core)
+    implementation(libs.voyager.navigation)
+    implementation(libs.voyager.transitions)
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pagerIndicators)
+    implementation(libs.accompanist.flowLayout)
     implementation(libs.kamel)
-    implementation(libs.materialDialogsCore)
+    implementation(libs.materialDialogs.core)
 
     // Android
-    implementation(libs.core)
-    implementation(libs.appCompat)
-    implementation(libs.activityCompose)
-    implementation(libs.work)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.appCompat)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.work)
 
     // Android Lifecycle
-    implementation(libs.lifecycleCommon)
-    implementation(libs.lifecycleProcess)
-    implementation(libs.lifecycleRuntime)
+    implementation(libs.lifecycle.common)
+    implementation(libs.lifecycle.process)
+    implementation(libs.lifecycle.runtime)
 
     // Threading
-    implementation(libs.coroutinesCore)
-    implementation(libs.coroutinesAndroid)
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
 
     // Json
-    implementation(libs.json)
+    implementation(libs.serialization.json)
 
     // Xml
-    implementation(libs.xmlUtilCore)
-    implementation(libs.xmlUtilSerialization)
+    implementation(libs.serialization.xmlUtil.core)
+    implementation(libs.serialization.xmlUtil.serialization)
 
     // Dependency Injection
-    implementation(libs.kotlinInjectRuntime)
-    ksp(libs.kotlinInjectCompiler)
+    implementation(libs.kotlinInject.runtime)
+    ksp(libs.kotlinInject.compiler)
 
     // Http client
-    implementation(libs.ktorCore)
-    implementation(libs.ktorOkHttp)
-    implementation(libs.ktorSerialization)
-    implementation(libs.ktorLogging)
-    implementation(libs.ktorWebsockets)
-    implementation(libs.ktorAuth)
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.okHttp)
+    implementation(libs.ktor.serialization)
+    implementation(libs.ktor.logging)
+    implementation(libs.ktor.websockets)
+    implementation(libs.ktor.auth)
 
     // Logging
-    implementation(libs.slf4jApi)
-    implementation(libs.slf4jAndroid)
-    implementation(libs.ktlogging)
+    implementation(libs.logging.slf4j.api)
+    implementation(libs.logging.slf4j.android)
+    implementation(libs.logging.ktlogging)
 
     // Storage
     implementation(libs.okio)
 
     // Preferences
-    implementation(libs.multiplatformSettingsCore)
-    implementation(libs.multiplatformSettingsSerialization)
-    implementation(libs.multiplatformSettingsCoroutines)
+    implementation(libs.multiplatformSettings.core)
+    implementation(libs.multiplatformSettings.serialization)
+    implementation(libs.multiplatformSettings.coroutines)
 
     // Utility
     implementation(libs.krokiCoroutines)
 
     // Localization
-    implementation(libs.mokoCore)
-    implementation(libs.mokoCompose)
+    implementation(libs.moko.core)
+    implementation(libs.moko.compose)
 
     // Testing
     testImplementation(kotlin("test-junit"))
     testImplementation(compose("org.jetbrains.compose.ui:ui-test-junit4"))
-    testImplementation(libs.coroutinesTest)
+    testImplementation(libs.coroutines.test)
 }
 
 android {

@@ -9,10 +9,6 @@ plugins {
 group = "ca.gosyer"
 version = "1.2.1"
 
-repositories {
-    mavenCentral()
-}
-
 kotlin {
     android {
         compilations {
@@ -41,16 +37,16 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(kotlin("stdlib-common"))
-                api(libs.coroutinesCore)
-                api(libs.json)
-                api(libs.kotlinInjectRuntime)
-                api(libs.ktorCore)
-                api(libs.ktorSerialization)
+                api(libs.coroutines.core)
+                api(libs.serialization.json)
+                api(libs.kotlinInject.runtime)
+                api(libs.ktor.core)
+                api(libs.ktor.serialization)
                 api(libs.okio)
-                api(libs.ktlogging)
-                api(libs.multiplatformSettingsCore)
-                api(libs.multiplatformSettingsCoroutines)
-                api(libs.multiplatformSettingsSerialization)
+                api(libs.logging.ktlogging)
+                api(libs.multiplatformSettings.core)
+                api(libs.multiplatformSettings.coroutines)
+                api(libs.multiplatformSettings.serialization)
             }
         }
         val commonTest by getting {
@@ -80,8 +76,8 @@ kotlin {
 }
 
 dependencies {
-    add("kspDesktop", libs.kotlinInjectCompiler)
-    add("kspAndroid", libs.kotlinInjectCompiler)
+    add("kspDesktop", libs.kotlinInject.compiler)
+    add("kspAndroid", libs.kotlinInject.compiler)
 }
 
 buildkonfig {
