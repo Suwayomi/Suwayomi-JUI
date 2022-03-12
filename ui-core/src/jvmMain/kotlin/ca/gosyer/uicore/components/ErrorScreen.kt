@@ -9,9 +9,9 @@ package ca.gosyer.uicore.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,12 +31,17 @@ fun ErrorScreen(
     Box(modifier then Modifier.fillMaxSize()) {
         Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
             val errorFace = remember { getRandomErrorFace() }
-            Text(errorFace, fontSize = 36.sp, color = MaterialTheme.colors.onBackground)
+            Text(
+                text = errorFace,
+                fontSize = 36.sp,
+                color = MaterialTheme.colors.onBackground,
+                maxLines = 1
+            )
             if (errorMessage != null) {
                 Text(errorMessage, color = MaterialTheme.colors.onBackground)
             }
             if (retry != null) {
-                Button(retry) {
+                TextButton(retry) {
                     Text(retryMessage)
                 }
             }

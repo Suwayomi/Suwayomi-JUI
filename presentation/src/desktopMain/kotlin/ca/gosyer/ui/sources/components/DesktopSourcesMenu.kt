@@ -12,7 +12,7 @@ import ca.gosyer.uicore.components.combinedMouseClickable
 actual fun Modifier.sourceSideMenuItem(
     onSourceTabClick: () -> Unit,
     onSourceCloseTabClick: () -> Unit
-): Modifier = Modifier.combinedMouseClickable(
+): Modifier = combinedMouseClickable(
     onClick = {
         onSourceTabClick()
     },

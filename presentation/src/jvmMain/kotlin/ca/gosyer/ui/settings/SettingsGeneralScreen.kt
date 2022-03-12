@@ -15,7 +15,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -90,7 +91,7 @@ class SettingsGeneralViewModel @Inject constructor(
     @Composable
     fun getLanguageChoices(): Map<String, String> {
         val langJson = MR.files.languages.rememberReadText()
-        val langs = remember {
+        val langs by derivedStateOf {
             Json.decodeFromString<JsonObject>(langJson)["langs"]!!
                 .jsonArray
                 .map { it.jsonPrimitive.content }
