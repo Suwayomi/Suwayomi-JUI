@@ -9,11 +9,20 @@ package ca.gosyer.data.library
 import ca.gosyer.core.prefs.Preference
 import ca.gosyer.core.prefs.PreferenceStore
 import ca.gosyer.data.library.model.DisplayMode
+import ca.gosyer.data.library.model.Sort
 
 class LibraryPreferences(private val preferenceStore: PreferenceStore) {
 
     fun displayMode(): Preference<DisplayMode> {
         return preferenceStore.getJsonObject("display_mode", DisplayMode.CompactGrid, DisplayMode.serializer())
+    }
+
+    fun sortMode(): Preference<Sort> {
+        return preferenceStore.getJsonObject("sort_mode", Sort.ALPHABETICAL, Sort.serializer())
+    }
+
+    fun sortAscending(): Preference<Boolean> {
+        return preferenceStore.getBoolean("sort_ascending", true)
     }
 
     fun gridColumns(): Preference<Int> {
