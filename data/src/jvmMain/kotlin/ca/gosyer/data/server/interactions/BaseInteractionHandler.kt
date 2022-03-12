@@ -14,5 +14,5 @@ open class BaseInteractionHandler(
     serverPreferences: ServerPreferences
 ) {
     private val _serverUrl = serverPreferences.serverUrl()
-    val serverUrl get() = _serverUrl.get()
+    val serverUrl get() = _serverUrl.get().toString()
 }

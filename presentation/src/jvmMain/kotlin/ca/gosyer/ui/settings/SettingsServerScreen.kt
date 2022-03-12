@@ -59,6 +59,7 @@ class SettingsServerScreen : Screen {
             authValue = connectionVM.auth.collectAsState().value,
             serverUrl = connectionVM.serverUrl,
             serverPort = connectionVM.serverPort,
+            serverPathPrefix = connectionVM.serverPathPrefix,
             proxy = connectionVM.proxy,
             proxyChoices = connectionVM.getProxyChoices(),
             httpHost = connectionVM.httpHost,
@@ -83,6 +84,7 @@ class SettingsServerViewModel @Inject constructor(
 ) : ViewModel(contextWrapper) {
     val serverUrl = serverPreferences.server().asStateIn(scope)
     val serverPort = serverPreferences.port().asStringStateIn(scope)
+    val serverPathPrefix = serverPreferences.pathPrefix().asStateIn(scope)
 
     val proxy = serverPreferences.proxy().asStateIn(scope)
 
@@ -125,6 +127,7 @@ fun SettingsServerScreenContent(
     authValue: Auth,
     serverUrl: PreferenceMutableStateFlow<String>,
     serverPort: PreferenceMutableStateFlow<String>,
+    serverPathPrefix: PreferenceMutableStateFlow<String>,
     proxy: PreferenceMutableStateFlow<Proxy>,
     proxyChoices: Map<Proxy, String>,
     httpHost: PreferenceMutableStateFlow<String>,
@@ -157,6 +160,13 @@ fun SettingsServerScreenContent(
                         serverPort,
                         stringResource(MR.strings.server_port),
                         subtitle = serverPort.collectAsState().value
+                    )
+                }
+                item {
+                    EditTextPreference(
+                        serverPathPrefix,
+                        stringResource(MR.strings.server_path_prefix),
+                        subtitle = stringResource(MR.strings.server_path_prefix_sub)
                     )
                 }
 

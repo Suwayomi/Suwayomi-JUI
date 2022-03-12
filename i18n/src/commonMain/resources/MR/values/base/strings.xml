@@ -237,6 +237,8 @@
     <string name="host_basic_auth_password">Basic auth password</string>
     <string name="server_url">Server URL</string>
     <string name="server_port">Server PORT</string>
+    <string name="server_path_prefix">Server Path Prefix</string>
+    <string name="server_path_prefix_sub">Path prefix to be used before endpoint paths, leave blank for unused.</string>
     <string name="server_preference_warning">Warning</string>
     <string name="server_preference_warning_sub">The below settings require a restart to take affect</string>
     <string name="no_proxy">No Proxy</string>

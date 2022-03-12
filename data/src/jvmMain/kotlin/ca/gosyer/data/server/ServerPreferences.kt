@@ -10,6 +10,7 @@ import ca.gosyer.core.prefs.Preference
 import ca.gosyer.core.prefs.PreferenceStore
 import ca.gosyer.data.server.model.Auth
 import ca.gosyer.data.server.model.Proxy
+import io.ktor.http.Url
 
 class ServerPreferences(private val preferenceStore: PreferenceStore) {
 
@@ -21,8 +22,12 @@ class ServerPreferences(private val preferenceStore: PreferenceStore) {
         return preferenceStore.getInt("server_port", 4567)
     }
 
-    fun serverUrl(): Preference<String> {
-        return ServerUrlPreference("", server(), port())
+    fun pathPrefix(): Preference<String> {
+        return preferenceStore.getString("server_path_prefix", "")
+    }
+
+    fun serverUrl(): Preference<Url> {
+        return ServerUrlPreference("", server(), port(), pathPrefix())
     }
 
     fun proxy(): Preference<Proxy> {

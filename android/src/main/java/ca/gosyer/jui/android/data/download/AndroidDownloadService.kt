@@ -145,8 +145,9 @@ class AndroidDownloadService : Service() {
                     }
                     runCatching {
                         client.ws(
-                            host = serverUrl.substringAfter("://"),
-                            path = downloadsQuery()
+                            host = serverUrl.host,
+                            port = serverUrl.port,
+                            path = serverUrl.encodedPath + downloadsQuery()
                         ) {
                             errorConnectionCount = 0
                             status.value = Status.RUNNING

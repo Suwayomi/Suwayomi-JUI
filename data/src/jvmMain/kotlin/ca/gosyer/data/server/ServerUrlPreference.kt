@@ -7,6 +7,8 @@
 package ca.gosyer.data.server
 
 import ca.gosyer.core.prefs.Preference
+import io.ktor.http.URLBuilder
+import io.ktor.http.Url
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,42 +19,56 @@ import kotlinx.coroutines.flow.stateIn
 class ServerUrlPreference(
     private val key: String,
     private val server: Preference<String>,
-    private val port: Preference<Int>
-) : Preference<String> {
+    private val port: Preference<Int>,
+    private val pathPrefix: Preference<String>
+) : Preference<Url> {
     override fun key(): String {
         return key
     }
 
-    override fun get(): String {
-        return server.get() + ":" + port.get()
+    override fun get(): Url {
+        return URLBuilder(server.get()).apply {
+            port = this@ServerUrlPreference.port.get()
+            if (pathPrefix.isSet() && pathPrefix.get().isNotBlank()) {
+                path(pathPrefix.get())
+            }
+        }.build()
     }
 
-    override fun set(value: String) {
-        val (server, port) = value.split(':')
-        this.server.set(server)
-        this.port.set(port.toInt())
+    override fun set(value: Url) {
+        server.set(value.protocol.name + "://" + value.host)
+        port.set(value.port)
+        pathPrefix.set(value.encodedPath)
     }
 
     override fun isSet(): Boolean {
-        return server.isSet() || port.isSet()
+        return server.isSet() || port.isSet() || pathPrefix.isSet()
     }
 
     override fun delete() {
         server.delete()
         port.delete()
+        pathPrefix.delete()
     }
 
-    override fun defaultValue(): String {
-        return server.defaultValue() + ":" + port.defaultValue()
+    override fun defaultValue(): Url {
+        return URLBuilder(server.defaultValue()).apply {
+            port = this@ServerUrlPreference.port.defaultValue()
+        }.build()
     }
 
-    override fun changes(): Flow<String> {
-        return combine(server.changes(), port.changes()) { server, port ->
-            "$server:$port"
+    override fun changes(): Flow<Url> {
+        return combine(server.changes(), port.changes(), pathPrefix.changes()) { server, port, pathPrefix ->
+            URLBuilder(server).apply {
+                this.port = port
+                if (pathPrefix.isNotBlank()) {
+                    path(pathPrefix)
+                }
+            }.build()
         }
     }
 
-    override fun stateIn(scope: CoroutineScope): StateFlow<String> {
+    override fun stateIn(scope: CoroutineScope): StateFlow<Url> {
         return changes().stateIn(scope, SharingStarted.Eagerly, get())
     }
 }

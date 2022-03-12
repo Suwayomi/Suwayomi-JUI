@@ -55,8 +55,9 @@ abstract class WebsocketService(
                     }
                     runCatching {
                         client.ws(
-                            host = serverUrl.substringAfter("://"),
-                            path = query
+                            host = serverUrl.host,
+                            port = serverUrl.port,
+                            path = serverUrl.encodedPath + query
                         ) {
                             errorConnectionCount = 0
                             _status.value = Status.RUNNING
