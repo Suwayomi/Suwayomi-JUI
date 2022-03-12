@@ -162,9 +162,10 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     private fun getMangaItemsFlow(unfilteredItemsFlow: StateFlow<List<Manga>>): StateFlow<List<Manga>> {
-        return combine(unfilteredItemsFlow, query, comparator) { unfilteredItems, query, comparator ->
+        return combine(unfilteredItemsFlow, query) { unfilteredItems, query ->
             filterManga(query, unfilteredItems)
-                .sortedWith(comparator)
+        }.combine(comparator) { filteredManga, comparator ->
+            filteredManga.sortedWith(comparator)
         }.stateIn(scope, SharingStarted.Eagerly, emptyList())
     }
 
