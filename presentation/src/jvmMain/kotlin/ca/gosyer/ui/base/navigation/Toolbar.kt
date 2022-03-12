@@ -207,6 +207,12 @@ private fun ThinToolbar(
     searchSubmit: (() -> Unit)?,
 ) {
     var searchMode by remember { mutableStateOf(!searchText.isNullOrEmpty()) }
+    fun closeSearch() {
+        search?.invoke("")
+        searchSubmit?.invoke()
+        searchMode = false
+    }
+    BackHandler(searchMode, ::closeSearch)
     Surface(
         color = backgroundColor,
         contentColor = contentColor,
@@ -232,9 +238,7 @@ private fun ThinToolbar(
                             IconButton(
                                 onClick = {
                                     if (searchMode) {
-                                        search?.invoke("")
-                                        searchSubmit?.invoke()
-                                        searchMode = false
+                                        closeSearch()
                                     } else {
                                         onClose()
                                     }
