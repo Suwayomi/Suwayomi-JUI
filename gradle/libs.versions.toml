@@ -19,7 +19,7 @@ androidGradle = "7.0.4"
 core = "1.7.0"
 appCompat = "1.6.0-alpha01"
 activityCompose = "1.4.0"
-work = "2.6.0"
+work = "2.7.1"
 
 # Android Lifecycle
 lifecycle = "2.5.0-alpha04"
