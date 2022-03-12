@@ -52,7 +52,12 @@ class ReaderActivity : AppCompatActivity() {
                 *hooks
             ) {
                 AppTheme {
-                    ReaderMenu(chapterIndex, mangaId, hotkeyFlow)
+                    ReaderMenu(
+                        chapterIndex = chapterIndex,
+                        mangaId = mangaId,
+                        hotkeyFlow = hotkeyFlow,
+                        onCloseRequest = ::onBackPressed
+                    )
                 }
             }
         }

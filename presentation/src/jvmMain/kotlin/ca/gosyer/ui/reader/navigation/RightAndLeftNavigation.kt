@@ -22,7 +22,7 @@ class RightAndLeftNavigation : ViewerNavigation() {
 
     override var regions: List<Region> = listOf(
         Region(
-            rect = Rect(0, 0, 66, 100),
+            rect = Rect(0, 0, 33, 100),
             type = Navigation.LEFT
         ),
         Region(

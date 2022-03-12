@@ -1,3 +1,5 @@
+import org.jetbrains.compose.compose
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -41,6 +43,7 @@ kotlin {
                 api(projects.i18n)
                 api(compose.desktop.currentOs)
                 api(compose.materialIconsExtended)
+                api(compose("org.jetbrains.compose.ui:ui-util"))
             }
         }
         val commonTest by getting {

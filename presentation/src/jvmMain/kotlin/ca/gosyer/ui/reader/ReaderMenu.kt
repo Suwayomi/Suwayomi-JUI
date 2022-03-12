@@ -12,9 +12,12 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -24,18 +27,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.FilterQuality
@@ -49,13 +55,17 @@ import ca.gosyer.data.reader.model.Direction
 import ca.gosyer.data.reader.model.ImageScale
 import ca.gosyer.data.reader.model.NavigationMode
 import ca.gosyer.i18n.MR
+import ca.gosyer.ui.base.navigation.ActionItem
+import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.reader.model.Navigation
+import ca.gosyer.ui.reader.model.PageMove
 import ca.gosyer.ui.reader.model.ReaderChapter
 import ca.gosyer.ui.reader.model.ReaderPage
 import ca.gosyer.ui.reader.navigation.EdgeNavigation
 import ca.gosyer.ui.reader.navigation.KindlishNavigation
 import ca.gosyer.ui.reader.navigation.LNavigation
 import ca.gosyer.ui.reader.navigation.RightAndLeftNavigation
+import ca.gosyer.ui.reader.navigation.ViewerNavigation
 import ca.gosyer.ui.reader.navigation.navigationClickable
 import ca.gosyer.ui.reader.viewer.ContinuousReader
 import ca.gosyer.ui.reader.viewer.PagerReader
@@ -66,6 +76,7 @@ import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.LocalViewModelFactory
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 val supportedKeyList = listOf(
     Key.W,
@@ -95,7 +106,8 @@ expect fun rememberReaderLauncher(): ReaderLauncher
 fun ReaderMenu(
     chapterIndex: Int,
     mangaId: Long,
-    hotkeyFlow: SharedFlow<KeyEvent>
+    hotkeyFlow: SharedFlow<KeyEvent>,
+    onCloseRequest: () -> Unit
 ) {
     val vmFactory = LocalViewModelFactory.current
     val vm = remember { vmFactory.instantiate<ReaderMenuViewModel>(ReaderMenuViewModel.Params(chapterIndex, mangaId)) }
@@ -116,6 +128,7 @@ fun ReaderMenu(
     val navigationMode by vm.readerModeSettings.navigationMode.collectAsState()
     val currentPage by vm.currentPage.collectAsState()
     val currentPageOffset by vm.currentPageOffset.collectAsState()
+    val readerSettingsMenuOpen by vm.readerSettingsMenuOpen.collectAsState()
 
     LaunchedEffect(hotkeyFlow) {
         hotkeyFlow.collectLatest {
@@ -135,90 +148,68 @@ fun ReaderMenu(
         Crossfade(state to chapter) { (state, chapter) ->
             if (state is ReaderChapter.State.Loaded && chapter != null) {
                 if (pages.isNotEmpty()) {
-                    var sideMenuOpen by remember { mutableStateOf(true) }
-                    val sideMenuSize by animateDpAsState(
-                        targetValue = if (sideMenuOpen) {
-                            260.dp
-                        } else {
-                            0.dp
-                        }
-                    )
-
-                    val loadingModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
-                    AnimatedVisibility(
-                        sideMenuOpen,
-                        enter = fadeIn() + slideInHorizontally(),
-                        exit = fadeOut() + slideOutHorizontally()
-                    ) {
-                        ReaderSideMenu(
-                            chapter = chapter,
-                            currentPage = currentPage,
-                            readerModes = readerModes,
-                            selectedMode = readerMode,
-                            onNewPageClicked = vm::navigate,
-                            onCloseSideMenuClicked = {
-                                sideMenuOpen = false
-                            },
-                            onSetReaderMode = vm::setMangaReaderMode,
-                            onPrevChapterClicked = vm::prevChapter,
-                            onNextChapterClicked = vm::nextChapter
-                        )
-                    }
-
-                    Box(
-                        Modifier.padding(start = sideMenuSize).fillMaxSize()
-                    ) {
-                        val readerModifier = Modifier
-                            .navigationClickable(
-                                navigation = navigationMode.toNavigation(),
-                                onClick = vm::navigate
-                            )
-
-                        if (continuous) {
-                            ContinuousReader(
-                                readerModifier,
-                                pages,
-                                direction,
-                                maxSize,
-                                padding,
-                                currentPage,
-                                currentPageOffset,
-                                previousChapter,
-                                chapter,
-                                nextChapter,
-                                loadingModifier,
-                                if (fitSize) {
-                                    if (direction == Direction.Up || direction == Direction.Down) {
-                                        ContentScale.FillWidth
-                                    } else {
-                                        ContentScale.FillHeight
-                                    }
-                                } else {
-                                    ContentScale.Fit
-                                },
-                                vm.pageEmitter,
-                                vm::retry,
-                                vm::progress,
-                                vm::updateLastPageReadOffset
+                    BoxWithConstraints {
+                        if (maxWidth > 720.dp) {
+                            WideReaderMenu(
+                                previousChapter = previousChapter,
+                                chapter = chapter,
+                                nextChapter = nextChapter,
+                                pages = pages,
+                                readerModes = readerModes,
+                                readerMode = readerMode,
+                                continuous = continuous,
+                                direction = direction,
+                                padding = padding,
+                                imageScale = imageScale,
+                                fitSize = fitSize,
+                                maxSize = maxSize,
+                                navigationViewer = navigationMode.toNavigation(),
+                                currentPage = currentPage,
+                                currentPageOffset = currentPageOffset,
+                                navigate = vm::navigate,
+                                navigateTap = vm::navigate,
+                                pageEmitter = vm.pageEmitter,
+                                retry = vm::retry,
+                                progress = vm::progress,
+                                updateLastPageReadOffset = vm::updateLastPageReadOffset,
+                                sideMenuOpen = readerSettingsMenuOpen,
+                                setSideMenuOpen = vm::setReaderSettingsMenuOpen,
+                                setMangaReaderMode = vm::setMangaReaderMode,
+                                movePrevChapter = vm::prevChapter,
+                                moveNextChapter = vm::nextChapter
                             )
                         } else {
-                            PagerReader(
-                                readerModifier,
-                                direction,
-                                currentPage,
-                                pages,
-                                previousChapter,
-                                chapter,
-                                nextChapter,
-                                loadingModifier,
-                                imageScale.toContentScale(),
-                                vm.pageEmitter,
-                                vm::retry,
-                                vm::progress
+                            ThinReaderMenu(
+                                previousChapter = previousChapter,
+                                chapter = chapter,
+                                nextChapter = nextChapter,
+                                pages = pages,
+                                readerModes = readerModes,
+                                readerMode = readerMode,
+                                continuous = continuous,
+                                direction = direction,
+                                padding = padding,
+                                imageScale = imageScale,
+                                fitSize = fitSize,
+                                maxSize = maxSize,
+                                navigationViewer = navigationMode.toNavigation(),
+                                currentPage = currentPage,
+                                currentPageOffset = currentPageOffset,
+                                navigate = vm::navigate,
+                                navigateTap = vm::navigate,
+                                pageEmitter = vm.pageEmitter,
+                                retry = vm::retry,
+                                progress = vm::progress,
+                                updateLastPageReadOffset = vm::updateLastPageReadOffset,
+                                readerMenuOpen = readerSettingsMenuOpen,
+                                setMangaReaderMode = vm::setMangaReaderMode,
+                                movePrevChapter = vm::prevChapter,
+                                moveNextChapter = vm::nextChapter,
+                                onCloseRequest = onCloseRequest
                             )
                         }
-                        SideMenuButton(sideMenuOpen, onOpenSideMenuClicked = { sideMenuOpen = true })
                     }
+
                 } else {
                     ErrorScreen(stringResource(MR.strings.no_pages_found))
                 }
@@ -230,6 +221,268 @@ fun ReaderMenu(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun WideReaderMenu(
+    previousChapter: ReaderChapter?,
+    chapter: ReaderChapter,
+    nextChapter: ReaderChapter?,
+    pages: List<ReaderPage>,
+    readerModes: List<String>,
+    readerMode: String,
+    continuous: Boolean,
+    direction: Direction,
+    padding: Int,
+    imageScale: ImageScale,
+    fitSize: Boolean,
+    maxSize: Int,
+    navigationViewer: ViewerNavigation,
+    currentPage: Int,
+    currentPageOffset: Int,
+    navigate: (Int) -> Unit,
+    navigateTap: (Navigation) -> Unit,
+    pageEmitter: SharedFlow<PageMove>,
+    retry: (ReaderPage) -> Unit,
+    progress: (Int) -> Unit,
+    updateLastPageReadOffset: (Int) -> Unit,
+    sideMenuOpen: Boolean,
+    setSideMenuOpen: (Boolean) -> Unit,
+    setMangaReaderMode: (String) -> Unit,
+    movePrevChapter: () -> Unit,
+    moveNextChapter: () -> Unit,
+) {
+    val sideMenuSize by animateDpAsState(
+        targetValue = if (sideMenuOpen) {
+            260.dp
+        } else {
+            0.dp
+        }
+    )
+
+    AnimatedVisibility(
+        sideMenuOpen,
+        enter = fadeIn() + slideInHorizontally(),
+        exit = fadeOut() + slideOutHorizontally()
+    ) {
+        ReaderSideMenu(
+            chapter = chapter,
+            currentPage = currentPage,
+            readerModes = readerModes,
+            selectedMode = readerMode,
+            onNewPageClicked = navigate,
+            onCloseSideMenuClicked = {
+                setSideMenuOpen(false)
+            },
+            onSetReaderMode = setMangaReaderMode,
+            onPrevChapterClicked = movePrevChapter,
+            onNextChapterClicked = moveNextChapter
+        )
+    }
+
+    Box(
+        Modifier.padding(start = sideMenuSize).fillMaxSize()
+    ) {
+        ReaderLayout(
+            previousChapter = previousChapter,
+            chapter = chapter,
+            nextChapter = nextChapter,
+            pages = pages,
+            continuous = continuous,
+            direction = direction,
+            padding = padding,
+            imageScale = imageScale,
+            fitSize = fitSize,
+            maxSize = maxSize,
+            navigationViewer = navigationViewer,
+            currentPage = currentPage,
+            currentPageOffset = currentPageOffset,
+            navigateTap = navigateTap,
+            pageEmitter = pageEmitter,
+            retry = retry,
+            progress = progress,
+            updateLastPageReadOffset = updateLastPageReadOffset,
+        )
+        SideMenuButton(sideMenuOpen, onOpenSideMenuClicked = { setSideMenuOpen(true) })
+    }
+}
+
+@Composable
+fun ThinReaderMenu(
+    previousChapter: ReaderChapter?,
+    chapter: ReaderChapter,
+    nextChapter: ReaderChapter?,
+    pages: List<ReaderPage>,
+    readerModes: List<String>,
+    readerMode: String,
+    continuous: Boolean,
+    direction: Direction,
+    padding: Int,
+    imageScale: ImageScale,
+    fitSize: Boolean,
+    maxSize: Int,
+    navigationViewer: ViewerNavigation,
+    currentPage: Int,
+    currentPageOffset: Int,
+    navigate: (Int) -> Unit,
+    navigateTap: (Navigation) -> Unit,
+    pageEmitter: SharedFlow<PageMove>,
+    retry: (ReaderPage) -> Unit,
+    progress: (Int) -> Unit,
+    updateLastPageReadOffset: (Int) -> Unit,
+    readerMenuOpen: Boolean,
+    setMangaReaderMode: (String) -> Unit,
+    movePrevChapter: () -> Unit,
+    moveNextChapter: () -> Unit,
+    onCloseRequest: () -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(
+        ModalBottomSheetValue.Hidden
+    )
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetContent = {
+            ReaderSheet(
+                readerModes = readerModes,
+                selectedMode = readerMode,
+                onSetReaderMode = setMangaReaderMode,
+            )
+        }
+    ) {
+        Box {
+            ReaderLayout(
+                previousChapter = previousChapter,
+                chapter = chapter,
+                nextChapter = nextChapter,
+                pages = pages,
+                continuous = continuous,
+                direction = direction,
+                padding = padding,
+                imageScale = imageScale,
+                fitSize = fitSize,
+                maxSize = maxSize,
+                navigationViewer = navigationViewer,
+                currentPage = currentPage,
+                currentPageOffset = currentPageOffset,
+                navigateTap = navigateTap,
+                pageEmitter = pageEmitter,
+                retry = retry,
+                progress = progress,
+                updateLastPageReadOffset = updateLastPageReadOffset,
+            )
+            AnimatedVisibility(
+                readerMenuOpen,
+                enter = slideInVertically { -it },
+                exit = slideOutVertically { -it },
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                val scope = rememberCoroutineScope()
+                Toolbar(
+                    chapter.chapter.name,
+                    closable = true,
+                    onClose = onCloseRequest,
+                    actions = {
+                        listOf(
+                            ActionItem(
+                                stringResource(MR.strings.location_settings),
+                                Icons.Rounded.Settings,
+                                doAction = {
+                                    scope.launch {
+                                        sheetState.show()
+                                    }
+                                }
+                            )
+                        )
+                    }
+                )
+            }
+            ReaderExpandBottomMenu(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                previousChapter = previousChapter,
+                chapter = chapter,
+                nextChapter = nextChapter,
+                direction = direction,
+                currentPage = currentPage,
+                navigate = navigate,
+                readerMenuOpen = readerMenuOpen,
+                movePrevChapter = movePrevChapter,
+                moveNextChapter = moveNextChapter
+            )
+        }
+    }
+}
+
+@Composable
+fun ReaderLayout(
+    previousChapter: ReaderChapter?,
+    chapter: ReaderChapter,
+    nextChapter: ReaderChapter?,
+    pages: List<ReaderPage>,
+    continuous: Boolean,
+    direction: Direction,
+    padding: Int,
+    imageScale: ImageScale,
+    fitSize: Boolean,
+    maxSize: Int,
+    navigationViewer: ViewerNavigation,
+    currentPage: Int,
+    currentPageOffset: Int,
+    navigateTap: (Navigation) -> Unit,
+    pageEmitter: SharedFlow<PageMove>,
+    retry: (ReaderPage) -> Unit,
+    progress: (Int) -> Unit,
+    updateLastPageReadOffset: (Int) -> Unit,
+) {
+    val loadingModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
+    val readerModifier = Modifier
+        .navigationClickable(
+            navigation = navigationViewer,
+            onClick = navigateTap
+        )
+
+    if (continuous) {
+        ContinuousReader(
+            modifier = readerModifier,
+            pages = pages,
+            direction = direction,
+            maxSize = maxSize,
+            padding = padding,
+            currentPage = currentPage,
+            currentPageOffset = currentPageOffset,
+            previousChapter = previousChapter,
+            currentChapter = chapter,
+            nextChapter = nextChapter,
+            loadingModifier = loadingModifier,
+            pageContentScale = if (fitSize) {
+                if (direction == Direction.Up || direction == Direction.Down) {
+                    ContentScale.FillWidth
+                } else {
+                    ContentScale.FillHeight
+                }
+            } else {
+                ContentScale.Fit
+            },
+            pageEmitter = pageEmitter,
+            retry = retry,
+            progress = progress,
+            updateLastPageReadOffset = updateLastPageReadOffset
+        )
+    } else {
+        PagerReader(
+            parentModifier = readerModifier,
+            direction = direction,
+            currentPage = currentPage,
+            pages = pages,
+            previousChapter = previousChapter,
+            currentChapter = chapter,
+            nextChapter = nextChapter,
+            loadingModifier = loadingModifier,
+            pageContentScale = imageScale.toContentScale(),
+            pageEmitter = pageEmitter,
+            retry = retry,
+            progress = progress
+        )
     }
 }
 
@@ -261,7 +514,7 @@ fun ReaderImage(
     Crossfade(drawable to status) { (drawable, status) ->
         if (drawable != null) {
             Image(
-                drawable,
+                bitmap = drawable,
                 modifier = imageModifier,
                 contentDescription = null,
                 contentScale = contentScale,

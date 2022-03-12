@@ -7,7 +7,7 @@
 package ca.gosyer.ui.reader.model
 
 sealed class Navigation(val name: String) {
-    object NONE : Navigation("None")
+    object MENU : Navigation("Menu")
     object PREV : Navigation("Prev")
     object NEXT : Navigation("Next")
     object LEFT : Navigation("Left")

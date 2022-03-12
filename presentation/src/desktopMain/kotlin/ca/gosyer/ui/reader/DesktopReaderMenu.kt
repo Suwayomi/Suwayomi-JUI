@@ -68,7 +68,12 @@ actual class ReaderLauncher {
                                 it.key in supportedKeyList
                             }
                         ) {
-                            ReaderMenu(chapterIndex, mangaId, hotkeyFlow)
+                            ReaderMenu(
+                                chapterIndex = chapterIndex,
+                                mangaId = mangaId,
+                                hotkeyFlow = hotkeyFlow,
+                                onCloseRequest = ::exitApplication
+                            )
                         }
                     }
                 }

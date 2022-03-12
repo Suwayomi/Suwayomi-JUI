@@ -64,7 +64,7 @@ abstract class ViewerNavigation {
             .find { realPos in it.rect }
         return when {
             region != null -> region.type
-            else -> Navigation.NONE
+            else -> Navigation.MENU
         }
     }
 }

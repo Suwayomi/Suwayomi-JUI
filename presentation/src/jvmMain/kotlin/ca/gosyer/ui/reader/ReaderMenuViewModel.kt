@@ -74,6 +74,9 @@ class ReaderMenuViewModel @Inject constructor(
     private val _currentPageOffset = MutableStateFlow(1)
     val currentPageOffset = _currentPageOffset.asStateFlow()
 
+    private val _readerSettingsMenuOpen = MutableStateFlow(false)
+    val readerSettingsMenuOpen = _readerSettingsMenuOpen.asStateFlow()
+
     private val _pageEmitter = MutableSharedFlow<PageMove>()
     val pageEmitter = _pageEmitter.asSharedFlow()
 
@@ -110,7 +113,10 @@ class ReaderMenuViewModel @Inject constructor(
     fun navigate(navigationRegion: Navigation) {
         scope.launch {
             val moveTo = when (navigationRegion) {
-                Navigation.NONE -> null
+                Navigation.MENU -> {
+                    setReaderSettingsMenuOpen(!readerSettingsMenuOpen.value)
+                    null
+                }
                 Navigation.NEXT -> MoveTo.Next
                 Navigation.PREV -> MoveTo.Previous
                 Navigation.RIGHT -> when (readerModeSettings.direction.value) {
@@ -164,6 +170,10 @@ class ReaderMenuViewModel @Inject constructor(
                 ?.collect()
             initManga(params.mangaId)
         }
+    }
+
+    fun setReaderSettingsMenuOpen(open: Boolean) {
+        _readerSettingsMenuOpen.value = open
     }
 
     fun prevChapter() {

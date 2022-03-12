@@ -73,7 +73,7 @@ fun ContinuousReader(
                             val by = when (moveTo) {
                                 MoveTo.Previous -> -maxHeight
                                 MoveTo.Next -> maxHeight
-                            }
+                            } * 0.8F
                             state.animateScrollBy(by.value)
                             Unit
                         }
@@ -118,15 +118,15 @@ fun ContinuousReader(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     items(
-                        pages,
-                        contentPadding,
-                        previousChapter,
-                        currentChapter,
-                        nextChapter,
-                        imageModifier,
-                        loadingModifier,
-                        pageContentScale,
-                        retry
+                        pages = pages,
+                        paddingValues = contentPadding,
+                        previousChapter = previousChapter,
+                        currentChapter = currentChapter,
+                        nextChapter = nextChapter,
+                        imageModifier = imageModifier,
+                        loadingModifier = loadingModifier,
+                        pageContentScale = pageContentScale,
+                        retry = retry
                     )
                 }
                 VerticalScrollbar(
@@ -145,15 +145,15 @@ fun ContinuousReader(
                     modifier = Modifier.fillMaxHeight()
                 ) {
                     items(
-                        pages,
-                        contentPadding,
-                        previousChapter,
-                        currentChapter,
-                        nextChapter,
-                        imageModifier,
-                        loadingModifier,
-                        pageContentScale,
-                        retry
+                        pages = pages,
+                        paddingValues = contentPadding,
+                        previousChapter = previousChapter,
+                        currentChapter = currentChapter,
+                        nextChapter = nextChapter,
+                        imageModifier = imageModifier,
+                        loadingModifier = loadingModifier,
+                        pageContentScale = pageContentScale,
+                        retry = retry
                     )
                 }
                 HorizontalScrollbar(
@@ -185,20 +185,20 @@ private fun LazyListScope.items(
     items(pages) { image ->
         Box(Modifier.padding(paddingValues)) {
             ReaderImage(
-                image.index,
-                image.bitmap.collectAsState().value,
-                image.progress.collectAsState().value,
-                image.status.collectAsState().value,
-                image.error.collectAsState().value,
-                imageModifier,
-                loadingModifier,
-                pageContentScale
+                imageIndex = image.index,
+                drawable = image.bitmap.collectAsState().value,
+                progress = image.progress.collectAsState().value,
+                status = image.status.collectAsState().value,
+                error = image.error.collectAsState().value,
+                imageModifier = imageModifier,
+                loadingModifier = loadingModifier,
+                contentScale = pageContentScale
             ) { pageIndex ->
                 pages.find { it.index == pageIndex }?.let { retry(it) }
             }
         }
     }
     item {
-        ChapterSeparator(currentChapter, nextChapter)
+        ChapterSeparator(previousChapter = currentChapter, nextChapter = nextChapter)
     }
 }

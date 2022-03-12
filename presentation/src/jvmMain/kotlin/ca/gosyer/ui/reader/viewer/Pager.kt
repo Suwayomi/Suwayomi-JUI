@@ -84,14 +84,14 @@ fun PagerReader(
             modifier = modifier
         ) {
             HandlePager(
-                pages,
-                it,
-                previousChapter,
-                currentChapter,
-                nextChapter,
-                loadingModifier,
-                pageContentScale,
-                retry
+                pages = pages,
+                page = it,
+                previousChapter = previousChapter,
+                currentChapter = currentChapter,
+                nextChapter = nextChapter,
+                loadingModifier = loadingModifier,
+                pageContentScale = pageContentScale,
+                retry = retry
             )
         }
     } else {
@@ -102,14 +102,14 @@ fun PagerReader(
             modifier = modifier
         ) {
             HandlePager(
-                pages,
-                it,
-                previousChapter,
-                currentChapter,
-                nextChapter,
-                loadingModifier,
-                pageContentScale,
-                retry
+                pages = pages,
+                page = it,
+                previousChapter = previousChapter,
+                currentChapter = currentChapter,
+                nextChapter = nextChapter,
+                loadingModifier = loadingModifier,
+                pageContentScale = pageContentScale,
+                retry = retry
             )
         }
     }
@@ -132,11 +132,11 @@ fun HandlePager(
         else -> {
             val image = pages[page - 1]
             ReaderImage(
-                image.index,
-                image.bitmap.collectAsState().value,
-                image.progress.collectAsState().value,
-                image.status.collectAsState().value,
-                image.error.collectAsState().value,
+                imageIndex = image.index,
+                drawable = image.bitmap.collectAsState().value,
+                progress = image.progress.collectAsState().value,
+                status = image.status.collectAsState().value,
+                error = image.error.collectAsState().value,
                 loadingModifier = loadingModifier,
                 retry = { pageIndex ->
                     pages.find { it.index == pageIndex }?.let { retry(it) }
