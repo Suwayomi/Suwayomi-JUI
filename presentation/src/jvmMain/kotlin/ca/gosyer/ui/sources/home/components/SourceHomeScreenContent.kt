@@ -127,7 +127,9 @@ fun SourceHomeScreenToolbar(
         searchText = query,
         search = setQuery,
         searchSubmit = {
-            submitSearch(query)
+            if (query.isNotBlank()) {
+                submitSearch(query)
+            }
         }
     )
 }
