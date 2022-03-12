@@ -7,10 +7,6 @@
 # todo optimize more
 -keep class kotlin.reflect.** { *; }
 
-# Log4J
--dontwarn org.apache.logging.log4j.**
--keep class org.apache.logging.log4j.** { *; }
-
 # SLF4J
 -dontwarn org.apache.logging.slf4j.**
 -keep class org.apache.logging.slf4j.** { *; }
@@ -54,7 +50,7 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
--keep,includedescriptorclasses class eu.kanade.tachiyomi.**$$serializer { *; }
+-keep,includedescriptorclasses class ca.gosyer.**$$serializer { *; }
 -keepclassmembers class ca.gosyer.** {
     *** Companion;
 }

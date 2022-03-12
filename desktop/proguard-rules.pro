@@ -53,7 +53,7 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
--keep,includedescriptorclasses class eu.kanade.tachiyomi.**$$serializer { *; }
+-keep,includedescriptorclasses class ca.gosyer.**$$serializer { *; }
 -keepclassmembers class ca.gosyer.** {
     *** Companion;
 }
