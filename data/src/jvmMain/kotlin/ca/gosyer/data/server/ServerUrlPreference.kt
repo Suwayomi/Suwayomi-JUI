@@ -7,6 +7,7 @@
 package ca.gosyer.data.server
 
 import ca.gosyer.core.prefs.Preference
+import ca.gosyer.core.prefs.getAsFlow
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.stateIn
 
 class ServerUrlPreference(
@@ -58,14 +60,14 @@ class ServerUrlPreference(
     }
 
     override fun changes(): Flow<Url> {
-        return combine(server.changes(), port.changes(), pathPrefix.changes()) { server, port, pathPrefix ->
+        return combine(server.getAsFlow(), port.getAsFlow(), pathPrefix.getAsFlow()) { server, port, pathPrefix ->
             URLBuilder(server).apply {
                 this.port = port
                 if (pathPrefix.isNotBlank()) {
                     path(pathPrefix)
                 }
             }.build()
-        }
+        }.drop(1)
     }
 
     override fun stateIn(scope: CoroutineScope): StateFlow<Url> {
