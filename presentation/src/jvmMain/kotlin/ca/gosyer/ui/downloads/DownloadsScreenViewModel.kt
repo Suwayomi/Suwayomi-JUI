@@ -16,6 +16,7 @@ import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -89,6 +90,11 @@ class DownloadsScreenViewModel @Inject constructor(
     }
 
     fun restartDownloader() = startDownloadService(contextWrapper, downloadService, Actions.RESTART)
+
+    override fun onDispose() {
+        super.onDispose()
+        uiScope?.cancel()
+    }
 
     private companion object : CKLogger({})
 }

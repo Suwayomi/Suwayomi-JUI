@@ -111,6 +111,12 @@ fun ReaderMenu(
 ) {
     val vmFactory = LocalViewModelFactory.current
     val vm = remember { vmFactory.instantiate<ReaderMenuViewModel>(ReaderMenuViewModel.Params(chapterIndex, mangaId)) }
+    DisposableEffect(vm) {
+        onDispose(vm::onDispose)
+    }
+    DisposableEffect(Unit) {
+        onDispose(vm::sendProgress)
+    }
 
     val state by vm.state.collectAsState()
     val previousChapter by vm.previousChapter.collectAsState()
@@ -140,9 +146,7 @@ fun ReaderMenu(
             }
         }
     }
-    DisposableEffect(Unit) {
-        onDispose(vm::sendProgress)
-    }
+
 
     Surface {
         Crossfade(state to chapter) { (state, chapter) ->

@@ -28,6 +28,8 @@ import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -52,6 +54,7 @@ class ReaderMenuViewModel @Inject constructor(
     contextWrapper: ContextWrapper,
     private val params: Params,
 ) : ViewModel(contextWrapper) {
+    override val scope = MainScope()
     private val _manga = MutableStateFlow<Manga?>(null)
     private val viewerChapters = ViewerChapters(
         MutableStateFlow(null),
@@ -313,6 +316,7 @@ class ReaderMenuViewModel @Inject constructor(
 
     override fun onDispose() {
         viewerChapters.recycle()
+        scope.cancel()
     }
 
     data class Params(val chapterIndex: Int, val mangaId: Long)

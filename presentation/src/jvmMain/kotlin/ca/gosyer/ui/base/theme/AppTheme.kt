@@ -46,7 +46,7 @@ fun AppTheme(content: @Composable () -> Unit) {
     val vm = remember { vmFactory.instantiate<AppThemeViewModel>() }
     val colors = vm.getColors()
     /*val systemUiController = rememberSystemUiController()*/
-    DisposableEffect(Unit) {
+    DisposableEffect(vm) {
         onDispose(vm::onDispose)
     }
 

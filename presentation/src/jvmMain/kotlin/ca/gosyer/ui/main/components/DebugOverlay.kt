@@ -9,6 +9,7 @@ package ca.gosyer.ui.main.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -19,6 +20,9 @@ import ca.gosyer.uicore.vm.LocalViewModelFactory
 fun DebugOverlay() {
     val vmFactory = LocalViewModelFactory.current
     val vm = remember { vmFactory.instantiate<DebugOverlayViewModel>() }
+    DisposableEffect(vm) {
+        onDispose(vm::onDispose)
+    }
     val usedMemory by vm.usedMemoryFlow.collectAsState()
     Column {
         Text("$usedMemory/${vm.maxMemory}", color = Color.White)

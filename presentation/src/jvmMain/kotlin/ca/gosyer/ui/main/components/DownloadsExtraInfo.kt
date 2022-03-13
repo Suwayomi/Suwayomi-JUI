@@ -13,6 +13,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -29,6 +30,9 @@ import ca.gosyer.uicore.vm.LocalViewModelFactory
 fun DownloadsExtraInfo() {
     val vmFactory = LocalViewModelFactory.current
     val vm = remember { vmFactory.instantiate<DownloadsScreenViewModel>(true) }
+    DisposableEffect(vm) {
+        onDispose(vm::onDispose)
+    }
     val serviceStatus by vm.serviceStatus.collectAsState()
     val downloaderStatus by vm.downloaderStatus.collectAsState()
     val list by vm.downloadQueue.collectAsState()

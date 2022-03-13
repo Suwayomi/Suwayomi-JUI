@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,6 +45,9 @@ const val SIDE_MENU_EXPAND_DURATION = 500
 fun MainMenu() {
     val vmFactory = LocalViewModelFactory.current
     val vm = remember { vmFactory.instantiate<MainViewModel>() }
+    DisposableEffect(vm) {
+        onDispose(vm::onDispose)
+    }
     val confirmExit by vm.confirmExit.collectAsState()
     Surface {
         Navigator(vm.startScreen.toScreen()) { navigator ->

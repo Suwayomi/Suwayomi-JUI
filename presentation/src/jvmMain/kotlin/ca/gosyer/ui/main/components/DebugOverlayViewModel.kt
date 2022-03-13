@@ -9,6 +9,7 @@ package ca.gosyer.ui.main.components
 import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -38,4 +39,9 @@ class DebugOverlayViewModel @Inject constructor(contextWrapper: ContextWrapper) 
     }
 
     private fun Runtime.usedMemory(): Long = totalMemory() - freeMemory()
+
+    override fun onDispose() {
+        super.onDispose()
+        scope.cancel()
+    }
 }
