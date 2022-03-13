@@ -15,6 +15,7 @@ import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.data.server.interactions.UpdatesInteractionHandler
+import ca.gosyer.i18n.MR
 import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel
 import kotlinx.coroutines.async
@@ -94,7 +95,7 @@ class LibraryScreenViewModel @Inject constructor(
         categoryHandler.getCategories()
             .onEach { categories ->
                 if (categories.isEmpty()) {
-                    throw Exception("Library is empty")
+                    throw Exception(MR.strings.library_empty.toPlatformString())
                 }
                 library.categories.value = categories.sortedBy { it.order }
                 updateCategories(categories)

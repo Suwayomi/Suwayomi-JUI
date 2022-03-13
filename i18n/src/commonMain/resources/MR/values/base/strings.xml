@@ -77,6 +77,7 @@
 
     <!-- Library Menu -->
     <string name="default_category">Default</string>
+    <string name="library_empty">Library is empty</string>
 
     <!-- Manga Menu -->
     <string name="page_progress">Page %1$d</string>
