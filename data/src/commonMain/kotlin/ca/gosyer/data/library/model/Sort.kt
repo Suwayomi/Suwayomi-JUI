@@ -11,9 +11,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class Sort {
     ALPHABETICAL,
+
     // LAST_READ,
     // LAST_CHECKED,
     UNREAD,
+
     // TOTAL_CHAPTERS,
     // LATEST_CHAPTER,
     // DATE_FETCHED,

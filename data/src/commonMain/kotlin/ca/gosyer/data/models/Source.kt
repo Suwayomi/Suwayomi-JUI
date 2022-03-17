@@ -20,11 +20,11 @@ data class Source(
     val displayName: String
 ) {
     val displayLang: String
-    get() = if (id == LOCAL_SOURCE_ID) {
-        "other"
-    } else {
-        lang
-    }
+        get() = if (id == LOCAL_SOURCE_ID) {
+            "other"
+        } else {
+            lang
+        }
 
     companion object {
         const val LOCAL_SOURCE_LANG = "localsourcelang"

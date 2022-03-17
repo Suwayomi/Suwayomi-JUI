@@ -34,6 +34,7 @@ enum class SecureFlagPolicy {
      * policy.
      */
     SecureOn,
+
     /**
      * No [WindowManager.LayoutParams.FLAG_SECURE] will be set on the window that is using this
      * policy.

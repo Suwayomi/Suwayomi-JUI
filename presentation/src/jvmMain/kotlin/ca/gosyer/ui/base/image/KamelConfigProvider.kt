@@ -109,6 +109,5 @@ class KamelConfigProvider @Inject constructor(
             val bytes = response.receive<ByteReadChannel>()
             send(Resource.Success(bytes))
         }
-
     }
 }

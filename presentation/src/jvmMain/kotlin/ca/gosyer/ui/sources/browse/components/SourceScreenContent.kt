@@ -421,7 +421,6 @@ fun SourceToolbar(
                 },
                 openDisplayModeSelect = { displayModeSelectOpen = true }
             )
-
         }
     )
 }
@@ -447,7 +446,6 @@ fun DisplayModeSelect(
                 Text(stringResource(it.res))
             }
         }
-
     }
 }
 
