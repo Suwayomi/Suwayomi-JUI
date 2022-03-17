@@ -59,8 +59,8 @@ fun SourceSettingsScreenContent(
         topBar = {
             Toolbar(stringResource(MR.strings.location_settings))
         }
-    ) {
-        Box(Modifier.padding(it)) {
+    ) { padding ->
+        Box(Modifier.padding(padding)) {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state) {
                 items(settings, { it.props.hashCode() }) {
