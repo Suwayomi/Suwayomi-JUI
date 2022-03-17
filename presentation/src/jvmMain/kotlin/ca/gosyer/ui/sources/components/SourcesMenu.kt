@@ -128,13 +128,21 @@ fun SourcesSideMenu(
                                 .requiredSize(50.dp)
                                 .align(Alignment.Center)
                             when (screen) {
-                                SourceNavigatorScreen.HomeScreen -> Icon(Icons.Rounded.Home, stringResource(MR.strings.sources_home), modifier = modifier)
-                                SourceNavigatorScreen.SearchScreen -> Icon(Icons.Rounded.Search, stringResource(MR.strings.sources_home), modifier = modifier)
+                                SourceNavigatorScreen.HomeScreen -> Icon(
+                                    imageVector = Icons.Rounded.Home,
+                                    contentDescription = stringResource(MR.strings.sources_home),
+                                    modifier = modifier
+                                )
+                                SourceNavigatorScreen.SearchScreen -> Icon(
+                                    imageVector = Icons.Rounded.Search,
+                                    contentDescription = stringResource(MR.strings.location_global_search),
+                                    modifier = modifier
+                                )
                                 is SourceNavigatorScreen.SourceScreen -> Box(Modifier.align(Alignment.Center)) {
                                     KamelImage(
-                                        lazyPainterResource(screen.source, filterQuality = FilterQuality.Medium),
-                                        screen.source.displayName,
-                                        modifier
+                                        resource = lazyPainterResource(screen.source, filterQuality = FilterQuality.Medium),
+                                        contentDescription = screen.source.displayName,
+                                        modifier = modifier
                                     )
                                 }
                             }
