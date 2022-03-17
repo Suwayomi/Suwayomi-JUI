@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.takeOrElse
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
-import ca.gosyer.ui.base.components.LocalScrollbarStyle
 import ca.gosyer.ui.base.theme.ThemeScrollbarStyle.getScrollbarStyle
+import ca.gosyer.uicore.components.LocalScrollbarStyle
 import ca.gosyer.uicore.theme.Theme
 import ca.gosyer.uicore.theme.themes
 import ca.gosyer.uicore.vm.ContextWrapper

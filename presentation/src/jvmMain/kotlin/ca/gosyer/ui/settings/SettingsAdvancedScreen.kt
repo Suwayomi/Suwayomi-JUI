@@ -19,10 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.update.UpdatePreferences
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.SwitchPreference
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ContextWrapper

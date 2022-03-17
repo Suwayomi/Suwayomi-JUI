@@ -38,13 +38,13 @@ import ca.gosyer.data.library.LibraryPreferences
 import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.PreferenceRow
 import ca.gosyer.ui.categories.rememberCategoriesLauncher
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ContextWrapper

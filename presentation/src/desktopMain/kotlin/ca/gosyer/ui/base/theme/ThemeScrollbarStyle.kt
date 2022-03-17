@@ -9,7 +9,7 @@ package ca.gosyer.ui.base.theme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import ca.gosyer.ui.base.components.ScrollbarStyle
+import ca.gosyer.uicore.components.ScrollbarStyle
 
 actual object ThemeScrollbarStyle {
     @Composable

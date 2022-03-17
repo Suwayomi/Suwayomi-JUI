@@ -49,12 +49,12 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Extension
 import ca.gosyer.i18n.MR
 import ca.gosyer.presentation.build.BuildKonfig
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.uicore.components.LoadingScreen
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.MaterialDialog

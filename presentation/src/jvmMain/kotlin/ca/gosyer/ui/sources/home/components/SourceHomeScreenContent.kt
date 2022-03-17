@@ -45,13 +45,13 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.TooltipArea
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import ca.gosyer.ui.base.components.localeToString
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.extensions.components.LanguageDialog
 import ca.gosyer.uicore.components.LoadingScreen
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState

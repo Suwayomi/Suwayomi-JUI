@@ -39,13 +39,13 @@ import ca.gosyer.core.lang.throwIfCancellation
 import ca.gosyer.core.logging.CKLogger
 import ca.gosyer.data.server.interactions.BackupInteractionHandler
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.file.rememberFileChooser
 import ca.gosyer.ui.base.file.rememberFileSaver
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.PreferenceRow
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.vm.ContextWrapper
 import ca.gosyer.uicore.vm.ViewModel

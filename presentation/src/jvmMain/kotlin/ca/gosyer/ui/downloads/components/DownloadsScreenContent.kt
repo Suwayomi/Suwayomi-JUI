@@ -45,8 +45,6 @@ import ca.gosyer.data.download.model.DownloadChapter
 import ca.gosyer.data.download.model.DownloaderStatus
 import ca.gosyer.data.models.Chapter
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.uicore.components.DropdownIconButton
@@ -55,7 +53,9 @@ import ca.gosyer.uicore.components.MangaListItemColumn
 import ca.gosyer.uicore.components.MangaListItemImage
 import ca.gosyer.uicore.components.MangaListItemSubtitle
 import ca.gosyer.uicore.components.MangaListItemTitle
+import ca.gosyer.uicore.components.VerticalScrollbar
 import ca.gosyer.uicore.components.mangaAspectRatio
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.resources.stringResource
 import io.kamel.image.lazyPainterResource
 

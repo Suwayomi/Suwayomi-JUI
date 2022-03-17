@@ -36,8 +36,6 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.ThemeMode
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.ColorPreference
@@ -46,6 +44,8 @@ import ca.gosyer.ui.base.theme.AppColorsPreferenceState
 import ca.gosyer.ui.base.theme.asStateFlow
 import ca.gosyer.ui.base.theme.getDarkColors
 import ca.gosyer.ui.base.theme.getLightColors
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.uicore.resources.stringResource
 import ca.gosyer.uicore.theme.Theme

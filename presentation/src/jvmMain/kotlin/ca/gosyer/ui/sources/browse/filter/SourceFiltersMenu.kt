@@ -58,11 +58,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import ca.gosyer.data.models.sourcefilters.SortFilter
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.prefs.ExpandablePreference
 import ca.gosyer.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.uicore.components.Spinner
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.resources.stringResource
 import kotlinx.coroutines.flow.filterIsInstance
 

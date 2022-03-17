@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.ui.base.components
+package ca.gosyer.uicore.components
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,7 +21,7 @@ expect class ScrollbarStyle
 expect val LocalScrollbarStyle: ProvidableCompositionLocal<ScrollbarStyle>
 
 @Composable
-expect fun VerticalScrollbar(
+internal expect fun RealVerticalScrollbar(
     adapter: ScrollbarAdapter,
     modifier: Modifier,
     reverseLayout: Boolean,
@@ -30,7 +30,7 @@ expect fun VerticalScrollbar(
 )
 
 @Composable
-expect fun HorizontalScrollbar(
+internal expect fun RealHorizontalScrollbar(
     adapter: ScrollbarAdapter,
     modifier: Modifier,
     reverseLayout: Boolean,
@@ -44,9 +44,8 @@ fun VerticalScrollbar(
     modifier: Modifier = Modifier,
     reverseLayout: Boolean = false,
     style: ScrollbarStyle = LocalScrollbarStyle.current,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    real: Boolean = false
-) = VerticalScrollbar(adapter, modifier, reverseLayout, style, interactionSource)
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+) = RealVerticalScrollbar(adapter, modifier, reverseLayout, style, interactionSource)
 
 @Composable
 fun HorizontalScrollbar(
@@ -54,9 +53,8 @@ fun HorizontalScrollbar(
     modifier: Modifier = Modifier,
     reverseLayout: Boolean = false,
     style: ScrollbarStyle = LocalScrollbarStyle.current,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    real: Boolean = false
-) = HorizontalScrollbar(adapter, modifier, reverseLayout, style, interactionSource)
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+) = RealHorizontalScrollbar(adapter, modifier, reverseLayout, style, interactionSource)
 
 @Composable
 expect fun rememberScrollbarAdapter(

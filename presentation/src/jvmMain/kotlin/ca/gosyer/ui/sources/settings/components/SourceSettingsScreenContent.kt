@@ -29,8 +29,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
 import ca.gosyer.presentation.build.BuildKonfig
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.ChoiceDialog
@@ -43,7 +41,9 @@ import ca.gosyer.ui.sources.settings.model.SourceSettingsView.List
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.MultiSelect
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.ui.sources.settings.model.SourceSettingsView.TwoState
+import ca.gosyer.uicore.components.VerticalScrollbar
 import ca.gosyer.uicore.components.keyboardHandler
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.message

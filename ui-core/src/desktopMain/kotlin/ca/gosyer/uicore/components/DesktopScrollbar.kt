@@ -4,61 +4,54 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.ui.base.components
+package ca.gosyer.uicore.components
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 
-actual interface ScrollbarAdapter {
-    fun noop()
-}
+actual typealias ScrollbarAdapter = androidx.compose.foundation.ScrollbarAdapter
 
-actual class ScrollbarStyle
+actual typealias ScrollbarStyle = androidx.compose.foundation.ScrollbarStyle
 
-actual val LocalScrollbarStyle: ProvidableCompositionLocal<ScrollbarStyle> = staticCompositionLocalOf { ScrollbarStyle() }
+actual val LocalScrollbarStyle: ProvidableCompositionLocal<ScrollbarStyle>
+    get() = androidx.compose.foundation.LocalScrollbarStyle
 
 @Composable
-actual fun VerticalScrollbar(
+internal actual fun RealVerticalScrollbar(
     adapter: ScrollbarAdapter,
     modifier: Modifier,
     reverseLayout: Boolean,
     style: ScrollbarStyle,
     interactionSource: MutableInteractionSource
-) {}
+) = androidx.compose.foundation.VerticalScrollbar(
+    adapter, modifier, reverseLayout, style, interactionSource
+)
 
 @Composable
-actual fun HorizontalScrollbar(
+internal actual fun RealHorizontalScrollbar(
     adapter: ScrollbarAdapter,
     modifier: Modifier,
     reverseLayout: Boolean,
     style: ScrollbarStyle,
     interactionSource: MutableInteractionSource
-) {}
+) = androidx.compose.foundation.HorizontalScrollbar(
+    adapter, modifier, reverseLayout, style, interactionSource
+)
 
 @Composable
 actual fun rememberScrollbarAdapter(
     scrollState: ScrollState
 ): ScrollbarAdapter {
-    return remember {
-        object : ScrollbarAdapter {
-            override fun noop() {}
-        }
-    }
+    return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 }
 
 @Composable
 actual fun rememberScrollbarAdapter(
     scrollState: LazyListState,
 ): ScrollbarAdapter {
-    return remember {
-        object : ScrollbarAdapter {
-            override fun noop() {}
-        }
-    }
+    return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 }

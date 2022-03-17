@@ -25,9 +25,9 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Manga
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
+import ca.gosyer.uicore.components.VerticalScrollbar
 import ca.gosyer.uicore.components.mangaAspectRatio
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.image.KamelImage
 import io.kamel.image.lazyPainterResource
 

@@ -30,13 +30,13 @@ import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.chapter.ChapterDownloadItem
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.ActionItem
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.reader.rememberReaderLauncher
 import ca.gosyer.uicore.components.ErrorScreen
 import ca.gosyer.uicore.components.LoadingScreen
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.flow.SharedFlow

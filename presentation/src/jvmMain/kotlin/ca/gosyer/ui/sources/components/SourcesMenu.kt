@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.i18n.MR
 import ca.gosyer.ui.base.components.CursorPoint
 import ca.gosyer.ui.base.components.TooltipArea
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.ui.sources.home.SourceHomeScreen
 import ca.gosyer.uicore.image.KamelImage
 import ca.gosyer.uicore.resources.stringResource

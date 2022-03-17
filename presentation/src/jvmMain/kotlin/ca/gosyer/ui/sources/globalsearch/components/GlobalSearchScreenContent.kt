@@ -37,13 +37,13 @@ import ca.gosyer.data.library.model.DisplayMode
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.models.Source
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.components.HorizontalScrollbar
-import ca.gosyer.ui.base.components.VerticalScrollbar
 import ca.gosyer.ui.base.components.localeToString
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.sources.globalsearch.GlobalSearchViewModel.Search
 import ca.gosyer.uicore.components.ErrorScreen
+import ca.gosyer.uicore.components.HorizontalScrollbar
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.resources.stringResource
 
 @Composable

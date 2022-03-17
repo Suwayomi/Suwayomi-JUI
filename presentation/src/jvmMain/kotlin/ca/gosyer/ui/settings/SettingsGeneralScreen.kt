@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.data.ui.UiPreferences
 import ca.gosyer.data.ui.model.StartScreen
 import ca.gosyer.i18n.MR
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.ui.base.navigation.Toolbar
 import ca.gosyer.ui.base.prefs.ChoicePreference
 import ca.gosyer.ui.base.prefs.SwitchPreference
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.uicore.resources.rememberReadText
 import ca.gosyer.uicore.resources.stringResource

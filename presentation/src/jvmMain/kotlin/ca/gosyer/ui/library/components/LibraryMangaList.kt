@@ -23,11 +23,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.unit.dp
 import ca.gosyer.data.models.Manga
-import ca.gosyer.ui.base.components.VerticalScrollbar
-import ca.gosyer.ui.base.components.rememberScrollbarAdapter
 import ca.gosyer.uicore.components.MangaListItem
 import ca.gosyer.uicore.components.MangaListItemImage
 import ca.gosyer.uicore.components.MangaListItemTitle
+import ca.gosyer.uicore.components.VerticalScrollbar
+import ca.gosyer.uicore.components.rememberScrollbarAdapter
 import io.kamel.image.lazyPainterResource
 
 @Composable
