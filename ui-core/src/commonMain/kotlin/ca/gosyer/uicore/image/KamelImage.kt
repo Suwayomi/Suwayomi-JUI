@@ -34,7 +34,7 @@ fun KamelImage(
         LoadingScreen(progress = it, modifier = modifier then Modifier.fillMaxSize())
     },
     onFailure: @Composable (Throwable) -> Unit = {
-        ErrorScreen(it.localizedMessage, modifier = modifier then Modifier.fillMaxSize())
+        ErrorScreen(it.message, modifier = modifier then Modifier.fillMaxSize())
     },
     crossfade: Boolean = true,
     animationSpec: FiniteAnimationSpec<Float> = tween()
