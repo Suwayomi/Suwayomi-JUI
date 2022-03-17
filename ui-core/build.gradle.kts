@@ -39,6 +39,7 @@ kotlin {
                 api(libs.coroutines.core)
                 api(libs.kamel)
                 api(libs.voyager.core)
+                api(libs.locale)
                 api(projects.core)
                 api(projects.i18n)
                 api(compose.desktop.currentOs)

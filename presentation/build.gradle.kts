@@ -50,6 +50,7 @@ kotlin {
                 api(libs.accompanist.pagerIndicators)
                 api(libs.accompanist.flowLayout)
                 api(libs.krokiCoroutines)
+                api(libs.locale)
                 api(projects.core)
                 api(projects.i18n)
                 api(projects.data)

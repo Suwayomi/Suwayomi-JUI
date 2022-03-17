@@ -6,12 +6,13 @@
 
 package ca.gosyer.data.extension
 
+import ca.gosyer.core.lang.getDefault
 import ca.gosyer.core.prefs.Preference
 import ca.gosyer.core.prefs.PreferenceStore
-import java.util.Locale
+import io.fluidsonic.locale.Locale
 
 class ExtensionPreferences(private val preferenceStore: PreferenceStore) {
     fun languages(): Preference<Set<String>> {
-        return preferenceStore.getStringSet("enabled_langs", setOf("all", "en", Locale.getDefault().language))
+        return preferenceStore.getStringSet("enabled_langs", setOfNotNull("all", "en", Locale.getDefault().language))
     }
 }

@@ -84,6 +84,7 @@ dependencies {
     // Localization
     implementation(libs.moko.core)
     implementation(libs.moko.compose)
+    implementation(libs.locale)
 
     // Testing
     testImplementation(kotlin("test-junit"))

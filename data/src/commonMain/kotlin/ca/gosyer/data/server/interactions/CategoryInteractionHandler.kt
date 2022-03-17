@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.server.interactions
 
+import ca.gosyer.core.lang.IO
 import ca.gosyer.data.models.Category
 import ca.gosyer.data.models.Manga
 import ca.gosyer.data.server.Http

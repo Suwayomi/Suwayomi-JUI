@@ -11,8 +11,6 @@ import ca.gosyer.data.server.model.Auth
 import ca.gosyer.data.server.model.Proxy
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.ProxyBuilder
-import io.ktor.client.engine.ProxyConfig
-import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.features.auth.providers.BasicAuthCredentials
 import io.ktor.client.features.auth.providers.DigestAuthCredentials
 import io.ktor.client.features.auth.providers.basic
@@ -31,10 +29,10 @@ typealias Http = HttpClient
 
 class HttpProvider @Inject constructor() {
     fun get(serverPreferences: ServerPreferences): Http {
-        return HttpClient(OkHttp) {
+        return HttpClient {
             engine {
                 proxy = when (serverPreferences.proxy().get()) {
-                    Proxy.NO_PROXY -> ProxyConfig.NO_PROXY
+                    Proxy.NO_PROXY -> null
                     Proxy.HTTP_PROXY -> ProxyBuilder.http(
                         URLBuilder(
                             host = serverPreferences.proxyHttpHost().get(),

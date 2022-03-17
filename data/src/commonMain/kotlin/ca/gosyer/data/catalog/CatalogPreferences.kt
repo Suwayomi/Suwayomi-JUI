@@ -6,14 +6,15 @@
 
 package ca.gosyer.data.catalog
 
+import ca.gosyer.core.lang.getDefault
 import ca.gosyer.core.prefs.Preference
 import ca.gosyer.core.prefs.PreferenceStore
 import ca.gosyer.data.library.model.DisplayMode
-import java.util.Locale
+import io.fluidsonic.locale.Locale
 
 class CatalogPreferences(private val preferenceStore: PreferenceStore) {
     fun languages(): Preference<Set<String>> {
-        return preferenceStore.getStringSet("enabled_langs", setOf("en", Locale.getDefault().language))
+        return preferenceStore.getStringSet("enabled_langs", setOfNotNull("en", Locale.getDefault().language))
     }
 
     fun displayMode(): Preference<DisplayMode> {

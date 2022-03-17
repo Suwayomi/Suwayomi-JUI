@@ -51,7 +51,7 @@ abstract class WebsocketService(
                 while (true) {
                     if (errorConnectionCount > 3) {
                         _status.value = Status.STOPPED
-                        throw CancellationException()
+                        throw CancellationException("Finish")
                     }
                     runCatching {
                         client.ws(

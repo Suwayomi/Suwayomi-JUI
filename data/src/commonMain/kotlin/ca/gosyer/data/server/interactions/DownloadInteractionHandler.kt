@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.server.interactions
 
+import ca.gosyer.core.lang.IO
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.server.ServerPreferences
 import ca.gosyer.data.server.requests.downloadsClearRequest

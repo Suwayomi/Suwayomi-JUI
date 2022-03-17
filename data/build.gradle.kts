@@ -45,6 +45,7 @@ kotlin {
                 api(libs.okio)
                 api(projects.core)
                 api(projects.i18n)
+                api(libs.locale)
             }
         }
         val commonTest by getting {

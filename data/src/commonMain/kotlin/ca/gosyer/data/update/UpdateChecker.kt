@@ -6,6 +6,7 @@
 
 package ca.gosyer.data.update
 
+import ca.gosyer.core.lang.IO
 import ca.gosyer.data.build.BuildKonfig
 import ca.gosyer.data.server.Http
 import ca.gosyer.data.update.model.GithubRelease
