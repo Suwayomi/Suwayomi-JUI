@@ -4,8 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.core.prefs
+package ca.gosyer.core.io
 
-expect class PreferenceStoreFactory {
-    fun create(vararg names: String): PreferenceStore
-}
+import okio.FileSystem
+
+expect val FileSystem.Companion.SYSTEM: FileSystem

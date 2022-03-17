@@ -6,6 +6,8 @@
 
 package ca.gosyer.core.util
 
+import io.ktor.utils.io.core.toByteArray
+
 object ImageUtil {
 
     private val jpgMagic = charByteArrayOf(0xFF, 0xD8, 0xFF)
