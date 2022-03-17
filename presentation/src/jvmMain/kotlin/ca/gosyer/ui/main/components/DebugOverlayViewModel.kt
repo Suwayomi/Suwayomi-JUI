@@ -16,12 +16,12 @@ import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
-class DebugOverlayViewModel @Inject constructor(contextWrapper: ContextWrapper) : ViewModel(contextWrapper) {
+actual class DebugOverlayViewModel @Inject constructor(contextWrapper: ContextWrapper) : ViewModel(contextWrapper) {
     override val scope = MainScope()
 
     val runtime: Runtime = Runtime.getRuntime()
-    val maxMemory = runtime.maxMemory().formatSize()
-    val usedMemoryFlow = MutableStateFlow(runtime.usedMemory().formatSize())
+    actual val maxMemory = runtime.maxMemory().formatSize()
+    actual val usedMemoryFlow = MutableStateFlow(runtime.usedMemory().formatSize())
 
     init {
         scope.launch {

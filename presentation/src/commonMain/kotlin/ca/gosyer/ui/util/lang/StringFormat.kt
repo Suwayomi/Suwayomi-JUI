@@ -4,10 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.core.lang
+package ca.gosyer.ui.util.lang
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-expect val Dispatchers.IO: CoroutineDispatcher
+expect fun stringFormat(string: String, vararg args: Any?): String

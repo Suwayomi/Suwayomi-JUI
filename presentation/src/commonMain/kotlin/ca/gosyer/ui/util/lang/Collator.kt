@@ -4,14 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.core.lang
+package ca.gosyer.ui.util.lang
 
 import io.fluidsonic.locale.Locale
 
-expect fun Locale.Companion.getDefault(): Locale
+expect fun Collator(locale: Locale): Collator
 
-expect fun Locale.getDisplayLanguage(displayLocale: Locale): String
-
-expect fun Locale.getDisplayName(displayLocale: Locale): String
-
-expect val Locale.displayName: String
+expect class Collator {
+    fun compare(source: String, target: String): Int
+}

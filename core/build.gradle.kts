@@ -48,6 +48,7 @@ kotlin {
                 api(libs.multiplatformSettings.coroutines)
                 api(libs.multiplatformSettings.serialization)
                 api(libs.locale)
+                api(libs.klock)
             }
         }
         val commonTest by getting {

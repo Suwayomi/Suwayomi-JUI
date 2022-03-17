@@ -51,6 +51,7 @@ kotlin {
                 api(libs.accompanist.flowLayout)
                 api(libs.krokiCoroutines)
                 api(libs.locale)
+                api(libs.klock)
                 api(projects.core)
                 api(projects.i18n)
                 api(projects.data)

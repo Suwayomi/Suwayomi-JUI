@@ -4,10 +4,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.core.lang
+package ca.gosyer.ui.util.compose
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import androidx.compose.ui.graphics.Color
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-expect val Dispatchers.IO: CoroutineDispatcher
+val Long.color get() = Color(this)
+
+expect fun Color.toHexString(): String
+
+expect fun Color.toLong(): Long

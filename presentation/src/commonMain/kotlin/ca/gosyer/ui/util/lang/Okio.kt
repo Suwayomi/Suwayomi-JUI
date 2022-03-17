@@ -4,10 +4,9 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.core.lang
+package ca.gosyer.ui.util.lang
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import io.ktor.utils.io.ByteReadChannel
+import okio.Source
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-expect val Dispatchers.IO: CoroutineDispatcher
+expect fun ByteReadChannel.toSource(): Source

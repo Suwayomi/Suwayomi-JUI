@@ -80,6 +80,7 @@ dependencies {
 
     // Utility
     implementation(libs.krokiCoroutines)
+    implementation(libs.klock)
 
     // Localization
     implementation(libs.moko.core)
