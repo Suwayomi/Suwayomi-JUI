@@ -34,8 +34,6 @@ class UpdatesScreenViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private var mangaIds: Set<Long> = emptySet()
-
     private val _updates = MutableStateFlow<List<ChapterDownloadItem>>(emptyList())
     val updates = _updates.asStateFlow()
 
@@ -63,8 +61,6 @@ class UpdatesScreenViewModel @Inject constructor(
     private suspend fun getUpdates() {
         updatesHandler.getRecentUpdates(currentPage.value)
             .onEach { updates ->
-                mangaIds = updates.page.map { it.manga.id }.toSet()
-
                 _updates.value += updates.page.map {
                     ChapterDownloadItem(
                         it.manga,
@@ -72,7 +68,7 @@ class UpdatesScreenViewModel @Inject constructor(
                     )
                 }
                 downloadServiceJob?.cancel()
-                downloadServiceJob = DownloadService.registerWatches(mangaIds)
+                downloadServiceJob = DownloadService.registerWatches(updates.page.map { it.manga.id }.toSet())
                     .onEach { chapters ->
                         _updates.value
                             .forEach {
