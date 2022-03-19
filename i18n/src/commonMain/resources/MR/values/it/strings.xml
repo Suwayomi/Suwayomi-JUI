@@ -186,4 +186,8 @@
     <string name="action_retry">Riprova</string>
     <string name="sources_home">Home</string>
     <string name="settings_server">Server</string>
+    <string name="location_more">Altro</string>
+    <string name="action_search">Cerca</string>
+    <string name="action_searching">Cercando…</string>
+    <string name="downloads_paused">In pausa</string>
 </resources>
