@@ -148,7 +148,7 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "ca.gosyer.MainKt"
+        mainClass = "ca.gosyer.jui.desktop.MainKt"
         nativeDistributions {
             targetFormats(
                 // Windows
@@ -200,7 +200,7 @@ compose.desktop {
 fun String.wrap() = """"$this""""
 buildConfig {
     className("BuildConfig")
-    packageName(project.group.toString() + ".desktop.build")
+    packageName(project.group.toString() + ".jui.desktop.build")
     useKotlinOutput { internalVisibility = true }
 
     buildConfigField("String", "NAME", rootProject.name.wrap())

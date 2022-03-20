@@ -96,5 +96,5 @@ dependencies {
 }
 
 buildkonfig {
-    packageName = "ca.gosyer.presentation.build"
+    packageName = "ca.gosyer.jui.presentation.build"
 }

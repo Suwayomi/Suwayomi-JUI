@@ -74,5 +74,5 @@ kotlin {
 }
 
 buildkonfig {
-    packageName = "ca.gosyer.uicore.build"
+    packageName = "ca.gosyer.jui.uicore.build"
 }

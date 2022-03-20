@@ -80,5 +80,5 @@ dependencies {
 }
 
 buildkonfig {
-    packageName = "ca.gosyer.data.build"
+    packageName = "ca.gosyer.jui.data.build"
 }

@@ -46,7 +46,7 @@ tasks {
 }
 
 multiplatformResources {
-    multiplatformResourcesPackage = "ca.gosyer.i18n"
+    multiplatformResourcesPackage = "ca.gosyer.jui.i18n"
 }
 
 android {
