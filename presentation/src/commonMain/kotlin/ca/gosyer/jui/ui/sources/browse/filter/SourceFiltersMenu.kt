@@ -62,6 +62,7 @@ import ca.gosyer.jui.ui.base.prefs.ExpandablePreference
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.jui.uicore.components.Spinner
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
+import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.resources.stringResource
 import kotlinx.coroutines.flow.filterIsInstance
@@ -280,7 +281,7 @@ fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChang
 
 @Composable
 fun TextView(text: SourceFiltersView.Text) {
-    val placeholderText = remember { text.filter.state }
+    val placeholderText = remember { text.filter.name }
     val state by text.state.collectAsState()
     var stateText by remember(state) {
         mutableStateOf(
@@ -302,7 +303,8 @@ fun TextView(text: SourceFiltersView.Text) {
         singleLine = true,
         maxLines = 1,
         interactionSource = interactionSource,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .keyboardHandler(singleLine = true) { it.clearFocus() },
         placeholder = if (placeholderText.isNotEmpty()) {
             { Text(placeholderText) }
         } else {
