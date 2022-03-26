@@ -15,13 +15,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.getDisplayName
+import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.data.ui.UiPreferences
 import ca.gosyer.jui.data.ui.model.StartScreen
 import ca.gosyer.jui.i18n.MR
@@ -31,7 +32,7 @@ import ca.gosyer.jui.ui.base.prefs.SwitchPreference
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
-import ca.gosyer.jui.uicore.resources.rememberReadText
+import ca.gosyer.jui.uicore.resources.readTextAsync
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -92,16 +93,20 @@ class SettingsGeneralViewModel @Inject constructor(
 
     @Composable
     fun getLanguageChoices(): Map<String, String> {
-        val langJson = MR.files.languages.rememberReadText()
-        val langs by derivedStateOf {
-            Json.decodeFromString<JsonObject>(langJson)["langs"]!!
-                .jsonArray
-                .map { it.jsonPrimitive.content }
-                .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
+        val langJsonState = MR.files.languages.readTextAsync()
+        val langs by produceState(emptyMap(), langJsonState.value) {
+            val langJson = langJsonState.value
+            if (langJson != null) {
+                withIOContext {
+                    value = Json.decodeFromString<JsonObject>(langJson)["langs"]!!
+                        .jsonArray
+                        .map { it.jsonPrimitive.content }
+                        .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
+                }
+            }
         }
         return mapOf("" to stringResource(MR.strings.language_system_default, currentLocale.getDisplayName(currentLocale)))
             .plus(langs)
-            .toMap()
     }
 
     @Composable

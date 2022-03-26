@@ -7,7 +7,11 @@
 package ca.gosyer.jui.uicore.resources
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import dev.icerock.moko.resources.FileResource
 
 @Composable
 expect fun FileResource.rememberReadText(): String
+
+@Composable
+expect fun FileResource.readTextAsync(): State<String?>
