@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.categories
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.models.Category
 import ca.gosyer.jui.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class CategoriesScreenViewModel @Inject constructor(
     private val categoryHandler: CategoryInteractionHandler,
@@ -47,7 +47,7 @@ class CategoriesScreenViewModel @Inject constructor(
                 _isLoading.value = false
             }
             .catch {
-                info(it) { "Error getting categories" }
+                log.warn(it) { "Error getting categories" }
                 _isLoading.value = false
             }
             .launchIn(scope)
@@ -59,7 +59,7 @@ class CategoriesScreenViewModel @Inject constructor(
         newCategories.forEach {
             categoryHandler.createCategory(it.name)
                 .catch {
-                    info(it) { "Error creating category" }
+                    log.warn(it) { "Error creating category" }
                 }
                 .collect()
         }
@@ -68,35 +68,35 @@ class CategoriesScreenViewModel @Inject constructor(
             if (category == null) {
                 categoryHandler.deleteCategory(originalCategory)
                     .catch {
-                        info(it) { "Error deleting category $originalCategory" }
+                        log.warn(it) { "Error deleting category $originalCategory" }
                     }
                     .collect()
             } else if (category.name != originalCategory.name) {
                 categoryHandler.modifyCategory(originalCategory, category.name)
                     .catch {
-                        info(it) { "Error modifying category $category" }
+                        log.warn(it) { "Error modifying category $category" }
                     }
                     .collect()
             }
         }
         var updatedCategories = categoryHandler.getCategories(true)
             .catch {
-                info(it) { "Error getting updated categories" }
+                log.warn(it) { "Error getting updated categories" }
             }
             .singleOrNull()
         categories.forEach { category ->
             val updatedCategory = updatedCategories?.find { it.id == category.id || it.name == category.name } ?: return@forEach
             if (category.order != updatedCategory.order) {
-                debug { "${category.name}: ${updatedCategory.order} to ${category.order}" }
+                log.debug { "${category.name}: ${updatedCategory.order} to ${category.order}" }
                 categoryHandler.reorderCategory(category.order, updatedCategory.order)
                     .catch {
-                        info(it) { "Error re-ordering categories" }
+                        log.warn(it) { "Error re-ordering categories" }
                     }
                     .singleOrNull()
             }
             updatedCategories = categoryHandler.getCategories(true)
                 .catch {
-                    info(it) { "Error getting updated categories" }
+                    log.warn(it) { "Error getting updated categories" }
                 }
                 .singleOrNull()
         }
@@ -144,5 +144,7 @@ class CategoriesScreenViewModel @Inject constructor(
 
     data class MenuCategory(val id: Long? = null, var order: Int, val name: String, val default: Boolean = false)
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

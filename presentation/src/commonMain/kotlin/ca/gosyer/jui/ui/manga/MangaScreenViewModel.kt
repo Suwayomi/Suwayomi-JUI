@@ -7,7 +7,6 @@
 package ca.gosyer.jui.ui.manga
 
 import ca.gosyer.jui.core.lang.withIOContext
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.download.DownloadService
 import ca.gosyer.jui.data.models.Category
 import ca.gosyer.jui.data.models.Chapter
@@ -38,6 +37,7 @@ import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class MangaScreenViewModel @Inject constructor(
     private val mangaHandler: MangaInteractionHandler,
@@ -93,7 +93,7 @@ class MangaScreenViewModel @Inject constructor(
                 _categories.value = it
             }
             .catch {
-                info(it) { "Error getting categories" }
+                log.warn(it) { "Error getting categories" }
             }
             .launchIn(scope)
     }
@@ -136,7 +136,7 @@ class MangaScreenViewModel @Inject constructor(
                     _manga.value = it
                 }
                 .catch {
-                    info(it) { "Error getting manga" }
+                    log.warn(it) { "Error getting manga" }
                 }
                 .collect()
             categoryHandler.getMangaCategories(mangaId)
@@ -144,7 +144,7 @@ class MangaScreenViewModel @Inject constructor(
                     _mangaCategories.value = it
                 }
                 .catch {
-                    info(it) { "Error getting manga" }
+                    log.warn(it) { "Error getting manga" }
                 }
                 .collect()
         }
@@ -154,7 +154,7 @@ class MangaScreenViewModel @Inject constructor(
         async {
             _chapters.value = chapterHandler.getChapters(mangaId, refresh)
                 .catch {
-                    info(it) { "Error getting chapters" }
+                    log.warn(it) { "Error getting chapters" }
                     emit(emptyList())
                 }
                 .single()
@@ -168,7 +168,7 @@ class MangaScreenViewModel @Inject constructor(
                 if (manga.inLibrary) {
                     libraryHandler.removeMangaFromLibrary(manga)
                         .catch {
-                            info(it) { "Error toggling favorite" }
+                            log.warn(it) { "Error toggling favorite" }
                         }
                         .collect()
                     refreshMangaAsync(manga.id).await()
@@ -190,21 +190,21 @@ class MangaScreenViewModel @Inject constructor(
                     oldCategories.filterNot { it in categories }.forEach {
                         categoryHandler.removeMangaFromCategory(manga, it)
                             .catch {
-                                info(it) { "Error removing manga from category" }
+                                log.warn(it) { "Error removing manga from category" }
                             }
                             .collect()
                     }
                 } else {
                     libraryHandler.addMangaToLibrary(manga)
                         .catch {
-                            info(it) { "Error Adding manga to library" }
+                            log.warn(it) { "Error Adding manga to library" }
                         }
                         .collect()
                 }
                 categories.filterNot { it in oldCategories }.forEach {
                     categoryHandler.addMangaToCategory(manga, it)
                         .catch {
-                            info(it) { "Error adding manga to category" }
+                            log.warn(it) { "Error adding manga to category" }
                         }
                         .collect()
                 }
@@ -227,12 +227,12 @@ class MangaScreenViewModel @Inject constructor(
                     read = !_chapters.value.first { it.chapter.index == index }.chapter.read
                 )
                     .catch {
-                        info(it) { "Error toggling read" }
+                        log.warn(it) { "Error toggling read" }
                     }
                     .collect()
                 _chapters.value = chapterHandler.getChapters(manga)
                     .catch {
-                        info(it) { "Error getting new chapters after toggling read" }
+                        log.warn(it) { "Error getting new chapters after toggling read" }
                         emit(emptyList())
                     }
                     .single()
@@ -250,12 +250,12 @@ class MangaScreenViewModel @Inject constructor(
                     bookmarked = !_chapters.value.first { it.chapter.index == index }.chapter.bookmarked
                 )
                     .catch {
-                        info(it) { "Error toggling bookmarked" }
+                        log.warn(it) { "Error toggling bookmarked" }
                     }
                     .collect()
                 _chapters.value = chapterHandler.getChapters(manga)
                     .catch {
-                        info(it) { "Error getting new chapters after toggling bookmarked" }
+                        log.warn(it) { "Error getting new chapters after toggling bookmarked" }
                         emit(emptyList())
                     }
                     .single()
@@ -269,12 +269,12 @@ class MangaScreenViewModel @Inject constructor(
             manga.value?.let { manga ->
                 chapterHandler.updateChapter(manga, index, markPreviousRead = true)
                     .catch {
-                        info(it) { "Error marking previous as read" }
+                        log.warn(it) { "Error marking previous as read" }
                     }
                     .collect()
                 _chapters.value = chapterHandler.getChapters(manga)
                     .catch {
-                        info(it) { "Error getting new chapters after marking previous as read" }
+                        log.warn(it) { "Error getting new chapters after marking previous as read" }
                         emit(emptyList())
                     }
                     .single()
@@ -287,7 +287,7 @@ class MangaScreenViewModel @Inject constructor(
         manga.value?.let { manga ->
             chapterHandler.queueChapterDownload(manga, index)
                 .catch {
-                    info(it) { "Error downloading chapter" }
+                    log.warn(it) { "Error downloading chapter" }
                 }
                 .launchIn(scope)
         }
@@ -297,7 +297,7 @@ class MangaScreenViewModel @Inject constructor(
         chapters.value.find { it.chapter.index == index }
             ?.deleteDownload(chapterHandler)
             ?.catch {
-                info(it) { "Error deleting download" }
+                log.warn(it) { "Error deleting download" }
             }
             ?.launchIn(scope)
     }
@@ -306,7 +306,7 @@ class MangaScreenViewModel @Inject constructor(
         chapters.value.find { it.chapter.index == index }
             ?.stopDownloading(chapterHandler)
             ?.catch {
-                info(it) { "Error stopping download" }
+                log.warn(it) { "Error stopping download" }
             }
             ?.launchIn(scope)
     }
@@ -317,5 +317,7 @@ class MangaScreenViewModel @Inject constructor(
 
     data class Params(val mangaId: Long)
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

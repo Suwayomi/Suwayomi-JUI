@@ -9,7 +9,6 @@ package ca.gosyer.jui.data.server
 import ca.gosyer.jui.core.io.copyTo
 import ca.gosyer.jui.core.io.userDataDir
 import ca.gosyer.jui.core.lang.withIOContext
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.build.BuildKonfig
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -22,12 +21,12 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
-import mu.KotlinLogging
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
 import okio.source
+import org.lighthousegames.logging.logging
 import java.io.File.pathSeparatorChar
 import java.io.IOException
 import java.io.Reader
@@ -116,7 +115,7 @@ class ServerService @Inject constructor(
                 return@mapLatest
             }
             val handler = CoroutineExceptionHandler { _, throwable ->
-                error(throwable) { "Error launching Tachidesk.jar" }
+                log.error(throwable) { "Error launching Tachidesk.jar" }
                 if (_initialized.value == ServerResult.STARTING || _initialized.value == ServerResult.STARTED) {
                     _initialized.value = ServerResult.FAILED
                 }
@@ -124,7 +123,7 @@ class ServerService @Inject constructor(
             GlobalScope.launch(handler) {
                 val jarFile = userDataDir / "Tachidesk.jar"
                 if (!FileSystem.SYSTEM.exists(jarFile)) {
-                    info { "Copying server to resources" }
+                    log.info { "Copying server to resources" }
                     withIOContext { copyJar(jarFile) }
                 } else {
                     try {
@@ -135,20 +134,20 @@ class ServerService @Inject constructor(
                         }
 
                         if (jarVersion != BuildKonfig.SERVER_CODE) {
-                            info { "Updating server file from resources" }
+                            log.info { "Updating server file from resources" }
                             withIOContext { copyJar(jarFile) }
                         }
                     } catch (e: IOException) {
-                        error(e) {
+                        log.error(e) {
                             "Error accessing server jar, cannot update server, ${BuildKonfig.NAME} may not work properly"
                         }
                     }
                 }
 
                 val javaPath = getRuntimeJava() ?: getPossibleJava() ?: "java"
-                info { "Starting server with $javaPath" }
+                log.info { "Starting server with $javaPath" }
                 val properties = serverHostPreferences.properties()
-                info { "Using server properties:\n" + properties.joinToString(separator = "\n") }
+                log.info { "Using server properties:\n" + properties.joinToString(separator = "\n") }
 
                 withIOContext {
                     val reader: Reader
@@ -158,8 +157,8 @@ class ServerService @Inject constructor(
                         .also {
                             reader = it.inputStream.reader()
                         }
-                    info { "Server started successfully" }
-                    val logger = KotlinLogging.logger("Server")
+                    log.info { "Server started successfully" }
+                    val log = logging("Server")
                     reader.useLines { lines ->
                         lines.forEach {
                             if (_initialized.value == ServerResult.STARTING) {
@@ -169,15 +168,15 @@ class ServerService @Inject constructor(
                                     _initialized.value = ServerResult.FAILED
                                 }
                             }
-                            logger.info { it }
+                            log.info { it }
                         }
                     }
                     if (_initialized.value == ServerResult.STARTING) {
                         _initialized.value = ServerResult.FAILED
                     }
-                    info { "Server closed" }
+                    log.info { "Server closed" }
                     val exitVal = process?.waitFor()
-                    info { "Process exitValue: $exitVal" }
+                    log.info { "Process exitValue: $exitVal" }
                     process = null
                 }
             }
@@ -191,5 +190,7 @@ class ServerService @Inject constructor(
         FAILED;
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

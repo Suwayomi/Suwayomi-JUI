@@ -8,7 +8,6 @@ package ca.gosyer.jui.desktop.logging
 
 import ca.gosyer.jui.desktop.build.BuildConfig
 import com.github.weisj.darklaf.LafManager
-import mu.KotlinLogging
 import okio.Path
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
@@ -16,6 +15,7 @@ import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
+import org.lighthousegames.logging.logging
 import org.slf4j.bridge.SLF4JBridgeHandler
 import java.util.logging.LogManager as JLogManager
 
@@ -103,8 +103,8 @@ fun initializeLogger(loggingLocation: Path) {
         handlers.forEach { removeHandler(it) }
         addHandler(SLF4JBridgeHandler())
     }
-    val logger = KotlinLogging.logger("UncaughtException")
+    val log = logging("UncaughtException")
     Thread.setDefaultUncaughtExceptionHandler { t, e ->
-        logger.error(e) { "Uncaught exception in thread [${t.name}@${t.id}]" }
+        log.error(e) { "Uncaught exception in thread [${t.name}@${t.id}]" }
     }
 }

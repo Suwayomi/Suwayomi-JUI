@@ -9,7 +9,6 @@ package ca.gosyer.jui.ui.library
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.lowercase
 import ca.gosyer.jui.core.lang.withDefaultContext
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.library.LibraryPreferences
 import ca.gosyer.jui.data.library.model.Sort
 import ca.gosyer.jui.data.models.Category
@@ -40,6 +39,7 @@ import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 private typealias CategoryItems = Pair<StateFlow<List<Manga>>, MutableStateFlow<List<Manga>>>
 private typealias LibraryMap = MutableMap<Long, CategoryItems>
@@ -104,7 +104,7 @@ class LibraryScreenViewModel @Inject constructor(
             }
             .catch {
                 _error.value = it.message
-                info(it) { "Error getting categories" }
+                log.warn(it) { "Error getting categories" }
                 _isLoading.value = false
             }
             .launchIn(scope)
@@ -181,7 +181,7 @@ class LibraryScreenViewModel @Inject constructor(
                         id = category.id,
                         manga = categoryHandler.getMangaFromCategory(category)
                             .catch {
-                                info { "Error getting manga for category $category" }
+                                log.warn(it) { "Error getting manga for category $category" }
                                 emit(emptyList())
                             }
                             .single(),
@@ -206,7 +206,7 @@ class LibraryScreenViewModel @Inject constructor(
                 updateCategories(getCategoriesToUpdate(mangaId))
             }
             .catch {
-                info(it) { "Error removing manga from library" }
+                log.warn(it) { "Error removing manga from library" }
             }
             .launchIn(scope)
     }
@@ -218,7 +218,7 @@ class LibraryScreenViewModel @Inject constructor(
     fun updateLibrary() {
         updatesHandler.updateLibrary()
             .catch {
-                info(it) { "Error updating library" }
+                log.warn(it) { "Error updating library" }
             }
             .launchIn(scope)
     }
@@ -226,10 +226,12 @@ class LibraryScreenViewModel @Inject constructor(
     fun updateCategory(category: Category) {
         updatesHandler.updateCategory(category)
             .catch {
-                info(it) { "Error updating category" }
+                log.warn(it) { "Error updating category" }
             }
             .launchIn(scope)
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

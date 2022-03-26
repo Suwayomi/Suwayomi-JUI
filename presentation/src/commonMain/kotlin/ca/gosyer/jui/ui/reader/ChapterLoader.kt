@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.reader
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.reader.ReaderPreferences
 import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.jui.ui.reader.loader.TachideskPageLoader
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
+import org.lighthousegames.logging.logging
 
 class ChapterLoader(
     private val readerPreferences: ReaderPreferences,
@@ -27,7 +27,7 @@ class ChapterLoader(
             return (chapter.state as ReaderChapter.State.Loaded).pages
         } else {
             chapter.state = ReaderChapter.State.Loading
-            debug { "Loading pages for ${chapter.chapter.name}" }
+            log.debug { "Loading pages for ${chapter.chapter.name}" }
 
             val loader = TachideskPageLoader(chapter, readerPreferences, chapterHandler)
 
@@ -52,5 +52,7 @@ class ChapterLoader(
         return chapter.state is ReaderChapter.State.Loaded && chapter.pageLoader != null
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.updates
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.download.DownloadService
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
@@ -24,6 +23,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class UpdatesScreenViewModel @Inject constructor(
     private val chapterHandler: ChapterInteractionHandler,
@@ -81,7 +81,7 @@ class UpdatesScreenViewModel @Inject constructor(
                 _isLoading.value = false
             }
             .catch {
-                info(it) { "Error getting updates" }
+                log.warn(it) { "Error getting updates" }
                 if (currentPage.value > 1) {
                     currentPage.value--
                 }
@@ -93,7 +93,7 @@ class UpdatesScreenViewModel @Inject constructor(
     fun downloadChapter(chapter: Chapter) {
         chapterHandler.queueChapterDownload(chapter)
             .catch {
-                info(it) { "Error queueing chapter" }
+                log.warn(it) { "Error queueing chapter" }
             }
             .launchIn(scope)
     }
@@ -106,7 +106,7 @@ class UpdatesScreenViewModel @Inject constructor(
             }
             ?.deleteDownload(chapterHandler)
             ?.catch {
-                info(it) { "Error deleting download" }
+                log.warn(it) { "Error deleting download" }
             }
             ?.launchIn(scope)
     }
@@ -119,10 +119,12 @@ class UpdatesScreenViewModel @Inject constructor(
             }
             ?.stopDownloading(chapterHandler)
             ?.catch {
-                info(it) { "Error stopping download" }
+                log.warn(it) { "Error stopping download" }
             }
             ?.launchIn(scope)
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

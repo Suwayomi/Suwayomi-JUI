@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.sources.settings
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.models.sourcepreference.SourcePreference
 import ca.gosyer.jui.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView
@@ -23,6 +22,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.supervisorScope
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class SourceSettingsScreenViewModel @Inject constructor(
     private val sourceHandler: SourceInteractionHandler,
@@ -45,7 +45,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
                         .onEach {
                             sourceHandler.setSourceSetting(params.sourceId, setting.index, it)
                                 .catch {
-                                    info(it) { "Error setting source setting" }
+                                    log.warn(it) { "Error setting source setting" }
                                 }
                                 .collect()
                             getSourceSettings()
@@ -63,7 +63,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
                 _loading.value = false
             }
             .catch {
-                info(it) { "Error setting source setting" }
+                log.warn(it) { "Error setting source setting" }
                 _loading.value = false
             }
             .launchIn(scope)
@@ -75,5 +75,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
         SourceSettingsView(index, sourcePreference)
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

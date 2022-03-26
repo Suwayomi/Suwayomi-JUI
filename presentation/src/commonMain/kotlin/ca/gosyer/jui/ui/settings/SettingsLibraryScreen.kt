@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.library.LibraryPreferences
 import ca.gosyer.jui.data.library.model.DisplayMode
 import ca.gosyer.jui.data.server.interactions.CategoryInteractionHandler
@@ -63,6 +62,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 import kotlin.math.roundToInt
 
 class SettingsLibraryScreen : Screen {
@@ -109,7 +109,7 @@ class SettingsLibraryViewModel @Inject constructor(
                 _categories.value = it.size
             }
             .catch {
-                info(it) { "Error getting categories" }
+                log.warn(it) { "Error getting categories" }
             }
             .launchIn(scope)
     }
@@ -118,7 +118,9 @@ class SettingsLibraryViewModel @Inject constructor(
     fun getDisplayModeChoices() = DisplayMode.values()
         .associateWith { stringResource(it.res) }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }
 
 @Composable

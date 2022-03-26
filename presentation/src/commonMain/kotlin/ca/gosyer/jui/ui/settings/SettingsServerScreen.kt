@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.model.Auth
 import ca.gosyer.jui.data.server.model.Proxy
@@ -116,8 +115,6 @@ class SettingsServerViewModel @Inject constructor(
     fun serverSettingChanged() {
         _serverSettingChanged.value = true
     }
-
-    private companion object : CKLogger({})
 }
 
 @Composable

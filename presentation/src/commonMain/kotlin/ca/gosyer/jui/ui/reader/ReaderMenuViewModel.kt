@@ -7,7 +7,6 @@
 package ca.gosyer.jui.ui.reader
 
 import ca.gosyer.jui.core.lang.launchDefault
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.data.models.Manga
@@ -46,6 +45,7 @@ import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class ReaderMenuViewModel @Inject constructor(
     private val readerPreferences: ReaderPreferences,
@@ -138,19 +138,19 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     fun navigate(page: Int) {
-        info { "Navigate to $page" }
+        log.info { "Navigate to $page" }
         scope.launch {
             _pageEmitter.emit(PageMove.Page(page))
         }
     }
 
     fun progress(index: Int) {
-        info { "Progressed to $index" }
+        log.info { "Progressed to $index" }
         _currentPage.value = index
     }
 
     fun retry(page: ReaderPage) {
-        info { "Retrying $page" }
+        log.info { "Retrying $page" }
         chapter.value?.pageLoader?.retryPage(page)
     }
 
@@ -168,7 +168,7 @@ class ReaderMenuViewModel @Inject constructor(
                     mode
                 )
                 ?.catch {
-                    info(it) { "Error updating manga reader mode" }
+                    log.warn(it) { "Error updating manga reader mode" }
                 }
                 ?.collect()
             initManga(params.mangaId)
@@ -187,7 +187,7 @@ class ReaderMenuViewModel @Inject constructor(
                 sendProgress()
                 initChapters(params.mangaId, prevChapter.chapter.index)
             } catch (e: Exception) {
-                info(e) { "Error loading prev chapter" }
+                log.warn(e) { "Error loading prev chapter" }
             }
         }
     }
@@ -200,7 +200,7 @@ class ReaderMenuViewModel @Inject constructor(
                 sendProgress()
                 initChapters(params.mangaId, nextChapter.chapter.index)
             } catch (e: Exception) {
-                info(e) { "Error loading next chapter" }
+                log.warn(e) { "Error loading next chapter" }
             }
         }
     }
@@ -212,7 +212,7 @@ class ReaderMenuViewModel @Inject constructor(
             }
             .catch {
                 _state.value = ReaderChapter.State.Error(it)
-                info(it) { "Error loading manga" }
+                log.warn(it) { "Error loading manga" }
             }
             .collect()
     }
@@ -223,7 +223,7 @@ class ReaderMenuViewModel @Inject constructor(
             chapterHandler.getChapter(mangaId, chapterIndex)
                 .catch {
                     _state.value = ReaderChapter.State.Error(it)
-                    info(it) { "Error getting chapter" }
+                    log.warn(it) { "Error getting chapter" }
                 }
                 .singleOrNull() ?: return
         )
@@ -232,7 +232,7 @@ class ReaderMenuViewModel @Inject constructor(
         scope.launchDefault {
             val chapters = chapterHandler.getChapters(mangaId)
                 .catch {
-                    info(it) { "Error getting chapter list" }
+                    log.warn(it) { "Error getting chapter list" }
                     emit(emptyList())
                 }
                 .single()
@@ -285,7 +285,7 @@ class ReaderMenuViewModel @Inject constructor(
     private fun markChapterRead(mangaId: Long, chapter: ReaderChapter) {
         chapterHandler.updateChapter(mangaId, chapter.chapter.index, true)
             .catch {
-                info(it) { "Error marking chapter read" }
+                log.warn(it) { "Error marking chapter read" }
             }
             .launchIn(scope)
     }
@@ -296,7 +296,7 @@ class ReaderMenuViewModel @Inject constructor(
         if (chapter.read) return
         chapterHandler.updateChapter(chapter.mangaId, chapter.index, lastPageRead = lastPageRead)
             .catch {
-                info(it) { "Error sending progress" }
+                log.warn(it) { "Error sending progress" }
             }
             .launchIn(GlobalScope)
     }
@@ -309,7 +309,7 @@ class ReaderMenuViewModel @Inject constructor(
     private fun updateLastPageReadOffset(chapter: Chapter, offset: Int) {
         chapter.updateRemote(chapterHandler, offset)
             .catch {
-                info(it) { "Error updating chapter offset" }
+                log.warn(it) { "Error updating chapter offset" }
             }
             .launchIn(GlobalScope)
     }
@@ -321,5 +321,7 @@ class ReaderMenuViewModel @Inject constructor(
 
     data class Params(val chapterIndex: Int, val mangaId: Long)
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

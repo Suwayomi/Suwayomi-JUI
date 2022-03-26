@@ -43,7 +43,7 @@ kotlin {
                 api(libs.ktor.core)
                 api(libs.ktor.serialization)
                 api(libs.okio)
-                api(libs.logging.ktlogging)
+                api(libs.logging.kmlogging)
                 api(libs.multiplatformSettings.core)
                 api(libs.multiplatformSettings.coroutines)
                 api(libs.multiplatformSettings.serialization)

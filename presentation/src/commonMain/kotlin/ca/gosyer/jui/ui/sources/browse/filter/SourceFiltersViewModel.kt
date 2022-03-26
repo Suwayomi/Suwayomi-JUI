@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.sources.browse.filter
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.models.sourcefilters.SourceFilter
 import ca.gosyer.jui.data.server.interactions.SourceInteractionHandler
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
@@ -23,6 +22,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.supervisorScope
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class SourceFiltersViewModel(
     private val sourceId: Long,
@@ -87,7 +87,7 @@ class SourceFiltersViewModel(
             }
         }
             .catch {
-                info(it) { "Error with filters" }
+                log.warn(it) { "Error with filters" }
             }
             .launchIn(scope)
     }
@@ -103,7 +103,7 @@ class SourceFiltersViewModel(
                 _loading.value = false
             }
             .catch {
-                info(it) { "Error getting filters" }
+                log.warn(it) { "Error getting filters" }
                 _loading.value = false
             }
             .launchIn(scope)
@@ -119,5 +119,7 @@ class SourceFiltersViewModel(
         SourceFiltersView(index, sourcePreference)
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

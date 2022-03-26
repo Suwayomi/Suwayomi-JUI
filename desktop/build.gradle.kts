@@ -68,7 +68,7 @@ dependencies {
     implementation(libs.logging.log4j.api)
     implementation(libs.logging.log4j.core)
     implementation(libs.logging.log4j.slf4j)
-    implementation(libs.logging.ktlogging)
+    implementation(libs.logging.kmlogging)
 
     // Storage
     implementation(libs.okio)

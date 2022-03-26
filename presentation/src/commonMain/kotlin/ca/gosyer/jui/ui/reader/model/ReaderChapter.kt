@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.reader.model
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.ui.reader.loader.PageLoader
 import kotlinx.coroutines.CoroutineScope
@@ -16,6 +15,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.lighthousegames.logging.logging
 
 data class ReaderChapter(val chapter: Chapter) {
     val scope = CoroutineScope(Dispatchers.Default + Job())
@@ -40,7 +40,7 @@ data class ReaderChapter(val chapter: Chapter) {
 
     fun recycle() {
         if (pageLoader != null) {
-            debug { "Recycling chapter ${chapter.name}" }
+            log.debug { "Recycling chapter ${chapter.name}" }
         }
         pageLoader?.recycle()
         pageLoader = null
@@ -55,5 +55,7 @@ data class ReaderChapter(val chapter: Chapter) {
         class Loaded(val pages: StateFlow<List<ReaderPage>>) : State()
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

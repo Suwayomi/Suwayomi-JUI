@@ -38,7 +38,7 @@ ktor = "1.6.7"
 slf4j = "1.7.36"
 slf4jAndroid = "1.7.36-0"
 log4j = "2.17.2"
-ktlogging = "2.1.21"
+kmlogging = "1.1.2"
 
 # Storage
 okio = "3.0.0"
@@ -124,7 +124,7 @@ logging-slf4j-android = { module = "uk.uuid.slf4j:slf4j-android", version.ref = 
 logging-log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 logging-log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 logging-log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
-logging-ktlogging = { module = "io.github.microutils:kotlin-logging", version.ref = "ktlogging" }
+logging-kmlogging = { module = "org.lighthousegames:logging", version.ref = "kmlogging" }
 
 # Storage
 appDirs = { module = "net.harawata:appdirs", version.ref = "appDirs" }

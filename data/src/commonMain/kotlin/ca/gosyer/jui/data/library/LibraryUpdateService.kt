@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.data.library
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.base.WebsocketService
 import ca.gosyer.jui.data.library.model.UpdateStatus
 import ca.gosyer.jui.data.server.Http
@@ -18,6 +17,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.decodeFromString
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 @OptIn(DelicateCoroutinesApi::class)
 class LibraryUpdateService @Inject constructor(
@@ -32,8 +32,10 @@ class LibraryUpdateService @Inject constructor(
 
     override suspend fun onReceived(frame: Frame.Text) {
         val status = json.decodeFromString<UpdateStatus>(frame.readText())
-        info { status }
+        log.info { status }
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

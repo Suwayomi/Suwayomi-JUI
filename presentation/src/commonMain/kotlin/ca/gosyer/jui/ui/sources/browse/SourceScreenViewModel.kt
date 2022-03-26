@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.sources.browse
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.catalog.CatalogPreferences
 import ca.gosyer.jui.data.library.LibraryPreferences
 import ca.gosyer.jui.data.library.model.DisplayMode
@@ -23,6 +22,7 @@ import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class SourceScreenViewModel(
     private val source: Source,
@@ -126,7 +126,7 @@ class SourceScreenViewModel(
             else -> sourceHandler.getPopularManga(source, pageNum.value)
         }
             .catch {
-                info(it) { "Error getting source page" }
+                log.warn(it) { "Error getting source page" }
             }
             .singleOrNull()
     }
@@ -160,5 +160,7 @@ class SourceScreenViewModel(
 
     data class Params(val source: Source, val initialQuery: String?)
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

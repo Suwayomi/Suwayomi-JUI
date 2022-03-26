@@ -7,7 +7,6 @@
 package ca.gosyer.jui.ui.extensions
 
 import ca.gosyer.jui.core.lang.displayName
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.extension.ExtensionPreferences
 import ca.gosyer.jui.data.models.Extension
 import ca.gosyer.jui.data.server.interactions.ExtensionInteractionHandler
@@ -26,6 +25,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class ExtensionsScreenViewModel @Inject constructor(
     private val extensionHandler: ExtensionInteractionHandler,
@@ -66,7 +66,7 @@ class ExtensionsScreenViewModel @Inject constructor(
                 _isLoading.value = false
             }
             .catch {
-                info(it) { "Error getting extensions" }
+                log.warn(it) { "Error getting extensions" }
                 emit(emptyList())
                 _isLoading.value = false
             }
@@ -74,39 +74,39 @@ class ExtensionsScreenViewModel @Inject constructor(
     }
 
     fun install(extension: Extension) {
-        info { "Install clicked" }
+        log.info { "Install clicked" }
         extensionHandler.installExtension(extension)
             .onEach {
                 getExtensions()
             }
             .catch {
-                info(it) { "Error installing extension ${extension.apkName}" }
+                log.warn(it) { "Error installing extension ${extension.apkName}" }
                 getExtensions()
             }
             .launchIn(scope)
     }
 
     fun update(extension: Extension) {
-        info { "Update clicked" }
+        log.info { "Update clicked" }
         extensionHandler.updateExtension(extension)
             .onEach {
                 getExtensions()
             }
             .catch {
-                info(it) { "Error updating extension ${extension.apkName}" }
+                log.warn(it) { "Error updating extension ${extension.apkName}" }
                 getExtensions()
             }
             .launchIn(scope)
     }
 
     fun uninstall(extension: Extension) {
-        info { "Uninstall clicked" }
+        log.info { "Uninstall clicked" }
         extensionHandler.uninstallExtension(extension)
             .onEach {
                 getExtensions()
             }
             .catch {
-                info(it) { "Error uninstalling extension ${extension.apkName}" }
+                log.warn(it) { "Error uninstalling extension ${extension.apkName}" }
                 getExtensions()
             }
             .launchIn(scope)
@@ -153,5 +153,7 @@ class ExtensionsScreenViewModel @Inject constructor(
         }
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.sources.home
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.catalog.CatalogPreferences
 import ca.gosyer.jui.data.models.Source
 import ca.gosyer.jui.data.server.interactions.SourceInteractionHandler
@@ -22,6 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class SourceHomeScreenViewModel @Inject constructor(
     private val sourceHandler: SourceInteractionHandler,
@@ -65,14 +65,14 @@ class SourceHomeScreenViewModel @Inject constructor(
                 _isLoading.value = false
             }
             .catch {
-                info(it) { "Error getting sources" }
+                log.warn(it) { "Error getting sources" }
                 _isLoading.value = false
             }
             .launchIn(scope)
     }
 
     fun setEnabledLanguages(langs: Set<String>) {
-        info { langs }
+        log.info { langs }
         _languages.value = langs
     }
 
@@ -80,5 +80,7 @@ class SourceHomeScreenViewModel @Inject constructor(
         _query.value = query
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

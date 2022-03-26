@@ -68,7 +68,7 @@ dependencies {
     // Logging
     implementation(libs.logging.slf4j.api)
     implementation(libs.logging.slf4j.android)
-    implementation(libs.logging.ktlogging)
+    implementation(libs.logging.kmlogging)
 
     // Storage
     implementation(libs.okio)

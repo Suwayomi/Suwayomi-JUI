@@ -37,7 +37,6 @@ import ca.gosyer.jui.core.io.SYSTEM
 import ca.gosyer.jui.core.io.copyTo
 import ca.gosyer.jui.core.io.saveTo
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.server.interactions.BackupInteractionHandler
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
@@ -80,6 +79,7 @@ import okio.Path
 import okio.Sink
 import okio.Source
 import okio.buffer
+import org.lighthousegames.logging.logging
 import kotlin.random.Random
 
 class SettingsBackupScreen : Screen {
@@ -136,7 +136,7 @@ class SettingsBackupViewModel @Inject constructor(
                         source.saveTo(file)
                     }
             } catch (e: Exception) {
-                info(e) { "Error creating backup file" }
+                log.warn(e) { "Error creating backup file" }
                 _restoreStatus.value = Status.Error
                 e.throwIfCancellation()
                 null
@@ -152,7 +152,7 @@ class SettingsBackupViewModel @Inject constructor(
                     }
                 }
                 .catch {
-                    info(it) { "Error importing backup" }
+                    log.warn(it) { "Error importing backup" }
                     _restoreStatus.value = Status.Error
                 }
                 .collect()
@@ -173,7 +173,7 @@ class SettingsBackupViewModel @Inject constructor(
                     _restoreStatus.value = Status.Success
                 }
                 .catch {
-                    info(it) { "Error importing backup" }
+                    log.warn(it) { "Error importing backup" }
                     _restoreStatus.value = Status.Error
                 }
                 .collect()
@@ -211,7 +211,7 @@ class SettingsBackupViewModel @Inject constructor(
                                 backup.content.toSource().saveTo(it)
                             } catch (e: Exception) {
                                 e.throwIfCancellation()
-                                info(e) { "Error creating backup" }
+                                log.warn(e) { "Error creating backup" }
                                 _creatingStatus.value = Status.Error
                                 _creating.value = false
                             } finally {
@@ -223,7 +223,7 @@ class SettingsBackupViewModel @Inject constructor(
                 }
             }
             .catch {
-                info(it) { "Error exporting backup" }
+                log.warn(it) { "Error exporting backup" }
                 _creatingStatus.value = Status.Error
                 _creating.value = false
             }
@@ -240,7 +240,7 @@ class SettingsBackupViewModel @Inject constructor(
                         _creatingStatus.value = Status.Success
                     } catch (e: Exception) {
                         e.throwIfCancellation()
-                        error(e) { "Error moving created backup" }
+                        log.error(e) { "Error moving created backup" }
                         _creatingStatus.value = Status.Error
                     } finally {
                         _creating.value = false
@@ -259,7 +259,9 @@ class SettingsBackupViewModel @Inject constructor(
         object Error : Status()
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }
 
 @Composable

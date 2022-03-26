@@ -7,7 +7,6 @@
 package ca.gosyer.jui.data.base
 
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.build.BuildKonfig
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.json.Json
+import org.lighthousegames.logging.logging
 
 @OptIn(DelicateCoroutinesApi::class)
 abstract class WebsocketService(
@@ -67,7 +67,7 @@ abstract class WebsocketService(
                                 .filterIsInstance<Frame.Text>()
                                 .mapLatest(::onReceived)
                                 .catch {
-                                    info(it) { "Error running websocket" }
+                                    log.warn(it) { "Error running websocket" }
                                 }
                                 .collect()
                         }
@@ -79,7 +79,7 @@ abstract class WebsocketService(
             }
             .catch {
                 _status.value = Status.STOPPED
-                error(it) { "Error while running websocket service" }
+                log.warn(it) { "Error while running websocket service" }
             }
             .launchIn(GlobalScope)
     }
@@ -100,5 +100,7 @@ abstract class WebsocketService(
         RESTART
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        val log = logging()
+    }
 }

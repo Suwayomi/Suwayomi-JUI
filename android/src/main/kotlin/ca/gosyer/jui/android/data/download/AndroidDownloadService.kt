@@ -19,7 +19,6 @@ import ca.gosyer.jui.android.util.notificationBuilder
 import ca.gosyer.jui.android.util.notificationManager
 import ca.gosyer.jui.core.lang.chop
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.data.base.WebsocketService.Actions
 import ca.gosyer.jui.data.base.WebsocketService.Status
@@ -49,11 +48,12 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.job
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.lighthousegames.logging.logging
 import java.util.regex.Pattern
 
 class AndroidDownloadService : Service() {
 
-    companion object : CKLogger({}) {
+    companion object {
         private var instance: AndroidDownloadService? = null
 
         fun start(context: Context, actions: Actions) {
@@ -72,6 +72,8 @@ class AndroidDownloadService : Service() {
         fun isRunning(): Boolean {
             return instance != null
         }
+
+        private val log = logging()
     }
 
     private lateinit var ioScope: CoroutineScope
@@ -103,17 +105,15 @@ class AndroidDownloadService : Service() {
 
         if (intent != null) {
             val action = intent.action
-            info("using an intent with action $action")
+            log.info { "using an intent with action $action" }
             when (action) {
                 Actions.START.name,
                 Actions.RESTART.name -> startWebsocket()
                 Actions.STOP.name -> stopSelf()
-                else -> info("This should never happen. No action in the received intent")
+                else -> log.info { "This should never happen. No action in the received intent" }
             }
         } else {
-            info(
-                "with a null intent. It has been probably restarted by the system."
-            )
+            log.info { "with a null intent. It has been probably restarted by the system." }
             startWebsocket()
         }
 
@@ -157,7 +157,7 @@ class AndroidDownloadService : Service() {
                                 .filterIsInstance<Frame.Text>()
                                 .mapLatest(::onReceived)
                                 .catch {
-                                    info(it) { "Error running downloader" }
+                                    log.warn(it) { "Error running downloader" }
                                 }
                                 .collect()
                         }
@@ -169,7 +169,7 @@ class AndroidDownloadService : Service() {
             }
             .catch {
                 status.value = Status.STOPPED
-                error(it) { "Error while running websocket service" }
+                log.warn(it) { "Error while running websocket service" }
                 stopSelf()
             }
             .launchIn(ioScope)

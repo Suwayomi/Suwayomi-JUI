@@ -50,7 +50,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.jui.core.logging.kLogger
 import ca.gosyer.jui.core.util.replace
 import ca.gosyer.jui.data.models.MangaMeta
 import ca.gosyer.jui.data.reader.model.Direction
@@ -60,8 +59,6 @@ import ca.gosyer.jui.uicore.components.AroundLayout
 import ca.gosyer.jui.uicore.components.Spinner
 import ca.gosyer.jui.uicore.resources.stringResource
 import kotlin.math.roundToInt
-
-private val logger = kLogger {}
 
 @Composable
 fun ReaderSideMenu(

@@ -8,7 +8,6 @@ package ca.gosyer.jui.ui.sources.globalsearch
 
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import ca.gosyer.jui.core.lang.IO
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.catalog.CatalogPreferences
 import ca.gosyer.jui.data.models.MangaPage
 import ca.gosyer.jui.data.models.Source
@@ -35,6 +34,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class GlobalSearchViewModel @Inject constructor(
     private val sourceHandler: SourceInteractionHandler,
@@ -80,7 +80,7 @@ class GlobalSearchViewModel @Inject constructor(
                 _isLoading.value = false
             }
             .catch {
-                info(it) { "Error getting sources" }
+                log.warn(it) { "Error getting sources" }
                 _isLoading.value = false
             }
             .launchIn(scope)
@@ -109,7 +109,7 @@ class GlobalSearchViewModel @Inject constructor(
                                         }
                                     }
                                     .catch {
-                                        info(it) { "Error getting search from ${source.displayName}" }
+                                        log.warn(it) { "Error getting search from ${source.displayName}" }
                                         emit(Search.Failure(it))
                                     }
                                     .onEach {
@@ -122,7 +122,7 @@ class GlobalSearchViewModel @Inject constructor(
                 }
             }
             .catch {
-                info(it) { "Error getting sources" }
+                log.warn(it) { "Error getting sources" }
             }
             .flowOn(Dispatchers.IO)
             .launchIn(scope)
@@ -146,5 +146,7 @@ class GlobalSearchViewModel @Inject constructor(
         }
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

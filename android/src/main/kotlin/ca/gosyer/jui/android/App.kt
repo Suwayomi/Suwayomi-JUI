@@ -13,12 +13,12 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import ca.gosyer.jui.android.data.notification.Notifications
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.data.ui.model.ThemeMode
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.lighthousegames.logging.logging
 import java.util.Locale
 
 class App : Application(), DefaultLifecycleObserver {
@@ -55,7 +55,7 @@ class App : Application(), DefaultLifecycleObserver {
         try {
             Notifications.createChannels(this)
         } catch (e: Exception) {
-            error(e) { "Failed to modify notification channels" }
+            log.error(e) { "Failed to modify notification channels" }
         }
     }
 
@@ -86,5 +86,7 @@ class App : Application(), DefaultLifecycleObserver {
             .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
     }
 
-    protected companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

@@ -15,7 +15,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.server.ServerHostPreferences
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.ServerService
@@ -128,7 +127,6 @@ actual class SettingsServerHostViewModel @Inject constructor(
             }
         }.launchIn(scope)
     }
-    private companion object : CKLogger({})
 }
 
 fun LazyListScope.ServerHostItems(

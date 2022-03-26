@@ -8,7 +8,6 @@ package ca.gosyer.jui.ui.reader.loader
 
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.reader.ReaderPreferences
 import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
@@ -29,6 +28,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.lighthousegames.logging.logging
 
 class TachideskPageLoader(
     val chapter: ReaderChapter,
@@ -61,7 +61,7 @@ class TachideskPageLoader(
                     try {
                         for (priorityPage in channel) {
                             val page = priorityPage.page
-                            debug { "Loading page ${page.index}" }
+                            log.debug { "Loading page ${page.index}" }
                             if (page.status.value == ReaderPage.Status.QUEUE) {
                                 chapterHandler
                                     .getPage(chapter.chapter, page.index) {
@@ -78,7 +78,7 @@ class TachideskPageLoader(
                                         page.bitmap.value = null
                                         page.status.value = ReaderPage.Status.ERROR
                                         page.error.value = it.message
-                                        info(it) { "Error getting image" }
+                                        log.warn(it) { "Error getting image" }
                                     }
                                     .flowOn(Dispatchers.IO)
                                     .collect()
@@ -86,7 +86,7 @@ class TachideskPageLoader(
                         }
                     } catch (e: Exception) {
                         e.throwIfCancellation()
-                        info(e) { "Error in loop" }
+                        log.warn(e) { "Error in loop" }
                     }
                 }
             }
@@ -187,5 +187,7 @@ class TachideskPageLoader(
         channel.close()
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }

@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.data.download
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.base.WebsocketService
 import ca.gosyer.jui.data.download.model.DownloadChapter
 import ca.gosyer.jui.data.download.model.DownloadStatus
@@ -39,7 +38,7 @@ class DownloadService @Inject constructor(
         downloadQueue.value = status.queue
     }
 
-    companion object : CKLogger({}) {
+    companion object {
         val status = MutableStateFlow(Status.STARTING)
         val downloadQueue = MutableStateFlow(emptyList<DownloadChapter>())
         val downloaderStatus = MutableStateFlow(DownloaderStatus.Stopped)

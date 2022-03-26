@@ -52,7 +52,9 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import mu.KotlinLogging
+import org.lighthousegames.logging.logging
+
+private val log = logging()
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
@@ -68,9 +70,8 @@ fun CategoriesScreenContent(
 ) {
     DisposableEffect(Unit) {
         onDispose {
-            val logger = KotlinLogging.logger {}
             val handler = CoroutineExceptionHandler { _, throwable ->
-                logger.debug { throwable }
+                log.warn(throwable) { "Error updating remote categories" }
             }
             GlobalScope.launch(handler) {
                 updateRemoteCategories()

@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.downloads
 
-import ca.gosyer.jui.core.logging.CKLogger
 import ca.gosyer.jui.data.base.WebsocketService.Actions
 import ca.gosyer.jui.data.download.DownloadService
 import ca.gosyer.jui.data.models.Chapter
@@ -23,6 +22,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class DownloadsScreenViewModel @Inject constructor(
     private val downloadService: DownloadService,
@@ -45,7 +45,7 @@ class DownloadsScreenViewModel @Inject constructor(
     fun start() {
         downloadsHandler.startDownloading()
             .catch {
-                info(it) { "Error starting download" }
+                log.warn(it) { "Error starting download" }
             }
             .launchIn(scope)
     }
@@ -53,7 +53,7 @@ class DownloadsScreenViewModel @Inject constructor(
     fun pause() {
         downloadsHandler.stopDownloading()
             .catch {
-                info(it) { "Error stopping download" }
+                log.warn(it) { "Error stopping download" }
             }
             .launchIn(scope)
     }
@@ -61,7 +61,7 @@ class DownloadsScreenViewModel @Inject constructor(
     fun clear() {
         downloadsHandler.clearDownloadQueue()
             .catch {
-                info(it) { "Error clearing download" }
+                log.warn(it) { "Error clearing download" }
             }
             .launchIn(scope)
     }
@@ -69,7 +69,7 @@ class DownloadsScreenViewModel @Inject constructor(
     fun stopDownload(chapter: Chapter) {
         chapterHandler.stopChapterDownload(chapter)
             .catch {
-                info(it) { "Error stop chapter download" }
+                log.warn(it) { "Error stop chapter download" }
             }
             .launchIn(scope)
     }
@@ -79,12 +79,12 @@ class DownloadsScreenViewModel @Inject constructor(
             .onEach {
                 chapterHandler.queueChapterDownload(chapter)
                     .catch {
-                        info(it) { "Error adding download" }
+                        log.warn(it) { "Error adding download" }
                     }
                     .collect()
             }
             .catch {
-                info(it) { "Error stop chapter download" }
+                log.warn(it) { "Error stop chapter download" }
             }
             .launchIn(scope)
     }
@@ -96,5 +96,7 @@ class DownloadsScreenViewModel @Inject constructor(
         uiScope?.cancel()
     }
 
-    private companion object : CKLogger({})
+    private companion object {
+        private val log = logging()
+    }
 }
