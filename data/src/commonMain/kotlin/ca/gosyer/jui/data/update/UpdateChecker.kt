@@ -60,5 +60,15 @@ class UpdateChecker @Inject constructor(
         } else {
             "Suwayomi/Tachidesk-JUI"
         }
+
+        private val RELEASE_TAG: String by lazy {
+            if (BuildKonfig.IS_PREVIEW) {
+                "r${BuildKonfig.PREVIEW_BUILD}"
+            } else {
+                "v${BuildKonfig.VERSION}"
+            }
+        }
+
+        val RELEASE_URL = "https://github.com/$GITHUB_REPO/releases/tag/$RELEASE_TAG"
     }
 }

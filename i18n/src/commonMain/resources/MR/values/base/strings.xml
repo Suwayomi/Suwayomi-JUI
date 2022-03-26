@@ -56,6 +56,7 @@
     <string name="location_categories">Categories</string>
     <string name="location_manga">Manga</string>
     <string name="location_more">More</string>
+    <string name="location_about">About</string>
 
     <!-- Categories Menu -->
     <string name="categories_create">Create Category</string>
@@ -108,6 +109,16 @@
     <string name="no_next_chapter">There is no next chapter</string>
     <string name="nav_next_chapter">Next chapter</string>
     <string name="nav_prev_chapter">Previous chapter</string>
+
+    <!-- About Menu -->
+    <string name="version">Version</string>
+    <string name="server_version">Server version</string>
+    <string name="whats_new">What\'s new</string>
+    <string name="help_translate">Help translate</string>
+    <string name="github">Github</string>
+    <string name="discord">Discord</string>
+    <string name="reddit">Reddit</string>
+
 
     <!-- Settings-->
     <string name="settings_advanced">Advanced</string>

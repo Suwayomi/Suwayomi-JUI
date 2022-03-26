@@ -12,6 +12,7 @@ import ca.gosyer.jui.ui.downloads.DownloadsScreenViewModel
 import ca.gosyer.jui.ui.extensions.ExtensionsScreenViewModel
 import ca.gosyer.jui.ui.library.LibraryScreenViewModel
 import ca.gosyer.jui.ui.main.MainViewModel
+import ca.gosyer.jui.ui.main.about.AboutViewModel
 import ca.gosyer.jui.ui.main.components.DebugOverlayViewModel
 import ca.gosyer.jui.ui.main.components.TrayViewModel
 import ca.gosyer.jui.ui.reader.ReaderMenuViewModel
@@ -36,6 +37,7 @@ import kotlin.reflect.KClass
 
 @Inject
 actual class ViewModelFactoryImpl(
+    private val aboutFactory: () -> AboutViewModel,
     private val appThemeFactory: () -> AppThemeViewModel,
     private val categoryFactory: () -> CategoriesScreenViewModel,
     private val downloadsFactory: (Boolean) -> DownloadsScreenViewModel,
@@ -65,6 +67,7 @@ actual class ViewModelFactoryImpl(
     override fun <VM : ViewModel> instantiate(klass: KClass<VM>, arg1: Any?): VM {
         @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
         return when (klass) {
+            AboutViewModel::class -> aboutFactory()
             AppThemeViewModel::class -> appThemeFactory()
             CategoriesScreenViewModel::class -> categoryFactory()
             DownloadsScreenViewModel::class -> downloadsFactory(arg1 as Boolean)

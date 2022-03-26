@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.Settings
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.outlined.Store
 import androidx.compose.material.icons.rounded.Book
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Explore
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.NewReleases
 import androidx.compose.material.icons.rounded.Settings
@@ -27,6 +29,7 @@ import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.downloads.DownloadsScreen
 import ca.gosyer.jui.ui.extensions.ExtensionsScreen
 import ca.gosyer.jui.ui.library.LibraryScreen
+import ca.gosyer.jui.ui.main.about.AboutScreen
 import ca.gosyer.jui.ui.main.components.DownloadsExtraInfo
 import ca.gosyer.jui.ui.main.more.MoreScreen
 import ca.gosyer.jui.ui.settings.SettingsScreen
@@ -72,5 +75,6 @@ enum class MoreMenus(
     override val extraInfo: (@Composable () -> Unit)? = null
 ) : Menu {
     Downloads(MR.strings.location_downloads, Icons.Outlined.Download, Icons.Rounded.Download, DownloadsScreen::class, { DownloadsScreen() }, extraInfo = { DownloadsExtraInfo() }),
-    Settings(MR.strings.location_settings, Icons.Outlined.Settings, Icons.Rounded.Settings, SettingsScreen::class, { SettingsScreen() });
+    Settings(MR.strings.location_settings, Icons.Outlined.Settings, Icons.Rounded.Settings, SettingsScreen::class, { SettingsScreen() }),
+    About(MR.strings.location_about, Icons.Outlined.Info, Icons.Rounded.Info, AboutScreen::class, { AboutScreen() });
 }
