@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.core.io.SYSTEM
 import ca.gosyer.jui.core.io.copyTo
 import ca.gosyer.jui.core.io.saveTo
+import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.data.server.interactions.BackupInteractionHandler
 import ca.gosyer.jui.i18n.MR
@@ -61,6 +62,7 @@ import com.vanpra.composematerialdialogs.title
 import io.ktor.client.features.onDownload
 import io.ktor.client.features.onUpload
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -286,14 +288,14 @@ private fun SettingsBackupScreenContent(
     val fileSaver = rememberFileSaver(exportBackupFileFound)
     val fileChooser = rememberFileChooser(restoreFile)
     LaunchedEffect(Unit) {
-        launch {
+        launch(Dispatchers.IO) {
             missingSourceFlow.collect { (backup, sources) ->
                 backupFile = backup
                 missingSources = sources
                 dialogState.show()
             }
         }
-        launch {
+        launch(Dispatchers.IO) {
             createFlow.collect { filename ->
                 fileSaver.save(filename)
             }
@@ -361,7 +363,7 @@ private fun MissingSourcesDialog(
         },
         properties = getMaterialDialogProperties(),
     ) {
-        title("Missing Sources")
+        title(stringResource(MR.strings.missing_sources))
         Box {
             val listState = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize(), state = listState) {
@@ -383,7 +385,14 @@ private fun MissingSourcesDialog(
 }
 
 @Composable
-private fun PreferenceFile(title: String, subtitle: String, working: Boolean, progress: Float?, status: SettingsBackupViewModel.Status, onClick: () -> Unit) {
+private fun PreferenceFile(
+    title: String,
+    subtitle: String,
+    working: Boolean,
+    progress: Float?,
+    status: SettingsBackupViewModel.Status,
+    onClick: () -> Unit
+) {
     PreferenceRow(
         title = title,
         onClick = onClick,
