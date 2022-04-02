@@ -109,7 +109,6 @@ private fun CheckForUpdates(checkForUpdates: () -> Unit) {
 
 expect fun getDebugInfo(): String
 
-
 @Composable
 private fun ClientVersionInfo() {
     val clipboardManager = LocalClipboardManager.current
@@ -139,7 +138,7 @@ private fun ServerVersionInfo(about: About?, formattedBuildTime: String) {
     } else {
         PreferenceRow(
             title = stringResource(MR.strings.server_version),
-            subtitle = "${about.buildType.name} ${about.version}-${about.revision} (${formattedBuildTime})"
+            subtitle = "${about.buildType.name} ${about.version}-${about.revision} ($formattedBuildTime)"
         )
     }
 }
@@ -199,7 +198,7 @@ private fun LinkDisplay() {
                     ) {
                         val name = stringResource(it.nameRes)
                         val modifier = Modifier.size(48.dp)
-                        when(it.icon) {
+                        when (it.icon) {
                             is LinkIcon.Resource -> Icon(
                                 painter = it.icon.res.toPainter(),
                                 contentDescription = name,
@@ -222,7 +221,7 @@ private fun LinkDisplay() {
                             .size(32.dp)
                     ) {
                         val name = stringResource(it.nameRes)
-                        when(it.icon) {
+                        when (it.icon) {
                             is LinkIcon.Resource -> Icon(
                                 painter = it.icon.res.toPainter(),
                                 contentDescription = name,

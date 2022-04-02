@@ -32,7 +32,7 @@ class AboutViewModel @Inject constructor(
     private val settingsHandler: SettingsInteractionHandler,
     private val updateChecker: UpdateChecker,
     contextWrapper: ContextWrapper
-): ViewModel(contextWrapper) {
+) : ViewModel(contextWrapper) {
 
     private val _about = MutableStateFlow<About?>(null)
     val about = _about.asStateFlow()
@@ -61,7 +61,6 @@ class AboutViewModel @Inject constructor(
         updateChecker.checkForUpdates()
             .filterIsInstance<Update.UpdateFound>()
             .onEach {
-
             }
             .launchIn(scope)
     }

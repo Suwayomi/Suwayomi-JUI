@@ -39,17 +39,19 @@ class Slf4jLog(tag: String) : KmLog(tag) {
 
     override fun warn(tag: String, msg: String, t: Throwable?) {
         super.warn(tag, msg, t)
-        if (t != null)
+        if (t != null) {
             logger.warn(msg, t)
-        else
+        } else {
             logger.warn(msg)
+        }
     }
 
     override fun error(tag: String, msg: String, t: Throwable?) {
         super.error(tag, msg, t)
-        if (t != null)
+        if (t != null) {
             logger.error(msg, t)
-        else
+        } else {
             logger.error(msg)
+        }
     }
 }
