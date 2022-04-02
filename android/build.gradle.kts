@@ -93,7 +93,7 @@ dependencies {
 
 android {
     defaultConfig {
-        applicationId = "ca.gosyer.tachidesk.jui.android"
+        applicationId = "ca.gosyer.jui.android"
         versionCode = migrationCode
         versionName = version.toString()
 
