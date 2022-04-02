@@ -48,7 +48,8 @@ import dev.icerock.moko.resources.StringResource
 fun AboutContent(
     about: About?,
     formattedBuildTime: String,
-    checkForUpdates: () -> Unit
+    checkForUpdates: () -> Unit,
+    openSourceLicenses: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -76,6 +77,9 @@ fun AboutContent(
             }
             item {
                 HelpTranslate()
+            }
+            item {
+                OpenSourceLicenses(openSourceLicenses)
             }
             item {
                 LinkDisplay()
@@ -159,6 +163,14 @@ private fun HelpTranslate() {
         onClick = {
             uriHandler.openUri("https://hosted.weblate.org/projects/tachideskjui/desktop/")
         }
+    )
+}
+
+@Composable
+private fun OpenSourceLicenses(openSourceLicenses: () -> Unit) {
+    PreferenceRow(
+        title = stringResource(MR.strings.open_source_licenses),
+        onClick = openSourceLicenses
     )
 }
 

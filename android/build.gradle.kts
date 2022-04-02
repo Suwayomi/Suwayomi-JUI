@@ -7,6 +7,7 @@ plugins {
     id("org.jetbrains.compose")
     id("com.google.devtools.ksp")
     id("org.jmailen.kotlinter")
+    id("com.mikepenz.aboutlibraries.plugin")
 }
 
 dependencies {

@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.buildkonfig) apply false
     alias(libs.plugins.moko.gradle) apply false
     alias(libs.plugins.kotlinter) apply false
+    alias(libs.plugins.aboutLibraries) apply false
     alias(libs.plugins.versions)
 }
 

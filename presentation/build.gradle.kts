@@ -52,6 +52,8 @@ kotlin {
                 api(libs.krokiCoroutines)
                 api(libs.locale)
                 api(libs.klock)
+                api(libs.aboutLibraries.core)
+                api(libs.aboutLibraries.ui)
                 api(projects.core)
                 api(projects.i18n)
                 api(projects.data)

@@ -13,6 +13,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.github.gmazzo.buildconfig")
     id("org.jmailen.kotlinter")
+    id("com.mikepenz.aboutlibraries.plugin")
 }
 
 dependencies {

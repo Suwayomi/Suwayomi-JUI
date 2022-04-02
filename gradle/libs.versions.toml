@@ -51,6 +51,7 @@ multiplatformSettings = "0.8.1"
 kroki = "1.22"
 desugarJdkLibs = "1.1.5"
 klock = "2.6.3"
+aboutLibraries = "10.0.1"
 
 # Localization
 locale = "0.11.0"
@@ -139,6 +140,8 @@ multiplatformSettings-coroutines = { module = "com.russhwolf:multiplatform-setti
 krokiCoroutines = { module = "io.github.kerubistan.kroki:kroki-coroutines", version.ref = "kroki" }
 desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 klock = { module = "com.soywiz.korlibs.klock:klock", version.ref = "klock" }
+aboutLibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
+aboutLibraries-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutLibraries" }
 
 # Localization
 moko-core = { module = "dev.icerock.moko:resources", version.ref = "moko" }
@@ -175,3 +178,6 @@ kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter"}
 
 # Version updates
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions"}
+
+# Utility
+aboutLibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries"}
