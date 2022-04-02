@@ -36,10 +36,10 @@ jobs:
           message: Update avalible Locales
           push: false
 
-      - name: Update Libraries
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: desktop:exportLibraryDefinitions -PexportPath="../i18n/src/commonMain/resources/MR/files/"
+#      - name: Update Libraries
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: desktop:exportLibraryDefinitions -PexportPath="../i18n/src/commonMain/resources/MR/files/"
 
       - name: Commit library changes
         uses: EndBug/add-and-commit@v9
