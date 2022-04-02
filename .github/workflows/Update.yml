@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   update_files:
-    name: Build Applications
+    name: Update files
     runs-on: ubuntu-latest
 
     steps:
@@ -36,10 +36,13 @@ jobs:
           message: Update avalible Locales
           push: false
 
-#      - name: Update Libraries
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          arguments: desktop:exportLibraryDefinitions -PexportPath="../i18n/src/commonMain/resources/MR/files/"
+      - name: Update Libraries
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: desktop:exportLibraryDefinitions -PexportPath=build
+
+      - name: Move libraries json
+        run: mv desktop/build/aboutlibraries.json i18n/src/commonMain/resources/MR/files/aboutlibraries.json -f
 
       - name: Commit library changes
         uses: EndBug/add-and-commit@v9
