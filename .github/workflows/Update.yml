@@ -1,0 +1,65 @@
+name: Update
+on:
+  push:
+    branches:
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update_files:
+    name: Build Applications
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '16'
+          architecture: x64
+
+      - name: Setup Cl
+        run: ./scripts/SetupClUnix.sh
+
+      - name: Update Locales
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: generateLocales
+
+      - name: Commit locale changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: Update avalible Locales
+          push: false
+
+      - name: Update Libraries
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: desktop:exportLibraryDefinitions -PexportPath="../i18n/src/commonMain/resources/MR/files/"
+
+      - name: Commit library changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: Update Libraries
+          push: false
+
+      - name: Format files
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: formatKotlin
+
+      - name: Commit lint changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: Automatic Lint
+          push: false
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
