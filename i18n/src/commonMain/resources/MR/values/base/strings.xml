@@ -89,7 +89,10 @@
     <string name="status_unknown">Unknown</string>
     <string name="status_ongoing">Ongoing</string>
     <string name="status_completed">Completed</string>
-    <string name="status_Licensed">Licensed</string>
+    <string name="status_licensed">Licensed</string>
+    <string name="status_publishing_finished">Publishing finished</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="status_on_hiatus">On hiatus</string>
 
     <!-- Sources Menu -->
     <string name="sources_home">Home</string>

@@ -62,5 +62,8 @@ enum class MangaStatus(@Transient val res: StringResource) {
     UNKNOWN(MR.strings.status_unknown),
     ONGOING(MR.strings.status_ongoing),
     COMPLETED(MR.strings.status_completed),
-    LICENSED(MR.strings.status_Licensed);
+    LICENSED(MR.strings.status_licensed),
+    PUBLISHING_FINISHED(MR.strings.status_publishing_finished),
+    CANCELLED(MR.strings.status_cancelled),
+    ON_HIATUS(MR.strings.status_on_hiatus);
 }
