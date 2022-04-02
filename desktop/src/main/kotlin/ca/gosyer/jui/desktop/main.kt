@@ -18,7 +18,6 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -41,6 +40,7 @@ import ca.gosyer.jui.ui.util.compose.WindowGet
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.resources.stringResource
+import ca.gosyer.jui.uicore.resources.toPainter
 import com.github.weisj.darklaf.LafManager
 import com.github.weisj.darklaf.theme.DarculaTheme
 import com.github.weisj.darklaf.theme.IntelliJTheme
@@ -51,7 +51,9 @@ import com.vanpra.composematerialdialogs.title
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.jetbrains.skiko.SystemTheme
 import org.jetbrains.skiko.currentSystemTheme
 import java.util.Locale
@@ -70,9 +72,17 @@ suspend fun main() {
     val uiComponent = appComponent.uiComponent
     dataComponent.migrations.runMigrations()
     appComponent.appMigrations.runMigrations()
-    dataComponent.downloadService.init()
-    // dataComponent.libraryUpdateService.init()
+
     val serverService = dataComponent.serverService
+    serverService.startServer()
+    serverService.initialized
+        .filter { it == ServerResult.STARTED || it == ServerResult.UNUSED }
+        .onEach {
+            dataComponent.downloadService.init()
+            // dataComponent.libraryUpdateService.init()
+        }
+        .launchIn(GlobalScope)
+
     val uiPreferences = dataComponent.uiPreferences
     val uiHooks = uiComponent.getHooks()
 
@@ -133,7 +143,7 @@ suspend fun main() {
                 placement = placement
             )
 
-            val icon = painterResource("icon.png")
+            val icon = MR.images.icon.toPainter()
 
             Tray(icon)
 

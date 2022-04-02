@@ -105,7 +105,7 @@ actual class SettingsServerHostViewModel @Inject constructor(
 
     fun restartServer() {
         if (serverSettingChanged.value) {
-            serverService.restartServer()
+            serverService.startServer()
         }
     }
 

@@ -11,15 +11,17 @@ import ca.gosyer.jui.core.io.userDataDir
 import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.data.build.BuildKonfig
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Path
@@ -41,7 +43,8 @@ import kotlin.io.path.isExecutable
 class ServerService @Inject constructor(
     private val serverHostPreferences: ServerHostPreferences
 ) {
-    private val restartServerFlow = MutableSharedFlow<Unit>()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
     private val host = serverHostPreferences.host().stateIn(GlobalScope)
     private val _initialized = MutableStateFlow(
         if (host.value) {
@@ -55,10 +58,6 @@ class ServerService @Inject constructor(
 
     fun startAnyway() {
         _initialized.value = ServerResult.UNUSED
-    }
-
-    fun restartServer() {
-        GlobalScope.launch { restartServerFlow.emit(Unit) }
     }
 
     @Throws(IOException::class)
@@ -97,6 +96,91 @@ class ServerService @Inject constructor(
             .firstOrNull()
     }
 
+    private suspend fun runService() {
+        process?.destroy()
+        process?.waitFor()
+        _initialized.value = if (host.value) {
+            ServerResult.STARTING
+        } else {
+            ServerResult.UNUSED
+            return
+        }
+        val handler = CoroutineExceptionHandler { _, throwable ->
+            log.error(throwable) { "Error launching Tachidesk.jar" }
+            if (_initialized.value == ServerResult.STARTING || _initialized.value == ServerResult.STARTED) {
+                _initialized.value = ServerResult.FAILED
+            }
+        }
+        withContext(handler) {
+            val jarFile = userDataDir / "Tachidesk.jar"
+            if (!FileSystem.SYSTEM.exists(jarFile)) {
+                log.info { "Copying server to resources" }
+                withIOContext { copyJar(jarFile) }
+            } else {
+                try {
+                    val jarVersion = withIOContext {
+                        JarInputStream(FileSystem.SYSTEM.source(jarFile).buffer().inputStream()).use { jar ->
+                            jar.manifest?.mainAttributes?.getValue(Attributes.Name.IMPLEMENTATION_VERSION)?.toIntOrNull()
+                        }
+                    }
+
+                    if (jarVersion != BuildKonfig.SERVER_CODE) {
+                        log.info { "Updating server file from resources" }
+                        withIOContext { copyJar(jarFile) }
+                    }
+                } catch (e: IOException) {
+                    log.error(e) {
+                        "Error accessing server jar, cannot update server, ${BuildKonfig.NAME} may not work properly"
+                    }
+                }
+            }
+
+            val javaPath = getRuntimeJava() ?: getPossibleJava() ?: "java"
+            log.info { "Starting server with $javaPath" }
+            val properties = serverHostPreferences.properties()
+            log.info { "Using server properties:\n" + properties.joinToString(separator = "\n") }
+
+            withIOContext {
+                val reader: Reader
+                process = ProcessBuilder(javaPath, *properties, "-jar", jarFile.toString())
+                    .redirectErrorStream(true)
+                    .start()
+                    .also {
+                        reader = it.inputStream.reader()
+                    }
+                log.info { "Server started successfully" }
+                val log = logging("Server")
+                reader.forEachLine {
+                    if (_initialized.value == ServerResult.STARTING) {
+                        when {
+                            it.contains("Javalin started") ->
+                                _initialized.value = ServerResult.STARTED
+                            it.contains("Javalin has stopped") ->
+                                _initialized.value = ServerResult.FAILED
+                        }
+                    }
+                    log.info { it }
+                }
+                if (_initialized.value == ServerResult.STARTING) {
+                    _initialized.value = ServerResult.FAILED
+                }
+                log.info { "Server closed" }
+                val exitVal = process?.waitFor()
+                log.info { "Process exitValue: $exitVal" }
+                process = null
+            }
+        }
+    }
+
+    fun startServer() {
+        scope.coroutineContext.cancelChildren()
+        host
+            .mapLatest {
+                runService()
+            }
+            .launchIn(scope)
+    }
+
     init {
         Runtime.getRuntime().addShutdownHook(
             thread(start = false) {
@@ -104,83 +188,6 @@ class ServerService @Inject constructor(
                 process = null
             }
         )
-
-        merge(restartServerFlow, host).mapLatest {
-            process?.destroy()
-            process?.waitFor()
-            _initialized.value = if (host.value) {
-                ServerResult.STARTING
-            } else {
-                ServerResult.UNUSED
-                return@mapLatest
-            }
-            val handler = CoroutineExceptionHandler { _, throwable ->
-                log.error(throwable) { "Error launching Tachidesk.jar" }
-                if (_initialized.value == ServerResult.STARTING || _initialized.value == ServerResult.STARTED) {
-                    _initialized.value = ServerResult.FAILED
-                }
-            }
-            GlobalScope.launch(handler) {
-                val jarFile = userDataDir / "Tachidesk.jar"
-                if (!FileSystem.SYSTEM.exists(jarFile)) {
-                    log.info { "Copying server to resources" }
-                    withIOContext { copyJar(jarFile) }
-                } else {
-                    try {
-                        val jarVersion = withIOContext {
-                            JarInputStream(FileSystem.SYSTEM.source(jarFile).buffer().inputStream()).use { jar ->
-                                jar.manifest?.mainAttributes?.getValue(Attributes.Name.IMPLEMENTATION_VERSION)?.toIntOrNull()
-                            }
-                        }
-
-                        if (jarVersion != BuildKonfig.SERVER_CODE) {
-                            log.info { "Updating server file from resources" }
-                            withIOContext { copyJar(jarFile) }
-                        }
-                    } catch (e: IOException) {
-                        log.error(e) {
-                            "Error accessing server jar, cannot update server, ${BuildKonfig.NAME} may not work properly"
-                        }
-                    }
-                }
-
-                val javaPath = getRuntimeJava() ?: getPossibleJava() ?: "java"
-                log.info { "Starting server with $javaPath" }
-                val properties = serverHostPreferences.properties()
-                log.info { "Using server properties:\n" + properties.joinToString(separator = "\n") }
-
-                withIOContext {
-                    val reader: Reader
-                    process = ProcessBuilder(javaPath, *properties, "-jar", jarFile.toString())
-                        .redirectErrorStream(true)
-                        .start()
-                        .also {
-                            reader = it.inputStream.reader()
-                        }
-                    log.info { "Server started successfully" }
-                    val log = logging("Server")
-                    reader.useLines { lines ->
-                        lines.forEach {
-                            if (_initialized.value == ServerResult.STARTING) {
-                                if (it.contains("Javalin started")) {
-                                    _initialized.value = ServerResult.STARTED
-                                } else if (it.contains("Javalin has stopped")) {
-                                    _initialized.value = ServerResult.FAILED
-                                }
-                            }
-                            log.info { it }
-                        }
-                    }
-                    if (_initialized.value == ServerResult.STARTING) {
-                        _initialized.value = ServerResult.FAILED
-                    }
-                    log.info { "Server closed" }
-                    val exitVal = process?.waitFor()
-                    log.info { "Process exitValue: $exitVal" }
-                    process = null
-                }
-            }
-        }.launchIn(GlobalScope)
     }
 
     enum class ServerResult {
