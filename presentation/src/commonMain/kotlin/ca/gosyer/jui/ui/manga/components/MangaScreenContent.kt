@@ -19,12 +19,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Label
+import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.data.models.Category
 import ca.gosyer.jui.data.models.Manga
@@ -80,6 +82,7 @@ fun MangaScreenContent(
             Toolbar(
                 stringResource(MR.strings.location_manga),
                 actions = {
+                    val uriHandler = LocalUriHandler.current
                     getActionItems(
                         refreshManga = refreshManga,
                         refreshMangaEnabled = !isLoading,
@@ -87,7 +90,11 @@ fun MangaScreenContent(
                         setCategories = setCategories,
                         inLibrary = manga?.inLibrary == true,
                         toggleFavorite = toggleFavorite,
-                        favoritesButtonEnabled = manga != null
+                        favoritesButtonEnabled = manga != null,
+                        openInBrowserEnabled = manga?.realUrl != null,
+                        openInBrowser = {
+                            manga?.realUrl?.let { uriHandler.openUri(it) }
+                        }
                     )
                 }
             )
@@ -154,7 +161,9 @@ private fun getActionItems(
     setCategories: () -> Unit,
     inLibrary: Boolean,
     toggleFavorite: () -> Unit,
-    favoritesButtonEnabled: Boolean
+    favoritesButtonEnabled: Boolean,
+    openInBrowserEnabled: Boolean,
+    openInBrowser: () -> Unit
 ): List<ActionItem> {
     return listOfNotNull(
         ActionItem(
@@ -179,6 +188,12 @@ private fun getActionItems(
             },
             doAction = toggleFavorite,
             enabled = favoritesButtonEnabled
+        ),
+        ActionItem(
+            name = stringResource(MR.strings.action_browser),
+            icon = Icons.Rounded.OpenInBrowser,
+            enabled = openInBrowserEnabled,
+            doAction = openInBrowser
         )
     )
 }
