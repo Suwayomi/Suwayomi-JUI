@@ -44,6 +44,7 @@
     <string name="action_searching">Search…</string>
     <string name="action_more_actions">More actions</string>
     <string name="action_ok">Ok</string>
+    <string name="action_browser">Browser</string>
 
     <!-- Locations -->
     <string name="location_library">Library</string>
