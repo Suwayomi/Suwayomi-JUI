@@ -10,18 +10,22 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 
-actual interface ScrollbarAdapter {
-    fun noop()
-}
+actual interface ScrollbarAdapter
 
+object AndroidScrollbarAdapter : ScrollbarAdapter
+
+@Immutable
 actual class ScrollbarStyle
 
-actual val LocalScrollbarStyle: ProvidableCompositionLocal<ScrollbarStyle> = staticCompositionLocalOf { ca.gosyer.jui.uicore.components.ScrollbarStyle() }
+private val scrollbarStyle = ScrollbarStyle()
+
+actual val LocalScrollbarStyle: ProvidableCompositionLocal<ScrollbarStyle> = staticCompositionLocalOf { scrollbarStyle }
 
 @Composable
 internal actual fun RealVerticalScrollbar(
@@ -46,9 +50,7 @@ actual fun rememberScrollbarAdapter(
     scrollState: ScrollState
 ): ScrollbarAdapter {
     return remember {
-        object : ScrollbarAdapter {
-            override fun noop() {}
-        }
+        AndroidScrollbarAdapter
     }
 }
 
@@ -57,8 +59,6 @@ actual fun rememberScrollbarAdapter(
     scrollState: LazyListState,
 ): ScrollbarAdapter {
     return remember {
-        object : ScrollbarAdapter {
-            override fun noop() {}
-        }
+        AndroidScrollbarAdapter
     }
 }

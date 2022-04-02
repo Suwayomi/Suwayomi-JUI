@@ -7,9 +7,11 @@
 package ca.gosyer.jui.ui.base.theme
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import ca.gosyer.jui.uicore.components.ScrollbarStyle
 
 expect object ThemeScrollbarStyle {
+    @Stable
     @Composable
     fun getScrollbarStyle(): ScrollbarStyle
 }
