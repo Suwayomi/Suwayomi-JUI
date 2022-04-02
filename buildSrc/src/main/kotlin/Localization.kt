@@ -11,6 +11,7 @@ fun TaskContainerScope.registerLocalizationTask(project: Project) {
                 val langs = listOf("en") + file("src/commonMain/resources/MR/values").listFiles()?.map { it.name }
                     ?.minus("base")
                     ?.map { it.replace("-r", "-") }
+                    ?.sorted()
                     .orEmpty()
                 val json = JsonObject().apply {
                     val array = JsonArray().apply {
