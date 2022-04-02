@@ -61,6 +61,7 @@ class AboutViewModel @Inject constructor(
         updateChecker.checkForUpdates()
             .filterIsInstance<Update.UpdateFound>()
             .onEach {
+                _updates.emit(it)
             }
             .launchIn(scope)
     }
