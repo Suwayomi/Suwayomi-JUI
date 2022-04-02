@@ -15,9 +15,7 @@ fun TaskContainerScope.registerLocalizationTask(project: Project) {
                     .orEmpty()
                 val json = JsonObject().apply {
                     val array = JsonArray().apply {
-                        langs.forEach {
-                            add(it)
-                        }
+                        langs.forEach(::add)
                     }
                     add("langs", array)
                 }
