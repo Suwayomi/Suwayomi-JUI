@@ -19,4 +19,4 @@ actual fun Locale.getDisplayLanguage(displayLocale: Locale): String = toPlatform
 actual fun Locale.getDisplayName(displayLocale: Locale): String = toPlatform()
     .getDisplayName(displayLocale.toPlatform())
 
-actual val Locale.displayName get() = toPlatform().displayName
+actual val Locale.displayName: String get() = toPlatform().displayName

@@ -13,7 +13,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.input.key.KeyEvent
-import androidx.compose.ui.input.key.NativeKeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.lifecycle.lifecycleScope
 import ca.gosyer.jui.ui.base.theme.AppTheme
@@ -48,9 +47,7 @@ class ReaderActivity : AppCompatActivity() {
         }
 
         setContent {
-            CompositionLocalProvider(
-                *hooks
-            ) {
+            CompositionLocalProvider(*hooks) {
                 AppTheme {
                     ReaderMenu(
                         chapterIndex = chapterIndex,
@@ -64,8 +61,9 @@ class ReaderActivity : AppCompatActivity() {
     }
 
     override fun onKeyUp(keyCode: Int, event: android.view.KeyEvent?): Boolean {
-        event ?: super.onKeyUp(keyCode, event)
-        val composeKeyEvent = KeyEvent(event as NativeKeyEvent)
+        @Suppress("KotlinConstantConditions")
+        event ?: return super.onKeyUp(keyCode, event)
+        val composeKeyEvent = KeyEvent(event)
         lifecycleScope.launch {
             hotkeyFlow.emit(composeKeyEvent)
         }

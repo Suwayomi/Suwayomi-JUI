@@ -120,9 +120,9 @@ subprojects {
         }
     }
 
-    afterEvaluate {
-        plugins.withType<org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper> {
-            configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
+    plugins.withType<org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper> {
+        configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
+            afterEvaluate {
                 if (!Config.androidDev) {
                     sourceSets.addSrcDir("desktopMain", "src/jvmMain/kotlin")
                     sourceSets.addSrcDir("desktopTest", "src/jvmTest/kotlin")
