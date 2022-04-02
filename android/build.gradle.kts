@@ -66,8 +66,6 @@ dependencies {
     implementation(libs.ktor.auth)
 
     // Logging
-    implementation(libs.logging.slf4j.api)
-    implementation(libs.logging.slf4j.android)
     implementation(libs.logging.kmlogging)
 
     // Storage

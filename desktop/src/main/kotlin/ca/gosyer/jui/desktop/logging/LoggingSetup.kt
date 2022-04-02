@@ -15,6 +15,7 @@ import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
+import org.lighthousegames.logging.KmLogging
 import org.lighthousegames.logging.logging
 import org.slf4j.bridge.SLF4JBridgeHandler
 import java.util.logging.LogManager as JLogManager
@@ -103,6 +104,10 @@ fun initializeLogger(loggingLocation: Path) {
         handlers.forEach { removeHandler(it) }
         addHandler(SLF4JBridgeHandler())
     }
+
+    KmLogging.clear()
+    KmLogging.setLogFactory(Slf4jLogFactory())
+
     val log = logging("UncaughtException")
     Thread.setDefaultUncaughtExceptionHandler { t, e ->
         log.error(e) { "Uncaught exception in thread [${t.name}@${t.id}]" }
