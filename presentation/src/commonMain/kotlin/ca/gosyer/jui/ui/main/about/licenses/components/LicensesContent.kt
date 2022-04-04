@@ -8,15 +8,21 @@ package ca.gosyer.jui.ui.main.about.licenses.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.uicore.components.LoadingScreen
+import ca.gosyer.jui.uicore.components.VerticalScrollbar
+import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
@@ -30,6 +36,7 @@ expect fun getLicenses(): Libs?
 internal expect fun InternalAboutLibraries(
     libraries: List<Library>,
     modifier: Modifier = Modifier,
+    lazyListState: LazyListState,
     contentPadding: PaddingValues,
     showAuthor: Boolean,
     showVersion: Boolean,
@@ -43,6 +50,7 @@ internal expect fun InternalAboutLibraries(
 fun AboutLibraries(
     libraries: List<Library>,
     modifier: Modifier = Modifier,
+    lazyListState: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     showAuthor: Boolean = true,
     showVersion: Boolean = true,
@@ -54,6 +62,7 @@ fun AboutLibraries(
     InternalAboutLibraries(
         libraries = libraries,
         modifier = modifier,
+        lazyListState = lazyListState,
         contentPadding = contentPadding,
         showAuthor = showAuthor,
         showVersion = showVersion,
@@ -64,7 +73,6 @@ fun AboutLibraries(
     )
 }
 
-// TODO: 2022-04-02 Add scrollbar
 @Composable
 fun LicensesContent() {
     Scaffold(
@@ -75,8 +83,16 @@ fun LicensesContent() {
         Box(Modifier.fillMaxSize().padding(it)) {
             val libs = getLicenses()
             if (libs != null) {
+                val state = rememberLazyListState()
                 AboutLibraries(
-                    libraries = libs.libraries
+                    libraries = libs.libraries,
+                    lazyListState = state
+                )
+                VerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                        .fillMaxHeight()
+                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                    adapter = rememberScrollbarAdapter(state)
                 )
             } else {
                 LoadingScreen()

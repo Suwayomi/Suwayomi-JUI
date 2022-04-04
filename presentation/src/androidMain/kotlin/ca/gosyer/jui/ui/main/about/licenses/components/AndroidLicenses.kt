@@ -7,6 +7,7 @@
 package ca.gosyer.jui.ui.main.about.licenses.components
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -37,6 +38,7 @@ actual fun getLicenses(): Libs? {
 actual fun InternalAboutLibraries(
     libraries: List<Library>,
     modifier: Modifier,
+    lazyListState: LazyListState,
     contentPadding: PaddingValues,
     showAuthor: Boolean,
     showVersion: Boolean,
@@ -48,6 +50,7 @@ actual fun InternalAboutLibraries(
     Libraries(
         libraries = libraries,
         modifier = modifier,
+        lazyListState = lazyListState,
         contentPadding = contentPadding,
         showAuthor = showAuthor,
         showVersion = showVersion,

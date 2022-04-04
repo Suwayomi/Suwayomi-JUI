@@ -51,7 +51,7 @@ multiplatformSettings = "0.8.1"
 kroki = "1.22"
 desugarJdkLibs = "1.1.5"
 klock = "2.6.3"
-aboutLibraries = "10.0.1"
+aboutLibraries = "10.1.0"
 
 # Localization
 locale = "0.11.0"
