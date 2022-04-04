@@ -17,6 +17,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -79,14 +80,18 @@ fun LicensesContent() {
         topBar = {
             Toolbar(stringResource(MR.strings.open_source_licenses))
         }
-    ) {
-        Box(Modifier.fillMaxSize().padding(it)) {
+    ) { padding ->
+        Box(Modifier.fillMaxSize().padding(padding)) {
             val libs = getLicenses()
             if (libs != null) {
                 val state = rememberLazyListState()
+                val uriHandler = LocalUriHandler.current
                 AboutLibraries(
                     libraries = libs.libraries,
-                    lazyListState = state
+                    lazyListState = state,
+                    onLibraryClick = {
+                        it.website?.let(uriHandler::openUri)
+                    }
                 )
                 VerticalScrollbar(
                     modifier = Modifier.align(Alignment.CenterEnd)
