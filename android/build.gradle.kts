@@ -1,13 +1,14 @@
 import Config.migrationCode
 import org.jetbrains.compose.compose
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("android")
-    id("com.android.application")
-    id("org.jetbrains.compose")
-    id("com.google.devtools.ksp")
-    id("org.jmailen.kotlinter")
-    id("com.mikepenz.aboutlibraries.plugin")
+    id(libs.plugins.kotlin.android.get().pluginId)
+    id(libs.plugins.android.application.get().pluginId)
+    id(libs.plugins.ksp.get().pluginId)
+    id(libs.plugins.compose.get().pluginId)
+    id(libs.plugins.kotlinter.get().pluginId)
+    id(libs.plugins.aboutLibraries.get().pluginId)
 }
 
 dependencies {

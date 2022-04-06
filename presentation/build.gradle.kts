@@ -1,12 +1,13 @@
 import org.jetbrains.compose.compose
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("com.google.devtools.ksp")
-    id("org.jetbrains.compose")
-    id("com.codingfeline.buildkonfig")
-    id("org.jmailen.kotlinter")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    id(libs.plugins.android.library.get().pluginId)
+    id(libs.plugins.ksp.get().pluginId)
+    id(libs.plugins.compose.get().pluginId)
+    id(libs.plugins.buildkonfig.get().pluginId)
+    id(libs.plugins.kotlinter.get().pluginId)
 }
 
 kotlin {

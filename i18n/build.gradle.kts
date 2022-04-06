@@ -1,10 +1,11 @@
 import org.jetbrains.compose.compose
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("dev.icerock.mobile.multiplatform-resources")
-    id("org.jetbrains.compose")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    id(libs.plugins.android.library.get().pluginId)
+    id(libs.plugins.moko.gradle.get().pluginId)
+    id(libs.plugins.compose.get().pluginId)
 }
 
 kotlin {

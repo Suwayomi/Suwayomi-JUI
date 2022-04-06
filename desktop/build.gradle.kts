@@ -7,13 +7,14 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import proguard.gradle.ProGuardTask
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.compose")
-    id("com.google.devtools.ksp")
-    id("com.github.gmazzo.buildconfig")
-    id("org.jmailen.kotlinter")
-    id("com.mikepenz.aboutlibraries.plugin")
+    id(libs.plugins.kotlin.jvm.get().pluginId)
+    id(libs.plugins.ksp.get().pluginId)
+    id(libs.plugins.compose.get().pluginId)
+    id(libs.plugins.buildconfig.get().pluginId)
+    id(libs.plugins.kotlinter.get().pluginId)
+    id(libs.plugins.aboutLibraries.get().pluginId)
 }
 
 dependencies {
