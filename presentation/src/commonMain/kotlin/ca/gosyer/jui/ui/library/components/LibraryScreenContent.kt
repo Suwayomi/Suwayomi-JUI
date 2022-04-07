@@ -37,6 +37,7 @@ import ca.gosyer.jui.data.models.Category
 import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.ActionItem
+import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.library.settings.LibrarySheet
 import ca.gosyer.jui.ui.library.settings.LibrarySideMenu
@@ -70,6 +71,10 @@ fun LibraryScreenContent(
     showLanguage: Boolean,
     showLocal: Boolean
 ) {
+    BackHandler(showingMenu) {
+        setShowingMenu(false)
+    }
+
     BoxWithConstraints {
         val pagerState = rememberPagerState(selectedCategoryIndex)
         LaunchedEffect(pagerState.isScrollInProgress to pagerState.currentPage) {
