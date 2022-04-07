@@ -298,7 +298,7 @@ private fun ThinToolbar(
                             CompositionLocalProvider(
                                 LocalContentAlpha provides ContentAlpha.high,
                             ) {
-                                Text(name)
+                                Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             }
                         }
                     }
