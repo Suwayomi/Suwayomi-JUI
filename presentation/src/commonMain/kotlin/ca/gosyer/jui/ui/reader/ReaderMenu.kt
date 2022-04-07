@@ -56,6 +56,7 @@ import ca.gosyer.jui.data.reader.model.ImageScale
 import ca.gosyer.jui.data.reader.model.NavigationMode
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.ActionItem
+import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.reader.model.Navigation
 import ca.gosyer.jui.ui.reader.model.PageMove
@@ -342,6 +343,12 @@ fun ThinReaderMenu(
     val sheetState = rememberModalBottomSheetState(
         ModalBottomSheetValue.Hidden
     )
+    val scope = rememberCoroutineScope()
+    BackHandler(sheetState.isVisible) {
+        scope.launch {
+            sheetState.hide()
+        }
+    }
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = {
@@ -379,7 +386,6 @@ fun ThinReaderMenu(
                 exit = slideOutVertically { -it },
                 modifier = Modifier.align(Alignment.TopCenter)
             ) {
-                val scope = rememberCoroutineScope()
                 Toolbar(
                     chapter.chapter.name,
                     closable = true,
