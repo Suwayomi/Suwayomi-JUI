@@ -91,15 +91,38 @@ private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
 private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
     SelectionContainer {
         Column(modifier) {
-            Text(manga.title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = manga.title,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(Modifier.height(4.dp))
             if (!manga.author.isNullOrEmpty()) {
-                Text(manga.author!!, fontSize = 18.sp)
+                Text(
+                    text = manga.author!!,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(2.dp))
             }
             if (!manga.artist.isNullOrEmpty() && manga.artist != manga.author) {
-                Text(manga.artist!!, fontSize = 18.sp)
+                Text(
+                    text = manga.artist!!,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(2.dp))
             }
+            val sourceText = manga.source?.displayName ?: manga.sourceId.toString()
+            Text(
+                text = stringResource(manga.status.res)  + " • " + sourceText,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(Modifier.height(8.dp))
             if (!manga.description.isNullOrEmpty()) {
                 Text(manga.description!!)
+                Spacer(Modifier.height(8.dp))
             }
             if (manga.genre.isNotEmpty()) {
                 FlowRow {
@@ -107,7 +130,6 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
                         Chip(it)
                     }
                 }
-                // Text(manga.genre.joinToString())
             }
         }
     }
