@@ -267,7 +267,7 @@ private fun ThinToolbar(
                                     searchSubmit?.invoke()
                                     it.clearFocus()
                                 },
-                            textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium)),
+                            textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colors.onSurface),
                             cursorBrush = SolidColor(MaterialTheme.colors.primary),
                             keyboardActions = KeyboardActions {
                                 searchSubmit?.invoke()
@@ -278,7 +278,10 @@ private fun ThinToolbar(
                             decorationBox = { innerTextField ->
                                 Box(contentAlignment = Alignment.CenterStart) {
                                     if (searchText.isNullOrEmpty()) {
-                                        Text(stringResource(MR.strings.action_searching))
+                                        Text(
+                                            stringResource(MR.strings.action_searching),
+                                            color = LocalTextStyle.current.color.copy(alpha = ContentAlpha.medium)
+                                        )
                                     }
                                     innerTextField()
                                 }
