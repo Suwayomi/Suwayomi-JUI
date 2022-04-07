@@ -7,6 +7,7 @@
 package ca.gosyer.jui.data.models
 
 import kotlinx.serialization.Serializable
+import ca.gosyer.jui.core.io.Serializable as JvmSerializable
 
 @Serializable
 data class Source(
@@ -18,7 +19,7 @@ data class Source(
     val isConfigurable: Boolean,
     val isNsfw: Boolean,
     val displayName: String
-) {
+): JvmSerializable {
     val displayLang: String
         get() = if (id == LOCAL_SOURCE_ID) {
             "other"
