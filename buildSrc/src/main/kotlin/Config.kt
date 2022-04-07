@@ -3,12 +3,12 @@ import org.gradle.api.JavaVersion
 object Config {
     const val migrationCode = 1
 
-    // Tachidesk
-    const val tachideskVersion = "v0.6.2"
+    // Tachidesk-Server version
+    const val tachideskVersion = "v0.6.3"
     // Match this to the Tachidesk-Server commit count
-    const val serverCode = 1074
+    const val serverCode = 1087
     const val preview = true
-    const val previewCommit = "858784857e8b4ba7d2a88a8128bb31dc53673852"
+    const val previewCommit = "a26b8ecca035fe01fadc55bfb7184774b035fec1"
 
     val desktopJvmTarget = JavaVersion.VERSION_16
     val androidJvmTarget = JavaVersion.VERSION_11
