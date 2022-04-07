@@ -53,7 +53,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.ArrowDropUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -459,7 +459,7 @@ fun ExpandablePreference(
         Column {
             Box(Modifier.clickable { expanded = !expanded }) {
                 Icon(
-                    imageVector = Icons.Rounded.ArrowDropDown,
+                    imageVector = Icons.Rounded.ArrowDropUp,
                     contentDescription = "Expandable Arrow",
                     modifier = Modifier.rotate(arrowRotationDegree)
                         .align(Alignment.CenterStart),
