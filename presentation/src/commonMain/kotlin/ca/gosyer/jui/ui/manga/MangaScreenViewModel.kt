@@ -46,7 +46,7 @@ class MangaScreenViewModel @Inject constructor(
     private val libraryHandler: LibraryInteractionHandler,
     uiPreferences: UiPreferences,
     contextWrapper: ContextWrapper,
-    private val params: ca.gosyer.jui.ui.manga.MangaScreenViewModel.Params,
+    private val params: Params,
 ) : ViewModel(contextWrapper) {
     private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()

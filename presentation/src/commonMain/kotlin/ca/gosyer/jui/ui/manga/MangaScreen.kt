@@ -21,11 +21,7 @@ class MangaScreen(private val mangaId: Long) : Screen {
     @Composable
     override fun Content() {
         val vm = viewModel {
-            instantiate<ca.gosyer.jui.ui.manga.MangaScreenViewModel>(
-                ca.gosyer.jui.ui.manga.MangaScreenViewModel.Params(
-                    mangaId
-                )
-            )
+            instantiate<MangaScreenViewModel>(MangaScreenViewModel.Params(mangaId))
         }
 
         MangaScreenContent(
