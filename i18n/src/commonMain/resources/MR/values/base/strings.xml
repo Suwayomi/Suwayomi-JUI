@@ -45,6 +45,7 @@
     <string name="action_more_actions">More actions</string>
     <string name="action_ok">Ok</string>
     <string name="action_browser">Browser</string>
+    <string name="action_filter">Filter</string>
 
     <!-- Locations -->
     <string name="location_library">Library</string>
@@ -81,6 +82,23 @@
     <string name="default_category">Default</string>
     <string name="library_empty">Library is empty</string>
 
+    <string name="library_sort">Sort</string>
+    <string name="library_display">Display</string>
+
+    <string name="filter_downloaded">Downloaded</string>
+    <string name="filter_unread">Unread</string>
+    <string name="filter_completed">Completed</string>
+
+    <string name="sort_alphabetical">Alphabetically</string>
+    <string name="sort_unread">Unread</string>
+    <string name="sort_date_added">Date added</string>
+
+    <string name="display_badges">Badges</string>
+    <string name="display_badge_downloaded">Downloaded chapters</string>
+    <string name="display_badge_unread">Unread chapters</string>
+    <string name="display_badge_local">Local manga</string>
+    <string name="display_badge_language">Language</string>
+
     <!-- Manga Menu -->
     <string name="page_progress">Page %1$d</string>
     <string name="no_chapters_found">No chapters found</string>
@@ -100,7 +118,6 @@
     <string name="move_to_browse">Browse</string>
     <string name="move_to_latest">Latest</string>
     <string name="reset_filters">Reset</string>
-    <string name="filter_source">Filter</string>
     <string name="in_library">In library</string>
     <string name="no_results_found">No results found</string>
 

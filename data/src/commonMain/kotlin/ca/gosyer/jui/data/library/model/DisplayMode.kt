@@ -19,6 +19,6 @@ enum class DisplayMode(@Transient val res: StringResource) {
     List(MR.strings.display_list);
 
     companion object {
-        val values = values()
+        val values = values().asList()
     }
 }

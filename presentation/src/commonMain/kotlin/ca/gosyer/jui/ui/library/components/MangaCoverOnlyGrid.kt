@@ -37,7 +37,11 @@ fun LibraryMangaCoverOnlyGrid(
     gridColumns: Int,
     gridSize: Int,
     onClickManga: (Long) -> Unit,
-    onRemoveMangaClicked: (Long) -> Unit
+    onRemoveMangaClicked: (Long) -> Unit,
+    showUnread: Boolean,
+    showDownloaded: Boolean,
+    showLanguage: Boolean,
+    showLocal: Boolean
 ) {
     Box {
         val state = rememberLazyListState()
@@ -58,8 +62,10 @@ fun LibraryMangaCoverOnlyGrid(
                         { onRemoveMangaClicked(manga.id) }
                     ),
                     manga = manga,
-                    unread = manga.unreadCount,
-                    downloaded = manga.downloadCount
+                    showUnread = showUnread,
+                    showDownloaded = showDownloaded,
+                    showLanguage = showLanguage,
+                    showLocal = showLocal
                 )
             }
         }
@@ -76,8 +82,10 @@ fun LibraryMangaCoverOnlyGrid(
 private fun LibraryMangaCoverOnlyGridItem(
     modifier: Modifier,
     manga: Manga,
-    unread: Int?,
-    downloaded: Int?
+    showUnread: Boolean,
+    showDownloaded: Boolean,
+    showLanguage: Boolean,
+    showLocal: Boolean
 ) {
     val cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium)
 
@@ -94,9 +102,12 @@ private fun LibraryMangaCoverOnlyGridItem(
             contentScale = ContentScale.Crop
         )
         LibraryMangaBadges(
-            unread = unread,
-            downloaded = downloaded,
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(4.dp),
+            manga = manga,
+            showUnread = showUnread,
+            showDownloaded = showDownloaded,
+            showLanguage = showLanguage,
+            showLocal = showLocal
         )
     }
 }

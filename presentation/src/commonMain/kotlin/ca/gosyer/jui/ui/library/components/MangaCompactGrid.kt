@@ -51,7 +51,11 @@ fun LibraryMangaCompactGrid(
     gridColumns: Int,
     gridSize: Int,
     onClickManga: (Long) -> Unit,
-    onRemoveMangaClicked: (Long) -> Unit
+    onRemoveMangaClicked: (Long) -> Unit,
+    showUnread: Boolean,
+    showDownloaded: Boolean,
+    showLanguage: Boolean,
+    showLocal: Boolean
 ) {
     Box {
         val state = rememberLazyListState()
@@ -72,8 +76,10 @@ fun LibraryMangaCompactGrid(
                         { onRemoveMangaClicked(manga.id) }
                     ),
                     manga = manga,
-                    unread = manga.unreadCount,
-                    downloaded = manga.downloadCount
+                    showUnread = showUnread,
+                    showDownloaded = showDownloaded,
+                    showLanguage = showLanguage,
+                    showLocal = showLocal
                 )
             }
         }
@@ -90,8 +96,10 @@ fun LibraryMangaCompactGrid(
 private fun LibraryMangaCompactGridItem(
     modifier: Modifier,
     manga: Manga,
-    unread: Int?,
-    downloaded: Int?,
+    showUnread: Boolean,
+    showDownloaded: Boolean,
+    showLanguage: Boolean,
+    showLocal: Boolean
 ) {
     val cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium)
     val fontStyle = LocalTextStyle.current.merge(
@@ -119,9 +127,12 @@ private fun LibraryMangaCompactGridItem(
             modifier = Modifier.align(Alignment.BottomStart).padding(8.dp)
         )
         LibraryMangaBadges(
-            unread = unread,
-            downloaded = downloaded,
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(4.dp),
+            manga = manga,
+            showUnread = showUnread,
+            showDownloaded = showDownloaded,
+            showLanguage = showLanguage,
+            showLocal = showLocal
         )
     }
 }

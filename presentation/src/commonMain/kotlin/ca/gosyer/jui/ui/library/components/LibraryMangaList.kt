@@ -7,11 +7,13 @@
 package ca.gosyer.jui.ui.library.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -34,7 +36,11 @@ import io.kamel.image.lazyPainterResource
 fun LibraryMangaList(
     library: List<Manga>,
     onClickManga: (Long) -> Unit,
-    onRemoveMangaClicked: (Long) -> Unit
+    onRemoveMangaClicked: (Long) -> Unit,
+    showUnread: Boolean,
+    showDownloaded: Boolean,
+    showLanguage: Boolean,
+    showLocal: Boolean
 ) {
     Box {
         val state = rememberLazyListState()
@@ -49,8 +55,10 @@ fun LibraryMangaList(
                         { onRemoveMangaClicked(manga.id) }
                     ),
                     manga = manga,
-                    unread = manga.unreadCount,
-                    downloaded = manga.downloadCount,
+                    showUnread = showUnread,
+                    showDownloaded = showDownloaded,
+                    showLanguage = showLanguage,
+                    showLocal = showLocal
                 )
             }
         }
@@ -67,8 +75,10 @@ fun LibraryMangaList(
 private fun LibraryMangaListItem(
     modifier: Modifier,
     manga: Manga,
-    unread: Int?,
-    downloaded: Int?,
+    showUnread: Boolean,
+    showDownloaded: Boolean,
+    showLanguage: Boolean,
+    showLocal: Boolean
 ) {
     val cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium)
     MangaListItem(
@@ -89,6 +99,14 @@ private fun LibraryMangaListItem(
                 .padding(horizontal = 16.dp),
             text = manga.title,
         )
-        LibraryMangaBadges(unread, downloaded)
+        Box(Modifier.width(IntrinsicSize.Min)) {
+            LibraryMangaBadges(
+                manga = manga,
+                showUnread = showUnread,
+                showDownloaded = showDownloaded,
+                showLanguage = showLanguage,
+                showLocal = showLocal
+            )
+        }
     }
 }

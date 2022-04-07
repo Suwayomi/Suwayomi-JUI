@@ -6,18 +6,21 @@
 
 package ca.gosyer.jui.data.library.model
 
+import ca.gosyer.jui.i18n.MR
+import dev.icerock.moko.resources.StringResource
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
-enum class Sort {
-    ALPHABETICAL,
+enum class Sort(@Transient val res: StringResource) {
+    ALPHABETICAL(MR.strings.sort_alphabetical),
 
     // LAST_READ,
     // LAST_CHECKED,
-    UNREAD,
+    UNREAD(MR.strings.sort_unread),
 
     // TOTAL_CHAPTERS,
     // LATEST_CHAPTER,
     // DATE_FETCHED,
-    DATE_ADDED;
+    DATE_ADDED(MR.strings.sort_date_added);
 }

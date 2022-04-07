@@ -11,10 +11,12 @@ import ca.gosyer.jui.ui.categories.CategoriesScreenViewModel
 import ca.gosyer.jui.ui.downloads.DownloadsScreenViewModel
 import ca.gosyer.jui.ui.extensions.ExtensionsScreenViewModel
 import ca.gosyer.jui.ui.library.LibraryScreenViewModel
+import ca.gosyer.jui.ui.library.settings.LibrarySettingsViewModel
 import ca.gosyer.jui.ui.main.MainViewModel
 import ca.gosyer.jui.ui.main.about.AboutViewModel
 import ca.gosyer.jui.ui.main.components.DebugOverlayViewModel
 import ca.gosyer.jui.ui.main.components.TrayViewModel
+import ca.gosyer.jui.ui.manga.MangaScreenViewModel
 import ca.gosyer.jui.ui.reader.ReaderMenuViewModel
 import ca.gosyer.jui.ui.settings.SettingsAdvancedViewModel
 import ca.gosyer.jui.ui.settings.SettingsBackupViewModel
@@ -43,10 +45,11 @@ actual class ViewModelFactoryImpl(
     private val downloadsFactory: (Boolean) -> DownloadsScreenViewModel,
     private val extensionsFactory: () -> ExtensionsScreenViewModel,
     private val libraryFactory: () -> LibraryScreenViewModel,
+    private val librarySettingsFactory: () -> LibrarySettingsViewModel,
     private val debugOverlayFactory: () -> DebugOverlayViewModel,
     private val trayFactory: () -> TrayViewModel,
     private val mainFactory: () -> MainViewModel,
-    private val mangaFactory: (params: ca.gosyer.jui.ui.manga.MangaScreenViewModel.Params) -> ca.gosyer.jui.ui.manga.MangaScreenViewModel,
+    private val mangaFactory: (params: MangaScreenViewModel.Params) -> MangaScreenViewModel,
     private val readerFactory: (params: ReaderMenuViewModel.Params) -> ReaderMenuViewModel,
     private val settingsAdvancedFactory: () -> SettingsAdvancedViewModel,
     private val themesFactory: () -> ThemesViewModel,
@@ -73,10 +76,11 @@ actual class ViewModelFactoryImpl(
             DownloadsScreenViewModel::class -> downloadsFactory(arg1 as Boolean)
             ExtensionsScreenViewModel::class -> extensionsFactory()
             LibraryScreenViewModel::class -> libraryFactory()
+            LibrarySettingsViewModel::class -> librarySettingsFactory()
             DebugOverlayViewModel::class -> debugOverlayFactory()
             TrayViewModel::class -> trayFactory()
             MainViewModel::class -> mainFactory()
-            ca.gosyer.jui.ui.manga.MangaScreenViewModel::class -> mangaFactory(arg1 as ca.gosyer.jui.ui.manga.MangaScreenViewModel.Params)
+            MangaScreenViewModel::class -> mangaFactory(arg1 as MangaScreenViewModel.Params)
             ReaderMenuViewModel::class -> readerFactory(arg1 as ReaderMenuViewModel.Params)
             SettingsAdvancedViewModel::class -> settingsAdvancedFactory()
             ThemesViewModel::class -> themesFactory()

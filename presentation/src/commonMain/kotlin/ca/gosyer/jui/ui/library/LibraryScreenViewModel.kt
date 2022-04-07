@@ -9,10 +9,13 @@ package ca.gosyer.jui.ui.library
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.lowercase
 import ca.gosyer.jui.core.lang.withDefaultContext
+import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.data.library.LibraryPreferences
+import ca.gosyer.jui.data.library.model.FilterState
 import ca.gosyer.jui.data.library.model.Sort
 import ca.gosyer.jui.data.models.Category
 import ca.gosyer.jui.data.models.Manga
+import ca.gosyer.jui.data.models.MangaStatus
 import ca.gosyer.jui.data.server.interactions.CategoryInteractionHandler
 import ca.gosyer.jui.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.jui.data.server.interactions.UpdatesInteractionHandler
@@ -67,12 +70,41 @@ class LibraryScreenViewModel @Inject constructor(
     private val _selectedCategoryIndex = MutableStateFlow(0)
     val selectedCategoryIndex = _selectedCategoryIndex.asStateFlow()
 
+    private val _showingMenu = MutableStateFlow(false)
+    val showingMenu = _showingMenu.asStateFlow()
+
     val displayMode = libraryPreferences.displayMode().stateIn(scope)
     val gridColumns = libraryPreferences.gridColumns().stateIn(scope)
     val gridSize = libraryPreferences.gridSize().stateIn(scope)
+    val unreadBadges = libraryPreferences.unreadBadge().stateIn(scope)
+    val downloadBadges = libraryPreferences.downloadBadge().stateIn(scope)
+    val languageBadges = libraryPreferences.languageBadge().stateIn(scope)
+    val localBadges = libraryPreferences.localBadge().stateIn(scope)
 
     private val sortMode = libraryPreferences.sortMode().stateIn(scope)
     private val sortAscending = libraryPreferences.sortAscending().stateIn(scope)
+
+    private val filter = combine(
+        libraryPreferences.filterDownloaded().getAsFlow(),
+        libraryPreferences.filterUnread().getAsFlow(),
+        libraryPreferences.filterCompleted().getAsFlow()
+    ) { downloaded, unread, completed ->
+        { manga: Manga ->
+            when (downloaded) {
+                FilterState.EXCLUDED -> manga.downloadCount == null || manga.downloadCount == 0
+                FilterState.INCLUDED -> manga.downloadCount != null && (manga.downloadCount ?: 0) > 0
+                FilterState.IGNORED -> true
+            } && when (unread) {
+                FilterState.EXCLUDED -> manga.unreadCount == null || manga.unreadCount == 0
+                FilterState.INCLUDED -> manga.unreadCount != null && (manga.unreadCount ?: 0) > 0
+                FilterState.IGNORED -> true
+            } && when (completed) {
+                FilterState.EXCLUDED -> manga.status != MangaStatus.COMPLETED
+                FilterState.INCLUDED -> manga.status == MangaStatus.COMPLETED
+                FilterState.IGNORED -> true
+            }
+        }
+    }
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
@@ -112,6 +144,10 @@ class LibraryScreenViewModel @Inject constructor(
 
     fun setSelectedPage(page: Int) {
         _selectedCategoryIndex.value = page
+    }
+
+    fun setShowingMenu(showingMenu: Boolean) {
+        _showingMenu.value = showingMenu
     }
 
     private fun getComparator(sortMode: Sort, ascending: Boolean): Comparator<Manga> {
@@ -164,6 +200,8 @@ class LibraryScreenViewModel @Inject constructor(
     private fun getMangaItemsFlow(unfilteredItemsFlow: StateFlow<List<Manga>>): StateFlow<List<Manga>> {
         return combine(unfilteredItemsFlow, query) { unfilteredItems, query ->
             filterManga(query, unfilteredItems)
+        }.combine(filter) { filteredManga, filterer ->
+            filteredManga.filter(filterer)
         }.combine(comparator) { filteredManga, comparator ->
             filteredManga.sortedWith(comparator)
         }.stateIn(scope, SharingStarted.Eagerly, emptyList())

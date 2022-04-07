@@ -15,6 +15,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -86,7 +87,7 @@ fun SourceFiltersMenu(
                         Text(stringResource(MR.strings.reset_filters))
                     }
                     Button(onSearchClicked) {
-                        Text(stringResource(MR.strings.filter_source))
+                        Text(stringResource(MR.strings.action_filter))
                     }
                 }
             }
@@ -141,7 +142,8 @@ fun SourceFilterAction(
     Row(
         Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically
     ) {
         action()

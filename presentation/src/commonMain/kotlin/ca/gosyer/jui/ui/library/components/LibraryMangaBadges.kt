@@ -7,7 +7,10 @@
 package ca.gosyer.jui.ui.library.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -15,33 +18,66 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import ca.gosyer.jui.data.models.Manga
+import ca.gosyer.jui.data.models.Source
 
 @Composable
 fun LibraryMangaBadges(
-    unread: Int?,
-    downloaded: Int?,
     modifier: Modifier = Modifier,
+    manga: Manga,
+    showUnread: Boolean,
+    showDownloaded: Boolean,
+    showLanguage: Boolean,
+    showLocal: Boolean
 ) {
-    if (unread == null && downloaded == null) return
+    val unread = manga.unreadCount
+    val downloaded = manga.downloadCount
+    val isLocal = manga.sourceId == Source.LOCAL_SOURCE_ID
 
-    Row(modifier = modifier.clip(MaterialTheme.shapes.medium)) {
-        if (unread != null && unread > 0) {
-            Text(
-                text = unread.toString(),
-                modifier = Modifier.background(MaterialTheme.colors.primary).then(BadgesInnerPadding),
-                style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.onPrimary
-            )
+    Row(modifier then Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        if ((unread != null && unread > 0) || (downloaded != null && downloaded > 0) || isLocal) {
+            Row(modifier = Modifier.clip(MaterialTheme.shapes.medium)) {
+                if (showLocal && isLocal) {
+                    Text(
+                        text = unread.toString(),
+                        modifier = Modifier.background(MaterialTheme.colors.secondary).then(BadgesInnerPadding),
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onSecondary
+                    )
+                }
+                if (showUnread && unread != null && unread > 0) {
+                    Text(
+                        text = unread.toString(),
+                        modifier = Modifier.background(MaterialTheme.colors.primary).then(BadgesInnerPadding),
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                }
+                if (showDownloaded && downloaded != null && downloaded > 0) {
+                    Text(
+                        text = downloaded.toString(),
+                        modifier = Modifier.background(MaterialTheme.colors.secondary).then(
+                            BadgesInnerPadding
+                        ),
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onSecondary
+                    )
+                }
+            }
+        } else {
+            Spacer(Modifier)
         }
-        if (downloaded != null && downloaded > 0) {
-            Text(
-                text = downloaded.toString(),
-                modifier = Modifier.background(MaterialTheme.colors.secondary).then(
-                    BadgesInnerPadding
-                ),
-                style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.onSecondary
-            )
+
+        val lang = manga.source?.lang
+        if (showLanguage && lang != null) {
+            Row(modifier = Modifier.clip(MaterialTheme.shapes.medium)) {
+                Text(
+                    text = lang.uppercase(),
+                    modifier = Modifier.background(MaterialTheme.colors.secondary).then(BadgesInnerPadding),
+                    style = MaterialTheme.typography.caption,
+                    color = MaterialTheme.colors.onSecondary
+                )
+            }
         }
     }
 }

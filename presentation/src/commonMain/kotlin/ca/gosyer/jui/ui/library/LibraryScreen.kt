@@ -9,6 +9,10 @@ package ca.gosyer.jui.ui.library
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.jui.ui.library.components.LibraryScreenContent
+import ca.gosyer.jui.ui.library.settings.LibrarySettingsViewModel
+import ca.gosyer.jui.ui.library.settings.getLibraryDisplay
+import ca.gosyer.jui.ui.library.settings.getLibraryFilters
+import ca.gosyer.jui.ui.library.settings.getLibrarySort
 import ca.gosyer.jui.ui.manga.MangaScreen
 import ca.gosyer.jui.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -24,6 +28,7 @@ class LibraryScreen : Screen {
     @Composable
     override fun Content() {
         val vm = viewModel<LibraryScreenViewModel>()
+        val settingsVM = viewModel<LibrarySettingsViewModel>()
         val navigator = LocalNavigator.currentOrThrow
         LibraryScreenContent(
             categories = vm.categories.collectAsState().value,
@@ -38,7 +43,16 @@ class LibraryScreen : Screen {
             getLibraryForPage = { vm.getLibraryForCategoryId(it).collectAsState() },
             onPageChanged = vm::setSelectedPage,
             onClickManga = { navigator push MangaScreen(it) },
-            onRemoveMangaClicked = vm::removeManga
+            onRemoveMangaClicked = vm::removeManga,
+            showingMenu = vm.showingMenu.collectAsState().value,
+            setShowingMenu = vm::setShowingMenu,
+            libraryFilters = getLibraryFilters(settingsVM),
+            librarySort = getLibrarySort(settingsVM),
+            libraryDisplay = getLibraryDisplay(settingsVM),
+            showUnread = vm.unreadBadges.collectAsState().value,
+            showDownloaded = vm.downloadBadges.collectAsState().value,
+            showLanguage = vm.languageBadges.collectAsState().value,
+            showLocal = vm.localBadges.collectAsState().value
         )
     }
 }

@@ -11,6 +11,7 @@ import ca.gosyer.jui.ui.categories.CategoriesScreenViewModel
 import ca.gosyer.jui.ui.downloads.DownloadsScreenViewModel
 import ca.gosyer.jui.ui.extensions.ExtensionsScreenViewModel
 import ca.gosyer.jui.ui.library.LibraryScreenViewModel
+import ca.gosyer.jui.ui.library.settings.LibrarySettingsViewModel
 import ca.gosyer.jui.ui.main.MainViewModel
 import ca.gosyer.jui.ui.main.about.AboutViewModel
 import ca.gosyer.jui.ui.main.components.DebugOverlayViewModel
@@ -43,6 +44,7 @@ actual class ViewModelFactoryImpl(
     private val downloadsFactory: (Boolean) -> DownloadsScreenViewModel,
     private val extensionsFactory: () -> ExtensionsScreenViewModel,
     private val libraryFactory: () -> LibraryScreenViewModel,
+    private val librarySettingsFactory: () -> LibrarySettingsViewModel,
     private val debugOverlayFactory: () -> DebugOverlayViewModel,
     private val mainFactory: () -> MainViewModel,
     private val mangaFactory: (params: MangaScreenViewModel.Params) -> MangaScreenViewModel,
@@ -72,6 +74,7 @@ actual class ViewModelFactoryImpl(
             DownloadsScreenViewModel::class -> downloadsFactory(arg1 as Boolean)
             ExtensionsScreenViewModel::class -> extensionsFactory()
             LibraryScreenViewModel::class -> libraryFactory()
+            LibrarySettingsViewModel::class -> librarySettingsFactory()
             DebugOverlayViewModel::class -> debugOverlayFactory()
             MainViewModel::class -> mainFactory()
             MangaScreenViewModel::class -> mangaFactory(arg1 as MangaScreenViewModel.Params)

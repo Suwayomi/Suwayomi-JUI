@@ -25,7 +25,11 @@ fun LibraryPager(
     gridSize: Int,
     getLibraryForPage: @Composable (Long) -> State<List<Manga>>,
     onClickManga: (Long) -> Unit,
-    onRemoveMangaClicked: (Long) -> Unit
+    onRemoveMangaClicked: (Long) -> Unit,
+    showUnread: Boolean,
+    showDownloaded: Boolean,
+    showLanguage: Boolean,
+    showLocal: Boolean
 ) {
     if (categories.isEmpty()) return
 
@@ -37,26 +41,42 @@ fun LibraryPager(
                 gridColumns = gridColumns,
                 gridSize = gridSize,
                 onClickManga = onClickManga,
-                onRemoveMangaClicked = onRemoveMangaClicked
+                onRemoveMangaClicked = onRemoveMangaClicked,
+                showUnread = showUnread,
+                showDownloaded = showDownloaded,
+                showLanguage = showLanguage,
+                showLocal = showLocal
             )
             DisplayMode.ComfortableGrid -> LibraryMangaComfortableGrid(
                 library = library,
                 gridColumns = gridColumns,
                 gridSize = gridSize,
                 onClickManga = onClickManga,
-                onRemoveMangaClicked = onRemoveMangaClicked
+                onRemoveMangaClicked = onRemoveMangaClicked,
+                showUnread = showUnread,
+                showDownloaded = showDownloaded,
+                showLanguage = showLanguage,
+                showLocal = showLocal
             )
             DisplayMode.CoverOnlyGrid -> LibraryMangaCoverOnlyGrid(
                 library = library,
                 gridColumns = gridColumns,
                 gridSize = gridSize,
                 onClickManga = onClickManga,
-                onRemoveMangaClicked = onRemoveMangaClicked
+                onRemoveMangaClicked = onRemoveMangaClicked,
+                showUnread = showUnread,
+                showDownloaded = showDownloaded,
+                showLanguage = showLanguage,
+                showLocal = showLocal
             )
             DisplayMode.List -> LibraryMangaList(
                 library = library,
                 onClickManga = onClickManga,
-                onRemoveMangaClicked = onRemoveMangaClicked
+                onRemoveMangaClicked = onRemoveMangaClicked,
+                showUnread = showUnread,
+                showDownloaded = showDownloaded,
+                showLanguage = showLanguage,
+                showLocal = showLocal
             )
             else -> Box {}
         }

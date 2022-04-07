@@ -353,7 +353,7 @@ private fun SourceThinScreenContent(
                 if (showFilterButton && !isLatest) {
                     ExtendedFloatingActionButton(
                         text = {
-                            Text(stringResource(MR.strings.filter_source))
+                            Text(stringResource(MR.strings.action_filter))
                         },
                         onClick = {
                             setShowingFilters(true)
@@ -361,7 +361,7 @@ private fun SourceThinScreenContent(
                         icon = {
                             Icon(
                                 Icons.Rounded.FilterList,
-                                stringResource(MR.strings.filter_source)
+                                stringResource(MR.strings.action_filter)
                             )
                         },
                         modifier = Modifier.align(Alignment.BottomEnd)
@@ -506,7 +506,7 @@ private fun getActionItems(
     return listOfNotNull(
         if (showFilterButton) {
             ActionItem(
-                name = stringResource(MR.strings.filter_source),
+                name = stringResource(MR.strings.action_filter),
                 icon = Icons.Rounded.FilterList,
                 doAction = onToggleFiltersClick,
                 enabled = !isLatest
