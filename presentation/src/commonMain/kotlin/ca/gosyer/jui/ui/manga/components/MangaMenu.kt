@@ -143,7 +143,7 @@ fun CategorySelectDialog(
         },
         properties = getMaterialDialogProperties(),
     ) {
-        title("Select Categories")
+        title(stringResource(MR.strings.select_categories))
         val listState = rememberLazyListState()
         Box {
             LazyColumn(state = listState) {
