@@ -97,8 +97,9 @@ class SettingsGeneralViewModel @Inject constructor(
             val langJson = langJsonState.value
             if (langJson != null) {
                 withIOContext {
-                    value = Json.decodeFromString<JsonObject>(langJson)["langs"]!!
-                        .jsonArray
+                    value = Json.decodeFromString<JsonObject>(langJson)["langs"]
+                        ?.jsonArray
+                        .orEmpty()
                         .map { it.jsonPrimitive.content }
                         .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
                 }
