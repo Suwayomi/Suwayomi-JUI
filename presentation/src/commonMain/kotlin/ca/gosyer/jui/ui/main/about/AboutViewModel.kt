@@ -6,14 +6,13 @@
 
 package ca.gosyer.jui.ui.main.about
 
+import ca.gosyer.jui.data.base.DateHandler
 import ca.gosyer.jui.data.models.About
 import ca.gosyer.jui.data.server.interactions.SettingsInteractionHandler
 import ca.gosyer.jui.data.update.UpdateChecker
 import ca.gosyer.jui.data.update.UpdateChecker.Update
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import com.soywiz.klock.KlockLocale
-import com.soywiz.klock.format
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,11 +23,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.datetime.Instant
 import me.tatarka.inject.annotations.Inject
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 class AboutViewModel @Inject constructor(
+    private val dateHandler: DateHandler,
     private val settingsHandler: SettingsInteractionHandler,
     private val updateChecker: UpdateChecker,
     contextWrapper: ContextWrapper
@@ -39,7 +38,7 @@ class AboutViewModel @Inject constructor(
 
     val formattedBuildTime = about.map { about ->
         about ?: return@map ""
-        getFormattedDate(about.buildTime.seconds)
+        getFormattedDate(Instant.fromEpochSeconds(about.buildTime))
     }.stateIn(scope, SharingStarted.Eagerly, "")
 
     private val _updates = MutableSharedFlow<Update.UpdateFound>()
@@ -66,7 +65,7 @@ class AboutViewModel @Inject constructor(
             .launchIn(scope)
     }
 
-    private fun getFormattedDate(time: Duration): String {
-        return KlockLocale.default.formatDateTimeMedium.format(time.inWholeMilliseconds)
+    private fun getFormattedDate(time: Instant): String {
+        return dateHandler.dateTimeFormat(time)
     }
 }

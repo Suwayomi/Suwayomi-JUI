@@ -32,7 +32,7 @@ import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadIcon
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.resources.stringResource
-import com.soywiz.klock.DateTime
+import kotlinx.datetime.Instant
 
 expect fun Modifier.chapterItemModifier(
     onClick: () -> Unit,
@@ -44,7 +44,7 @@ expect fun Modifier.chapterItemModifier(
 @Composable
 fun ChapterItem(
     chapterDownload: ChapterDownloadItem,
-    format: (DateTime) -> String,
+    format: (Instant) -> String,
     onClick: (Int) -> Unit,
     toggleRead: (Int) -> Unit,
     toggleBookmarked: (Int) -> Unit,
@@ -86,7 +86,7 @@ fun ChapterItem(
                     }
                     val subtitleStr = buildAnnotatedString {
                         if (chapter.uploadDate > 0) {
-                            append(format(DateTime.fromUnix(chapter.uploadDate)))
+                            append(format(Instant.fromEpochMilliseconds(chapter.uploadDate)))
                         }
                         if (!chapter.read && chapter.lastPageRead > 0) {
                             if (length > 0) append(" • ")

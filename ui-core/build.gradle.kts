@@ -41,7 +41,7 @@ kotlin {
                 api(libs.kamel)
                 api(libs.voyager.core)
                 api(libs.locale)
-                api(libs.klock)
+                api(libs.dateTime)
                 api(projects.core)
                 api(projects.i18n)
                 api(compose.desktop.currentOs)

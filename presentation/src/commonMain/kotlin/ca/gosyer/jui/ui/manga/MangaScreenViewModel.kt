@@ -7,6 +7,7 @@
 package ca.gosyer.jui.ui.manga
 
 import ca.gosyer.jui.core.lang.withIOContext
+import ca.gosyer.jui.data.base.DateHandler
 import ca.gosyer.jui.data.download.DownloadService
 import ca.gosyer.jui.data.models.Category
 import ca.gosyer.jui.data.models.Chapter
@@ -19,9 +20,6 @@ import ca.gosyer.jui.data.ui.UiPreferences
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.KlockLocale
-import com.soywiz.klock.PatternDateFormat
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +38,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class MangaScreenViewModel @Inject constructor(
+    private val dateHandler: DateHandler,
     private val mangaHandler: MangaInteractionHandler,
     private val chapterHandler: ChapterInteractionHandler,
     private val categoryHandler: CategoryInteractionHandler,
@@ -70,9 +69,9 @@ class MangaScreenViewModel @Inject constructor(
 
     val dateTimeFormatter = uiPreferences.dateFormat().changes()
         .map {
-            getDateFormat(it)
+            dateHandler.getDateFormat(it)
         }
-        .asStateFlow(getDateFormat(uiPreferences.dateFormat().get()))
+        .asStateFlow(dateHandler.getDateFormat(uiPreferences.dateFormat().get()))
 
     init {
         DownloadService.registerWatch(params.mangaId)
@@ -211,11 +210,6 @@ class MangaScreenViewModel @Inject constructor(
                 refreshMangaAsync(manga.id).await()
             }
         }
-    }
-
-    private fun getDateFormat(format: String): DateFormat = when (format) {
-        "" -> KlockLocale.default.formatDateShort
-        else -> PatternDateFormat(format)
     }
 
     fun toggleRead(index: Int) {

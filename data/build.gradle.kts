@@ -45,7 +45,7 @@ kotlin {
                 api(libs.ktor.okHttp)
                 api(libs.okio)
                 api(libs.locale)
-                api(libs.klock)
+                api(libs.dateTime)
                 api(projects.core)
                 api(projects.i18n)
             }

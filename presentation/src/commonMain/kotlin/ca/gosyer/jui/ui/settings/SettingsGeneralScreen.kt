@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.getDisplayName
 import ca.gosyer.jui.core.lang.withIOContext
+import ca.gosyer.jui.data.base.DateHandler
 import ca.gosyer.jui.data.ui.UiPreferences
 import ca.gosyer.jui.data.ui.model.StartScreen
 import ca.gosyer.jui.i18n.MR
@@ -40,11 +41,8 @@ import ca.gosyer.jui.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import com.soywiz.klock.DateTime
-import com.soywiz.klock.KlockLocale
-import com.soywiz.klock.PatternDateFormat
-import com.soywiz.klock.format
 import io.fluidsonic.locale.Locale
+import kotlinx.datetime.Clock
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -71,6 +69,7 @@ class SettingsGeneralScreen : Screen {
 }
 
 class SettingsGeneralViewModel @Inject constructor(
+    private val dateHandler: DateHandler,
     uiPreferences: UiPreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
@@ -80,7 +79,7 @@ class SettingsGeneralViewModel @Inject constructor(
     val language = uiPreferences.language().asStateFlow()
     val dateFormat = uiPreferences.dateFormat().asStateFlow()
 
-    private val now = DateTime.now()
+    private val now = Clock.System.now()
     private val currentLocale = Locale.getDefault()
 
     @Composable
@@ -111,20 +110,16 @@ class SettingsGeneralViewModel @Inject constructor(
 
     @Composable
     fun getDateChoices(): Map<String, String> {
-        return mapOf(
-            "" to stringResource(MR.strings.date_system_default),
-            "MM/dd/yy" to "MM/dd/yy",
-            "dd/MM/yy" to "dd/MM/yy",
-            "yyyy-MM-dd" to "yyyy-MM-dd"
-        ).mapValues { "${it.value} (${getFormattedDate(it.key)})" }
+        return dateHandler.formatOptions
+            .associateWith {
+                it.ifEmpty { stringResource(MR.strings.date_system_default) } +
+                    " (${getFormattedDate(it)})"
+            }
     }
 
     @Composable
     private fun getFormattedDate(prefValue: String): String {
-        return when (prefValue) {
-            "" -> KlockLocale.default.formatDateShort
-            else -> PatternDateFormat(prefValue)
-        }.format(now)
+        return dateHandler.getDateFormat(prefValue).invoke(now)
     }
 }
 

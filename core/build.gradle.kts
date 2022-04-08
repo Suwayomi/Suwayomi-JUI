@@ -49,7 +49,7 @@ kotlin {
                 api(libs.multiplatformSettings.coroutines)
                 api(libs.multiplatformSettings.serialization)
                 api(libs.locale)
-                api(libs.klock)
+                api(libs.dateTime)
             }
         }
         val commonTest by getting {

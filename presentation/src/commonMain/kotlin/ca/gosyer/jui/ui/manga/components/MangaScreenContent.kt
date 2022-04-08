@@ -40,17 +40,16 @@ import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.resources.stringResource
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.format
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.datetime.Instant
 
 @Composable
 fun MangaScreenContent(
     isLoading: Boolean,
     manga: Manga?,
     chapters: List<ChapterDownloadItem>,
-    dateTimeFormatter: DateFormat,
+    dateTimeFormatter: (Instant) -> String,
     categoriesExist: Boolean,
     chooseCategoriesFlow: SharedFlow<Unit>,
     availableCategories: List<Category>,
@@ -113,7 +112,7 @@ fun MangaScreenContent(
                                 items(chapters) { chapter ->
                                     ChapterItem(
                                         chapter,
-                                        dateTimeFormatter::format,
+                                        dateTimeFormatter,
                                         onClick = { readerLauncher.launch(it, manga.id) },
                                         toggleRead = toggleRead,
                                         toggleBookmarked = toggleBookmarked,
