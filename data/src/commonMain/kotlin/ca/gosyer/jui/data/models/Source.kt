@@ -19,7 +19,7 @@ data class Source(
     val isConfigurable: Boolean,
     val isNsfw: Boolean,
     val displayName: String
-): JvmSerializable {
+) : JvmSerializable {
     val displayLang: String
         get() = if (id == LOCAL_SOURCE_ID) {
             "other"

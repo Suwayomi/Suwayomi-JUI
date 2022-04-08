@@ -115,7 +115,7 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
             }
             val sourceText = manga.source?.displayName ?: manga.sourceId.toString()
             Text(
-                text = stringResource(manga.status.res)  + " • " + sourceText,
+                text = stringResource(manga.status.res) + " • " + sourceText,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold
             )
