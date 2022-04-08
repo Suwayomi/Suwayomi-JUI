@@ -162,7 +162,13 @@ class LibraryScreenViewModel @Inject constructor(
             }
             Sort.UNREAD -> {
                 { a: Manga, b: Manga ->
-                    (a.unreadCount ?: 0).compareTo(b.unreadCount ?: 0)
+                    when {
+                        // Ensure unread content comes first
+                        (a.unreadCount ?: 0) == (b.unreadCount ?: 0) -> 0
+                        a.unreadCount == null || a.unreadCount == 0 -> if (ascending) 1 else -1
+                        b.unreadCount == null || b.unreadCount == 0 -> if (ascending) -1 else 1
+                        else -> (a.unreadCount ?: 0).compareTo(b.unreadCount ?: 0)
+                    }
                 }
             }
             Sort.DATE_ADDED -> {
