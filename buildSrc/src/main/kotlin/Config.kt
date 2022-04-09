@@ -1,7 +1,7 @@
 import org.gradle.api.JavaVersion
 
 object Config {
-    const val migrationCode = 1
+    const val migrationCode = 2
 
     // Tachidesk-Server version
     const val tachideskVersion = "v0.6.3"

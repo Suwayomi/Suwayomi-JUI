@@ -3,9 +3,9 @@
 # Tachidesk-JUI
 A free and open source manga reader to read manga from a [Tachidesk-Server][tachidesk-server] instance.
 
-Tachidesk-JUI can run Tachidesk-Server on its own, or connect to an already hosted server. 
+Tachidesk-JUI can run Tachidesk-Server on its own on desktop platforms, or connect to an already hosted server. 
 
-Any platform that runs Java can run it. On most platforms are binaries available if you don't want to install Java yourself.
+Android and any desktop platform that runs Java can run it. On most platforms are binaries available if you don't want to install Java yourself.
 
 ## Is this application usable? Should I test it?
 Here is a list of current features for interaction with Tachidesk-JUI:
@@ -16,6 +16,7 @@ Here is a list of current features for interaction with Tachidesk-JUI:
 - Viewing manga and chapters.
 - Reading, downloading, and managing chapters.
 - Viewing chapter updates
+- Globally search sources
 
 **Note:** Keep in mind that Tachidesk-JUI and Tachidesk-Server are alpha software, so it can have issues. See [General troubleshooting](#general-troubleshooting) and [Support and help](#support-and-help) if it happens.
 
@@ -27,7 +28,7 @@ These are the versions of [Tachidesk-Server][tachidesk-server] that JUI supports
 - [Tachidesk-Server Preview][tachidesk-server-preview] v0.6.0+
 
 ## Downloading and Running the app
-### All Operating Systems (x64, Java Not Included)
+### All Desktop Operating Systems (x64, Java Not Included)
 You should have [Java(JRE or JDK) 17](https://adoptium.net/) or newer.
 
 Download the latest jar release for your OS from [the releases section][release] (Or from [the preview releases][preview]).
@@ -58,6 +59,9 @@ Download the latest rpm release from [the releases section][release] (Or from [t
 Download the latest release from [the aur](https://aur.archlinux.org/packages/tachidesk-jui/).
 
 If you use yay, you can run `yay -S tachidesk-jui` inside a terminal window.
+
+### Android (Requires external server)
+Download the latest apk from [the releases section][release] (Or from [the preview releases][preview]).
 
 ## General troubleshooting
 ### I'm having issues starting the application

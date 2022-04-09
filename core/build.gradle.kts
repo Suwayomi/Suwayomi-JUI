@@ -7,9 +7,6 @@ plugins {
     id(libs.plugins.kotlinter.get().pluginId)
 }
 
-group = "ca.gosyer"
-version = "1.2.1"
-
 kotlin {
     android {
         compilations {
