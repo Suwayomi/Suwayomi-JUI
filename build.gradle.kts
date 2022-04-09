@@ -89,6 +89,11 @@ subprojects {
             dependencies {
                 add("coreLibraryDesugaring", libs.desugarJdkLibs)
             }
+            buildFeatures.apply {
+                aidl = false
+                renderScript = false
+                shaders = false
+            }
         }
     }
     plugins.withType<com.codingfeline.buildkonfig.gradle.BuildKonfigPlugin> {
