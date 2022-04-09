@@ -47,7 +47,6 @@ import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Switch
@@ -69,7 +68,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -77,13 +75,14 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
-import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogButtons
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.TextFieldStyle
+import com.vanpra.composematerialdialogs.input
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 
@@ -183,6 +182,8 @@ fun EditTextPreference(
     icon: ImageVector? = null,
     changeListener: () -> Unit = {},
     enabled: Boolean = true,
+    maxLines: Int = 1,
+    singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     val dialogState = rememberMaterialDialogState()
@@ -196,12 +197,10 @@ fun EditTextPreference(
         enabled = enabled
     )
     val value by preference.collectAsState()
-    var editText by remember(value) { mutableStateOf(TextFieldValue(preference.value)) }
     MaterialDialog(
         dialogState,
         buttons = {
             positiveButton(stringResource(MR.strings.action_ok)) {
-                preference.value = editText.text
                 changeListener()
             }
             negativeButton(stringResource(MR.strings.action_cancel))
@@ -209,13 +208,14 @@ fun EditTextPreference(
         properties = getMaterialDialogProperties(),
     ) {
         title(title)
-        OutlinedTextField(
-            editText,
-            onValueChange = {
-                editText = it
-            },
+        input(
+            label = "",
+            prefill = value,
+            textFieldStyle = TextFieldStyle.Outlined,
             visualTransformation = visualTransformation,
-            modifier = Modifier.keyboardHandler()
+            onInput = { preference.value = it },
+            maxLines = maxLines,
+            singleLine = singleLine
         )
     }
 }

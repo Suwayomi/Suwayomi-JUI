@@ -14,18 +14,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Checkbox
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
@@ -42,10 +38,11 @@ import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.MultiSelect
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.TwoState
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
-import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.TextFieldStyle
+import com.vanpra.composematerialdialogs.input
 import com.vanpra.composematerialdialogs.message
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
@@ -189,13 +186,10 @@ private fun EditTextPreference(editText: EditText) {
         subtitle = subtitle,
         onClick = dialogState::show
     )
-    var text by remember(state) { mutableStateOf(TextFieldValue(state)) }
     MaterialDialog(
         dialogState,
         buttons = {
-            positiveButton(stringResource(MR.strings.action_ok)) {
-                editText.updateState(text.text)
-            }
+            positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
         properties = getMaterialDialogProperties(),
@@ -204,12 +198,10 @@ private fun EditTextPreference(editText: EditText) {
         if (editText.dialogMessage != null) {
             message(editText.dialogMessage)
         }
-        OutlinedTextField(
-            text,
-            onValueChange = {
-                text = it
-            },
-            modifier = Modifier.keyboardHandler(singleLine = true)
+        input(
+            label = "",
+            textFieldStyle = TextFieldStyle.Outlined,
+            onInput = { editText.updateState(it) }
         )
     }
 }
