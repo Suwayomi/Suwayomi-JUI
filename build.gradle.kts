@@ -29,6 +29,14 @@ buildscript {
 allprojects {
     group = "ca.gosyer"
     version = "1.2.1"
+
+    dependencies {
+        modules {
+            module("androidx.lifecycle:lifecycle-viewmodel-ktx") {
+                replacedBy("androidx.lifecycle:lifecycle-viewmodel")
+            }
+        }
+    }
 }
 
 tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
