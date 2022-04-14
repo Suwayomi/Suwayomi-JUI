@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.uicore.components
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,19 +29,21 @@ fun LoadingScreen(
     retryMessage: String = stringResource(MR.strings.action_retry),
     retry: (() -> Unit)? = null
 ) {
-    BoxWithConstraints(modifier) {
-        if (isLoading) {
-            if (progress != 0.0F && !progress.isNaN()) {
-                val animatedProgress by animateFloatAsState(
-                    targetValue = progress,
-                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
-                )
-                CircularProgressIndicator(animatedProgress, Modifier.align(Alignment.Center))
+    Crossfade(isLoading, modifier) {
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            if (it) {
+                if (progress != 0.0F && !progress.isNaN()) {
+                    val animatedProgress by animateFloatAsState(
+                        targetValue = progress,
+                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                    )
+                    CircularProgressIndicator(animatedProgress, Modifier.align(Alignment.Center))
+                } else {
+                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+                }
             } else {
-                CircularProgressIndicator(Modifier.align(Alignment.Center))
+                ErrorScreen(errorMessage, modifier, retryMessage, retry)
             }
-        } else {
-            ErrorScreen(errorMessage, modifier, retryMessage, retry)
         }
     }
 }
