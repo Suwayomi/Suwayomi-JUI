@@ -10,16 +10,14 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.data.server.Http
+import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsChannel
-import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.jvm.javaio.copyTo
+import io.ktor.client.statement.HttpResponse
 import okio.FileSystem
 import okio.Path
 import okio.buffer
 import org.jetbrains.skia.Image
-import java.io.ByteArrayOutputStream
 
 fun imageFromFile(file: Path): ImageBitmap {
     return Image.makeFromEncoded(FileSystem.SYSTEM.source(file).buffer().readByteArray())
@@ -27,13 +25,9 @@ fun imageFromFile(file: Path): ImageBitmap {
 }
 
 suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
-    return client.get(url, block).asSuccess().bodyAsChannel().toImageBitmap()
+    return client.get(url, block).asSuccess().toImageBitmap()
 }
 
-actual suspend fun ByteReadChannel.toImageBitmap(): ImageBitmap {
-    val bytes = ByteArrayOutputStream().use {
-        this.copyTo(it)
-        it.toByteArray()
-    }
-    return Image.makeFromEncoded(bytes).toComposeImageBitmap()
+actual suspend fun HttpResponse.toImageBitmap(): ImageBitmap {
+    return Image.makeFromEncoded(body<ByteArray>()).toComposeImageBitmap()
 }

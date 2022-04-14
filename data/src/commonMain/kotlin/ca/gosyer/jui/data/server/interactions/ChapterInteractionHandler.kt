@@ -26,7 +26,6 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
 import kotlinx.coroutines.Dispatchers
@@ -133,7 +132,7 @@ class ChapterInteractionHandler @Inject constructor(
         val response = client.get(
             serverUrl + getPageQuery(mangaId, chapterIndex, pageNum),
             block
-        ).asSuccess().bodyAsChannel()
+        ).asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 

@@ -7,6 +7,6 @@
 package ca.gosyer.jui.ui.util.compose
 
 import androidx.compose.ui.graphics.ImageBitmap
-import io.ktor.utils.io.ByteReadChannel
+import io.ktor.client.statement.HttpResponse
 
-expect suspend fun ByteReadChannel.toImageBitmap(): ImageBitmap
+expect suspend fun HttpResponse.toImageBitmap(): ImageBitmap
