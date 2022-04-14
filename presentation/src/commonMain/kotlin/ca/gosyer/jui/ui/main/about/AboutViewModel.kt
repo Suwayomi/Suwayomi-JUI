@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.Instant
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class AboutViewModel @Inject constructor(
     private val dateHandler: DateHandler,
@@ -53,6 +55,9 @@ class AboutViewModel @Inject constructor(
             .onEach {
                 _about.value = it
             }
+            .catch {
+                log.warn(it) { "Error getting server info" }
+            }
             .launchIn(scope)
     }
 
@@ -67,5 +72,9 @@ class AboutViewModel @Inject constructor(
 
     private fun getFormattedDate(time: Instant): String {
         return dateHandler.dateTimeFormat(time)
+    }
+
+    companion object {
+        private val log = logging()
     }
 }
