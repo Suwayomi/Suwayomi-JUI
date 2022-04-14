@@ -59,7 +59,8 @@ dependencies {
     // Http client
     implementation(libs.ktor.core)
     implementation(libs.ktor.okHttp)
-    implementation(libs.ktor.serialization)
+    implementation(libs.ktor.contentNegotiation)
+    implementation(libs.ktor.serialization.json)
     implementation(libs.ktor.logging)
     implementation(libs.ktor.websockets)
     implementation(libs.ktor.auth)

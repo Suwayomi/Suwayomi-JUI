@@ -6,15 +6,16 @@
 
 package ca.gosyer.jui.data.server.interactions
 
+import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.About
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.requests.aboutQuery
 import ca.gosyer.jui.data.server.requests.checkUpdateQuery
+import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
-import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -26,16 +27,16 @@ class SettingsInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     fun aboutServer() = flow {
-        val response = client.get<About>(
+        val response = client.get(
             serverUrl + aboutQuery()
-        )
+        ).asSuccess().body<About>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun checkUpdate() = flow {
-        val response = client.post<HttpResponse>(
+        val response = client.post(
             serverUrl + checkUpdateQuery()
-        )
+        ).asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 }

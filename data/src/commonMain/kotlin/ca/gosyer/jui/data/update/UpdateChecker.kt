@@ -10,6 +10,7 @@ import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.build.BuildKonfig
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.update.model.GithubRelease
+import io.ktor.client.call.body
 import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -22,9 +23,9 @@ class UpdateChecker @Inject constructor(
 ) {
     fun checkForUpdates() = flow {
         // if (!updatePreferences.enabled().get()) return
-        val latestRelease = client.get<GithubRelease>(
+        val latestRelease = client.get(
             "https://api.github.com/repos/$GITHUB_REPO/releases/latest"
-        )
+        ).body<GithubRelease>()
 
         if (isNewVersion(latestRelease.version)) {
             emit(Update.UpdateFound(latestRelease))

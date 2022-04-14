@@ -15,7 +15,7 @@ import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.util.compose.toImageBitmap
 import ca.gosyer.jui.ui.util.lang.priorityChannel
 import cafe.adriel.voyager.core.concurrent.AtomicInt32
-import io.ktor.client.features.onDownload
+import io.ktor.client.plugins.onDownload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

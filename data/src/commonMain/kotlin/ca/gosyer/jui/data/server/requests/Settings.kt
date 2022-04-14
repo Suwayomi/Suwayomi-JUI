@@ -8,8 +8,8 @@ package ca.gosyer.jui.data.server.requests
 
 @Get
 fun aboutQuery() =
-    "/api/v1/settings/about"
+    "api/v1/settings/about"
 
 @Get
 fun checkUpdateQuery() =
-    "/api/v1/settings/check-update"
+    "api/v1/settings/check-update"

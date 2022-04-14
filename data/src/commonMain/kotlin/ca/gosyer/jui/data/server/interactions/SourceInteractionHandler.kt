@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.data.server.interactions
 
+import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.MangaPage
 import ca.gosyer.jui.data.models.Source
@@ -25,10 +26,11 @@ import ca.gosyer.jui.data.server.requests.sourceListQuery
 import ca.gosyer.jui.data.server.requests.sourcePopularQuery
 import ca.gosyer.jui.data.server.requests.sourceSearchQuery
 import ca.gosyer.jui.data.server.requests.updateSourceSettingQuery
+import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
-import io.ktor.client.statement.HttpResponse
+import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.Dispatchers
@@ -44,25 +46,25 @@ class SourceInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     fun getSourceList() = flow {
-        val response = client.get<List<Source>>(
+        val response = client.get(
             serverUrl + sourceListQuery()
-        )
+        ).asSuccess().body<List<Source>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun getSourceInfo(sourceId: Long) = flow {
-        val response = client.get<Source>(
+        val response = client.get(
             serverUrl + sourceInfoQuery(sourceId)
-        )
+        ).asSuccess().body<Source>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun getSourceInfo(source: Source) = getSourceInfo(source.id)
 
     fun getPopularManga(sourceId: Long, pageNum: Int) = flow {
-        val response = client.get<MangaPage>(
+        val response = client.get(
             serverUrl + sourcePopularQuery(sourceId, pageNum)
-        )
+        ).asSuccess().body<MangaPage>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -72,9 +74,9 @@ class SourceInteractionHandler @Inject constructor(
     )
 
     fun getLatestManga(sourceId: Long, pageNum: Int) = flow {
-        val response = client.get<MangaPage>(
+        val response = client.get(
             serverUrl + sourceLatestQuery(sourceId, pageNum)
-        )
+        ).asSuccess().body<MangaPage>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -85,7 +87,7 @@ class SourceInteractionHandler @Inject constructor(
 
     // TODO: 2021-03-14
     fun getGlobalSearchResults(searchTerm: String) = flow {
-        val response = client.get<HttpResponse>(
+        val response = client.get(
             serverUrl + globalSearchQuery()
         ) {
             url {
@@ -93,12 +95,12 @@ class SourceInteractionHandler @Inject constructor(
                     parameter("searchTerm", searchTerm)
                 }
             }
-        }
+        }.asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun getSearchResults(sourceId: Long, searchTerm: String, pageNum: Int) = flow {
-        val response = client.get<MangaPage>(
+        val response = client.get(
             serverUrl + sourceSearchQuery(sourceId)
         ) {
             url {
@@ -107,7 +109,7 @@ class SourceInteractionHandler @Inject constructor(
                     parameter("searchTerm", searchTerm)
                 }
             }
-        }
+        }.asSuccess().body<MangaPage>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -118,7 +120,7 @@ class SourceInteractionHandler @Inject constructor(
     )
 
     fun getFilterList(sourceId: Long, reset: Boolean = false) = flow {
-        val response = client.get<List<SourceFilter>>(
+        val response = client.get(
             serverUrl + getFilterListQuery(sourceId)
         ) {
             url {
@@ -126,19 +128,19 @@ class SourceInteractionHandler @Inject constructor(
                     parameter("reset", true)
                 }
             }
-        }
+        }.asSuccess().body<List<SourceFilter>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun getFilterList(source: Source, reset: Boolean = false) = getFilterList(source.id, reset)
 
     fun setFilter(sourceId: Long, sourceFilter: SourceFilterChange) = flow {
-        val response = client.post<HttpResponse>(
+        val response = client.post(
             serverUrl + setFilterRequest(sourceId)
         ) {
             contentType(ContentType.Application.Json)
-            body = sourceFilter
-        }
+            setBody(sourceFilter)
+        }.asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -156,21 +158,21 @@ class SourceInteractionHandler @Inject constructor(
     )
 
     fun getSourceSettings(sourceId: Long) = flow {
-        val response = client.get<List<SourcePreference>>(
+        val response = client.get(
             serverUrl + getSourceSettingsQuery(sourceId)
-        )
+        ).asSuccess().body<List<SourcePreference>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun getSourceSettings(source: Source) = getSourceSettings(source.id)
 
     fun setSourceSetting(sourceId: Long, sourcePreference: SourcePreferenceChange) = flow {
-        val response = client.post<HttpResponse>(
+        val response = client.post(
             serverUrl + updateSourceSettingQuery(sourceId)
         ) {
             contentType(ContentType.Application.Json)
-            body = sourcePreference
-        }
+            setBody(sourcePreference)
+        }.asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 

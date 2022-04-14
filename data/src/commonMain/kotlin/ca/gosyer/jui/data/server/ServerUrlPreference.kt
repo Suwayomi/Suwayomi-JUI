@@ -10,6 +10,7 @@ import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.getAsFlow
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
+import io.ktor.http.path
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted

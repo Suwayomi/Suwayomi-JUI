@@ -13,15 +13,13 @@ import ca.gosyer.jui.data.download.model.DownloaderStatus
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.requests.downloadsQuery
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.readText
-import kotlinx.coroutines.DelicateCoroutinesApi
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.decodeFromString
 import me.tatarka.inject.annotations.Inject
 
-@OptIn(DelicateCoroutinesApi::class)
 class DownloadService @Inject constructor(
     serverPreferences: ServerPreferences,
     client: Http

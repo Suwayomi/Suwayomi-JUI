@@ -59,9 +59,9 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
-import io.ktor.client.features.onDownload
-import io.ktor.client.features.onUpload
-import io.ktor.http.isSuccess
+import io.ktor.client.plugins.onDownload
+import io.ktor.client.plugins.onUpload
+import io.ktor.client.statement.bodyAsChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -202,27 +202,25 @@ class SettingsBackupViewModel @Inject constructor(
                 }
             }
             .onEach { backup ->
-                if (backup.status.isSuccess()) {
-                    val filename =
-                        backup.headers["content-disposition"]?.substringAfter("filename=")
-                            ?.trim('"') ?: "backup"
-                    tempFile.value = FileSystem.SYSTEM_TEMPORARY_DIRECTORY.resolve(filename).also {
-                        mutex.tryLock()
-                        scope.launch {
-                            try {
-                                backup.content.toSource().saveTo(it)
-                            } catch (e: Exception) {
-                                e.throwIfCancellation()
-                                log.warn(e) { "Error creating backup" }
-                                _creatingStatus.value = Status.Error
-                                _creating.value = false
-                            } finally {
-                                mutex.unlock()
-                            }
+                val filename =
+                    backup.headers["content-disposition"]?.substringAfter("filename=")
+                        ?.trim('"') ?: "backup"
+                tempFile.value = FileSystem.SYSTEM_TEMPORARY_DIRECTORY.resolve(filename).also {
+                    mutex.tryLock()
+                    scope.launch {
+                        try {
+                            backup.bodyAsChannel().toSource().saveTo(it)
+                        } catch (e: Exception) {
+                            e.throwIfCancellation()
+                            log.warn(e) { "Error creating backup" }
+                            _creatingStatus.value = Status.Error
+                            _creating.value = false
+                        } finally {
+                            mutex.unlock()
                         }
                     }
-                    _createFlow.emit(filename)
                 }
+                _createFlow.emit(filename)
             }
             .catch {
                 log.warn(it) { "Error exporting backup" }

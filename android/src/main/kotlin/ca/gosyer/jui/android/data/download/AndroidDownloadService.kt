@@ -30,9 +30,9 @@ import ca.gosyer.jui.data.server.requests.downloadsQuery
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
-import io.ktor.client.features.websocket.ws
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.readText
+import io.ktor.client.plugins.websocket.ws
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

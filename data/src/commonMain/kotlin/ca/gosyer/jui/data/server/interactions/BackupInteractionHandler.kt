@@ -7,6 +7,7 @@
 package ca.gosyer.jui.data.server.interactions
 
 import ca.gosyer.jui.core.io.SYSTEM
+import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.BackupValidationResult
 import ca.gosyer.jui.data.server.Http
@@ -14,11 +15,11 @@ import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.requests.backupFileExportRequest
 import ca.gosyer.jui.data.server.requests.backupFileImportRequest
 import ca.gosyer.jui.data.server.requests.validateBackupFileRequest
+import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
@@ -36,7 +37,7 @@ class BackupInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     fun importBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = flow {
-        val response = client.submitFormWithBinaryData<HttpResponse>(
+        val response = client.submitFormWithBinaryData(
             serverUrl + backupFileImportRequest(),
             formData = formData {
                 append(
@@ -48,12 +49,12 @@ class BackupInteractionHandler @Inject constructor(
                 )
             },
             block = block
-        )
+        ).asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun validateBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = flow {
-        val response = client.submitFormWithBinaryData<BackupValidationResult>(
+        val response = client.submitFormWithBinaryData(
             serverUrl + validateBackupFileRequest(),
             formData = formData {
                 append(
@@ -65,15 +66,15 @@ class BackupInteractionHandler @Inject constructor(
                 )
             },
             block = block
-        )
+        ).asSuccess().body<BackupValidationResult>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun exportBackupFile(block: HttpRequestBuilder.() -> Unit = {}) = flow {
-        val response = client.get<HttpResponse>(
+        val response = client.get(
             serverUrl + backupFileExportRequest(),
             block
-        )
+        ).asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 }

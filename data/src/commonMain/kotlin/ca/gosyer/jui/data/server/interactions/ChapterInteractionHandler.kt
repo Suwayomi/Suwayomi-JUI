@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.data.server.interactions
 
+import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.data.models.Manga
@@ -19,15 +20,15 @@ import ca.gosyer.jui.data.server.requests.queueDownloadChapterRequest
 import ca.gosyer.jui.data.server.requests.stopDownloadingChapterRequest
 import ca.gosyer.jui.data.server.requests.updateChapterMetaRequest
 import ca.gosyer.jui.data.server.requests.updateChapterRequest
+import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
-import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -39,7 +40,7 @@ class ChapterInteractionHandler @Inject constructor(
 ) : BaseInteractionHandler(client, serverPreferences) {
 
     fun getChapters(mangaId: Long, refresh: Boolean = false) = flow {
-        val response = client.get<List<Chapter>>(
+        val response = client.get(
             serverUrl + getMangaChaptersQuery(mangaId)
         ) {
             url {
@@ -47,16 +48,16 @@ class ChapterInteractionHandler @Inject constructor(
                     parameter("onlineFetch", true)
                 }
             }
-        }
+        }.asSuccess().body<List<Chapter>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun getChapters(manga: Manga, refresh: Boolean = false) = getChapters(manga.id, refresh)
 
     fun getChapter(mangaId: Long, chapterIndex: Int) = flow {
-        val response = client.get<Chapter>(
+        val response = client.get(
             serverUrl + getChapterQuery(mangaId, chapterIndex)
-        )
+        ).asSuccess().body<Chapter>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -74,7 +75,7 @@ class ChapterInteractionHandler @Inject constructor(
         lastPageRead: Int? = null,
         markPreviousRead: Boolean? = null
     ) = flow {
-        val response = client.submitForm<HttpResponse>(
+        val response = client.submitForm(
             serverUrl + updateChapterRequest(mangaId, chapterIndex),
             formParameters = Parameters.build {
                 if (read != null) {
@@ -92,7 +93,7 @@ class ChapterInteractionHandler @Inject constructor(
             }
         ) {
             method = HttpMethod.Patch
-        }
+        }.asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -129,10 +130,10 @@ class ChapterInteractionHandler @Inject constructor(
     )
 
     fun getPage(mangaId: Long, chapterIndex: Int, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = flow {
-        val response = client.get<ByteReadChannel>(
+        val response = client.get(
             serverUrl + getPageQuery(mangaId, chapterIndex, pageNum),
             block
-        )
+        ).asSuccess().bodyAsChannel()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -143,9 +144,9 @@ class ChapterInteractionHandler @Inject constructor(
     fun getPage(manga: Manga, chapter: Chapter, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = getPage(manga.id, chapter.index, pageNum, block)
 
     fun deleteChapterDownload(mangaId: Long, chapterIndex: Int) = flow {
-        val response = client.delete<HttpResponse>(
+        val response = client.delete(
             serverUrl + deleteDownloadedChapterRequest(mangaId, chapterIndex)
-        )
+        ).asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -156,9 +157,9 @@ class ChapterInteractionHandler @Inject constructor(
     fun deleteChapterDownload(manga: Manga, chapter: Chapter) = deleteChapterDownload(manga.id, chapter.index)
 
     fun queueChapterDownload(mangaId: Long, chapterIndex: Int) = flow {
-        val response = client.get<HttpResponse>(
+        val response = client.get(
             serverUrl + queueDownloadChapterRequest(mangaId, chapterIndex)
-        )
+        ).asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -169,9 +170,9 @@ class ChapterInteractionHandler @Inject constructor(
     fun queueChapterDownload(manga: Manga, chapter: Chapter) = queueChapterDownload(manga.id, chapter.index)
 
     fun stopChapterDownload(mangaId: Long, chapterIndex: Int) = flow {
-        val response = client.delete<HttpResponse>(
+        val response = client.delete(
             serverUrl + stopDownloadingChapterRequest(mangaId, chapterIndex)
-        )
+        ).asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -182,7 +183,7 @@ class ChapterInteractionHandler @Inject constructor(
     fun stopChapterDownload(manga: Manga, chapter: Chapter) = stopChapterDownload(manga.id, chapter.index)
 
     fun updateChapterMeta(mangaId: Long, chapterIndex: Int, key: String, value: String) = flow {
-        val response = client.submitForm<HttpResponse>(
+        val response = client.submitForm(
             serverUrl + updateChapterMetaRequest(mangaId, chapterIndex),
             formParameters = Parameters.build {
                 append("key", key)
@@ -190,7 +191,7 @@ class ChapterInteractionHandler @Inject constructor(
             }
         ) {
             method = HttpMethod.Patch
-        }
+        }.asSuccess()
         emit(response)
     }.flowOn(Dispatchers.IO)
 

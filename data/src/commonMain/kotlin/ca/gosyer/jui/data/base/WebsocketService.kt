@@ -10,8 +10,8 @@ import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.data.build.BuildKonfig
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
-import io.ktor.client.features.websocket.ws
-import io.ktor.http.cio.websocket.Frame
+import io.ktor.client.plugins.websocket.ws
+import io.ktor.websocket.Frame
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope

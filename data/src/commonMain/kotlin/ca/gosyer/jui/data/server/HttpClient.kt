@@ -11,19 +11,21 @@ import ca.gosyer.jui.data.server.model.Auth
 import ca.gosyer.jui.data.server.model.Proxy
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.ProxyBuilder
-import io.ktor.client.features.auth.providers.BasicAuthCredentials
-import io.ktor.client.features.auth.providers.DigestAuthCredentials
-import io.ktor.client.features.auth.providers.basic
-import io.ktor.client.features.auth.providers.digest
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.features.logging.LogLevel
-import io.ktor.client.features.logging.Logging
-import io.ktor.client.features.websocket.WebSockets
+import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.DigestAuthCredentials
+import io.ktor.client.plugins.auth.providers.basic
+import io.ktor.client.plugins.auth.providers.digest
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.http.URLBuilder
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Inject
-import io.ktor.client.features.auth.Auth as AuthFeature
+import org.lighthousegames.logging.logging
+import io.ktor.client.plugins.auth.Auth as AuthPlugin
 
 typealias Http = HttpClient
 
@@ -47,7 +49,7 @@ class HttpProvider @Inject constructor() {
             }
             when (serverPreferences.auth().get()) {
                 Auth.NONE -> Unit
-                Auth.BASIC -> install(AuthFeature) {
+                Auth.BASIC -> AuthPlugin {
                     basic {
                         credentials {
                             BasicAuthCredentials(
@@ -57,7 +59,7 @@ class HttpProvider @Inject constructor() {
                         }
                     }
                 }
-                Auth.DIGEST -> install(AuthFeature) {
+                Auth.DIGEST -> AuthPlugin {
                     digest {
                         credentials {
                             DigestAuthCredentials(
@@ -68,8 +70,8 @@ class HttpProvider @Inject constructor() {
                     }
                 }
             }
-            install(JsonFeature) {
-                serializer = KotlinxSerializer(
+            install(ContentNegotiation) {
+                json(
                     Json {
                         isLenient = false
                         ignoreUnknownKeys = true
@@ -84,6 +86,12 @@ class HttpProvider @Inject constructor() {
                     LogLevel.HEADERS
                 } else {
                     LogLevel.INFO
+                }
+                logger = object : Logger {
+                    val log = logging("HttpClient")
+                    override fun log(message: String) {
+                        log.info { message }
+                    }
                 }
             }
         }

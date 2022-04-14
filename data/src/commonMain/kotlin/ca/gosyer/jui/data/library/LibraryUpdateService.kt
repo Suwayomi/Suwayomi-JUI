@@ -11,15 +11,13 @@ import ca.gosyer.jui.data.library.model.UpdateStatus
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.requests.updatesQuery
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.readText
-import kotlinx.coroutines.DelicateCoroutinesApi
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.decodeFromString
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-@OptIn(DelicateCoroutinesApi::class)
 class LibraryUpdateService @Inject constructor(
     serverPreferences: ServerPreferences,
     client: Http
