@@ -32,8 +32,8 @@ class ServerUrlPreference(
     override fun get(): Url {
         return URLBuilder(server.get()).apply {
             port = this@ServerUrlPreference.port.get()
-            if (pathPrefix.isSet() && pathPrefix.get().isNotBlank()) {
-                path(pathPrefix.get())
+            if (pathPrefix.isSet()) {
+                pathPrefix.get().ifBlank { null }?.let { path(it) }
             }
         }.build()
     }
