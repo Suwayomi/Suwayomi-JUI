@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.data.reader.model.Direction
 import ca.gosyer.jui.ui.reader.ChapterSeparator
@@ -64,6 +65,7 @@ fun ContinuousReader(
 ) {
     BoxWithConstraints(modifier then Modifier.fillMaxSize()) {
         val state = rememberLazyListState(currentPage, currentPageOffset)
+        val density = LocalDensity.current
         LaunchedEffect(Unit) {
             pageEmitter
                 .mapLatest { pageMove ->
@@ -74,7 +76,11 @@ fun ContinuousReader(
                                 MoveTo.Previous -> -maxHeight
                                 MoveTo.Next -> maxHeight
                             } * 0.8F
-                            state.animateScrollBy(by.value)
+                            state.animateScrollBy(
+                                with(density) {
+                                    by.toPx()
+                                }
+                            )
                             Unit
                         }
                         is PageMove.Page -> {
