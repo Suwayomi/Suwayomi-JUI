@@ -11,6 +11,7 @@ import ca.gosyer.jui.data.build.BuildKonfig
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
 import io.ktor.client.plugins.websocket.ws
+import io.ktor.http.URLProtocol
 import io.ktor.websocket.Frame
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -57,7 +58,13 @@ abstract class WebsocketService(
                         client.ws(
                             host = serverUrl.host,
                             port = serverUrl.port,
-                            path = serverUrl.encodedPath + query
+                            path = serverUrl.encodedPath + query,
+                            request = {
+                                if (serverUrl.port == 443) {
+                                    url.protocol = URLProtocol.WSS
+                                    url.port = serverUrl.port
+                                }
+                            }
                         ) {
                             errorConnectionCount = 0
                             _status.value = Status.RUNNING
