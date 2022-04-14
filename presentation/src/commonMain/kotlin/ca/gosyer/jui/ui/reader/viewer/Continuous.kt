@@ -114,6 +114,7 @@ fun ContinuousReader(
             Direction.Up -> PaddingValues(top = padding.dp)
             Direction.Down -> PaddingValues(bottom = padding.dp)
         }
+        fun retry(index: Int) { pages.find { it.index == index }?.let { retry(it) } }
 
         when (direction) {
             Direction.Down, Direction.Up -> {
@@ -132,7 +133,7 @@ fun ContinuousReader(
                         imageModifier = imageModifier,
                         loadingModifier = loadingModifier,
                         pageContentScale = pageContentScale,
-                        retry = retry
+                        retry = ::retry
                     )
                 }
                 VerticalScrollbar(
@@ -159,7 +160,7 @@ fun ContinuousReader(
                         imageModifier = imageModifier,
                         loadingModifier = loadingModifier,
                         pageContentScale = pageContentScale,
-                        retry = retry
+                        retry = ::retry
                     )
                 }
                 HorizontalScrollbar(
@@ -183,7 +184,7 @@ private fun LazyListScope.items(
     imageModifier: Modifier,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    retry: (ReaderPage) -> Unit
+    retry: (Int) -> Unit
 ) {
     item {
         ChapterSeparator(previousChapter, currentChapter)
@@ -198,10 +199,9 @@ private fun LazyListScope.items(
                 error = image.error.collectAsState().value,
                 imageModifier = imageModifier,
                 loadingModifier = loadingModifier,
-                contentScale = pageContentScale
-            ) { pageIndex ->
-                pages.find { it.index == pageIndex }?.let { retry(it) }
-            }
+                contentScale = pageContentScale,
+                retry = retry
+            )
         }
     }
     item {

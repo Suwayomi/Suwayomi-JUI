@@ -43,7 +43,7 @@ fun PagerReader(
 ) {
     val state = rememberPagerState(initialPage = currentPage)
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(pages.size) {
         val pageRange = 0..(pages.size + 1)
         pageEmitter
             .mapLatest { pageMove ->
@@ -75,6 +75,7 @@ fun PagerReader(
         }
     }
     val modifier = parentModifier then Modifier.fillMaxSize()
+    fun retry(index: Int) { pages.find { it.index == index }?.let { retry(it) } }
 
     if (direction == Direction.Down || direction == Direction.Up) {
         VerticalPager(
@@ -91,7 +92,7 @@ fun PagerReader(
                 nextChapter = nextChapter,
                 loadingModifier = loadingModifier,
                 pageContentScale = pageContentScale,
-                retry = retry
+                retry = ::retry
             )
         }
     } else {
@@ -109,7 +110,7 @@ fun PagerReader(
                 nextChapter = nextChapter,
                 loadingModifier = loadingModifier,
                 pageContentScale = pageContentScale,
-                retry = retry
+                retry = ::retry
             )
         }
     }
@@ -124,7 +125,7 @@ fun HandlePager(
     nextChapter: ReaderChapter?,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    retry: (ReaderPage) -> Unit,
+    retry: (Int) -> Unit,
 ) {
     when (page) {
         0 -> ChapterSeparator(previousChapter, currentChapter)
@@ -138,9 +139,7 @@ fun HandlePager(
                 status = image.status.collectAsState().value,
                 error = image.error.collectAsState().value,
                 loadingModifier = loadingModifier,
-                retry = { pageIndex ->
-                    pages.find { it.index == pageIndex }?.let { retry(it) }
-                },
+                retry = retry,
                 contentScale = pageContentScale
             )
         }
