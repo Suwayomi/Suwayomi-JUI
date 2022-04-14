@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.base.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +27,6 @@ actual class ComponentRect actual constructor(
     offset: DpOffset
 ) : TooltipPlacement
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 actual fun TooltipArea(
     tooltip: @Composable () -> Unit,
