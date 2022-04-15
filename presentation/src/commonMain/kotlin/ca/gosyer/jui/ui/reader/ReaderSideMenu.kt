@@ -48,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.core.util.replace
@@ -84,7 +85,8 @@ fun ReaderSideMenu(
             ReaderProgressSlider(
                 currentPage = currentPage,
                 pageCount = pageCount,
-                onNewPageClicked = onNewPageClicked
+                onNewPageClicked = onNewPageClicked,
+                isRtL = false
             )
             NavigateChapters(
                 loadPrevChapter = onPrevChapterClicked,
@@ -113,10 +115,11 @@ fun ReaderExpandBottomMenu(
         exit = slideOutVertically { it },
         modifier = modifier
     ) {
+        val isRtL = direction == Direction.Left
         AroundLayout(
             Modifier.padding(horizontal = 16.dp, vertical = 8.dp).height(48.dp),
             startLayout = {
-                val (text, onClick, enabled) = if (direction == Direction.Right) {
+                val (text, onClick, enabled) = if (!isRtL) {
                     Triple(stringResource(MR.strings.previous_chapter), movePrevChapter, previousChapter != null)
                 } else {
                     Triple(stringResource(MR.strings.next_chapter), moveNextChapter, nextChapter != null)
@@ -135,7 +138,7 @@ fun ReaderExpandBottomMenu(
                 }
             },
             endLayout = {
-                val (text, onClick, enabled) = if (direction != Direction.Right) {
+                val (text, onClick, enabled) = if (isRtL) {
                     Triple(stringResource(MR.strings.previous_chapter), movePrevChapter, previousChapter != null)
                 } else {
                     Triple(stringResource(MR.strings.next_chapter), moveNextChapter, nextChapter != null)
@@ -163,7 +166,7 @@ fun ReaderExpandBottomMenu(
                     Modifier.padding(horizontal = 8.dp),
                     startLayout = {
                         Box(Modifier.fillMaxHeight().width(32.dp), contentAlignment = Alignment.Center) {
-                            val text = if (direction == Direction.Right) {
+                            val text = if (!isRtL) {
                                 currentPage
                             } else {
                                 chapter.chapter.pageCount!!
@@ -173,7 +176,7 @@ fun ReaderExpandBottomMenu(
                     },
                     endLayout = {
                         Box(Modifier.fillMaxHeight().width(32.dp), contentAlignment = Alignment.Center) {
-                            val text = if (direction != Direction.Right) {
+                            val text = if (isRtL) {
                                 currentPage
                             } else {
                                 chapter.chapter.pageCount!!
@@ -188,7 +191,8 @@ fun ReaderExpandBottomMenu(
                             .padding(horizontal = 4.dp),
                         currentPage = currentPage,
                         pageCount = chapter.chapter.pageCount!!,
-                        onNewPageClicked = navigate
+                        onNewPageClicked = navigate,
+                        isRtL = isRtL
                     )
                 }
             }
@@ -249,6 +253,7 @@ private fun ReaderProgressSlider(
     currentPage: Int,
     pageCount: Int,
     onNewPageClicked: (Int) -> Unit,
+    isRtL: Boolean
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = currentPage.toFloat(),
@@ -266,7 +271,11 @@ private fun ReaderProgressSlider(
         valueRange = 0F..pageCount.toFloat(),
         steps = pageCount,
         onValueChangeFinished = { isValueChanging = false },
-        modifier = modifier
+        modifier = modifier.let {
+            if (isRtL) {
+                it then Modifier.rotate(180F)
+            } else it
+        }
     )
 }
 
