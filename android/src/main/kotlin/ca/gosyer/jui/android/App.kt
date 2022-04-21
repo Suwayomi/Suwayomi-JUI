@@ -36,7 +36,7 @@ class App : Application(), DefaultLifecycleObserver {
 
         setupNotificationChannels()
 
-        appComponent.dataComponent.uiPreferences.themeMode()
+        appComponent.uiPreferences.themeMode()
             .getAsFlow {
                 AppCompatDelegate.setDefaultNightMode(
                     when (it) {
@@ -48,7 +48,7 @@ class App : Application(), DefaultLifecycleObserver {
             }
             .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
 
-        setupAppLanguage(appComponent.dataComponent.uiPreferences.language())
+        setupAppLanguage(appComponent.uiPreferences.language())
     }
 
     private fun setupNotificationChannels() {

@@ -49,7 +49,7 @@ class KamelConfigProvider @Inject constructor(
     @OptIn(DelicateCoroutinesApi::class)
     val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
 
-    fun get(resourcesFetcher: KamelConfigBuilder.() -> Unit): KamelConfig {
+    fun get(kamelPlatformHandler: KamelConfigBuilder.() -> Unit): KamelConfig {
         return KamelConfig {
             // Default config
             imageBitmapCacheSize = DefaultCacheSize
@@ -61,8 +61,8 @@ class KamelConfigProvider @Inject constructor(
             fileFetcher()
 
             // JUI config
+            kamelPlatformHandler()
             fetcher(HttpFetcher(http))
-            resourcesFetcher()
             mapper(MangaCoverMapper(serverUrl))
             mapper(ExtensionIconMapper(serverUrl))
             mapper(SourceIconMapper(serverUrl))

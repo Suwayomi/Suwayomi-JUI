@@ -6,26 +6,33 @@
 
 package ca.gosyer.jui.ui.base
 
-import androidx.compose.runtime.ProvidedValue
-import ca.gosyer.jui.data.DataComponent
+import ca.gosyer.jui.core.di.AppScope
 import ca.gosyer.jui.ui.base.image.KamelConfigProvider
 import ca.gosyer.jui.ui.base.vm.ViewModelFactoryImpl
 import ca.gosyer.jui.uicore.vm.ContextWrapper
+import ca.gosyer.jui.uicore.vm.LocalViewModelFactory
 import io.kamel.core.config.KamelConfig
+import io.kamel.core.config.KamelConfigBuilder
+import io.kamel.image.config.LocalKamelConfig
+import me.tatarka.inject.annotations.Provides
 
-expect abstract class UiComponent {
-    protected val dataComponent: DataComponent
-    protected abstract val kamelConfigProvider: KamelConfigProvider
+interface UiComponent {
+    val kamelConfigProvider: KamelConfigProvider
 
-    abstract val viewModelFactory: ViewModelFactoryImpl
+    val viewModelFactory: ViewModelFactoryImpl
 
-    abstract val kamelConfig: KamelConfig
+    val kamelConfig: KamelConfig
 
-    abstract val contextWrapper: ContextWrapper
+    val contextWrapper: ContextWrapper
 
-    protected val kamelConfigFactory: KamelConfig
+    @AppScope
+    @Provides
+    fun kamelConfigFactory(contextWrapper: ContextWrapper): KamelConfig = kamelConfigProvider.get { kamelPlatformHandler(contextWrapper) }
 
-    fun getHooks(): Array<ProvidedValue<out Any>>
-
-    companion object
+    fun getHooks() = arrayOf(
+        LocalViewModelFactory provides viewModelFactory,
+        LocalKamelConfig provides kamelConfig
+    )
 }
+
+expect fun KamelConfigBuilder.kamelPlatformHandler(contextWrapper: ContextWrapper)

@@ -126,13 +126,12 @@ class AndroidDownloadService : Service() {
             stopSelf()
         }
 
-        val dataComponent = AppComponent.getInstance(applicationContext)
-            .dataComponent
-        val client = dataComponent.http
+        val appComponent = AppComponent.getInstance(applicationContext)
+        val client = appComponent.http
 
         var errorConnectionCount = 0
 
-        dataComponent
+        appComponent
             .serverPreferences
             .serverUrl()
             .getAsFlow()

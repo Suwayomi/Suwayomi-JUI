@@ -68,23 +68,21 @@ suspend fun main() {
     }
 
     val appComponent = AppComponent.getInstance()
-    val dataComponent = appComponent.dataComponent
-    val uiComponent = appComponent.uiComponent
-    dataComponent.migrations.runMigrations()
+    appComponent.migrations.runMigrations()
     appComponent.appMigrations.runMigrations()
 
-    val serverService = dataComponent.serverService
+    val serverService = appComponent.serverService
     serverService.startServer()
     serverService.initialized
         .filter { it == ServerResult.STARTED || it == ServerResult.UNUSED }
         .onEach {
-            dataComponent.downloadService.init()
+            appComponent.downloadService.init()
             // dataComponent.libraryUpdateService.init()
         }
         .launchIn(GlobalScope)
 
-    val uiPreferences = dataComponent.uiPreferences
-    val uiHooks = uiComponent.getHooks()
+    val uiPreferences = appComponent.uiPreferences
+    val uiHooks = appComponent.getHooks()
 
     // Call setDefault before getting a resource bundle
     val language = uiPreferences.language().get()

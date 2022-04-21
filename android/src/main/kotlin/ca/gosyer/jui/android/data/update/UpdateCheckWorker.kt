@@ -28,7 +28,6 @@ class UpdateCheckWorker(private val context: Context, workerParams: WorkerParame
     override suspend fun doWork(): Result {
         return try {
             val update = AppComponent.getInstance(context.applicationContext)
-                .dataComponent
                 .let {
                     if (it.updatePreferences.enabled().get()) {
                         it.updateChecker

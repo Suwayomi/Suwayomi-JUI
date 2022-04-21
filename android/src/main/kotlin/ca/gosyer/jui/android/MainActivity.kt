@@ -15,13 +15,13 @@ class MainActivity : AppCompatActivity() {
 
         val appComponent = AppComponent.getInstance(applicationContext)
         if (savedInstanceState == null) {
-            appComponent.dataComponent.migrations.runMigrations()
+            appComponent.migrations.runMigrations()
             appComponent.appMigrations.runMigrations()
         }
 
         AndroidDownloadService.start(this, Actions.START)
 
-        val uiHooks = appComponent.uiComponent.getHooks()
+        val uiHooks = appComponent.getHooks()
         setContent {
             CompositionLocalProvider(*uiHooks) {
                 AppTheme {

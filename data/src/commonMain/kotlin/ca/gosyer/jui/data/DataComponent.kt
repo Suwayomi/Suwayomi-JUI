@@ -6,4 +6,4 @@
 
 package ca.gosyer.jui.data
 
-expect abstract class DataComponent
+expect interface DataComponent
