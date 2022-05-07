@@ -8,16 +8,16 @@ package ca.gosyer.jui.data.server.requests
 
 @Get
 fun recentUpdatesQuery(pageNum: Int) =
-    "api/v1/update/recentChapters/$pageNum"
+    "/api/v1/update/recentChapters/$pageNum"
 
 @Post
 fun fetchUpdatesRequest() =
-    "api/v1/update/fetch"
+    "/api/v1/update/fetch"
 
 @Get
 fun updatesSummaryQuery() =
-    "api/v1/update/summary"
+    "/api/v1/update/summary"
 
 @WS
 fun updatesQuery() =
-    "api/v1/update"
+    "/api/v1/update"

@@ -8,12 +8,12 @@ package ca.gosyer.jui.data.server.requests
 
 @Get
 fun mangaQuery(mangaId: Long) =
-    "api/v1/manga/$mangaId/"
+    "/api/v1/manga/$mangaId/"
 
 @Get
 fun mangaThumbnailQuery(mangaId: Long) =
-    "api/v1/manga/$mangaId/thumbnail"
+    "/api/v1/manga/$mangaId/thumbnail"
 
 @Post
 fun updateMangaMetaRequest(mangaId: Long) =
-    "api/v1/manga/$mangaId/meta"
+    "/api/v1/manga/$mangaId/meta"

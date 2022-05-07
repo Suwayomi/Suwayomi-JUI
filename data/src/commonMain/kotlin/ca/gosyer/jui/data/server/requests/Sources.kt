@@ -8,40 +8,40 @@ package ca.gosyer.jui.data.server.requests
 
 @Get
 fun sourceListQuery() =
-    "api/v1/source/list"
+    "/api/v1/source/list"
 
 @Get
 fun sourceInfoQuery(sourceId: Long) =
-    "api/v1/source/$sourceId"
+    "/api/v1/source/$sourceId"
 
 @Get
 fun sourcePopularQuery(sourceId: Long, pageNum: Int) =
-    "api/v1/source/$sourceId/popular/$pageNum"
+    "/api/v1/source/$sourceId/popular/$pageNum"
 
 @Get
 fun sourceLatestQuery(sourceId: Long, pageNum: Int) =
-    "api/v1/source/$sourceId/latest/$pageNum"
+    "/api/v1/source/$sourceId/latest/$pageNum"
 
 @Get
 fun globalSearchQuery() =
-    "api/v1/source/all/search"
+    "/api/v1/source/all/search"
 
 @Get
 fun sourceSearchQuery(sourceId: Long) =
-    "api/v1/source/$sourceId/search"
+    "/api/v1/source/$sourceId/search"
 
 @Get
 fun getFilterListQuery(sourceId: Long) =
-    "api/v1/source/$sourceId/filters"
+    "/api/v1/source/$sourceId/filters"
 
 @Post
 fun setFilterRequest(sourceId: Long) =
-    "api/v1/source/$sourceId/filters"
+    "/api/v1/source/$sourceId/filters"
 
 @Get
 fun getSourceSettingsQuery(sourceId: Long) =
-    "api/v1/source/$sourceId/preferences"
+    "/api/v1/source/$sourceId/preferences"
 
 @Post
 fun updateSourceSettingQuery(sourceId: Long) =
-    "api/v1/source/$sourceId/preferences"
+    "/api/v1/source/$sourceId/preferences"

@@ -69,19 +69,19 @@ class KamelConfigProvider @Inject constructor(
 
     class MangaCoverMapper(private val serverUrlStateFlow: StateFlow<Url>) : Mapper<Manga, Url> {
         override fun map(input: Manga): Url {
-            return Url(serverUrlStateFlow.value.toString() + input.thumbnailUrl?.trimStart('/'))
+            return Url(serverUrlStateFlow.value.toString() + input.thumbnailUrl.orEmpty())
         }
     }
 
     class ExtensionIconMapper(private val serverUrlStateFlow: StateFlow<Url>) : Mapper<Extension, Url> {
         override fun map(input: Extension): Url {
-            return Url(serverUrlStateFlow.value.toString() + input.iconUrl.trimStart('/'))
+            return Url(serverUrlStateFlow.value.toString() + input.iconUrl)
         }
     }
 
     class SourceIconMapper(private val serverUrlStateFlow: StateFlow<Url>) : Mapper<Source, Url> {
         override fun map(input: Source): Url {
-            return Url(serverUrlStateFlow.value.toString() + input.iconUrl.trimStart('/'))
+            return Url(serverUrlStateFlow.value.toString() + input.iconUrl)
         }
     }
 

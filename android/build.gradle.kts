@@ -46,10 +46,6 @@ dependencies {
     // Json
     implementation(libs.serialization.json)
 
-    // Xml
-    implementation(libs.serialization.xmlUtil.core)
-    implementation(libs.serialization.xmlUtil.serialization)
-
     // Dependency Injection
     implementation(libs.kotlinInject.runtime)
     ksp(libs.kotlinInject.compiler)

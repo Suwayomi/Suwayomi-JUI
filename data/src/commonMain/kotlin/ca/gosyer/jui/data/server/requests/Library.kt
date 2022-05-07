@@ -8,8 +8,8 @@ package ca.gosyer.jui.data.server.requests
 
 @Get
 fun addMangaToLibraryQuery(mangaId: Long) =
-    "api/v1/manga/$mangaId/library"
+    "/api/v1/manga/$mangaId/library"
 
 @Delete
 fun removeMangaFromLibraryRequest(mangaId: Long) =
-    "api/v1/manga/$mangaId/library"
+    "/api/v1/manga/$mangaId/library"

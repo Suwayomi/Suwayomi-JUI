@@ -8,32 +8,32 @@ package ca.gosyer.jui.data.server.requests
 
 @Get
 fun getMangaChaptersQuery(mangaId: Long) =
-    "api/v1/manga/$mangaId/chapters"
+    "/api/v1/manga/$mangaId/chapters"
 
 @Get
 fun getChapterQuery(mangaId: Long, chapterIndex: Int) =
-    "api/v1/manga/$mangaId/chapter/$chapterIndex"
+    "/api/v1/manga/$mangaId/chapter/$chapterIndex"
 
 @Patch
 fun updateChapterRequest(mangaId: Long, chapterIndex: Int) =
-    "api/v1/manga/$mangaId/chapter/$chapterIndex"
+    "/api/v1/manga/$mangaId/chapter/$chapterIndex"
 
 @Get
 fun getPageQuery(mangaId: Long, chapterIndex: Int, index: Int) =
-    "api/v1/manga/$mangaId/chapter/$chapterIndex/page/$index"
+    "/api/v1/manga/$mangaId/chapter/$chapterIndex/page/$index"
 
 @Delete
 fun deleteDownloadedChapterRequest(mangaId: Long, chapterIndex: Int) =
-    "api/v1/manga/$mangaId/chapter/$chapterIndex"
+    "/api/v1/manga/$mangaId/chapter/$chapterIndex"
 
 @Get
 fun queueDownloadChapterRequest(mangaId: Long, chapterIndex: Int) =
-    "api/v1/download/$mangaId/chapter/$chapterIndex"
+    "/api/v1/download/$mangaId/chapter/$chapterIndex"
 
 @Delete
 fun stopDownloadingChapterRequest(mangaId: Long, chapterIndex: Int) =
-    "api/v1/download/$mangaId/chapter/$chapterIndex"
+    "/api/v1/download/$mangaId/chapter/$chapterIndex"
 
 @Patch
 fun updateChapterMetaRequest(mangaId: Long, chapterIndex: Int) =
-    "api/v1/manga/$mangaId/chapter/$chapterIndex/meta"
+    "/api/v1/manga/$mangaId/chapter/$chapterIndex/meta"

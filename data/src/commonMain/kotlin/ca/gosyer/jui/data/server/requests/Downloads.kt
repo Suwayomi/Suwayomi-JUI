@@ -8,16 +8,16 @@ package ca.gosyer.jui.data.server.requests
 
 @WS
 fun downloadsQuery() =
-    "api/v1/downloads"
+    "/api/v1/downloads"
 
 @Get
 fun downloadsStartRequest() =
-    "api/v1/downloads/start"
+    "/api/v1/downloads/start"
 
 @Get
 fun downloadsStopRequest() =
-    "api/v1/downloads/stop"
+    "/api/v1/downloads/stop"
 
 @Get
 fun downloadsClearRequest() =
-    "api/v1/downloads/clear"
+    "/api/v1/downloads/clear"

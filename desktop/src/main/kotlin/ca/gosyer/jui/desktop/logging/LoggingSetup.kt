@@ -105,8 +105,7 @@ fun initializeLogger(loggingLocation: Path) {
         addHandler(SLF4JBridgeHandler())
     }
 
-    KmLogging.clear()
-    KmLogging.setLogFactory(Slf4jLogFactory())
+    KmLogging.setLogFactory(org.lighthousegames.logging.Slf4jLogFactory())
 
     val log = logging("UncaughtException")
     Thread.setDefaultUncaughtExceptionHandler { t, e ->

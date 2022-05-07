@@ -5,7 +5,6 @@ coroutines = "1.6.1"
 
 # Serialization
 json = "1.3.2"
-xmlUtil = "0.84.1"
 
 # Compose
 composeGradle = "1.1.1"
@@ -17,28 +16,28 @@ materialDialogs = "0.7.0"
 # Android
 androidGradle = "7.0.4"
 core = "1.7.0"
-appCompat = "1.6.0-alpha01"
+appCompat = "1.6.0-alpha03"
 activityCompose = "1.4.0"
 work = "2.7.1"
 
 # Android Lifecycle
-lifecycle = "2.5.0-alpha05"
+lifecycle = "2.5.0-beta01"
 
 # Swing
-darklaf = "2.7.3"
+darklaf = "3.0.0"
 
 # Dependency Injection
 ksp = "1.6.10-1.0.4"
 kotlinInject = "0.4.1"
 
 # Network
-ktor = "2.0.0"
+ktor = "2.0.1"
 
 # Logging
 slf4j = "1.7.36"
 slf4jAndroid = "1.7.36-0"
 log4j = "2.17.2"
-kmlogging = "1.1.2"
+kmlogging = "1.2.0"
 
 # Storage
 okio = "3.0.0"
@@ -55,7 +54,7 @@ dateTime = "0.3.2"
 
 # Localization
 locale = "0.11.0"
-moko = "0.19.0"
+moko = "0.19.1"
 
 # BuildConfigs
 buildconfig = "3.0.3"
@@ -79,8 +78,6 @@ coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", ve
 
 # Serialization
 serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "json" }
-serialization-xmlUtil-core = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "xmlUtil" }
-serialization-xmlUtil-serialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlUtil" }
 
 # Compose
 voyager-core = { module = "cafe.adriel.voyager:voyager-core", version.ref = "voyager" }
