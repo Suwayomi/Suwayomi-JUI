@@ -89,23 +89,26 @@ fun ExtensionsScreenContent(
                 languageDialogState::show
             )
         }
-    ) {
+    ) { padding ->
         if (isLoading) {
             LoadingScreen()
         } else {
             val state = rememberLazyListState()
 
-            Box(Modifier.fillMaxSize().padding(it)) {
+            Box(Modifier.fillMaxSize().padding(padding)) {
                 LazyColumn(Modifier.fillMaxSize(), state) {
                     extensions.forEach { (header, items) ->
-                        item {
+                        item(key = header) {
                             Text(
                                 header,
                                 style = MaterialTheme.typography.h6,
                                 modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 4.dp)
                             )
                         }
-                        items(items) { extension ->
+                        items(
+                            items,
+                            key = { it.pkgName }
+                        ) { extension ->
                             ExtensionItem(
                                 extension,
                                 onInstallClicked = installExtension,
