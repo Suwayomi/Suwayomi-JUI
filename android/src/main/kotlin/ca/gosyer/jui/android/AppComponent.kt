@@ -20,7 +20,7 @@ abstract class AppComponent(
     @get:AppScope
     @get:Provides
     val context: Context
-): DataComponent, UiComponent {
+) : DataComponent, UiComponent {
 
     abstract val appMigrations: AppMigrations
 

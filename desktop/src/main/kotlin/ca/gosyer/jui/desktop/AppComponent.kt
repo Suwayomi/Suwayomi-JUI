@@ -14,7 +14,7 @@ import me.tatarka.inject.annotations.Provides
 
 @AppScope
 @Component
-abstract class AppComponent: DataComponent, UiComponent {
+abstract class AppComponent : DataComponent, UiComponent {
 
     abstract val appMigrations: AppMigrations
 

@@ -141,7 +141,7 @@ class UpdatesScreenViewModel @Inject constructor(
 
     fun stopDownloadingChapter(chapter: Chapter) {
         _updates
-            .firstNotNullOfOrNull {(_, chapters) ->
+            .firstNotNullOfOrNull { (_, chapters) ->
                 chapters.find {
                     it.chapter.mangaId == chapter.mangaId &&
                         it.chapter.index == chapter.index
