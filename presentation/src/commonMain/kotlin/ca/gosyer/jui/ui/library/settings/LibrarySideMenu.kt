@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 
 @Composable
@@ -55,7 +56,7 @@ fun LibrarySideMenu(
                 rememberScrollbarAdapter(scrollState),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .scrollbarPadding()
             )
         }
     }

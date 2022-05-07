@@ -41,6 +41,7 @@ import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.uicore.components.HorizontalScrollbar
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
@@ -143,7 +144,7 @@ fun ContinuousReader(
                 VerticalScrollbar(
                     modifier = Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                        .scrollbarPadding(),
                     adapter = rememberScrollbarAdapter(state),
                     reverseLayout = direction == Direction.Up
                 )
@@ -170,7 +171,7 @@ fun ContinuousReader(
                 HorizontalScrollbar(
                     modifier = Modifier.align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                        .scrollbarPadding(),
                     adapter = rememberScrollbarAdapter(state),
                     reverseLayout = direction == Direction.Left
                 )

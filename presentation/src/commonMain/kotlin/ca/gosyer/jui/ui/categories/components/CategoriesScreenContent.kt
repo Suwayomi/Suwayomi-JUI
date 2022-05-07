@@ -46,6 +46,7 @@ import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.categories.CategoriesScreenViewModel.MenuCategory
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -131,7 +132,7 @@ fun CategoriesScreenContent(
                 rememberScrollbarAdapter(state),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .scrollbarPadding()
             )
         }
     }

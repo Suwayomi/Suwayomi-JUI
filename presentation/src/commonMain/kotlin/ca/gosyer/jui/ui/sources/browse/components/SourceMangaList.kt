@@ -30,6 +30,7 @@ import ca.gosyer.jui.uicore.components.MangaListItemImage
 import ca.gosyer.jui.uicore.components.MangaListItemTitle
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import io.kamel.image.lazyPainterResource
 
 @Composable
@@ -62,7 +63,7 @@ fun SourceMangaList(
             rememberScrollbarAdapter(state),
             Modifier.align(Alignment.CenterEnd)
                 .fillMaxHeight()
-                .padding(horizontal = 4.dp, vertical = 8.dp)
+                .scrollbarPadding()
         )
     }
 }

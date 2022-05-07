@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
@@ -39,6 +38,7 @@ import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.TwoState
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.TextFieldStyle
@@ -81,7 +81,7 @@ fun SourceSettingsScreenContent(
                 rememberScrollbarAdapter(state),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .scrollbarPadding()
             )
         }
     }

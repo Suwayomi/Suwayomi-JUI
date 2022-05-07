@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.getDisplayName
 import ca.gosyer.jui.core.lang.withIOContext
@@ -32,6 +31,7 @@ import ca.gosyer.jui.ui.base.prefs.ChoicePreference
 import ca.gosyer.jui.ui.base.prefs.SwitchPreference
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.resources.readTextAsync
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -177,7 +177,7 @@ fun SettingsGeneralScreenContent(
                 rememberScrollbarAdapter(state),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .scrollbarPadding()
             )
         }
     }

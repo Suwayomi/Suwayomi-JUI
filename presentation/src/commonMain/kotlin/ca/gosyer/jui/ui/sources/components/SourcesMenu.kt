@@ -39,6 +39,7 @@ import ca.gosyer.jui.ui.base.components.TooltipArea
 import ca.gosyer.jui.ui.sources.home.SourceHomeScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.KamelImage
 import ca.gosyer.jui.uicore.resources.stringResource
 import io.kamel.image.lazyPainterResource
@@ -154,7 +155,7 @@ fun SourcesSideMenu(
                 rememberScrollbarAdapter(state),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .scrollbarPadding()
             )
         }
     }

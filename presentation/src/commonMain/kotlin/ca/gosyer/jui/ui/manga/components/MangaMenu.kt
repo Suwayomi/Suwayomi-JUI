@@ -48,6 +48,7 @@ import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.KamelImage
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.google.accompanist.flowlayout.FlowRow
@@ -211,7 +212,7 @@ fun CategorySelectDialog(
             VerticalScrollbar(
                 modifier = Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp),
+                    .scrollbarPadding(),
                 adapter = rememberScrollbarAdapter(listState)
             )
         }

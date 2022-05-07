@@ -66,6 +66,7 @@ import ca.gosyer.jui.uicore.components.Spinner
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import kotlinx.coroutines.flow.filterIsInstance
 
@@ -113,7 +114,7 @@ fun SourceFiltersMenu(
                     rememberScrollbarAdapter(lazyListState),
                     Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .padding(horizontal = 4.dp, vertical = 8.dp)
+                        .scrollbarPadding()
                 )
             }
         }

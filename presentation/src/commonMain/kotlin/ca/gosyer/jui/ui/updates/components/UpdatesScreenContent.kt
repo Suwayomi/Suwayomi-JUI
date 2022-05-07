@@ -43,6 +43,7 @@ import ca.gosyer.jui.uicore.components.MangaListItemTitle
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import io.kamel.image.lazyPainterResource
 import kotlinx.datetime.LocalDate
@@ -100,7 +101,7 @@ fun UpdatesScreenContent(
                     rememberScrollbarAdapter(state),
                     Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .padding(horizontal = 4.dp, vertical = 8.dp)
+                        .scrollbarPadding()
                 )
             }
         }

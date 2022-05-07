@@ -44,6 +44,7 @@ import ca.gosyer.jui.ui.base.prefs.PreferenceRow
 import ca.gosyer.jui.ui.categories.rememberCategoriesLauncher
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -178,7 +179,7 @@ fun SettingsLibraryScreenContent(
                 rememberScrollbarAdapter(state),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .scrollbarPadding()
             )
         }
     }

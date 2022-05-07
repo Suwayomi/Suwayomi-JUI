@@ -24,6 +24,7 @@ import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
@@ -96,7 +97,7 @@ fun LicensesContent() {
                 VerticalScrollbar(
                     modifier = Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                        .scrollbarPadding(),
                     adapter = rememberScrollbarAdapter(state)
                 )
             } else {

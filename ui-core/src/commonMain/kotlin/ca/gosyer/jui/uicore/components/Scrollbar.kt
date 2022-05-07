@@ -65,3 +65,5 @@ expect fun rememberScrollbarAdapter(
 expect fun rememberScrollbarAdapter(
     scrollState: LazyListState,
 ): ScrollbarAdapter
+
+expect fun Modifier.scrollbarPadding(): Modifier

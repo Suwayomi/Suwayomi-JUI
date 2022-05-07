@@ -37,6 +37,7 @@ import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.KamelImage
 import io.kamel.image.lazyPainterResource
 
@@ -87,7 +88,7 @@ fun LibraryMangaCompactGrid(
             rememberScrollbarAdapter(state),
             Modifier.align(Alignment.CenterEnd)
                 .fillMaxHeight()
-                .padding(horizontal = 4.dp, vertical = 8.dp)
+                .scrollbarPadding()
         )
     }
 }

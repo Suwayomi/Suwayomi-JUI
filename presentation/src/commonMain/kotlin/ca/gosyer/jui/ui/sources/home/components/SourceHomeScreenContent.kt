@@ -52,6 +52,7 @@ import ca.gosyer.jui.ui.extensions.components.LanguageDialog
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.KamelImage
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
@@ -101,7 +102,7 @@ fun SourceHomeScreenContent(
                 VerticalScrollbar(
                     modifier = Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                        .scrollbarPadding(),
                     adapter = rememberScrollbarAdapter(state)
                 )
             }

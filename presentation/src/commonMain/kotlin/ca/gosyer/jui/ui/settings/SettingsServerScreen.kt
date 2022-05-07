@@ -21,7 +21,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.model.Auth
 import ca.gosyer.jui.data.server.model.Proxy
@@ -32,6 +31,7 @@ import ca.gosyer.jui.ui.base.prefs.EditTextPreference
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.prefs.asStringStateIn
@@ -232,7 +232,7 @@ fun SettingsServerScreenContent(
                 rememberScrollbarAdapter(state),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .scrollbarPadding()
             )
         }
     }

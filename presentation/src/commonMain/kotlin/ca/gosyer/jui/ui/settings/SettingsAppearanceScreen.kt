@@ -46,6 +46,7 @@ import ca.gosyer.jui.ui.base.theme.getDarkColors
 import ca.gosyer.jui.ui.base.theme.getLightColors
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.theme.Theme
@@ -175,7 +176,7 @@ fun SettingsAppearanceScreenContent(
                 rememberScrollbarAdapter(state),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .scrollbarPadding()
             )
         }
     }
