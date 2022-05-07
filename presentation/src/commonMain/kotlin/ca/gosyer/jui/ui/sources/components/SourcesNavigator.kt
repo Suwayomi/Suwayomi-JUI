@@ -164,6 +164,7 @@ class SourcesNavigator internal constructor(
         screens.forEach {
             cleanup(it.value)
         }
+        navigator.clearEvent()
     }
 
     val tabs by derivedStateOf {
