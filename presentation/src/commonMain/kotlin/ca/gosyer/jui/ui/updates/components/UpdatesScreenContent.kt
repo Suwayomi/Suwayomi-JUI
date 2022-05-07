@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -44,11 +45,12 @@ import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.resources.stringResource
 import io.kamel.image.lazyPainterResource
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun UpdatesScreenContent(
     isLoading: Boolean,
-    updates: List<ChapterDownloadItem>,
+    dateWithUpdates: List<Pair<LocalDate, List<ChapterDownloadItem>>>,
     loadNextPage: () -> Unit,
     openChapter: (Int, Long) -> Unit,
     openManga: (Long) -> Unit,
@@ -61,28 +63,37 @@ fun UpdatesScreenContent(
             Toolbar(stringResource(MR.strings.location_updates))
         }
     ) {
-        if (isLoading || updates.isEmpty()) {
+        if (isLoading || dateWithUpdates.isEmpty()) {
             LoadingScreen(isLoading)
         } else {
             Box(Modifier.padding(it)) {
                 val state = rememberLazyListState()
                 LazyColumn(Modifier.fillMaxSize(), state) {
-                    itemsIndexed(updates) { index, item ->
-                        LaunchedEffect(Unit) {
-                            if (index == updates.lastIndex) {
-                                loadNextPage()
-                            }
+                    dateWithUpdates.forEachIndexed { index, (date, updates) ->
+                        item {
+                            Text(
+                                text = date.toString(),
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                fontWeight = FontWeight.Medium
+                            )
                         }
-                        val manga = item.manga!!
-                        val chapter = item.chapter
-                        UpdatesItem(
-                            item,
-                            onClickItem = { openChapter(chapter.index, chapter.mangaId) },
-                            onClickCover = { openManga(manga.id) },
-                            onClickDownload = downloadChapter,
-                            onClickDeleteDownload = deleteDownloadedChapter,
-                            onClickStopDownload = stopDownloadingChapter
-                        )
+                        itemsIndexed(updates) { itemIndex, item ->
+                            LaunchedEffect(Unit) {
+                                if (index == dateWithUpdates.lastIndex && itemIndex == updates.lastIndex) {
+                                    loadNextPage()
+                                }
+                            }
+                            val manga = item.manga!!
+                            val chapter = item.chapter
+                            UpdatesItem(
+                                chapterDownloadItem = item,
+                                onClickItem = { openChapter(chapter.index, chapter.mangaId) },
+                                onClickCover = { openManga(manga.id) },
+                                onClickDownload = downloadChapter,
+                                onClickDeleteDownload = deleteDownloadedChapter,
+                                onClickStopDownload = stopDownloadingChapter
+                            )
+                        }
                     }
                 }
                 VerticalScrollbar(

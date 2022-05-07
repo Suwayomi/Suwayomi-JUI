@@ -29,10 +29,10 @@ class UpdatesScreen : Screen {
         val readerLauncher = rememberReaderLauncher()
         UpdatesScreenContent(
             isLoading = vm.isLoading.collectAsState().value,
-            updates = vm.updates.collectAsState().value,
+            dateWithUpdates = vm.updates.collectAsState().value,
             loadNextPage = vm::loadNextPage,
             openChapter = readerLauncher::launch,
-            openManga = { navigator push ca.gosyer.jui.ui.manga.MangaScreen(it) },
+            openManga = { navigator push MangaScreen(it) },
             downloadChapter = vm::downloadChapter,
             deleteDownloadedChapter = vm::deleteDownloadedChapter,
             stopDownloadingChapter = vm::stopDownloadingChapter

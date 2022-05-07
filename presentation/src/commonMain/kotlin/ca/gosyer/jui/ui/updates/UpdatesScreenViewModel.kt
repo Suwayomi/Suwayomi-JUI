@@ -6,6 +6,10 @@
 
 package ca.gosyer.jui.ui.updates
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import ca.gosyer.jui.data.download.DownloadService
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
@@ -13,15 +17,22 @@ import ca.gosyer.jui.data.server.interactions.UpdatesInteractionHandler
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -34,8 +45,9 @@ class UpdatesScreenViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _updates = MutableStateFlow<List<ChapterDownloadItem>>(emptyList())
-    val updates = _updates.asStateFlow()
+    private val _updates = mutableStateMapOf<LocalDate, SnapshotStateList<ChapterDownloadItem>>()
+    val updates = snapshotFlow { _updates.toList().sortedByDescending { it.first } }
+        .stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     private val currentPage = MutableStateFlow(1)
     private val hasNextPage = MutableStateFlow(false)
@@ -44,36 +56,50 @@ class UpdatesScreenViewModel @Inject constructor(
     private var downloadServiceJob: Job? = null
 
     init {
-        scope.launch {
-            getUpdates()
+        scope.launch(Dispatchers.Default) {
+            getUpdates(currentPage.value)
         }
     }
 
     fun loadNextPage() {
-        scope.launch {
+        scope.launch(Dispatchers.Default) {
             if (hasNextPage.value && updatesMutex.tryLock()) {
-                getUpdates()
+                currentPage.value++
+                getUpdates(currentPage.value)
                 updatesMutex.unlock()
             }
         }
     }
 
-    private suspend fun getUpdates() {
-        updatesHandler.getRecentUpdates(currentPage.value)
+    private suspend fun getUpdates(page: Int) {
+        updatesHandler.getRecentUpdates(page)
             .onEach { updates ->
-                _updates.value += updates.page.map {
-                    ChapterDownloadItem(
-                        it.manga,
-                        it.chapter
-                    )
-                }
+                updates.page
+                    .map {
+                        ChapterDownloadItem(
+                            it.manga,
+                            it.chapter
+                        )
+                    }
+                    .groupBy {
+                        Instant.fromEpochSeconds(it.chapter.fetchedAt).toLocalDateTime(TimeZone.currentSystemDefault()).date
+                    }.forEach { (date, chapters) ->
+                        val list = _updates.getOrPut(date, ::mutableStateListOf)
+                        list += chapters
+                        list.sortByDescending { it.chapter.fetchedAt }
+                    }
+
                 downloadServiceJob?.cancel()
-                downloadServiceJob = DownloadService.registerWatches(updates.page.map { it.manga.id }.toSet())
+                val mangaIds = _updates.values.flatMap { items ->
+                    items.mapNotNull { it.manga?.id }
+                }.toSet()
+                downloadServiceJob = DownloadService.registerWatches(mangaIds)
                     .onEach { chapters ->
-                        _updates.value
-                            .forEach {
+                        _updates.forEach { (_, updates) ->
+                            updates.forEach {
                                 it.updateFrom(chapters)
                             }
+                        }
                     }
                     .launchIn(scope)
 
@@ -82,8 +108,8 @@ class UpdatesScreenViewModel @Inject constructor(
             }
             .catch {
                 log.warn(it) { "Error getting updates" }
-                if (currentPage.value > 1) {
-                    currentPage.value--
+                if (page > 1) {
+                    currentPage.value = page - 1
                 }
                 _isLoading.value = false
             }
@@ -99,10 +125,12 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun deleteDownloadedChapter(chapter: Chapter) {
-        updates.value
-            .find {
-                it.chapter.mangaId == chapter.mangaId &&
-                    it.chapter.index == chapter.index
+        _updates
+            .firstNotNullOfOrNull { (_, chapters) ->
+                chapters.find {
+                    it.chapter.mangaId == chapter.mangaId &&
+                        it.chapter.index == chapter.index
+                }
             }
             ?.deleteDownload(chapterHandler)
             ?.catch {
@@ -112,10 +140,12 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun stopDownloadingChapter(chapter: Chapter) {
-        updates.value
-            .find {
-                it.chapter.mangaId == chapter.mangaId &&
-                    it.chapter.index == chapter.index
+        _updates
+            .firstNotNullOfOrNull {(_, chapters) ->
+                chapters.find {
+                    it.chapter.mangaId == chapter.mangaId &&
+                        it.chapter.index == chapter.index
+                }
             }
             ?.stopDownloading(chapterHandler)
             ?.catch {
