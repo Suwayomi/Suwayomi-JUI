@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -125,7 +127,7 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
                 Spacer(Modifier.height(8.dp))
             }
             if (manga.genre.isNotEmpty()) {
-                FlowRow {
+                FlowRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 8.dp) {
                     manga.genre.fastForEach {
                         Chip(it)
                     }
@@ -137,12 +139,23 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
 
 @Composable
 private fun Chip(text: String) {
-    Box(Modifier.padding(horizontal = 4.dp, vertical = 2.dp)) {
-        Card(
-            shape = RoundedCornerShape(50),
-            elevation = 4.dp
+    Card(
+        shape = RoundedCornerShape(50),
+        modifier = Modifier.defaultMinSize(minHeight = 32.dp)
+            .height(IntrinsicSize.Min),
+        contentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.10F)
+    ) {
+        Box(
+            modifier = Modifier.padding(start = 8.dp, end = 6.dp)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
         ) {
-            Text(text, Modifier.align(Alignment.Center).padding(8.dp))
+            Text(
+                text = text,
+                style = MaterialTheme.typography.body2,
+                fontSize = 14.sp,
+                color = MaterialTheme.colors.onSurface.copy(alpha = 0.85F)
+            )
         }
     }
 }
