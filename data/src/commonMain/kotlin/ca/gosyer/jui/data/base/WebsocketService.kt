@@ -7,7 +7,6 @@
 package ca.gosyer.jui.data.base
 
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.data.build.BuildKonfig
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
 import io.ktor.client.plugins.websocket.ws
@@ -33,7 +32,7 @@ abstract class WebsocketService(
     protected val client: Http
 ) {
     protected val json = Json {
-        ignoreUnknownKeys = !BuildKonfig.DEBUG
+        ignoreUnknownKeys = true
     }
     protected abstract val _status: MutableStateFlow<Status>
 

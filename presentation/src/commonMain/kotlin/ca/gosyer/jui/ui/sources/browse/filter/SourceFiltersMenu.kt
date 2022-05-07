@@ -57,6 +57,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
+import androidx.compose.ui.util.fastForEachIndexed
 import ca.gosyer.jui.data.models.sourcefilters.SortFilter
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.prefs.ExpandablePreference
@@ -269,7 +270,7 @@ fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChang
         }
     ) {
         Column(Modifier.fillMaxWidth()) {
-            sort.filter.values.forEachIndexed { index, name ->
+            sort.filter.values.fastForEachIndexed { index, name ->
                 SortRow(
                     name = name,
                     selected = state?.index == index,
