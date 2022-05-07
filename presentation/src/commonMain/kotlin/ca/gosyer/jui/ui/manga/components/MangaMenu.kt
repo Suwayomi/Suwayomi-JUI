@@ -14,11 +14,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,7 +30,6 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -46,6 +46,7 @@ import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
+import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.image.KamelImage
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -58,15 +59,18 @@ import io.kamel.image.lazyPainterResource
 @Composable
 fun MangaItem(manga: Manga) {
     BoxWithConstraints(Modifier.padding(8.dp)) {
-        if (maxWidth > 600.dp) {
+        if (maxWidth > 720.dp) {
             Row {
                 Cover(manga, Modifier.width(300.dp))
                 Spacer(Modifier.width(16.dp))
                 MangaInfo(manga)
             }
         } else {
-            Column {
-                Cover(manga, Modifier.align(Alignment.CenterHorizontally))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Cover(
+                    manga,
+                    Modifier.heightIn(120.dp, 300.dp)
+                )
                 Spacer(Modifier.height(16.dp))
                 MangaInfo(manga)
             }
@@ -76,17 +80,16 @@ fun MangaItem(manga: Manga) {
 
 @Composable
 private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier then Modifier
-            .padding(4.dp),
-        shape = RoundedCornerShape(4.dp)
-    ) {
-        KamelImage(
-            lazyPainterResource(manga, filterQuality = FilterQuality.Medium),
-            manga.title,
-            Modifier.fillMaxSize()
-        )
-    }
+    KamelImage(
+        resource = lazyPainterResource(manga, filterQuality = FilterQuality.Medium),
+        contentDescription = manga.title,
+        modifier = modifier,
+        errorModifier = modifier then Modifier
+            .aspectRatio(
+                ratio = mangaAspectRatio,
+                matchHeightConstraintsFirst = true
+            ),
+    )
 }
 
 @Composable
