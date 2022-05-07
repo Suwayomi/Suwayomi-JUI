@@ -19,7 +19,29 @@ fun filePicker(
     onCancel: () -> Unit = {},
     onError: () -> Unit = {},
     onApprove: (Path) -> Unit
-) = fileChooser(false, onCancel, onError, onApprove, extensions = extensions)
+) = fileChooser(
+    saving = false,
+    selectFolders = false,
+    selectFiles = true,
+    onCancel = onCancel,
+    onError = onError,
+    onApprove = onApprove,
+    defaultFileName = "",
+    extensions = extensions
+)
+
+fun folderPicker(
+    onCancel: () -> Unit = {},
+    onError: () -> Unit = {},
+    onApprove: (Path) -> Unit
+) = fileChooser(
+    saving = false,
+    selectFolders = true,
+    selectFiles = false,
+    onCancel = onCancel,
+    onError = onError,
+    onApprove = onApprove
+)
 
 fun fileSaver(
     defaultFileName: String,
@@ -28,6 +50,8 @@ fun fileSaver(
     onError: () -> Unit = {},
     onApprove: (Path) -> Unit
 ) = fileChooser(
+    true,
+    false,
     true,
     onCancel,
     onError,
@@ -45,8 +69,10 @@ fun fileSaver(
  * @param onApprove the listener that is called when picking a file is completed
  */
 @OptIn(DelicateCoroutinesApi::class)
-internal fun fileChooser(
+private fun fileChooser(
     saving: Boolean = false,
+    selectFolders: Boolean = false,
+    selectFiles: Boolean = true,
     onCancel: () -> Unit = {},
     onError: () -> Unit = {},
     onApprove: (Path) -> Unit,
@@ -62,6 +88,12 @@ internal fun fileChooser(
             }
             if (saving) {
                 selectedFile = Path(defaultFileName).toFile()
+            }
+            fileSelectionMode = when {
+                selectFiles && selectFolders -> JFileChooser.FILES_AND_DIRECTORIES
+                selectFiles -> JFileChooser.FILES_ONLY
+                selectFolders -> JFileChooser.DIRECTORIES_ONLY
+                else -> fileSelectionMode
             }
         }
 

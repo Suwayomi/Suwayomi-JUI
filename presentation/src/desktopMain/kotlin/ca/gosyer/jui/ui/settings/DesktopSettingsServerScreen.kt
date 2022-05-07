@@ -23,6 +23,7 @@ import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.prefs.EditTextPreference
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow
 import ca.gosyer.jui.ui.base.prefs.SwitchPreference
+import ca.gosyer.jui.ui.util.system.folderPicker
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.prefs.asStringStateIn
@@ -60,6 +61,7 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
             socksProxyPort = serverVm.socksProxyPort,
             debugLogsEnabled = serverVm.debugLogsEnabled,
             systemTrayEnabled = serverVm.systemTrayEnabled,
+            downloadPath = serverVm.downloadPath,
             webUIEnabled = serverVm.webUIEnabled,
             openInBrowserEnabled = serverVm.openInBrowserEnabled,
             basicAuthEnabled = serverVm.basicAuthEnabled,
@@ -87,6 +89,7 @@ actual class SettingsServerHostViewModel @Inject constructor(
     // Misc
     val debugLogsEnabled = serverHostPreferences.debugLogsEnabled().asStateIn(scope)
     val systemTrayEnabled = serverHostPreferences.systemTrayEnabled().asStateIn(scope)
+    val downloadPath = serverHostPreferences.downloadPath().asStateIn(scope)
 
     // WebUI
     val webUIEnabled = serverHostPreferences.webUIEnabled().asStateIn(scope)
@@ -141,6 +144,7 @@ fun LazyListScope.ServerHostItems(
     socksProxyPort: PreferenceMutableStateFlow<String>,
     debugLogsEnabled: PreferenceMutableStateFlow<Boolean>,
     systemTrayEnabled: PreferenceMutableStateFlow<Boolean>,
+    downloadPath: PreferenceMutableStateFlow<String>,
     webUIEnabled: PreferenceMutableStateFlow<Boolean>,
     openInBrowserEnabled: PreferenceMutableStateFlow<Boolean>,
     basicAuthEnabled: PreferenceMutableStateFlow<Boolean>,
@@ -215,6 +219,27 @@ fun LazyListScope.ServerHostItems(
                 title = stringResource(MR.strings.host_system_tray),
                 subtitle = stringResource(MR.strings.host_system_tray_sub),
                 changeListener = serverSettingChanged
+            )
+        }
+        item {
+            val downloadPathValue by downloadPath.collectAsState()
+            PreferenceRow(
+                title = stringResource(MR.strings.host_download_path),
+                subtitle = if (downloadPathValue.isEmpty()) {
+                    stringResource(MR.strings.host_download_path_sub_empty)
+                } else {
+                    stringResource(MR.strings.host_download_path_sub, downloadPathValue)
+                },
+                onClick = {
+                    folderPicker {
+                        downloadPath.value = it.toString()
+                        serverSettingChanged()
+                    }
+                },
+                onLongClick = {
+                    downloadPath.value = ""
+                    serverSettingChanged()
+                }
             )
         }
         item {

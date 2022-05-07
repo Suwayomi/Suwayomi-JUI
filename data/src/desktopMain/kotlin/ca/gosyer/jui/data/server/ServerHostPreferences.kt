@@ -48,6 +48,10 @@ class ServerHostPreferences(private val preferenceStore: PreferenceStore) {
     fun systemTrayEnabled(): Preference<Boolean> {
         return systemTrayEnabled.preference()
     }
+    private val downloadPath = ServerHostPreference.DownloadPath(preferenceStore)
+    fun downloadPath(): Preference<String> {
+        return downloadPath.preference()
+    }
 
     // WebUI
     private val webUIEnabled = ServerHostPreference.WebUIEnabled(preferenceStore)
@@ -82,6 +86,7 @@ class ServerHostPreferences(private val preferenceStore: PreferenceStore) {
             socksProxyPort,
             debugLogsEnabled,
             systemTrayEnabled,
+            downloadPath,
             webUIEnabled,
             openInBrowserEnabled,
             basicAuthEnabled,

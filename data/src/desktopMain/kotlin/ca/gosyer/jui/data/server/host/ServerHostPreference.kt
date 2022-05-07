@@ -106,6 +106,11 @@ sealed class ServerHostPreference<T : Any> {
         false,
         true
     )
+    class DownloadPath(preferenceStore: PreferenceStore) : StringServerHostPreference(
+        preferenceStore,
+        "downloadsPath",
+        ""
+    )
 
     // WebUI
     class WebUIEnabled(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
