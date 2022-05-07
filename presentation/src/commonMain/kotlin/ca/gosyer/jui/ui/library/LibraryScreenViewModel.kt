@@ -34,27 +34,44 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-private typealias CategoryItems = Pair<StateFlow<List<Manga>>, MutableStateFlow<List<Manga>>>
-private typealias LibraryMap = MutableMap<Long, CategoryItems>
+sealed class CategoryState {
+    object Loading : CategoryState()
+    data class Failed(val e: Throwable) : CategoryState()
+    data class Loaded(
+        val items: StateFlow<List<Manga>>,
+        val unfilteredItems: MutableStateFlow<List<Manga>>
+    ) : CategoryState()
+}
+
+private typealias LibraryMap = MutableMap<Long, MutableStateFlow<CategoryState>>
 private data class Library(val categories: MutableStateFlow<List<Category>>, val mangaMap: LibraryMap)
 
-private fun LibraryMap.getManga(id: Long, getItemsFlow: (StateFlow<List<Manga>>) -> StateFlow<List<Manga>>) =
+private fun LibraryMap.getManga(id: Long) =
     getOrPut(id) {
-        val unfilteredItems = MutableStateFlow<List<Manga>>(emptyList())
-        getItemsFlow(unfilteredItems) to unfilteredItems
+        MutableStateFlow(CategoryState.Loading)
     }
+private fun LibraryMap.setError(id: Long, e: Throwable) {
+    getManga(id).value = CategoryState.Failed(e)
+}
 private fun LibraryMap.setManga(id: Long, manga: List<Manga>, getItemsFlow: (StateFlow<List<Manga>>) -> StateFlow<List<Manga>>) {
-    getManga(id, getItemsFlow).second.value = manga
+    val flow = getManga(id)
+    when (val state = flow.value) {
+        is CategoryState.Loaded -> state.unfilteredItems.value = manga
+        else -> {
+            val unfilteredItems = MutableStateFlow(manga)
+            flow.value = CategoryState.Loaded(getItemsFlow(unfilteredItems), unfilteredItems)
+        }
+    }
 }
 
 class LibraryScreenViewModel @Inject constructor(
@@ -213,24 +230,27 @@ class LibraryScreenViewModel @Inject constructor(
         }.stateIn(scope, SharingStarted.Eagerly, emptyList())
     }
 
-    fun getLibraryForCategoryId(id: Long): StateFlow<List<Manga>> {
-        return library.mangaMap.getManga(id, ::getMangaItemsFlow).first
+    fun getLibraryForCategoryId(id: Long): StateFlow<CategoryState> {
+        return library.mangaMap.getManga(id)
     }
 
     private suspend fun updateCategories(categories: List<Category>) {
         withDefaultContext {
             categories.map { category ->
                 async {
-                    library.mangaMap.setManga(
-                        id = category.id,
-                        manga = categoryHandler.getMangaFromCategory(category)
-                            .catch {
-                                log.warn(it) { "Error getting manga for category $category" }
-                                emit(emptyList())
-                            }
-                            .single(),
-                        getItemsFlow = ::getMangaItemsFlow
-                    )
+                    categoryHandler.getMangaFromCategory(category)
+                        .onEach {
+                            library.mangaMap.setManga(
+                                id = category.id,
+                                manga = it,
+                                getItemsFlow = ::getMangaItemsFlow
+                            )
+                        }
+                        .catch {
+                            log.warn(it) { "Error getting manga for category $category" }
+                            library.mangaMap.setError(category.id, it)
+                        }
+                        .collect()
                 }
             }.awaitAll()
         }
@@ -239,7 +259,7 @@ class LibraryScreenViewModel @Inject constructor(
     private fun getCategoriesToUpdate(mangaId: Long): List<Category> {
         return library.mangaMap
             .filter { mangaMapEntry ->
-                mangaMapEntry.value.first.value.firstOrNull { it.id == mangaId } != null
+                (mangaMapEntry.value.value as? CategoryState.Loaded)?.items?.value?.firstOrNull { it.id == mangaId } != null
             }
             .map { (id) -> library.categories.value.first { it.id == id } }
     }

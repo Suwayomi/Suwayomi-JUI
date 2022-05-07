@@ -34,11 +34,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.data.library.model.DisplayMode
 import ca.gosyer.jui.data.models.Category
-import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
+import ca.gosyer.jui.ui.library.CategoryState
 import ca.gosyer.jui.ui.library.settings.LibrarySheet
 import ca.gosyer.jui.ui.library.settings.LibrarySideMenu
 import ca.gosyer.jui.uicore.components.LoadingScreen
@@ -57,7 +57,7 @@ fun LibraryScreenContent(
     error: String?,
     query: String,
     updateQuery: (String) -> Unit,
-    getLibraryForPage: @Composable (Long) -> State<List<Manga>>,
+    getLibraryForPage: @Composable (Long) -> State<CategoryState>,
     onPageChanged: (Int) -> Unit,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit,
@@ -155,7 +155,7 @@ fun WideLibraryScreenContent(
     error: String?,
     query: String,
     updateQuery: (String) -> Unit,
-    getLibraryForPage: @Composable (Long) -> State<List<Manga>>,
+    getLibraryForPage: @Composable (Long) -> State<CategoryState>,
     onPageChanged: (Int) -> Unit,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit,
@@ -251,7 +251,7 @@ fun ThinLibraryScreenContent(
     error: String?,
     query: String,
     updateQuery: (String) -> Unit,
-    getLibraryForPage: @Composable (Long) -> State<List<Manga>>,
+    getLibraryForPage: @Composable (Long) -> State<CategoryState>,
     onPageChanged: (Int) -> Unit,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit,
