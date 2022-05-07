@@ -26,7 +26,7 @@ fun BottomNav(navigator: Navigator) {
             BottomNavigationItem(
                 selected = isSelected,
                 onClick = {
-                    if (navigator.lastItem::class == it.screen) return@BottomNavigationItem
+                    if (isSelected) return@BottomNavigationItem
                     navigator replace it.createScreen()
                 },
                 icon = {

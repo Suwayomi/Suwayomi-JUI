@@ -67,7 +67,10 @@ private fun SideMenuItem(
             modifier = Modifier.fillMaxWidth()
                 .defaultMinSize(minHeight = 40.dp)
                 .clickable(
-                    onClick = { onClick(createScreen()) },
+                    onClick = {
+                        if (selected) return@clickable
+                        onClick(createScreen())
+                    },
                     // onMiddleClick = { onMiddleClick?.invoke() } todo
                 )
         ) {
