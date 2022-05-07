@@ -64,7 +64,7 @@ jobs:
       - uses: actions/setup-java@v1
         if: ${{ matrix.runtime != 'linux-fedora-x64' }}
         with:
-          java-version: '16'
+          java-version: '17'
           architecture: ${{ matrix.arch }}
 
       - name: Setup Cl
@@ -79,7 +79,7 @@ jobs:
 
       - name: Build rpm Package
         if: ${{ matrix.runtime == 'linux-fedora-x64' }}
-        uses: Syer10/Fedora-Java16-Action@v1
+        uses: Syer10/Fedora-Java17-Action@v1
         with:
           command: ./gradlew ${{ matrix.build }} --stacktrace
 
@@ -137,7 +137,7 @@ jobs:
         uses: actions/download-artifact@v2
 
       - name: Fix rpm java dependency
-        uses: Syer10/Fedora-Java16-Action@v1
+        uses: Syer10/Fedora-Java17-Action@v1
         with:
           command: ./scripts/RpmDependencyFix.sh
 

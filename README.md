@@ -65,7 +65,7 @@ Download the latest apk from [the releases section][release] (Or from [the previ
 
 ## General troubleshooting
 ### I'm having issues starting the application
-Make sure you have used either an installer, or you have Java 15 installed.
+Make sure you have used either an installer, or you have Java 17 installed.
 
 ### It says server failed to start
 Make sure that if you used an installer, that you have at least Java 8 installed.
@@ -76,7 +76,7 @@ Join Tachidesk's [discord server](https://discord.gg/DDZdqZWaHA) to hang out wit
 ## Building from source
 ### Prerequisite: Software dependencies
 You need this software packages installed in order to build this project:
-- Java Development Kit and Java Runtime Environment version 15, this can be handled by IntelliJ
+- Java Development Kit and Java Runtime Environment version 17, this can be handled by IntelliJ
 ### Building a jar for your OS
 Run `./gradlew packageUberJarForCurrentOS`, the resulting built jar file will be `build/compose/Tachidesk-JUI-os-arch-X.Y.Z.jar`.
 
