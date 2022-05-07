@@ -10,10 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
@@ -25,6 +22,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.toSize
 import ca.gosyer.jui.ui.reader.model.Navigation
 import ca.gosyer.jui.ui.util.compose.contains
+import kotlinx.coroutines.flow.MutableStateFlow
 
 fun Modifier.navigationClickable(
     navigation: ViewerNavigation,
@@ -36,7 +34,7 @@ fun Modifier.navigationClickable(
         properties["onClick"] = onClick
     }
 ) {
-    Modifier.navigationClickable(
+    navigationClickable(
         navigation = navigation,
         interactionSource = remember { MutableInteractionSource() },
         onClick = onClick,
@@ -50,7 +48,7 @@ fun Modifier.navigationClickable(
     onClickLabel: String? = null,
     role: Role? = null,
     onClick: (Navigation) -> Unit
-) = composed(
+): Modifier = composed(
     inspectorInfo = debugInspectorInfo {
         name = "navigationClickable"
         properties["navigation"] = navigation
@@ -61,23 +59,24 @@ fun Modifier.navigationClickable(
         properties["interactionSource"] = interactionSource
     }
 ) {
-    var offsetEvent by remember { mutableStateOf<Offset?>(null) }
-    var layoutSize by remember { mutableStateOf(Size.Zero) }
-    Modifier
+    val offsetEvent = remember { MutableStateFlow<Offset?>(null) }
+    val layoutSize = remember { MutableStateFlow(Size.Zero) }
+    this
         .clickable(interactionSource, null, enabled, onClickLabel, role) {
-            val offset = offsetEvent ?: return@clickable
-            if (offset in layoutSize) {
-                onClick(navigation.getAction(offset, layoutSize))
+            val offset = offsetEvent.value ?: return@clickable
+            val size = layoutSize.value
+            if (offset in size) {
+                onClick(navigation.getAction(offset, size))
             }
         }
         .pointerInput(interactionSource) {
             forEachGesture {
                 awaitPointerEventScope {
-                    offsetEvent = awaitFirstDown().position
+                    offsetEvent.value = awaitFirstDown().position
                 }
             }
         }
         .onGloballyPositioned {
-            layoutSize = it.size.toSize()
+            layoutSize.value = it.size.toSize()
         }
 }
