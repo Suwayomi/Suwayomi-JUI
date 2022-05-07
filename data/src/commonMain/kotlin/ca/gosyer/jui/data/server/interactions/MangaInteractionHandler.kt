@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.data.server.interactions
 
-import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.data.server.Http
@@ -15,6 +14,7 @@ import ca.gosyer.jui.data.server.requests.mangaQuery
 import ca.gosyer.jui.data.server.requests.mangaThumbnailQuery
 import ca.gosyer.jui.data.server.requests.updateMangaMetaRequest
 import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
@@ -41,7 +41,8 @@ class MangaInteractionHandler @Inject constructor(
                     parameter("onlineFetch", true)
                 }
             }
-        }.asSuccess().body<Manga>()
+            expectSuccess = true
+        }.body<Manga>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -49,9 +50,11 @@ class MangaInteractionHandler @Inject constructor(
 
     fun getMangaThumbnail(mangaId: Long, block: HttpRequestBuilder.() -> Unit) = flow {
         val response = client.get(
-            serverUrl + mangaThumbnailQuery(mangaId),
-            block
-        ).asSuccess().bodyAsChannel()
+            serverUrl + mangaThumbnailQuery(mangaId)
+        ) {
+            expectSuccess = true
+            block()
+        }.bodyAsChannel()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -64,7 +67,8 @@ class MangaInteractionHandler @Inject constructor(
             }
         ) {
             method = HttpMethod.Patch
-        }.asSuccess()
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 

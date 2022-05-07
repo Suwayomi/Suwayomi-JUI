@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.base.image
 
-import ca.gosyer.jui.core.io.HttpException
 import ca.gosyer.jui.data.models.Extension
 import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.data.models.Source
@@ -26,14 +25,13 @@ import io.kamel.core.fetcher.Fetcher
 import io.kamel.core.mapper.Mapper
 import io.kamel.image.config.imageBitmapDecoder
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.plugins.onDownload
 import io.ktor.client.request.request
 import io.ktor.client.request.takeFrom
 import io.ktor.client.request.url
 import io.ktor.client.statement.bodyAsChannel
-import io.ktor.client.statement.discardRemaining
 import io.ktor.http.Url
-import io.ktor.http.isSuccess
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -105,14 +103,10 @@ class KamelConfigProvider @Inject constructor(
                 }
                 takeFrom(resourceConfig.requestData)
                 url(data)
+                expectSuccess = true
             }
-            if (response.status.isSuccess()) {
-                val bytes = response.bodyAsChannel()
-                send(Resource.Success(bytes))
-            } else {
-                response.discardRemaining()
-                send(Resource.Failure(HttpException(response.status)))
-            }
+            val bytes = response.bodyAsChannel()
+            send(Resource.Success(bytes))
         }
     }
 }

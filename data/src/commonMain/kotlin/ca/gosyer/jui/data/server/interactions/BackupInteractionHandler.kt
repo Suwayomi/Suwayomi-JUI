@@ -7,7 +7,6 @@
 package ca.gosyer.jui.data.server.interactions
 
 import ca.gosyer.jui.core.io.SYSTEM
-import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.BackupValidationResult
 import ca.gosyer.jui.data.server.Http
@@ -16,6 +15,7 @@ import ca.gosyer.jui.data.server.requests.backupFileExportRequest
 import ca.gosyer.jui.data.server.requests.backupFileImportRequest
 import ca.gosyer.jui.data.server.requests.validateBackupFileRequest
 import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
@@ -36,45 +36,45 @@ class BackupInteractionHandler @Inject constructor(
     serverPreferences: ServerPreferences
 ) : BaseInteractionHandler(client, serverPreferences) {
 
+    private fun buildFormData(file: Path) = formData {
+        append(
+            "backup.proto.gz", FileSystem.SYSTEM.source(file).buffer().readByteArray(),
+            Headers.build {
+                append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
+                append(HttpHeaders.ContentDisposition, "filename=backup.proto.gz")
+            }
+        )
+    }
+
     fun importBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = flow {
         val response = client.submitFormWithBinaryData(
             serverUrl + backupFileImportRequest(),
-            formData = formData {
-                append(
-                    "backup.proto.gz", FileSystem.SYSTEM.source(file).buffer().readByteArray(),
-                    Headers.build {
-                        append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
-                        append(HttpHeaders.ContentDisposition, "filename=backup.proto.gz")
-                    }
-                )
-            },
-            block = block
-        ).asSuccess()
+            formData = buildFormData(file)
+        ) {
+            expectSuccess = true
+            block()
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun validateBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = flow {
         val response = client.submitFormWithBinaryData(
             serverUrl + validateBackupFileRequest(),
-            formData = formData {
-                append(
-                    "backup.proto.gz", FileSystem.SYSTEM.source(file).buffer().readByteArray(),
-                    Headers.build {
-                        append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
-                        append(HttpHeaders.ContentDisposition, "filename=backup.proto.gz")
-                    }
-                )
-            },
-            block = block
-        ).asSuccess().body<BackupValidationResult>()
+            formData = buildFormData(file)
+        ) {
+            expectSuccess = true
+            block()
+        }.body<BackupValidationResult>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun exportBackupFile(block: HttpRequestBuilder.() -> Unit = {}) = flow {
         val response = client.get(
-            serverUrl + backupFileExportRequest(),
-            block
-        ).asSuccess()
+            serverUrl + backupFileExportRequest()
+        ) {
+            expectSuccess = true
+            block()
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 }

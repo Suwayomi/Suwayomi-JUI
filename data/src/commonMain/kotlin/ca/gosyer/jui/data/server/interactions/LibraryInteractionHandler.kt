@@ -6,13 +6,13 @@
 
 package ca.gosyer.jui.data.server.interactions
 
-import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.requests.addMangaToLibraryQuery
 import ca.gosyer.jui.data.server.requests.removeMangaFromLibraryRequest
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +28,9 @@ class LibraryInteractionHandler @Inject constructor(
     fun addMangaToLibrary(mangaId: Long) = flow {
         val response = client.get(
             serverUrl + addMangaToLibraryQuery(mangaId)
-        ).asSuccess()
+        ) {
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -37,7 +39,9 @@ class LibraryInteractionHandler @Inject constructor(
     fun removeMangaFromLibrary(mangaId: Long) = flow {
         val response = client.delete(
             serverUrl + removeMangaFromLibraryRequest(mangaId)
-        ).asSuccess()
+        ) {
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 

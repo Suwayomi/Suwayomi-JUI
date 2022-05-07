@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.data.server.interactions
 
-import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.MangaPage
 import ca.gosyer.jui.data.models.Source
@@ -27,6 +26,7 @@ import ca.gosyer.jui.data.server.requests.sourcePopularQuery
 import ca.gosyer.jui.data.server.requests.sourceSearchQuery
 import ca.gosyer.jui.data.server.requests.updateSourceSettingQuery
 import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -48,14 +48,18 @@ class SourceInteractionHandler @Inject constructor(
     fun getSourceList() = flow {
         val response = client.get(
             serverUrl + sourceListQuery()
-        ).asSuccess().body<List<Source>>()
+        ) {
+            expectSuccess = true
+        }.body<List<Source>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun getSourceInfo(sourceId: Long) = flow {
         val response = client.get(
             serverUrl + sourceInfoQuery(sourceId)
-        ).asSuccess().body<Source>()
+        ) {
+            expectSuccess = true
+        }.body<Source>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -64,7 +68,9 @@ class SourceInteractionHandler @Inject constructor(
     fun getPopularManga(sourceId: Long, pageNum: Int) = flow {
         val response = client.get(
             serverUrl + sourcePopularQuery(sourceId, pageNum)
-        ).asSuccess().body<MangaPage>()
+        ) {
+            expectSuccess = true
+        }.body<MangaPage>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -76,7 +82,9 @@ class SourceInteractionHandler @Inject constructor(
     fun getLatestManga(sourceId: Long, pageNum: Int) = flow {
         val response = client.get(
             serverUrl + sourceLatestQuery(sourceId, pageNum)
-        ).asSuccess().body<MangaPage>()
+        ) {
+            expectSuccess = true
+        }.body<MangaPage>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -95,7 +103,8 @@ class SourceInteractionHandler @Inject constructor(
                     parameter("searchTerm", searchTerm)
                 }
             }
-        }.asSuccess()
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -109,7 +118,8 @@ class SourceInteractionHandler @Inject constructor(
                     parameter("searchTerm", searchTerm)
                 }
             }
-        }.asSuccess().body<MangaPage>()
+            expectSuccess = true
+        }.body<MangaPage>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -128,7 +138,8 @@ class SourceInteractionHandler @Inject constructor(
                     parameter("reset", true)
                 }
             }
-        }.asSuccess().body<List<SourceFilter>>()
+            expectSuccess = true
+        }.body<List<SourceFilter>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -140,7 +151,8 @@ class SourceInteractionHandler @Inject constructor(
         ) {
             contentType(ContentType.Application.Json)
             setBody(sourceFilter)
-        }.asSuccess()
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -160,7 +172,9 @@ class SourceInteractionHandler @Inject constructor(
     fun getSourceSettings(sourceId: Long) = flow {
         val response = client.get(
             serverUrl + getSourceSettingsQuery(sourceId)
-        ).asSuccess().body<List<SourcePreference>>()
+        ) {
+            expectSuccess = true
+        }.body<List<SourcePreference>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -172,7 +186,8 @@ class SourceInteractionHandler @Inject constructor(
         ) {
             contentType(ContentType.Application.Json)
             setBody(sourcePreference)
-        }.asSuccess()
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 

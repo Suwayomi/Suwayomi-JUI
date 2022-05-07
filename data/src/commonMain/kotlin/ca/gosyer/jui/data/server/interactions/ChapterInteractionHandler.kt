@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.data.server.interactions
 
-import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.data.models.Manga
@@ -21,6 +20,7 @@ import ca.gosyer.jui.data.server.requests.stopDownloadingChapterRequest
 import ca.gosyer.jui.data.server.requests.updateChapterMetaRequest
 import ca.gosyer.jui.data.server.requests.updateChapterRequest
 import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
@@ -47,7 +47,8 @@ class ChapterInteractionHandler @Inject constructor(
                     parameter("onlineFetch", true)
                 }
             }
-        }.asSuccess().body<List<Chapter>>()
+            expectSuccess = true
+        }.body<List<Chapter>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -56,7 +57,9 @@ class ChapterInteractionHandler @Inject constructor(
     fun getChapter(mangaId: Long, chapterIndex: Int) = flow {
         val response = client.get(
             serverUrl + getChapterQuery(mangaId, chapterIndex)
-        ).asSuccess().body<Chapter>()
+        ) {
+            expectSuccess = true
+        }.body<Chapter>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -92,7 +95,8 @@ class ChapterInteractionHandler @Inject constructor(
             }
         ) {
             method = HttpMethod.Patch
-        }.asSuccess()
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -130,9 +134,11 @@ class ChapterInteractionHandler @Inject constructor(
 
     fun getPage(mangaId: Long, chapterIndex: Int, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = flow {
         val response = client.get(
-            serverUrl + getPageQuery(mangaId, chapterIndex, pageNum),
-            block
-        ).asSuccess()
+            serverUrl + getPageQuery(mangaId, chapterIndex, pageNum)
+        ) {
+            expectSuccess = true
+            block()
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -145,7 +151,9 @@ class ChapterInteractionHandler @Inject constructor(
     fun deleteChapterDownload(mangaId: Long, chapterIndex: Int) = flow {
         val response = client.delete(
             serverUrl + deleteDownloadedChapterRequest(mangaId, chapterIndex)
-        ).asSuccess()
+        ) {
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -158,7 +166,9 @@ class ChapterInteractionHandler @Inject constructor(
     fun queueChapterDownload(mangaId: Long, chapterIndex: Int) = flow {
         val response = client.get(
             serverUrl + queueDownloadChapterRequest(mangaId, chapterIndex)
-        ).asSuccess()
+        ) {
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -171,7 +181,9 @@ class ChapterInteractionHandler @Inject constructor(
     fun stopChapterDownload(mangaId: Long, chapterIndex: Int) = flow {
         val response = client.delete(
             serverUrl + stopDownloadingChapterRequest(mangaId, chapterIndex)
-        ).asSuccess()
+        ) {
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -190,7 +202,8 @@ class ChapterInteractionHandler @Inject constructor(
             }
         ) {
             method = HttpMethod.Patch
-        }.asSuccess()
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 

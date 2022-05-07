@@ -8,9 +8,9 @@ package ca.gosyer.jui.ui.util.compose
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
-import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.data.server.Http
 import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
@@ -25,7 +25,10 @@ fun imageFromFile(file: Path): ImageBitmap {
 }
 
 suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
-    return client.get(url, block).asSuccess().toImageBitmap()
+    return client.get(url) {
+        expectSuccess = true
+        block()
+    }.toImageBitmap()
 }
 
 actual suspend fun HttpResponse.toImageBitmap(): ImageBitmap {

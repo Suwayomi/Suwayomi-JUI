@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.data.server.interactions
 
-import ca.gosyer.jui.core.io.asSuccess
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.data.models.Category
 import ca.gosyer.jui.data.models.Manga
@@ -22,6 +21,7 @@ import ca.gosyer.jui.data.server.requests.getMangaCategoriesQuery
 import ca.gosyer.jui.data.server.requests.getMangaInCategoryQuery
 import ca.gosyer.jui.data.server.requests.removeMangaFromCategoryRequest
 import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
@@ -40,7 +40,9 @@ class CategoryInteractionHandler @Inject constructor(
     fun getMangaCategories(mangaId: Long) = flow {
         val response = client.get(
             serverUrl + getMangaCategoriesQuery(mangaId)
-        ).asSuccess().body<List<Category>>()
+        ) {
+            expectSuccess = true
+        }.body<List<Category>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -49,7 +51,9 @@ class CategoryInteractionHandler @Inject constructor(
     fun addMangaToCategory(mangaId: Long, categoryId: Long) = flow {
         val response = client.get(
             serverUrl + addMangaToCategoryQuery(mangaId, categoryId)
-        ).asSuccess()
+        ) {
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
     fun addMangaToCategory(manga: Manga, category: Category) = addMangaToCategory(manga.id, category.id)
@@ -59,7 +63,9 @@ class CategoryInteractionHandler @Inject constructor(
     fun removeMangaFromCategory(mangaId: Long, categoryId: Long) = flow {
         val response = client.delete(
             serverUrl + removeMangaFromCategoryRequest(mangaId, categoryId)
-        ).asSuccess()
+        ) {
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
     fun removeMangaFromCategory(manga: Manga, category: Category) = removeMangaFromCategory(manga.id, category.id)
@@ -69,7 +75,9 @@ class CategoryInteractionHandler @Inject constructor(
     fun getCategories(dropDefault: Boolean = false) = flow {
         val response = client.get(
             serverUrl + getCategoriesQuery()
-        ).asSuccess().body<List<Category>>().let { categories ->
+        ) {
+            expectSuccess = true
+        }.body<List<Category>>().let { categories ->
             if (dropDefault) {
                 categories.filterNot { it.name.equals("default", true) }
             } else categories
@@ -83,7 +91,9 @@ class CategoryInteractionHandler @Inject constructor(
             formParameters = Parameters.build {
                 append("name", name)
             }
-        ).asSuccess()
+        ) {
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -100,7 +110,8 @@ class CategoryInteractionHandler @Inject constructor(
             }
         ) {
             method = HttpMethod.Patch
-        }.asSuccess()
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
     fun modifyCategory(category: Category, name: String? = null, isLanding: Boolean? = null) = modifyCategory(category.id, name, isLanding)
@@ -114,14 +125,17 @@ class CategoryInteractionHandler @Inject constructor(
             }
         ) {
             method = HttpMethod.Patch
-        }.asSuccess()
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
 
     fun deleteCategory(categoryId: Long) = flow {
         val response = client.delete(
             serverUrl + categoryDeleteRequest(categoryId)
-        ).asSuccess()
+        ) {
+            expectSuccess = true
+        }
         emit(response)
     }.flowOn(Dispatchers.IO)
     fun deleteCategory(category: Category) = deleteCategory(category.id)
@@ -129,7 +143,9 @@ class CategoryInteractionHandler @Inject constructor(
     fun getMangaFromCategory(categoryId: Long) = flow {
         val response = client.get(
             serverUrl + getMangaInCategoryQuery(categoryId)
-        ).asSuccess().body<List<Manga>>()
+        ) {
+            expectSuccess = true
+        }.body<List<Manga>>()
         emit(response)
     }.flowOn(Dispatchers.IO)
     fun getMangaFromCategory(category: Category) = getMangaFromCategory(category.id)
