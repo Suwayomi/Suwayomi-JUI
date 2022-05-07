@@ -162,7 +162,7 @@ fun SourceFilterAction(
 fun GroupView(group: SourceFiltersView.Group, startExpanded: Boolean, onExpandChanged: ((Boolean, Int) -> Unit)? = null) {
     val state by group.state.collectAsState()
     ExpandablePreference(
-        group.name,
+        title = group.name,
         startExpanded = startExpanded,
         onExpandedChanged = {
             onExpandChanged?.invoke(it, group.index)
@@ -178,7 +178,7 @@ fun GroupView(group: SourceFiltersView.Group, startExpanded: Boolean, onExpandCh
 fun CheckboxView(checkBox: SourceFiltersView.CheckBox) {
     val state by checkBox.state.collectAsState()
     SourceFilterAction(
-        checkBox.name,
+        name = checkBox.name,
         onClick = { checkBox.updateState(!state) },
         action = {
             Checkbox(checked = state, onCheckedChange = null)
@@ -190,7 +190,7 @@ fun CheckboxView(checkBox: SourceFiltersView.CheckBox) {
 fun HeaderView(header: SourceFiltersView.Header) {
     Box(Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth()) {
         Text(
-            header.name,
+            text = header.name,
             fontWeight = FontWeight.Bold,
             color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
             maxLines = 1,
@@ -214,9 +214,12 @@ fun SelectView(select: SourceFiltersView.Select) {
             style = MaterialTheme.typography.subtitle1,
             modifier = Modifier.weight(1f)
         )
-        Spinner(Modifier.weight(1f), select.filter.values, state) {
-            select.updateState(it)
-        }
+        Spinner(
+            modifier = Modifier.weight(1f),
+            items = select.filter.values,
+            selectedItemIndex = state,
+            onSelectItem = select::updateState
+        )
     }
 }
 
@@ -243,7 +246,7 @@ fun SortRow(name: String, selected: Boolean, asc: Boolean, onClick: () -> Unit) 
             )
 
             Icon(
-                Icons.Rounded.ArrowUpward,
+                imageVector = Icons.Rounded.ArrowUpward,
                 contentDescription = null,
                 modifier = Modifier.rotate(angle),
                 tint = MaterialTheme.colors.primary
@@ -266,7 +269,11 @@ fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChang
     ) {
         Column(Modifier.fillMaxWidth()) {
             sort.filter.values.forEachIndexed { index, name ->
-                SortRow(name, state?.index == index, state?.ascending ?: false) {
+                SortRow(
+                    name = name,
+                    selected = state?.index == index,
+                    asc = state?.ascending ?: false
+                ) {
                     sort.updateState(
                         value = SortFilter.Selection(
                             index,
@@ -300,7 +307,7 @@ fun TextView(text: SourceFiltersView.Text) {
     }
 
     OutlinedTextField(
-        stateText,
+        value = stateText,
         onValueChange = { stateText = it },
         singleLine = true,
         maxLines = 1,
@@ -319,7 +326,7 @@ fun TextView(text: SourceFiltersView.Text) {
 fun TriStateView(triState: SourceFiltersView.TriState) {
     val state by triState.state.collectAsState()
     SourceFilterAction(
-        triState.name,
+        name = triState.name,
         onClick = {
             triState.updateState(
                 when (state) {

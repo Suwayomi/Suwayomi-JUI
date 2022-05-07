@@ -163,6 +163,7 @@ sealed class SourceFiltersView<T, R : Any?> {
     }
 }
 
+@Suppress("FunctionName")
 fun SourceFiltersView(index: Int, sourceFilter: SourceFilter): SourceFiltersView<*, *> {
     return when (sourceFilter) {
         is CheckBoxFilter -> SourceFiltersView.CheckBox(index, sourceFilter)
