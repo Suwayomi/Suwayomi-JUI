@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -41,6 +42,7 @@ import ca.gosyer.jui.uicore.components.HorizontalScrollbar
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 
@@ -98,8 +100,10 @@ fun ContinuousReader(
                 updateLastPageReadOffset(state.firstVisibleItemScrollOffset)
             }
         }
-        LaunchedEffect(state.firstVisibleItemIndex) {
-            progress(state.firstVisibleItemIndex)
+        LaunchedEffect(state) {
+            snapshotFlow { state.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+                .filterNotNull()
+                .collect(progress)
         }
 
         val imageModifier = if (maxSize != 0) {
