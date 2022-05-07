@@ -8,6 +8,7 @@ package ca.gosyer.jui.data.models.sourcefilters
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 @SerialName("Select")
@@ -18,6 +19,7 @@ data class SelectFilter(
     data class SelectProps(
         override val name: String,
         override val state: Int,
-        val values: List<String>
+        val values: List<JsonElement>,
+        val displayValues: List<String>? = null
     ) : Props<Int>
 }

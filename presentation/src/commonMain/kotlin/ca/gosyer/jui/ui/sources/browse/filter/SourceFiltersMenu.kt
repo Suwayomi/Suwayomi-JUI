@@ -216,7 +216,8 @@ fun SelectView(select: SourceFiltersView.Select) {
         )
         Spinner(
             modifier = Modifier.weight(1f),
-            items = select.filter.values,
+            // TODO: 2022-05-06 Remove it.values when we hit server version 0.7.0
+            items = select.filter.let { it.displayValues ?: it.values.map(Any::toString) },
             selectedItemIndex = state,
             onSelectItem = select::updateState
         )
