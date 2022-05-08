@@ -6,10 +6,10 @@
 
 package ca.gosyer.jui.ui.base.components
 
+import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.getDisplayLanguage
-import io.fluidsonic.locale.Locale
 
-fun localeToString(locale: String) = Locale.forLanguageTag(locale)
+fun localeToString(locale: String) = Locale(locale)
     .getDisplayLanguage(Locale.getDefault())
     .ifBlank { locale.uppercase() }

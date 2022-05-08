@@ -6,10 +6,10 @@
 
 package ca.gosyer.jui.data.extension
 
+import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.PreferenceStore
-import io.fluidsonic.locale.Locale
 
 class ExtensionPreferences(private val preferenceStore: PreferenceStore) {
     fun languages(): Preference<Set<String>> {

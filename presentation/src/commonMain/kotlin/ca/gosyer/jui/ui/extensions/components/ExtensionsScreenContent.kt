@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +66,6 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
-import io.fluidsonic.locale.Locale
 import io.kamel.image.lazyPainterResource
 
 @Composable
@@ -240,7 +240,7 @@ fun LanguageDialog(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         val langName by derivedStateOf {
-                            Locale.forLanguageTag(lang).getDisplayName(locale).ifBlank { lang }
+                            Locale(lang).getDisplayName(locale).ifBlank { lang.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } }
                         }
                         Text(langName)
                         Switch(

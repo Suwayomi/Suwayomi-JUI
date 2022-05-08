@@ -1,3 +1,5 @@
+import org.jetbrains.compose.compose
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
@@ -46,8 +48,8 @@ kotlin {
                 api(libs.multiplatformSettings.core)
                 api(libs.multiplatformSettings.coroutines)
                 api(libs.multiplatformSettings.serialization)
-                api(libs.locale)
                 api(libs.dateTime)
+                api(compose("org.jetbrains.compose.ui:ui-text"))
             }
         }
         val commonTest by getting {

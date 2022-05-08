@@ -6,11 +6,11 @@
 
 package ca.gosyer.jui.data.catalog
 
+import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.PreferenceStore
 import ca.gosyer.jui.data.library.model.DisplayMode
-import io.fluidsonic.locale.Locale
 
 class CatalogPreferences(private val preferenceStore: PreferenceStore) {
     fun languages(): Preference<Set<String>> {

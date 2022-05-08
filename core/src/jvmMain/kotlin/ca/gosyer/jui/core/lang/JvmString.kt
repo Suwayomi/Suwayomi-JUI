@@ -7,10 +7,9 @@
 
 package ca.gosyer.jui.core.lang
 
-import io.fluidsonic.locale.Locale
-import io.fluidsonic.locale.toPlatform
+import androidx.compose.ui.text.intl.Locale
 
-fun String.capitalize(locale: Locale = Locale.getDefault()) =
+fun String.capitalize(locale: Locale = Locale.current) =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
 
 actual fun String.uppercase(locale: Locale): String = uppercase(locale.toPlatform())

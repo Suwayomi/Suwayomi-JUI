@@ -6,8 +6,8 @@
 
 package ca.gosyer.jui.ui.util.lang
 
-import io.fluidsonic.locale.Locale
-import io.fluidsonic.locale.toPlatform
+import androidx.compose.ui.text.intl.Locale
+import ca.gosyer.jui.core.lang.toPlatform
 import java.text.Collator as JvmCollator
 
 actual fun Collator(locale: Locale): Collator {

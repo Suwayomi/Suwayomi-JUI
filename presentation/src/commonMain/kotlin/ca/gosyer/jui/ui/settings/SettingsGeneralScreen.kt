@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.getDisplayName
 import ca.gosyer.jui.core.lang.withIOContext
@@ -41,7 +42,6 @@ import ca.gosyer.jui.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import io.fluidsonic.locale.Locale
 import kotlinx.datetime.Clock
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -101,7 +101,7 @@ class SettingsGeneralViewModel @Inject constructor(
                         ?.jsonArray
                         .orEmpty()
                         .map { it.jsonPrimitive.content }
-                        .associateWith { Locale.forLanguageTag(it).getDisplayName(currentLocale) }
+                        .associateWith { Locale(it).getDisplayName(currentLocale) }
                 }
             }
         }

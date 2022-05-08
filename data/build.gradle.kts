@@ -43,9 +43,7 @@ kotlin {
                 api(libs.ktor.auth)
                 api(libs.ktor.logging)
                 api(libs.ktor.websockets)
-                api(libs.ktor.okHttp)
                 api(libs.okio)
-                api(libs.locale)
                 api(libs.dateTime)
                 api(projects.core)
                 api(projects.i18n)
@@ -61,6 +59,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
+                api(libs.ktor.okHttp)
             }
         }
         val desktopTest by getting {
@@ -69,6 +68,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
+                api(libs.ktor.okHttp)
             }
         }
         val androidTest by getting {

@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.core.lang
 
-import io.fluidsonic.locale.Locale
+import androidx.compose.ui.text.intl.Locale
 
 expect fun Locale.Companion.getDefault(): Locale
 

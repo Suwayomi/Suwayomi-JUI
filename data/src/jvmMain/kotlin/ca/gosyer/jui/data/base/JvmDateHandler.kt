@@ -6,9 +6,9 @@
 
 package ca.gosyer.jui.data.base
 
+import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.getDefault
-import io.fluidsonic.locale.Locale
-import io.fluidsonic.locale.toPlatform
+import ca.gosyer.jui.core.lang.toPlatform
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import me.tatarka.inject.annotations.Inject

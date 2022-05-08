@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.ui.util.lang
 
-import io.fluidsonic.locale.Locale
+import androidx.compose.ui.text.intl.Locale
 
 expect fun Collator(locale: Locale): Collator
 

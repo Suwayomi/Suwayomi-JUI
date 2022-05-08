@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.extensions
 
+import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.displayName
 import ca.gosyer.jui.data.extension.ExtensionPreferences
 import ca.gosyer.jui.data.models.Extension
@@ -13,7 +14,6 @@ import ca.gosyer.jui.data.server.interactions.ExtensionInteractionHandler
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import io.fluidsonic.locale.Locale
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -148,7 +148,7 @@ class ExtensionsScreenViewModel @Inject constructor(
             if (it.key == "all") {
                 MR.strings.all.toPlatformString()
             } else {
-                Locale.forLanguageTag(it.key).displayName
+                Locale(it.key).displayName
             }
         }
     }

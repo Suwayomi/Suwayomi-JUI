@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.library
 
+import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.lowercase
 import ca.gosyer.jui.core.lang.withDefaultContext
@@ -23,7 +24,6 @@ import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.util.lang.Collator
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import io.fluidsonic.locale.Locale
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow

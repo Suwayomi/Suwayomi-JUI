@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.core.lang
 
-import io.fluidsonic.locale.Locale
+import androidx.compose.ui.text.intl.Locale
 
 /**
  * Replaces the given string to have at most [count] characters using [replacement] at its end.

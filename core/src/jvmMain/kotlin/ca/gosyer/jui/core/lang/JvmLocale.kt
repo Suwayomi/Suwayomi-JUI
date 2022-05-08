@@ -6,12 +6,12 @@
 
 package ca.gosyer.jui.core.lang
 
-import io.fluidsonic.locale.Locale
-import io.fluidsonic.locale.toCommon
-import io.fluidsonic.locale.toPlatform
+import androidx.compose.ui.text.intl.Locale
 import java.util.Locale as PlatformLocale
 
-actual fun Locale.Companion.getDefault(): Locale = PlatformLocale.getDefault().toCommon()
+actual fun Locale.Companion.getDefault(): Locale = current
+
+fun Locale.toPlatform() = PlatformLocale.forLanguageTag(toLanguageTag())
 
 actual fun Locale.getDisplayLanguage(displayLocale: Locale): String = toPlatform()
     .getDisplayLanguage(displayLocale.toPlatform())

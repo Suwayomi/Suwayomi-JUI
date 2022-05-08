@@ -40,7 +40,6 @@ kotlin {
                 api(libs.coroutines.core)
                 api(libs.kamel)
                 api(libs.voyager.core)
-                api(libs.locale)
                 api(libs.dateTime)
                 api(projects.core)
                 api(projects.i18n)

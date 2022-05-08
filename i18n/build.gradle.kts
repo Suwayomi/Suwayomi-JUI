@@ -1,11 +1,8 @@
-import org.jetbrains.compose.compose
-
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
     id(libs.plugins.android.library.get().pluginId)
     id(libs.plugins.moko.gradle.get().pluginId)
-    id(libs.plugins.compose.get().pluginId)
 }
 
 kotlin {
@@ -28,8 +25,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(kotlin("stdlib-common"))
-                compileOnly(compose.runtime)
-                compileOnly(compose.ui)
                 api(libs.moko.core)
             }
         }
