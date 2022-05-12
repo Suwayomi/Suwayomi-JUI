@@ -47,7 +47,6 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.getDisplayName
 import ca.gosyer.jui.core.lang.uppercase
 import ca.gosyer.jui.data.models.Extension
@@ -168,7 +167,7 @@ fun ExtensionItem(
                 }
                 Text(title, fontSize = 18.sp, color = MaterialTheme.colors.onBackground)
                 Row {
-                    Text(extension.lang.uppercase(Locale.getDefault()), fontSize = 14.sp, color = MaterialTheme.colors.onBackground)
+                    Text(extension.lang.uppercase(Locale.current), fontSize = 14.sp, color = MaterialTheme.colors.onBackground)
                     if (extension.isNsfw) {
                         Spacer(Modifier.width(4.dp))
                         Text("18+", fontSize = 14.sp, color = Color.Red)
@@ -221,7 +220,7 @@ fun LanguageDialog(
     ) {
         title(BuildKonfig.NAME)
         Box {
-            val locale = remember { Locale.getDefault() }
+            val locale = remember { Locale.current }
             val listState = rememberLazyListState()
             LazyColumn(Modifier.fillMaxWidth(), listState) {
                 items(availableLangs.toList()) { lang ->

@@ -20,7 +20,6 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.intl.Locale
-import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.getDisplayName
 import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.data.base.DateHandler
@@ -80,7 +79,7 @@ class SettingsGeneralViewModel @Inject constructor(
     val dateFormat = uiPreferences.dateFormat().asStateFlow()
 
     private val now = Clock.System.now()
-    private val currentLocale = Locale.getDefault()
+    private val currentLocale = Locale.current
 
     @Composable
     fun getStartScreenChoices() = mapOf(

@@ -8,8 +8,6 @@ package ca.gosyer.jui.core.lang
 
 import androidx.compose.ui.text.intl.Locale
 
-expect fun Locale.Companion.getDefault(): Locale
-
 expect fun Locale.getDisplayLanguage(displayLocale: Locale): String
 
 expect fun Locale.getDisplayName(displayLocale: Locale): String

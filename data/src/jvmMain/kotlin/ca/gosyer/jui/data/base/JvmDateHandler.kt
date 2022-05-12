@@ -7,7 +7,6 @@
 package ca.gosyer.jui.data.base
 
 import androidx.compose.ui.text.intl.Locale
-import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.toPlatform
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
@@ -28,7 +27,7 @@ actual class DateHandler @Inject constructor() {
 
     actual fun getDateFormat(format: String): (Instant) -> String = when (format) {
         "" -> DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-            .withLocale(Locale.getDefault().toPlatform())
+            .withLocale(Locale.current.toPlatform())
             .withZone(ZoneId.systemDefault())
         else -> DateTimeFormatter.ofPattern(format)
             .withZone(ZoneId.systemDefault())
@@ -41,7 +40,7 @@ actual class DateHandler @Inject constructor() {
     actual val dateTimeFormat: (Instant) -> String by lazy {
         DateTimeFormatter
             .ofLocalizedDateTime(FormatStyle.SHORT)
-            .withLocale(Locale.getDefault().toPlatform())
+            .withLocale(Locale.current.toPlatform())
             .withZone(ZoneId.systemDefault())
             .let { formatter ->
                 {

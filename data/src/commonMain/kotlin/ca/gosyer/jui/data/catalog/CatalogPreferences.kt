@@ -7,14 +7,13 @@
 package ca.gosyer.jui.data.catalog
 
 import androidx.compose.ui.text.intl.Locale
-import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.PreferenceStore
 import ca.gosyer.jui.data.library.model.DisplayMode
 
 class CatalogPreferences(private val preferenceStore: PreferenceStore) {
     fun languages(): Preference<Set<String>> {
-        return preferenceStore.getStringSet("enabled_langs", setOfNotNull("en", Locale.getDefault().language))
+        return preferenceStore.getStringSet("enabled_langs", setOfNotNull("en", Locale.current.language))
     }
 
     fun displayMode(): Preference<DisplayMode> {

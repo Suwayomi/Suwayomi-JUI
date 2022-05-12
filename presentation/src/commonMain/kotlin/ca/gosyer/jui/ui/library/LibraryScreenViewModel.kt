@@ -7,7 +7,6 @@
 package ca.gosyer.jui.ui.library
 
 import androidx.compose.ui.text.intl.Locale
-import ca.gosyer.jui.core.lang.getDefault
 import ca.gosyer.jui.core.lang.lowercase
 import ca.gosyer.jui.core.lang.withDefaultContext
 import ca.gosyer.jui.core.prefs.getAsFlow
@@ -170,7 +169,7 @@ class LibraryScreenViewModel @Inject constructor(
     private fun getComparator(sortMode: Sort, ascending: Boolean): Comparator<Manga> {
         val sortFn = when (sortMode) {
             Sort.ALPHABETICAL -> {
-                val locale = Locale.getDefault()
+                val locale = Locale.current
                 val collator = Collator(locale);
 
                 { a: Manga, b: Manga ->
