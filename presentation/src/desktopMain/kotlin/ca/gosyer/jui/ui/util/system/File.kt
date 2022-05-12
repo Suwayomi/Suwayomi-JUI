@@ -50,13 +50,13 @@ fun fileSaver(
     onError: () -> Unit = {},
     onApprove: (Path) -> Unit
 ) = fileChooser(
-    true,
-    false,
-    true,
-    onCancel,
-    onError,
-    onApprove,
-    defaultFileName,
+    saving = true,
+    selectFolders = false,
+    selectFiles = true,
+    onCancel = onCancel,
+    onError = onError,
+    onApprove = onApprove,
+    defaultFileName = defaultFileName,
     extension
 )
 

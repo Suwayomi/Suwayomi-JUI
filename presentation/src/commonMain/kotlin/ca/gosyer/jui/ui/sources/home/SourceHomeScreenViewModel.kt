@@ -43,7 +43,7 @@ class SourceHomeScreenViewModel @Inject constructor(
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     val sourceLanguages = installedSources.map { sources ->
-        sources.map { it.lang }.toSet() - setOf(Source.LOCAL_SOURCE_LANG)
+        sources.map { it.lang }.toSet() - Source.LOCAL_SOURCE_LANG
     }.stateIn(scope, SharingStarted.Eagerly, emptySet())
 
     private val _query = MutableStateFlow("")
@@ -57,10 +57,8 @@ class SourceHomeScreenViewModel @Inject constructor(
         sourceHandler.getSourceList()
             .onEach {
                 installedSources.value = it.sortedWith(
-                    compareBy<Source, String>(String.CASE_INSENSITIVE_ORDER) { it.displayLang }
-                        .thenBy(String.CASE_INSENSITIVE_ORDER) {
-                            it.name
-                        }
+                    compareBy(String.CASE_INSENSITIVE_ORDER, Source::displayLang)
+                        .thenBy(String.CASE_INSENSITIVE_ORDER, Source::name)
                 )
                 _isLoading.value = false
             }
