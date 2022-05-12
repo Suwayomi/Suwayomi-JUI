@@ -38,7 +38,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
@@ -84,7 +83,7 @@ class ReaderMenuViewModel @Inject constructor(
     val pageEmitter = _pageEmitter.asSharedFlow()
 
     val readerModes = readerPreferences.modes().asStateIn(scope)
-    val readerMode = combine(merge(readerPreferences.mode().getAsFlow()), _manga) { mode, manga ->
+    val readerMode = combine(readerPreferences.mode().getAsFlow(), _manga) { mode, manga ->
         if (
             manga != null &&
             manga.meta.juiReaderMode != MangaMeta.DEFAULT_READER_MODE &&

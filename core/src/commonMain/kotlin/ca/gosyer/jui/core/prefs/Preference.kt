@@ -9,9 +9,8 @@ package ca.gosyer.jui.core.prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 
 /**
  * A wrapper around application preferences without knowing implementation details. Instances of
@@ -62,7 +61,8 @@ interface Preference<T> {
 }
 
 fun <T> Preference<T>.getAsFlow(action: (suspend (T) -> Unit)? = null): Flow<T> {
-    val flow = merge(flowOf(get()), changes())
+    val flow = changes()
+        .onStart { emit(get()) }
     return if (action != null) {
         flow.onEach(action = action)
     } else flow
