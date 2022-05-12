@@ -31,7 +31,7 @@ import io.ktor.client.plugins.auth.Auth as AuthPlugin
 
 typealias Http = HttpClient
 
-expect val Engine : HttpClientEngineFactory<HttpClientEngineConfig>
+expect val Engine: HttpClientEngineFactory<HttpClientEngineConfig>
 
 class HttpProvider @Inject constructor() {
     fun get(serverPreferences: ServerPreferences): Http {
