@@ -9,7 +9,7 @@ package ca.gosyer.jui.core.lang
 
 import androidx.compose.ui.text.intl.Locale
 
-fun String.capitalize(locale: Locale = Locale.current) =
+actual fun String.capitalize(locale: Locale) =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
 
 actual fun String.uppercase(locale: Locale): String = uppercase(locale.toPlatform())

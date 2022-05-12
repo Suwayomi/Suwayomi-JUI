@@ -20,6 +20,8 @@ fun String.chop(count: Int, replacement: String = "…"): String {
     }
 }
 
+expect fun String.capitalize(locale: Locale = Locale.current): String
+
 expect fun String.uppercase(locale: Locale): String
 
 expect fun String.lowercase(locale: Locale): String
