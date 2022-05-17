@@ -7,8 +7,9 @@
 package ca.gosyer.jui.ui.base.components
 
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import ca.gosyer.jui.core.lang.getDisplayLanguage
 
 fun localeToString(locale: String) = Locale(locale)
     .getDisplayLanguage(Locale.current)
-    .ifBlank { locale.uppercase() }
+    .ifBlank { locale.toUpperCase(Locale.current) }

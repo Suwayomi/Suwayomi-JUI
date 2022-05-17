@@ -17,6 +17,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.data.models.Source
@@ -72,7 +74,7 @@ fun LibraryMangaBadges(
         if (showLanguage && lang != null) {
             Row(modifier = Modifier.clip(MaterialTheme.shapes.medium)) {
                 Text(
-                    text = lang.uppercase(),
+                    text = lang.toUpperCase(Locale.current),
                     modifier = Modifier.background(MaterialTheme.colors.secondary).then(BadgesInnerPadding),
                     style = MaterialTheme.typography.caption,
                     color = MaterialTheme.colors.onSecondary

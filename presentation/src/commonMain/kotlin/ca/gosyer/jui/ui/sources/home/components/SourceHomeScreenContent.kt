@@ -39,7 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.data.models.Source
@@ -190,7 +192,7 @@ fun WideSourceItem(
             KamelImage(lazyPainterResource(source, filterQuality = FilterQuality.Medium), source.displayName, Modifier.size(96.dp))
             Spacer(Modifier.height(4.dp))
             Text(
-                "${source.name} (${source.displayLang.uppercase()})",
+                "${source.name} (${source.displayLang.toUpperCase(Locale.current)})",
                 color = MaterialTheme.colors.onBackground,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis

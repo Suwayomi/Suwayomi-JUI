@@ -7,7 +7,7 @@
 package ca.gosyer.jui.ui.library
 
 import androidx.compose.ui.text.intl.Locale
-import ca.gosyer.jui.core.lang.lowercase
+import androidx.compose.ui.text.toLowerCase
 import ca.gosyer.jui.core.lang.withDefaultContext
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.data.library.LibraryPreferences
@@ -173,7 +173,7 @@ class LibraryScreenViewModel @Inject constructor(
                 val collator = Collator(locale);
 
                 { a: Manga, b: Manga ->
-                    collator.compare(a.title.lowercase(locale), b.title.lowercase(locale))
+                    collator.compare(a.title.toLowerCase(locale), b.title.toLowerCase(locale))
                 }
             }
             Sort.UNREAD -> {

@@ -43,12 +43,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.core.lang.getDisplayName
-import ca.gosyer.jui.core.lang.uppercase
 import ca.gosyer.jui.data.models.Extension
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
@@ -167,7 +168,7 @@ fun ExtensionItem(
                 }
                 Text(title, fontSize = 18.sp, color = MaterialTheme.colors.onBackground)
                 Row {
-                    Text(extension.lang.uppercase(Locale.current), fontSize = 14.sp, color = MaterialTheme.colors.onBackground)
+                    Text(extension.lang.toUpperCase(Locale.current), fontSize = 14.sp, color = MaterialTheme.colors.onBackground)
                     if (extension.isNsfw) {
                         Spacer(Modifier.width(4.dp))
                         Text("18+", fontSize = 14.sp, color = Color.Red)
@@ -239,7 +240,7 @@ fun LanguageDialog(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         val langName by derivedStateOf {
-                            Locale(lang).getDisplayName(locale).ifBlank { lang.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } }
+                            Locale(lang).getDisplayName(locale).ifBlank { lang.capitalize(Locale.current) }
                         }
                         Text(langName)
                         Switch(

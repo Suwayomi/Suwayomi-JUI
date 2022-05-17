@@ -6,8 +6,6 @@
 
 package ca.gosyer.jui.core.lang
 
-import androidx.compose.ui.text.intl.Locale
-
 /**
  * Replaces the given string to have at most [count] characters using [replacement] at its end.
  * If [replacement] is longer than [count] an exception will be thrown when `length > count`.
@@ -19,11 +17,3 @@ fun String.chop(count: Int, replacement: String = "…"): String {
         this
     }
 }
-
-expect fun String.capitalize(locale: Locale = Locale.current): String
-
-expect fun String.uppercase(locale: Locale): String
-
-expect fun String.lowercase(locale: Locale): String
-
-expect fun Char.titlecase(locale: Locale): String
