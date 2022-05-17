@@ -22,6 +22,8 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.data.models.Source
+import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.uicore.resources.stringResource
 
 @Composable
 fun LibraryMangaBadges(
@@ -41,7 +43,7 @@ fun LibraryMangaBadges(
             Row(modifier = Modifier.clip(MaterialTheme.shapes.medium)) {
                 if (showLocal && isLocal) {
                     Text(
-                        text = unread.toString(),
+                        text = stringResource(MR.strings.local_badge),
                         modifier = Modifier.background(MaterialTheme.colors.secondary).then(BadgesInnerPadding),
                         style = MaterialTheme.typography.caption,
                         color = MaterialTheme.colors.onSecondary

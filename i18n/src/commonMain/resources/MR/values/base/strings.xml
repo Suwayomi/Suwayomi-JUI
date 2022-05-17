@@ -98,6 +98,7 @@
     <string name="display_badge_unread">Unread chapters</string>
     <string name="display_badge_local">Local manga</string>
     <string name="display_badge_language">Language</string>
+    <string name="local_badge">Local</string>
 
     <!-- Manga Menu -->
     <string name="page_progress">Page %1$d</string>
