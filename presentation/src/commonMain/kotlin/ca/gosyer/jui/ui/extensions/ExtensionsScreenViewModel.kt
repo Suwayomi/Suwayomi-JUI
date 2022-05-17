@@ -49,8 +49,8 @@ class ExtensionsScreenViewModel @Inject constructor(
     }.stateIn(scope, SharingStarted.Eagerly, emptyMap())
 
     val availableLangs = extensionList.filterNotNull().map { langs ->
-        langs.map { it.lang }.toSet()
-    }.stateIn(scope, SharingStarted.Eagerly, emptySet())
+        langs.map { it.lang }.distinct()
+    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()

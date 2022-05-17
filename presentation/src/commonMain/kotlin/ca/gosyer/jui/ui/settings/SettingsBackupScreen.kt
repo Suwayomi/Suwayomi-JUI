@@ -12,13 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Warning
@@ -58,6 +55,7 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.listItems
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import io.ktor.client.plugins.onDownload
@@ -365,14 +363,7 @@ private fun MissingSourcesDialog(
         title(stringResource(MR.strings.missing_sources))
         Box {
             val listState = rememberLazyListState()
-            LazyColumn(Modifier.fillMaxSize(), state = listState) {
-                item {
-                    Text(stringResource(MR.strings.missing_sources), style = MaterialTheme.typography.subtitle2)
-                }
-                items(missingSources) {
-                    Text(it)
-                }
-            }
+        	listItems(missingSources, state = listState)
             VerticalScrollbar(
                 rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)

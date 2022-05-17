@@ -29,25 +29,18 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Checkbox
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
@@ -60,7 +53,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -84,6 +76,8 @@ import com.vanpra.composematerialdialogs.MaterialDialogButtons
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.TextFieldStyle
 import com.vanpra.composematerialdialogs.input
+import com.vanpra.composematerialdialogs.listItemsMultiChoice
+import com.vanpra.composematerialdialogs.listItemsSingleChoice
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 
@@ -274,32 +268,16 @@ fun <T> ChoiceDialog(
         title(title)
         Box {
             val listState = rememberLazyListState()
-            LazyColumn(Modifier.defaultMinSize(minHeight = 64.dp).fillMaxWidth(), listState) {
-                items(items) { (value, text) ->
-                    Row(
-                        modifier = Modifier
-                            .requiredHeight(48.dp)
-                            .fillMaxWidth()
-                            .clickable(
-                                onClick = {
-                                    onSelected(value)
-                                    state.hide()
-                                }
-                            )
-                            .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = value == selected,
-                            onClick = {
-                                onSelected(value)
-                                state.hide()
-                            },
-                        )
-                        Text(text = text, modifier = Modifier.padding(start = 24.dp))
-                    }
-                }
-            }
+	        listItemsSingleChoice(
+	            items.map { it.second },
+	            state = listState,
+	            initialSelection = items.indexOfFirst { it.first == selected }.takeUnless { it == -1 },
+	            waitForPositiveButton = false,
+	            onChoiceChange = {
+	                onSelected(items[it].first)
+	                submit()
+	            }
+	        )
             VerticalScrollbar(
                 rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)
@@ -319,13 +297,10 @@ fun <T> MultiSelectDialog(
     onFinished: (List<T>) -> Unit,
     title: String,
 ) {
-    val checked = remember(selected) { selected.orEmpty().toMutableStateList() }
     MaterialDialog(
         state,
         buttons = {
-            positiveButton(stringResource(MR.strings.action_ok)) {
-                onFinished(checked)
-            }
+            positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
         properties = getMaterialDialogProperties(),
@@ -335,35 +310,20 @@ fun <T> MultiSelectDialog(
         }
     ) {
         title(title)
-        val listState = rememberLazyListState()
         Box {
-            LazyColumn(Modifier.defaultMinSize(minHeight = 64.dp).fillMaxWidth(), listState) {
-                items(items) { (value, text) ->
-                    Row(
-                        modifier = Modifier
-                            .requiredHeight(48.dp)
-                            .fillMaxWidth()
-                            .clickable(
-                                onClick = {
-                                    if (value in checked) {
-                                        checked -= value
-                                    } else {
-                                        checked += value
-                                    }
-                                }
-                            )
-                            .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = value in checked,
-                            onCheckedChange = null,
-                        )
-                        Text(text = text, modifier = Modifier.padding(start = 24.dp))
-                    }
-                }
-                item { Spacer(Modifier.height(80.dp)) }
-            }
+            val listState = rememberLazyListState()
+	        listItemsMultiChoice(
+	            items.map { it.second },
+	            state = listState,
+	            initialSelection = selected?.mapNotNull { item ->
+	                items.indexOfFirst { it.first == item }.takeUnless { it == -1 }
+	            }
+	                ?.toSet()
+	                .orEmpty(),
+	            onCheckedChange = { indexes ->
+	                onFinished(indexes.map { items[it].first })
+	            }
+	        )
             VerticalScrollbar(
                 rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)

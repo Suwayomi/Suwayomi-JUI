@@ -43,8 +43,8 @@ class SourceHomeScreenViewModel @Inject constructor(
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     val sourceLanguages = installedSources.map { sources ->
-        sources.map { it.lang }.toSet() - Source.LOCAL_SOURCE_LANG
-    }.stateIn(scope, SharingStarted.Eagerly, emptySet())
+        sources.map { it.lang }.distinct() - Source.LOCAL_SOURCE_LANG
+    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()

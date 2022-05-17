@@ -66,7 +66,7 @@ fun SourceHomeScreenContent(
     isLoading: Boolean,
     sources: List<Source>,
     languages: Set<String>,
-    sourceLanguages: Set<String>,
+    sourceLanguages: List<String>,
     setEnabledLanguages: (Set<String>) -> Unit,
     query: String,
     setQuery: (String) -> Unit,

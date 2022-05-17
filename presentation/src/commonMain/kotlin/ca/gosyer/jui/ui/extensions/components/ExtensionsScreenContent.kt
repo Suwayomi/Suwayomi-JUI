@@ -7,8 +7,6 @@
 package ca.gosyer.jui.ui.extensions.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,16 +25,12 @@ import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,6 +58,7 @@ import ca.gosyer.jui.uicore.image.KamelImage
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.listItemsMultiChoice
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import io.kamel.image.lazyPainterResource
@@ -75,7 +70,7 @@ fun ExtensionsScreenContent(
     query: String?,
     setQuery: (String) -> Unit,
     enabledLangs: Set<String>,
-    availableLangs: Set<String>,
+    availableLangs: List<String>,
     setEnabledLanguages: (Set<String>) -> Unit,
     installExtension: (Extension) -> Unit,
     updateExtension: (Extension) -> Unit,
@@ -205,51 +200,34 @@ fun ExtensionItem(
 fun LanguageDialog(
     state: MaterialDialogState,
     enabledLangs: Set<String>,
-    availableLangs: Set<String>,
+    availableLangs: List<String>,
     setLangs: (Set<String>) -> Unit
 ) {
-    val modifiedLangs = remember(enabledLangs) { enabledLangs.toMutableStateList() }
     MaterialDialog(
         state,
         buttons = {
-            positiveButton(stringResource(MR.strings.action_ok)) {
-                setLangs(modifiedLangs.toSet())
-            }
+            positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
         properties = getMaterialDialogProperties(),
     ) {
         title(BuildKonfig.NAME)
+
         Box {
             val locale = remember { Locale.current }
             val listState = rememberLazyListState()
-            LazyColumn(Modifier.fillMaxWidth(), listState) {
-                items(availableLangs.toList()) { lang ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .height(48.dp)
-                            .clickable {
-                                if (lang in modifiedLangs) {
-                                    modifiedLangs -= lang
-                                } else {
-                                    modifiedLangs += lang
-                                }
-                            }
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        val langName by derivedStateOf {
-                            Locale(lang).getDisplayName(locale).ifBlank { lang.capitalize(Locale.current) }
-                        }
-                        Text(langName)
-                        Switch(
-                            checked = lang in modifiedLangs,
-                            onCheckedChange = null
-                        )
-                    }
-                }
-            }
+	        listItemsMultiChoice(
+                list = availableLangs.map { lang ->
+                    Locale(lang).getDisplayName(locale).ifBlank { lang.capitalize(Locale.current) }
+                },
+	            state = listState,
+	            initialSelection = enabledLangs.mapNotNull { lang ->
+	                availableLangs.indexOfFirst { it == lang }.takeUnless { it == -1 }
+	            }.toSet(),
+	            onCheckedChange = { indexes ->
+	                setLangs(indexes.map { availableLangs[it] }.toSet())
+	            }
+	        )
             VerticalScrollbar(
                 rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)
