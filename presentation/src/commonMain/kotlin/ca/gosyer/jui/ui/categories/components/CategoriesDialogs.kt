@@ -7,9 +7,12 @@
 package ca.gosyer.jui.ui.categories.components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.ui.categories.CategoriesScreenViewModel
+import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -39,7 +42,8 @@ fun RenameDialog(
             textFieldStyle = TextFieldStyle.Outlined,
             onInput = { onRename(it) },
             maxLines = 1,
-            singleLine = true
+            singleLine = true,
+            modifier = Modifier.keyboardHandler(true, enterAction =  { it.moveFocus(FocusDirection.Next) })
         )
     }
 }
@@ -84,7 +88,8 @@ fun CreateDialog(
             textFieldStyle = TextFieldStyle.Outlined,
             onInput = { onCreate(it) },
             maxLines = 1,
-            singleLine = true
+            singleLine = true,
+            modifier = Modifier.keyboardHandler(true, enterAction = { it.moveFocus(FocusDirection.Next) })
         )
     }
 }

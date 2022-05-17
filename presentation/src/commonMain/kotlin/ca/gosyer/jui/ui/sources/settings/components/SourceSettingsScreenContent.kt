@@ -37,6 +37,7 @@ import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.MultiSelect
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.TwoState
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
+import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -201,7 +202,8 @@ private fun EditTextPreference(editText: EditText) {
         input(
             label = "",
             textFieldStyle = TextFieldStyle.Outlined,
-            onInput = { editText.updateState(it) }
+            onInput = { editText.updateState(it) },
+            modifier = Modifier.keyboardHandler()
         )
     }
 }

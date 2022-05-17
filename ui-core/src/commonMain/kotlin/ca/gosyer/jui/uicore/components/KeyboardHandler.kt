@@ -18,16 +18,19 @@ import androidx.compose.ui.platform.LocalFocusManager
 @OptIn(ExperimentalComposeUiApi::class)
 fun Modifier.keyboardHandler(
     singleLine: Boolean = false,
-    action: (FocusManager) -> Unit = { it.moveFocus(FocusDirection.Down) }
+    enterAction: ((FocusManager) -> Unit)? = null,
+    action: (FocusManager) -> Unit = { it.moveFocus(FocusDirection.Down) },
 ) = composed {
     val focusManager = LocalFocusManager.current
     Modifier.onPreviewKeyEvent {
-        if (
-            (it.key == Key.Tab || (singleLine && it.key == Key.Enter)) &&
-            it.type == KeyEventType.KeyDown
-        ) {
-            action(focusManager)
-            true
+        if (it.type == KeyEventType.KeyDown) {
+            if (singleLine && it.key == Key.Enter) {
+                enterAction?.invoke(focusManager) ?: action(focusManager)
+                true
+            } else if (it.key == Key.Tab) {
+                action(focusManager)
+                true
+            } else false
         } else false
     }
 }

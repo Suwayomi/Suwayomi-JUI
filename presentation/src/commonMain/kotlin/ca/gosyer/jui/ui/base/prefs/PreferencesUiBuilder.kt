@@ -57,6 +57,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -67,6 +68,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
+import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
@@ -186,9 +188,7 @@ fun EditTextPreference(
         title = title,
         subtitle = subtitle,
         icon = icon,
-        onClick = {
-            dialogState.show()
-        },
+        onClick = dialogState::show,
         enabled = enabled
     )
     val value by preference.collectAsState()
@@ -210,7 +210,8 @@ fun EditTextPreference(
             visualTransformation = visualTransformation,
             onInput = { preference.value = it },
             maxLines = maxLines,
-            singleLine = singleLine
+            singleLine = singleLine,
+            modifier = Modifier.keyboardHandler(singleLine, enterAction = { it.moveFocus(FocusDirection.Next) })
         )
     }
 }
