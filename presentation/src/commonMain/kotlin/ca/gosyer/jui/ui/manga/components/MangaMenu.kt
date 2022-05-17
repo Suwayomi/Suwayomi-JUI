@@ -176,16 +176,16 @@ fun CategorySelectDialog(
 
         Box {
             val listState = rememberLazyListState()
-	        listItemsMultiChoice(
+            listItemsMultiChoice(
                 list = categories.map { it.name },
-	            state = listState,
-	            initialSelection = oldCategories.mapNotNull { category ->
-	                categories.indexOfFirst { it.id == category.id }.takeUnless { it == -1 }
-	            }.toSet(),
-	            onCheckedChange = { indexes ->
-	                onPositiveClick(indexes.map { categories[it] }, oldCategories)
-	            }
-	        )
+                state = listState,
+                initialSelection = oldCategories.mapNotNull { category ->
+                    categories.indexOfFirst { it.id == category.id }.takeUnless { it == -1 }
+                }.toSet(),
+                onCheckedChange = { indexes ->
+                    onPositiveClick(indexes.map { categories[it] }, oldCategories)
+                }
+            )
             VerticalScrollbar(
                 modifier = Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()

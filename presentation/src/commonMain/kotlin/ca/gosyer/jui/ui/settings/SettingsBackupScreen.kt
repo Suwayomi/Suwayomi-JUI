@@ -363,7 +363,7 @@ private fun MissingSourcesDialog(
         title(stringResource(MR.strings.missing_sources))
         Box {
             val listState = rememberLazyListState()
-        	listItems(missingSources, state = listState)
+            listItems(missingSources, state = listState)
             VerticalScrollbar(
                 rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)

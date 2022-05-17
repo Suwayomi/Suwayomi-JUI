@@ -43,7 +43,7 @@ fun RenameDialog(
             onInput = { onRename(it) },
             maxLines = 1,
             singleLine = true,
-            modifier = Modifier.keyboardHandler(true, enterAction =  { it.moveFocus(FocusDirection.Next) })
+            modifier = Modifier.keyboardHandler(true, enterAction = { it.moveFocus(FocusDirection.Next) })
         )
     }
 }

@@ -216,18 +216,18 @@ fun LanguageDialog(
         Box {
             val locale = remember { Locale.current }
             val listState = rememberLazyListState()
-	        listItemsMultiChoice(
+            listItemsMultiChoice(
                 list = availableLangs.map { lang ->
                     Locale(lang).getDisplayName(locale).ifBlank { lang.capitalize(Locale.current) }
                 },
-	            state = listState,
-	            initialSelection = enabledLangs.mapNotNull { lang ->
-	                availableLangs.indexOfFirst { it == lang }.takeUnless { it == -1 }
-	            }.toSet(),
-	            onCheckedChange = { indexes ->
-	                setLangs(indexes.map { availableLangs[it] }.toSet())
-	            }
-	        )
+                state = listState,
+                initialSelection = enabledLangs.mapNotNull { lang ->
+                    availableLangs.indexOfFirst { it == lang }.takeUnless { it == -1 }
+                }.toSet(),
+                onCheckedChange = { indexes ->
+                    setLangs(indexes.map { availableLangs[it] }.toSet())
+                }
+            )
             VerticalScrollbar(
                 rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)

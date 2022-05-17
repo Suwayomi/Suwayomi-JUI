@@ -269,16 +269,16 @@ fun <T> ChoiceDialog(
         title(title)
         Box {
             val listState = rememberLazyListState()
-	        listItemsSingleChoice(
-	            items.map { it.second },
-	            state = listState,
-	            initialSelection = items.indexOfFirst { it.first == selected }.takeUnless { it == -1 },
-	            waitForPositiveButton = false,
-	            onChoiceChange = {
-	                onSelected(items[it].first)
-	                submit()
-	            }
-	        )
+            listItemsSingleChoice(
+                items.map { it.second },
+                state = listState,
+                initialSelection = items.indexOfFirst { it.first == selected }.takeUnless { it == -1 },
+                waitForPositiveButton = false,
+                onChoiceChange = {
+                    onSelected(items[it].first)
+                    submit()
+                }
+            )
             VerticalScrollbar(
                 rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)
@@ -313,18 +313,18 @@ fun <T> MultiSelectDialog(
         title(title)
         Box {
             val listState = rememberLazyListState()
-	        listItemsMultiChoice(
-	            items.map { it.second },
-	            state = listState,
-	            initialSelection = selected?.mapNotNull { item ->
-	                items.indexOfFirst { it.first == item }.takeUnless { it == -1 }
-	            }
-	                ?.toSet()
-	                .orEmpty(),
-	            onCheckedChange = { indexes ->
-	                onFinished(indexes.map { items[it].first })
-	            }
-	        )
+            listItemsMultiChoice(
+                items.map { it.second },
+                state = listState,
+                initialSelection = selected?.mapNotNull { item ->
+                    items.indexOfFirst { it.first == item }.takeUnless { it == -1 }
+                }
+                    ?.toSet()
+                    .orEmpty(),
+                onCheckedChange = { indexes ->
+                    onFinished(indexes.map { items[it].first })
+                }
+            )
             VerticalScrollbar(
                 rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)
