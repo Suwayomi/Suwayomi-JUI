@@ -71,6 +71,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
+                api(libs.compose.ui.text)
             }
         }
         val androidTest by getting {

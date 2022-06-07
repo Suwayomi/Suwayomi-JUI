@@ -1,5 +1,4 @@
 import Config.migrationCode
-import org.jetbrains.compose.compose
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -19,6 +18,7 @@ dependencies {
     implementation(projects.presentation)
 
     // UI (Compose)
+    implementation(libs.bundles.compose.android)
     implementation(libs.voyager.core)
     implementation(libs.voyager.navigation)
     implementation(libs.voyager.transitions)
@@ -80,7 +80,7 @@ dependencies {
 
     // Testing
     testImplementation(kotlin("test-junit"))
-    testImplementation(compose("org.jetbrains.compose.ui:ui-test-junit4"))
+    testImplementation(libs.compose.ui.test.junit4)
     testImplementation(libs.coroutines.test)
 }
 

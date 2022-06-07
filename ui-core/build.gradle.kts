@@ -66,6 +66,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
+                api(libs.bundles.compose.android)
             }
         }
         val androidTest by getting {
