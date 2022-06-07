@@ -167,17 +167,17 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     private fun getComparator(sortMode: Sort, ascending: Boolean): Comparator<Manga> {
-        val sortFn = when (sortMode) {
+        val sortFn: (Manga, Manga) -> Int = when (sortMode) {
             Sort.ALPHABETICAL -> {
                 val locale = Locale.current
                 val collator = Collator(locale);
 
-                { a: Manga, b: Manga ->
+                { a, b ->
                     collator.compare(a.title.toLowerCase(locale), b.title.toLowerCase(locale))
                 }
             }
             Sort.UNREAD -> {
-                { a: Manga, b: Manga ->
+                { a, b ->
                     when {
                         // Ensure unread content comes first
                         (a.unreadCount ?: 0) == (b.unreadCount ?: 0) -> 0
@@ -188,7 +188,7 @@ class LibraryScreenViewModel @Inject constructor(
                 }
             }
             Sort.DATE_ADDED -> {
-                { a: Manga, b: Manga ->
+                { a, b ->
                     a.inLibraryAt.compareTo(b.inLibraryAt)
                 }
             }
