@@ -12,6 +12,6 @@ import io.kamel.image.config.resourcesFetcher
 import io.kamel.image.config.resourcesIdMapper
 
 actual fun KamelConfigBuilder.kamelPlatformHandler(contextWrapper: ContextWrapper) {
-    resourcesIdMapper(contextWrapper.context)
-    resourcesFetcher(contextWrapper.context)
+    resourcesIdMapper(contextWrapper)
+    resourcesFetcher(contextWrapper)
 }

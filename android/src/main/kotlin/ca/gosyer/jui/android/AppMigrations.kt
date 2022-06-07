@@ -21,7 +21,7 @@ class AppMigrations @Inject constructor(
         if (oldVersion < BuildConfig.VERSION_CODE) {
             migrationPreferences.appVersion().set(BuildConfig.VERSION_CODE)
 
-            UpdateCheckWorker.setupTask(contextWrapper.context)
+            UpdateCheckWorker.setupTask(contextWrapper)
 
             // Fresh install
             if (oldVersion == 0) {

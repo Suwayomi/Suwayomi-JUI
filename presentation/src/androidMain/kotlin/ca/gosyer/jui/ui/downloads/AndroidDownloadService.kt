@@ -17,12 +17,11 @@ internal actual fun startDownloadService(
     downloadService: DownloadService,
     actions: WebsocketService.Actions
 ) {
-    val context = contextWrapper.context
     val intent = Intent(
-        context,
+        contextWrapper,
         Class.forName("ca.gosyer.jui.android.data.download.AndroidDownloadService")
     ).apply {
         action = actions.name
     }
-    ContextCompat.startForegroundService(context, intent)
+    ContextCompat.startForegroundService(contextWrapper, intent)
 }
