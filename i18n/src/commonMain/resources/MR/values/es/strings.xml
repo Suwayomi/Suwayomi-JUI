@@ -40,7 +40,6 @@
     <string name="categories_delete_confirm">¿Eliminar la categoría %1$s\?</string>
     <string name="location_downloads">Descargas</string>
     <string name="failed_manga_fetch">Fallo al cargar el manga</string>
-    <string name="filter_source">Filtro</string>
     <string name="sources_home">Inicio</string>
     <string name="enabled_languages">Idiomas</string>
     <string name="downloads_loading">Cargando…</string>
