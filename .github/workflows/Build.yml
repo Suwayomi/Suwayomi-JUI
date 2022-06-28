@@ -151,4 +151,4 @@ jobs:
         with:
           artifacts: "*/binaries/main/*/*.*,*/jars/*.jar,*/android/build/outputs/apk/release/*.apk"
           draft: true
-          token: ${{ secrets.GITHUB_PAT }}
+          token: ${{ secrets.WINGET_PUBLISH_PAT }}
