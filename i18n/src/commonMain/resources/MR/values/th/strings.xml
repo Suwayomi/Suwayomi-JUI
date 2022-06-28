@@ -138,7 +138,6 @@
     <string name="http_proxy">พร็อกซี HTTP</string>
     <string name="host_open_in_browser">เปิดเซิร์ฟเวอร์ WebUI เมื่อเริ่มต้น</string>
     <string name="settings_library_screen">การตั้งค่าคลัง</string>
-    <string name="status_Licensed">มีลิขสิทธ์แล้ว</string>
     <string name="action_more_actions">การกระทำเพิ่มเติม</string>
     <string name="max_height_sub">ความสูงสูงสุดของรูปภาพ ขณะนี้อยู่ที่ %1$d dp การตั้งค่าด้านบนขยายขนาดภาพขึ้น และจำกัดเมื่อถึงความสูงที่กำหนด</string>
     <string name="max_width_sub">ความกว้างสูงสุดของรูปภาพ ขณะนี้อยู่ที่ %1$d dp การตั้งค่าด้านบนขยายขนาดภาพขึ้น และจำกัดเมื่อถึงความกว้างที่กำหนด</string>
@@ -173,7 +172,6 @@
     <string name="reset_filters">ล้างค่า</string>
     <string name="move_to_browse">เรียกดู</string>
     <string name="default_reader_mode">ค่าเริ่มต้น</string>
-    <string name="filter_source">ตัวกรอง</string>
     <string name="no_previous_chapter">ไม่มีตอนก่อนหน้า</string>
     <string name="next_chapter">ตอนถัดไป:
 \n %1$s</string>
