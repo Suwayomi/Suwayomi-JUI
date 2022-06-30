@@ -17,7 +17,6 @@ import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.data.ui.model.ThemeMode
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import org.lighthousegames.logging.logging
 import java.util.Locale
 
@@ -60,18 +59,8 @@ class App : Application(), DefaultLifecycleObserver {
     }
 
     private fun setupAppLanguage(languagePref: Preference<String>) {
-        val defaultLocaleList = AppCompatDelegate.getApplicationLocales()
-        if (languagePref.isSet() && languagePref.defaultValue() != languagePref.get()) {
-            AppCompatDelegate.setApplicationLocales(
-                LocaleListCompat.create(
-                    Locale.forLanguageTag(languagePref.get()),
-                    Locale.forLanguageTag("en")
-                )
-            )
-        }
         languagePref
-            .changes()
-            .onEach {
+            .getAsFlow {
                 if (languagePref.isSet() && languagePref.defaultValue() != it) {
                     AppCompatDelegate.setApplicationLocales(
                         LocaleListCompat.create(
@@ -79,8 +68,12 @@ class App : Application(), DefaultLifecycleObserver {
                             Locale.forLanguageTag("en")
                         )
                     )
-                } else if (languagePref.isSet() && it == languagePref.defaultValue()) {
-                    AppCompatDelegate.setApplicationLocales(defaultLocaleList)
+                } else if (
+                    AppCompatDelegate.getApplicationLocales().isEmpty.not() &&
+                    languagePref.isSet() &&
+                    it == languagePref.defaultValue()
+                ) {
+                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
                 }
             }
             .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
