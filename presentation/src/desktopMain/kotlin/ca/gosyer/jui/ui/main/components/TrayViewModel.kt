@@ -7,39 +7,25 @@
 package ca.gosyer.jui.ui.main.components
 
 import ca.gosyer.jui.data.update.UpdateChecker
-import ca.gosyer.jui.data.update.UpdatePreferences
-import ca.gosyer.jui.data.update.model.GithubRelease
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.shareIn
 import me.tatarka.inject.annotations.Inject
 
 class TrayViewModel @Inject constructor(
     updateChecker: UpdateChecker,
-    updatePreferences: UpdatePreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()
 
-    private val _updateFound = MutableSharedFlow<GithubRelease>()
-    val updateFound = _updateFound.asSharedFlow()
-
-    init {
-        if (updatePreferences.enabled().get()) {
-            updateChecker.checkForUpdates()
-                .onEach {
-                    if (it is UpdateChecker.Update.UpdateFound) {
-                        _updateFound.emit(it.release)
-                    }
-                }
-                .launchIn(scope)
-        }
-    }
+    val updateFound = updateChecker
+        .checkForUpdates(false)
+        .filterIsInstance<UpdateChecker.Update.UpdateFound>()
+        .shareIn(scope, SharingStarted.Eagerly, 1)
 
     override fun onDispose() {
         super.onDispose()

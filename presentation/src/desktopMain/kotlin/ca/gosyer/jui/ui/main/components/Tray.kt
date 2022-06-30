@@ -40,7 +40,7 @@ fun ApplicationScope.Tray(icon: Painter) {
                 trayState.sendNotification(
                     Notification(
                         MR.strings.new_update_title.localized(),
-                        MR.strings.new_update_message.localized(Locale.getDefault(), it.version),
+                        MR.strings.new_update_message.localized(Locale.getDefault(), it.release.version),
                         Notification.Type.Info
                     )
                 )
