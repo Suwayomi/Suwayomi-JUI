@@ -19,6 +19,12 @@ class MainActivity : AppCompatActivity() {
             appComponent.appMigrations.runMigrations()
         }
 
+        // Do not let the launcher create a new activity http://stackoverflow.com/questions/16283079
+        if (!isTaskRoot) {
+            finish()
+            return
+        }
+
         AndroidDownloadService.start(this, Actions.START)
 
         val uiHooks = appComponent.getHooks()
