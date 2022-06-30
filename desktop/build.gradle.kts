@@ -144,6 +144,11 @@ kotlin {
     }
 }
 
+val isPreview: Boolean
+    get() = project.hasProperty("preview")
+val previewCode: String
+    get() = project.properties["preview"]?.toString()?.trim('"') ?: 0.toString()
+
 compose.desktop {
     application {
         mainClass = "ca.gosyer.jui.desktop.MainKt"
@@ -171,13 +176,24 @@ compose.desktop {
                 "jdk.unsupported"
             )
 
-            packageName = "Tachidesk-JUI"
+            packageName = if (!isPreview) {
+                "Tachidesk-JUI"
+            } else {
+                "Tachidesk-JUI Preview"
+            }
             description = "Tachidesk-JUI is a Jvm client for a Tachidesk Server"
             copyright = "Mozilla Public License v2.0"
             vendor = "Suwayomi"
+            if (isPreview) {
+                packageVersion = "${version.toString().substringBeforeLast('.')}.$previewCode"
+            }
             windows {
                 dirChooser = true
-                upgradeUuid = "B2ED947E-81E4-4258-8388-2B1EDF5E0A30"
+                upgradeUuid = if (!isPreview) {
+                    "B2ED947E-81E4-4258-8388-2B1EDF5E0A30"
+                } else {
+                    "7869504A-DB4D-45E8-AC6C-60C0360EA2F0"
+                }
                 shortcut = true
                 menu = true
                 iconFile.set(rootProject.file("resources/icon.ico"))
@@ -205,8 +221,8 @@ buildConfig {
     buildConfigField("String", "VERSION", project.version.toString().wrap())
     buildConfigField("int", "MIGRATION_CODE", migrationCode.toString())
     buildConfigField("boolean", "DEBUG", project.hasProperty("debugApp").toString())
-    buildConfigField("boolean", "IS_PREVIEW", project.hasProperty("preview").toString())
-    buildConfigField("int", "PREVIEW_BUILD", project.properties["preview"]?.toString()?.trim('"') ?: 0.toString())
+    buildConfigField("boolean", "IS_PREVIEW", isPreview.toString())
+    buildConfigField("int", "PREVIEW_BUILD", previewCode)
 
     // Tachidesk
     buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion.wrap())
