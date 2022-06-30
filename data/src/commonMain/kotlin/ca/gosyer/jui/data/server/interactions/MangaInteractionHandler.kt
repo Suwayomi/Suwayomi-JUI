@@ -18,10 +18,10 @@ import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
-import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -34,13 +34,13 @@ class MangaInteractionHandler @Inject constructor(
 
     fun getManga(mangaId: Long, refresh: Boolean = false) = flow {
         val response = client.get(
-            serverUrl + mangaQuery(mangaId)
-        ) {
-            url {
+            buildUrl {
+                path(mangaQuery(mangaId))
                 if (refresh) {
                     parameter("onlineFetch", true)
                 }
-            }
+            },
+        ) {
             expectSuccess = true
         }.body<Manga>()
         emit(response)
@@ -50,7 +50,7 @@ class MangaInteractionHandler @Inject constructor(
 
     fun getMangaThumbnail(mangaId: Long, block: HttpRequestBuilder.() -> Unit) = flow {
         val response = client.get(
-            serverUrl + mangaThumbnailQuery(mangaId)
+            buildUrl { path(mangaThumbnailQuery(mangaId)) },
         ) {
             expectSuccess = true
             block()
@@ -60,7 +60,7 @@ class MangaInteractionHandler @Inject constructor(
 
     fun updateMangaMeta(mangaId: Long, key: String, value: String) = flow {
         val response = client.submitForm(
-            serverUrl + updateMangaMetaRequest(mangaId),
+            buildUrl { path(updateMangaMetaRequest(mangaId),) },
             formParameters = Parameters.build {
                 append("key", key)
                 append("value", value)

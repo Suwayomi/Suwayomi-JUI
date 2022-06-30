@@ -27,6 +27,7 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -39,7 +40,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     fun getMangaCategories(mangaId: Long) = flow {
         val response = client.get(
-            serverUrl + getMangaCategoriesQuery(mangaId)
+            buildUrl { path(getMangaCategoriesQuery(mangaId)) },
         ) {
             expectSuccess = true
         }.body<List<Category>>()
@@ -50,7 +51,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     fun addMangaToCategory(mangaId: Long, categoryId: Long) = flow {
         val response = client.get(
-            serverUrl + addMangaToCategoryQuery(mangaId, categoryId)
+            buildUrl { path(addMangaToCategoryQuery(mangaId, categoryId)) }
         ) {
             expectSuccess = true
         }
@@ -62,7 +63,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     fun removeMangaFromCategory(mangaId: Long, categoryId: Long) = flow {
         val response = client.delete(
-            serverUrl + removeMangaFromCategoryRequest(mangaId, categoryId)
+            buildUrl { path(removeMangaFromCategoryRequest(mangaId, categoryId)) }
         ) {
             expectSuccess = true
         }
@@ -74,7 +75,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     fun getCategories(dropDefault: Boolean = false) = flow {
         val response = client.get(
-            serverUrl + getCategoriesQuery()
+            buildUrl { path(getCategoriesQuery()) },
         ) {
             expectSuccess = true
         }.body<List<Category>>().let { categories ->
@@ -87,7 +88,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     fun createCategory(name: String) = flow {
         val response = client.submitForm(
-            serverUrl + createCategoryRequest(),
+            buildUrl { path(createCategoryRequest()) },
             formParameters = Parameters.build {
                 append("name", name)
             }
@@ -99,7 +100,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     fun modifyCategory(categoryId: Long, name: String? = null, isLanding: Boolean? = null) = flow {
         val response = client.submitForm(
-            serverUrl + categoryModifyRequest(categoryId),
+            buildUrl { path(categoryModifyRequest(categoryId)) },
             formParameters = Parameters.build {
                 if (name != null) {
                     append("name", name)
@@ -118,7 +119,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     fun reorderCategory(to: Int, from: Int) = flow {
         val response = client.submitForm(
-            serverUrl + categoryReorderRequest(),
+            buildUrl { path(categoryReorderRequest()) },
             formParameters = Parameters.build {
                 append("to", to.toString())
                 append("from", from.toString())
@@ -132,7 +133,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     fun deleteCategory(categoryId: Long) = flow {
         val response = client.delete(
-            serverUrl + categoryDeleteRequest(categoryId)
+            buildUrl { path(categoryDeleteRequest(categoryId)) },
         ) {
             expectSuccess = true
         }
@@ -142,7 +143,7 @@ class CategoryInteractionHandler @Inject constructor(
 
     fun getMangaFromCategory(categoryId: Long) = flow {
         val response = client.get(
-            serverUrl + getMangaInCategoryQuery(categoryId)
+            buildUrl { path(getMangaInCategoryQuery(categoryId)) },
         ) {
             expectSuccess = true
         }.body<List<Manga>>()

@@ -20,6 +20,7 @@ import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsChannel
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -32,7 +33,7 @@ class ExtensionInteractionHandler @Inject constructor(
 
     fun getExtensionList() = flow {
         val response = client.get(
-            serverUrl + extensionListQuery()
+            buildUrl { path(extensionListQuery()) },
         ) {
             expectSuccess = true
         }.body<List<Extension>>()
@@ -41,7 +42,7 @@ class ExtensionInteractionHandler @Inject constructor(
 
     fun installExtension(extension: Extension) = flow {
         val response = client.get(
-            serverUrl + apkInstallQuery(extension.pkgName)
+            buildUrl { path(apkInstallQuery(extension.pkgName)) },
         ) {
             expectSuccess = true
         }
@@ -50,7 +51,7 @@ class ExtensionInteractionHandler @Inject constructor(
 
     fun updateExtension(extension: Extension) = flow {
         val response = client.get(
-            serverUrl + apkUpdateQuery(extension.pkgName)
+            buildUrl { path(apkUpdateQuery(extension.pkgName)) },
         ) {
             expectSuccess = true
         }
@@ -59,7 +60,7 @@ class ExtensionInteractionHandler @Inject constructor(
 
     fun uninstallExtension(extension: Extension) = flow {
         val response = client.get(
-            serverUrl + apkUninstallQuery(extension.pkgName)
+            buildUrl { path(apkUninstallQuery(extension.pkgName)) },
         ) {
             expectSuccess = true
         }
@@ -68,7 +69,7 @@ class ExtensionInteractionHandler @Inject constructor(
 
     fun getApkIcon(extension: Extension, block: HttpRequestBuilder.() -> Unit) = flow {
         val response = client.get(
-            serverUrl + apkIconQuery(extension.apkName)
+            buildUrl { path(apkIconQuery(extension.apkName)) },
         ) {
             expectSuccess = true
             block()

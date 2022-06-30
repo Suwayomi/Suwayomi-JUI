@@ -8,6 +8,7 @@ package ca.gosyer.jui.data.server.interactions
 
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
+import io.ktor.http.URLBuilder
 
 open class BaseInteractionHandler(
     protected val client: Http,
@@ -15,4 +16,8 @@ open class BaseInteractionHandler(
 ) {
     private val _serverUrl = serverPreferences.serverUrl()
     val serverUrl get() = _serverUrl.get().toString()
+
+    fun buildUrl(builder: URLBuilder.() -> Unit) = URLBuilder(serverUrl).apply(builder).buildString()
+
+    fun URLBuilder.parameter(key: String, value: Any) = encodedParameters.append(key, value.toString())
 }

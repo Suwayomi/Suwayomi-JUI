@@ -15,6 +15,7 @@ import ca.gosyer.jui.data.server.requests.removeMangaFromLibraryRequest
 import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -27,7 +28,7 @@ class LibraryInteractionHandler @Inject constructor(
 
     fun addMangaToLibrary(mangaId: Long) = flow {
         val response = client.get(
-            serverUrl + addMangaToLibraryQuery(mangaId)
+            buildUrl { path(addMangaToLibraryQuery(mangaId)) },
         ) {
             expectSuccess = true
         }
@@ -38,7 +39,7 @@ class LibraryInteractionHandler @Inject constructor(
 
     fun removeMangaFromLibrary(mangaId: Long) = flow {
         val response = client.delete(
-            serverUrl + removeMangaFromLibraryRequest(mangaId)
+            buildUrl { path(removeMangaFromLibraryRequest(mangaId)) },
         ) {
             expectSuccess = true
         }

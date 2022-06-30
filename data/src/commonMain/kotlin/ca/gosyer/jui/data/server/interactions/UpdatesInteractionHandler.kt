@@ -19,6 +19,7 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.http.Parameters
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -31,7 +32,7 @@ class UpdatesInteractionHandler @Inject constructor(
 
     fun getRecentUpdates(pageNum: Int) = flow {
         val response = client.get(
-            serverUrl + recentUpdatesQuery(pageNum)
+            buildUrl { path(recentUpdatesQuery(pageNum)) }
         ) {
             expectSuccess = true
         }.body<Updates>()
@@ -40,7 +41,7 @@ class UpdatesInteractionHandler @Inject constructor(
 
     fun updateLibrary() = flow {
         val response = client.post(
-            serverUrl + fetchUpdatesRequest()
+            buildUrl { path(fetchUpdatesRequest()) }
         ) {
             expectSuccess = true
         }
@@ -49,7 +50,7 @@ class UpdatesInteractionHandler @Inject constructor(
 
     fun updateCategory(categoryId: Long) = flow {
         val response = client.submitForm(
-            serverUrl + fetchUpdatesRequest(),
+            buildUrl { path(fetchUpdatesRequest()) },
             formParameters = Parameters.build {
                 append("category", categoryId.toString())
             }

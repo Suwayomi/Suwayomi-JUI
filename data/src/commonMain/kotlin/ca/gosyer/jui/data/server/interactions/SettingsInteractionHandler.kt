@@ -16,6 +16,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -28,7 +29,7 @@ class SettingsInteractionHandler @Inject constructor(
 
     fun aboutServer() = flow {
         val response = client.get(
-            serverUrl + aboutQuery()
+            buildUrl { path(aboutQuery()) },
         ) {
             expectSuccess = true
         }.body<About>()
@@ -37,7 +38,7 @@ class SettingsInteractionHandler @Inject constructor(
 
     fun checkUpdate() = flow {
         val response = client.post(
-            serverUrl + checkUpdateQuery()
+            buildUrl { path(checkUpdateQuery()) },
         ) {
             expectSuccess = true
         }

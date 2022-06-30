@@ -28,11 +28,11 @@ import ca.gosyer.jui.data.server.requests.updateSourceSettingQuery
 import io.ktor.client.call.body
 import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
-import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -47,7 +47,7 @@ class SourceInteractionHandler @Inject constructor(
 
     fun getSourceList() = flow {
         val response = client.get(
-            serverUrl + sourceListQuery()
+            buildUrl { path(sourceListQuery()) },
         ) {
             expectSuccess = true
         }.body<List<Source>>()
@@ -56,7 +56,7 @@ class SourceInteractionHandler @Inject constructor(
 
     fun getSourceInfo(sourceId: Long) = flow {
         val response = client.get(
-            serverUrl + sourceInfoQuery(sourceId)
+            buildUrl { path(sourceInfoQuery(sourceId)) },
         ) {
             expectSuccess = true
         }.body<Source>()
@@ -67,7 +67,7 @@ class SourceInteractionHandler @Inject constructor(
 
     fun getPopularManga(sourceId: Long, pageNum: Int) = flow {
         val response = client.get(
-            serverUrl + sourcePopularQuery(sourceId, pageNum)
+            buildUrl { path(sourcePopularQuery(sourceId, pageNum)) },
         ) {
             expectSuccess = true
         }.body<MangaPage>()
@@ -81,7 +81,7 @@ class SourceInteractionHandler @Inject constructor(
 
     fun getLatestManga(sourceId: Long, pageNum: Int) = flow {
         val response = client.get(
-            serverUrl + sourceLatestQuery(sourceId, pageNum)
+            buildUrl { path(sourceLatestQuery(sourceId, pageNum)) },
         ) {
             expectSuccess = true
         }.body<MangaPage>()
@@ -96,13 +96,13 @@ class SourceInteractionHandler @Inject constructor(
     // TODO: 2021-03-14
     fun getGlobalSearchResults(searchTerm: String) = flow {
         val response = client.get(
-            serverUrl + globalSearchQuery()
-        ) {
-            url {
+            buildUrl {
+                path(globalSearchQuery())
                 if (searchTerm.isNotBlank()) {
                     parameter("searchTerm", searchTerm)
                 }
-            }
+            },
+        ) {
             expectSuccess = true
         }
         emit(response)
@@ -110,14 +110,14 @@ class SourceInteractionHandler @Inject constructor(
 
     fun getSearchResults(sourceId: Long, searchTerm: String, pageNum: Int) = flow {
         val response = client.get(
-            serverUrl + sourceSearchQuery(sourceId)
-        ) {
-            url {
+            buildUrl {
+                path(sourceSearchQuery(sourceId))
                 parameter("pageNum", pageNum)
                 if (searchTerm.isNotBlank()) {
                     parameter("searchTerm", searchTerm)
                 }
-            }
+            },
+        ) {
             expectSuccess = true
         }.body<MangaPage>()
         emit(response)
@@ -131,12 +131,15 @@ class SourceInteractionHandler @Inject constructor(
 
     fun getFilterList(sourceId: Long, reset: Boolean = false) = flow {
         val response = client.get(
-            serverUrl + getFilterListQuery(sourceId)
-        ) {
-            url {
+            buildUrl {
+                path(getFilterListQuery(sourceId))
                 if (reset) {
                     parameter("reset", true)
                 }
+            },
+        ) {
+            url {
+
             }
             expectSuccess = true
         }.body<List<SourceFilter>>()
@@ -147,7 +150,7 @@ class SourceInteractionHandler @Inject constructor(
 
     fun setFilter(sourceId: Long, sourceFilter: SourceFilterChange) = flow {
         val response = client.post(
-            serverUrl + setFilterRequest(sourceId)
+            buildUrl { path(setFilterRequest(sourceId)) },
         ) {
             contentType(ContentType.Application.Json)
             setBody(sourceFilter)
@@ -171,7 +174,7 @@ class SourceInteractionHandler @Inject constructor(
 
     fun getSourceSettings(sourceId: Long) = flow {
         val response = client.get(
-            serverUrl + getSourceSettingsQuery(sourceId)
+            buildUrl { path(getSourceSettingsQuery(sourceId)) },
         ) {
             expectSuccess = true
         }.body<List<SourcePreference>>()
@@ -182,7 +185,7 @@ class SourceInteractionHandler @Inject constructor(
 
     fun setSourceSetting(sourceId: Long, sourcePreference: SourcePreferenceChange) = flow {
         val response = client.post(
-            serverUrl + updateSourceSettingQuery(sourceId)
+            buildUrl { path(updateSourceSettingQuery(sourceId)) },
         ) {
             contentType(ContentType.Application.Json)
             setBody(sourcePreference)

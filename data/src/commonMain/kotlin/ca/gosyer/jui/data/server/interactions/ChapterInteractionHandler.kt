@@ -25,9 +25,9 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
-import io.ktor.client.request.parameter
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -40,13 +40,13 @@ class ChapterInteractionHandler @Inject constructor(
 
     fun getChapters(mangaId: Long, refresh: Boolean = false) = flow {
         val response = client.get(
-            serverUrl + getMangaChaptersQuery(mangaId)
-        ) {
-            url {
+            buildUrl {
+                path(getMangaChaptersQuery(mangaId))
                 if (refresh) {
                     parameter("onlineFetch", true)
                 }
             }
+        ) {
             expectSuccess = true
         }.body<List<Chapter>>()
         emit(response)
@@ -56,7 +56,7 @@ class ChapterInteractionHandler @Inject constructor(
 
     fun getChapter(mangaId: Long, chapterIndex: Int) = flow {
         val response = client.get(
-            serverUrl + getChapterQuery(mangaId, chapterIndex)
+            buildUrl { path(getChapterQuery(mangaId, chapterIndex)) }
         ) {
             expectSuccess = true
         }.body<Chapter>()
@@ -78,7 +78,7 @@ class ChapterInteractionHandler @Inject constructor(
         markPreviousRead: Boolean? = null
     ) = flow {
         val response = client.submitForm(
-            serverUrl + updateChapterRequest(mangaId, chapterIndex),
+            buildUrl { path(updateChapterRequest(mangaId, chapterIndex)) },
             formParameters = Parameters.build {
                 if (read != null) {
                     append("read", read.toString())
@@ -134,7 +134,7 @@ class ChapterInteractionHandler @Inject constructor(
 
     fun getPage(mangaId: Long, chapterIndex: Int, pageNum: Int, block: HttpRequestBuilder.() -> Unit) = flow {
         val response = client.get(
-            serverUrl + getPageQuery(mangaId, chapterIndex, pageNum)
+            buildUrl { path(getPageQuery(mangaId, chapterIndex, pageNum)) }
         ) {
             expectSuccess = true
             block()
@@ -150,7 +150,7 @@ class ChapterInteractionHandler @Inject constructor(
 
     fun deleteChapterDownload(mangaId: Long, chapterIndex: Int) = flow {
         val response = client.delete(
-            serverUrl + deleteDownloadedChapterRequest(mangaId, chapterIndex)
+            buildUrl { path(deleteDownloadedChapterRequest(mangaId, chapterIndex)) }
         ) {
             expectSuccess = true
         }
@@ -165,7 +165,7 @@ class ChapterInteractionHandler @Inject constructor(
 
     fun queueChapterDownload(mangaId: Long, chapterIndex: Int) = flow {
         val response = client.get(
-            serverUrl + queueDownloadChapterRequest(mangaId, chapterIndex)
+            buildUrl { path(queueDownloadChapterRequest(mangaId, chapterIndex)) }
         ) {
             expectSuccess = true
         }
@@ -180,7 +180,7 @@ class ChapterInteractionHandler @Inject constructor(
 
     fun stopChapterDownload(mangaId: Long, chapterIndex: Int) = flow {
         val response = client.delete(
-            serverUrl + stopDownloadingChapterRequest(mangaId, chapterIndex)
+            buildUrl { path(stopDownloadingChapterRequest(mangaId, chapterIndex)) }
         ) {
             expectSuccess = true
         }
@@ -195,7 +195,7 @@ class ChapterInteractionHandler @Inject constructor(
 
     fun updateChapterMeta(mangaId: Long, chapterIndex: Int, key: String, value: String) = flow {
         val response = client.submitForm(
-            serverUrl + updateChapterMetaRequest(mangaId, chapterIndex),
+            buildUrl { path(updateChapterMetaRequest(mangaId, chapterIndex)) },
             formParameters = Parameters.build {
                 append("key", key)
                 append("value", value)

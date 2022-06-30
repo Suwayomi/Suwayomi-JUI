@@ -23,6 +23,7 @@ import io.ktor.client.request.get
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -48,7 +49,7 @@ class BackupInteractionHandler @Inject constructor(
 
     fun importBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = flow {
         val response = client.submitFormWithBinaryData(
-            serverUrl + backupFileImportRequest(),
+            buildUrl { path(backupFileImportRequest()) },
             formData = buildFormData(file)
         ) {
             expectSuccess = true
@@ -59,7 +60,7 @@ class BackupInteractionHandler @Inject constructor(
 
     fun validateBackupFile(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = flow {
         val response = client.submitFormWithBinaryData(
-            serverUrl + validateBackupFileRequest(),
+            buildUrl { path(validateBackupFileRequest()) },
             formData = buildFormData(file)
         ) {
             expectSuccess = true
@@ -70,7 +71,7 @@ class BackupInteractionHandler @Inject constructor(
 
     fun exportBackupFile(block: HttpRequestBuilder.() -> Unit = {}) = flow {
         val response = client.get(
-            serverUrl + backupFileExportRequest()
+            buildUrl { path(backupFileExportRequest()) },
         ) {
             expectSuccess = true
             block()

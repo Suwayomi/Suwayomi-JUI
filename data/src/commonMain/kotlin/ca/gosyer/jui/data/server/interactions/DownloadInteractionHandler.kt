@@ -14,6 +14,7 @@ import ca.gosyer.jui.data.server.requests.downloadsStartRequest
 import ca.gosyer.jui.data.server.requests.downloadsStopRequest
 import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
+import io.ktor.http.path
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -26,7 +27,7 @@ class DownloadInteractionHandler @Inject constructor(
 
     fun startDownloading() = flow {
         val response = client.get(
-            serverUrl + downloadsStartRequest()
+            buildUrl { path(downloadsStartRequest()) },
         ) {
             expectSuccess = true
         }
@@ -35,7 +36,7 @@ class DownloadInteractionHandler @Inject constructor(
 
     fun stopDownloading() = flow {
         val response = client.get(
-            serverUrl + downloadsStopRequest()
+            buildUrl { path(downloadsStopRequest()) },
         ) {
             expectSuccess = true
         }
@@ -44,7 +45,7 @@ class DownloadInteractionHandler @Inject constructor(
 
     fun clearDownloadQueue() = flow {
         val response = client.get(
-            serverUrl + downloadsClearRequest()
+            buildUrl { path(downloadsClearRequest()) },
         ) {
             expectSuccess = true
         }
