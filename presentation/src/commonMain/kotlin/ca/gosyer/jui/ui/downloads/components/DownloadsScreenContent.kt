@@ -40,9 +40,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.data.download.model.DownloadChapter
-import ca.gosyer.jui.data.download.model.DownloaderStatus
-import ca.gosyer.jui.data.models.Chapter
+import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.model.DownloadChapter
+import ca.gosyer.jui.domain.download.model.DownloaderStatus
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.Toolbar

@@ -7,6 +7,7 @@
 package ca.gosyer.jui.desktop
 
 import ca.gosyer.jui.core.di.AppScope
+import ca.gosyer.jui.data.DataComponent
 import ca.gosyer.jui.domain.DomainComponent
 import ca.gosyer.jui.ui.base.UiComponent
 import me.tatarka.inject.annotations.Component
@@ -14,7 +15,7 @@ import me.tatarka.inject.annotations.Provides
 
 @AppScope
 @Component
-abstract class AppComponent : DomainComponent, UiComponent {
+abstract class AppComponent : DataComponent, DomainComponent, UiComponent {
 
     abstract val appMigrations: AppMigrations
 

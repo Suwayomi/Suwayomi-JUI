@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.ui.main.components
 
-import ca.gosyer.jui.data.update.UpdateChecker
+import ca.gosyer.jui.domain.updates.interactor.UpdateChecker
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.MainScope

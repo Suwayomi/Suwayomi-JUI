@@ -7,8 +7,8 @@
 package ca.gosyer.jui.domain.reader
 
 import ca.gosyer.jui.core.prefs.getAsFlow
-import ca.gosyer.jui.data.reader.ReaderModePreferences
-import ca.gosyer.jui.data.reader.ReaderPreferences
+import ca.gosyer.jui.domain.reader.service.ReaderModePreferences
+import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

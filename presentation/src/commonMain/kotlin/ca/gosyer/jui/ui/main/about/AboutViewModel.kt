@@ -7,10 +7,10 @@
 package ca.gosyer.jui.ui.main.about
 
 import ca.gosyer.jui.data.base.DateHandler
-import ca.gosyer.jui.data.models.About
-import ca.gosyer.jui.data.server.interactions.SettingsInteractionHandler
-import ca.gosyer.jui.domain.update.UpdateChecker
-import ca.gosyer.jui.domain.update.UpdateChecker.Update
+import ca.gosyer.jui.data.settings.SettingsRepositoryImpl
+import ca.gosyer.jui.domain.settings.model.About
+import ca.gosyer.jui.domain.updates.interactor.UpdateChecker
+import ca.gosyer.jui.domain.updates.interactor.UpdateChecker.Update
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,7 +30,7 @@ import org.lighthousegames.logging.logging
 
 class AboutViewModel @Inject constructor(
     private val dateHandler: DateHandler,
-    private val settingsHandler: SettingsInteractionHandler,
+    private val settingsHandler: SettingsRepositoryImpl,
     private val updateChecker: UpdateChecker,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {

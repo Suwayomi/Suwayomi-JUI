@@ -26,10 +26,10 @@ import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.jui.core.io.userDataDir
 import ca.gosyer.jui.core.lang.withUIContext
 import ca.gosyer.jui.core.prefs.getAsFlow
-import ca.gosyer.jui.data.server.ServerService.ServerResult
-import ca.gosyer.jui.data.ui.model.ThemeMode
 import ca.gosyer.jui.desktop.build.BuildConfig
 import ca.gosyer.jui.desktop.logging.initializeLogger
+import ca.gosyer.jui.domain.server.service.ServerService.ServerResult
+import ca.gosyer.jui.domain.ui.model.ThemeMode
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.ui.base.theme.AppTheme

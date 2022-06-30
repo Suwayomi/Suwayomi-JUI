@@ -6,8 +6,8 @@
 
 package ca.gosyer.jui.ui.sources.browse.filter
 
-import ca.gosyer.jui.data.models.sourcefilters.SourceFilter
-import ca.gosyer.jui.data.server.interactions.SourceInteractionHandler
+import ca.gosyer.jui.data.source.SourceRepositoryImpl
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -26,11 +26,11 @@ import org.lighthousegames.logging.logging
 
 class SourceFiltersViewModel(
     private val sourceId: Long,
-    private val sourceHandler: SourceInteractionHandler,
+    private val sourceHandler: SourceRepositoryImpl,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     @Inject constructor(
-        sourceHandler: SourceInteractionHandler,
+        sourceHandler: SourceRepositoryImpl,
         contextWrapper: ContextWrapper,
         params: Params,
     ) : this(

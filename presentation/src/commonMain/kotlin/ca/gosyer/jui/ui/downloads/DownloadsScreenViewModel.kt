@@ -6,11 +6,11 @@
 
 package ca.gosyer.jui.ui.downloads
 
-import ca.gosyer.jui.data.models.Chapter
-import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
-import ca.gosyer.jui.data.server.interactions.DownloadInteractionHandler
+import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.data.download.DownloadRepositoryImpl
 import ca.gosyer.jui.domain.base.WebsocketService.Actions
-import ca.gosyer.jui.domain.download.DownloadService
+import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -26,8 +26,8 @@ import org.lighthousegames.logging.logging
 
 class DownloadsScreenViewModel @Inject constructor(
     private val downloadService: DownloadService,
-    private val downloadsHandler: DownloadInteractionHandler,
-    private val chapterHandler: ChapterInteractionHandler,
+    private val downloadsHandler: DownloadRepositoryImpl,
+    private val chapterHandler: ChapterRepositoryImpl,
     private val contextWrapper: ContextWrapper,
     standalone: Boolean
 ) : ViewModel(contextWrapper) {
@@ -67,7 +67,7 @@ class DownloadsScreenViewModel @Inject constructor(
     }
 
     fun stopDownload(chapter: Chapter) {
-        chapterHandler.stopChapterDownload(chapter)
+        chapterHandler.stopChapterDownload(chapter.mangaId, chapter.index)
             .catch {
                 log.warn(it) { "Error stop chapter download" }
             }
@@ -75,9 +75,9 @@ class DownloadsScreenViewModel @Inject constructor(
     }
 
     fun moveToBottom(chapter: Chapter) {
-        chapterHandler.stopChapterDownload(chapter)
+        chapterHandler.stopChapterDownload(chapter.mangaId, chapter.index)
             .onEach {
-                chapterHandler.queueChapterDownload(chapter)
+                chapterHandler.queueChapterDownload(chapter.mangaId, chapter.index)
                     .catch {
                         log.warn(it) { "Error adding download" }
                     }

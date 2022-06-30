@@ -21,7 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
-import ca.gosyer.jui.data.library.model.Sort
+import ca.gosyer.jui.domain.library.model.Sort
 import ca.gosyer.jui.ui.sources.browse.filter.SourceFilterAction
 import ca.gosyer.jui.uicore.resources.stringResource
 

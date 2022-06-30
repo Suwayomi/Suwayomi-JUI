@@ -6,9 +6,9 @@
 
 package ca.gosyer.jui.ui.sources.home
 
-import ca.gosyer.jui.data.catalog.CatalogPreferences
-import ca.gosyer.jui.data.models.Source
-import ca.gosyer.jui.data.server.interactions.SourceInteractionHandler
+import ca.gosyer.jui.data.source.SourceRepositoryImpl
+import ca.gosyer.jui.domain.source.model.Source
+import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class SourceHomeScreenViewModel @Inject constructor(
-    private val sourceHandler: SourceInteractionHandler,
+    private val sourceHandler: SourceRepositoryImpl,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {

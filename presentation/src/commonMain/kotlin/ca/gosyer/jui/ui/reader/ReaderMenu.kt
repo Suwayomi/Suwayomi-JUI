@@ -51,9 +51,9 @@ import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.data.reader.model.Direction
-import ca.gosyer.jui.data.reader.model.ImageScale
-import ca.gosyer.jui.data.reader.model.NavigationMode
+import ca.gosyer.jui.domain.reader.model.Direction
+import ca.gosyer.jui.domain.reader.model.ImageScale
+import ca.gosyer.jui.domain.reader.model.NavigationMode
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler

@@ -33,9 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.jui.data.library.model.DisplayMode
-import ca.gosyer.jui.data.models.Manga
-import ca.gosyer.jui.data.models.Source
+import ca.gosyer.jui.domain.library.model.DisplayMode
+import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.components.localeToString
 import ca.gosyer.jui.ui.base.navigation.Toolbar

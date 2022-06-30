@@ -6,15 +6,15 @@
 
 package ca.gosyer.jui.ui.sources.browse.filter.model
 
-import ca.gosyer.jui.data.models.sourcefilters.CheckBoxFilter
-import ca.gosyer.jui.data.models.sourcefilters.GroupFilter
-import ca.gosyer.jui.data.models.sourcefilters.HeaderFilter
-import ca.gosyer.jui.data.models.sourcefilters.SelectFilter
-import ca.gosyer.jui.data.models.sourcefilters.SeparatorFilter
-import ca.gosyer.jui.data.models.sourcefilters.SortFilter
-import ca.gosyer.jui.data.models.sourcefilters.SourceFilter
-import ca.gosyer.jui.data.models.sourcefilters.TextFilter
-import ca.gosyer.jui.data.models.sourcefilters.TriStateFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.CheckBoxFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.GroupFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.HeaderFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.SelectFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.SeparatorFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.SortFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.TextFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.TriStateFilter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

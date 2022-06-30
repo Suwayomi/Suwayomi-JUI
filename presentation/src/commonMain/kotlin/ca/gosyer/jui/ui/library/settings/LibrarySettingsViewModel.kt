@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.ui.library.settings
 
-import ca.gosyer.jui.data.library.LibraryPreferences
+import ca.gosyer.jui.domain.library.service.LibraryPreferences
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import me.tatarka.inject.annotations.Inject

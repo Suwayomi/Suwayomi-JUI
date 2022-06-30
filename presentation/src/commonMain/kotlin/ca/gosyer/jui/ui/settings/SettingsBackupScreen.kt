@@ -35,7 +35,7 @@ import ca.gosyer.jui.core.io.copyTo
 import ca.gosyer.jui.core.io.saveTo
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.data.server.interactions.BackupInteractionHandler
+import ca.gosyer.jui.data.backup.BackupRepositoryImpl
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.ui.base.file.rememberFileChooser
@@ -108,7 +108,7 @@ class SettingsBackupScreen : Screen {
 }
 
 class SettingsBackupViewModel @Inject constructor(
-    private val backupHandler: BackupInteractionHandler,
+    private val backupHandler: BackupRepositoryImpl,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     private val _restoring = MutableStateFlow(false)

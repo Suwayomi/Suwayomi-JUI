@@ -8,7 +8,7 @@ package ca.gosyer.jui.ui.base.theme
 
 import androidx.compose.ui.graphics.Color
 import ca.gosyer.jui.core.prefs.Preference
-import ca.gosyer.jui.data.ui.UiPreferences
+import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.prefs.asColor
 import ca.gosyer.jui.uicore.prefs.asStateIn

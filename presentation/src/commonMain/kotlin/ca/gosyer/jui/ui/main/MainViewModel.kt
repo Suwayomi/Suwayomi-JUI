@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.ui.main
 
-import ca.gosyer.jui.data.ui.UiPreferences
+import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.Length

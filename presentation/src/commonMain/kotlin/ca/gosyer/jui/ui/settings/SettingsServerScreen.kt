@@ -21,9 +21,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import ca.gosyer.jui.data.server.ServerPreferences
-import ca.gosyer.jui.data.server.model.Auth
-import ca.gosyer.jui.data.server.model.Proxy
+import ca.gosyer.jui.domain.server.model.Auth
+import ca.gosyer.jui.domain.server.model.Proxy
+import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.ChoicePreference

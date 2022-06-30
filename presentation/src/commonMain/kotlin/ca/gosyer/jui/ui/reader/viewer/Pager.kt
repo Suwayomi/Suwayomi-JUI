@@ -12,7 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import ca.gosyer.jui.data.reader.model.Direction
+import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.ui.reader.ChapterSeparator
 import ca.gosyer.jui.ui.reader.ReaderImage
 import ca.gosyer.jui.ui.reader.model.MoveTo

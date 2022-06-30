@@ -10,10 +10,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import ca.gosyer.jui.data.models.Chapter
-import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
-import ca.gosyer.jui.data.server.interactions.UpdatesInteractionHandler
-import ca.gosyer.jui.domain.download.DownloadService
+import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.data.updates.UpdatesRepositoryImpl
+import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -37,8 +37,8 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class UpdatesScreenViewModel @Inject constructor(
-    private val chapterHandler: ChapterInteractionHandler,
-    private val updatesHandler: UpdatesInteractionHandler,
+    private val chapterHandler: ChapterRepositoryImpl,
+    private val updatesHandler: UpdatesRepositoryImpl,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
 
@@ -117,7 +117,7 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun downloadChapter(chapter: Chapter) {
-        chapterHandler.queueChapterDownload(chapter)
+        chapterHandler.queueChapterDownload(chapter.mangaId, chapter.index)
             .catch {
                 log.warn(it) { "Error queueing chapter" }
             }

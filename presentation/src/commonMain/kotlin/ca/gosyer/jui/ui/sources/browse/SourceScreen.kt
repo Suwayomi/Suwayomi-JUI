@@ -8,7 +8,7 @@ package ca.gosyer.jui.ui.sources.browse
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import ca.gosyer.jui.data.models.Source
+import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.ui.manga.MangaScreen
 import ca.gosyer.jui.ui.sources.browse.components.SourceScreenContent
 import ca.gosyer.jui.ui.sources.browse.filter.SourceFiltersViewModel

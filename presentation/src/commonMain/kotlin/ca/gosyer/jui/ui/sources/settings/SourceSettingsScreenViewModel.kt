@@ -6,8 +6,8 @@
 
 package ca.gosyer.jui.ui.sources.settings
 
-import ca.gosyer.jui.data.models.sourcepreference.SourcePreference
-import ca.gosyer.jui.data.server.interactions.SourceInteractionHandler
+import ca.gosyer.jui.data.source.SourceRepositoryImpl
+import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -25,7 +25,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class SourceSettingsScreenViewModel @Inject constructor(
-    private val sourceHandler: SourceInteractionHandler,
+    private val sourceHandler: SourceRepositoryImpl,
     contextWrapper: ContextWrapper,
     private val params: Params
 ) : ViewModel(contextWrapper) {

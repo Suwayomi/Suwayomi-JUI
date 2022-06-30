@@ -7,7 +7,7 @@
 package ca.gosyer.jui.ui.downloads
 
 import ca.gosyer.jui.domain.base.WebsocketService
-import ca.gosyer.jui.domain.download.DownloadService
+import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 
 internal expect fun startDownloadService(

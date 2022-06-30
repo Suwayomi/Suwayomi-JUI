@@ -52,8 +52,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.core.util.replace
-import ca.gosyer.jui.data.models.MangaMeta
-import ca.gosyer.jui.data.reader.model.Direction
+import ca.gosyer.jui.domain.manga.model.MangaMeta
+import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.uicore.components.AroundLayout

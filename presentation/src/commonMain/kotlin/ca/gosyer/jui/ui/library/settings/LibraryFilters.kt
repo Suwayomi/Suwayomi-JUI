@@ -14,7 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.state.ToggleableState
-import ca.gosyer.jui.data.library.model.FilterState
+import ca.gosyer.jui.domain.library.model.FilterState
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.sources.browse.filter.SourceFilterAction
 import ca.gosyer.jui.uicore.resources.stringResource

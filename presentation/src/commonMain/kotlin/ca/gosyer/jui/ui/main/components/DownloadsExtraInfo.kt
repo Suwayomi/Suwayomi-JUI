@@ -19,8 +19,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.data.download.model.DownloaderStatus
 import ca.gosyer.jui.domain.base.WebsocketService
+import ca.gosyer.jui.domain.download.model.DownloaderStatus
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.downloads.DownloadsScreenViewModel
 import ca.gosyer.jui.uicore.resources.stringResource

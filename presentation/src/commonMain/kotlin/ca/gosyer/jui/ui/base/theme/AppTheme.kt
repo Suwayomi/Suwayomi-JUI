@@ -18,8 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.takeOrElse
-import ca.gosyer.jui.data.ui.UiPreferences
-import ca.gosyer.jui.data.ui.model.ThemeMode
+import ca.gosyer.jui.domain.ui.model.ThemeMode
+import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.ui.base.theme.ThemeScrollbarStyle.getScrollbarStyle
 import ca.gosyer.jui.uicore.components.LocalScrollbarStyle
 import ca.gosyer.jui.uicore.theme.Theme

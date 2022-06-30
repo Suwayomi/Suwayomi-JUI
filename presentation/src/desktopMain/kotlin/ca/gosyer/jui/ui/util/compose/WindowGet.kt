@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
-import ca.gosyer.jui.data.ui.model.WindowSettings
+import ca.gosyer.jui.domain.ui.model.WindowSettings
 
 data class WindowGet(
     val offset: WindowPosition,

@@ -7,8 +7,8 @@
 package ca.gosyer.jui.domain.base
 
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.data.server.Http
-import ca.gosyer.jui.data.server.ServerPreferences
+import ca.gosyer.jui.domain.server.Http
+import ca.gosyer.jui.domain.server.service.ServerPreferences
 import io.ktor.client.plugins.websocket.ws
 import io.ktor.http.URLProtocol
 import io.ktor.websocket.Frame

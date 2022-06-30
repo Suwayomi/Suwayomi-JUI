@@ -58,7 +58,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
-import ca.gosyer.jui.data.models.sourcefilters.SortFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.SortFilter
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.prefs.ExpandablePreference
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView

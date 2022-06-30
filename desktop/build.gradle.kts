@@ -20,8 +20,8 @@ plugins {
 dependencies {
     implementation(projects.core)
     implementation(projects.i18n)
-    implementation(projects.data)
     implementation(projects.domain)
+    implementation(projects.data)
     implementation(projects.uiCore)
     implementation(projects.presentation)
 

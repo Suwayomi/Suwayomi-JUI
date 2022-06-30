@@ -9,7 +9,7 @@ package ca.gosyer.jui.ui.reader.navigation
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
-import ca.gosyer.jui.data.reader.model.TappingInvertMode
+import ca.gosyer.jui.domain.reader.model.TappingInvertMode
 import ca.gosyer.jui.ui.reader.model.Navigation
 
 abstract class ViewerNavigation {

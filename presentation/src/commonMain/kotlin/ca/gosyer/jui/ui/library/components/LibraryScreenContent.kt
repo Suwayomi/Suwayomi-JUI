@@ -32,8 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.data.library.model.DisplayMode
-import ca.gosyer.jui.data.models.Category
+import ca.gosyer.jui.domain.category.model.Category
+import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler

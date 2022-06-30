@@ -29,7 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.data.models.Chapter
+import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadIcon
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem

@@ -20,11 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.util.fastForEach
-import ca.gosyer.jui.data.reader.ReaderModePreferences
-import ca.gosyer.jui.data.reader.ReaderPreferences
-import ca.gosyer.jui.data.reader.model.Direction
-import ca.gosyer.jui.data.reader.model.ImageScale
-import ca.gosyer.jui.data.reader.model.NavigationMode
+import ca.gosyer.jui.domain.reader.model.Direction
+import ca.gosyer.jui.domain.reader.model.ImageScale
+import ca.gosyer.jui.domain.reader.model.NavigationMode
+import ca.gosyer.jui.domain.reader.service.ReaderModePreferences
+import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.ChoicePreference

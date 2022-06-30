@@ -8,9 +8,9 @@ package ca.gosyer.jui.ui.extensions
 
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.displayName
-import ca.gosyer.jui.data.extension.ExtensionPreferences
-import ca.gosyer.jui.data.models.Extension
-import ca.gosyer.jui.data.server.interactions.ExtensionInteractionHandler
+import ca.gosyer.jui.data.extension.ExtensionRepositoryImpl
+import ca.gosyer.jui.domain.extension.model.Extension
+import ca.gosyer.jui.domain.extension.service.ExtensionPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -28,7 +28,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class ExtensionsScreenViewModel @Inject constructor(
-    private val extensionHandler: ExtensionInteractionHandler,
+    private val extensionHandler: ExtensionRepositoryImpl,
     extensionPreferences: ExtensionPreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {

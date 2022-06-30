@@ -20,8 +20,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.data.models.Manga
-import ca.gosyer.jui.data.models.Source
+import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.resources.stringResource
 

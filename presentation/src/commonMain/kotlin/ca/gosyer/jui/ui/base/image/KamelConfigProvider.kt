@@ -6,11 +6,11 @@
 
 package ca.gosyer.jui.ui.base.image
 
-import ca.gosyer.jui.data.models.Extension
-import ca.gosyer.jui.data.models.Manga
-import ca.gosyer.jui.data.models.Source
-import ca.gosyer.jui.data.server.Http
-import ca.gosyer.jui.data.server.ServerPreferences
+import ca.gosyer.jui.domain.extension.model.Extension
+import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.server.Http
+import ca.gosyer.jui.domain.server.service.ServerPreferences
+import ca.gosyer.jui.domain.source.model.Source
 import io.kamel.core.DataSource
 import io.kamel.core.Resource
 import io.kamel.core.config.DefaultCacheSize

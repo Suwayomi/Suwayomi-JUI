@@ -10,15 +10,15 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import ca.gosyer.jui.core.lang.withDefaultContext
 import ca.gosyer.jui.core.prefs.getAsFlow
-import ca.gosyer.jui.data.library.LibraryPreferences
-import ca.gosyer.jui.data.library.model.FilterState
-import ca.gosyer.jui.data.library.model.Sort
-import ca.gosyer.jui.data.models.Category
-import ca.gosyer.jui.data.models.Manga
-import ca.gosyer.jui.data.models.MangaStatus
-import ca.gosyer.jui.data.server.interactions.CategoryInteractionHandler
-import ca.gosyer.jui.data.server.interactions.LibraryInteractionHandler
-import ca.gosyer.jui.data.server.interactions.UpdatesInteractionHandler
+import ca.gosyer.jui.data.category.CategoryRepositoryImpl
+import ca.gosyer.jui.data.library.LibraryRepositoryImpl
+import ca.gosyer.jui.data.updates.UpdatesRepositoryImpl
+import ca.gosyer.jui.domain.category.model.Category
+import ca.gosyer.jui.domain.library.model.FilterState
+import ca.gosyer.jui.domain.library.model.Sort
+import ca.gosyer.jui.domain.library.service.LibraryPreferences
+import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.manga.model.MangaStatus
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.util.lang.Collator
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -74,9 +74,9 @@ private fun LibraryMap.setManga(id: Long, manga: List<Manga>, getItemsFlow: (Sta
 }
 
 class LibraryScreenViewModel @Inject constructor(
-    private val categoryHandler: CategoryInteractionHandler,
-    private val libraryHandler: LibraryInteractionHandler,
-    private val updatesHandler: UpdatesInteractionHandler,
+    private val categoryHandler: CategoryRepositoryImpl,
+    private val libraryHandler: LibraryRepositoryImpl,
+    private val updatesHandler: UpdatesRepositoryImpl,
     libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
@@ -237,7 +237,7 @@ class LibraryScreenViewModel @Inject constructor(
         withDefaultContext {
             categories.map { category ->
                 async {
-                    categoryHandler.getMangaFromCategory(category)
+                    categoryHandler.getMangaFromCategory(category.id)
                         .onEach {
                             library.mangaMap.setManga(
                                 id = category.id,
@@ -287,7 +287,7 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     fun updateCategory(category: Category) {
-        updatesHandler.updateCategory(category)
+        updatesHandler.updateCategory(category.id)
             .catch {
                 log.warn(it) { "Error updating category" }
             }

@@ -6,8 +6,8 @@
 
 package ca.gosyer.jui.ui.categories
 
-import ca.gosyer.jui.data.models.Category
-import ca.gosyer.jui.data.server.interactions.CategoryInteractionHandler
+import ca.gosyer.jui.data.category.CategoryRepositoryImpl
+import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class CategoriesScreenViewModel @Inject constructor(
-    private val categoryHandler: CategoryInteractionHandler,
+    private val categoryHandler: CategoryRepositoryImpl,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     private var originalCategories = emptyList<Category>()
@@ -66,13 +66,13 @@ class CategoriesScreenViewModel @Inject constructor(
         originalCategories.forEach { originalCategory ->
             val category = categories.find { it.id == originalCategory.id }
             if (category == null) {
-                categoryHandler.deleteCategory(originalCategory)
+                categoryHandler.deleteCategory(originalCategory.id)
                     .catch {
                         log.warn(it) { "Error deleting category $originalCategory" }
                     }
                     .collect()
             } else if (category.name != originalCategory.name) {
-                categoryHandler.modifyCategory(originalCategory, category.name)
+                categoryHandler.modifyCategory(originalCategory.id, category.name)
                     .catch {
                         log.warn(it) { "Error modifying category $category" }
                     }

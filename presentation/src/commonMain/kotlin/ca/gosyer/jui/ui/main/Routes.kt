@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.ui.main
 
-import ca.gosyer.jui.data.ui.model.StartScreen
+import ca.gosyer.jui.domain.ui.model.StartScreen
 import ca.gosyer.jui.ui.extensions.ExtensionsScreen
 import ca.gosyer.jui.ui.library.LibraryScreen
 import ca.gosyer.jui.ui.sources.SourcesScreen

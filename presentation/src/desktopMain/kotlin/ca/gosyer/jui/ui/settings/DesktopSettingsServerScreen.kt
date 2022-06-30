@@ -15,10 +15,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import ca.gosyer.jui.data.server.ServerHostPreferences
-import ca.gosyer.jui.data.server.ServerPreferences
-import ca.gosyer.jui.data.server.ServerService
-import ca.gosyer.jui.data.server.model.Auth
+import ca.gosyer.jui.domain.server.model.Auth
+import ca.gosyer.jui.domain.server.service.ServerHostPreferences
+import ca.gosyer.jui.domain.server.service.ServerPreferences
+import ca.gosyer.jui.domain.server.service.ServerService
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.prefs.EditTextPreference
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow

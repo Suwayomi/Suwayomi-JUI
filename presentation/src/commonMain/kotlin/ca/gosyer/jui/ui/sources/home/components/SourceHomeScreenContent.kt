@@ -44,7 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.jui.data.models.Source
+import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.components.TooltipArea
 import ca.gosyer.jui.ui.base.components.localeToString

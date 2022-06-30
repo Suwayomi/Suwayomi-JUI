@@ -44,7 +44,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.core.lang.getDisplayName
-import ca.gosyer.jui.data.models.Extension
+import ca.gosyer.jui.domain.extension.model.Extension
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties

@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.ui.reader.model
 
-import ca.gosyer.jui.data.models.Chapter
+import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.ui.reader.loader.PageLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -38,15 +38,12 @@ kotlin {
                 api(libs.serialization.json)
                 api(libs.kotlinInject.runtime)
                 api(libs.ktor.core)
-                api(libs.ktor.contentNegotiation)
-                api(libs.ktor.serialization.json)
-                api(libs.ktor.auth)
-                api(libs.ktor.logging)
                 api(libs.ktor.websockets)
                 api(libs.okio)
                 api(libs.dateTime)
                 api(projects.core)
                 api(projects.i18n)
+                api(projects.domain)
             }
         }
         val commonTest by getting {
@@ -59,7 +56,6 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                api(libs.ktor.okHttp)
             }
         }
         val desktopTest by getting {
@@ -68,7 +64,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                api(libs.ktor.okHttp)
             }
         }
         val androidTest by getting {

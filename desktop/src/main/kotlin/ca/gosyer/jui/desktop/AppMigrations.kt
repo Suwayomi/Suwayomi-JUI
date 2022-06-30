@@ -6,8 +6,8 @@
 
 package ca.gosyer.jui.desktop
 
-import ca.gosyer.jui.data.migration.MigrationPreferences
 import ca.gosyer.jui.desktop.build.BuildConfig
+import ca.gosyer.jui.domain.migration.service.MigrationPreferences
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import me.tatarka.inject.annotations.Inject
 

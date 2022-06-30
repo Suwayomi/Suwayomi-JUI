@@ -16,7 +16,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import ca.gosyer.jui.data.update.UpdatePreferences
+import ca.gosyer.jui.domain.updates.service.UpdatePreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.SwitchPreference

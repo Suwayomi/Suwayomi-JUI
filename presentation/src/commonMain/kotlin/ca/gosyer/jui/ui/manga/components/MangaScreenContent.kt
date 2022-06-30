@@ -28,8 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.data.models.Category
-import ca.gosyer.jui.data.models.Manga
+import ca.gosyer.jui.domain.category.model.Category
+import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.ui.base.navigation.ActionItem

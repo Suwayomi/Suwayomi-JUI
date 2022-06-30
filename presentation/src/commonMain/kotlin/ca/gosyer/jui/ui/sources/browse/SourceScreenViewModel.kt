@@ -6,13 +6,13 @@
 
 package ca.gosyer.jui.ui.sources.browse
 
-import ca.gosyer.jui.data.catalog.CatalogPreferences
-import ca.gosyer.jui.data.library.LibraryPreferences
-import ca.gosyer.jui.data.library.model.DisplayMode
-import ca.gosyer.jui.data.models.Manga
-import ca.gosyer.jui.data.models.MangaPage
-import ca.gosyer.jui.data.models.Source
-import ca.gosyer.jui.data.server.interactions.SourceInteractionHandler
+import ca.gosyer.jui.data.source.SourceRepositoryImpl
+import ca.gosyer.jui.domain.library.model.DisplayMode
+import ca.gosyer.jui.domain.library.service.LibraryPreferences
+import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.source.model.MangaPage
+import ca.gosyer.jui.domain.source.model.Source
+import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +26,7 @@ import org.lighthousegames.logging.logging
 
 class SourceScreenViewModel(
     private val source: Source,
-    private val sourceHandler: SourceInteractionHandler,
+    private val sourceHandler: SourceRepositoryImpl,
     private val catalogPreferences: CatalogPreferences,
     private val libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper,
@@ -34,7 +34,7 @@ class SourceScreenViewModel(
 ) : ViewModel(contextWrapper) {
 
     @Inject constructor(
-        sourceHandler: SourceInteractionHandler,
+        sourceHandler: SourceRepositoryImpl,
         catalogPreferences: CatalogPreferences,
         libraryPreferences: LibraryPreferences,
         contextWrapper: ContextWrapper,
@@ -121,9 +121,9 @@ class SourceScreenViewModel(
 
     private suspend fun getPage(): MangaPage? {
         return when {
-            isLatest.value -> sourceHandler.getLatestManga(source, pageNum.value)
-            _query.value != null || _usingFilters.value -> sourceHandler.getSearchResults(source, _query.value.orEmpty(), pageNum.value)
-            else -> sourceHandler.getPopularManga(source, pageNum.value)
+            isLatest.value -> sourceHandler.getLatestManga(source.id, pageNum.value)
+            _query.value != null || _usingFilters.value -> sourceHandler.getSearchResults(source.id, _query.value.orEmpty(), pageNum.value)
+            else -> sourceHandler.getPopularManga(source.id, pageNum.value)
         }
             .catch {
                 log.warn(it) { "Error getting source page" }

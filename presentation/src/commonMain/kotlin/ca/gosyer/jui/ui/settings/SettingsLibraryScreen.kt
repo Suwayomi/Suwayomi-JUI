@@ -33,9 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.jui.data.library.LibraryPreferences
-import ca.gosyer.jui.data.library.model.DisplayMode
-import ca.gosyer.jui.data.server.interactions.CategoryInteractionHandler
+import ca.gosyer.jui.data.category.CategoryRepositoryImpl
+import ca.gosyer.jui.domain.library.model.DisplayMode
+import ca.gosyer.jui.domain.library.service.LibraryPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -88,7 +88,7 @@ class SettingsLibraryScreen : Screen {
 
 class SettingsLibraryViewModel @Inject constructor(
     libraryPreferences: LibraryPreferences,
-    private val categoryHandler: CategoryInteractionHandler,
+    private val categoryHandler: CategoryRepositoryImpl,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
 

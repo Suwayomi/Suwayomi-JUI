@@ -31,11 +31,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.data.download.model.DownloadChapter
-import ca.gosyer.jui.data.download.model.DownloadState
-import ca.gosyer.jui.data.models.Chapter
-import ca.gosyer.jui.data.models.Manga
-import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
+import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.model.DownloadChapter
+import ca.gosyer.jui.domain.download.model.DownloadState
+import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.components.DropdownIconButton
 import ca.gosyer.jui.uicore.components.DropdownMenuItem
@@ -74,15 +74,15 @@ data class ChapterDownloadItem(
         _downloadChapterFlow.value = downloadingChapter
     }
 
-    fun deleteDownload(chapterHandler: ChapterInteractionHandler): Flow<HttpResponse> {
-        return chapterHandler.deleteChapterDownload(chapter)
+    fun deleteDownload(chapterHandler: ChapterRepositoryImpl): Flow<HttpResponse> {
+        return chapterHandler.deleteChapterDownload(chapter.mangaId, chapter.index)
             .onEach {
                 _downloadState.value = ChapterDownloadState.NotDownloaded
             }
     }
 
-    fun stopDownloading(chapterHandler: ChapterInteractionHandler): Flow<HttpResponse> {
-        return chapterHandler.stopChapterDownload(chapter)
+    fun stopDownloading(chapterHandler: ChapterRepositoryImpl): Flow<HttpResponse> {
+        return chapterHandler.stopChapterDownload(chapter.mangaId, chapter.index)
             .onEach {
                 _downloadState.value = ChapterDownloadState.NotDownloaded
             }

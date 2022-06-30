@@ -8,8 +8,8 @@ package ca.gosyer.jui.ui.reader.loader
 
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.data.reader.ReaderPreferences
-import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
+import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.util.compose.toImageBitmap
@@ -33,7 +33,7 @@ import org.lighthousegames.logging.logging
 class TachideskPageLoader(
     val chapter: ReaderChapter,
     readerPreferences: ReaderPreferences,
-    chapterHandler: ChapterInteractionHandler
+    chapterHandler: ChapterRepositoryImpl
 ) : PageLoader() {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -64,7 +64,7 @@ class TachideskPageLoader(
                             log.debug { "Loading page ${page.index}" }
                             if (page.status.value == ReaderPage.Status.QUEUE) {
                                 chapterHandler
-                                    .getPage(chapter.chapter, page.index) {
+                                    .getPage(chapter.chapter.mangaId, chapter.chapter.index, page.index) {
                                         onDownload { bytesSentTotal, contentLength ->
                                             page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                                         }

@@ -6,13 +6,13 @@
 
 package ca.gosyer.jui.ui.sources.settings.model
 
-import ca.gosyer.jui.data.models.sourcepreference.CheckBoxPreference
-import ca.gosyer.jui.data.models.sourcepreference.EditTextPreference
-import ca.gosyer.jui.data.models.sourcepreference.ListPreference
-import ca.gosyer.jui.data.models.sourcepreference.MultiSelectListPreference
-import ca.gosyer.jui.data.models.sourcepreference.SourcePreference
-import ca.gosyer.jui.data.models.sourcepreference.SwitchPreference
-import ca.gosyer.jui.data.models.sourcepreference.TwoStateProps
+import ca.gosyer.jui.domain.source.model.sourcepreference.CheckBoxPreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.EditTextPreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.ListPreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.MultiSelectListPreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.SwitchPreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.TwoStateProps
 import ca.gosyer.jui.ui.util.lang.stringFormat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

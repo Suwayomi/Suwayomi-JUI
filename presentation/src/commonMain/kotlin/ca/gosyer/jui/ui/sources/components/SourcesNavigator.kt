@@ -18,7 +18,7 @@ import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.runtime.staticCompositionLocalOf
-import ca.gosyer.jui.data.models.Source
+import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.ui.sources.browse.SourceScreen
 import ca.gosyer.jui.ui.sources.globalsearch.GlobalSearchScreen
 import ca.gosyer.jui.ui.sources.home.SourceHomeScreen

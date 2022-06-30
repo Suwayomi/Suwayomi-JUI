@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import ca.gosyer.jui.data.library.model.DisplayMode
-import ca.gosyer.jui.data.models.Category
+import ca.gosyer.jui.domain.category.model.Category
+import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.ui.library.CategoryState
 import ca.gosyer.jui.uicore.components.ErrorScreen
 import ca.gosyer.jui.uicore.components.LoadingScreen

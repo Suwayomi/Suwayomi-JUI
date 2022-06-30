@@ -33,8 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.jui.data.ui.UiPreferences
-import ca.gosyer.jui.data.ui.model.ThemeMode
+import ca.gosyer.jui.domain.ui.model.ThemeMode
+import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.ChoicePreference

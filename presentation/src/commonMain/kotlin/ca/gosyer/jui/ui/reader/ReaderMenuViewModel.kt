@@ -8,14 +8,16 @@ package ca.gosyer.jui.ui.reader
 
 import ca.gosyer.jui.core.lang.launchDefault
 import ca.gosyer.jui.core.prefs.getAsFlow
-import ca.gosyer.jui.data.models.Chapter
-import ca.gosyer.jui.data.models.Manga
-import ca.gosyer.jui.data.models.MangaMeta
-import ca.gosyer.jui.data.reader.ReaderPreferences
-import ca.gosyer.jui.data.reader.model.Direction
-import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
-import ca.gosyer.jui.data.server.interactions.MangaInteractionHandler
+import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.data.manga.MangaRepositoryImpl
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterMeta
+import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.manga.interactor.UpdateMangaMeta
+import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.manga.model.MangaMeta
 import ca.gosyer.jui.domain.reader.ReaderModeWatch
+import ca.gosyer.jui.domain.reader.model.Direction
+import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.ui.reader.model.MoveTo
 import ca.gosyer.jui.ui.reader.model.Navigation
 import ca.gosyer.jui.ui.reader.model.PageMove
@@ -48,8 +50,10 @@ import org.lighthousegames.logging.logging
 
 class ReaderMenuViewModel @Inject constructor(
     private val readerPreferences: ReaderPreferences,
-    private val mangaHandler: MangaInteractionHandler,
-    private val chapterHandler: ChapterInteractionHandler,
+    private val mangaHandler: MangaRepositoryImpl,
+    private val chapterHandler: ChapterRepositoryImpl,
+    private val updateMangaMeta: UpdateMangaMeta,
+    private val updateChapterMeta: UpdateChapterMeta,
     contextWrapper: ContextWrapper,
     private val params: Params,
 ) : ViewModel(contextWrapper) {
@@ -161,15 +165,13 @@ class ReaderMenuViewModel @Inject constructor(
 
     fun setMangaReaderMode(mode: String) {
         scope.launchDefault {
-            _manga.value
-                ?.updateRemote(
-                    mangaHandler,
-                    mode
-                )
-                ?.catch {
-                    log.warn(it) { "Error updating manga reader mode" }
-                }
-                ?.collect()
+            _manga.value?.let {
+                updateMangaMeta.subscribe(it, mode)
+                    .catch {
+                        log.warn(it) { "Error updating manga reader mode" }
+                    }
+                    .collect()
+            }
             initManga(params.mangaId)
         }
     }
@@ -306,7 +308,7 @@ class ReaderMenuViewModel @Inject constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun updateLastPageReadOffset(chapter: Chapter, offset: Int) {
-        chapter.updateRemote(chapterHandler, offset)
+        updateChapterMeta.subscribe(chapter, offset)
             .catch {
                 log.warn(it) { "Error updating chapter offset" }
             }

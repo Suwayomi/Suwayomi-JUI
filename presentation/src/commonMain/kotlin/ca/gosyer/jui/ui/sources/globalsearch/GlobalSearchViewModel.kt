@@ -8,10 +8,10 @@ package ca.gosyer.jui.ui.sources.globalsearch
 
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import ca.gosyer.jui.core.lang.IO
-import ca.gosyer.jui.data.catalog.CatalogPreferences
-import ca.gosyer.jui.data.models.MangaPage
-import ca.gosyer.jui.data.models.Source
-import ca.gosyer.jui.data.server.interactions.SourceInteractionHandler
+import ca.gosyer.jui.data.source.SourceRepositoryImpl
+import ca.gosyer.jui.domain.source.model.MangaPage
+import ca.gosyer.jui.domain.source.model.Source
+import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -37,7 +37,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class GlobalSearchViewModel @Inject constructor(
-    private val sourceHandler: SourceInteractionHandler,
+    private val sourceHandler: SourceRepositoryImpl,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper,
     params: Params
@@ -100,7 +100,7 @@ class GlobalSearchViewModel @Inject constructor(
                         async {
                             semaphore.withPermit {
                                 sourceHandler
-                                    .getSearchResults(source, query, 1)
+                                    .getSearchResults(source.id, query, 1)
                                     .map {
                                         if (it.mangaList.isEmpty()) {
                                             Search.Failure(MR.strings.no_results_found.toPlatformString())
