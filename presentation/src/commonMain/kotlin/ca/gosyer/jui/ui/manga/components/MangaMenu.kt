@@ -151,7 +151,8 @@ private fun Chip(text: String) {
                 text = text,
                 style = MaterialTheme.typography.body2,
                 fontSize = 14.sp,
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.85F)
+                color = MaterialTheme.colors.onSurface.copy(alpha = 0.85F),
+                maxLines = 1
             )
         }
     }

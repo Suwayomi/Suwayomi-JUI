@@ -130,8 +130,9 @@ fun ContinuousReader(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     items(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(contentPadding),
                         pages = pages,
-                        paddingValues = contentPadding,
                         previousChapter = previousChapter,
                         currentChapter = currentChapter,
                         nextChapter = nextChapter,
@@ -157,8 +158,9 @@ fun ContinuousReader(
                     modifier = Modifier.fillMaxHeight()
                 ) {
                     items(
+                        modifier = Modifier.fillMaxHeight()
+                            .padding(contentPadding),
                         pages = pages,
-                        paddingValues = contentPadding,
                         previousChapter = previousChapter,
                         currentChapter = currentChapter,
                         nextChapter = nextChapter,
@@ -170,8 +172,7 @@ fun ContinuousReader(
                 }
                 HorizontalScrollbar(
                     modifier = Modifier.align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .scrollbarPadding(),
+                        .fillMaxWidth(),
                     adapter = rememberScrollbarAdapter(state),
                     reverseLayout = direction == Direction.Left
                 )
@@ -181,8 +182,8 @@ fun ContinuousReader(
 }
 
 private fun LazyListScope.items(
+    modifier: Modifier,
     pages: List<ReaderPage>,
-    paddingValues: PaddingValues,
     previousChapter: ReaderChapter?,
     currentChapter: ReaderChapter,
     nextChapter: ReaderChapter?,
@@ -195,7 +196,7 @@ private fun LazyListScope.items(
         ChapterSeparator(previousChapter, currentChapter)
     }
     items(pages) { image ->
-        Box(Modifier.padding(paddingValues)) {
+        Box(modifier, contentAlignment = Alignment.Center) {
             ReaderImage(
                 imageIndex = image.index,
                 drawable = image.bitmap.collectAsState().value,
