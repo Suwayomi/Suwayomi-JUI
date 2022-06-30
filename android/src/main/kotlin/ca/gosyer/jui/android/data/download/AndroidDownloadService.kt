@@ -20,13 +20,13 @@ import ca.gosyer.jui.android.util.notificationManager
 import ca.gosyer.jui.core.lang.chop
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.core.prefs.getAsFlow
-import ca.gosyer.jui.data.base.WebsocketService.Actions
-import ca.gosyer.jui.data.base.WebsocketService.Status
-import ca.gosyer.jui.data.download.DownloadService
-import ca.gosyer.jui.data.download.DownloadService.Companion.status
 import ca.gosyer.jui.data.download.model.DownloadState
 import ca.gosyer.jui.data.download.model.DownloadStatus
 import ca.gosyer.jui.data.server.requests.downloadsQuery
+import ca.gosyer.jui.domain.base.WebsocketService.Actions
+import ca.gosyer.jui.domain.base.WebsocketService.Status
+import ca.gosyer.jui.domain.download.DownloadService
+import ca.gosyer.jui.domain.download.DownloadService.Companion.status
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format

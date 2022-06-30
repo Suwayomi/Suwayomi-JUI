@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.data.base
+package ca.gosyer.jui.domain.base
 
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.data.server.Http

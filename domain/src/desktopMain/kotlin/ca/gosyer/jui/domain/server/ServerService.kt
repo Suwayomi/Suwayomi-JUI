@@ -4,12 +4,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.data.server
+package ca.gosyer.jui.domain.server
 
 import ca.gosyer.jui.core.io.copyTo
 import ca.gosyer.jui.core.io.userDataDir
 import ca.gosyer.jui.core.lang.withIOContext
-import ca.gosyer.jui.data.build.BuildKonfig
+import ca.gosyer.jui.data.server.ServerHostPreferences
+import ca.gosyer.jui.domain.build.BuildKonfig
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi

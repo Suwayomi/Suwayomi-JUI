@@ -4,15 +4,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.data.download
+package ca.gosyer.jui.domain.download
 
-import ca.gosyer.jui.data.base.WebsocketService
 import ca.gosyer.jui.data.download.model.DownloadChapter
 import ca.gosyer.jui.data.download.model.DownloadStatus
 import ca.gosyer.jui.data.download.model.DownloaderStatus
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.requests.downloadsQuery
+import ca.gosyer.jui.domain.base.WebsocketService
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.flow.MutableStateFlow

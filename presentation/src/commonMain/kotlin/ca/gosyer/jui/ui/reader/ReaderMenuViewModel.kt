@@ -11,11 +11,11 @@ import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.data.models.Manga
 import ca.gosyer.jui.data.models.MangaMeta
-import ca.gosyer.jui.data.reader.ReaderModeWatch
 import ca.gosyer.jui.data.reader.ReaderPreferences
 import ca.gosyer.jui.data.reader.model.Direction
 import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.jui.data.server.interactions.MangaInteractionHandler
+import ca.gosyer.jui.domain.reader.ReaderModeWatch
 import ca.gosyer.jui.ui.reader.model.MoveTo
 import ca.gosyer.jui.ui.reader.model.Navigation
 import ca.gosyer.jui.ui.reader.model.PageMove

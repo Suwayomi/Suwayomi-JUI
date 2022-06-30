@@ -9,18 +9,14 @@ package ca.gosyer.jui.data
 import ca.gosyer.jui.core.di.AppScope
 import ca.gosyer.jui.core.prefs.PreferenceStoreFactory
 import ca.gosyer.jui.data.catalog.CatalogPreferences
-import ca.gosyer.jui.data.download.DownloadService
 import ca.gosyer.jui.data.extension.ExtensionPreferences
 import ca.gosyer.jui.data.library.LibraryPreferences
-import ca.gosyer.jui.data.library.LibraryUpdateService
 import ca.gosyer.jui.data.migration.MigrationPreferences
-import ca.gosyer.jui.data.migration.Migrations
 import ca.gosyer.jui.data.reader.ReaderPreferences
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.HttpProvider
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.ui.UiPreferences
-import ca.gosyer.jui.data.update.UpdateChecker
 import ca.gosyer.jui.data.update.UpdatePreferences
 import me.tatarka.inject.annotations.Provides
 
@@ -28,14 +24,6 @@ actual interface DataComponent {
     val preferenceFactory: PreferenceStoreFactory
 
     val httpProvider: HttpProvider
-
-    val downloadService: DownloadService
-
-    val libraryUpdateService: LibraryUpdateService
-
-    val migrations: Migrations
-
-    val updateChecker: UpdateChecker
 
     val http: Http
 
@@ -101,26 +89,6 @@ actual interface DataComponent {
     @get:Provides
     val httpFactory: Http
         get() = httpProvider.get(serverPreferences)
-
-    @get:AppScope
-    @get:Provides
-    val libraryUpdateServiceFactory: LibraryUpdateService
-        get() = LibraryUpdateService(serverPreferences, http)
-
-    @get:AppScope
-    @get:Provides
-    val downloadServiceFactory: DownloadService
-        get() = DownloadService(serverPreferences, http)
-
-    @get:AppScope
-    @get:Provides
-    val migrationsFactory: Migrations
-        get() = Migrations(migrationPreferences, readerPreferences)
-
-    @get:AppScope
-    @get:Provides
-    val updateCheckerFactory: UpdateChecker
-        get() = UpdateChecker(updatePreferences, http)
 
     companion object
 }

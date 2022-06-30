@@ -8,7 +8,6 @@ package ca.gosyer.jui.ui.manga
 
 import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.data.base.DateHandler
-import ca.gosyer.jui.data.download.DownloadService
 import ca.gosyer.jui.data.models.Category
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.data.models.Manga
@@ -17,6 +16,7 @@ import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.jui.data.server.interactions.LibraryInteractionHandler
 import ca.gosyer.jui.data.server.interactions.MangaInteractionHandler
 import ca.gosyer.jui.data.ui.UiPreferences
+import ca.gosyer.jui.domain.download.DownloadService
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel

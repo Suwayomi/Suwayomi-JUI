@@ -18,7 +18,7 @@ import ca.gosyer.jui.android.AppComponent
 import ca.gosyer.jui.android.data.notification.Notifications
 import ca.gosyer.jui.android.util.notificationBuilder
 import ca.gosyer.jui.android.util.notificationManager
-import ca.gosyer.jui.data.update.UpdateChecker.Update
+import ca.gosyer.jui.domain.update.UpdateChecker.Update
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.desc.desc
 import kotlinx.coroutines.flow.singleOrNull

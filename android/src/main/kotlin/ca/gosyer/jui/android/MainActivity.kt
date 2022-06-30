@@ -5,7 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import ca.gosyer.jui.android.data.download.AndroidDownloadService
-import ca.gosyer.jui.data.base.WebsocketService.Actions
+import ca.gosyer.jui.domain.base.WebsocketService.Actions
 import ca.gosyer.jui.ui.base.theme.AppTheme
 import ca.gosyer.jui.ui.main.MainMenu
 

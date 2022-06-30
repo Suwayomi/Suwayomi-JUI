@@ -10,10 +10,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import ca.gosyer.jui.data.download.DownloadService
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.jui.data.server.interactions.UpdatesInteractionHandler
+import ca.gosyer.jui.domain.download.DownloadService
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel

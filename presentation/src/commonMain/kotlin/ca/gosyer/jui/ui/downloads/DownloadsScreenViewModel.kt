@@ -6,11 +6,11 @@
 
 package ca.gosyer.jui.ui.downloads
 
-import ca.gosyer.jui.data.base.WebsocketService.Actions
-import ca.gosyer.jui.data.download.DownloadService
 import ca.gosyer.jui.data.models.Chapter
 import ca.gosyer.jui.data.server.interactions.ChapterInteractionHandler
 import ca.gosyer.jui.data.server.interactions.DownloadInteractionHandler
+import ca.gosyer.jui.domain.base.WebsocketService.Actions
+import ca.gosyer.jui.domain.download.DownloadService
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.CoroutineScope

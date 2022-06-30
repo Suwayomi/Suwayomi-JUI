@@ -4,9 +4,11 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.data.reader
+package ca.gosyer.jui.domain.reader
 
 import ca.gosyer.jui.core.prefs.getAsFlow
+import ca.gosyer.jui.data.reader.ReaderModePreferences
+import ca.gosyer.jui.data.reader.ReaderPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

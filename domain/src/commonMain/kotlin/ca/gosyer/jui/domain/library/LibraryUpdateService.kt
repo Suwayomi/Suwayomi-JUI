@@ -4,13 +4,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.data.library
+package ca.gosyer.jui.domain.library
 
-import ca.gosyer.jui.data.base.WebsocketService
 import ca.gosyer.jui.data.library.model.UpdateStatus
 import ca.gosyer.jui.data.server.Http
 import ca.gosyer.jui.data.server.ServerPreferences
 import ca.gosyer.jui.data.server.requests.updatesQuery
+import ca.gosyer.jui.domain.base.WebsocketService
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.flow.MutableStateFlow

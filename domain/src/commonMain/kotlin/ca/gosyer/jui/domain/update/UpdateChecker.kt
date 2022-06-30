@@ -4,12 +4,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.data.update
+package ca.gosyer.jui.domain.update
 
 import ca.gosyer.jui.core.lang.IO
-import ca.gosyer.jui.data.build.BuildKonfig
 import ca.gosyer.jui.data.server.Http
+import ca.gosyer.jui.data.update.UpdatePreferences
 import ca.gosyer.jui.data.update.model.GithubRelease
+import ca.gosyer.jui.domain.build.BuildKonfig
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers

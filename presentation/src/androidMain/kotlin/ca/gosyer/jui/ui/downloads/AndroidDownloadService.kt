@@ -8,8 +8,8 @@ package ca.gosyer.jui.ui.downloads
 
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import ca.gosyer.jui.data.base.WebsocketService
-import ca.gosyer.jui.data.download.DownloadService
+import ca.gosyer.jui.domain.base.WebsocketService
+import ca.gosyer.jui.domain.download.DownloadService
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 
 internal actual fun startDownloadService(

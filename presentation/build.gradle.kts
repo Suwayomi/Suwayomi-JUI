@@ -57,6 +57,7 @@ kotlin {
                 api(projects.core)
                 api(projects.i18n)
                 api(projects.data)
+                api(projects.domain)
                 api(projects.uiCore)
                 api(compose.desktop.currentOs)
                 api(compose("org.jetbrains.compose.ui:ui-util"))

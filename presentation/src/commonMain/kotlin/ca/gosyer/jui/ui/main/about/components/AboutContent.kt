@@ -32,7 +32,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import ca.gosyer.jui.data.models.About
-import ca.gosyer.jui.data.update.UpdateChecker
+import ca.gosyer.jui.domain.update.UpdateChecker
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
 import ca.gosyer.jui.ui.base.navigation.Toolbar

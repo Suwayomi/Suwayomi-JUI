@@ -9,8 +9,8 @@ package ca.gosyer.jui.ui.main.about
 import ca.gosyer.jui.data.base.DateHandler
 import ca.gosyer.jui.data.models.About
 import ca.gosyer.jui.data.server.interactions.SettingsInteractionHandler
-import ca.gosyer.jui.data.update.UpdateChecker
-import ca.gosyer.jui.data.update.UpdateChecker.Update
+import ca.gosyer.jui.domain.update.UpdateChecker
+import ca.gosyer.jui.domain.update.UpdateChecker.Update
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
