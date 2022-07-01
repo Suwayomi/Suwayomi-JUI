@@ -13,13 +13,27 @@ fun TaskContainerScope.registerLocalizationTask(project: Project) {
                     ?.map { it.replace("-r", "-") }
                     ?.sorted()
                     .orEmpty()
+
+                val langFile = file("src/commonMain/resources/MR/files/languages.json")
+                if (langFile.exists()) {
+                    val currentLangs = langFile.reader().use {
+                        Gson().fromJson(it, JsonObject::class.java)
+                            .getAsJsonArray("langs")
+                            .mapNotNull { it.asString }
+                            .toSet()
+                    }
+
+                    if (currentLangs == langs.toSet()) return@doFirst
+                }
+
                 val json = JsonObject().apply {
                     val array = JsonArray().apply {
                         langs.forEach(::add)
                     }
                     add("langs", array)
                 }
-                file("src/commonMain/resources/MR/files/languages.json").writer().use {
+
+                langFile.writer().use {
                     Gson().toJson(json, it)
                 }
             }
