@@ -8,7 +8,10 @@ package ca.gosyer.jui.ui.extensions
 
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.displayName
-import ca.gosyer.jui.data.extension.ExtensionRepositoryImpl
+import ca.gosyer.jui.domain.extension.interactor.GetExtensionList
+import ca.gosyer.jui.domain.extension.interactor.InstallExtension
+import ca.gosyer.jui.domain.extension.interactor.UninstallExtension
+import ca.gosyer.jui.domain.extension.interactor.UpdateExtension
 import ca.gosyer.jui.domain.extension.model.Extension
 import ca.gosyer.jui.domain.extension.service.ExtensionPreferences
 import ca.gosyer.jui.i18n.MR
@@ -17,18 +20,19 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class ExtensionsScreenViewModel @Inject constructor(
-    private val extensionHandler: ExtensionRepositoryImpl,
+    private val getExtensionList: GetExtensionList,
+    private val installExtension: InstallExtension,
+    private val updateExtension: UpdateExtension,
+    private val uninstallExtension: UninstallExtension,
     extensionPreferences: ExtensionPreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
@@ -56,60 +60,38 @@ class ExtensionsScreenViewModel @Inject constructor(
     val isLoading = _isLoading.asStateFlow()
 
     init {
-        getExtensions()
+        scope.launch {
+            getExtensions()
+        }
     }
 
-    private fun getExtensions() {
-        extensionHandler.getExtensionList()
-            .onEach {
-                extensionList.value = it
-                _isLoading.value = false
-            }
-            .catch {
-                log.warn(it) { "Error getting extensions" }
-                emit(emptyList())
-                _isLoading.value = false
-            }
-            .launchIn(scope)
+    private suspend fun getExtensions() {
+        extensionList.value = getExtensionList.await().orEmpty()
+        _isLoading.value = false
     }
 
     fun install(extension: Extension) {
         log.info { "Install clicked" }
-        extensionHandler.installExtension(extension)
-            .onEach {
-                getExtensions()
-            }
-            .catch {
-                log.warn(it) { "Error installing extension ${extension.apkName}" }
-                getExtensions()
-            }
-            .launchIn(scope)
+        scope.launch {
+            installExtension.await(extension)
+            getExtensions()
+        }
     }
 
     fun update(extension: Extension) {
         log.info { "Update clicked" }
-        extensionHandler.updateExtension(extension)
-            .onEach {
-                getExtensions()
-            }
-            .catch {
-                log.warn(it) { "Error updating extension ${extension.apkName}" }
-                getExtensions()
-            }
-            .launchIn(scope)
+        scope.launch {
+            updateExtension.await(extension)
+            getExtensions()
+        }
     }
 
     fun uninstall(extension: Extension) {
         log.info { "Uninstall clicked" }
-        extensionHandler.uninstallExtension(extension)
-            .onEach {
-                getExtensions()
-            }
-            .catch {
-                log.warn(it) { "Error uninstalling extension ${extension.apkName}" }
-                getExtensions()
-            }
-            .launchIn(scope)
+        scope.launch {
+            uninstallExtension.await(extension)
+            getExtensions()
+        }
     }
 
     fun setEnabledLanguages(langs: Set<String>) {
