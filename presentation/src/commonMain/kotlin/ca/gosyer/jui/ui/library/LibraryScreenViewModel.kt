@@ -10,10 +10,11 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import ca.gosyer.jui.core.lang.withDefaultContext
 import ca.gosyer.jui.core.prefs.getAsFlow
-import ca.gosyer.jui.data.category.CategoryRepositoryImpl
-import ca.gosyer.jui.data.library.LibraryRepositoryImpl
 import ca.gosyer.jui.data.updates.UpdatesRepositoryImpl
+import ca.gosyer.jui.domain.category.interactor.GetCategories
+import ca.gosyer.jui.domain.category.interactor.GetMangaListFromCategory
 import ca.gosyer.jui.domain.category.model.Category
+import ca.gosyer.jui.domain.library.interactor.RemoveMangaFromLibrary
 import ca.gosyer.jui.domain.library.model.FilterState
 import ca.gosyer.jui.domain.library.model.Sort
 import ca.gosyer.jui.domain.library.service.LibraryPreferences
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -74,8 +76,9 @@ private fun LibraryMap.setManga(id: Long, manga: List<Manga>, getItemsFlow: (Sta
 }
 
 class LibraryScreenViewModel @Inject constructor(
-    private val categoryHandler: CategoryRepositoryImpl,
-    private val libraryHandler: LibraryRepositoryImpl,
+    private val getCategories: GetCategories,
+    private val getMangaListFromCategory: GetMangaListFromCategory,
+    private val removeMangaFromLibrary: RemoveMangaFromLibrary,
     private val updatesHandler: UpdatesRepositoryImpl,
     libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper
@@ -141,7 +144,7 @@ class LibraryScreenViewModel @Inject constructor(
 
     private fun getLibrary() {
         _isLoading.value = true
-        categoryHandler.getCategories()
+        getCategories.asFlow()
             .onEach { categories ->
                 if (categories.isEmpty()) {
                     throw Exception(MR.strings.library_empty.toPlatformString())
@@ -152,7 +155,7 @@ class LibraryScreenViewModel @Inject constructor(
             }
             .catch {
                 _error.value = it.message
-                log.warn(it) { "Error getting categories" }
+                log.warn(it) { "Failed to get categories" }
                 _isLoading.value = false
             }
             .launchIn(scope)
@@ -237,7 +240,7 @@ class LibraryScreenViewModel @Inject constructor(
         withDefaultContext {
             categories.map { category ->
                 async {
-                    categoryHandler.getMangaFromCategory(category.id)
+                    getMangaListFromCategory.asFlow(category)
                         .onEach {
                             library.mangaMap.setManga(
                                 id = category.id,
@@ -246,7 +249,7 @@ class LibraryScreenViewModel @Inject constructor(
                             )
                         }
                         .catch {
-                            log.warn(it) { "Error getting manga for category $category" }
+                            log.warn(it) { "Failed to get manga list from category ${category.name}" }
                             library.mangaMap.setError(category.id, it)
                         }
                         .collect()
@@ -264,14 +267,9 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     fun removeManga(mangaId: Long) {
-        libraryHandler.removeMangaFromLibrary(mangaId)
-            .onEach {
-                updateCategories(getCategoriesToUpdate(mangaId))
-            }
-            .catch {
-                log.warn(it) { "Error removing manga from library" }
-            }
-            .launchIn(scope)
+        scope.launch {
+            removeMangaFromLibrary.await(mangaId)
+        }
     }
 
     fun updateQuery(query: String) {

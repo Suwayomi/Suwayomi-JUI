@@ -8,13 +8,17 @@ package ca.gosyer.jui.ui.manga
 
 import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.data.base.DateHandler
-import ca.gosyer.jui.data.category.CategoryRepositoryImpl
 import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
-import ca.gosyer.jui.data.library.LibraryRepositoryImpl
 import ca.gosyer.jui.data.manga.MangaRepositoryImpl
+import ca.gosyer.jui.domain.category.interactor.AddMangaToCategory
+import ca.gosyer.jui.domain.category.interactor.GetCategories
+import ca.gosyer.jui.domain.category.interactor.GetMangaCategories
+import ca.gosyer.jui.domain.category.interactor.RemoveMangaFromCategory
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.service.DownloadService
+import ca.gosyer.jui.domain.library.interactor.AddMangaToLibrary
+import ca.gosyer.jui.domain.library.interactor.RemoveMangaFromLibrary
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
@@ -41,8 +45,12 @@ class MangaScreenViewModel @Inject constructor(
     private val dateHandler: DateHandler,
     private val mangaHandler: MangaRepositoryImpl,
     private val chapterHandler: ChapterRepositoryImpl,
-    private val categoryHandler: CategoryRepositoryImpl,
-    private val libraryHandler: LibraryRepositoryImpl,
+    private val getCategories: GetCategories,
+    private val getMangaCategories: GetMangaCategories,
+    private val addMangaToCategory: AddMangaToCategory,
+    private val removeMangaFromCategory: RemoveMangaFromCategory,
+    private val addMangaToLibrary: AddMangaToLibrary,
+    private val removeMangaFromLibrary: RemoveMangaFromLibrary,
     uiPreferences: UiPreferences,
     contextWrapper: ContextWrapper,
     private val params: Params,
@@ -56,8 +64,9 @@ class MangaScreenViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _categories = MutableStateFlow(emptyList<Category>())
-    val categories = _categories.asStateFlow()
+    val categories = getCategories.asFlow(true)
+        .catch { log.warn(it) { "Failed to get categories" } }
+        .stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     private val _mangaCategories = MutableStateFlow(emptyList<Category>())
     val mangaCategories = _mangaCategories.asStateFlow()
@@ -86,15 +95,6 @@ class MangaScreenViewModel @Inject constructor(
             refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
             _isLoading.value = false
         }
-
-        categoryHandler.getCategories(true)
-            .onEach {
-                _categories.value = it
-            }
-            .catch {
-                log.warn(it) { "Error getting categories" }
-            }
-            .launchIn(scope)
     }
 
     fun loadManga() {
@@ -138,14 +138,10 @@ class MangaScreenViewModel @Inject constructor(
                     log.warn(it) { "Error getting manga" }
                 }
                 .collect()
-            categoryHandler.getMangaCategories(mangaId)
-                .onEach {
+            getMangaCategories.await(mangaId)
+                ?.let {
                     _mangaCategories.value = it
                 }
-                .catch {
-                    log.warn(it) { "Error getting manga" }
-                }
-                .collect()
         }
     }
 
@@ -165,11 +161,7 @@ class MangaScreenViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 if (manga.inLibrary) {
-                    libraryHandler.removeMangaFromLibrary(manga.id)
-                        .catch {
-                            log.warn(it) { "Error toggling favorite" }
-                        }
-                        .collect()
+                    removeMangaFromLibrary.await(manga)
                     refreshMangaAsync(manga.id).await()
                 } else {
                     if (categories.value.isEmpty()) {
@@ -187,25 +179,13 @@ class MangaScreenViewModel @Inject constructor(
             manga.value?.let { manga ->
                 if (manga.inLibrary) {
                     oldCategories.filterNot { it in categories }.forEach {
-                        categoryHandler.removeMangaFromCategory(manga.id, it.id)
-                            .catch {
-                                log.warn(it) { "Error removing manga from category" }
-                            }
-                            .collect()
+                        removeMangaFromCategory.await(manga, it)
                     }
                 } else {
-                    libraryHandler.addMangaToLibrary(manga.id)
-                        .catch {
-                            log.warn(it) { "Error Adding manga to library" }
-                        }
-                        .collect()
+                    addMangaToLibrary.await(manga)
                 }
                 categories.filterNot { it in oldCategories }.forEach {
-                    categoryHandler.addMangaToCategory(manga.id, it.id)
-                        .catch {
-                            log.warn(it) { "Error adding manga to category" }
-                        }
-                        .collect()
+                    addMangaToCategory.await(manga, it)
                 }
                 refreshMangaAsync(manga.id).await()
             }

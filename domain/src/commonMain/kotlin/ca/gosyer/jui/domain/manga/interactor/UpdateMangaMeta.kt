@@ -8,24 +8,36 @@ package ca.gosyer.jui.domain.manga.interactor
 
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.manga.service.MangaRepository
-import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class UpdateMangaMeta @Inject constructor(private val mangaRepository: MangaRepository) {
 
-    fun subscribe(
+    suspend fun await(
+        manga: Manga,
+        readerMode: String = manga.meta.juiReaderMode
+    ) = asFlow(manga, readerMode)
+        .catch { log.warn(it) { "Failed to update ${manga.title}(${manga.id}) meta" } }
+        .collect()
+
+    fun asFlow(
         manga: Manga,
         readerMode: String = manga.meta.juiReaderMode
     ) = flow {
         if (readerMode != manga.meta.juiReaderMode) {
-            emitAll(
-                mangaRepository.updateMangaMeta(
-                    manga.id,
-                    "juiReaderMode",
-                    readerMode
-                )
-            )
+            mangaRepository.updateMangaMeta(
+                manga.id,
+                "juiReaderMode",
+                readerMode
+            ).collect()
         }
+        emit(Unit)
+    }
+
+    companion object {
+        private val log = logging()
     }
 }

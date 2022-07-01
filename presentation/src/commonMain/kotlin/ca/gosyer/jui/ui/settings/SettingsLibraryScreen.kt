@@ -33,7 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.jui.data.category.CategoryRepositoryImpl
+import ca.gosyer.jui.domain.category.interactor.GetCategories
 import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.domain.library.service.LibraryPreferences
 import ca.gosyer.jui.i18n.MR
@@ -59,11 +59,8 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
-import org.lighthousegames.logging.logging
 import kotlin.math.roundToInt
 
 class SettingsLibraryScreen : Screen {
@@ -88,7 +85,7 @@ class SettingsLibraryScreen : Screen {
 
 class SettingsLibraryViewModel @Inject constructor(
     libraryPreferences: LibraryPreferences,
-    private val categoryHandler: CategoryRepositoryImpl,
+    private val getCategories: GetCategories,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
 
@@ -105,23 +102,14 @@ class SettingsLibraryViewModel @Inject constructor(
     }
 
     fun refreshCategoryCount() {
-        categoryHandler.getCategories(true)
-            .onEach {
-                _categories.value = it.size
-            }
-            .catch {
-                log.warn(it) { "Error getting categories" }
-            }
-            .launchIn(scope)
+        scope.launch {
+            _categories.value = getCategories.await(true)?.size ?: 0
+        }
     }
 
     @Composable
     fun getDisplayModeChoices() = DisplayMode.values()
         .associateWith { stringResource(it.res) }
-
-    private companion object {
-        private val log = logging()
-    }
 }
 
 @Composable

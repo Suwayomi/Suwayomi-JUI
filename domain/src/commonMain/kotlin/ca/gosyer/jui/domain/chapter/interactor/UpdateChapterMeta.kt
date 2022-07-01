@@ -8,25 +8,37 @@ package ca.gosyer.jui.domain.chapter.interactor
 
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
-import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class UpdateChapterMeta @Inject constructor(private val chapterRepository: ChapterRepository) {
 
-    fun subscribe(
+    suspend fun await(
+        chapter: Chapter,
+        pageOffset: Int = chapter.meta.juiPageOffset
+    ) = asFlow(chapter, pageOffset)
+        .catch { log.warn(it) { "Failed to update ${chapter.name}(${chapter.index}) meta" } }
+        .collect()
+
+    fun asFlow(
         chapter: Chapter,
         pageOffset: Int = chapter.meta.juiPageOffset
     ) = flow {
         if (pageOffset != chapter.meta.juiPageOffset) {
-            emitAll(
-                chapterRepository.updateChapterMeta(
-                    chapter.mangaId,
-                    chapter.index,
-                    "juiPageOffset",
-                    pageOffset.toString()
-                )
-            )
+            chapterRepository.updateChapterMeta(
+                chapter.mangaId,
+                chapter.index,
+                "juiPageOffset",
+                pageOffset.toString()
+            ).collect()
         }
+        emit(Unit)
+    }
+
+    companion object {
+        private val log = logging()
     }
 }

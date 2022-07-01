@@ -6,99 +6,71 @@
 
 package ca.gosyer.jui.ui.categories
 
-import ca.gosyer.jui.data.category.CategoryRepositoryImpl
+import ca.gosyer.jui.domain.category.interactor.CreateCategory
+import ca.gosyer.jui.domain.category.interactor.DeleteCategory
+import ca.gosyer.jui.domain.category.interactor.GetCategories
+import ca.gosyer.jui.domain.category.interactor.ModifyCategory
+import ca.gosyer.jui.domain.category.interactor.ReorderCategory
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class CategoriesScreenViewModel @Inject constructor(
-    private val categoryHandler: CategoryRepositoryImpl,
+    private val getCategories: GetCategories,
+    private val createCategory: CreateCategory,
+    private val deleteCategory: DeleteCategory,
+    private val modifyCategory: ModifyCategory,
+    private val reorderCategory: ReorderCategory,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     private var originalCategories = emptyList<Category>()
     private val _categories = MutableStateFlow(emptyList<MenuCategory>())
     val categories = _categories.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading = _isLoading.asStateFlow()
-
     init {
-        getCategories()
+        scope.launch {
+            getCategories()
+        }
     }
 
-    private fun getCategories() {
+    private suspend fun getCategories() {
         _categories.value = emptyList()
-        _isLoading.value = true
-        categoryHandler.getCategories(true)
-            .onEach {
-                _categories.value = it
-                    .sortedBy { it.order }
-                    .also { originalCategories = it }
-                    .map { it.toMenuCategory() }
-                _isLoading.value = false
-            }
-            .catch {
-                log.warn(it) { "Error getting categories" }
-                _isLoading.value = false
-            }
-            .launchIn(scope)
+        val categories = getCategories.await(true)
+        if (categories != null) {
+            _categories.value = categories
+                .sortedBy { it.order }
+                .also { originalCategories = it }
+                .map { it.toMenuCategory() }
+        }
     }
 
     suspend fun updateRemoteCategories(manualUpdate: Boolean = false) {
         val categories = _categories.value
         val newCategories = categories.filter { it.id == null }
         newCategories.forEach {
-            categoryHandler.createCategory(it.name)
-                .catch {
-                    log.warn(it) { "Error creating category" }
-                }
-                .collect()
+            createCategory.await(it.name)
         }
         originalCategories.forEach { originalCategory ->
             val category = categories.find { it.id == originalCategory.id }
             if (category == null) {
-                categoryHandler.deleteCategory(originalCategory.id)
-                    .catch {
-                        log.warn(it) { "Error deleting category $originalCategory" }
-                    }
-                    .collect()
+                deleteCategory.await(originalCategory)
             } else if (category.name != originalCategory.name) {
-                categoryHandler.modifyCategory(originalCategory.id, category.name)
-                    .catch {
-                        log.warn(it) { "Error modifying category $category" }
-                    }
-                    .collect()
+                modifyCategory.await(originalCategory, category.name)
             }
         }
-        var updatedCategories = categoryHandler.getCategories(true)
-            .catch {
-                log.warn(it) { "Error getting updated categories" }
-            }
-            .singleOrNull()
+        var updatedCategories = getCategories.await(true)
         categories.forEach { category ->
             val updatedCategory = updatedCategories?.find { it.id == category.id || it.name == category.name } ?: return@forEach
             if (category.order != updatedCategory.order) {
                 log.debug { "${category.name}: ${updatedCategory.order} to ${category.order}" }
-                categoryHandler.reorderCategory(category.order, updatedCategory.order)
-                    .catch {
-                        log.warn(it) { "Error re-ordering categories" }
-                    }
-                    .singleOrNull()
+                reorderCategory.await(category.order, updatedCategory.order)
             }
-            updatedCategories = categoryHandler.getCategories(true)
-                .catch {
-                    log.warn(it) { "Error getting updated categories" }
-                }
-                .singleOrNull()
+            updatedCategories = getCategories.await(true)
         }
 
         if (manualUpdate) {

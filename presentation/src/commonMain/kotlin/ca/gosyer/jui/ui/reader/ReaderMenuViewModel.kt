@@ -166,11 +166,7 @@ class ReaderMenuViewModel @Inject constructor(
     fun setMangaReaderMode(mode: String) {
         scope.launchDefault {
             _manga.value?.let {
-                updateMangaMeta.subscribe(it, mode)
-                    .catch {
-                        log.warn(it) { "Error updating manga reader mode" }
-                    }
-                    .collect()
+                updateMangaMeta.await(it, mode)
             }
             initManga(params.mangaId)
         }
@@ -308,11 +304,7 @@ class ReaderMenuViewModel @Inject constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun updateLastPageReadOffset(chapter: Chapter, offset: Int) {
-        updateChapterMeta.subscribe(chapter, offset)
-            .catch {
-                log.warn(it) { "Error updating chapter offset" }
-            }
-            .launchIn(GlobalScope)
+        GlobalScope.launch { updateChapterMeta.await(chapter, offset) }
     }
 
     override fun onDispose() {
