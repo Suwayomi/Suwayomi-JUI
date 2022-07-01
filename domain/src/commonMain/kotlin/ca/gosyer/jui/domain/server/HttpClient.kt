@@ -32,6 +32,7 @@ import io.ktor.client.plugins.auth.Auth as AuthPlugin
 
 typealias Http = HttpClient
 
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 expect val Engine: HttpClientEngineFactory<HttpClientEngineConfig>
 
 class HttpProvider @Inject constructor() {

@@ -34,6 +34,7 @@ abstract class AppComponent(
         @SuppressLint("StaticFieldLeak")
         private var appComponentInstance: AppComponent? = null
 
+        @Suppress("UNRESOLVED_REFERENCE", "EXPRESSION_EXPECTED_PACKAGE_FOUND")
         fun getInstance(context: Context) = appComponentInstance ?: create(context)
             .also { appComponentInstance = it }
     }

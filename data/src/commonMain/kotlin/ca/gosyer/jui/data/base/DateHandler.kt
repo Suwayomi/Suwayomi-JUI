@@ -8,6 +8,7 @@ package ca.gosyer.jui.data.base
 
 import kotlinx.datetime.Instant
 
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 expect class DateHandler {
     val formatOptions: List<String>
 
