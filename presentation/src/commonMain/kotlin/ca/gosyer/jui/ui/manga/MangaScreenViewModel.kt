@@ -9,7 +9,6 @@ package ca.gosyer.jui.ui.manga
 import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.data.base.DateHandler
 import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
-import ca.gosyer.jui.data.manga.MangaRepositoryImpl
 import ca.gosyer.jui.domain.category.interactor.AddMangaToCategory
 import ca.gosyer.jui.domain.category.interactor.GetCategories
 import ca.gosyer.jui.domain.category.interactor.GetMangaCategories
@@ -19,6 +18,8 @@ import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.library.interactor.AddMangaToLibrary
 import ca.gosyer.jui.domain.library.interactor.RemoveMangaFromLibrary
+import ca.gosyer.jui.domain.manga.interactor.GetManga
+import ca.gosyer.jui.domain.manga.interactor.RefreshManga
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
@@ -34,7 +35,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -43,7 +43,8 @@ import org.lighthousegames.logging.logging
 
 class MangaScreenViewModel @Inject constructor(
     private val dateHandler: DateHandler,
-    private val mangaHandler: MangaRepositoryImpl,
+    private val getManga: GetManga,
+    private val refreshManga: RefreshManga,
     private val chapterHandler: ChapterRepositoryImpl,
     private val getCategories: GetCategories,
     private val getMangaCategories: GetMangaCategories,
@@ -130,14 +131,14 @@ class MangaScreenViewModel @Inject constructor(
 
     private suspend fun refreshMangaAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
-            mangaHandler.getManga(mangaId, refresh)
-                .onEach {
-                    _manga.value = it
-                }
-                .catch {
-                    log.warn(it) { "Error getting manga" }
-                }
-                .collect()
+            val manga = if (refresh) {
+                refreshManga.await(mangaId)
+            } else {
+                getManga.await(mangaId)
+            }
+            if (manga != null) {
+                _manga.value = manga
+            }
             getMangaCategories.await(mangaId)
                 ?.let {
                     _mangaCategories.value = it

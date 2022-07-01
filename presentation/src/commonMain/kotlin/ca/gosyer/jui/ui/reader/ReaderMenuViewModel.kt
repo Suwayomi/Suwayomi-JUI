@@ -9,9 +9,9 @@ package ca.gosyer.jui.ui.reader
 import ca.gosyer.jui.core.lang.launchDefault
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
-import ca.gosyer.jui.data.manga.MangaRepositoryImpl
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterMeta
 import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.manga.interactor.GetManga
 import ca.gosyer.jui.domain.manga.interactor.UpdateMangaMeta
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.manga.model.MangaMeta
@@ -50,7 +50,7 @@ import org.lighthousegames.logging.logging
 
 class ReaderMenuViewModel @Inject constructor(
     private val readerPreferences: ReaderPreferences,
-    private val mangaHandler: MangaRepositoryImpl,
+    private val getManga: GetManga,
     private val chapterHandler: ChapterRepositoryImpl,
     private val updateMangaMeta: UpdateMangaMeta,
     private val updateChapterMeta: UpdateChapterMeta,
@@ -203,7 +203,7 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     private suspend fun initManga(mangaId: Long) {
-        mangaHandler.getManga(mangaId)
+        getManga.asFlow(mangaId)
             .onEach {
                 _manga.value = it
             }
