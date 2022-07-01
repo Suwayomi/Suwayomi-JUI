@@ -10,7 +10,6 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import ca.gosyer.jui.core.lang.withDefaultContext
 import ca.gosyer.jui.core.prefs.getAsFlow
-import ca.gosyer.jui.data.updates.UpdatesRepositoryImpl
 import ca.gosyer.jui.domain.category.interactor.GetCategories
 import ca.gosyer.jui.domain.category.interactor.GetMangaListFromCategory
 import ca.gosyer.jui.domain.category.model.Category
@@ -20,6 +19,8 @@ import ca.gosyer.jui.domain.library.model.Sort
 import ca.gosyer.jui.domain.library.service.LibraryPreferences
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.manga.model.MangaStatus
+import ca.gosyer.jui.domain.updates.interactor.UpdateCategory
+import ca.gosyer.jui.domain.updates.interactor.UpdateLibrary
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.util.lang.Collator
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -79,7 +80,8 @@ class LibraryScreenViewModel @Inject constructor(
     private val getCategories: GetCategories,
     private val getMangaListFromCategory: GetMangaListFromCategory,
     private val removeMangaFromLibrary: RemoveMangaFromLibrary,
-    private val updatesHandler: UpdatesRepositoryImpl,
+    private val updateLibrary: UpdateLibrary,
+    private val updateCategory: UpdateCategory,
     libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
@@ -277,19 +279,11 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     fun updateLibrary() {
-        updatesHandler.updateLibrary()
-            .catch {
-                log.warn(it) { "Error updating library" }
-            }
-            .launchIn(scope)
+        scope.launch { updateLibrary.await() }
     }
 
     fun updateCategory(category: Category) {
-        updatesHandler.updateCategory(category.id)
-            .catch {
-                log.warn(it) { "Error updating category" }
-            }
-            .launchIn(scope)
+        scope.launch { updateCategory.await(category) }
     }
 
     private companion object {

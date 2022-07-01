@@ -14,6 +14,7 @@ import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
 import ca.gosyer.jui.data.updates.UpdatesRepositoryImpl
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.service.DownloadService
+import ca.gosyer.jui.domain.updates.interactor.GetRecentUpdates
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -39,6 +40,7 @@ import org.lighthousegames.logging.logging
 class UpdatesScreenViewModel @Inject constructor(
     private val chapterHandler: ChapterRepositoryImpl,
     private val updatesHandler: UpdatesRepositoryImpl,
+    private val getRecentUpdates: GetRecentUpdates,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
 
@@ -72,7 +74,7 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     private suspend fun getUpdates(page: Int) {
-        updatesHandler.getRecentUpdates(page)
+        getRecentUpdates.asFlow(page)
             .onEach { updates ->
                 updates.page
                     .map {
@@ -107,7 +109,7 @@ class UpdatesScreenViewModel @Inject constructor(
                 _isLoading.value = false
             }
             .catch {
-                log.warn(it) { "Error getting updates" }
+                log.warn(it) { "Failed to get updates for page $page" }
                 if (page > 1) {
                     currentPage.value = page - 1
                 }
