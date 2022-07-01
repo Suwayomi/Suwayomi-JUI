@@ -8,12 +8,17 @@ package ca.gosyer.jui.ui.manga
 
 import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.data.base.DateHandler
-import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
 import ca.gosyer.jui.domain.category.interactor.AddMangaToCategory
 import ca.gosyer.jui.domain.category.interactor.GetCategories
 import ca.gosyer.jui.domain.category.interactor.GetMangaCategories
 import ca.gosyer.jui.domain.category.interactor.RemoveMangaFromCategory
 import ca.gosyer.jui.domain.category.model.Category
+import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
+import ca.gosyer.jui.domain.chapter.interactor.GetChapters
+import ca.gosyer.jui.domain.chapter.interactor.QueueChapterDownload
+import ca.gosyer.jui.domain.chapter.interactor.RefreshChapters
+import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterFlags
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.library.interactor.AddMangaToLibrary
@@ -31,11 +36,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -45,7 +48,12 @@ class MangaScreenViewModel @Inject constructor(
     private val dateHandler: DateHandler,
     private val getManga: GetManga,
     private val refreshManga: RefreshManga,
-    private val chapterHandler: ChapterRepositoryImpl,
+    private val getChapters: GetChapters,
+    private val refreshChapters: RefreshChapters,
+    private val updateChapterFlags: UpdateChapterFlags,
+    private val queueChapterDownload: QueueChapterDownload,
+    private val stopChapterDownload: StopChapterDownload,
+    private val deleteChapterDownload: DeleteChapterDownload,
     private val getCategories: GetCategories,
     private val getMangaCategories: GetMangaCategories,
     private val addMangaToCategory: AddMangaToCategory,
@@ -138,23 +146,31 @@ class MangaScreenViewModel @Inject constructor(
             }
             if (manga != null) {
                 _manga.value = manga
+            } else {
+                // TODO: 2022-07-01 Error toast
             }
-            getMangaCategories.await(mangaId)
-                ?.let {
-                    _mangaCategories.value = it
-                }
+
+            val mangaCategories = getMangaCategories.await(mangaId)
+            if (mangaCategories != null) {
+                _mangaCategories.value = mangaCategories
+            } else {
+                // TODO: 2022-07-01 Error toast
+            }
         }
     }
 
     private suspend fun refreshChaptersAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
-            _chapters.value = chapterHandler.getChapters(mangaId, refresh)
-                .catch {
-                    log.warn(it) { "Error getting chapters" }
-                    emit(emptyList())
-                }
-                .single()
-                .toDownloadChapters()
+            val chapters = if (refresh) {
+                refreshChapters.await(mangaId)
+            } else {
+                getChapters.await(mangaId)
+            }
+            if (chapters != null) {
+                _chapters.value = chapters.toDownloadChapters()
+            } else {
+                // TODO: 2022-07-01 Error toast
+            }
         }
     }
 
@@ -193,48 +209,24 @@ class MangaScreenViewModel @Inject constructor(
         }
     }
 
+    private fun findChapter(index: Int) = chapters.value.find { it.chapter.index == index }?.chapter
+
     fun toggleRead(index: Int) {
+        val chapter = findChapter(index) ?: return
         scope.launch {
             manga.value?.let { manga ->
-                chapterHandler.updateChapter(
-                    manga.id,
-                    index,
-                    read = !_chapters.value.first { it.chapter.index == index }.chapter.read
-                )
-                    .catch {
-                        log.warn(it) { "Error toggling read" }
-                    }
-                    .collect()
-                _chapters.value = chapterHandler.getChapters(manga.id)
-                    .catch {
-                        log.warn(it) { "Error getting new chapters after toggling read" }
-                        emit(emptyList())
-                    }
-                    .single()
-                    .toDownloadChapters()
+                updateChapterFlags.await(manga, index, read = chapter.read.not())
+                refreshChaptersAsync(manga.id).await()
             }
         }
     }
 
     fun toggleBookmarked(index: Int) {
+        val chapter = findChapter(index) ?: return
         scope.launch {
             manga.value?.let { manga ->
-                chapterHandler.updateChapter(
-                    manga.id,
-                    index,
-                    bookmarked = !_chapters.value.first { it.chapter.index == index }.chapter.bookmarked
-                )
-                    .catch {
-                        log.warn(it) { "Error toggling bookmarked" }
-                    }
-                    .collect()
-                _chapters.value = chapterHandler.getChapters(manga.id)
-                    .catch {
-                        log.warn(it) { "Error getting new chapters after toggling bookmarked" }
-                        emit(emptyList())
-                    }
-                    .single()
-                    .toDownloadChapters()
+                updateChapterFlags.await(manga, index, bookmarked = chapter.bookmarked.not())
+                refreshChaptersAsync(manga.id).await()
             }
         }
     }
@@ -242,48 +234,30 @@ class MangaScreenViewModel @Inject constructor(
     fun markPreviousRead(index: Int) {
         scope.launch {
             manga.value?.let { manga ->
-                chapterHandler.updateChapter(manga.id, index, markPreviousRead = true)
-                    .catch {
-                        log.warn(it) { "Error marking previous as read" }
-                    }
-                    .collect()
-                _chapters.value = chapterHandler.getChapters(manga.id)
-                    .catch {
-                        log.warn(it) { "Error getting new chapters after marking previous as read" }
-                        emit(emptyList())
-                    }
-                    .single()
-                    .toDownloadChapters()
+                updateChapterFlags.await(manga, index, markPreviousRead = true)
+                refreshChaptersAsync(manga.id).await()
             }
         }
     }
 
     fun downloadChapter(index: Int) {
         manga.value?.let { manga ->
-            chapterHandler.queueChapterDownload(manga.id, index)
-                .catch {
-                    log.warn(it) { "Error downloading chapter" }
-                }
-                .launchIn(scope)
+            scope.launch { queueChapterDownload.await(manga, index) }
         }
     }
 
     fun deleteDownload(index: Int) {
-        chapters.value.find { it.chapter.index == index }
-            ?.deleteDownload(chapterHandler)
-            ?.catch {
-                log.warn(it) { "Error deleting download" }
-            }
-            ?.launchIn(scope)
+        scope.launch {
+            chapters.value.find { it.chapter.index == index }
+                ?.deleteDownload(deleteChapterDownload)
+        }
     }
 
     fun stopDownloadingChapter(index: Int) {
-        chapters.value.find { it.chapter.index == index }
-            ?.stopDownloading(chapterHandler)
-            ?.catch {
-                log.warn(it) { "Error stopping download" }
-            }
-            ?.launchIn(scope)
+        scope.launch {
+            chapters.value.find { it.chapter.index == index }
+                ?.stopDownloading(stopChapterDownload)
+        }
     }
 
     private fun List<Chapter>.toDownloadChapters() = map {

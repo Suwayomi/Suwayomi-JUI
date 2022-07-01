@@ -8,7 +8,7 @@ package ca.gosyer.jui.ui.reader.loader
 
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
@@ -33,7 +33,7 @@ import org.lighthousegames.logging.logging
 class TachideskPageLoader(
     val chapter: ReaderChapter,
     readerPreferences: ReaderPreferences,
-    chapterHandler: ChapterRepositoryImpl
+    getChapterPage: GetChapterPage
 ) : PageLoader() {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -63,8 +63,7 @@ class TachideskPageLoader(
                             val page = priorityPage.page
                             log.debug { "Loading page ${page.index}" }
                             if (page.status.value == ReaderPage.Status.QUEUE) {
-                                chapterHandler
-                                    .getPage(chapter.chapter.mangaId, chapter.chapter.index, page.index) {
+                                getChapterPage.asFlow(chapter.chapter, page.index) {
                                         onDownload { bytesSentTotal, contentLength ->
                                             page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                                         }
@@ -78,7 +77,7 @@ class TachideskPageLoader(
                                         page.bitmap.value = null
                                         page.status.value = ReaderPage.Status.ERROR
                                         page.error.value = it.message
-                                        log.warn(it) { "Error getting image" }
+                                        log.warn(it) { "Failed to get page ${page.index} for chapter ${chapter.chapter.index} for ${chapter.chapter.mangaId}" }
                                     }
                                     .flowOn(Dispatchers.IO)
                                     .collect()

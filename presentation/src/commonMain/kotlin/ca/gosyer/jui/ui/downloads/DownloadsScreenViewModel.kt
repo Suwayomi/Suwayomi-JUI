@@ -6,8 +6,9 @@
 
 package ca.gosyer.jui.ui.downloads
 
-import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
 import ca.gosyer.jui.domain.base.WebsocketService.Actions
+import ca.gosyer.jui.domain.chapter.interactor.QueueChapterDownload
+import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.interactor.ClearDownloadQueue
 import ca.gosyer.jui.domain.download.interactor.StartDownloading
@@ -19,10 +20,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
@@ -32,7 +29,8 @@ class DownloadsScreenViewModel @Inject constructor(
     private val startDownloading: StartDownloading,
     private val stopDownloading: StopDownloading,
     private val clearDownloadQueue: ClearDownloadQueue,
-    private val chapterHandler: ChapterRepositoryImpl,
+    private val queueChapterDownload: QueueChapterDownload,
+    private val stopChapterDownload: StopChapterDownload,
     private val contextWrapper: ContextWrapper,
     standalone: Boolean
 ) : ViewModel(contextWrapper) {
@@ -60,26 +58,14 @@ class DownloadsScreenViewModel @Inject constructor(
     }
 
     fun stopDownload(chapter: Chapter) {
-        chapterHandler.stopChapterDownload(chapter.mangaId, chapter.index)
-            .catch {
-                log.warn(it) { "Error stop chapter download" }
-            }
-            .launchIn(scope)
+        scope.launch { stopChapterDownload.await(chapter) }
     }
 
     fun moveToBottom(chapter: Chapter) {
-        chapterHandler.stopChapterDownload(chapter.mangaId, chapter.index)
-            .onEach {
-                chapterHandler.queueChapterDownload(chapter.mangaId, chapter.index)
-                    .catch {
-                        log.warn(it) { "Error adding download" }
-                    }
-                    .collect()
-            }
-            .catch {
-                log.warn(it) { "Error stop chapter download" }
-            }
-            .launchIn(scope)
+        scope.launch {
+            stopChapterDownload.await(chapter)
+            queueChapterDownload.await(chapter)
+        }
     }
 
     fun restartDownloader() = startDownloadService(contextWrapper, downloadService, Actions.RESTART)

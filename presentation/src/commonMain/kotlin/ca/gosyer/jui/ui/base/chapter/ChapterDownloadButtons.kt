@@ -31,7 +31,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
+import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.model.DownloadChapter
 import ca.gosyer.jui.domain.download.model.DownloadState
@@ -40,11 +41,8 @@ import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.components.DropdownIconButton
 import ca.gosyer.jui.uicore.components.DropdownMenuItem
 import ca.gosyer.jui.uicore.resources.stringResource
-import io.ktor.client.statement.HttpResponse
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onEach
 
 data class ChapterDownloadItem(
     val manga: Manga?,
@@ -74,18 +72,14 @@ data class ChapterDownloadItem(
         _downloadChapterFlow.value = downloadingChapter
     }
 
-    fun deleteDownload(chapterHandler: ChapterRepositoryImpl): Flow<HttpResponse> {
-        return chapterHandler.deleteChapterDownload(chapter.mangaId, chapter.index)
-            .onEach {
-                _downloadState.value = ChapterDownloadState.NotDownloaded
-            }
+    suspend fun deleteDownload(deleteChapterDownload: DeleteChapterDownload) {
+        deleteChapterDownload.await(chapter)
+        _downloadState.value = ChapterDownloadState.NotDownloaded
     }
 
-    fun stopDownloading(chapterHandler: ChapterRepositoryImpl): Flow<HttpResponse> {
-        return chapterHandler.stopChapterDownload(chapter.mangaId, chapter.index)
-            .onEach {
-                _downloadState.value = ChapterDownloadState.NotDownloaded
-            }
+    suspend fun stopDownloading(stopChapterDownload: StopChapterDownload) {
+        stopChapterDownload.await(chapter)
+        _downloadState.value = ChapterDownloadState.NotDownloaded
     }
 }
 

@@ -10,7 +10,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
+import ca.gosyer.jui.domain.chapter.interactor.QueueChapterDownload
+import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.updates.interactor.GetRecentUpdates
@@ -37,7 +39,9 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class UpdatesScreenViewModel @Inject constructor(
-    private val chapterHandler: ChapterRepositoryImpl,
+    private val queueChapterDownload: QueueChapterDownload,
+    private val stopChapterDownload: StopChapterDownload,
+    private val deleteChapterDownload: DeleteChapterDownload,
     private val getRecentUpdates: GetRecentUpdates,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
@@ -117,41 +121,33 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun downloadChapter(chapter: Chapter) {
-        chapterHandler.queueChapterDownload(chapter.mangaId, chapter.index)
-            .catch {
-                log.warn(it) { "Error queueing chapter" }
-            }
-            .launchIn(scope)
+        scope.launch { queueChapterDownload.await(chapter) }
     }
 
     fun deleteDownloadedChapter(chapter: Chapter) {
-        _updates
-            .firstNotNullOfOrNull { (_, chapters) ->
-                chapters.find {
-                    it.chapter.mangaId == chapter.mangaId &&
-                        it.chapter.index == chapter.index
+        scope.launch {
+            _updates
+                .firstNotNullOfOrNull { (_, chapters) ->
+                    chapters.find {
+                        it.chapter.mangaId == chapter.mangaId &&
+                                it.chapter.index == chapter.index
+                    }
                 }
-            }
-            ?.deleteDownload(chapterHandler)
-            ?.catch {
-                log.warn(it) { "Error deleting download" }
-            }
-            ?.launchIn(scope)
+                ?.deleteDownload(deleteChapterDownload)
+        }
     }
 
     fun stopDownloadingChapter(chapter: Chapter) {
-        _updates
-            .firstNotNullOfOrNull { (_, chapters) ->
-                chapters.find {
-                    it.chapter.mangaId == chapter.mangaId &&
-                        it.chapter.index == chapter.index
+        scope.launch {
+            _updates
+                .firstNotNullOfOrNull { (_, chapters) ->
+                    chapters.find {
+                        it.chapter.mangaId == chapter.mangaId &&
+                                it.chapter.index == chapter.index
+                    }
                 }
-            }
-            ?.stopDownloading(chapterHandler)
-            ?.catch {
-                log.warn(it) { "Error stopping download" }
-            }
-            ?.launchIn(scope)
+                ?.stopDownloading(stopChapterDownload)
+        }
     }
 
     private companion object {

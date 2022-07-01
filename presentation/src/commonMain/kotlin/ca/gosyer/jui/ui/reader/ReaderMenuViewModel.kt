@@ -8,7 +8,10 @@ package ca.gosyer.jui.ui.reader
 
 import ca.gosyer.jui.core.lang.launchDefault
 import ca.gosyer.jui.core.prefs.getAsFlow
-import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.domain.chapter.interactor.GetChapter
+import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
+import ca.gosyer.jui.domain.chapter.interactor.GetChapters
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterFlags
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterMeta
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.manga.interactor.GetManga
@@ -51,7 +54,10 @@ import org.lighthousegames.logging.logging
 class ReaderMenuViewModel @Inject constructor(
     private val readerPreferences: ReaderPreferences,
     private val getManga: GetManga,
-    private val chapterHandler: ChapterRepositoryImpl,
+    private val getChapters: GetChapters,
+    private val getChapter: GetChapter,
+    private val getChapterPage: GetChapterPage,
+    private val updateChapterFlags: UpdateChapterFlags,
     private val updateMangaMeta: UpdateMangaMeta,
     private val updateChapterMeta: UpdateChapterMeta,
     contextWrapper: ContextWrapper,
@@ -101,7 +107,7 @@ class ReaderMenuViewModel @Inject constructor(
 
     val readerModeSettings = ReaderModeWatch(readerPreferences, scope, readerMode)
 
-    private val loader = ChapterLoader(readerPreferences, chapterHandler)
+    private val loader = ChapterLoader(readerPreferences, getChapterPage)
 
     init {
         init()
@@ -217,7 +223,7 @@ class ReaderMenuViewModel @Inject constructor(
     private suspend fun initChapters(mangaId: Long, chapterIndex: Int) {
         resetValues()
         val chapter = ReaderChapter(
-            chapterHandler.getChapter(mangaId, chapterIndex)
+            getChapter.asFlow(mangaId, chapterIndex)
                 .catch {
                     _state.value = ReaderChapter.State.Error(it)
                     log.warn(it) { "Error getting chapter" }
@@ -227,9 +233,10 @@ class ReaderMenuViewModel @Inject constructor(
         val pages = loader.loadChapter(chapter)
         viewerChapters.currChapter.value = chapter
         scope.launchDefault {
-            val chapters = chapterHandler.getChapters(mangaId)
+            val chapters = getChapters.asFlow(mangaId)
                 .catch {
                     log.warn(it) { "Error getting chapter list" }
+                    // TODO: 2022-07-01 Error toast
                     emit(emptyList())
                 }
                 .single()
@@ -273,29 +280,21 @@ class ReaderMenuViewModel @Inject constructor(
             .onEach { index ->
                 pages.value.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
                 if (index == pages.value.size) {
-                    markChapterRead(mangaId, chapter)
+                    markChapterRead(chapter)
                 }
             }
             .launchIn(chapter.scope)
     }
 
-    private fun markChapterRead(mangaId: Long, chapter: ReaderChapter) {
-        chapterHandler.updateChapter(mangaId, chapter.chapter.index, true)
-            .catch {
-                log.warn(it) { "Error marking chapter read" }
-            }
-            .launchIn(scope)
+    private fun markChapterRead(chapter: ReaderChapter) {
+        scope.launch { updateChapterFlags.await(chapter.chapter, read = true) }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun sendProgress(chapter: Chapter? = this.chapter.value?.chapter, lastPageRead: Int = currentPage.value) {
         chapter ?: return
         if (chapter.read) return
-        chapterHandler.updateChapter(chapter.mangaId, chapter.index, lastPageRead = lastPageRead)
-            .catch {
-                log.warn(it) { "Error sending progress" }
-            }
-            .launchIn(GlobalScope)
+        GlobalScope.launch { updateChapterFlags.await(chapter, lastPageRead = lastPageRead) }
     }
 
     fun updateLastPageReadOffset(offset: Int) {

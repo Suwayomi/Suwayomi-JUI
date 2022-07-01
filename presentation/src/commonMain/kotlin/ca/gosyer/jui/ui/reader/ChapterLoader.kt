@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.ui.reader
 
-import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
+import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.ui.reader.loader.TachideskPageLoader
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
@@ -20,7 +20,7 @@ import org.lighthousegames.logging.logging
 
 class ChapterLoader(
     private val readerPreferences: ReaderPreferences,
-    private val chapterHandler: ChapterRepositoryImpl
+    private val getChapterPage: GetChapterPage
 ) {
     fun loadChapter(chapter: ReaderChapter): StateFlow<List<ReaderPage>> {
         if (chapterIsReady(chapter)) {
@@ -29,7 +29,7 @@ class ChapterLoader(
             chapter.state = ReaderChapter.State.Loading
             log.debug { "Loading pages for ${chapter.chapter.name}" }
 
-            val loader = TachideskPageLoader(chapter, readerPreferences, chapterHandler)
+            val loader = TachideskPageLoader(chapter, readerPreferences, getChapterPage)
 
             val pages = loader.getPages()
 
