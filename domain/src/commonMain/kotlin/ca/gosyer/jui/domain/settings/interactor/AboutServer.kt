@@ -7,9 +7,7 @@
 package ca.gosyer.jui.domain.settings.interactor
 
 import ca.gosyer.jui.domain.settings.service.SettingsRepository
-import ca.gosyer.jui.domain.updates.service.UpdatesRepository
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging

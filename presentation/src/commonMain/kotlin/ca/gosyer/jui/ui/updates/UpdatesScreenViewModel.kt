@@ -130,7 +130,7 @@ class UpdatesScreenViewModel @Inject constructor(
                 .firstNotNullOfOrNull { (_, chapters) ->
                     chapters.find {
                         it.chapter.mangaId == chapter.mangaId &&
-                                it.chapter.index == chapter.index
+                            it.chapter.index == chapter.index
                     }
                 }
                 ?.deleteDownload(deleteChapterDownload)
@@ -143,7 +143,7 @@ class UpdatesScreenViewModel @Inject constructor(
                 .firstNotNullOfOrNull { (_, chapters) ->
                     chapters.find {
                         it.chapter.mangaId == chapter.mangaId &&
-                                it.chapter.index == chapter.index
+                            it.chapter.index == chapter.index
                     }
                 }
                 ?.stopDownloading(stopChapterDownload)

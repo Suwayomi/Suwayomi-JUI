@@ -64,10 +64,10 @@ class TachideskPageLoader(
                             log.debug { "Loading page ${page.index}" }
                             if (page.status.value == ReaderPage.Status.QUEUE) {
                                 getChapterPage.asFlow(chapter.chapter, page.index) {
-                                        onDownload { bytesSentTotal, contentLength ->
-                                            page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
-                                        }
+                                    onDownload { bytesSentTotal, contentLength ->
+                                        page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                                     }
+                                }
                                     .onEach {
                                         page.bitmap.value = it.toImageBitmap()
                                         page.status.value = ReaderPage.Status.READY

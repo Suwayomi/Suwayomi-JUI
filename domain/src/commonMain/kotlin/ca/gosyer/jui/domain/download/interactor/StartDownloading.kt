@@ -7,7 +7,6 @@
 package ca.gosyer.jui.domain.download.interactor
 
 import ca.gosyer.jui.domain.download.service.DownloadRepository
-import ca.gosyer.jui.domain.updates.service.UpdatesRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
