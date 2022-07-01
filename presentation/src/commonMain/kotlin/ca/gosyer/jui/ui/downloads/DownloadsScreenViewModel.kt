@@ -7,9 +7,11 @@
 package ca.gosyer.jui.ui.downloads
 
 import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
-import ca.gosyer.jui.data.download.DownloadRepositoryImpl
 import ca.gosyer.jui.domain.base.WebsocketService.Actions
 import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.interactor.ClearDownloadQueue
+import ca.gosyer.jui.domain.download.interactor.StartDownloading
+import ca.gosyer.jui.domain.download.interactor.StopDownloading
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -21,12 +23,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class DownloadsScreenViewModel @Inject constructor(
     private val downloadService: DownloadService,
-    private val downloadsHandler: DownloadRepositoryImpl,
+    private val startDownloading: StartDownloading,
+    private val stopDownloading: StopDownloading,
+    private val clearDownloadQueue: ClearDownloadQueue,
     private val chapterHandler: ChapterRepositoryImpl,
     private val contextWrapper: ContextWrapper,
     standalone: Boolean
@@ -43,27 +48,15 @@ class DownloadsScreenViewModel @Inject constructor(
     val downloadQueue get() = DownloadService.downloadQueue.asStateFlow()
 
     fun start() {
-        downloadsHandler.startDownloading()
-            .catch {
-                log.warn(it) { "Error starting download" }
-            }
-            .launchIn(scope)
+        scope.launch { startDownloading.await() }
     }
 
     fun pause() {
-        downloadsHandler.stopDownloading()
-            .catch {
-                log.warn(it) { "Error stopping download" }
-            }
-            .launchIn(scope)
+        scope.launch { stopDownloading.await() }
     }
 
     fun clear() {
-        downloadsHandler.clearDownloadQueue()
-            .catch {
-                log.warn(it) { "Error clearing download" }
-            }
-            .launchIn(scope)
+        scope.launch { clearDownloadQueue.await() }
     }
 
     fun stopDownload(chapter: Chapter) {
