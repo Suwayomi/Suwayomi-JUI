@@ -14,15 +14,22 @@ import ca.gosyer.jui.domain.updates.service.UpdatePreferences
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class UpdateChecker @Inject constructor(
     private val updatePreferences: UpdatePreferences,
     private val client: Http
 ) {
-    fun checkForUpdates(manualFetch: Boolean) = flow {
+    suspend fun await(manualFetch: Boolean) = asFlow(manualFetch)
+        .catch { log.warn(it) { "Failed to check for updates" } }
+        .singleOrNull()
+
+    fun asFlow(manualFetch: Boolean) = flow {
         if (!manualFetch && !updatePreferences.enabled().get()) return@flow
         val latestRelease = client.get(
             "https://api.github.com/repos/$GITHUB_REPO/releases/latest"
@@ -72,5 +79,7 @@ class UpdateChecker @Inject constructor(
         }
 
         val RELEASE_URL = "https://github.com/$GITHUB_REPO/releases/tag/$RELEASE_TAG"
+
+        private val log = logging()
     }
 }

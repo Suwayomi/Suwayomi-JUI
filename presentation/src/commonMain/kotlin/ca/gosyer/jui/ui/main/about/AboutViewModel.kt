@@ -7,7 +7,7 @@
 package ca.gosyer.jui.ui.main.about
 
 import ca.gosyer.jui.data.base.DateHandler
-import ca.gosyer.jui.data.settings.SettingsRepositoryImpl
+import ca.gosyer.jui.domain.settings.interactor.AboutServer
 import ca.gosyer.jui.domain.settings.model.About
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker.Update
@@ -18,19 +18,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class AboutViewModel @Inject constructor(
     private val dateHandler: DateHandler,
-    private val settingsHandler: SettingsRepositoryImpl,
+    private val aboutServer: AboutServer,
     private val updateChecker: UpdateChecker,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
@@ -51,23 +48,18 @@ class AboutViewModel @Inject constructor(
     }
 
     private fun getAbout() {
-        settingsHandler.aboutServer()
-            .onEach {
-                _about.value = it
-            }
-            .catch {
-                log.warn(it) { "Error getting server info" }
-            }
-            .launchIn(scope)
+        scope.launch {
+            _about.value = aboutServer.await()
+        }
     }
 
     fun checkForUpdates() {
-        updateChecker.checkForUpdates(true)
-            .filterIsInstance<Update.UpdateFound>()
-            .onEach {
-                _updates.emit(it)
+        scope.launch {
+            when (val update = updateChecker.await(true)) {
+                is Update.UpdateFound -> _updates.emit(update)
+                else -> Unit
             }
-            .launchIn(scope)
+        }
     }
 
     private fun getFormattedDate(time: Instant): String {

@@ -12,9 +12,11 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.shareIn
 import me.tatarka.inject.annotations.Inject
+import org.lighthousegames.logging.logging
 
 class TrayViewModel @Inject constructor(
     updateChecker: UpdateChecker,
@@ -23,12 +25,17 @@ class TrayViewModel @Inject constructor(
     override val scope = MainScope()
 
     val updateFound = updateChecker
-        .checkForUpdates(false)
+        .asFlow(false)
+        .catch { log.warn(it) { "Failed to check for updates" } }
         .filterIsInstance<UpdateChecker.Update.UpdateFound>()
         .shareIn(scope, SharingStarted.Eagerly, 1)
 
     override fun onDispose() {
         super.onDispose()
         scope.cancel()
+    }
+
+    companion object {
+        private val log = logging()
     }
 }

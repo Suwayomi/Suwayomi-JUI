@@ -11,7 +11,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
-import ca.gosyer.jui.data.updates.UpdatesRepositoryImpl
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.updates.interactor.GetRecentUpdates
@@ -39,7 +38,6 @@ import org.lighthousegames.logging.logging
 
 class UpdatesScreenViewModel @Inject constructor(
     private val chapterHandler: ChapterRepositoryImpl,
-    private val updatesHandler: UpdatesRepositoryImpl,
     private val getRecentUpdates: GetRecentUpdates,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {

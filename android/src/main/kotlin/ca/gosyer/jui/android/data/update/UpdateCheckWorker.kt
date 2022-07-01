@@ -21,7 +21,6 @@ import ca.gosyer.jui.android.util.notificationManager
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker.Update
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.desc.desc
-import kotlinx.coroutines.flow.singleOrNull
 import java.util.concurrent.TimeUnit
 
 class UpdateCheckWorker(private val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
@@ -30,9 +29,7 @@ class UpdateCheckWorker(private val context: Context, workerParams: WorkerParame
             val update = AppComponent.getInstance(context.applicationContext)
                 .let {
                     if (it.updatePreferences.enabled().get()) {
-                        it.updateChecker
-                            .checkForUpdates(false)
-                            .singleOrNull()
+                        it.updateChecker.await(false)
                     } else null
                 }
 
