@@ -42,7 +42,12 @@ jobs:
           arguments: desktop:exportLibraryDefinitions -PexportPath=build
 
       - name: Move libraries json
-        run: mv desktop/build/aboutlibraries.json i18n/src/commonMain/resources/MR/files/aboutlibraries.json -f
+        run: |
+          DIFF="$(diff <(jq 'del(.metadata)' --sort-keys desktop/build/aboutlibraries.json) <(jq 'del(.metadata)' --sort-keys i18n/src/commonMain/resources/MR/files/aboutlibraries.json))"
+          if [ -n "$DIFF" ]; then
+              mv desktop/build/aboutlibraries.json i18n/src/commonMain/resources/MR/files/aboutlibraries.json -f
+              echo "Moved file"
+          fi
 
       - name: Commit library changes
         uses: EndBug/add-and-commit@v9
