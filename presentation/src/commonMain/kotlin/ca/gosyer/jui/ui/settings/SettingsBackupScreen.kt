@@ -35,7 +35,9 @@ import ca.gosyer.jui.core.io.copyTo
 import ca.gosyer.jui.core.io.saveTo
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.data.backup.BackupRepositoryImpl
+import ca.gosyer.jui.domain.backup.interactor.ExportBackupFile
+import ca.gosyer.jui.domain.backup.interactor.ImportBackupFile
+import ca.gosyer.jui.domain.backup.interactor.ValidateBackupFile
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.ui.base.file.rememberFileChooser
@@ -108,7 +110,9 @@ class SettingsBackupScreen : Screen {
 }
 
 class SettingsBackupViewModel @Inject constructor(
-    private val backupHandler: BackupRepositoryImpl,
+    private val validateBackupFile: ValidateBackupFile,
+    private val importBackupFile: ImportBackupFile,
+    private val exportBackupFile: ExportBackupFile,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     private val _restoring = MutableStateFlow(false)
@@ -144,7 +148,7 @@ class SettingsBackupViewModel @Inject constructor(
             }
             file ?: return@launch
 
-            backupHandler.validateBackupFile(file)
+            validateBackupFile.asFlow(file)
                 .onEach { (missingSources) ->
                     if (missingSources.isEmpty()) {
                         restoreBackup(file)
@@ -165,11 +169,12 @@ class SettingsBackupViewModel @Inject constructor(
             _restoreStatus.value = Status.Nothing
             _restoringProgress.value = null
             _restoring.value = true
-            backupHandler.importBackupFile(file) {
-                onUpload { bytesSentTotal, contentLength ->
-                    _restoringProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
+            importBackupFile
+                .asFlow(file) {
+                    onUpload { bytesSentTotal, contentLength ->
+                        _restoringProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
+                    }
                 }
-            }
                 .onEach {
                     _restoreStatus.value = Status.Success
                 }
@@ -194,8 +199,8 @@ class SettingsBackupViewModel @Inject constructor(
         _creatingStatus.value = Status.Nothing
         _creatingProgress.value = null
         _creating.value = true
-        backupHandler
-            .exportBackupFile {
+        exportBackupFile
+            .asFlow {
                 onDownload { bytesSentTotal, contentLength ->
                     _creatingProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(0.99F)
                 }
