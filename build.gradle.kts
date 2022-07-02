@@ -63,6 +63,7 @@ subprojects {
     }
     plugins.withType<com.android.build.gradle.BasePlugin> {
         configure<com.android.build.gradle.BaseExtension> {
+            // 32 requires a higher android plugin version
             compileSdkVersion(31)
             defaultConfig {
                 minSdk = 21
