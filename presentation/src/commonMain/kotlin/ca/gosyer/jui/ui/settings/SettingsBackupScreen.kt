@@ -73,6 +73,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -92,11 +93,7 @@ class SettingsBackupScreen : Screen {
     override fun Content() {
         val vm = viewModel<SettingsBackupViewModel>()
         SettingsBackupScreenContent(
-            restoring = vm.restoring.collectAsState().value,
-            restoringProgress = vm.restoringProgress.collectAsState().value,
             restoreStatus = vm.restoreStatus.collectAsState().value,
-            creating = vm.creating.collectAsState().value,
-            creatingProgress = vm.creatingProgress.collectAsState().value,
             creatingStatus = vm.creatingStatus.collectAsState().value,
             missingSourceFlow = vm.missingSourceFlow,
             createFlow = vm.createFlow,
@@ -115,21 +112,14 @@ class SettingsBackupViewModel @Inject constructor(
     private val exportBackupFile: ExportBackupFile,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
-    private val _restoring = MutableStateFlow(false)
-    val restoring = _restoring.asStateFlow()
-    private val _restoringProgress = MutableStateFlow<Float?>(null)
-    val restoringProgress = _restoringProgress.asStateFlow()
     private val _restoreStatus = MutableStateFlow<Status>(Status.Nothing)
-    internal val restoreStatus = _restoreStatus.asStateFlow()
+    val restoreStatus = _restoreStatus.asStateFlow()
+
     private val _missingSourceFlow = MutableSharedFlow<Pair<Path, List<String>>>()
     val missingSourceFlow = _missingSourceFlow.asSharedFlow()
 
-    private val _creating = MutableStateFlow(false)
-    val creating = _creating.asStateFlow()
-    private val _creatingProgress = MutableStateFlow<Float?>(null)
-    val creatingProgress = _creatingProgress.asStateFlow()
     private val _creatingStatus = MutableStateFlow<Status>(Status.Nothing)
-    internal val creatingStatus = _creatingStatus.asStateFlow()
+    val creatingStatus = _creatingStatus.asStateFlow()
     private val _createFlow = MutableSharedFlow<String>()
     val createFlow = _createFlow.asSharedFlow()
     fun restoreFile(source: Source) {
@@ -144,9 +134,8 @@ class SettingsBackupViewModel @Inject constructor(
                 log.warn(e) { "Error creating backup file" }
                 _restoreStatus.value = Status.Error
                 e.throwIfCancellation()
-                null
+                return@launch
             }
-            file ?: return@launch
 
             validateBackupFile.asFlow(file)
                 .onEach { (missingSources) ->
@@ -165,45 +154,47 @@ class SettingsBackupViewModel @Inject constructor(
     }
 
     fun restoreBackup(file: Path) {
-        scope.launch {
-            _restoreStatus.value = Status.Nothing
-            _restoringProgress.value = null
-            _restoring.value = true
-            importBackupFile
-                .asFlow(file) {
-                    onUpload { bytesSentTotal, contentLength ->
-                        _restoringProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
-                    }
+        importBackupFile
+            .asFlow(file) {
+                onUpload { bytesSentTotal, contentLength ->
+                    _restoreStatus.value = Status.InProgress(
+                        (bytesSentTotal.toFloat() / contentLength)
+                            .coerceAtMost(1.0F)
+                    )
                 }
-                .onEach {
-                    _restoreStatus.value = Status.Success
-                }
-                .catch {
-                    log.warn(it) { "Error importing backup" }
-                    _restoreStatus.value = Status.Error
-                }
-                .collect()
-            _restoring.value = false
-        }
+            }
+            .onStart {
+                _restoreStatus.value = Status.InProgress(null)
+            }
+            .onEach {
+                _restoreStatus.value = Status.Success
+            }
+            .catch {
+                log.warn(it) { "Error importing backup" }
+                _restoreStatus.value = Status.Error
+            }
+            .launchIn(scope)
     }
 
     fun stopRestore() {
         _restoreStatus.value = Status.Error
-        _restoring.value = false
     }
 
     private val tempFile = MutableStateFlow<Path?>(null)
     private val mutex = Mutex()
 
     fun exportBackup() {
-        _creatingStatus.value = Status.Nothing
-        _creatingProgress.value = null
-        _creating.value = true
         exportBackupFile
             .asFlow {
                 onDownload { bytesSentTotal, contentLength ->
-                    _creatingProgress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(0.99F)
+                    _creatingStatus.value = Status.InProgress(
+                        (bytesSentTotal.toFloat() / contentLength)
+                            .coerceAtMost(0.99F)
+                    )
                 }
+            }
+            .onStart {
+                _creatingStatus.value = Status.InProgress(null)
             }
             .onEach { backup ->
                 val filename =
@@ -218,7 +209,6 @@ class SettingsBackupViewModel @Inject constructor(
                             e.throwIfCancellation()
                             log.warn(e) { "Error creating backup" }
                             _creatingStatus.value = Status.Error
-                            _creating.value = false
                         } finally {
                             mutex.unlock()
                         }
@@ -229,7 +219,6 @@ class SettingsBackupViewModel @Inject constructor(
             .catch {
                 log.warn(it) { "Error exporting backup" }
                 _creatingStatus.value = Status.Error
-                _creating.value = false
             }
             .launchIn(scope)
     }
@@ -238,7 +227,7 @@ class SettingsBackupViewModel @Inject constructor(
         scope.launch {
             mutex.withLock {
                 val tempFile = tempFile.value
-                if (_creating.value && tempFile != null) {
+                if (creatingStatus.value is Status.InProgress && tempFile != null) {
                     try {
                         FileSystem.SYSTEM.source(tempFile).copyTo(backupSink.buffer())
                         _creatingStatus.value = Status.Success
@@ -246,21 +235,12 @@ class SettingsBackupViewModel @Inject constructor(
                         e.throwIfCancellation()
                         log.error(e) { "Error moving created backup" }
                         _creatingStatus.value = Status.Error
-                    } finally {
-                        _creating.value = false
                     }
                 } else {
                     _creatingStatus.value = Status.Error
-                    _creating.value = false
                 }
             }
         }
-    }
-
-    internal sealed class Status {
-        object Nothing : Status()
-        object Success : Status()
-        object Error : Status()
     }
 
     private companion object {
@@ -268,14 +248,17 @@ class SettingsBackupViewModel @Inject constructor(
     }
 }
 
+sealed class Status {
+    object Nothing : Status()
+    data class InProgress(val progress: Float?) : Status()
+    object Success : Status()
+    object Error : Status()
+}
+
 @Composable
 private fun SettingsBackupScreenContent(
-    restoring: Boolean,
-    restoringProgress: Float?,
-    restoreStatus: SettingsBackupViewModel.Status,
-    creating: Boolean,
-    creatingProgress: Float?,
-    creatingStatus: SettingsBackupViewModel.Status,
+    restoreStatus: Status,
+    creatingStatus: Status,
     missingSourceFlow: SharedFlow<Pair<Path, List<String>>>,
     createFlow: SharedFlow<String>,
     restoreFile: (Source) -> Unit,
@@ -316,8 +299,6 @@ private fun SettingsBackupScreenContent(
                     PreferenceFile(
                         stringResource(MR.strings.backup_restore),
                         stringResource(MR.strings.backup_restore_sub),
-                        restoring,
-                        restoringProgress,
                         restoreStatus
                     ) {
                         fileChooser.launch("gz")
@@ -325,8 +306,6 @@ private fun SettingsBackupScreenContent(
                     PreferenceFile(
                         stringResource(MR.strings.backup_create),
                         stringResource(MR.strings.backup_create_sub),
-                        creating,
-                        creatingProgress,
                         creatingStatus,
                         exportBackup
                     )
@@ -383,39 +362,35 @@ private fun MissingSourcesDialog(
 private fun PreferenceFile(
     title: String,
     subtitle: String,
-    working: Boolean,
-    progress: Float?,
-    status: SettingsBackupViewModel.Status,
+    status: Status,
     onClick: () -> Unit
 ) {
     PreferenceRow(
         title = title,
         onClick = onClick,
-        enabled = !working,
+        enabled = status !is Status.InProgress,
         subtitle = subtitle
     ) {
         val modifier = Modifier.align(Alignment.Center)
             .size(24.dp)
-        if (working) {
-            if (progress != null) {
+        if (status is Status.InProgress) {
+            if (status.progress != null && !status.progress.isNaN()) {
                 CircularProgressIndicator(
-                    progress,
-                    modifier
+                    progress = status.progress,
+                    modifier = modifier
                 )
             } else {
-                CircularProgressIndicator(
-                    modifier
-                )
+                CircularProgressIndicator(modifier)
             }
-        } else if (status != SettingsBackupViewModel.Status.Nothing) {
+        } else if (status != Status.Nothing) {
             when (status) {
-                SettingsBackupViewModel.Status.Error -> Icon(
+                Status.Error -> Icon(
                     Icons.Rounded.Warning,
                     contentDescription = null,
                     modifier = modifier,
                     tint = Color.Red
                 )
-                SettingsBackupViewModel.Status.Success -> Icon(
+                Status.Success -> Icon(
                     Icons.Rounded.Check,
                     contentDescription = null,
                     modifier = modifier
