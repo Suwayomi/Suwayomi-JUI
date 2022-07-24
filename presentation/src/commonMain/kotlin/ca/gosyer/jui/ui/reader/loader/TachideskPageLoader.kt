@@ -51,7 +51,7 @@ class TachideskPageLoader(
      * The pages stateflow
      */
     private val pagesFlow by lazy {
-        MutableStateFlow<List<ReaderPage>>(emptyList())
+        MutableStateFlow<PagesState>(PagesState.Loading)
     }
 
     init {
@@ -98,11 +98,11 @@ class TachideskPageLoader(
      */
     private fun preloadNextPages(currentPage: ReaderPage, amount: Int): List<PriorityPage> {
         val pageIndex = currentPage.index
-        val pages = currentPage.chapter.pages ?: return emptyList()
-        if (pageIndex == pages.value.lastIndex) return emptyList()
+        val pages = (currentPage.chapter.pages?.value as? PagesState.Success)?.pages ?: return emptyList()
+        if (pageIndex >= pages.lastIndex) return emptyList()
 
-        return pages.value
-            .subList(pageIndex + 1, (pageIndex + 1 + amount).coerceAtMost(pages.value.size))
+        return pages
+            .subList(pageIndex + 1, (pageIndex + 1 + amount).coerceAtMost(pages.size))
             .mapNotNull {
                 if (it.status.value == ReaderPage.Status.QUEUE) {
                     PriorityPage(it, 0).also {
@@ -114,18 +114,24 @@ class TachideskPageLoader(
             }
     }
 
-    override fun getPages(): StateFlow<List<ReaderPage>> {
+    override fun getPages(): StateFlow<PagesState> {
         scope.launch {
-            if (pagesFlow.value.isNotEmpty()) return@launch
-            val pageRange = chapter.chapter.pageCount?.let { 0..it.minus(1) } ?: IntRange.EMPTY
-            pagesFlow.value = pageRange.map {
-                ReaderPage(
-                    index = it,
-                    bitmap = MutableStateFlow(null),
-                    progress = MutableStateFlow(0.0F),
-                    status = MutableStateFlow(ReaderPage.Status.QUEUE),
-                    error = MutableStateFlow(null),
-                    chapter = chapter
+            if (pagesFlow.value != PagesState.Loading) return@launch
+            val pageRange = chapter.chapter.pageCount?.let { 0..it.minus(1) }
+            pagesFlow.value = if (pageRange == null || pageRange.isEmpty()) {
+                PagesState.Empty
+            } else {
+                PagesState.Success(
+                    pageRange.map {
+                        ReaderPage(
+                            index = it,
+                            bitmap = MutableStateFlow(null),
+                            progress = MutableStateFlow(0.0F),
+                            status = MutableStateFlow(ReaderPage.Status.QUEUE),
+                            error = MutableStateFlow(null),
+                            chapter = chapter
+                        )
+                    }
                 )
             }
         }

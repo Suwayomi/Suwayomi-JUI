@@ -21,6 +21,7 @@ import ca.gosyer.jui.domain.manga.model.MangaMeta
 import ca.gosyer.jui.domain.reader.ReaderModeWatch
 import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
+import ca.gosyer.jui.ui.reader.loader.PagesState
 import ca.gosyer.jui.ui.reader.model.MoveTo
 import ca.gosyer.jui.ui.reader.model.Navigation
 import ca.gosyer.jui.ui.reader.model.PageMove
@@ -42,6 +43,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
@@ -270,7 +272,8 @@ class ReaderMenuViewModel @Inject constructor(
             }
             .launchIn(chapter.scope)
         pages
-            .onEach { pageList ->
+            .filterIsInstance<PagesState.Success>()
+            .onEach { (pageList) ->
                 _pages.value = pageList
                 pageList.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
             }
@@ -278,8 +281,8 @@ class ReaderMenuViewModel @Inject constructor(
 
         _currentPage
             .onEach { index ->
-                pages.value.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
-                if (index == pages.value.size) {
+                _pages.value.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
+                if (index == _pages.value.size) {
                     markChapterRead(chapter)
                 }
             }

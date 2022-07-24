@@ -8,6 +8,7 @@ package ca.gosyer.jui.ui.reader.model
 
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.ui.reader.loader.PageLoader
+import ca.gosyer.jui.ui.reader.loader.PagesState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,15 +24,15 @@ data class ReaderChapter(val chapter: Chapter) {
     var state: State =
         State.Wait
         set(value) {
-                field = value
-                stateRelay.value = value
-            }
+            field = value
+            stateRelay.value = value
+        }
 
     private val stateRelay by lazy { MutableStateFlow(state) }
 
     val stateObserver by lazy { stateRelay.asStateFlow() }
 
-    val pages: StateFlow<List<ReaderPage>>?
+    val pages: StateFlow<PagesState>?
         get() = (state as? State.Loaded)?.pages
 
     var pageLoader: PageLoader? = null
@@ -52,7 +53,7 @@ data class ReaderChapter(val chapter: Chapter) {
         object Wait : State()
         object Loading : State()
         class Error(val error: Throwable) : State()
-        class Loaded(val pages: StateFlow<List<ReaderPage>>) : State()
+        class Loaded(val pages: StateFlow<PagesState>) : State()
     }
 
     private companion object {

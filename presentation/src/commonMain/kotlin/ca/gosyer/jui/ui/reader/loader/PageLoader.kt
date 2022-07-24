@@ -32,7 +32,7 @@ abstract class PageLoader {
     /**
      * Returns an [StateFlow] containing the list of pages of a chapter.
      */
-    abstract fun getPages(): StateFlow<List<ReaderPage>>
+    abstract fun getPages(): StateFlow<PagesState>
 
     /**
      * Returns an [StateFlow] that should inform of the progress of the page (see the Page class
@@ -45,4 +45,10 @@ abstract class PageLoader {
      * online source is used.
      */
     open fun retryPage(page: ReaderPage) {}
+}
+
+sealed class PagesState {
+    object Loading : PagesState()
+    data class Success(val pages: List<ReaderPage>) : PagesState()
+    object Empty : PagesState()
 }
