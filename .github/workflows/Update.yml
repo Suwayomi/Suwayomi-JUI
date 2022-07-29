@@ -43,6 +43,7 @@ jobs:
 
       - name: Move libraries json
         run: |
+          mkdir -p build
           jq 'del(.metadata)' --sort-keys desktop/build/aboutlibraries.json > build/json1.json
           jq 'del(.metadata)' --sort-keys i18n/src/commonMain/resources/MR/files/aboutlibraries.json > build/json2.json
           DIFF="$(diff build/json1.json build/json2.json)"
