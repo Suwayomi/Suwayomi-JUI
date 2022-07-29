@@ -2,7 +2,7 @@ name: Update
 on:
   push:
     branches:
-      - develop
+      - master
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

@@ -3,7 +3,7 @@ name: Preview CI
 on:
   push:
     branches:
-      - master
+      - preview
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
