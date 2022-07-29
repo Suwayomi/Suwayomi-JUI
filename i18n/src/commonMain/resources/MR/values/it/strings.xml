@@ -62,7 +62,6 @@
     <string name="move_to_browse">Sfoglia</string>
     <string name="action_close">Chiudi</string>
     <string name="default_reader_mode">Predefinita</string>
-    <string name="filter_source">Filtro</string>
     <string name="theme_follow_system">Segui le impostazioni di sistema</string>
     <string name="settings_general">Generali</string>
     <string name="enabled_languages">Lingue</string>
@@ -141,7 +140,6 @@
     <string name="no_next_chapter">Nessun capitolo successivo</string>
     <string name="settings_tracking">Monitoraggio</string>
     <string name="status_ongoing">In corso</string>
-    <string name="status_Licensed">Con licenza</string>
     <string name="status_completed">Completato</string>
     <string name="window_decorations">Decorazioni finestra</string>
     <string name="reader_mode">Modalità di lettura</string>
