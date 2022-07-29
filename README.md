@@ -101,7 +101,7 @@ You can obtain a copy of `Mozilla Public License v2.0` from https://mozilla.org/
 
 ## License
 
-    Copyright (C) 2020-2021 Syer and contributors
+    Copyright (C) 2020-2022 Syer and contributors
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
