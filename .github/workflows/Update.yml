@@ -43,10 +43,15 @@ jobs:
 
       - name: Move libraries json
         run: |
+          echo "1"
           mkdir -p build
+          echo "2"
           jq 'del(.metadata)' --sort-keys desktop/build/aboutlibraries.json > build/json1.json
+          echo "3"
           jq 'del(.metadata)' --sort-keys i18n/src/commonMain/resources/MR/files/aboutlibraries.json > build/json2.json
+          echo "4"
           DIFF="$(diff build/json1.json build/json2.json)"
+          echo "5"
           if [ -n "$DIFF" ]; then
               mv desktop/build/aboutlibraries.json i18n/src/commonMain/resources/MR/files/aboutlibraries.json -f
               echo "Moved file"
