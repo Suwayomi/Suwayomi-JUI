@@ -43,6 +43,8 @@ jobs:
 
       - name: Move libraries json
         run: |
+          diff --help
+          jq --help
           DIFF="$(diff <(jq 'del(.metadata)' --sort-keys desktop/build/aboutlibraries.json) <(jq 'del(.metadata)' --sort-keys i18n/src/commonMain/resources/MR/files/aboutlibraries.json))"
           if [ -n "$DIFF" ]; then
               mv desktop/build/aboutlibraries.json i18n/src/commonMain/resources/MR/files/aboutlibraries.json -f
