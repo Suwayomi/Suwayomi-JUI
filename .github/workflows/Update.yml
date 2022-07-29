@@ -43,10 +43,11 @@ jobs:
 
       - name: Move libraries json
         run: |
-          diff --help
-          jq --help
+          echo "Test1"
           DIFF="$(diff <(jq 'del(.metadata)' --sort-keys desktop/build/aboutlibraries.json) <(jq 'del(.metadata)' --sort-keys i18n/src/commonMain/resources/MR/files/aboutlibraries.json))"
+          echo "Test2"
           if [ -n "$DIFF" ]; then
+              echo "Test3"
               mv desktop/build/aboutlibraries.json i18n/src/commonMain/resources/MR/files/aboutlibraries.json -f
               echo "Moved file"
           fi
