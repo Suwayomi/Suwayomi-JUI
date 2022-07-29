@@ -202,7 +202,7 @@ private fun SourceWideScreenContent(
                 onToggleFiltersClick = setShowingFilters,
                 onSelectDisplayMode = onSelectDisplayMode
             )
-        },
+        }
     ) { padding ->
         Box(Modifier.padding(padding)) {
             MangaTable(
@@ -213,7 +213,7 @@ private fun SourceWideScreenContent(
                 isLoading = loading,
                 hasNextPage = hasNextPage,
                 onLoadNextPage = loadNextPage,
-                onMangaClick = onMangaClick,
+                onMangaClick = onMangaClick
             )
             if (showingFilters && !isLatest) {
                 Box(
@@ -337,7 +337,7 @@ private fun SourceThinScreenContent(
                     isLoading = loading,
                     hasNextPage = hasNextPage,
                     onLoadNextPage = loadNextPage,
-                    onMangaClick = onMangaClick,
+                    onMangaClick = onMangaClick
                 )
                 if (showingFilters && !isLatest) {
                     Box(
@@ -387,7 +387,7 @@ fun SourceToolbar(
     showingFilters: Boolean,
     onClickMode: (Boolean) -> Unit,
     onToggleFiltersClick: (Boolean) -> Unit,
-    onSelectDisplayMode: (DisplayMode) -> Unit,
+    onSelectDisplayMode: (DisplayMode) -> Unit
 ) {
     Toolbar(
         source.name,
@@ -458,7 +458,7 @@ private fun MangaTable(
     isLoading: Boolean = false,
     hasNextPage: Boolean = false,
     onLoadNextPage: () -> Unit,
-    onMangaClick: (Long) -> Unit,
+    onMangaClick: (Long) -> Unit
 ) {
     if (isLoading || mangas.isEmpty()) {
         LoadingScreen(isLoading)
@@ -540,6 +540,6 @@ private fun getActionItems(
                 icon = Icons.Rounded.Settings,
                 doAction = onSourceSettingsClick
             )
-        } else null,
+        } else null
     )
 }

@@ -92,7 +92,7 @@ fun CategoriesScreenContent(
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
-            LazyColumn(modifier = Modifier.fillMaxSize(), state = state,) {
+            LazyColumn(modifier = Modifier.fillMaxSize(), state = state) {
                 itemsIndexed(categories) { i, category ->
                     val renameDialogState = rememberMaterialDialogState()
                     val deleteDialogState = rememberMaterialDialogState()
@@ -107,7 +107,7 @@ fun CategoriesScreenContent(
                         },
                         onDelete = {
                             deleteDialogState.show()
-                        },
+                        }
                     )
                     RenameDialog(renameDialogState, category) {
                         renameCategory(category, it)
@@ -147,7 +147,7 @@ private fun CategoryRow(
     onMoveUp: () -> Unit = {},
     onMoveDown: () -> Unit = {},
     onRename: () -> Unit = {},
-    onDelete: () -> Unit = {},
+    onDelete: () -> Unit = {}
 ) {
     Card(Modifier.padding(8.dp)) {
         Column {
@@ -156,7 +156,7 @@ private fun CategoryRow(
                     imageVector = Icons.Outlined.List,
                     modifier = Modifier.padding(16.dp),
                     tint = MaterialTheme.colors.primary,
-                    contentDescription = null,
+                    contentDescription = null
                 )
                 Text(
                     text = category.name,

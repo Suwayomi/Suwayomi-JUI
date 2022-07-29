@@ -154,7 +154,7 @@ fun SourceFilterAction(
                 text = name,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.subtitle1
             )
         }
     }
@@ -196,7 +196,7 @@ fun HeaderView(header: SourceFiltersView.Header) {
             fontWeight = FontWeight.Bold,
             color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
             maxLines = 1,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.subtitle1
         )
     }
 }

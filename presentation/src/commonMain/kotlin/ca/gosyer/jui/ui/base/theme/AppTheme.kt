@@ -127,7 +127,7 @@ class AppThemeViewModel @Inject constructor(
             secondary = secondary,
             secondaryVariant = secondary,
             onPrimary = if (primary.luminance() > 0.5) Color.Black else Color.White,
-            onSecondary = if (secondary.luminance() > 0.5) Color.Black else Color.White,
+            onSecondary = if (secondary.luminance() > 0.5) Color.Black else Color.White
         )
     }
 

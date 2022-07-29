@@ -254,7 +254,7 @@ fun WideReaderMenu(
     setSideMenuOpen: (Boolean) -> Unit,
     setMangaReaderMode: (String) -> Unit,
     movePrevChapter: () -> Unit,
-    moveNextChapter: () -> Unit,
+    moveNextChapter: () -> Unit
 ) {
     val sideMenuSize by animateDpAsState(
         targetValue = if (sideMenuOpen) {
@@ -305,7 +305,7 @@ fun WideReaderMenu(
             pageEmitter = pageEmitter,
             retry = retry,
             progress = progress,
-            updateLastPageReadOffset = updateLastPageReadOffset,
+            updateLastPageReadOffset = updateLastPageReadOffset
         )
         SideMenuButton(sideMenuOpen, onOpenSideMenuClicked = { setSideMenuOpen(true) })
     }
@@ -355,7 +355,7 @@ fun ThinReaderMenu(
             ReaderSheet(
                 readerModes = readerModes,
                 selectedMode = readerMode,
-                onSetReaderMode = setMangaReaderMode,
+                onSetReaderMode = setMangaReaderMode
             )
         }
     ) {
@@ -378,7 +378,7 @@ fun ThinReaderMenu(
                 pageEmitter = pageEmitter,
                 retry = retry,
                 progress = progress,
-                updateLastPageReadOffset = updateLastPageReadOffset,
+                updateLastPageReadOffset = updateLastPageReadOffset
             )
             AnimatedVisibility(
                 readerMenuOpen,
@@ -440,7 +440,7 @@ fun ReaderLayout(
     pageEmitter: SharedFlow<PageMove>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit,
-    updateLastPageReadOffset: (Int) -> Unit,
+    updateLastPageReadOffset: (Int) -> Unit
 ) {
     val loadingModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
     val readerModifier = Modifier

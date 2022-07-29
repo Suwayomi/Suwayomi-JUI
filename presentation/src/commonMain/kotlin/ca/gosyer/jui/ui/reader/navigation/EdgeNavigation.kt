@@ -32,6 +32,6 @@ class EdgeNavigation : ViewerNavigation() {
         Region(
             rect = Rect(66, 0, 100, 100),
             type = Navigation.NEXT
-        ),
+        )
     )
 }

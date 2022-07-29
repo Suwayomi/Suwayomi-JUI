@@ -47,7 +47,7 @@ fun SourceMangaComfortableGrid(
     gridSize: Int,
     onClickManga: (Long) -> Unit,
     hasNextPage: Boolean = false,
-    onLoadNextPage: () -> Unit,
+    onLoadNextPage: () -> Unit
 ) {
     Box {
         val state = rememberLazyGridState()

@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 fun Modifier.keyboardHandler(
     singleLine: Boolean = false,
     enterAction: ((FocusManager) -> Unit)? = null,
-    action: (FocusManager) -> Unit = { it.moveFocus(FocusDirection.Down) },
+    action: (FocusManager) -> Unit = { it.moveFocus(FocusDirection.Down) }
 ) = composed {
     val focusManager = LocalFocusManager.current
     Modifier.onPreviewKeyEvent {

@@ -82,7 +82,7 @@ private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
             .aspectRatio(
                 ratio = mangaAspectRatio,
                 matchHeightConstraintsFirst = true
-            ),
+            )
     )
 }
 
@@ -171,7 +171,7 @@ fun CategorySelectDialog(
             positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties(),
+        properties = getMaterialDialogProperties()
     ) {
         title(stringResource(MR.strings.select_categories))
 

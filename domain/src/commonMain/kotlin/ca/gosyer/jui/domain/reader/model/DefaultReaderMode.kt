@@ -12,7 +12,7 @@ enum class DefaultReaderMode(
     val direction: Direction = Direction.Down,
     val padding: Int = 0,
     val imageScale: ImageScale = ImageScale.FitScreen,
-    val navigationMode: NavigationMode = NavigationMode.LNavigation,
+    val navigationMode: NavigationMode = NavigationMode.LNavigation
 ) {
     RTL("RTL", false, Direction.Left, navigationMode = NavigationMode.RightAndLeftNavigation),
     LTR("LTR", false, Direction.Right, navigationMode = NavigationMode.RightAndLeftNavigation),

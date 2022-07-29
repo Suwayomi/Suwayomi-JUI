@@ -89,7 +89,7 @@ fun SkinnyMainMenu(
             AnimatedVisibility(
                 navigator.size <= 1,
                 enter = slideInVertically(initialOffsetY = { it }),
-                exit = slideOutVertically(targetOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
             ) {
                 BottomNav(navigator)
             }

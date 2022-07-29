@@ -43,7 +43,7 @@ actual class FileSaver(
 actual fun rememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit,
-    onError: () -> Unit,
+    onError: () -> Unit
 ): FileSaver {
     val coroutineScope = rememberCoroutineScope()
     return remember { FileSaver(onFileSelected, onCancel, onError, coroutineScope) }

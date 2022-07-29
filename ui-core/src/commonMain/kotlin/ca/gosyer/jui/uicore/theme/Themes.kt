@@ -47,5 +47,5 @@ val themes = listOf(
             onPrimary = Color.White,
             background = Color.Black
         )
-    ),
+    )
 )

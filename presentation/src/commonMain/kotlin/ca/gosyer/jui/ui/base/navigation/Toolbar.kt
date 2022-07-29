@@ -88,7 +88,7 @@ fun Toolbar(
     elevation: Dp = Dp.Hairline,
     searchText: String? = null,
     search: ((String) -> Unit)? = null,
-    searchSubmit: (() -> Unit)? = null,
+    searchSubmit: (() -> Unit)? = null
 ) {
     BoxWithConstraints {
         if (maxWidth > 600.dp) {
@@ -135,7 +135,7 @@ private fun WideToolbar(
     elevation: Dp,
     searchText: String?,
     search: ((String) -> Unit)?,
-    searchSubmit: (() -> Unit)?,
+    searchSubmit: (() -> Unit)?
 ) {
     Surface(
         modifier = modifier,
@@ -204,7 +204,7 @@ private fun ThinToolbar(
     elevation: Dp,
     searchText: String?,
     search: ((String) -> Unit)?,
-    searchSubmit: (() -> Unit)?,
+    searchSubmit: (() -> Unit)?
 ) {
     var searchMode by remember { mutableStateOf(!searchText.isNullOrEmpty()) }
     fun closeSearch() {
@@ -233,7 +233,7 @@ private fun ThinToolbar(
                 } else {
                     Row(Modifier.width(68.dp), verticalAlignment = Alignment.CenterVertically) {
                         CompositionLocalProvider(
-                            LocalContentAlpha provides ContentAlpha.high,
+                            LocalContentAlpha provides ContentAlpha.high
                         ) {
                             IconButton(
                                 onClick = {
@@ -296,7 +296,7 @@ private fun ThinToolbar(
                     ) {
                         ProvideTextStyle(value = MaterialTheme.typography.h6) {
                             CompositionLocalProvider(
-                                LocalContentAlpha provides ContentAlpha.high,
+                                LocalContentAlpha provides ContentAlpha.high
                             ) {
                                 Text(name, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             }
@@ -308,7 +308,7 @@ private fun ThinToolbar(
                     Row(
                         Modifier.fillMaxHeight(),
                         horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         if (search != null && !searchMode) {
                             IconButton(onClick = { searchMode = true }) {
@@ -373,7 +373,7 @@ fun TextActionIcon(
     text: String,
     icon: ImageVector,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
     Column(
         Modifier

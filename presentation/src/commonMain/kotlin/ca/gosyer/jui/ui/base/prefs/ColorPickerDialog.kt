@@ -78,7 +78,7 @@ fun ColorPickerDialog(
     title: String,
     onCloseRequest: () -> Unit = {},
     onSelected: (Color) -> Unit,
-    initialColor: Color = Color.Unspecified,
+    initialColor: Color = Color.Unspecified
 ) {
     var currentColor by remember(initialColor) { mutableStateOf(initialColor) }
     var showPresets by remember { mutableStateOf(true) }
@@ -444,5 +444,5 @@ private val presetColors = listOf(
     Color(0xFFFF9800), // ORANGE 500
     Color(0xFF795548), // BROWN 500
     Color(0xFF607D8B), // BLUE GREY 500
-    Color(0xFF9E9E9E), // GREY 500
+    Color(0xFF9E9E9E) // GREY 500
 )

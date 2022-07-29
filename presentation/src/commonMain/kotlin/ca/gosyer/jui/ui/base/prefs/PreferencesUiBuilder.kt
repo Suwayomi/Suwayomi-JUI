@@ -91,7 +91,7 @@ fun PreferenceRow(
     onLongClick: () -> Unit = {},
     subtitle: String? = null,
     enabled: Boolean = true,
-    action: @Composable (BoxScope.() -> Unit)? = null,
+    action: @Composable (BoxScope.() -> Unit)? = null
 ) {
     val height = if (subtitle != null) 72.dp else 56.dp
 
@@ -153,7 +153,7 @@ fun SwitchPreference(
     subtitle: String? = null,
     icon: ImageVector? = null,
     changeListener: () -> Unit = {},
-    enabled: Boolean = true,
+    enabled: Boolean = true
 ) {
     PreferenceRow(
         title = title,
@@ -200,7 +200,7 @@ fun EditTextPreference(
             }
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties(),
+        properties = getMaterialDialogProperties()
     ) {
         title(title)
         input(
@@ -296,7 +296,7 @@ fun <T> MultiSelectDialog(
     selected: List<T>?,
     onCloseRequest: () -> Unit = {},
     onFinished: (List<T>) -> Unit,
-    title: String,
+    title: String
 ) {
     MaterialDialog(
         state,
@@ -388,7 +388,7 @@ fun ExpandablePreference(
     title: String,
     startExpanded: Boolean = false,
     onExpandedChanged: ((Boolean) -> Unit)? = null,
-    expandedContent: @Composable ColumnScope.() -> Unit,
+    expandedContent: @Composable ColumnScope.() -> Unit
 ) {
     var expanded by remember { mutableStateOf(startExpanded) }
     LaunchedEffect(expanded) {
@@ -424,14 +424,14 @@ fun ExpandablePreference(
                     imageVector = Icons.Rounded.ArrowDropUp,
                     contentDescription = "Expandable Arrow",
                     modifier = Modifier.rotate(arrowRotationDegree)
-                        .align(Alignment.CenterStart),
+                        .align(Alignment.CenterStart)
                 )
                 Text(
                     text = title,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             }
             ExpandableContent(

@@ -66,7 +66,7 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
             openInBrowserEnabled = serverVm.openInBrowserEnabled,
             basicAuthEnabled = serverVm.basicAuthEnabled,
             basicAuthUsername = serverVm.basicAuthUsername,
-            basicAuthPassword = serverVm.basicAuthPassword,
+            basicAuthPassword = serverVm.basicAuthPassword
         )
     }
 }
@@ -149,7 +149,7 @@ fun LazyListScope.ServerHostItems(
     openInBrowserEnabled: PreferenceMutableStateFlow<Boolean>,
     basicAuthEnabled: PreferenceMutableStateFlow<Boolean>,
     basicAuthUsername: PreferenceMutableStateFlow<String>,
-    basicAuthPassword: PreferenceMutableStateFlow<String>,
+    basicAuthPassword: PreferenceMutableStateFlow<String>
 ) {
     item {
         SwitchPreference(preference = host, title = stringResource(MR.strings.host_server))

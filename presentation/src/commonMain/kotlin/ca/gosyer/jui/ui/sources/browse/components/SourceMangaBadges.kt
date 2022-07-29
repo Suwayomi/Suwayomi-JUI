@@ -21,7 +21,7 @@ import ca.gosyer.jui.uicore.resources.stringResource
 @Composable
 fun SourceMangaBadges(
     inLibrary: Boolean,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     if (!inLibrary) return
 

@@ -207,7 +207,7 @@ suspend fun main() {
                         },
                         properties = getMaterialDialogProperties(
                             size = DpSize(400.dp, 200.dp)
-                        ),
+                        )
                     ) {
                         title(stringResource(MR.strings.confirm_exit))
                         message(stringResource(MR.strings.confirm_exit_message))

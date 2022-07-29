@@ -62,7 +62,7 @@ class MangaScreenViewModel @Inject constructor(
     private val removeMangaFromLibrary: RemoveMangaFromLibrary,
     uiPreferences: UiPreferences,
     contextWrapper: ContextWrapper,
-    private val params: Params,
+    private val params: Params
 ) : ViewModel(contextWrapper) {
     private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()

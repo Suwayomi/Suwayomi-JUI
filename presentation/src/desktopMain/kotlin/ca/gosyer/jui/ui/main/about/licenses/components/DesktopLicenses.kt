@@ -43,7 +43,7 @@ actual fun InternalAboutLibraries(
     showLicenseBadges: Boolean,
     colors: LibraryColors,
     itemContentPadding: PaddingValues,
-    onLibraryClick: ((Library) -> Unit)?,
+    onLibraryClick: ((Library) -> Unit)?
 ) {
     Libraries(
         libraries = libraries,

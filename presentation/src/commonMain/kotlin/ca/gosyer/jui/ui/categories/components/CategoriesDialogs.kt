@@ -33,7 +33,7 @@ fun RenameDialog(
             positiveButton(stringResource(MR.strings.action_rename))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties(),
+        properties = getMaterialDialogProperties()
     ) {
         title(stringResource(MR.strings.categories_rename))
         input(
@@ -62,7 +62,7 @@ fun DeleteDialog(
             }
             negativeButton(stringResource(MR.strings.action_no))
         },
-        properties = getMaterialDialogProperties(),
+        properties = getMaterialDialogProperties()
     ) {
         title(stringResource(MR.strings.categories_delete))
         message(stringResource(MR.strings.categories_delete_confirm, category.name))
@@ -80,7 +80,7 @@ fun CreateDialog(
             positiveButton(stringResource(MR.strings.action_create))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties(),
+        properties = getMaterialDialogProperties()
     ) {
         title(stringResource(MR.strings.categories_create))
         input(

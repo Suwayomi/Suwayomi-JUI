@@ -28,7 +28,7 @@ internal expect fun RealVerticalScrollbar(
     modifier: Modifier,
     reverseLayout: Boolean,
     style: ScrollbarStyle,
-    interactionSource: MutableInteractionSource,
+    interactionSource: MutableInteractionSource
 )
 
 @Composable
@@ -37,7 +37,7 @@ internal expect fun RealHorizontalScrollbar(
     modifier: Modifier,
     reverseLayout: Boolean,
     style: ScrollbarStyle,
-    interactionSource: MutableInteractionSource,
+    interactionSource: MutableInteractionSource
 )
 
 @Composable
@@ -65,13 +65,13 @@ expect fun rememberScrollbarAdapter(
 
 @Composable
 expect fun rememberScrollbarAdapter(
-    scrollState: LazyListState,
+    scrollState: LazyListState
 ): ScrollbarAdapter
 
 @Composable
 expect fun rememberScrollbarAdapter(
     scrollState: LazyGridState,
-    gridCells: GridCells,
+    gridCells: GridCells
 ): ScrollbarAdapter
 
 expect fun Modifier.scrollbarPadding(): Modifier

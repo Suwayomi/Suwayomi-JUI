@@ -145,7 +145,7 @@ sealed class SourceFiltersView<T, R : Any?> {
     data class Group internal constructor(
         override val index: Int,
         override val name: String,
-        override val filter: GroupFilter.GroupProps,
+        override val filter: GroupFilter.GroupProps
     ) : SourceFiltersView<GroupFilter.GroupProps, List<SourceFiltersView<*, *>>>() {
         override val state: StateFlow<List<SourceFiltersView<*, *>>> = MutableStateFlow(
             filter.state.mapIndexed { itemIndex, sourceFilter ->

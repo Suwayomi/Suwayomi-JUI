@@ -41,7 +41,8 @@ class BackupRepositoryImpl @Inject constructor(
 
     private fun buildFormData(file: Path) = formData {
         append(
-            "backup.proto.gz", FileSystem.SYSTEM.source(file).buffer().readByteArray(),
+            "backup.proto.gz",
+            FileSystem.SYSTEM.source(file).buffer().readByteArray(),
             Headers.build {
                 append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
                 append(HttpHeaders.ContentDisposition, "filename=backup.proto.gz")
@@ -73,7 +74,7 @@ class BackupRepositoryImpl @Inject constructor(
 
     override fun exportBackupFile(block: HttpRequestBuilder.() -> Unit) = flow {
         val response = client.get(
-            buildUrl { path(backupFileExportRequest()) },
+            buildUrl { path(backupFileExportRequest()) }
         ) {
             expectSuccess = true
             block()

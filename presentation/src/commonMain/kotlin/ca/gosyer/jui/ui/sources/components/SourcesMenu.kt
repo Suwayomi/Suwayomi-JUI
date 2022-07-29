@@ -55,7 +55,7 @@ fun SourcesMenu() {
     BoxWithConstraints {
         if (maxWidth > 720.dp) {
             SourcesNavigator(
-                homeScreen,
+                homeScreen
             ) { navigator ->
                 Row {
                     SourcesSideMenu(

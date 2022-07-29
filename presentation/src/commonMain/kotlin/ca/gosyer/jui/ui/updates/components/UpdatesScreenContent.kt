@@ -159,7 +159,7 @@ fun UpdatesItem(
             chapterDownloadItem,
             onClickDownload,
             onClickStopDownload,
-            onClickDeleteDownload,
+            onClickDeleteDownload
         )
     }
 }

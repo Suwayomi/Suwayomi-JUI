@@ -39,7 +39,7 @@ data class ActionItem(
     val icon: ImageVector? = null,
     val overflowMode: OverflowMode = OverflowMode.IF_NECESSARY,
     val enabled: Boolean = true,
-    val doAction: () -> Unit,
+    val doAction: () -> Unit
 ) {
     // allow 'calling' the action like a function
     operator fun invoke() = doAction()
@@ -74,7 +74,7 @@ fun ActionMenu(
                 TextButton(onClick = item.doAction, enabled = item.enabled) {
                     Text(
                         text = item.name,
-                        color = MaterialTheme.colors.onPrimary.copy(alpha = LocalContentAlpha.current),
+                        color = MaterialTheme.colors.onPrimary.copy(alpha = LocalContentAlpha.current)
                     )
                 }
             }
@@ -90,7 +90,7 @@ fun ActionMenu(
         )
         DropdownMenu(
             expanded = menuVisible.value,
-            onDismissRequest = { menuVisible.value = false },
+            onDismissRequest = { menuVisible.value = false }
         ) {
             overflowActions.fastForEach { item ->
                 key(item.hashCode()) {

@@ -29,7 +29,7 @@ class DownloadRepositoryImpl @Inject constructor(
 
     override fun startDownloading() = flow {
         val response = client.get(
-            buildUrl { path(downloadsStartRequest()) },
+            buildUrl { path(downloadsStartRequest()) }
         ) {
             expectSuccess = true
         }
@@ -38,7 +38,7 @@ class DownloadRepositoryImpl @Inject constructor(
 
     override fun stopDownloading() = flow {
         val response = client.get(
-            buildUrl { path(downloadsStopRequest()) },
+            buildUrl { path(downloadsStopRequest()) }
         ) {
             expectSuccess = true
         }
@@ -47,7 +47,7 @@ class DownloadRepositoryImpl @Inject constructor(
 
     override fun clearDownloadQueue() = flow {
         val response = client.get(
-            buildUrl { path(downloadsClearRequest()) },
+            buildUrl { path(downloadsClearRequest()) }
         ) {
             expectSuccess = true
         }

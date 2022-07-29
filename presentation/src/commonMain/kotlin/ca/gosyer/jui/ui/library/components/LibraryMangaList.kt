@@ -85,7 +85,7 @@ private fun LibraryMangaListItem(
     MangaListItem(
         modifier = modifier then Modifier
             .requiredHeight(56.dp)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
     ) {
         MangaListItemImage(
             modifier = Modifier
@@ -98,7 +98,7 @@ private fun LibraryMangaListItem(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 16.dp),
-            text = manga.title,
+            text = manga.title
         )
         Box(Modifier.width(IntrinsicSize.Min)) {
             LibraryMangaBadges(

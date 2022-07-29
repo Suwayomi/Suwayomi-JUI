@@ -125,7 +125,7 @@ fun HandlePager(
     nextChapter: ReaderChapter?,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    retry: (Int) -> Unit,
+    retry: (Int) -> Unit
 ) {
     when (page) {
         0 -> ChapterSeparator(previousChapter, currentChapter)

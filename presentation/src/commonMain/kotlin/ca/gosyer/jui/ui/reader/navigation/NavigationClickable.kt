@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 fun Modifier.navigationClickable(
     navigation: ViewerNavigation,
-    onClick: (Navigation) -> Unit = {},
+    onClick: (Navigation) -> Unit = {}
 ) = composed(
     inspectorInfo = debugInspectorInfo {
         name = "navigationClickable"
@@ -37,7 +37,7 @@ fun Modifier.navigationClickable(
     navigationClickable(
         navigation = navigation,
         interactionSource = remember { MutableInteractionSource() },
-        onClick = onClick,
+        onClick = onClick
     )
 }
 

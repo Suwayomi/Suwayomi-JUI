@@ -41,7 +41,7 @@ class MangaRepositoryImpl @Inject constructor(
                 if (refresh) {
                     parameter("onlineFetch", true)
                 }
-            },
+            }
         ) {
             expectSuccess = true
         }.body<Manga>()
@@ -50,7 +50,7 @@ class MangaRepositoryImpl @Inject constructor(
 
     override fun getMangaThumbnail(mangaId: Long, block: HttpRequestBuilder.() -> Unit) = flow {
         val response = client.get(
-            buildUrl { path(mangaThumbnailQuery(mangaId)) },
+            buildUrl { path(mangaThumbnailQuery(mangaId)) }
         ) {
             expectSuccess = true
             block()
@@ -60,7 +60,7 @@ class MangaRepositoryImpl @Inject constructor(
 
     override fun updateMangaMeta(mangaId: Long, key: String, value: String) = flow {
         val response = client.submitForm(
-            buildUrl { path(updateMangaMetaRequest(mangaId),) },
+            buildUrl { path(updateMangaMetaRequest(mangaId)) },
             formParameters = Parameters.build {
                 append("key", key)
                 append("value", value)

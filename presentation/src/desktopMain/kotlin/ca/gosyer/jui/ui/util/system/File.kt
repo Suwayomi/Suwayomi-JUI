@@ -77,7 +77,7 @@ private fun fileChooser(
     onError: () -> Unit = {},
     onApprove: (Path) -> Unit,
     defaultFileName: String = "",
-    vararg extensions: String,
+    vararg extensions: String
 ) = launchUI {
     val fileChooser = JFileChooser()
         .apply {

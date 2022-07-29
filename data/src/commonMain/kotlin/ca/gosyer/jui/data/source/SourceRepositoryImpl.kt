@@ -48,7 +48,7 @@ class SourceRepositoryImpl @Inject constructor(
 
     override fun getSourceList() = flow {
         val response = client.get(
-            buildUrl { path(sourceListQuery()) },
+            buildUrl { path(sourceListQuery()) }
         ) {
             expectSuccess = true
         }.body<List<Source>>()
@@ -57,7 +57,7 @@ class SourceRepositoryImpl @Inject constructor(
 
     override fun getSourceInfo(sourceId: Long) = flow {
         val response = client.get(
-            buildUrl { path(sourceInfoQuery(sourceId)) },
+            buildUrl { path(sourceInfoQuery(sourceId)) }
         ) {
             expectSuccess = true
         }.body<Source>()
@@ -66,7 +66,7 @@ class SourceRepositoryImpl @Inject constructor(
 
     override fun getPopularManga(sourceId: Long, pageNum: Int) = flow {
         val response = client.get(
-            buildUrl { path(sourcePopularQuery(sourceId, pageNum)) },
+            buildUrl { path(sourcePopularQuery(sourceId, pageNum)) }
         ) {
             expectSuccess = true
         }.body<MangaPage>()
@@ -75,7 +75,7 @@ class SourceRepositoryImpl @Inject constructor(
 
     override fun getLatestManga(sourceId: Long, pageNum: Int) = flow {
         val response = client.get(
-            buildUrl { path(sourceLatestQuery(sourceId, pageNum)) },
+            buildUrl { path(sourceLatestQuery(sourceId, pageNum)) }
         ) {
             expectSuccess = true
         }.body<MangaPage>()
@@ -90,7 +90,7 @@ class SourceRepositoryImpl @Inject constructor(
                 if (searchTerm.isNotBlank()) {
                     parameter("searchTerm", searchTerm)
                 }
-            },
+            }
         ) {
             expectSuccess = true
         }.body<MangaPage>()
@@ -104,7 +104,7 @@ class SourceRepositoryImpl @Inject constructor(
                 if (reset) {
                     parameter("reset", true)
                 }
-            },
+            }
         ) {
             expectSuccess = true
         }.body<List<SourceFilter>>()
@@ -113,7 +113,7 @@ class SourceRepositoryImpl @Inject constructor(
 
     override fun setFilter(sourceId: Long, sourceFilter: SourceFilterChange) = flow {
         val response = client.post(
-            buildUrl { path(setFilterRequest(sourceId)) },
+            buildUrl { path(setFilterRequest(sourceId)) }
         ) {
             contentType(ContentType.Application.Json)
             setBody(sourceFilter)
@@ -137,7 +137,7 @@ class SourceRepositoryImpl @Inject constructor(
 
     override fun getSourceSettings(sourceId: Long) = flow {
         val response = client.get(
-            buildUrl { path(getSourceSettingsQuery(sourceId)) },
+            buildUrl { path(getSourceSettingsQuery(sourceId)) }
         ) {
             expectSuccess = true
         }.body<List<SourcePreference>>()
@@ -146,7 +146,7 @@ class SourceRepositoryImpl @Inject constructor(
 
     override fun setSourceSetting(sourceId: Long, sourcePreference: SourcePreferenceChange) = flow {
         val response = client.post(
-            buildUrl { path(updateSourceSettingQuery(sourceId)) },
+            buildUrl { path(updateSourceSettingQuery(sourceId)) }
         ) {
             contentType(ContentType.Application.Json)
             setBody(sourcePreference)

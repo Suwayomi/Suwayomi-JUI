@@ -209,7 +209,7 @@ fun LanguageDialog(
             positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties(),
+        properties = getMaterialDialogProperties()
     ) {
         title(BuildKonfig.NAME)
 

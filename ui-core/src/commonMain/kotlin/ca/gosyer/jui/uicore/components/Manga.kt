@@ -37,7 +37,7 @@ import io.kamel.core.Resource
 fun MangaGridItem(
     title: String,
     cover: Resource<Painter>,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     val fontStyle = LocalTextStyle.current.merge(
         TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
@@ -63,7 +63,7 @@ fun MangaGridItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.wrapContentHeight(Alignment.CenterVertically)
                     .align(Alignment.BottomStart)
-                    .padding(8.dp),
+                    .padding(8.dp)
             )
         }
     }

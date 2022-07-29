@@ -31,7 +31,7 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override fun aboutServer() = flow {
         val response = client.get(
-            buildUrl { path(aboutQuery()) },
+            buildUrl { path(aboutQuery()) }
         ) {
             expectSuccess = true
         }.body<About>()
@@ -40,7 +40,7 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override fun checkUpdate() = flow {
         val response = client.post(
-            buildUrl { path(checkUpdateQuery()) },
+            buildUrl { path(checkUpdateQuery()) }
         ) {
             expectSuccess = true
         }

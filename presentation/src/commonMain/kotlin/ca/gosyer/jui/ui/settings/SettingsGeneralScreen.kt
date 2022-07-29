@@ -161,7 +161,7 @@ fun SettingsGeneralScreenContent(
                     ChoicePreference(
                         preference = language,
                         title = stringResource(MR.strings.language),
-                        choices = languageChoices,
+                        choices = languageChoices
                     )
                 }
                 item {

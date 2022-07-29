@@ -17,7 +17,7 @@ import okio.Sink
 import okio.sink
 
 actual class FileSaver(
-    private val resultLauncher: ManagedActivityResultLauncher<String, Uri?>,
+    private val resultLauncher: ManagedActivityResultLauncher<String, Uri?>
 ) {
     actual fun save(name: String) {
         resultLauncher.launch(name)
@@ -28,7 +28,7 @@ actual class FileSaver(
 actual fun rememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit,
-    onError: () -> Unit,
+    onError: () -> Unit
 ): FileSaver {
     val context = LocalContext.current
     val result = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument()) {

@@ -30,6 +30,6 @@ private fun getContextItems(
     onClickRemoveManga: () -> Unit
 ): List<ContextMenuItem> {
     return listOf(
-        ContextMenuItem(stringResource(MR.strings.action_remove_favorite)) { onClickRemoveManga() },
+        ContextMenuItem(stringResource(MR.strings.action_remove_favorite)) { onClickRemoveManga() }
     )
 }

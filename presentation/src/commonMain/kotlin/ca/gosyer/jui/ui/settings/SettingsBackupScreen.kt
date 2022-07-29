@@ -342,7 +342,7 @@ private fun MissingSourcesDialog(
             positiveButton(stringResource(MR.strings.action_ok), onClick = onPositiveClick)
             negativeButton(stringResource(MR.strings.action_cancel), onClick = onNegativeClick)
         },
-        properties = getMaterialDialogProperties(),
+        properties = getMaterialDialogProperties()
     ) {
         title(stringResource(MR.strings.missing_sources))
         Box {

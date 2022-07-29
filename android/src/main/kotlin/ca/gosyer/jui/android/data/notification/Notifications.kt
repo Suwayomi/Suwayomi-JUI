@@ -41,7 +41,7 @@ object Notifications {
                 },
                 buildNotificationChannelGroup(GROUP_APK_UPDATES) {
                     setName(MR.strings.group_updates.desc().toString(context))
-                },
+                }
             )
         )
 

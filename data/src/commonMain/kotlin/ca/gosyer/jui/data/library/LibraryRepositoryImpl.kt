@@ -29,7 +29,7 @@ class LibraryRepositoryImpl @Inject constructor(
 
     override fun addMangaToLibrary(mangaId: Long) = flow {
         val response = client.get(
-            buildUrl { path(addMangaToLibraryQuery(mangaId)) },
+            buildUrl { path(addMangaToLibraryQuery(mangaId)) }
         ) {
             expectSuccess = true
         }
@@ -38,7 +38,7 @@ class LibraryRepositoryImpl @Inject constructor(
 
     override fun removeMangaFromLibrary(mangaId: Long) = flow {
         val response = client.delete(
-            buildUrl { path(removeMangaFromLibraryRequest(mangaId)) },
+            buildUrl { path(removeMangaFromLibraryRequest(mangaId)) }
         ) {
             expectSuccess = true
         }

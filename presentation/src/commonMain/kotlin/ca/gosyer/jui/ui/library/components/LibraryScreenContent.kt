@@ -342,7 +342,7 @@ fun ThinLibraryScreenContent(
 @Composable
 @Stable
 private fun getActionItems(
-    onToggleFiltersClick: () -> Unit,
+    onToggleFiltersClick: () -> Unit
 ): List<ActionItem> {
     return listOfNotNull(
         ActionItem(

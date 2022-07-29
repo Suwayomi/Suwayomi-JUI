@@ -33,7 +33,7 @@ import ca.gosyer.jui.uicore.resources.stringResource
 fun LibrarySideMenu(
     libraryFilters: @Composable () -> Unit,
     librarySort: @Composable () -> Unit,
-    libraryDisplay: @Composable () -> Unit,
+    libraryDisplay: @Composable () -> Unit
 ) {
     Surface(Modifier.fillMaxHeight().width(260.dp), elevation = 1.dp) {
         Box {

@@ -45,7 +45,7 @@ internal expect fun InternalAboutLibraries(
     showLicenseBadges: Boolean,
     colors: LibraryColors,
     itemContentPadding: PaddingValues,
-    onLibraryClick: ((Library) -> Unit)?,
+    onLibraryClick: ((Library) -> Unit)?
 )
 
 @Composable
@@ -59,7 +59,7 @@ fun AboutLibraries(
     showLicenseBadges: Boolean = true,
     colors: LibraryColors = LibraryDefaults.libraryColors(),
     itemContentPadding: PaddingValues = LibraryDefaults.ContentPadding,
-    onLibraryClick: ((Library) -> Unit)? = null,
+    onLibraryClick: ((Library) -> Unit)? = null
 ) {
     InternalAboutLibraries(
         libraries = libraries,

@@ -125,7 +125,7 @@ class ExtensionsScreenViewModel @Inject constructor(
         val available = filter { !it.installed }.sortedWith(comparator)
 
         return mapOf(
-            MR.strings.installed.toPlatformString() to (obsolete + updates + installed),
+            MR.strings.installed.toPlatformString() to (obsolete + updates + installed)
         ).filterNot { it.value.isEmpty() } + available.groupBy { it.lang }.mapKeys {
             if (it.key == "all") {
                 MR.strings.all.toPlatformString()

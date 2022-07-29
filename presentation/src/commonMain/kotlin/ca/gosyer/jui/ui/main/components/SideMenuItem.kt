@@ -70,7 +70,7 @@ private fun SideMenuItem(
                     onClick = {
                         if (selected) return@clickable
                         onClick(createScreen())
-                    },
+                    }
                     // onMiddleClick = { onMiddleClick?.invoke() } todo
                 )
         ) {

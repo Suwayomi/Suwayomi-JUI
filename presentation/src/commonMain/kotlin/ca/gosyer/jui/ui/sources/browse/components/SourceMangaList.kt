@@ -38,7 +38,7 @@ fun SourceMangaList(
     mangas: List<Manga>,
     onClickManga: (Long) -> Unit,
     hasNextPage: Boolean = false,
-    onLoadNextPage: () -> Unit,
+    onLoadNextPage: () -> Unit
 ) {
     Box {
         val state = rememberLazyListState()
@@ -78,7 +78,7 @@ private fun MangaListItem(
     MangaListItem(
         modifier = modifier then Modifier
             .requiredHeight(56.dp)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
     ) {
         MangaListItemImage(
             modifier = Modifier
@@ -91,7 +91,7 @@ private fun MangaListItem(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 16.dp),
-            text = manga.title,
+            text = manga.title
         )
         SourceMangaBadges(inLibrary)
     }

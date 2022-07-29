@@ -66,7 +66,7 @@ fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navig
                         remember { MoreMenus.values() }.forEach { topLevelMenu ->
                             SideMenuItem(
                                 topLevelMenu.isSelected(navigator),
-                                topLevelMenu,
+                                topLevelMenu
                             ) { navigator replaceAll it }
                         }
                     }

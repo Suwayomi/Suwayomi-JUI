@@ -126,7 +126,7 @@ private fun DownloadIconButton(onClick: () -> Unit) {
     ) {
         Surface(
             shape = CircleShape,
-            border = BorderStroke(2.dp, LocalContentColor.current.copy(alpha = ContentAlpha.disabled)),
+            border = BorderStroke(2.dp, LocalContentColor.current.copy(alpha = ContentAlpha.disabled))
         ) {
             Icon(
                 Icons.Rounded.ArrowDownward,

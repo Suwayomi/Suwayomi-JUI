@@ -39,7 +39,11 @@ internal actual fun RealVerticalScrollbar(
     style: ScrollbarStyle,
     interactionSource: MutableInteractionSource
 ) = androidx.compose.foundation.VerticalScrollbar(
-    adapter, modifier, reverseLayout, style, interactionSource
+    adapter,
+    modifier,
+    reverseLayout,
+    style,
+    interactionSource
 )
 
 @Composable
@@ -50,7 +54,11 @@ internal actual fun RealHorizontalScrollbar(
     style: ScrollbarStyle,
     interactionSource: MutableInteractionSource
 ) = androidx.compose.foundation.HorizontalScrollbar(
-    adapter, modifier, reverseLayout, style, interactionSource
+    adapter,
+    modifier,
+    reverseLayout,
+    style,
+    interactionSource
 )
 
 @Composable
@@ -62,7 +70,7 @@ actual fun rememberScrollbarAdapter(
 
 @Composable
 actual fun rememberScrollbarAdapter(
-    scrollState: LazyListState,
+    scrollState: LazyListState
 ): ScrollbarAdapter {
     return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 }
@@ -70,7 +78,7 @@ actual fun rememberScrollbarAdapter(
 @Composable
 actual fun rememberScrollbarAdapter(
     scrollState: LazyGridState,
-    gridCells: GridCells,
+    gridCells: GridCells
 ): ScrollbarAdapter {
     val density = LocalDensity.current
     return remember(scrollState, gridCells, density) { GridScrollbarAdapter(scrollState, gridCells, density) }
@@ -80,11 +88,10 @@ actual fun rememberScrollbarAdapter(
 class GridScrollbarAdapter(
     private val scrollState: LazyGridState,
     private val gridCells: GridCells,
-    private val density: Density,
+    private val density: Density
 ) : ScrollbarAdapter {
     override val scrollOffset: Float
         get() = (scrollState.firstVisibleItemIndex / itemsPerRow).coerceAtLeast(0) * averageItemSize + scrollState.firstVisibleItemScrollOffset
-
 
     override fun maxScrollOffset(containerSize: Int): Float {
         val size = with(gridCells) {
@@ -92,7 +99,6 @@ class GridScrollbarAdapter(
         }
         return (averageItemSize * (itemCount / size) - containerSize).coerceAtLeast(0f)
     }
-
 
     override suspend fun scrollTo(containerSize: Int, scrollOffset: Float) {
         val distance = scrollOffset - this@GridScrollbarAdapter.scrollOffset

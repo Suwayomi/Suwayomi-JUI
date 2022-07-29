@@ -114,7 +114,7 @@ actual fun rememberScrollbarAdapter(
 
 @Composable
 actual fun rememberScrollbarAdapter(
-    scrollState: LazyListState,
+    scrollState: LazyListState
 ): ScrollbarAdapter {
     return remember(scrollState) {
         LazyListStateScrollbarAdapter(scrollState)
@@ -124,7 +124,7 @@ actual fun rememberScrollbarAdapter(
 @Composable
 actual fun rememberScrollbarAdapter(
     scrollState: LazyGridState,
-    gridCells: GridCells,
+    gridCells: GridCells
 ): ScrollbarAdapter {
     return remember(scrollState, gridCells) {
         LazyGridStateScrollbarAdapter(scrollState, gridCells)
@@ -171,7 +171,9 @@ private fun Modifier.drawScrollbar(
     orientation: Orientation,
     reverseScrolling: Boolean
 ): Modifier = drawScrollbar(
-    orientation, reverseScrolling, snapshotFlow { state.isScrollInProgress }
+    orientation,
+    reverseScrolling,
+    snapshotFlow { state.isScrollInProgress }
 ) { reverseDirection, atEnd, thickness, color, alpha ->
     val layoutInfo = state.layoutInfo
     val viewportSize = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
@@ -210,7 +212,9 @@ private fun Modifier.drawScrollbar(
     orientation: Orientation,
     reverseScrolling: Boolean
 ): Modifier = drawScrollbar(
-    orientation, reverseScrolling, snapshotFlow { state.isScrollInProgress }
+    orientation,
+    reverseScrolling,
+    snapshotFlow { state.isScrollInProgress }
 ) { reverseDirection, atEnd, thickness, color, alpha ->
     val layoutInfo = state.layoutInfo
     val viewportSize = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
@@ -328,5 +332,5 @@ private fun Modifier.drawScrollbar(
 private val Thickness = 4.dp
 private val FadeOutAnimationSpec =
     tween<Float>(
-        durationMillis = ViewConfiguration.getScrollBarFadeDuration(),
+        durationMillis = ViewConfiguration.getScrollBarFadeDuration()
     )

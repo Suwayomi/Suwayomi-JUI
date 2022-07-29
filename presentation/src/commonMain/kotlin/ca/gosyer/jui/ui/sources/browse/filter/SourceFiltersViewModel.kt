@@ -32,7 +32,7 @@ class SourceFiltersViewModel(
     @Inject constructor(
         sourceHandler: SourceRepositoryImpl,
         contextWrapper: ContextWrapper,
-        params: Params,
+        params: Params
     ) : this(
         params.sourceId,
         sourceHandler,

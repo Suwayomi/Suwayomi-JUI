@@ -35,7 +35,7 @@ class ExtensionRepositoryImpl @Inject constructor(
 
     override fun getExtensionList() = flow {
         val response = client.get(
-            buildUrl { path(extensionListQuery()) },
+            buildUrl { path(extensionListQuery()) }
         ) {
             expectSuccess = true
         }.body<List<Extension>>()
@@ -44,7 +44,7 @@ class ExtensionRepositoryImpl @Inject constructor(
 
     override fun installExtension(extension: Extension) = flow {
         val response = client.get(
-            buildUrl { path(apkInstallQuery(extension.pkgName)) },
+            buildUrl { path(apkInstallQuery(extension.pkgName)) }
         ) {
             expectSuccess = true
         }
@@ -53,7 +53,7 @@ class ExtensionRepositoryImpl @Inject constructor(
 
     override fun updateExtension(extension: Extension) = flow {
         val response = client.get(
-            buildUrl { path(apkUpdateQuery(extension.pkgName)) },
+            buildUrl { path(apkUpdateQuery(extension.pkgName)) }
         ) {
             expectSuccess = true
         }
@@ -62,7 +62,7 @@ class ExtensionRepositoryImpl @Inject constructor(
 
     override fun uninstallExtension(extension: Extension) = flow {
         val response = client.get(
-            buildUrl { path(apkUninstallQuery(extension.pkgName)) },
+            buildUrl { path(apkUninstallQuery(extension.pkgName)) }
         ) {
             expectSuccess = true
         }
@@ -71,7 +71,7 @@ class ExtensionRepositoryImpl @Inject constructor(
 
     override fun getApkIcon(extension: Extension, block: HttpRequestBuilder.() -> Unit) = flow {
         val response = client.get(
-            buildUrl { path(apkIconQuery(extension.apkName)) },
+            buildUrl { path(apkIconQuery(extension.apkName)) }
         ) {
             expectSuccess = true
             block()

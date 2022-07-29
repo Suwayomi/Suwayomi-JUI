@@ -17,5 +17,5 @@ expect class FileSaver {
 expect fun rememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit = {},
-    onError: () -> Unit = {},
+    onError: () -> Unit = {}
 ): FileSaver

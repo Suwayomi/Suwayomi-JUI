@@ -193,7 +193,7 @@ private fun EditTextPreference(editText: EditText) {
             positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties(),
+        properties = getMaterialDialogProperties()
     ) {
         title(editText.dialogTitle ?: BuildKonfig.NAME)
         if (editText.dialogMessage != null) {

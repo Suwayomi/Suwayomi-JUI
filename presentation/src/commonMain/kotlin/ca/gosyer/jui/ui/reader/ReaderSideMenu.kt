@@ -107,7 +107,7 @@ fun ReaderExpandBottomMenu(
     navigate: (Int) -> Unit,
     readerMenuOpen: Boolean,
     movePrevChapter: () -> Unit,
-    moveNextChapter: () -> Unit,
+    moveNextChapter: () -> Unit
 ) {
     AnimatedVisibility(
         readerMenuOpen,
@@ -160,7 +160,7 @@ fun ReaderExpandBottomMenu(
             Card(
                 modifier = Modifier.fillMaxSize().padding(it).padding(horizontal = 8.dp),
                 shape = CircleShape,
-                backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.5F),
+                backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.5F)
             ) {
                 AroundLayout(
                     Modifier.padding(horizontal = 8.dp),
@@ -204,7 +204,7 @@ fun ReaderExpandBottomMenu(
 fun ReaderSheet(
     readerModes: List<String>,
     selectedMode: String,
-    onSetReaderMode: (String) -> Unit,
+    onSetReaderMode: (String) -> Unit
 ) {
     Column(Modifier.fillMaxWidth()) {
         ReaderModeSetting(readerModes, selectedMode, onSetReaderMode)
@@ -282,7 +282,7 @@ private fun ReaderProgressSlider(
 @Composable
 private fun NavigateChapters(loadPrevChapter: () -> Unit, loadNextChapter: () -> Unit) {
     Divider(Modifier.padding(horizontal = 4.dp, vertical = 8.dp))
-    Row(horizontalArrangement = Arrangement.SpaceBetween,) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween) {
         OutlinedButton(loadPrevChapter, Modifier.weight(0.5F)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val nextChapter = stringResource(MR.strings.nav_prev_chapter)

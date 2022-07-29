@@ -63,7 +63,7 @@ class ReaderMenuViewModel @Inject constructor(
     private val updateMangaMeta: UpdateMangaMeta,
     private val updateChapterMeta: UpdateChapterMeta,
     contextWrapper: ContextWrapper,
-    private val params: Params,
+    private val params: Params
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()
     private val _manga = MutableStateFlow<Manga?>(null)

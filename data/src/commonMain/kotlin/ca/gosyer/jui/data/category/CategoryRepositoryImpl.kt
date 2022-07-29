@@ -42,7 +42,7 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override fun getMangaCategories(mangaId: Long) = flow {
         val response = client.get(
-            buildUrl { path(getMangaCategoriesQuery(mangaId)) },
+            buildUrl { path(getMangaCategoriesQuery(mangaId)) }
         ) {
             expectSuccess = true
         }.body<List<Category>>()
@@ -69,7 +69,7 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override fun getCategories(dropDefault: Boolean) = flow {
         val response = client.get(
-            buildUrl { path(getCategoriesQuery()) },
+            buildUrl { path(getCategoriesQuery()) }
         ) {
             expectSuccess = true
         }.body<List<Category>>().let { categories ->
@@ -126,7 +126,7 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override fun deleteCategory(categoryId: Long) = flow {
         val response = client.delete(
-            buildUrl { path(categoryDeleteRequest(categoryId)) },
+            buildUrl { path(categoryDeleteRequest(categoryId)) }
         ) {
             expectSuccess = true
         }
@@ -135,7 +135,7 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override fun getMangaFromCategory(categoryId: Long) = flow {
         val response = client.get(
-            buildUrl { path(getMangaInCategoryQuery(categoryId)) },
+            buildUrl { path(getMangaInCategoryQuery(categoryId)) }
         ) {
             expectSuccess = true
         }.body<List<Manga>>()

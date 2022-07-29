@@ -17,7 +17,7 @@ val LocalDisplayController =
     compositionLocalOf<DisplayController?> { null }
 
 class DisplayController(
-    private val _sideMenuVisible: MutableState<Boolean> = mutableStateOf(true),
+    private val _sideMenuVisible: MutableState<Boolean> = mutableStateOf(true)
 ) {
     val sideMenuVisible by _sideMenuVisible
 
