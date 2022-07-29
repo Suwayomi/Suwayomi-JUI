@@ -82,7 +82,7 @@ suspend fun main() {
         .launchIn(GlobalScope)
 
     val uiPreferences = appComponent.uiPreferences
-    val uiHooks = appComponent.getHooks()
+    val uiHooks = appComponent.hooks
 
     // Call setDefault before getting a resource bundle
     val language = uiPreferences.language().get()

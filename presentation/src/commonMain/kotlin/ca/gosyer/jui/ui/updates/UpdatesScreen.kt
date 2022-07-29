@@ -11,7 +11,7 @@ import androidx.compose.runtime.collectAsState
 import ca.gosyer.jui.ui.manga.MangaScreen
 import ca.gosyer.jui.ui.reader.rememberReaderLauncher
 import ca.gosyer.jui.ui.updates.components.UpdatesScreenContent
-import ca.gosyer.jui.uicore.vm.viewModel
+import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -24,7 +24,7 @@ class UpdatesScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<UpdatesScreenViewModel>()
+        val vm = viewModel { updatesViewModel() }
         val navigator = LocalNavigator.currentOrThrow
         val readerLauncher = rememberReaderLauncher()
         UpdatesScreenContent(

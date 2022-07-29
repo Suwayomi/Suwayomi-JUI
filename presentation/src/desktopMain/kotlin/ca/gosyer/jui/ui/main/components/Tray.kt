@@ -16,14 +16,14 @@ import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.rememberTrayState
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
-import ca.gosyer.jui.uicore.vm.LocalViewModelFactory
+import ca.gosyer.jui.ui.base.LocalViewModels
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
 fun ApplicationScope.Tray(icon: Painter) {
-    val vmFactory = LocalViewModelFactory.current
-    val vm = remember { vmFactory.instantiate<TrayViewModel>() }
+    val viewModels = LocalViewModels.current
+    val vm = remember { viewModels.trayViewModel() }
     val trayState = rememberTrayState()
     Tray(
         icon,

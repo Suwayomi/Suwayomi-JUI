@@ -9,7 +9,7 @@ package ca.gosyer.jui.ui.manga
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.jui.ui.manga.components.MangaScreenContent
-import ca.gosyer.jui.uicore.vm.viewModel
+import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -21,7 +21,7 @@ class MangaScreen(private val mangaId: Long) : Screen {
     @Composable
     override fun Content() {
         val vm = viewModel {
-            instantiate<MangaScreenViewModel>(MangaScreenViewModel.Params(mangaId))
+            mangaViewModel(MangaScreenViewModel.Params(mangaId))
         }
 
         MangaScreenContent(

@@ -4,10 +4,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.ui.base.vm
+package ca.gosyer.jui.ui
 
-import ca.gosyer.jui.uicore.vm.ViewModelFactory
-import me.tatarka.inject.annotations.Inject
-
-@Inject
-expect class ViewModelFactoryImpl : ViewModelFactory
+actual interface ViewModelComponent : SharedViewModelComponent

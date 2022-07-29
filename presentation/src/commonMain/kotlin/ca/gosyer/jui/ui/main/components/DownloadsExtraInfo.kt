@@ -22,14 +22,13 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.base.WebsocketService
 import ca.gosyer.jui.domain.download.model.DownloaderStatus
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.ui.downloads.DownloadsScreenViewModel
+import ca.gosyer.jui.ui.base.LocalViewModels
 import ca.gosyer.jui.uicore.resources.stringResource
-import ca.gosyer.jui.uicore.vm.LocalViewModelFactory
 
 @Composable
 fun DownloadsExtraInfo() {
-    val vmFactory = LocalViewModelFactory.current
-    val vm = remember { vmFactory.instantiate<DownloadsScreenViewModel>(true) }
+    val viewModels = LocalViewModels.current
+    val vm = remember { viewModels.downloadsViewModel(true) }
     DisposableEffect(vm) {
         onDispose(vm::onDispose)
     }

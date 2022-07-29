@@ -9,11 +9,10 @@ package ca.gosyer.jui.ui.categories
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.jui.ui.categories.components.CategoriesScreenContent
-import ca.gosyer.jui.uicore.vm.viewModel
+import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import kotlin.jvm.Transient
 
 expect class CategoriesLauncher {
 
@@ -35,7 +34,7 @@ class CategoriesScreen(
 
     @Composable
     override fun Content() {
-        val vm = viewModel<CategoriesScreenViewModel>()
+        val vm = viewModel { categoryViewModel() }
         CategoriesScreenContent(
             categories = vm.categories.collectAsState().value,
             updateRemoteCategories = vm::updateRemoteCategories,

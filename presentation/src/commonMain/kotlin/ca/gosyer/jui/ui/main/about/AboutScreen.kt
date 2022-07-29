@@ -12,7 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalUriHandler
 import ca.gosyer.jui.ui.main.about.components.AboutContent
 import ca.gosyer.jui.ui.main.about.licenses.LicensesScreen
-import ca.gosyer.jui.uicore.vm.viewModel
+import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -26,7 +26,7 @@ class AboutScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<AboutViewModel>()
+        val vm = viewModel { aboutViewModel() }
         val uriHandler = LocalUriHandler.current
         val navigator = LocalNavigator.currentOrThrow
         LaunchedEffect(vm) {

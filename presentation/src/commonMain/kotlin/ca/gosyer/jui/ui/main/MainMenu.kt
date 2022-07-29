@@ -28,12 +28,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ca.gosyer.jui.ui.base.LocalViewModels
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.DisplayController
 import ca.gosyer.jui.ui.base.navigation.withDisplayController
 import ca.gosyer.jui.ui.main.components.BottomNav
 import ca.gosyer.jui.ui.main.components.SideMenu
-import ca.gosyer.jui.uicore.vm.LocalViewModelFactory
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.FadeTransition
 import kotlinx.coroutines.delay
@@ -43,8 +43,8 @@ const val SIDE_MENU_EXPAND_DURATION = 500
 
 @Composable
 fun MainMenu() {
-    val vmFactory = LocalViewModelFactory.current
-    val vm = remember { vmFactory.instantiate<MainViewModel>() }
+    val viewModels = LocalViewModels.current
+    val vm = remember { viewModels.mainViewModel() }
     DisposableEffect(vm) {
         onDispose(vm::onDispose)
     }

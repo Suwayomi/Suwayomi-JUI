@@ -29,6 +29,7 @@ import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.ChoicePreference
 import ca.gosyer.jui.ui.base.prefs.SwitchPreference
+import ca.gosyer.jui.ui.viewModel
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
@@ -37,7 +38,6 @@ import ca.gosyer.jui.uicore.resources.readTextAsync
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import ca.gosyer.jui.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -54,7 +54,7 @@ class SettingsGeneralScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<SettingsGeneralViewModel>()
+        val vm = viewModel { settingsGeneralViewModel() }
         SettingsGeneralScreenContent(
             startScreen = vm.startScreen,
             startScreenChoices = vm.getStartScreenChoices(),

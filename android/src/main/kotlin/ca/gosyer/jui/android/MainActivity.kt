@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         AndroidDownloadService.start(this, Actions.START)
 
-        val uiHooks = appComponent.getHooks()
+        val uiHooks = appComponent.hooks
         setContent {
             CompositionLocalProvider(*uiHooks) {
                 AppTheme {

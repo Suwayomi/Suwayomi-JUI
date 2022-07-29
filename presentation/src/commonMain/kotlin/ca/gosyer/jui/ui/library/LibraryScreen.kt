@@ -9,12 +9,11 @@ package ca.gosyer.jui.ui.library
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.jui.ui.library.components.LibraryScreenContent
-import ca.gosyer.jui.ui.library.settings.LibrarySettingsViewModel
 import ca.gosyer.jui.ui.library.settings.getLibraryDisplay
 import ca.gosyer.jui.ui.library.settings.getLibraryFilters
 import ca.gosyer.jui.ui.library.settings.getLibrarySort
 import ca.gosyer.jui.ui.manga.MangaScreen
-import ca.gosyer.jui.uicore.vm.viewModel
+import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -27,8 +26,8 @@ class LibraryScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<LibraryScreenViewModel>()
-        val settingsVM = viewModel<LibrarySettingsViewModel>()
+        val vm = viewModel { libraryViewModel() }
+        val settingsVM = viewModel { librarySettingsViewModel() }
         val navigator = LocalNavigator.currentOrThrow
         LibraryScreenContent(
             categories = vm.categories.collectAsState().value,

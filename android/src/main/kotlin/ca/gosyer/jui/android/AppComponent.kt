@@ -11,6 +11,7 @@ import android.content.Context
 import ca.gosyer.jui.core.di.AppScope
 import ca.gosyer.jui.data.DataComponent
 import ca.gosyer.jui.domain.DomainComponent
+import ca.gosyer.jui.ui.ViewModelComponent
 import ca.gosyer.jui.ui.base.UiComponent
 import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Provides
@@ -21,7 +22,7 @@ abstract class AppComponent(
     @get:AppScope
     @get:Provides
     val context: Context
-) : DataComponent, DomainComponent, UiComponent {
+) : ViewModelComponent, DataComponent, DomainComponent, UiComponent {
 
     abstract val appMigrations: AppMigrations
 
@@ -29,6 +30,9 @@ abstract class AppComponent(
     @get:Provides
     protected val appMigrationsFactory: AppMigrations
         get() = AppMigrations(migrationPreferences, contextWrapper)
+
+    val bind: ViewModelComponent
+        @Provides get() = this
 
     companion object {
         @SuppressLint("StaticFieldLeak")

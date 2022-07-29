@@ -20,12 +20,12 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.takeOrElse
 import ca.gosyer.jui.domain.ui.model.ThemeMode
 import ca.gosyer.jui.domain.ui.service.UiPreferences
+import ca.gosyer.jui.ui.base.LocalViewModels
 import ca.gosyer.jui.ui.base.theme.ThemeScrollbarStyle.getScrollbarStyle
 import ca.gosyer.jui.uicore.components.LocalScrollbarStyle
 import ca.gosyer.jui.uicore.theme.Theme
 import ca.gosyer.jui.uicore.theme.themes
 import ca.gosyer.jui.uicore.vm.ContextWrapper
-import ca.gosyer.jui.uicore.vm.LocalViewModelFactory
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -40,8 +40,8 @@ import me.tatarka.inject.annotations.Inject
  */
 @Composable
 fun AppTheme(content: @Composable () -> Unit) {
-    val vmFactory = LocalViewModelFactory.current
-    val vm = remember { vmFactory.instantiate<AppThemeViewModel>() }
+    val viewModels = LocalViewModels.current
+    val vm = remember { viewModels.appThemeViewModel() }
     val colors = vm.getColors()
     /*val systemUiController = rememberSystemUiController()*/
     DisposableEffect(vm) {

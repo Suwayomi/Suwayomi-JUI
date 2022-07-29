@@ -29,6 +29,7 @@ import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.ChoicePreference
 import ca.gosyer.jui.ui.base.prefs.EditTextPreference
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow
+import ca.gosyer.jui.ui.viewModel
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
@@ -38,7 +39,6 @@ import ca.gosyer.jui.uicore.prefs.asStringStateIn
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import ca.gosyer.jui.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -51,9 +51,9 @@ class SettingsServerScreen : Screen {
 
     @Composable
     override fun Content() {
-        val connectionVM = viewModel<SettingsServerViewModel>()
+        val connectionVM = viewModel { settingsServerViewModel() }
         SettingsServerScreenContent(
-            serverHostItems = getServerHostItems { viewModel() },
+            serverHostItems = getServerHostItems { viewModel { settingsServerHostViewModel() } },
             proxyValue = connectionVM.proxy.collectAsState().value,
             authValue = connectionVM.auth.collectAsState().value,
             serverUrl = connectionVM.serverUrl,

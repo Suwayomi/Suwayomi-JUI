@@ -14,7 +14,7 @@ import ca.gosyer.jui.ui.sources.browse.components.SourceScreenContent
 import ca.gosyer.jui.ui.sources.browse.filter.SourceFiltersViewModel
 import ca.gosyer.jui.ui.sources.components.LocalSourcesNavigator
 import ca.gosyer.jui.ui.sources.settings.SourceSettingsScreen
-import ca.gosyer.jui.uicore.vm.viewModel
+import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -27,10 +27,10 @@ class SourceScreen(val source: Source, private val initialQuery: String? = null)
     @Composable
     override fun Content() {
         val sourceVM = viewModel {
-            instantiate<SourceScreenViewModel>(SourceScreenViewModel.Params(source, initialQuery))
+            sourceViewModel(SourceScreenViewModel.Params(source, initialQuery))
         }
         val filterVM = viewModel {
-            instantiate<SourceFiltersViewModel>(SourceFiltersViewModel.Params(source.id))
+            sourceFiltersViewModel(SourceFiltersViewModel.Params(source.id))
         }
         val sourcesNavigator = LocalSourcesNavigator.current
         val navigator = LocalNavigator.currentOrThrow

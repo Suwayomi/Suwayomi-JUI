@@ -14,12 +14,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import ca.gosyer.jui.uicore.vm.LocalViewModelFactory
+import ca.gosyer.jui.ui.base.LocalViewModels
 
 @Composable
 fun DebugOverlay() {
-    val vmFactory = LocalViewModelFactory.current
-    val vm = remember { vmFactory.instantiate<DebugOverlayViewModel>() }
+    val viewModels = LocalViewModels.current
+    val vm = remember { viewModels.debugOverlayViewModel() }
     DisposableEffect(vm) {
         onDispose(vm::onDispose)
     }

@@ -30,6 +30,7 @@ import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.ChoicePreference
 import ca.gosyer.jui.ui.base.prefs.ExpandablePreference
 import ca.gosyer.jui.ui.base.prefs.SwitchPreference
+import ca.gosyer.jui.ui.viewModel
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
@@ -38,7 +39,6 @@ import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import ca.gosyer.jui.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -54,7 +54,7 @@ class SettingsReaderScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<SettingsReaderViewModel>()
+        val vm = viewModel { settingsReaderViewModel() }
         SettingsReaderScreenContent(
             modes = vm.modes.collectAsState().value.associateWith { it },
             selectedMode = vm.selectedMode,

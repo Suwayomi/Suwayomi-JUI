@@ -37,7 +37,7 @@ class ReaderActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val hooks = AppComponent.getInstance(applicationContext).getHooks()
+        val hooks = AppComponent.getInstance(applicationContext).hooks
 
         val mangaId = intent.extras!!.getLong("manga", -1)
         val chapterIndex = intent.extras!!.getInt("chapter", -1)

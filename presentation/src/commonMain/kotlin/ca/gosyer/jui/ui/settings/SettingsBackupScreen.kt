@@ -30,10 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.core.io.SYSTEM
 import ca.gosyer.jui.core.io.copyTo
 import ca.gosyer.jui.core.io.saveTo
-import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.backup.interactor.ExportBackupFile
 import ca.gosyer.jui.domain.backup.interactor.ImportBackupFile
@@ -45,13 +43,13 @@ import ca.gosyer.jui.ui.base.file.rememberFileSaver
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow
 import ca.gosyer.jui.ui.util.lang.toSource
+import ca.gosyer.jui.ui.viewModel
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import ca.gosyer.jui.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -91,7 +89,7 @@ class SettingsBackupScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<SettingsBackupViewModel>()
+        val vm = viewModel { settingsBackupViewModel() }
         SettingsBackupScreenContent(
             restoreStatus = vm.restoreStatus.collectAsState().value,
             creatingStatus = vm.creatingStatus.collectAsState().value,

@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.jui.ui.downloads.components.DownloadsScreenContent
 import ca.gosyer.jui.ui.manga.MangaScreen
-import ca.gosyer.jui.uicore.vm.viewModel
+import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -22,9 +22,7 @@ class DownloadsScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel {
-            instantiate<DownloadsScreenViewModel>(false)
-        }
+        val vm = viewModel { downloadsViewModel(false) }
         val navigator = LocalNavigator.currentOrThrow
         DownloadsScreenContent(
             downloadQueue = vm.downloadQueue.collectAsState().value,

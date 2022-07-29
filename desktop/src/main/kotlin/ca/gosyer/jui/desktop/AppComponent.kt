@@ -9,13 +9,14 @@ package ca.gosyer.jui.desktop
 import ca.gosyer.jui.core.di.AppScope
 import ca.gosyer.jui.data.DataComponent
 import ca.gosyer.jui.domain.DomainComponent
+import ca.gosyer.jui.ui.ViewModelComponent
 import ca.gosyer.jui.ui.base.UiComponent
 import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Provides
 
 @AppScope
 @Component
-abstract class AppComponent : DataComponent, DomainComponent, UiComponent {
+abstract class AppComponent : ViewModelComponent, DataComponent, DomainComponent, UiComponent {
 
     abstract val appMigrations: AppMigrations
 
@@ -23,6 +24,9 @@ abstract class AppComponent : DataComponent, DomainComponent, UiComponent {
     @get:Provides
     protected val appMigrationsFactory: AppMigrations
         get() = AppMigrations(migrationPreferences, contextWrapper)
+
+    val bind: ViewModelComponent
+        @Provides get() = this
 
     companion object {
         private var appComponentInstance: AppComponent? = null

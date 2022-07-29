@@ -20,6 +20,7 @@ import ca.gosyer.jui.domain.updates.service.UpdatePreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.SwitchPreference
+import ca.gosyer.jui.ui.viewModel
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
@@ -27,7 +28,6 @@ import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import ca.gosyer.jui.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -38,7 +38,7 @@ class SettingsAdvancedScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<SettingsAdvancedViewModel>()
+        val vm = viewModel { settingsAdvancedViewModel() }
         SettingsAdvancedScreenContent(
             updatesEnabled = vm.updatesEnabled
         )

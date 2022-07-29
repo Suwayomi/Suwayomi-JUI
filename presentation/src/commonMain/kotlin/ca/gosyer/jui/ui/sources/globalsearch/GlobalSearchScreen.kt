@@ -8,11 +8,10 @@ package ca.gosyer.jui.ui.sources.globalsearch
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import ca.gosyer.jui.ui.manga.MangaScreen
 import ca.gosyer.jui.ui.sources.browse.SourceScreen
 import ca.gosyer.jui.ui.sources.components.LocalSourcesNavigator
 import ca.gosyer.jui.ui.sources.globalsearch.components.GlobalSearchScreenContent
-import ca.gosyer.jui.uicore.vm.viewModel
+import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -26,7 +25,7 @@ class GlobalSearchScreen(private val initialQuery: String) : Screen {
     @Composable
     override fun Content() {
         val vm = viewModel {
-            instantiate<GlobalSearchViewModel>(GlobalSearchViewModel.Params(initialQuery))
+            globalSearchViewModel(GlobalSearchViewModel.Params(initialQuery))
         }
         val sourcesNavigator = LocalSourcesNavigator.current
         val navigator = LocalNavigator.currentOrThrow

@@ -44,6 +44,7 @@ import ca.gosyer.jui.ui.base.theme.AppColorsPreferenceState
 import ca.gosyer.jui.ui.base.theme.asStateFlow
 import ca.gosyer.jui.ui.base.theme.getDarkColors
 import ca.gosyer.jui.ui.base.theme.getLightColors
+import ca.gosyer.jui.ui.viewModel
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
@@ -53,7 +54,6 @@ import ca.gosyer.jui.uicore.theme.Theme
 import ca.gosyer.jui.uicore.theme.themes
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import ca.gosyer.jui.uicore.vm.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -64,7 +64,7 @@ class SettingsAppearanceScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<ThemesViewModel>()
+        val vm = viewModel { themesViewModel() }
         SettingsAppearanceScreenContent(
             activeColors = vm.getActiveColors(),
             themeMode = vm.themeMode,

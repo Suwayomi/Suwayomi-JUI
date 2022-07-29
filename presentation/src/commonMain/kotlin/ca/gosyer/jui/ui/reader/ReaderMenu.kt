@@ -55,6 +55,7 @@ import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.domain.reader.model.ImageScale
 import ca.gosyer.jui.domain.reader.model.NavigationMode
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.LocalViewModels
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -74,7 +75,6 @@ import ca.gosyer.jui.uicore.components.ErrorScreen
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.resources.stringResource
-import ca.gosyer.jui.uicore.vm.LocalViewModelFactory
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -110,8 +110,8 @@ fun ReaderMenu(
     hotkeyFlow: SharedFlow<KeyEvent>,
     onCloseRequest: () -> Unit
 ) {
-    val vmFactory = LocalViewModelFactory.current
-    val vm = remember { vmFactory.instantiate<ReaderMenuViewModel>(ReaderMenuViewModel.Params(chapterIndex, mangaId)) }
+    val viewModels = LocalViewModels.current
+    val vm = remember { viewModels.readerViewModel(ReaderMenuViewModel.Params(chapterIndex, mangaId)) }
     DisposableEffect(vm) {
         onDispose(vm::onDispose)
     }

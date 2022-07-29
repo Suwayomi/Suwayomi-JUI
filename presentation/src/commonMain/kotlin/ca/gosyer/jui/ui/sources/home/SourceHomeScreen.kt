@@ -12,7 +12,7 @@ import ca.gosyer.jui.ui.sources.browse.SourceScreen
 import ca.gosyer.jui.ui.sources.components.LocalSourcesNavigator
 import ca.gosyer.jui.ui.sources.globalsearch.GlobalSearchScreen
 import ca.gosyer.jui.ui.sources.home.components.SourceHomeScreenContent
-import ca.gosyer.jui.uicore.vm.viewModel
+import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -25,7 +25,7 @@ class SourceHomeScreen : Screen {
 
     @Composable
     override fun Content() {
-        val vm = viewModel<SourceHomeScreenViewModel>()
+        val vm = viewModel { sourceHomeViewModel() }
         val sourcesNavigator = LocalSourcesNavigator.current
         val navigator = LocalNavigator.currentOrThrow
         SourceHomeScreenContent(
