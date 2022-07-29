@@ -96,7 +96,7 @@ internal class ObjectAdapter<T>(
 ) : AndroidPreference.Adapter<T> {
 
     override fun get(key: String, preferences: ObservableSettings): T {
-        return deserializer(preferences.getString(key)) // Not called unless key is present.
+        return deserializer(preferences.getString(key, "")) // Not called unless key is present.
     }
 
     override fun set(key: String, value: T, editor: ObservableSettings) {

@@ -49,4 +49,9 @@ android {
     lint {
         disable += "MissingTranslation"
     }
+
+    sourceSets.getByName("main") {
+        assets.srcDir(File(buildDir, "generated/moko/androidMain/assets"))
+        res.srcDir(File(buildDir, "generated/moko/androidMain/res"))
+    }
 }

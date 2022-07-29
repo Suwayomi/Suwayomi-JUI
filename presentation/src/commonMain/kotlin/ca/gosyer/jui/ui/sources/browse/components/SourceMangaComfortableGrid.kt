@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -50,14 +50,14 @@ fun SourceMangaComfortableGrid(
     onLoadNextPage: () -> Unit,
 ) {
     Box {
-        val state = rememberLazyListState()
+        val state = rememberLazyGridState()
         val cells = if (gridColumns < 1) {
             GridCells.Adaptive(gridSize.dp)
         } else {
             GridCells.Fixed(gridColumns)
         }
         LazyVerticalGrid(
-            cells = cells,
+            columns = cells,
             state = state,
             modifier = Modifier.fillMaxSize().padding(4.dp)
         ) {
@@ -75,7 +75,7 @@ fun SourceMangaComfortableGrid(
             }
         }
         VerticalScrollbar(
-            rememberScrollbarAdapter(state),
+            rememberScrollbarAdapter(state, cells),
             Modifier.align(Alignment.CenterEnd)
                 .fillMaxHeight()
                 .scrollbarPadding()

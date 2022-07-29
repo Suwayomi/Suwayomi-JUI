@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.appender.ConsoleAppender
-import org.apache.logging.log4j.core.config.builder.api.ComponentBuilder
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
 import org.lighthousegames.logging.KmLogging
 import org.lighthousegames.logging.logging
@@ -71,14 +70,14 @@ fun initializeLogger(loggingLocation: Path) {
                             .addAttribute("pattern", filePattern)
                     )
                     .addComponent(
-                        newComponent<ComponentBuilder<*>>("Policies")
+                        newComponent<_>("Policies")
                             .addComponent(
-                                newComponent<ComponentBuilder<*>>("CronTriggeringPolicy")
+                                newComponent<_>("CronTriggeringPolicy")
                                     .addAttribute("schedule", "0 0 0 * * ?")
                                     .addAttribute("evaluateOnStartup", "true")
                             )
                             .addComponent(
-                                newComponent<ComponentBuilder<*>>("SizeBasedTriggeringPolicy")
+                                newComponent<_>("SizeBasedTriggeringPolicy")
                                     .addAttribute("size", "100M")
                             )
                     )

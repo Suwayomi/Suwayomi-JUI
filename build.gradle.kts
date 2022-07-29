@@ -48,9 +48,9 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 subprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile> {
         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf(
+            /*freeCompilerArgs = freeCompilerArgs + listOf(
                 "-Xjvm-default=compatibility",
-            )
+            )*/
         }
     }
     tasks.withType<org.jmailen.gradle.kotlinter.tasks.LintTask> {
@@ -64,7 +64,7 @@ subprojects {
     plugins.withType<com.android.build.gradle.BasePlugin> {
         configure<com.android.build.gradle.BaseExtension> {
             // 32 requires a higher android plugin version
-            compileSdkVersion(31)
+            compileSdkVersion(33)
             defaultConfig {
                 minSdk = 21
                 targetSdk = 31

@@ -26,9 +26,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -139,7 +139,7 @@ private fun ColorPresets(
     val borderColor = MaterialTheme.colors.onBackground.copy(alpha = 0.54f)
 
     Column {
-        LazyVerticalGrid(cells = GridCells.Fixed(5)) {
+        LazyVerticalGrid(columns = GridCells.Fixed(5)) {
             items(presets) { color ->
                 ColorPresetItem(
                     color = color,
@@ -158,7 +158,7 @@ private fun ColorPresets(
                 .background(MaterialTheme.colors.onBackground.copy(alpha = 0.2f))
         )
 
-        LazyVerticalGrid(cells = GridCells.Fixed(5)) {
+        LazyVerticalGrid(columns = GridCells.Fixed(5)) {
             items(shades) { color ->
                 ColorPresetItem(
                     color = color,

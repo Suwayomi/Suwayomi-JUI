@@ -15,6 +15,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -38,6 +40,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastMaxBy
 import androidx.compose.ui.util.fastSumBy
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -47,6 +50,8 @@ actual interface ScrollbarAdapter
 class ScrollStateScrollbarAdapter(val scrollState: ScrollState) : ScrollbarAdapter
 
 class LazyListStateScrollbarAdapter(val lazyListState: LazyListState) : ScrollbarAdapter
+
+class LazyGridStateScrollbarAdapter(val lazyGridState: LazyGridState, val gridCells: GridCells) : ScrollbarAdapter
 
 @Immutable
 actual class ScrollbarStyle
@@ -69,6 +74,9 @@ internal actual fun RealVerticalScrollbar(
         }
         is LazyListStateScrollbarAdapter -> {
             Modifier.drawScrollbar(adapter.lazyListState, Orientation.Vertical, reverseLayout)
+        }
+        is LazyGridStateScrollbarAdapter -> {
+            Modifier.drawScrollbar(adapter.lazyGridState, adapter.gridCells, Orientation.Vertical, reverseLayout)
         }
         else -> Modifier
     }
@@ -110,6 +118,16 @@ actual fun rememberScrollbarAdapter(
 ): ScrollbarAdapter {
     return remember(scrollState) {
         LazyListStateScrollbarAdapter(scrollState)
+    }
+}
+
+@Composable
+actual fun rememberScrollbarAdapter(
+    scrollState: LazyGridState,
+    gridCells: GridCells,
+): ScrollbarAdapter {
+    return remember(scrollState, gridCells) {
+        LazyGridStateScrollbarAdapter(scrollState, gridCells)
     }
 }
 
@@ -168,6 +186,50 @@ private fun Modifier.drawScrollbar(
         .first()
         .run {
             (estimatedItemSize * index - offset) / totalSize * canvasSize
+        }
+    val drawScrollbar = onDrawScrollbar(
+        orientation = orientation,
+        reverseDirection = reverseDirection,
+        atEnd = atEnd,
+        showScrollbar = showScrollbar,
+        thickness = thickness,
+        color = color,
+        alpha = alpha,
+        thumbSize = thumbSize,
+        startOffset = startOffset
+    )
+    onDrawWithContent {
+        drawContent()
+        drawScrollbar()
+    }
+}
+
+private fun Modifier.drawScrollbar(
+    state: LazyGridState,
+    gridCells: GridCells,
+    orientation: Orientation,
+    reverseScrolling: Boolean
+): Modifier = drawScrollbar(
+    orientation, reverseScrolling, snapshotFlow { state.isScrollInProgress }
+) { reverseDirection, atEnd, thickness, color, alpha ->
+    val layoutInfo = state.layoutInfo
+    val viewportSize = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
+    val items = layoutInfo.visibleItemsInfo
+    // TODO Fix spacing
+    val itemsSize = items.chunked(
+        with(gridCells) {
+            calculateCrossAxisCellSizes(viewportSize, 0).size
+        }
+    ).sumOf { it.fastMaxBy { it.size.height }?.size?.height ?: 0 }
+    val showScrollbar = items.size < layoutInfo.totalItemsCount || itemsSize > viewportSize
+    val estimatedItemSize = if (items.isEmpty()) 0f else itemsSize.toFloat() / items.size
+    val totalSize = estimatedItemSize * layoutInfo.totalItemsCount
+    val canvasSize = if (orientation == Orientation.Horizontal) size.width else size.height
+    val thumbSize = viewportSize / totalSize * canvasSize
+    val startOffset = if (items.isEmpty()) 0f else items
+        .first()
+        .run {
+            (estimatedItemSize * index - if (orientation == Orientation.Vertical) offset.y else offset.x) / totalSize * canvasSize
         }
     val drawScrollbar = onDrawScrollbar(
         orientation = orientation,

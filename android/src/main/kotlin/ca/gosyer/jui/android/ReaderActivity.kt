@@ -53,7 +53,7 @@ class ReaderActivity : AppCompatActivity() {
                         chapterIndex = chapterIndex,
                         mangaId = mangaId,
                         hotkeyFlow = hotkeyFlow,
-                        onCloseRequest = ::onBackPressed
+                        onCloseRequest = onBackPressedDispatcher::onBackPressed
                     )
                 }
             }

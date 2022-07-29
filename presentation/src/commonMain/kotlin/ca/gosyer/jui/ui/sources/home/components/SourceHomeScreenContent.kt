@@ -7,7 +7,6 @@
 package ca.gosyer.jui.ui.sources.home.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,10 +19,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -86,27 +86,41 @@ fun SourceHomeScreenContent(
         if (sources.isEmpty()) {
             LoadingScreen(isLoading)
         } else {
-            Box(Modifier.fillMaxSize().padding(it), Alignment.TopCenter) {
-                val state = rememberLazyListState()
-                SourceCategory(sources, onAddSource, state)
-                /*val sourcesByLang = sources.groupBy { it.lang.toLowerCase() }.toList()
-                LazyColumn(state = state) {
-                    items(sourcesByLang) { (lang, sources) ->
-                        SourceCategory(
-                            lang,
-                            sources,
-                            onSourceClicked = sourceClicked
-                        )
-                        Spacer(Modifier.height(8.dp))
+            BoxWithConstraints(Modifier.fillMaxSize().padding(it), Alignment.TopCenter) {
+                if (maxWidth > 720.dp) {
+                    val state = rememberLazyGridState()
+                    val cells = GridCells.Adaptive(120.dp)
+                    LazyVerticalGrid(cells, state = state) {
+                        items(sources) { source ->
+                            WideSourceItem(
+                                source,
+                                onSourceClicked = onAddSource
+                            )
+                        }
                     }
-                }*/
-
-                VerticalScrollbar(
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                        .fillMaxHeight()
-                        .scrollbarPadding(),
-                    adapter = rememberScrollbarAdapter(state)
-                )
+                    VerticalScrollbar(
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                            .fillMaxHeight()
+                            .scrollbarPadding(),
+                        adapter = rememberScrollbarAdapter(state, cells)
+                    )
+                } else {
+                    val state = rememberLazyListState()
+                    LazyColumn(state = state) {
+                        items(sources) { source ->
+                            ThinSourceItem(
+                                source,
+                                onSourceClicked = onAddSource
+                            )
+                        }
+                    }
+                    VerticalScrollbar(
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                            .fillMaxHeight()
+                            .scrollbarPadding(),
+                        adapter = rememberScrollbarAdapter(state)
+                    )
+                }
             }
         }
     }
@@ -135,35 +149,6 @@ fun SourceHomeScreenToolbar(
             }
         }
     )
-}
-
-@Composable
-fun SourceCategory(
-    sources: List<Source>,
-    onSourceClicked: (Source) -> Unit,
-    state: LazyListState
-) {
-    BoxWithConstraints {
-        if (maxWidth > 720.dp) {
-            LazyVerticalGrid(GridCells.Adaptive(120.dp), state = state) {
-                items(sources) { source ->
-                    WideSourceItem(
-                        source,
-                        onSourceClicked = onSourceClicked
-                    )
-                }
-            }
-        } else {
-            LazyColumn(state = state) {
-                items(sources) { source ->
-                    ThinSourceItem(
-                        source,
-                        onSourceClicked = onSourceClicked
-                    )
-                }
-            }
-        }
-    }
 }
 
 @Composable

@@ -17,7 +17,7 @@ import kotlinx.serialization.modules.SerializersModule
 
 internal object StringAdapter : JvmPreference.Adapter<String> {
     override fun get(key: String, preferences: ObservableSettings): String {
-        return preferences.getString(key) // Not called unless key is present.
+        return preferences.getString(key, "") // Not called unless key is present.
     }
 
     override fun set(key: String, value: String, editor: ObservableSettings) {
@@ -96,7 +96,7 @@ internal class ObjectAdapter<T>(
 ) : JvmPreference.Adapter<T> {
 
     override fun get(key: String, preferences: ObservableSettings): T {
-        return deserializer(preferences.getString(key)) // Not called unless key is present.
+        return deserializer(preferences.getString(key, "")) // Not called unless key is present.
     }
 
     override fun set(key: String, value: T, editor: ObservableSettings) {
