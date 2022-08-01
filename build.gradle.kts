@@ -2,6 +2,7 @@ import Config.migrationCode
 import Config.serverCode
 import Config.tachideskVersion
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -46,7 +47,7 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 }
 
 subprojects {
-    tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile> {
+    tasks.withType<KotlinJvmCompile> {
         kotlinOptions {
             /*freeCompilerArgs = freeCompilerArgs + listOf(
                 "-Xjvm-default=compatibility",
@@ -55,15 +56,14 @@ subprojects {
     }
     tasks.withType<org.jmailen.gradle.kotlinter.tasks.LintTask> {
         source(files("src"))
-        exclude("ca/gosyer/*/build")
+        exclude("ca/gosyer/jui/*/build")
     }
     tasks.withType<org.jmailen.gradle.kotlinter.tasks.FormatTask> {
         source(files("src"))
-        exclude("ca/gosyer/*/build")
+        exclude("ca/gosyer/jui/*/build")
     }
     plugins.withType<com.android.build.gradle.BasePlugin> {
         configure<com.android.build.gradle.BaseExtension> {
-            // 32 requires a higher android plugin version
             compileSdkVersion(33)
             defaultConfig {
                 minSdk = 21
