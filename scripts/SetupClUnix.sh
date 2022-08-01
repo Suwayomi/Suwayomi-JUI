@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ "$(basename "$(pwd)")" = "scripts" ]; then
   cd ..
 fi
