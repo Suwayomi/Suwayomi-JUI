@@ -42,8 +42,8 @@ private fun getContextItems(
     markPreviousAsRead: () -> Unit
 ): List<ContextMenuItem> {
     return listOf(
-        ContextMenuItem(stringResource(MR.strings.action_toggle_read)) { toggleRead() },
-        ContextMenuItem(stringResource(MR.strings.action_mark_previous_read)) { markPreviousAsRead() },
-        ContextMenuItem(stringResource(MR.strings.action_toggle_bookmarked)) { toggleBookmarked() }
+        ContextMenuItem(stringResource(MR.strings.action_toggle_read), toggleRead),
+        ContextMenuItem(stringResource(MR.strings.action_mark_previous_read), markPreviousAsRead),
+        ContextMenuItem(stringResource(MR.strings.action_toggle_bookmarked), toggleBookmarked)
     )
 }
