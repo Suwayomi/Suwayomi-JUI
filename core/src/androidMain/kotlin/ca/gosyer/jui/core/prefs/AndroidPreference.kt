@@ -22,16 +22,6 @@ internal class AndroidPreference<T>(
     private val adapter: Adapter<T>
 ) : Preference<T> {
 
-    interface Adapter<T> {
-        fun get(key: String, preferences: ObservableSettings): T
-
-        fun set(key: String, value: T, editor: ObservableSettings)
-
-        fun isSet(keys: Set<String>, key: String): Boolean = key in keys
-
-        fun keyListener(key: String) = key
-    }
-
     /**
      * Returns the key of this preference.
      */
@@ -83,7 +73,7 @@ internal class AndroidPreference<T>(
      */
     override fun changes(): Flow<T> {
         return callbackFlow {
-            val listener = preferences.addListener(adapter.keyListener(key)) {
+            val listener = adapter.addListener(key, preferences) {
                 trySend(get())
             }
             awaitClose { listener.deactivate() }

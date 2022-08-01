@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.core.prefs
 
-import com.russhwolf.settings.JvmPreferencesSettings
+import com.russhwolf.settings.PreferencesSettings
 import me.tatarka.inject.annotations.Inject
 import java.util.prefs.Preferences
 
@@ -16,7 +16,7 @@ actual class PreferenceStoreFactory @Inject constructor() {
 
     actual fun create(vararg names: String): PreferenceStore {
         return JvmPreferenceStore(
-            JvmPreferencesSettings(
+            PreferencesSettings(
                 rootNode.node(names.joinToString(separator = "/"))
             )
         )
