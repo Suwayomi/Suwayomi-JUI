@@ -7,11 +7,12 @@
 package ca.gosyer.jui.ui.manga.components
 
 import androidx.compose.foundation.ContextMenuItem
+import androidx.compose.foundation.onClick
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.uicore.components.contextMenuClickable
+import ca.gosyer.jui.uicore.components.onRightClickContextMenu
 import ca.gosyer.jui.uicore.resources.stringResource
 
 actual fun Modifier.chapterItemModifier(
@@ -19,16 +20,19 @@ actual fun Modifier.chapterItemModifier(
     toggleRead: () -> Unit,
     toggleBookmarked: () -> Unit,
     markPreviousAsRead: () -> Unit
-): Modifier = contextMenuClickable(
-    {
-        getContextItems(
-            toggleRead,
-            toggleBookmarked,
-            markPreviousAsRead
-        )
-    },
-    onClick = { onClick() }
-)
+): Modifier = this
+    .onClick(
+        onClick = onClick
+    )
+    .onRightClickContextMenu(
+        items = {
+            getContextItems(
+                toggleRead,
+                toggleBookmarked,
+                markPreviousAsRead
+            )
+        }
+    )
 
 @Composable
 @Stable

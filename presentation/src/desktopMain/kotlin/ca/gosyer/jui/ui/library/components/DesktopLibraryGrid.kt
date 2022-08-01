@@ -7,22 +7,24 @@
 package ca.gosyer.jui.ui.library.components
 
 import androidx.compose.foundation.ContextMenuItem
+import androidx.compose.foundation.onClick
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.uicore.components.contextMenuClickable
+import ca.gosyer.jui.uicore.components.onRightClickContextMenu
 import ca.gosyer.jui.uicore.resources.stringResource
 
 actual fun Modifier.libraryMangaModifier(
     onClickManga: () -> Unit,
     onClickRemoveManga: () -> Unit
-): Modifier = contextMenuClickable(
-    {
-        getContextItems(onClickRemoveManga)
-    },
-    onClick = { onClickManga() }
-)
+): Modifier = this
+    .onClick(onClick = onClickManga)
+    .onRightClickContextMenu(
+        items = {
+            getContextItems(onClickRemoveManga)
+        }
+    )
 
 @Composable
 @Stable

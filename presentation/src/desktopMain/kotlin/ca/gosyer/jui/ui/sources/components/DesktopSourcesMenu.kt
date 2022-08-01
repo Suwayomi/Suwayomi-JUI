@@ -6,17 +6,20 @@
 
 package ca.gosyer.jui.ui.sources.components
 
+import androidx.compose.foundation.PointerMatcher
+import androidx.compose.foundation.onClick
 import androidx.compose.ui.Modifier
-import ca.gosyer.jui.uicore.components.combinedMouseClickable
+import androidx.compose.ui.input.pointer.PointerButton
 
 actual fun Modifier.sourceSideMenuItem(
     onSourceTabClick: () -> Unit,
     onSourceCloseTabClick: () -> Unit
-): Modifier = combinedMouseClickable(
-    onClick = {
-        onSourceTabClick()
-    },
-    onMiddleClick = {
-        onSourceCloseTabClick()
-    }
-)
+): Modifier = this
+    .onClick(
+        matcher = PointerMatcher.mouse(PointerButton.Primary),
+        onClick = onSourceTabClick
+    )
+    .onClick(
+        matcher = PointerMatcher.mouse(PointerButton.Tertiary),
+        onClick = onSourceCloseTabClick
+    )

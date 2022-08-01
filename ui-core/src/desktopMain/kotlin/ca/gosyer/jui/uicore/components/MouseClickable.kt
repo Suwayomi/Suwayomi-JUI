@@ -7,8 +7,8 @@
 package ca.gosyer.jui.uicore.components
 
 import androidx.compose.foundation.ContextMenuItem
-import androidx.compose.foundation.MouseClickScope
-import androidx.compose.foundation.mouseClickable
+import androidx.compose.foundation.PointerMatcher
+import androidx.compose.foundation.onClick
 import androidx.compose.material.CursorDropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
@@ -19,34 +19,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.input.pointer.isPrimaryPressed
-import androidx.compose.ui.input.pointer.isSecondaryPressed
-import androidx.compose.ui.input.pointer.isTertiaryPressed
-import androidx.compose.ui.platform.debugInspectorInfo
-import androidx.compose.ui.semantics.AccessibilityAction
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.SemanticsPropertyKey
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.input.pointer.PointerButton
 
-fun Modifier.contextMenuClickable(
+fun Modifier.onRightClickContextMenu(
     items: @Composable () -> List<ContextMenuItem>,
-    onClickLabel: String? = null,
-    onMiddleClickLabel: String? = null,
-    onRightClickLabel: String? = null,
-    onClick: MouseClickScope.() -> Unit = {},
-    onMiddleClick: MouseClickScope.() -> Unit = {},
-    enabled: Boolean = true
-) = composed(
-    inspectorInfo = debugInspectorInfo {
-        name = "contextMenuClickable"
-        properties["onClick"] = onClick
-        properties["onMiddleClick"] = onMiddleClick
-        properties["enabled"] = enabled
-        properties["onClickLabel"] = onClickLabel
-        properties["onMiddleClickLabel"] = onMiddleClickLabel
-        properties["onRightClickLabel"] = onRightClickLabel
-    }
-) {
+    enabled: Boolean = true,
+) = composed {
     var expanded by remember { mutableStateOf(false) }
     CursorDropdownMenu(
         expanded,
@@ -63,72 +41,9 @@ fun Modifier.contextMenuClickable(
             }
         }
     }
-    Modifier.combinedMouseClickable(
-        onClick = onClick,
-        onMiddleClick = onMiddleClick,
-        onClickLabel = onClickLabel,
-        onMiddleClickLabel = onMiddleClickLabel,
-        onRightClickLabel = onRightClickLabel,
-        onRightClick = { expanded = true },
-        enabled = enabled
-    )
-}
-
-fun Modifier.combinedMouseClickable(
-    enabled: Boolean = true,
-    onClickLabel: String? = null,
-    onMiddleClickLabel: String? = null,
-    onRightClickLabel: String? = null,
-    role: Role? = null,
-    onClick: MouseClickScope.() -> Unit = {},
-    onMiddleClick: MouseClickScope.() -> Unit = {},
-    onRightClick: MouseClickScope.() -> Unit = {}
-) = composed(
-    inspectorInfo = debugInspectorInfo {
-        name = "combinedMouseClickable"
-        properties["enabled"] = enabled
-        properties["onClickLabel"] = onClickLabel
-        properties["onMiddleClickLabel"] = onMiddleClickLabel
-        properties["onRightClickLabel"] = onRightClickLabel
-        properties["role"] = role
-        properties["onClick"] = onClick
-        properties["onMiddleClick"] = onMiddleClick
-        properties["onRightClick"] = onRightClick
-    }
-) {
-    Modifier
-        .mouseClickable(
-            enabled,
-            onClickLabel,
-            role
-        ) {
-            when {
-                buttons.isPrimaryPressed -> onClick()
-                buttons.isSecondaryPressed -> onRightClick()
-                buttons.isTertiaryPressed -> onMiddleClick()
-            }
-        }
-        .semantics(mergeDescendants = true) {
-            this[DesktopSemanticsActions.onMiddleClick] = AccessibilityAction(onMiddleClickLabel) { onMiddleClick(); true }
-            this[DesktopSemanticsActions.onRightClick] = AccessibilityAction(onRightClickLabel) { onRightClick(); true }
-        }
-}
-
-private object DesktopSemanticsActions {
-    val onRightClick = ActionPropertyKey<MouseClickScope.() -> Boolean>("OnRightClick")
-    val onMiddleClick = ActionPropertyKey<MouseClickScope.() -> Boolean>("OnMiddleClick")
-}
-
-private fun <T : Function<Boolean>> ActionPropertyKey(
-    name: String
-): SemanticsPropertyKey<AccessibilityAction<T>> {
-    return SemanticsPropertyKey(
-        name = name,
-        mergePolicy = { parentValue, childValue ->
-            AccessibilityAction(
-                parentValue?.label ?: childValue.label,
-                parentValue?.action ?: childValue.action
-            )
-        }
+    Modifier.onClick(
+        enabled = enabled,
+        matcher = PointerMatcher.mouse(PointerButton.Secondary),
+        onClick = { expanded = true },
     )
 }
