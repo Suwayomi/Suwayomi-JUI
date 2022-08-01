@@ -24,9 +24,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.ContentAlpha
@@ -45,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -95,12 +95,9 @@ fun SourceFiltersMenu(
             }
             val expandedGroups = remember { mutableStateListOf<Int>() }
             Box {
-                val lazyListState = rememberLazyListState()
-                LazyColumn(Modifier.fillMaxSize(), lazyListState) {
-                    items(
-                        items = filters,
-                        key = { it.filter.hashCode() }
-                    ) { item ->
+                val scrollState = rememberScrollState()
+                Column(Modifier.fillMaxSize().verticalScroll(scrollState)) {
+                    filters.fastForEach { item ->
                         item.toView(startExpanded = item.index in expandedGroups) { expanded, index ->
                             if (expanded) {
                                 expandedGroups += index
@@ -111,7 +108,7 @@ fun SourceFiltersMenu(
                     }
                 }
                 VerticalScrollbar(
-                    rememberScrollbarAdapter(lazyListState),
+                    rememberScrollbarAdapter(scrollState),
                     Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
                         .scrollbarPadding()
@@ -162,7 +159,7 @@ fun SourceFilterAction(
 
 @Composable
 fun GroupView(group: SourceFiltersView.Group, startExpanded: Boolean, onExpandChanged: ((Boolean, Int) -> Unit)? = null) {
-    val state by group.state.collectAsState()
+    val state by key(group.hashCode()) { group.state.collectAsState() }
     ExpandablePreference(
         title = group.name,
         startExpanded = startExpanded,
@@ -178,7 +175,7 @@ fun GroupView(group: SourceFiltersView.Group, startExpanded: Boolean, onExpandCh
 
 @Composable
 fun CheckboxView(checkBox: SourceFiltersView.CheckBox) {
-    val state by checkBox.state.collectAsState()
+    val state by key(checkBox.hashCode()) { checkBox.state.collectAsState() }
     SourceFilterAction(
         name = checkBox.name,
         onClick = { checkBox.updateState(!state) },
@@ -203,7 +200,7 @@ fun HeaderView(header: SourceFiltersView.Header) {
 
 @Composable
 fun SelectView(select: SourceFiltersView.Select) {
-    val state by select.state.collectAsState()
+    val state by key(select.hashCode()) { select.state.collectAsState() }
     Row(
         Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp)
             .padding(horizontal = 16.dp),
@@ -262,7 +259,7 @@ fun SortRow(name: String, selected: Boolean, asc: Boolean, onClick: () -> Unit) 
 
 @Composable
 fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChanged: ((Boolean, Int) -> Unit)?) {
-    val state by sort.state.collectAsState()
+    val state by key(sort.hashCode()) { sort.state.collectAsState() }
     ExpandablePreference(
         sort.name,
         startExpanded = startExpanded,
@@ -293,9 +290,9 @@ fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChang
 
 @Composable
 fun TextView(text: SourceFiltersView.Text) {
-    val placeholderText = remember { text.filter.name }
-    val state by text.state.collectAsState()
-    var stateText by remember(state) {
+    val placeholderText = remember(text) { text.filter.name }
+    val state by key(text.hashCode()) { text.state.collectAsState() }
+    var stateText by remember(text, state) {
         mutableStateOf(
             if (state == placeholderText) {
                 ""
@@ -303,7 +300,7 @@ fun TextView(text: SourceFiltersView.Text) {
         )
     }
     val interactionSource = remember { MutableInteractionSource() }
-    LaunchedEffect(interactionSource) {
+    LaunchedEffect(interactionSource, text) {
         interactionSource.interactions.filterIsInstance<FocusInteraction.Unfocus>().collect {
             text.updateState(stateText)
         }
@@ -327,7 +324,7 @@ fun TextView(text: SourceFiltersView.Text) {
 
 @Composable
 fun TriStateView(triState: SourceFiltersView.TriState) {
-    val state by triState.state.collectAsState()
+    val state by key(triState.hashCode()) { triState.state.collectAsState() }
     SourceFilterAction(
         name = triState.name,
         onClick = {
