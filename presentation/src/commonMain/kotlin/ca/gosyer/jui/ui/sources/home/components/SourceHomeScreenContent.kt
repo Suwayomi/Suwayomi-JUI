@@ -54,6 +54,7 @@ import ca.gosyer.jui.ui.extensions.components.LanguageDialog
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.rememberVerticalScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.KamelImage
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -102,7 +103,7 @@ fun SourceHomeScreenContent(
                         modifier = Modifier.align(Alignment.CenterEnd)
                             .fillMaxHeight()
                             .scrollbarPadding(),
-                        adapter = rememberScrollbarAdapter(state, cells)
+                        adapter = rememberVerticalScrollbarAdapter(state, cells)
                     )
                 } else {
                     val state = rememberLazyListState()

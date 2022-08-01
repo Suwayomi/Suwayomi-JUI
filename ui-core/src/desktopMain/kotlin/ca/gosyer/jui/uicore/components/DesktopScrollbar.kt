@@ -9,6 +9,7 @@ package ca.gosyer.jui.uicore.components
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
@@ -76,26 +78,44 @@ actual fun rememberScrollbarAdapter(
 }
 
 @Composable
-actual fun rememberScrollbarAdapter(
+actual fun rememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
-    gridCells: GridCells
+    gridCells: GridCells,
+    arrangement: Arrangement.Vertical?
 ): ScrollbarAdapter {
     val density = LocalDensity.current
-    return remember(scrollState, gridCells, density) { GridScrollbarAdapter(scrollState, gridCells, density) }
+    return remember(scrollState, gridCells, density, arrangement) {
+        GridScrollbarAdapter(scrollState, gridCells, density, arrangement?.spacing ?: Dp.Hairline)
+    }
+}
+
+@Composable
+actual fun rememberHorizontalScrollbarAdapter(
+    scrollState: LazyGridState,
+    gridCells: GridCells,
+    arrangement: Arrangement.Horizontal?
+): ScrollbarAdapter {
+    val density = LocalDensity.current
+    return remember(scrollState, gridCells, density, arrangement) {
+        GridScrollbarAdapter(scrollState, gridCells, density, arrangement?.spacing ?: Dp.Hairline)
+    }
 }
 
 // TODO deal with item spacing
 class GridScrollbarAdapter(
     private val scrollState: LazyGridState,
     private val gridCells: GridCells,
-    private val density: Density
+    private val density: Density,
+    private val spacing: Dp,
 ) : ScrollbarAdapter {
     override val scrollOffset: Float
         get() = (scrollState.firstVisibleItemIndex / itemsPerRow).coerceAtLeast(0) * averageItemSize + scrollState.firstVisibleItemScrollOffset
 
     override fun maxScrollOffset(containerSize: Int): Float {
         val size = with(gridCells) {
-            density.calculateCrossAxisCellSizes(containerSize, 0).size
+            with(density) {
+                calculateCrossAxisCellSizes(containerSize, spacing.roundToPx()).size
+            }
         }
         return (averageItemSize * (itemCount / size) - containerSize).coerceAtLeast(0f)
     }
@@ -132,7 +152,9 @@ class GridScrollbarAdapter(
             .toInt()
             .div(
                 with(gridCells) {
-                    density.calculateCrossAxisCellSizes(containerSize, 0).size
+                    with(density) {
+                        calculateCrossAxisCellSizes(containerSize, spacing.roundToPx()).size
+                    }
                 }
             )
             .coerceAtLeast(0)
@@ -159,11 +181,12 @@ class GridScrollbarAdapter(
 
     private val itemsPerRow
         get() = with(gridCells) {
-            density.calculateCrossAxisCellSizes(
-                (scrollState.layoutInfo.viewportEndOffset - scrollState.layoutInfo.viewportStartOffset)
-                    .coerceAtLeast(0),
-                0
-            ).size
+            with(density) {
+                calculateCrossAxisCellSizes(
+                    (scrollState.layoutInfo.viewportEndOffset - scrollState.layoutInfo.viewportStartOffset),
+                    spacing.roundToPx()
+                ).size
+            }
         }
 }
 

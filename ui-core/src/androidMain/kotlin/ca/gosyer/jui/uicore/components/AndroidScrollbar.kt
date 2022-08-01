@@ -12,6 +12,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyListState
@@ -38,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastMaxBy
@@ -51,7 +53,7 @@ class ScrollStateScrollbarAdapter(val scrollState: ScrollState) : ScrollbarAdapt
 
 class LazyListStateScrollbarAdapter(val lazyListState: LazyListState) : ScrollbarAdapter
 
-class LazyGridStateScrollbarAdapter(val lazyGridState: LazyGridState, val gridCells: GridCells) : ScrollbarAdapter
+class LazyGridStateScrollbarAdapter(val lazyGridState: LazyGridState, val gridCells: GridCells, val spacing: Dp) : ScrollbarAdapter
 
 @Immutable
 actual class ScrollbarStyle
@@ -76,7 +78,7 @@ internal actual fun RealVerticalScrollbar(
             Modifier.drawScrollbar(adapter.lazyListState, Orientation.Vertical, reverseLayout)
         }
         is LazyGridStateScrollbarAdapter -> {
-            Modifier.drawScrollbar(adapter.lazyGridState, adapter.gridCells, Orientation.Vertical, reverseLayout)
+            Modifier.drawScrollbar(adapter.lazyGridState, adapter.gridCells, adapter.spacing, Orientation.Vertical, reverseLayout)
         }
         else -> Modifier
     }
@@ -122,12 +124,24 @@ actual fun rememberScrollbarAdapter(
 }
 
 @Composable
-actual fun rememberScrollbarAdapter(
+actual fun rememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
-    gridCells: GridCells
+    gridCells: GridCells,
+    arrangement: Arrangement.Vertical?
 ): ScrollbarAdapter {
     return remember(scrollState, gridCells) {
-        LazyGridStateScrollbarAdapter(scrollState, gridCells)
+        LazyGridStateScrollbarAdapter(scrollState, gridCells, arrangement?.spacing ?: Dp.Hairline)
+    }
+}
+
+@Composable
+actual fun rememberHorizontalScrollbarAdapter(
+    scrollState: LazyGridState,
+    gridCells: GridCells,
+    arrangement: Arrangement.Horizontal?
+): ScrollbarAdapter {
+    return remember(scrollState, gridCells) {
+        LazyGridStateScrollbarAdapter(scrollState, gridCells, arrangement?.spacing ?: Dp.Hairline)
     }
 }
 
@@ -209,6 +223,7 @@ private fun Modifier.drawScrollbar(
 private fun Modifier.drawScrollbar(
     state: LazyGridState,
     gridCells: GridCells,
+    spacing: Dp,
     orientation: Orientation,
     reverseScrolling: Boolean
 ): Modifier = drawScrollbar(
@@ -222,7 +237,7 @@ private fun Modifier.drawScrollbar(
     // TODO Fix spacing
     val itemsSize = items.chunked(
         with(gridCells) {
-            calculateCrossAxisCellSizes(viewportSize, 0).size
+            calculateCrossAxisCellSizes(viewportSize, spacing.roundToPx()).size
         }
     ).sumOf { it.fastMaxBy { it.size.height }?.size?.height ?: 0 }
     val showScrollbar = items.size < layoutInfo.totalItemsCount || itemsSize > viewportSize

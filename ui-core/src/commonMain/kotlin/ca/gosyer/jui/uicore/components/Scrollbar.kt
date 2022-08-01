@@ -8,6 +8,7 @@ package ca.gosyer.jui.uicore.components
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
@@ -69,9 +70,17 @@ expect fun rememberScrollbarAdapter(
 ): ScrollbarAdapter
 
 @Composable
-expect fun rememberScrollbarAdapter(
+expect fun rememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
-    gridCells: GridCells
+    gridCells: GridCells,
+    arrangement: Arrangement.Vertical? = null
+): ScrollbarAdapter
+
+@Composable
+expect fun rememberHorizontalScrollbarAdapter(
+    scrollState: LazyGridState,
+    gridCells: GridCells,
+    arrangement: Arrangement.Horizontal? = null
 ): ScrollbarAdapter
 
 expect fun Modifier.scrollbarPadding(): Modifier

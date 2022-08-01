@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
-import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
+import ca.gosyer.jui.uicore.components.rememberVerticalScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.KamelImage
 import io.kamel.image.lazyPainterResource
@@ -75,7 +75,7 @@ fun SourceMangaComfortableGrid(
             }
         }
         VerticalScrollbar(
-            rememberScrollbarAdapter(state, cells),
+            rememberVerticalScrollbarAdapter(state, cells),
             Modifier.align(Alignment.CenterEnd)
                 .fillMaxHeight()
                 .scrollbarPadding()
