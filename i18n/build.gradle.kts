@@ -20,6 +20,8 @@ kotlin {
             }
         }
     }
+    iosX64()
+    iosArm64()
 
     sourceSets {
         val commonMain by getting {

@@ -23,6 +23,9 @@ kotlin {
             }
         }
     }
+    iosX64()
+    iosArm64()
+    //iosSimulatorArm64()
 
     sourceSets {
         all {
@@ -72,6 +75,20 @@ kotlin {
             }
         }
         val androidTest by getting
+
+        val iosMain by creating {
+            dependsOn(commonMain)
+        }
+        val iosTest by creating {
+            dependsOn(commonTest)
+        }
+
+        listOf("iosX64Main", "iosArm64Main"/*, "iosSimulatorArm64Main"*/).forEach {
+            getByName(it).dependsOn(iosMain)
+        }
+        listOf("iosX64Test", "iosArm64Test"/*, "iosSimulatorArm64Test"*/).forEach {
+            getByName(it).dependsOn(iosTest)
+        }
     }
 }
 
