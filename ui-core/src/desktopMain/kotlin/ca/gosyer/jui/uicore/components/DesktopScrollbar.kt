@@ -106,7 +106,7 @@ class GridScrollbarAdapter(
     private val scrollState: LazyGridState,
     private val gridCells: GridCells,
     private val density: Density,
-    private val spacing: Dp,
+    private val spacing: Dp
 ) : ScrollbarAdapter {
     override val scrollOffset: Float
         get() = (scrollState.firstVisibleItemIndex / itemsPerRow).coerceAtLeast(0) * averageItemSize + scrollState.firstVisibleItemScrollOffset
