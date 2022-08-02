@@ -11,6 +11,7 @@ import ca.gosyer.jui.domain.server.model.Auth
 import ca.gosyer.jui.domain.server.model.Proxy
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.ProxyBuilder
@@ -32,12 +33,15 @@ import io.ktor.client.plugins.auth.Auth as AuthPlugin
 
 typealias Http = HttpClient
 
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 expect val Engine: HttpClientEngineFactory<HttpClientEngineConfig>
+
+expect fun HttpClientConfig<HttpClientEngineConfig>.configurePlatform()
 
 class HttpProvider @Inject constructor() {
     fun get(serverPreferences: ServerPreferences): Http {
         return HttpClient(Engine) {
+            configurePlatform()
+
             engine {
                 proxy = when (serverPreferences.proxy().get()) {
                     Proxy.NO_PROXY -> null

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.stateIn
 
-internal class JvmPreference<T>(
+internal class StandardPreference<T>(
     private val preferences: ObservableSettings,
     private val key: String,
     private val defaultValue: T,

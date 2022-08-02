@@ -6,4 +6,4 @@
 
 package ca.gosyer.jui.domain
 
-expect interface DomainComponent
+expect interface DomainComponent : SharedDomainComponent

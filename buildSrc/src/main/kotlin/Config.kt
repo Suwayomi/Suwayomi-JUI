@@ -12,6 +12,4 @@ object Config {
 
     val desktopJvmTarget = JavaVersion.VERSION_17
     val androidJvmTarget = JavaVersion.VERSION_11
-
-    const val androidDev = false
 }

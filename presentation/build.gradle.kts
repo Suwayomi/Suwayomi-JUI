@@ -71,16 +71,21 @@ kotlin {
             }
         }
 
+        val jvmMain by creating {
+            dependsOn(commonMain)
+        }
+
         val desktopMain by getting {
+            dependsOn(jvmMain)
             dependencies {
                 api(kotlin("stdlib-jdk8"))
                 api(libs.coroutines.swing)
             }
         }
-        val desktopTest by getting {
-        }
+        val desktopTest by getting
 
         val androidMain by getting {
+            dependsOn(jvmMain)
             dependencies {
                 api(kotlin("stdlib-jdk8"))
                 api(libs.bundles.compose.android)
@@ -89,8 +94,7 @@ kotlin {
                 api(libs.androidx.activity.compose)
             }
         }
-        val androidTest by getting {
-        }
+        val androidTest by getting
     }
 }
 

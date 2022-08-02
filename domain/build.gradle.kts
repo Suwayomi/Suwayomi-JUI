@@ -57,23 +57,28 @@ kotlin {
             }
         }
 
-        val desktopMain by getting {
+        val jvmMain by creating {
+            dependsOn(commonMain)
             dependencies {
-                api(kotlin("stdlib-jdk8"))
                 api(libs.ktor.okHttp)
             }
-        }
-        val desktopTest by getting {
         }
 
-        val androidMain by getting {
+        val desktopMain by getting {
+            dependsOn(jvmMain)
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                api(libs.ktor.okHttp)
             }
         }
-        val androidTest by getting {
+        val desktopTest by getting
+
+        val androidMain by getting {
+            dependsOn(jvmMain)
+            dependencies {
+                api(kotlin("stdlib-jdk8"))
+            }
         }
+        val androidTest by getting
     }
 }
 

@@ -10,48 +10,48 @@ import com.russhwolf.settings.ObservableSettings
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
-class AndroidPreferenceStore(private val preferences: ObservableSettings) : PreferenceStore {
+class StandardPreferenceStore(private val preferences: ObservableSettings) : PreferenceStore {
 
     /**
      * Returns an [String] preference for this [key].
      */
     override fun getString(key: String, defaultValue: String): Preference<String> {
-        return AndroidPreference(preferences, key, defaultValue, StringAdapter)
+        return StandardPreference(preferences, key, defaultValue, StringAdapter)
     }
 
     /**
      * Returns a [Long] preference for this [key].
      */
     override fun getLong(key: String, defaultValue: Long): Preference<Long> {
-        return AndroidPreference(preferences, key, defaultValue, LongAdapter)
+        return StandardPreference(preferences, key, defaultValue, LongAdapter)
     }
 
     /**
      * Returns an [Int] preference for this [key].
      */
     override fun getInt(key: String, defaultValue: Int): Preference<Int> {
-        return AndroidPreference(preferences, key, defaultValue, IntAdapter)
+        return StandardPreference(preferences, key, defaultValue, IntAdapter)
     }
 
     /**
      * Returns a [Float] preference for this [key].
      */
     override fun getFloat(key: String, defaultValue: Float): Preference<Float> {
-        return AndroidPreference(preferences, key, defaultValue, FloatAdapter)
+        return StandardPreference(preferences, key, defaultValue, FloatAdapter)
     }
 
     /**
      * Returns a [Boolean] preference for this [key].
      */
     override fun getBoolean(key: String, defaultValue: Boolean): Preference<Boolean> {
-        return AndroidPreference(preferences, key, defaultValue, BooleanAdapter)
+        return StandardPreference(preferences, key, defaultValue, BooleanAdapter)
     }
 
     /**
      * Returns a [Set<String>] preference for this [key].
      */
     override fun getStringSet(key: String, defaultValue: Set<String>): Preference<Set<String>> {
-        return AndroidPreference(preferences, key, defaultValue, StringSetAdapter)
+        return StandardPreference(preferences, key, defaultValue, StringSetAdapter)
     }
 
     /**
@@ -65,7 +65,7 @@ class AndroidPreferenceStore(private val preferences: ObservableSettings) : Pref
         deserializer: (String) -> T
     ): Preference<T> {
         val adapter = ObjectAdapter(serializer, deserializer)
-        return AndroidPreference(preferences, key, defaultValue, adapter)
+        return StandardPreference(preferences, key, defaultValue, adapter)
     }
 
     /**
@@ -78,6 +78,6 @@ class AndroidPreferenceStore(private val preferences: ObservableSettings) : Pref
         serializersModule: SerializersModule
     ): Preference<T> {
         val adapter = JsonObjectAdapter(defaultValue, serializer, serializersModule)
-        return AndroidPreference(preferences, key, defaultValue, adapter)
+        return StandardPreference(preferences, key, defaultValue, adapter)
     }
 }

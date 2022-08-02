@@ -134,26 +134,6 @@ subprojects {
             toolVersion = "0.8.7"
         }
     }
-
-    plugins.withType<org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper> {
-        configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
-            afterEvaluate {
-                if (!Config.androidDev) {
-                    sourceSets.addSrcDir("desktopMain", "src/jvmMain/kotlin")
-                    sourceSets.addSrcDir("desktopTest", "src/jvmTest/kotlin")
-                }
-                sourceSets.addSrcDir("androidMain", "src/jvmMain/kotlin")
-                sourceSets.addSrcDir("androidTest", "src/jvmTest/kotlin")
-            }
-        }
-    }
-}
-
-fun NamedDomainObjectContainer<org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet>.addSrcDir(configuration: String, srcDir: String) {
-    filter { it.name.contains(configuration) }
-        .forEach {
-            it.kotlin.srcDir(srcDir)
-        }
 }
 
 fun isNonStable(version: String): Boolean {
