@@ -38,7 +38,8 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib-common"))
                 api(libs.coroutines.core)
-                api(libs.serialization.json)
+                api(libs.serialization.json.core)
+                api(libs.serialization.json.okio)
                 api(libs.kotlinInject.runtime)
                 api(libs.ktor.core)
                 api(libs.ktor.websockets)

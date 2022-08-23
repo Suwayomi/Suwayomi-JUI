@@ -4,7 +4,7 @@ kotlin = "1.7.0"
 coroutines = "1.6.4"
 
 # Serialization
-json = "1.3.3"
+json = "1.4.0"
 
 # Compose
 composeGradle = "1.2.0-alpha01-dev753"
@@ -77,7 +77,8 @@ coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-androi
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 # Serialization
-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "json" }
+serialization-json-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "json" }
+serialization-json-okio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version.ref = "json" }
 
 # Compose
 compose-animation = { module = "androidx.compose.animation:animation", version.ref = "composeAndroid" }

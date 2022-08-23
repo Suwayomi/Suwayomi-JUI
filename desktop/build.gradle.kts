@@ -47,7 +47,8 @@ dependencies {
     implementation(libs.coroutines.swing)
 
     // Json
-    implementation(libs.serialization.json)
+    implementation(libs.serialization.json.core)
+    implementation(libs.serialization.json.okio)
 
     // Dependency Injection
     implementation(libs.kotlinInject.runtime)

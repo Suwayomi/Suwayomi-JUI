@@ -144,7 +144,7 @@ internal class ObjectAdapter<T>(
 internal class JsonObjectAdapter<T>(
     private val defaultValue: T,
     private val serializer: KSerializer<T>,
-    private val serializersModule: SerializersModule = EmptySerializersModule
+    private val serializersModule: SerializersModule = EmptySerializersModule()
 ) : Adapter<T> {
 
     override fun get(key: String, preferences: ObservableSettings): T {

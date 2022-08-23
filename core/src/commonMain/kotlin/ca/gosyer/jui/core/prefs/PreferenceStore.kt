@@ -64,7 +64,7 @@ interface PreferenceStore {
         key: String,
         defaultValue: T,
         serializer: KSerializer<T>,
-        serializersModule: SerializersModule = EmptySerializersModule
+        serializersModule: SerializersModule = EmptySerializersModule()
     ): Preference<T>
 }
 
