@@ -11,7 +11,7 @@ composeGradle = "1.2.0-alpha01-dev753"
 composeAndroid = "1.2.0"
 voyager = "1.0.0-beta16"
 accompanist = "0.25.0"
-kamel = "0.4.0"
+kamel = "0.4.1"
 materialDialogs = "0.8.0"
 
 # Android
