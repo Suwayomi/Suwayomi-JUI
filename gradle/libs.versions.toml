@@ -58,7 +58,7 @@ moko = "0.20.1"
 
 # BuildConfigs
 buildconfig = "3.0.3"
-buildkonfig = "0.12.0"
+buildkonfig = "0.13.3"
 
 # Linter
 kotlinter = "3.11.1"

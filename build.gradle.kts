@@ -100,16 +100,16 @@ subprojects {
     plugins.withType<com.codingfeline.buildkonfig.gradle.BuildKonfigPlugin> {
         configure<com.codingfeline.buildkonfig.gradle.BuildKonfigExtension> {
             defaultConfigs {
-                buildConfigField(Type.STRING, "NAME", rootProject.name)
-                buildConfigField(Type.STRING, "VERSION", project.version.toString())
-                buildConfigField(Type.INT, "MIGRATION_CODE", migrationCode.toString())
-                buildConfigField(Type.BOOLEAN, "DEBUG", project.hasProperty("debugApp").toString())
-                buildConfigField(Type.BOOLEAN, "IS_PREVIEW", project.hasProperty("preview").toString())
-                buildConfigField(Type.INT, "PREVIEW_BUILD", project.properties["preview"]?.toString()?.trim('"') ?: 0.toString())
+                buildConfigField(Type.STRING, "NAME", rootProject.name, const = true)
+                buildConfigField(Type.STRING, "VERSION", project.version.toString(), const = true)
+                buildConfigField(Type.INT, "MIGRATION_CODE", migrationCode.toString(), const = true)
+                buildConfigField(Type.BOOLEAN, "DEBUG", project.hasProperty("debugApp").toString(), const = true)
+                buildConfigField(Type.BOOLEAN, "IS_PREVIEW", project.hasProperty("preview").toString(), const = true)
+                buildConfigField(Type.INT, "PREVIEW_BUILD", project.properties["preview"]?.toString()?.trim('"') ?: 0.toString(), const = true)
 
                 // Tachidesk
-                buildConfigField(Type.STRING, "TACHIDESK_SP_VERSION", tachideskVersion)
-                buildConfigField(Type.INT, "SERVER_CODE", serverCode.toString())
+                buildConfigField(Type.STRING, "TACHIDESK_SP_VERSION", tachideskVersion, const = true)
+                buildConfigField(Type.INT, "SERVER_CODE", serverCode.toString(), const = true)
             }
         }
     }
