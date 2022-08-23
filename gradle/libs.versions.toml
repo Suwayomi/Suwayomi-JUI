@@ -8,31 +8,33 @@ json = "1.4.0"
 
 # Compose
 composeGradle = "1.2.0-alpha01-dev753"
-composeAndroid = "1.2.0"
+composeAndroid = "1.2.1"
 voyager = "1.0.0-beta16"
-accompanist = "0.25.0"
+accompanist = "0.25.1"
 kamel = "0.4.1"
 materialDialogs = "0.8.0"
 
 # Android
-androidGradle = "7.3.0-beta05"
+androidGradle = "7.3.0-rc01"
 core = "1.8.0"
-appCompat = "1.6.0-alpha05"
-activityCompose = "1.5.0"
+appCompat = "1.6.0-beta01"
+activityCompose = "1.5.1"
 work = "2.7.1"
 
 # Android Lifecycle
 lifecycle = "2.6.0-alpha01"
 
 # Swing
-darklaf = "3.0.0"
+darklaf = "3.0.1"
+
+# Ksp
+ksp = "1.7.0-1.0.6"
 
 # Dependency Injection
-ksp = "1.7.0-1.0.6"
-kotlinInject = "0.4.1"
+kotlinInject = "0.5.1"
 
 # Network
-ktor = "2.0.3"
+ktor = "2.1.0"
 
 # Logging
 slf4j = "1.7.36"
@@ -49,15 +51,15 @@ multiplatformSettings = "1.0.0-alpha01"
 
 # Utility
 kroki = "1.22"
-desugarJdkLibs = "1.1.6" # 1.2.0+ requires Android plugin 7.3 alpha
-aboutLibraries = "10.3.1"
+desugarJdkLibs = "1.2.0"
+aboutLibraries = "10.4.0"
 dateTime = "0.4.0"
 
 # Localization
 moko = "0.20.1"
 
 # BuildConfigs
-buildconfig = "3.0.3"
+buildconfig = "3.1.0"
 buildkonfig = "0.13.3"
 
 # Linter
@@ -174,7 +176,7 @@ android-application = { id = "com.android.application", version.ref = "androidGr
 # Compose
 compose = { id = "org.jetbrains.compose", version.ref = "composeGradle"}
 
-# Dependency Injection
+# Ksp
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 
 # Localization
