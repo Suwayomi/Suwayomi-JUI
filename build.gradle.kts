@@ -116,7 +116,11 @@ subprojects {
     plugins.withType<org.jmailen.gradle.kotlinter.KotlinterPlugin> {
         configure<org.jmailen.gradle.kotlinter.KotlinterExtension> {
             experimentalRules = true
-            disabledRules = arrayOf("experimental:argument-list-wrapping", "experimental:trailing-comma")
+            disabledRules = arrayOf(
+                "filename",
+                "experimental:argument-list-wrapping",
+                "experimental:trailing-comma"
+            )
         }
     }
 
