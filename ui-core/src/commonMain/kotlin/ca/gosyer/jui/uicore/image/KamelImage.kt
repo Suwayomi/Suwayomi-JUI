@@ -76,7 +76,7 @@ fun KamelImage(
         }
     },
     contentAlignment: Alignment = Alignment.Center,
-    animationSpec: FiniteAnimationSpec<Float>? = tween(),
+    animationSpec: FiniteAnimationSpec<Float>? = tween()
 ) {
     if (animationSpec != null) {
         val progress = remember { mutableStateOf(-1F) }
