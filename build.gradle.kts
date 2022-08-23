@@ -2,6 +2,7 @@ import Config.migrationCode
 import Config.serverCode
 import Config.tachideskVersion
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
+import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 @Suppress("DSL_SCOPE_VIOLATION")
@@ -137,6 +138,9 @@ subprojects {
         configure<JacocoPluginExtension> {
             toolVersion = "0.8.7"
         }
+    }
+    plugins.withType<ComposePlugin> {
+        ext["compose.compiler.version"] = libs.versions.composeCompiler.get()
     }
 }
 
