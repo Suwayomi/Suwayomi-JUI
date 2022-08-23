@@ -104,8 +104,7 @@ tasks {
         kotlinOptions {
             jvmTarget = Config.desktopJvmTarget.toString()
             freeCompilerArgs = listOf(
-                "-Xopt-in=kotlin.RequiresOptIn",
-                "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi"
+                "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi"
             )
         }
     }
