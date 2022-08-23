@@ -65,25 +65,36 @@ kotlin {
 
         val jvmMain by creating {
             dependsOn(commonMain)
+            dependencies {
+                api(kotlin("stdlib-jdk8"))
+            }
+        }
+        val jvmTest by creating {
+            dependsOn(commonTest)
+            dependencies {
+                implementation(kotlin("test"))
+            }
         }
 
         val desktopMain by getting {
             dependsOn(jvmMain)
             dependencies {
-                api(kotlin("stdlib-jdk8"))
                 api(libs.appDirs)
             }
         }
-        val desktopTest by getting
+        val desktopTest by getting {
+            dependsOn(jvmTest)
+        }
 
         val androidMain by getting {
             dependsOn(jvmMain)
             dependencies {
-                api(kotlin("stdlib-jdk8"))
                 api(libs.compose.ui.text)
             }
         }
-        val androidTest by getting
+        val androidTest by getting {
+            dependsOn(jvmTest)
+        }
 
         val iosMain by creating {
             dependsOn(commonMain)

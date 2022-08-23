@@ -64,25 +64,30 @@ kotlin {
         val jvmMain by creating {
             dependsOn(commonMain)
             dependencies {
+                api(kotlin("stdlib-jdk8"))
                 api(libs.ktor.okHttp)
+            }
+        }
+        val jvmTest by creating {
+            dependsOn(commonTest)
+            dependencies {
+                implementation(kotlin("test"))
             }
         }
 
         val desktopMain by getting {
             dependsOn(jvmMain)
-            dependencies {
-                api(kotlin("stdlib-jdk8"))
-            }
         }
-        val desktopTest by getting
+        val desktopTest by getting {
+            dependsOn(jvmTest)
+        }
 
         val androidMain by getting {
             dependsOn(jvmMain)
-            dependencies {
-                api(kotlin("stdlib-jdk8"))
-            }
         }
-        val androidTest by getting
+        val androidTest by getting {
+            dependsOn(jvmTest)
+        }
 
         val iosMain by creating {
             dependsOn(commonMain)
