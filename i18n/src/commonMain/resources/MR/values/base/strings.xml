@@ -76,6 +76,7 @@
     <string name="enabled_languages">Languages</string>
     <string name="installed">Installed</string>
     <string name="all">All</string>
+    <string name="other">Other</string>
     <string name="obsolete">Obsolete</string>
 
     <!-- Library Menu -->
