@@ -37,7 +37,7 @@ class AboutScreen : Screen {
             }
         }
         AboutContent(
-            about = vm.about.collectAsState().value,
+            aboutHolder = vm.aboutHolder.collectAsState().value,
             formattedBuildTime = vm.formattedBuildTime.collectAsState().value,
             checkForUpdates = vm::checkForUpdates,
             openSourceLicenses = {

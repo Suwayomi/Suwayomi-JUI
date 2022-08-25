@@ -47,6 +47,7 @@ import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -56,17 +57,19 @@ import ca.gosyer.jui.uicore.components.DropdownMenu
 import ca.gosyer.jui.uicore.components.DropdownMenuItem
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.resources.stringResource
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun SourceScreenContent(
-    source: Source,
+    sourceHolder: StableHolder<Source>,
     onMangaClick: (Long) -> Unit,
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    mangas: List<Manga>,
+    mangas: ImmutableList<StableHolder<Manga>>,
     hasNextPage: Boolean,
     loading: Boolean,
     isLatest: Boolean,
@@ -80,12 +83,13 @@ fun SourceScreenContent(
     setUsingFilters: (Boolean) -> Unit,
     onSelectDisplayMode: (DisplayMode) -> Unit,
     // filter
-    filters: List<SourceFiltersView<*, *>>,
+    filters: ImmutableList<StableHolder<SourceFiltersView<*, *>>>,
     showingFilters: Boolean,
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
     resetFiltersClicked: () -> Unit
 ) {
+    val source = sourceHolder.item
     LaunchedEffect(source) {
         enableLatest(source.supportsLatest)
     }
@@ -101,7 +105,7 @@ fun SourceScreenContent(
     BoxWithConstraints {
         if (maxWidth > 720.dp) {
             SourceWideScreenContent(
-                source = source,
+                sourceHolder = sourceHolder,
                 onMangaClick = onMangaClick,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 onSourceSettingsClick = onSourceSettingsClick,
@@ -128,7 +132,7 @@ fun SourceScreenContent(
             )
         } else {
             SourceThinScreenContent(
-                source = source,
+                sourceHolder = sourceHolder,
                 onMangaClick = onMangaClick,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 onSourceSettingsClick = onSourceSettingsClick,
@@ -159,14 +163,14 @@ fun SourceScreenContent(
 
 @Composable
 private fun SourceWideScreenContent(
-    source: Source,
+    sourceHolder: StableHolder<Source>,
     onMangaClick: (Long) -> Unit,
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    mangas: List<Manga>,
+    mangas: ImmutableList<StableHolder<Manga>>,
     hasNextPage: Boolean,
     loading: Boolean,
     isLatest: Boolean,
@@ -178,7 +182,7 @@ private fun SourceWideScreenContent(
     loadNextPage: () -> Unit,
     setUsingFilters: (Boolean) -> Unit,
     // filter
-    filters: List<SourceFiltersView<*, *>>,
+    filters: ImmutableList<StableHolder<SourceFiltersView<*, *>>>,
     showingFilters: Boolean,
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
@@ -188,7 +192,7 @@ private fun SourceWideScreenContent(
     Scaffold(
         topBar = {
             SourceToolbar(
-                source = source,
+                sourceHolder = sourceHolder,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 sourceSearchQuery = sourceSearchQuery,
                 onSearch = search,
@@ -249,14 +253,14 @@ private fun SourceWideScreenContent(
 
 @Composable
 private fun SourceThinScreenContent(
-    source: Source,
+    sourceHolder: StableHolder<Source>,
     onMangaClick: (Long) -> Unit,
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    mangas: List<Manga>,
+    mangas: ImmutableList<StableHolder<Manga>>,
     hasNextPage: Boolean,
     loading: Boolean,
     isLatest: Boolean,
@@ -268,7 +272,7 @@ private fun SourceThinScreenContent(
     loadNextPage: () -> Unit,
     setUsingFilters: (Boolean) -> Unit,
     // filter
-    filters: List<SourceFiltersView<*, *>>,
+    filters: ImmutableList<StableHolder<SourceFiltersView<*, *>>>,
     showingFilters: Boolean,
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
@@ -296,7 +300,7 @@ private fun SourceThinScreenContent(
     Scaffold(
         topBar = {
             SourceToolbar(
-                source = source,
+                sourceHolder = sourceHolder,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 sourceSearchQuery = sourceSearchQuery,
                 onSearch = search,
@@ -375,7 +379,7 @@ private fun SourceThinScreenContent(
 
 @Composable
 fun SourceToolbar(
-    source: Source,
+    sourceHolder: StableHolder<Source>,
     onCloseSourceTabClick: (Source) -> Unit,
     sourceSearchQuery: String?,
     onSearch: (String) -> Unit,
@@ -389,6 +393,7 @@ fun SourceToolbar(
     onToggleFiltersClick: (Boolean) -> Unit,
     onSelectDisplayMode: (DisplayMode) -> Unit
 ) {
+    val source = sourceHolder.item
     Toolbar(
         source.name,
         closable = true,
@@ -454,7 +459,7 @@ private fun MangaTable(
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    mangas: List<Manga>,
+    mangas: ImmutableList<StableHolder<Manga>>,
     isLoading: Boolean = false,
     hasNextPage: Boolean = false,
     onLoadNextPage: () -> Unit,
@@ -502,7 +507,7 @@ private fun getActionItems(
     onToggleFiltersClick: () -> Unit,
     onClickMode: () -> Unit,
     openDisplayModeSelect: () -> Unit
-): List<ActionItem> {
+): ImmutableList<ActionItem> {
     return listOfNotNull(
         if (showFilterButton) {
             ActionItem(
@@ -541,5 +546,5 @@ private fun getActionItems(
                 doAction = onSourceSettingsClick
             )
         } else null
-    )
+    ).toImmutableList()
 }

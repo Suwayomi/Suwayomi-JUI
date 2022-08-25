@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -30,13 +31,15 @@ import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
 import com.mikepenz.aboutlibraries.ui.compose.LibraryColors
 import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 expect fun getLicenses(): Libs?
 
 @Composable
 internal expect fun InternalAboutLibraries(
-    libraries: List<Library>,
+    libraries: ImmutableList<Library>,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState,
     contentPadding: PaddingValues,
@@ -50,7 +53,7 @@ internal expect fun InternalAboutLibraries(
 
 @Composable
 fun AboutLibraries(
-    libraries: List<Library>,
+    libraries: ImmutableList<Library>,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -88,7 +91,7 @@ fun LicensesContent() {
                 val state = rememberLazyListState()
                 val uriHandler = LocalUriHandler.current
                 AboutLibraries(
-                    libraries = libs.libraries,
+                    libraries = remember(libs) { libs.libraries.toImmutableList() },
                     lazyListState = state,
                     onLibraryClick = {
                         it.website?.let(uriHandler::openUri)

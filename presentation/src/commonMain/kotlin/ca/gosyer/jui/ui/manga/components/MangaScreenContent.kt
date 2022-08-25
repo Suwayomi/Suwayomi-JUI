@@ -32,6 +32,7 @@ import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.reader.rememberReaderLauncher
@@ -42,19 +43,21 @@ import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.datetime.Instant
 
 @Composable
 fun MangaScreenContent(
     isLoading: Boolean,
-    manga: Manga?,
-    chapters: List<ChapterDownloadItem>,
+    mangaHolder: StableHolder<Manga?>,
+    chapters: ImmutableList<ChapterDownloadItem>,
     dateTimeFormatter: (Instant) -> String,
     categoriesExist: Boolean,
-    chooseCategoriesFlow: SharedFlow<Unit>,
-    availableCategories: List<Category>,
-    mangaCategories: List<Category>,
+    chooseCategoriesFlowHolder: StableHolder<SharedFlow<Unit>>,
+    availableCategories: ImmutableList<StableHolder<Category>>,
+    mangaCategories: ImmutableList<StableHolder<Category>>,
     addFavorite: (List<Category>, List<Category>) -> Unit,
     setCategories: () -> Unit,
     toggleFavorite: () -> Unit,
@@ -70,7 +73,7 @@ fun MangaScreenContent(
 ) {
     val categoryDialogState = rememberMaterialDialogState()
     LaunchedEffect(Unit) {
-        chooseCategoriesFlow.collect {
+        chooseCategoriesFlowHolder.item.collect {
             categoryDialogState.show()
         }
     }
@@ -82,6 +85,7 @@ fun MangaScreenContent(
             Toolbar(
                 stringResource(MR.strings.location_manga),
                 actions = {
+                    val manga = mangaHolder.item
                     val uriHandler = LocalUriHandler.current
                     getActionItems(
                         refreshManga = refreshManga,
@@ -101,20 +105,20 @@ fun MangaScreenContent(
         }
     ) {
         Box(Modifier.padding(it)) {
-            manga.let { manga ->
-                if (manga != null) {
+            mangaHolder.let { mangaHolder ->
+                if (mangaHolder.item != null) {
                     Box {
                         val state = rememberLazyListState()
                         LazyColumn(state = state) {
                             item {
-                                MangaItem(manga)
+                                MangaItem(mangaHolder as StableHolder<Manga>)
                             }
                             if (chapters.isNotEmpty()) {
                                 items(chapters) { chapter ->
                                     ChapterItem(
                                         chapter,
                                         dateTimeFormatter,
-                                        onClick = { readerLauncher.launch(it, manga.id) },
+                                        onClick = { readerLauncher.launch(it, mangaHolder.item.id) },
                                         toggleRead = toggleRead,
                                         toggleBookmarked = toggleBookmarked,
                                         markPreviousAsRead = markPreviousRead,
@@ -164,7 +168,7 @@ private fun getActionItems(
     favoritesButtonEnabled: Boolean,
     openInBrowserEnabled: Boolean,
     openInBrowser: () -> Unit
-): List<ActionItem> {
+): ImmutableList<ActionItem> {
     return listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_refresh_manga),
@@ -195,5 +199,5 @@ private fun getActionItems(
             enabled = openInBrowserEnabled,
             doAction = openInBrowser
         )
-    )
+    ).toImmutableList()
 }

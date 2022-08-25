@@ -57,6 +57,7 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import kotlinx.collections.immutable.persistentMapOf
 import me.tatarka.inject.annotations.Inject
 
 class SettingsAppearanceScreen : Screen {
@@ -120,7 +121,7 @@ fun SettingsAppearanceScreenContent(
                 item {
                     ChoicePreference(
                         preference = themeMode,
-                        choices = mapOf(
+                        choices = persistentMapOf(
                             ThemeMode.System to stringResource(MR.strings.theme_follow_system),
                             ThemeMode.Light to stringResource(MR.strings.theme_light),
                             ThemeMode.Dark to stringResource(MR.strings.theme_dark)

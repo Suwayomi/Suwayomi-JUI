@@ -26,6 +26,7 @@ import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -38,12 +39,14 @@ import ca.gosyer.jui.domain.download.model.DownloadChapter
 import ca.gosyer.jui.domain.download.model.DownloadState
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.components.DropdownIconButton
 import ca.gosyer.jui.uicore.components.DropdownMenuItem
 import ca.gosyer.jui.uicore.resources.stringResource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+@Stable
 data class ChapterDownloadItem(
     val manga: Manga?,
     val chapter: Chapter,
@@ -54,7 +57,7 @@ data class ChapterDownloadItem(
             ChapterDownloadState.NotDownloaded
         }
     ),
-    private val _downloadChapterFlow: MutableStateFlow<DownloadChapter?> = MutableStateFlow(null)
+    private val _downloadChapterFlow: MutableStateFlow<StableHolder<DownloadChapter?>> = MutableStateFlow(StableHolder(null))
 ) {
     val downloadState = _downloadState.asStateFlow()
     val downloadChapterFlow = _downloadChapterFlow.asStateFlow()
@@ -69,7 +72,7 @@ data class ChapterDownloadItem(
         if (downloadState.value == ChapterDownloadState.Downloading && downloadingChapter == null) {
             _downloadState.value = ChapterDownloadState.Downloaded
         }
-        _downloadChapterFlow.value = downloadingChapter
+        _downloadChapterFlow.value = StableHolder(downloadingChapter)
     }
 
     suspend fun deleteDownload(deleteChapterDownload: DeleteChapterDownload) {
@@ -141,7 +144,8 @@ private fun DownloadIconButton(onClick: () -> Unit) {
 }
 
 @Composable
-private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: () -> Unit) {
+private fun DownloadingIconButton(downloadChapterHolder: StableHolder<DownloadChapter?>, onClick: () -> Unit) {
+    val downloadChapter = downloadChapterHolder.item
     DropdownIconButton(
         downloadChapter?.mangaId to downloadChapter?.chapterIndex,
         {

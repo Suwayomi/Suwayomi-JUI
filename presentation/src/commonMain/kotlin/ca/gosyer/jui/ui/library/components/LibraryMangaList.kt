@@ -24,16 +24,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.components.MangaListItem
 import ca.gosyer.jui.uicore.components.MangaListItemImage
 import ca.gosyer.jui.uicore.components.MangaListItemTitle
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun LibraryMangaList(
-    library: List<Manga>,
+    library: ImmutableList<StableHolder<Manga>>,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit,
     showUnread: Boolean,
@@ -47,13 +49,13 @@ fun LibraryMangaList(
             state = state,
             modifier = Modifier.fillMaxSize()
         ) {
-            items(library) { manga ->
+            items(library) { mangaHolder ->
                 LibraryMangaListItem(
                     modifier = Modifier.libraryMangaModifier(
-                        { onClickManga(manga.id) },
-                        { onRemoveMangaClicked(manga.id) }
+                        { onClickManga(mangaHolder.item.id) },
+                        { onRemoveMangaClicked(mangaHolder.item.id) }
                     ),
-                    manga = manga,
+                    mangaHolder = mangaHolder,
                     showUnread = showUnread,
                     showDownloaded = showDownloaded,
                     showLanguage = showLanguage,
@@ -73,12 +75,13 @@ fun LibraryMangaList(
 @Composable
 private fun LibraryMangaListItem(
     modifier: Modifier,
-    manga: Manga,
+    mangaHolder: StableHolder<Manga>,
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
     showLocal: Boolean
 ) {
+    val manga = mangaHolder.item
     MangaListItem(
         modifier = modifier then Modifier
             .requiredHeight(56.dp)
@@ -99,7 +102,7 @@ private fun LibraryMangaListItem(
         )
         Box(Modifier.width(IntrinsicSize.Min)) {
             LibraryMangaBadges(
-                manga = manga,
+                mangaHolder = mangaHolder,
                 showUnread = showUnread,
                 showDownloaded = showDownloaded,
                 showLanguage = showLanguage,

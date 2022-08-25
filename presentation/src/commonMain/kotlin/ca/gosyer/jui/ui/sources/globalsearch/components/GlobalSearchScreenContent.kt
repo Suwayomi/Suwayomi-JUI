@@ -28,6 +28,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +41,7 @@ import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.components.localeToString
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.sources.globalsearch.GlobalSearchViewModel.Search
 import ca.gosyer.jui.uicore.components.ErrorScreen
@@ -46,10 +50,11 @@ import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun GlobalSearchScreenContent(
-    sources: List<Source>,
+    sources: ImmutableList<StableHolder<Source>>,
     results: SnapshotStateMap<Long, Search>,
     displayMode: DisplayMode,
     query: String,
@@ -70,14 +75,26 @@ fun GlobalSearchScreenContent(
     ) { padding ->
         Box(Modifier.padding(padding)) {
             val state = rememberLazyListState()
+            val sourcesSuccess by remember(sources) {
+                derivedStateOf {
+                    sources.filter { results[it.item.id] is Search.Success }
+                }
+            }
+            val loadingSources by remember(sources) {
+                derivedStateOf {
+                    sources.filter { results[it.item.id] == null }
+                }
+            }
+            val failedSources by remember(sources) {
+                derivedStateOf {
+                    sources.filter { results[it.item.id] is Search.Failure }
+                }
+            }
             LazyColumn(state = state) {
-                val sourcesSuccess = sources.filter { results[it.id] is Search.Success }
-                val loadingSources = sources.filter { results[it.id] == null }
-                val failedSources = sources.filter { results[it.id] is Search.Failure }
                 items(sourcesSuccess) {
                     GlobalSearchItem(
-                        source = it,
-                        search = results[it.id] ?: Search.Searching,
+                        sourceHolder = it,
+                        search = results[it.item.id] ?: Search.Searching,
                         displayMode = displayMode,
                         onSourceClick = onSourceClick,
                         onMangaClick = onMangaClick
@@ -85,8 +102,8 @@ fun GlobalSearchScreenContent(
                 }
                 items(loadingSources) {
                     GlobalSearchItem(
-                        source = it,
-                        search = results[it.id] ?: Search.Searching,
+                        sourceHolder = it,
+                        search = results[it.item.id] ?: Search.Searching,
                         displayMode = displayMode,
                         onSourceClick = onSourceClick,
                         onMangaClick = onMangaClick
@@ -94,8 +111,8 @@ fun GlobalSearchScreenContent(
                 }
                 items(failedSources) {
                     GlobalSearchItem(
-                        source = it,
-                        search = results[it.id] ?: Search.Searching,
+                        sourceHolder = it,
+                        search = results[it.item.id] ?: Search.Searching,
                         displayMode = displayMode,
                         onSourceClick = onSourceClick,
                         onMangaClick = onMangaClick
@@ -114,12 +131,13 @@ fun GlobalSearchScreenContent(
 
 @Composable
 fun GlobalSearchItem(
-    source: Source,
+    sourceHolder: StableHolder<Source>,
     search: Search,
     displayMode: DisplayMode,
     onSourceClick: (Source) -> Unit,
     onMangaClick: (Manga) -> Unit
 ) {
+    val source = sourceHolder.item
     Column {
         Row(
             Modifier.fillMaxWidth()
@@ -159,18 +177,18 @@ fun GlobalSearchItem(
             ) {
                 val state = rememberLazyListState()
                 LazyRow(Modifier.fillMaxSize(), state) {
-                    items(search.mangaPage.mangaList) {
+                    items(search.mangaList) {
                         if (displayMode == DisplayMode.ComfortableGrid) {
                             GlobalSearchMangaComfortableGridItem(
-                                Modifier.clickable { onMangaClick(it) },
+                                Modifier.clickable { onMangaClick(it.item) },
                                 it,
-                                it.inLibrary
+                                it.item.inLibrary
                             )
                         } else {
                             GlobalSearchMangaCompactGridItem(
-                                Modifier.clickable { onMangaClick(it) },
+                                Modifier.clickable { onMangaClick(it.item) },
                                 it,
-                                it.inLibrary
+                                it.item.inLibrary
                             )
                         }
                     }

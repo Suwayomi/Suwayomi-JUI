@@ -56,6 +56,7 @@ import ca.gosyer.jui.domain.reader.model.ImageScale
 import ca.gosyer.jui.domain.reader.model.NavigationMode
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.LocalViewModels
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -75,6 +76,8 @@ import ca.gosyer.jui.uicore.components.ErrorScreen
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.resources.stringResource
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -107,7 +110,7 @@ expect fun rememberReaderLauncher(): ReaderLauncher
 fun ReaderMenu(
     chapterIndex: Int,
     mangaId: Long,
-    hotkeyFlow: SharedFlow<KeyEvent>,
+    hotkeyFlowHolder: StableHolder<SharedFlow<KeyEvent>>,
     onCloseRequest: () -> Unit
 ) {
     val viewModels = LocalViewModels.current
@@ -137,8 +140,8 @@ fun ReaderMenu(
     val currentPageOffset by vm.currentPageOffset.collectAsState()
     val readerSettingsMenuOpen by vm.readerSettingsMenuOpen.collectAsState()
 
-    LaunchedEffect(hotkeyFlow) {
-        hotkeyFlow.collectLatest {
+    LaunchedEffect(hotkeyFlowHolder) {
+        hotkeyFlowHolder.item.collectLatest {
             when (it.key) {
                 Key.W, Key.DirectionUp -> vm.navigate(Navigation.PREV)
                 Key.S, Key.DirectionDown -> vm.navigate(Navigation.NEXT)
@@ -172,7 +175,7 @@ fun ReaderMenu(
                                 currentPageOffset = currentPageOffset,
                                 navigate = vm::navigate,
                                 navigateTap = vm::navigate,
-                                pageEmitter = vm.pageEmitter,
+                                pageEmitterHolder = vm.pageEmitter,
                                 retry = vm::retry,
                                 progress = vm::progress,
                                 updateLastPageReadOffset = vm::updateLastPageReadOffset,
@@ -201,7 +204,7 @@ fun ReaderMenu(
                                 currentPageOffset = currentPageOffset,
                                 navigate = vm::navigate,
                                 navigateTap = vm::navigate,
-                                pageEmitter = vm.pageEmitter,
+                                pageEmitterHolder = vm.pageEmitter,
                                 retry = vm::retry,
                                 progress = vm::progress,
                                 updateLastPageReadOffset = vm::updateLastPageReadOffset,
@@ -232,8 +235,8 @@ fun WideReaderMenu(
     previousChapter: ReaderChapter?,
     chapter: ReaderChapter,
     nextChapter: ReaderChapter?,
-    pages: List<ReaderPage>,
-    readerModes: List<String>,
+    pages: ImmutableList<ReaderPage>,
+    readerModes: ImmutableList<String>,
     readerMode: String,
     continuous: Boolean,
     direction: Direction,
@@ -246,7 +249,7 @@ fun WideReaderMenu(
     currentPageOffset: Int,
     navigate: (Int) -> Unit,
     navigateTap: (Navigation) -> Unit,
-    pageEmitter: SharedFlow<PageMove>,
+    pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit,
@@ -302,7 +305,7 @@ fun WideReaderMenu(
             currentPage = currentPage,
             currentPageOffset = currentPageOffset,
             navigateTap = navigateTap,
-            pageEmitter = pageEmitter,
+            pageEmitterHolder = pageEmitterHolder,
             retry = retry,
             progress = progress,
             updateLastPageReadOffset = updateLastPageReadOffset
@@ -316,8 +319,8 @@ fun ThinReaderMenu(
     previousChapter: ReaderChapter?,
     chapter: ReaderChapter,
     nextChapter: ReaderChapter?,
-    pages: List<ReaderPage>,
-    readerModes: List<String>,
+    pages: ImmutableList<ReaderPage>,
+    readerModes: ImmutableList<String>,
     readerMode: String,
     continuous: Boolean,
     direction: Direction,
@@ -330,7 +333,7 @@ fun ThinReaderMenu(
     currentPageOffset: Int,
     navigate: (Int) -> Unit,
     navigateTap: (Navigation) -> Unit,
-    pageEmitter: SharedFlow<PageMove>,
+    pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit,
@@ -375,7 +378,7 @@ fun ThinReaderMenu(
                 currentPage = currentPage,
                 currentPageOffset = currentPageOffset,
                 navigateTap = navigateTap,
-                pageEmitter = pageEmitter,
+                pageEmitterHolder = pageEmitterHolder,
                 retry = retry,
                 progress = progress,
                 updateLastPageReadOffset = updateLastPageReadOffset
@@ -401,7 +404,7 @@ fun ThinReaderMenu(
                                     }
                                 }
                             )
-                        )
+                        ).toImmutableList()
                     }
                 )
             }
@@ -426,7 +429,7 @@ fun ReaderLayout(
     previousChapter: ReaderChapter?,
     chapter: ReaderChapter,
     nextChapter: ReaderChapter?,
-    pages: List<ReaderPage>,
+    pages: ImmutableList<ReaderPage>,
     continuous: Boolean,
     direction: Direction,
     padding: Int,
@@ -437,7 +440,7 @@ fun ReaderLayout(
     currentPage: Int,
     currentPageOffset: Int,
     navigateTap: (Navigation) -> Unit,
-    pageEmitter: SharedFlow<PageMove>,
+    pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit
@@ -471,7 +474,7 @@ fun ReaderLayout(
             } else {
                 ContentScale.Fit
             },
-            pageEmitter = pageEmitter,
+            pageEmitterHolder = pageEmitterHolder,
             retry = retry,
             progress = progress,
             updateLastPageReadOffset = updateLastPageReadOffset
@@ -487,7 +490,7 @@ fun ReaderLayout(
             nextChapter = nextChapter,
             loadingModifier = loadingModifier,
             pageContentScale = imageScale.toContentScale(),
-            pageEmitter = pageEmitter,
+            pageEmitterHolder = pageEmitterHolder,
             retry = retry,
             progress = progress
         )
@@ -510,7 +513,7 @@ fun SideMenuButton(sideMenuOpen: Boolean, onOpenSideMenuClicked: () -> Unit) {
 @Composable
 fun ReaderImage(
     imageIndex: Int,
-    drawable: ImageBitmap?,
+    drawableHolder: StableHolder<ImageBitmap?>,
     progress: Float,
     status: ReaderPage.Status,
     error: String?,
@@ -519,7 +522,8 @@ fun ReaderImage(
     contentScale: ContentScale = ContentScale.Fit,
     retry: (Int) -> Unit
 ) {
-    Crossfade(drawable to status) { (drawable, status) ->
+    Crossfade(drawableHolder to status) { (drawableHolder, status) ->
+        val drawable = drawableHolder.item
         if (drawable != null) {
             Image(
                 bitmap = drawable,

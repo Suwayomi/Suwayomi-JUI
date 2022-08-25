@@ -14,12 +14,18 @@ import ca.gosyer.jui.domain.download.interactor.ClearDownloadQueue
 import ca.gosyer.jui.domain.download.interactor.StartDownloading
 import ca.gosyer.jui.domain.download.interactor.StopDownloading
 import ca.gosyer.jui.domain.download.service.DownloadService
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
@@ -43,7 +49,8 @@ class DownloadsScreenViewModel @Inject constructor(
 
     val serviceStatus get() = DownloadService.status.asStateFlow()
     val downloaderStatus get() = DownloadService.downloaderStatus.asStateFlow()
-    val downloadQueue get() = DownloadService.downloadQueue.asStateFlow()
+    val downloadQueue get() = DownloadService.downloadQueue.map { it.map(::StableHolder).toImmutableList() }
+        .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     fun start() {
         scope.launch { startDownloading.await() }

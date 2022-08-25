@@ -11,6 +11,7 @@ import ca.gosyer.jui.domain.settings.interactor.AboutServer
 import ca.gosyer.jui.domain.settings.model.About
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker.Update
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -32,10 +33,10 @@ class AboutViewModel @Inject constructor(
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
 
-    private val _about = MutableStateFlow<About?>(null)
-    val about = _about.asStateFlow()
+    private val _aboutHolder = MutableStateFlow<StableHolder<About?>>(StableHolder(null))
+    val aboutHolder = _aboutHolder.asStateFlow()
 
-    val formattedBuildTime = about.map { about ->
+    val formattedBuildTime = aboutHolder.map { (about) ->
         about ?: return@map ""
         getFormattedDate(Instant.fromEpochSeconds(about.buildTime))
     }.stateIn(scope, SharingStarted.Eagerly, "")
@@ -49,7 +50,7 @@ class AboutViewModel @Inject constructor(
 
     private fun getAbout() {
         scope.launch {
-            _about.value = aboutServer.await()
+            _aboutHolder.value = StableHolder(aboutServer.await())
         }
     }
 

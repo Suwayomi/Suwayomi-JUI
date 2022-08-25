@@ -13,16 +13,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.library.model.DisplayMode
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.library.CategoryState
 import ca.gosyer.jui.uicore.components.ErrorScreen
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun LibraryPager(
     pagerState: PagerState,
-    categories: List<Category>,
+    categories: ImmutableList<StableHolder<Category>>,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
@@ -37,7 +39,7 @@ fun LibraryPager(
     if (categories.isEmpty()) return
 
     HorizontalPager(categories.size, state = pagerState) {
-        when (val library = getLibraryForPage(categories[it].id).value) {
+        when (val library = getLibraryForPage(categories[it].item.id).value) {
             CategoryState.Loading -> LoadingScreen()
             is CategoryState.Failed -> ErrorScreen(library.e.message)
             is CategoryState.Loaded -> LibraryLoadedPage(

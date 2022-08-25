@@ -35,6 +35,7 @@ import ca.gosyer.jui.domain.settings.model.About
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -46,7 +47,7 @@ import dev.icerock.moko.resources.StringResource
 
 @Composable
 fun AboutContent(
-    about: About?,
+    aboutHolder: StableHolder<About?>,
     formattedBuildTime: String,
     checkForUpdates: () -> Unit,
     openSourceLicenses: () -> Unit
@@ -70,7 +71,7 @@ fun AboutContent(
                 ClientVersionInfo()
             }
             item {
-                ServerVersionInfo(about, formattedBuildTime)
+                ServerVersionInfo(aboutHolder, formattedBuildTime)
             }
             item {
                 WhatsNew()
@@ -130,7 +131,8 @@ private fun ClientVersionInfo() {
 }
 
 @Composable
-private fun ServerVersionInfo(about: About?, formattedBuildTime: String) {
+private fun ServerVersionInfo(aboutHolder: StableHolder<About?>, formattedBuildTime: String) {
+    val about = aboutHolder.item
     if (about == null) {
         Box(Modifier.fillMaxWidth().height(48.dp), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()

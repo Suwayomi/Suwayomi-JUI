@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.categories
 
+import androidx.compose.runtime.Stable
 import ca.gosyer.jui.domain.category.interactor.CreateCategory
 import ca.gosyer.jui.domain.category.interactor.DeleteCategory
 import ca.gosyer.jui.domain.category.interactor.GetCategories
@@ -14,6 +15,12 @@ import ca.gosyer.jui.domain.category.interactor.ReorderCategory
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.minus
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.plus
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -29,7 +36,7 @@ class CategoriesScreenViewModel @Inject constructor(
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     private var originalCategories = emptyList<Category>()
-    private val _categories = MutableStateFlow(emptyList<MenuCategory>())
+    private val _categories = MutableStateFlow<ImmutableList<MenuCategory>>(persistentListOf())
     val categories = _categories.asStateFlow()
 
     init {
@@ -39,13 +46,14 @@ class CategoriesScreenViewModel @Inject constructor(
     }
 
     private suspend fun getCategories() {
-        _categories.value = emptyList()
+        _categories.value = persistentListOf()
         val categories = getCategories.await(true)
         if (categories != null) {
             _categories.value = categories
                 .sortedBy { it.order }
                 .also { originalCategories = it }
                 .map { it.toMenuCategory() }
+                .toImmutableList()
         }
     }
 
@@ -79,15 +87,16 @@ class CategoriesScreenViewModel @Inject constructor(
     }
 
     fun renameCategory(category: MenuCategory, newName: String) {
-        _categories.value = (_categories.value - category + category.copy(name = newName)).sortedBy { it.order }
+        _categories.value = (_categories.value.toPersistentList() - category + category.copy(name = newName)).sortedBy { it.order }
+            .toImmutableList()
     }
 
     fun deleteCategory(category: MenuCategory) {
-        _categories.value = _categories.value - category
+        _categories.value = _categories.value.toPersistentList() - category
     }
 
     fun createCategory(name: String) {
-        _categories.value += MenuCategory(order = categories.value.size + 1, name = name, default = false)
+        _categories.value = _categories.value.toPersistentList() + MenuCategory(order = categories.value.size + 1, name = name, default = false)
     }
 
     fun moveUp(category: MenuCategory) {
@@ -95,10 +104,12 @@ class CategoriesScreenViewModel @Inject constructor(
         val index = categories.indexOf(category)
         if (index == -1) throw Exception("Invalid index")
         categories.add(index - 1, categories.removeAt(index))
-        categories.forEachIndexed { i, _ ->
-            categories[i].order = i + 1
-        }
-        _categories.value = categories.sortedBy { it.order }.toList()
+        _categories.value = categories
+            .mapIndexed { i, menuCategory ->
+                menuCategory.copy(order = i + 1)
+            }
+            .sortedBy { it.order }
+            .toImmutableList()
     }
 
     fun moveDown(category: MenuCategory) {
@@ -106,15 +117,18 @@ class CategoriesScreenViewModel @Inject constructor(
         val index = categories.indexOf(category)
         if (index == -1) throw Exception("Invalid index")
         categories.add(index + 1, categories.removeAt(index))
-        categories.forEachIndexed { i, _ ->
-            categories[i].order = i + 1
-        }
-        _categories.value = categories.sortedBy { it.order }.toList()
+        _categories.value = categories
+            .mapIndexed { i, menuCategory ->
+                menuCategory.copy(order = i + 1)
+            }
+            .sortedBy { it.order }
+            .toImmutableList()
     }
 
     private fun Category.toMenuCategory() = MenuCategory(id, order, name, default)
 
-    data class MenuCategory(val id: Long? = null, var order: Int, val name: String, val default: Boolean = false)
+    @Stable
+    data class MenuCategory(val id: Long? = null, val order: Int, val name: String, val default: Boolean = false)
 
     private companion object {
         private val log = logging()

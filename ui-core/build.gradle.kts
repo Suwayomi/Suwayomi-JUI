@@ -41,6 +41,7 @@ kotlin {
                 api(libs.imageloader)
                 api(libs.voyager.core)
                 api(libs.dateTime)
+                api(libs.immutableCollections)
                 api(projects.core)
                 api(projects.i18n)
                 api(compose.desktop.currentOs)

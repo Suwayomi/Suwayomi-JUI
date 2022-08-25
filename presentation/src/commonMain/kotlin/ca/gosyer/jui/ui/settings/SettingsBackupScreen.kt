@@ -40,6 +40,7 @@ import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.ui.base.file.rememberFileChooser
 import ca.gosyer.jui.ui.base.file.rememberFileSaver
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow
 import ca.gosyer.jui.ui.util.lang.toSource
@@ -61,6 +62,9 @@ import com.vanpra.composematerialdialogs.title
 import io.ktor.client.plugins.onDownload
 import io.ktor.client.plugins.onUpload
 import io.ktor.client.statement.bodyAsChannel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,8 +97,8 @@ class SettingsBackupScreen : Screen {
         SettingsBackupScreenContent(
             restoreStatus = vm.restoreStatus.collectAsState().value,
             creatingStatus = vm.creatingStatus.collectAsState().value,
-            missingSourceFlow = vm.missingSourceFlow,
-            createFlow = vm.createFlow,
+            missingSourceFlowHolder = vm.missingSourceFlowHolder,
+            createFlowHolder = vm.createFlowHolder,
             restoreFile = vm::restoreFile,
             restoreBackup = vm::restoreBackup,
             stopRestore = vm::stopRestore,
@@ -113,13 +117,13 @@ class SettingsBackupViewModel @Inject constructor(
     private val _restoreStatus = MutableStateFlow<Status>(Status.Nothing)
     val restoreStatus = _restoreStatus.asStateFlow()
 
-    private val _missingSourceFlow = MutableSharedFlow<Pair<Path, List<String>>>()
-    val missingSourceFlow = _missingSourceFlow.asSharedFlow()
+    private val _missingSourceFlow = MutableSharedFlow<Pair<Path, ImmutableList<String>>>()
+    val missingSourceFlowHolder = StableHolder(_missingSourceFlow.asSharedFlow())
 
     private val _creatingStatus = MutableStateFlow<Status>(Status.Nothing)
     val creatingStatus = _creatingStatus.asStateFlow()
     private val _createFlow = MutableSharedFlow<String>()
-    val createFlow = _createFlow.asSharedFlow()
+    val createFlowHolder = StableHolder(_createFlow.asSharedFlow())
     fun restoreFile(source: Source) {
         scope.launch {
             val file = try {
@@ -140,7 +144,7 @@ class SettingsBackupViewModel @Inject constructor(
                     if (missingSources.isEmpty()) {
                         restoreBackup(file)
                     } else {
-                        _missingSourceFlow.emit(file to missingSources)
+                        _missingSourceFlow.emit(file to missingSources.toImmutableList())
                     }
                 }
                 .catch {
@@ -257,8 +261,8 @@ sealed class Status {
 private fun SettingsBackupScreenContent(
     restoreStatus: Status,
     creatingStatus: Status,
-    missingSourceFlow: SharedFlow<Pair<Path, List<String>>>,
-    createFlow: SharedFlow<String>,
+    missingSourceFlowHolder: StableHolder<SharedFlow<Pair<Path, ImmutableList<String>>>>,
+    createFlowHolder: StableHolder<SharedFlow<String>>,
     restoreFile: (Source) -> Unit,
     restoreBackup: (Path) -> Unit,
     stopRestore: () -> Unit,
@@ -266,20 +270,20 @@ private fun SettingsBackupScreenContent(
     exportBackupFileFound: (Sink) -> Unit
 ) {
     var backupFile by remember { mutableStateOf<Path?>(null) }
-    var missingSources by remember { mutableStateOf(emptyList<String>()) }
+    var missingSources: ImmutableList<String> by remember { mutableStateOf(persistentListOf()) }
     val dialogState = rememberMaterialDialogState()
     val fileSaver = rememberFileSaver(exportBackupFileFound)
     val fileChooser = rememberFileChooser(restoreFile)
     LaunchedEffect(Unit) {
         launch(Dispatchers.IO) {
-            missingSourceFlow.collect { (backup, sources) ->
+            missingSourceFlowHolder.item.collect { (backup, sources) ->
                 backupFile = backup
                 missingSources = sources
                 dialogState.show()
             }
         }
         launch(Dispatchers.IO) {
-            createFlow.collect { filename ->
+            createFlowHolder.item.collect { filename ->
                 fileSaver.save(filename)
             }
         }
@@ -330,7 +334,7 @@ private fun SettingsBackupScreenContent(
 @Composable
 private fun MissingSourcesDialog(
     state: MaterialDialogState,
-    missingSources: List<String>,
+    missingSources: ImmutableList<String>,
     onPositiveClick: () -> Unit,
     onNegativeClick: () -> Unit
 ) {

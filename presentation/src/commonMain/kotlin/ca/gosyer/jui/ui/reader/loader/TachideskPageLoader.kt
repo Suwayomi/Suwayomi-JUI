@@ -6,10 +6,10 @@
 
 package ca.gosyer.jui.ui.reader.loader
 
-import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.util.compose.toImageBitmap
@@ -69,12 +69,12 @@ class TachideskPageLoader(
                                     }
                                 }
                                     .onEach {
-                                        page.bitmap.value = it.toImageBitmap()
+                                        page.bitmap.value = StableHolder(it.toImageBitmap())
                                         page.status.value = ReaderPage.Status.READY
                                         page.error.value = null
                                     }
                                     .catch {
-                                        page.bitmap.value = null
+                                        page.bitmap.value = StableHolder(null)
                                         page.status.value = ReaderPage.Status.ERROR
                                         page.error.value = it.message
                                         log.warn(it) { "Failed to get page ${page.index} for chapter ${chapter.chapter.index} for ${chapter.chapter.mangaId}" }
@@ -125,7 +125,7 @@ class TachideskPageLoader(
                     pageRange.map {
                         ReaderPage(
                             index = it,
-                            bitmap = MutableStateFlow(null),
+                            bitmap = MutableStateFlow(StableHolder(null)),
                             progress = MutableStateFlow(0.0F),
                             status = MutableStateFlow(ReaderPage.Status.QUEUE),
                             error = MutableStateFlow(null),

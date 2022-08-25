@@ -43,6 +43,7 @@ import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.model.DownloadChapter
 import ca.gosyer.jui.domain.download.model.DownloaderStatus
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.uicore.components.DropdownIconButton
@@ -57,10 +58,12 @@ import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun DownloadsScreenContent(
-    downloadQueue: List<DownloadChapter>,
+    downloadQueue: ImmutableList<StableHolder<DownloadChapter>>,
     downloadStatus: DownloaderStatus,
     startDownloading: () -> Unit,
     pauseDownloading: () -> Unit,
@@ -90,7 +93,7 @@ fun DownloadsScreenContent(
                 items(downloadQueue) {
                     DownloadsItem(
                         it,
-                        { onMangaClick(it.mangaId) },
+                        { onMangaClick(it.item.mangaId) },
                         stopDownload,
                         moveDownloadToBottom
                     )
@@ -108,11 +111,12 @@ fun DownloadsScreenContent(
 
 @Composable
 fun DownloadsItem(
-    item: DownloadChapter,
+    itemHolder: StableHolder<DownloadChapter>,
     onClickCover: () -> Unit,
     onClickCancel: (Chapter) -> Unit,
     onClickMoveToBottom: (Chapter) -> Unit
 ) {
+    val item = itemHolder.item
     MangaListItem(
         modifier = Modifier
             .height(96.dp)
@@ -182,7 +186,7 @@ private fun getActionItems(
     startDownloading: () -> Unit,
     pauseDownloading: () -> Unit,
     clearQueue: () -> Unit
-): List<ActionItem> {
+): ImmutableList<ActionItem> {
     return listOf(
         if (downloadStatus == DownloaderStatus.Started) {
             ActionItem(
@@ -198,5 +202,5 @@ private fun getActionItems(
             )
         },
         ActionItem(stringResource(MR.strings.action_clear_queue), Icons.Rounded.ClearAll, doAction = clearQueue)
-    )
+    ).toImmutableList()
 }

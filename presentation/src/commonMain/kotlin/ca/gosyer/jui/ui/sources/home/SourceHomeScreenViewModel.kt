@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.sources.home
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.displayName
 import ca.gosyer.jui.data.source.SourceRepositoryImpl
@@ -14,6 +15,10 @@ import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,6 +43,8 @@ class SourceHomeScreenViewModel @Inject constructor(
 
     private val _languages = catalogPreferences.languages().asStateFlow()
     val languages = _languages.asStateFlow()
+        .map { it.toImmutableSet() }
+        .stateIn(scope, SharingStarted.Eagerly, persistentSetOf())
 
     val sources = combine(installedSources, languages) { installedSources, languages ->
         val all = MR.strings.all.toPlatformString()
@@ -72,11 +79,13 @@ class SourceHomeScreenViewModel @Inject constructor(
             .flatMap { (key, value) ->
                 listOf(SourceUI.Header(key)) + value
             }
-    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
+            .toImmutableList()
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     val sourceLanguages = installedSources.map { sources ->
-        sources.map { it.lang }.distinct() - Source.LOCAL_SOURCE_LANG
-    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
+        sources.map { it.lang }.distinct().minus(Source.LOCAL_SOURCE_LANG)
+            .toImmutableList()
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()
@@ -112,7 +121,10 @@ class SourceHomeScreenViewModel @Inject constructor(
     }
 }
 
+@Stable
 sealed class SourceUI {
+    @Stable
     data class Header(val header: String) : SourceUI()
+    @Stable
     data class SourceItem(val source: Source) : SourceUI()
 }

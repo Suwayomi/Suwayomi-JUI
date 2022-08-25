@@ -59,13 +59,16 @@ import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.uicore.components.AroundLayout
 import ca.gosyer.jui.uicore.components.Spinner
 import ca.gosyer.jui.uicore.resources.stringResource
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.plus
 import kotlin.math.roundToInt
 
 @Composable
 fun ReaderSideMenu(
     chapter: ReaderChapter,
     currentPage: Int,
-    readerModes: List<String>,
+    readerModes: ImmutableList<String>,
     selectedMode: String,
     onNewPageClicked: (Int) -> Unit,
     onCloseSideMenuClicked: () -> Unit,
@@ -202,7 +205,7 @@ fun ReaderExpandBottomMenu(
 
 @Composable
 fun ReaderSheet(
-    readerModes: List<String>,
+    readerModes: ImmutableList<String>,
     selectedMode: String,
     onSetReaderMode: (String) -> Unit
 ) {
@@ -212,8 +215,8 @@ fun ReaderSheet(
 }
 
 @Composable
-fun ReaderModeSetting(readerModes: List<String>, selectedMode: String, onSetReaderMode: (String) -> Unit) {
-    val modes by derivedStateOf { listOf(MangaMeta.DEFAULT_READER_MODE) + readerModes }
+fun ReaderModeSetting(readerModes: ImmutableList<String>, selectedMode: String, onSetReaderMode: (String) -> Unit) {
+    val modes by derivedStateOf { persistentListOf(MangaMeta.DEFAULT_READER_MODE) + readerModes }
     val defaultModeString = stringResource(MR.strings.default_reader_mode)
     val displayModes by derivedStateOf { modes.replace(0, defaultModeString) }
     val selectedModeIndex by derivedStateOf { modes.indexOf(selectedMode) }

@@ -34,11 +34,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberVerticalScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.ImageLoaderImage
+import kotlinx.collections.immutable.ImmutableList
 
 expect fun Modifier.libraryMangaModifier(
     onClickManga: () -> Unit,
@@ -47,7 +49,7 @@ expect fun Modifier.libraryMangaModifier(
 
 @Composable
 fun LibraryMangaCompactGrid(
-    library: List<Manga>,
+    library: ImmutableList<StableHolder<Manga>>,
     gridColumns: Int,
     gridSize: Int,
     onClickManga: (Long) -> Unit,
@@ -69,13 +71,13 @@ fun LibraryMangaCompactGrid(
             state = state,
             modifier = Modifier.fillMaxSize().padding(4.dp)
         ) {
-            items(library) { manga ->
+            items(library) { mangaHolder ->
                 LibraryMangaCompactGridItem(
                     modifier = Modifier.libraryMangaModifier(
-                        { onClickManga(manga.id) },
-                        { onRemoveMangaClicked(manga.id) }
+                        { onClickManga(mangaHolder.item.id) },
+                        { onRemoveMangaClicked(mangaHolder.item.id) }
                     ),
-                    manga = manga,
+                    mangaHolder = mangaHolder,
                     showUnread = showUnread,
                     showDownloaded = showDownloaded,
                     showLanguage = showLanguage,
@@ -95,12 +97,13 @@ fun LibraryMangaCompactGrid(
 @Composable
 private fun LibraryMangaCompactGridItem(
     modifier: Modifier,
-    manga: Manga,
+    mangaHolder: StableHolder<Manga>,
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
     showLocal: Boolean
 ) {
+    val manga = mangaHolder.item
     val fontStyle = LocalTextStyle.current.merge(
         TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
     )
@@ -128,7 +131,7 @@ private fun LibraryMangaCompactGridItem(
         )
         LibraryMangaBadges(
             modifier = Modifier.padding(4.dp),
-            manga = manga,
+            mangaHolder = mangaHolder,
             showUnread = showUnread,
             showDownloaded = showDownloaded,
             showLanguage = showLanguage,

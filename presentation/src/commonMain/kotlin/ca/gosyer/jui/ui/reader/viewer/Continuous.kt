@@ -32,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.reader.model.Direction
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.ChapterSeparator
 import ca.gosyer.jui.ui.reader.ReaderImage
 import ca.gosyer.jui.ui.reader.model.MoveTo
@@ -42,6 +43,7 @@ import ca.gosyer.jui.uicore.components.HorizontalScrollbar
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
@@ -50,7 +52,7 @@ import kotlinx.coroutines.flow.mapLatest
 @Composable
 fun ContinuousReader(
     modifier: Modifier,
-    pages: List<ReaderPage>,
+    pages: ImmutableList<ReaderPage>,
     direction: Direction,
     maxSize: Int,
     padding: Int,
@@ -61,7 +63,7 @@ fun ContinuousReader(
     nextChapter: ReaderChapter?,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    pageEmitter: SharedFlow<PageMove>,
+    pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit
@@ -70,7 +72,7 @@ fun ContinuousReader(
         val state = rememberLazyListState(currentPage, currentPageOffset)
         val density = LocalDensity.current
         LaunchedEffect(Unit) {
-            pageEmitter
+            pageEmitterHolder.item
                 .mapLatest { pageMove ->
                     when (pageMove) {
                         is PageMove.Direction -> {
@@ -183,7 +185,7 @@ fun ContinuousReader(
 
 private fun LazyListScope.items(
     modifier: Modifier,
-    pages: List<ReaderPage>,
+    pages: ImmutableList<ReaderPage>,
     previousChapter: ReaderChapter?,
     currentChapter: ReaderChapter,
     nextChapter: ReaderChapter?,
@@ -199,7 +201,7 @@ private fun LazyListScope.items(
         Box(modifier, contentAlignment = Alignment.Center) {
             ReaderImage(
                 imageIndex = image.index,
-                drawable = image.bitmap.collectAsState().value,
+                drawableHolder = image.bitmap.collectAsState().value,
                 progress = image.progress.collectAsState().value,
                 status = image.status.collectAsState().value,
                 error = image.error.collectAsState().value,

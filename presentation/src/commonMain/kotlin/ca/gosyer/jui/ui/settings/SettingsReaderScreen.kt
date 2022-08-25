@@ -26,6 +26,7 @@ import ca.gosyer.jui.domain.reader.model.NavigationMode
 import ca.gosyer.jui.domain.reader.service.ReaderModePreferences
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.ChoicePreference
 import ca.gosyer.jui.ui.base.prefs.ExpandablePreference
@@ -42,11 +43,21 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.plus
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import me.tatarka.inject.annotations.Inject
 
 class SettingsReaderScreen : Screen {
@@ -56,7 +67,7 @@ class SettingsReaderScreen : Screen {
     override fun Content() {
         val vm = viewModel { settingsReaderViewModel() }
         SettingsReaderScreenContent(
-            modes = vm.modes.collectAsState().value.associateWith { it },
+            modes = vm.modes.collectAsState().value,
             selectedMode = vm.selectedMode,
             modeSettings = vm.modeSettings.collectAsState().value,
             directionChoices = vm.getDirectionChoices(),
@@ -73,31 +84,39 @@ class SettingsReaderViewModel @Inject constructor(
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     val modes = readerPreferences.modes().asStateFlow()
+        .map {
+            it.associateWith { it }
+                .toImmutableMap()
+        }
+        .stateIn(scope, SharingStarted.Eagerly, persistentMapOf())
     val selectedMode = readerPreferences.mode().asStateIn(scope)
 
-    private val _modeSettings = MutableStateFlow(emptyList<ReaderModePreference>())
+    private val _modeSettings = MutableStateFlow<ImmutableList<StableHolder<ReaderModePreference>>>(
+        persistentListOf()
+    )
     val modeSettings = _modeSettings.asStateFlow()
 
     init {
         modes.onEach { modes ->
             val modeSettings = _modeSettings.value
-            val modesInSettings = modeSettings.map { it.mode }
-            _modeSettings.value = modeSettings.filter { it.mode in modes } + modes.filter {
+            val modesInSettings = modeSettings.map { it.item.mode }
+            _modeSettings.value = modeSettings.filter { it.item.mode in modes }.toPersistentList() + modes.filter { (it) ->
                 it !in modesInSettings
-            }.map {
-                ReaderModePreference(scope, it, readerPreferences.getMode(it))
+            }.map { (it) ->
+                StableHolder(ReaderModePreference(scope, it, readerPreferences.getMode(it)))
             }
         }.launchIn(scope)
     }
 
     fun getDirectionChoices() = Direction.values().associateWith { it.res.toPlatformString() }
+        .toImmutableMap()
 
     fun getPaddingChoices() = mapOf(
         0 to MR.strings.page_padding_none.toPlatformString(),
         8 to "8 Dp",
         16 to "16 Dp",
         32 to "32 Dp"
-    )
+    ).toImmutableMap()
 
     fun getMaxSizeChoices(direction: Direction) = if (direction == Direction.Right || direction == Direction.Left) {
         mapOf(
@@ -113,11 +132,13 @@ class SettingsReaderViewModel @Inject constructor(
             700 to "700 Dp",
             900 to "900 Dp"
         )
-    }
+    }.toImmutableMap()
 
     fun getImageScaleChoices() = ImageScale.values().associateWith { it.res.toPlatformString() }
+        .toImmutableMap()
 
     fun getNavigationModeChoices() = NavigationMode.values().associateWith { it.res.toPlatformString() }
+        .toImmutableMap()
 }
 
 data class ReaderModePreference(
@@ -149,14 +170,14 @@ data class ReaderModePreference(
 
 @Composable
 fun SettingsReaderScreenContent(
-    modes: Map<String, String>,
+    modes: ImmutableMap<String, String>,
     selectedMode: PreferenceMutableStateFlow<String>,
-    modeSettings: List<ReaderModePreference>,
-    directionChoices: Map<Direction, String>,
-    paddingChoices: Map<Int, String>,
-    getMaxSizeChoices: (Direction) -> Map<Int, String>,
-    imageScaleChoices: Map<ImageScale, String>,
-    navigationModeChoices: Map<NavigationMode, String>
+    modeSettings: ImmutableList<StableHolder<ReaderModePreference>>,
+    directionChoices: ImmutableMap<Direction, String>,
+    paddingChoices: ImmutableMap<Int, String>,
+    getMaxSizeChoices: (Direction) -> ImmutableMap<Int, String>,
+    imageScaleChoices: ImmutableMap<ImageScale, String>,
+    navigationModeChoices: ImmutableMap<NavigationMode, String>
 ) {
     Scaffold(
         topBar = {
@@ -176,7 +197,7 @@ fun SettingsReaderScreenContent(
                 item {
                     Divider()
                 }
-                modeSettings.fastForEach {
+                modeSettings.fastForEach { (it) ->
                     item {
                         ExpandablePreference(it.mode) {
                             ChoicePreference(

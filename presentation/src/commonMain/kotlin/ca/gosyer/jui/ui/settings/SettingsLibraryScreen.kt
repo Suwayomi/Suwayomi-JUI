@@ -57,6 +57,8 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -110,12 +112,13 @@ class SettingsLibraryViewModel @Inject constructor(
     @Composable
     fun getDisplayModeChoices() = DisplayMode.values()
         .associateWith { stringResource(it.res) }
+        .toImmutableMap()
 }
 
 @Composable
 fun SettingsLibraryScreenContent(
     displayMode: PreferenceMutableStateFlow<DisplayMode>,
-    displayModeChoices: Map<DisplayMode, String>,
+    displayModeChoices: ImmutableMap<DisplayMode, String>,
     gridColumns: PreferenceMutableStateFlow<Int>,
     gridSize: PreferenceMutableStateFlow<Int>,
     showAllCategory: PreferenceMutableStateFlow<Boolean>,

@@ -41,6 +41,9 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.datetime.Clock
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -82,7 +85,7 @@ class SettingsGeneralViewModel @Inject constructor(
     private val currentLocale = Locale.current
 
     @Composable
-    fun getStartScreenChoices() = mapOf(
+    fun getStartScreenChoices(): ImmutableMap<StartScreen, String> = persistentMapOf(
         StartScreen.Library to stringResource(MR.strings.location_library),
         StartScreen.Updates to stringResource(MR.strings.location_updates),
         StartScreen.Sources to stringResource(MR.strings.location_sources),
@@ -90,7 +93,7 @@ class SettingsGeneralViewModel @Inject constructor(
     )
 
     @Composable
-    fun getLanguageChoices(): Map<String, String> {
+    fun getLanguageChoices(): ImmutableMap<String, String> {
         val langJsonState = MR.files.languages.readTextAsync()
         val langs by produceState(emptyMap(), langJsonState.value) {
             val langJson = langJsonState.value
@@ -106,15 +109,17 @@ class SettingsGeneralViewModel @Inject constructor(
         }
         return mapOf("" to stringResource(MR.strings.language_system_default, currentLocale.getDisplayName(currentLocale)))
             .plus(langs)
+            .toImmutableMap()
     }
 
     @Composable
-    fun getDateChoices(): Map<String, String> {
+    fun getDateChoices(): ImmutableMap<String, String> {
         return dateHandler.formatOptions
             .associateWith {
                 it.ifEmpty { stringResource(MR.strings.date_system_default) } +
                     " (${getFormattedDate(it)})"
             }
+            .toImmutableMap()
     }
 
     @Composable
@@ -126,12 +131,12 @@ class SettingsGeneralViewModel @Inject constructor(
 @Composable
 fun SettingsGeneralScreenContent(
     startScreen: PreferenceMutableStateFlow<StartScreen>,
-    startScreenChoices: Map<StartScreen, String>,
+    startScreenChoices: ImmutableMap<StartScreen, String>,
     confirmExit: PreferenceMutableStateFlow<Boolean>,
     language: PreferenceMutableStateFlow<String>,
-    languageChoices: Map<String, String>,
+    languageChoices: ImmutableMap<String, String>,
     dateFormat: PreferenceMutableStateFlow<String>,
-    dateFormatChoices: Map<String, String>
+    dateFormatChoices: ImmutableMap<String, String>
 ) {
     Scaffold(
         topBar = {

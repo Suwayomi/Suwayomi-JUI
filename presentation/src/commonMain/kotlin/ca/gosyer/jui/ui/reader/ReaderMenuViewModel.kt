@@ -21,6 +21,7 @@ import ca.gosyer.jui.domain.manga.model.MangaMeta
 import ca.gosyer.jui.domain.reader.ReaderModeWatch
 import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.loader.PagesState
 import ca.gosyer.jui.ui.reader.model.MoveTo
 import ca.gosyer.jui.ui.reader.model.Navigation
@@ -31,6 +32,9 @@ import ca.gosyer.jui.ui.reader.model.ViewerChapters
 import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
@@ -45,6 +49,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
@@ -79,7 +84,7 @@ class ReaderMenuViewModel @Inject constructor(
     private val _state = MutableStateFlow<ReaderChapter.State>(ReaderChapter.State.Wait)
     val state = _state.asStateFlow()
 
-    private val _pages = MutableStateFlow(emptyList<ReaderPage>())
+    private val _pages = MutableStateFlow<ImmutableList<ReaderPage>>(persistentListOf())
     val pages = _pages.asStateFlow()
 
     private val _currentPage = MutableStateFlow(1)
@@ -92,9 +97,11 @@ class ReaderMenuViewModel @Inject constructor(
     val readerSettingsMenuOpen = _readerSettingsMenuOpen.asStateFlow()
 
     private val _pageEmitter = MutableSharedFlow<PageMove>()
-    val pageEmitter = _pageEmitter.asSharedFlow()
+    val pageEmitter = StableHolder(_pageEmitter.asSharedFlow())
 
     val readerModes = readerPreferences.modes().asStateIn(scope)
+        .map { it.toImmutableList() }
+        .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
     val readerMode = combine(readerPreferences.mode().getAsFlow(), _manga) { mode, manga ->
         if (
             manga != null &&
@@ -167,7 +174,7 @@ class ReaderMenuViewModel @Inject constructor(
 
     private fun resetValues() {
         viewerChapters.recycle()
-        _pages.value = emptyList()
+        _pages.value = persistentListOf()
         _currentPage.value = 1
     }
 
@@ -274,7 +281,7 @@ class ReaderMenuViewModel @Inject constructor(
         pages
             .filterIsInstance<PagesState.Success>()
             .onEach { (pageList) ->
-                _pages.value = pageList
+                _pages.value = pageList.toImmutableList()
                 pageList.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
             }
             .launchIn(chapter.scope)

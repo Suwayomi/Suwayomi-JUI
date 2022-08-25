@@ -13,7 +13,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.configureSwingGlobalsForCompose
+import androidx.compose.ui.graphics.toPainter
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -32,6 +34,7 @@ import ca.gosyer.jui.domain.server.service.ServerService.ServerResult
 import ca.gosyer.jui.domain.ui.model.ThemeMode
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.theme.AppTheme
 import ca.gosyer.jui.ui.main.MainMenu
 import ca.gosyer.jui.ui.main.components.DebugOverlay
@@ -40,7 +43,6 @@ import ca.gosyer.jui.ui.util.compose.WindowGet
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.resources.stringResource
-import ca.gosyer.jui.uicore.resources.toPainter
 import com.github.weisj.darklaf.LafManager
 import com.github.weisj.darklaf.theme.DarculaTheme
 import com.github.weisj.darklaf.theme.IntelliJTheme
@@ -141,7 +143,7 @@ suspend fun main() {
                 placement = placement
             )
 
-            val icon = MR.images.icon.toPainter()
+            val icon = remember { StableHolder(MR.images.icon.image.toPainter()) }
 
             Tray(icon)
 
@@ -156,7 +158,7 @@ suspend fun main() {
                     }
                 },
                 title = BuildConfig.NAME,
-                icon = icon,
+                icon = icon.item,
                 state = windowState,
                 onKeyEvent = {
                     if (it.type == KeyEventType.KeyUp) {

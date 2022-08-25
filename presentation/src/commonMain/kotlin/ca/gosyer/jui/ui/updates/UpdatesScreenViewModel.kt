@@ -19,6 +19,8 @@ import ca.gosyer.jui.domain.updates.interactor.GetRecentUpdates
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,8 +52,8 @@ class UpdatesScreenViewModel @Inject constructor(
     val isLoading = _isLoading.asStateFlow()
 
     private val _updates = mutableStateMapOf<LocalDate, SnapshotStateList<ChapterDownloadItem>>()
-    val updates = snapshotFlow { _updates.toList().sortedByDescending { it.first } }
-        .stateIn(scope, SharingStarted.Eagerly, emptyList())
+    val updates = snapshotFlow { _updates.toList().sortedByDescending { it.first }.toImmutableList() }
+        .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     private val currentPage = MutableStateFlow(1)
     private val hasNextPage = MutableStateFlow(false)

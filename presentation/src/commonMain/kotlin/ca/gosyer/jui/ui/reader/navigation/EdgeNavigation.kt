@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.reader.navigation
 
+import androidx.compose.runtime.Immutable
 import ca.gosyer.jui.ui.reader.model.Navigation
 
 /**
@@ -18,6 +19,7 @@ import ca.gosyer.jui.ui.reader.model.Navigation
  * | N | P | N |   N: Next
  * +---+---+---+
 */
+@Immutable
 class EdgeNavigation : ViewerNavigation() {
 
     override var regions: List<Region> = listOf(

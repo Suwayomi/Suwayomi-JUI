@@ -52,6 +52,7 @@ kotlin {
                 api(libs.accompanist.flowLayout)
                 api(libs.krokiCoroutines)
                 api(libs.dateTime)
+                api(libs.immutableCollections)
                 api(libs.aboutLibraries.core)
                 api(libs.aboutLibraries.ui)
                 api(projects.core)

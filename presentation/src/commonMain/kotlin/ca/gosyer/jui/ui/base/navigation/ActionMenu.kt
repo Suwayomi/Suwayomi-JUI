@@ -25,6 +25,7 @@ import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.components.DropdownMenu
 import ca.gosyer.jui.uicore.components.DropdownMenuItem
 import ca.gosyer.jui.uicore.resources.stringResource
+import kotlinx.collections.immutable.ImmutableList
 
 // Originally from https://gist.github.com/MachFour/369ebb56a66e2f583ebfb988dda2decf
 
@@ -53,7 +54,7 @@ enum class OverflowMode {
 // Note: should be used in a RowScope
 @Composable
 fun ActionMenu(
-    items: List<ActionItem>,
+    items: ImmutableList<ActionItem>,
     numIcons: Int = 3, // includes overflow menu icon; may be overridden by NEVER_OVERFLOW
     menuVisible: MutableState<Boolean> = remember { mutableStateOf(false) },
     iconItem: @Composable (onClick: () -> Unit, name: String, icon: ImageVector, enabled: Boolean) -> Unit
@@ -111,7 +112,7 @@ fun ActionMenu(
 }
 
 private fun separateIntoIconAndOverflow(
-    items: List<ActionItem>,
+    items: ImmutableList<ActionItem>,
     numIcons: Int
 ): Pair<List<ActionItem>, List<ActionItem>> {
     var (iconCount, overflowCount, preferIconCount) = Triple(0, 0, 0)

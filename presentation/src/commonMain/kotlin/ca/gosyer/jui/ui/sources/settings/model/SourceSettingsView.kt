@@ -14,10 +14,14 @@ import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
 import ca.gosyer.jui.domain.source.model.sourcepreference.SwitchPreference
 import ca.gosyer.jui.domain.source.model.sourcepreference.TwoStateProps
 import ca.gosyer.jui.ui.util.lang.stringFormat
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.minus
+import kotlinx.collections.immutable.plus
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlin.collections.List as KtList
 
 sealed class SourceSettingsView<T, R : Any?> {
     abstract val index: Int
@@ -98,7 +102,7 @@ sealed class SourceSettingsView<T, R : Any?> {
 
         fun getOptions() = props.entryValues.mapIndexed { index, s ->
             s to props.entries[index]
-        }
+        }.toImmutableList()
     }
 
     data class MultiSelect internal constructor(
@@ -106,12 +110,12 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val title: String?,
         override val subtitle: String?,
         override val props: MultiSelectListPreference.MultiSelectListProps
-    ) : SourceSettingsView<MultiSelectListPreference.MultiSelectListProps, KtList<String>?>() {
+    ) : SourceSettingsView<MultiSelectListPreference.MultiSelectListProps, ImmutableList<String>?>() {
         private val _state = MutableStateFlow(
-            props.currentValue ?: props.defaultValue
+            props.currentValue?.toImmutableList() ?: props.defaultValue?.toImmutableList()
         )
-        override val state: StateFlow<KtList<String>?> = _state.asStateFlow()
-        override fun updateState(value: KtList<String>?) {
+        override val state: StateFlow<ImmutableList<String>?> = _state.asStateFlow()
+        override fun updateState(value: ImmutableList<String>?) {
             _state.value = value
         }
         internal constructor(index: Int, preference: MultiSelectListPreference) : this(
@@ -123,13 +127,13 @@ sealed class SourceSettingsView<T, R : Any?> {
 
         fun getOptions() = props.entryValues.mapIndexed { index, s ->
             s to props.entries[index]
-        }
+        }.toImmutableList()
 
         fun toggleOption(key: String) {
             if (key in state.value.orEmpty()) {
-                updateState(state.value.orEmpty() - key)
+                updateState(state.value.orEmpty().toPersistentList() - key)
             } else {
-                updateState(state.value.orEmpty() + key)
+                updateState(state.value.orEmpty().toPersistentList() + key)
             }
         }
     }

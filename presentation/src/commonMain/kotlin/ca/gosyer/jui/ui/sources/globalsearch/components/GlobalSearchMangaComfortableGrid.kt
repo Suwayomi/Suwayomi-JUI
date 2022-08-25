@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.sources.browse.components.SourceMangaBadges
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.image.ImageLoaderImage
@@ -33,9 +34,10 @@ import ca.gosyer.jui.uicore.image.ImageLoaderImage
 @Composable
 fun GlobalSearchMangaComfortableGridItem(
     modifier: Modifier,
-    manga: Manga,
+    mangaHolder: StableHolder<Manga>,
     inLibrary: Boolean
 ) {
+    val manga = mangaHolder.item
     val fontStyle = LocalTextStyle.current.merge(
         TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
     )

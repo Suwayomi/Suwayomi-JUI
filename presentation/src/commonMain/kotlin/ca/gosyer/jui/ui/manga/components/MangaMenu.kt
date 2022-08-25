@@ -37,6 +37,7 @@ import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
@@ -48,31 +49,33 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.listItemsMultiChoice
 import com.vanpra.composematerialdialogs.title
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun MangaItem(manga: Manga) {
+fun MangaItem(mangaHolder: StableHolder<Manga>) {
     BoxWithConstraints(Modifier.padding(8.dp)) {
         if (maxWidth > 720.dp) {
             Row {
-                Cover(manga, Modifier.width(300.dp))
+                Cover(mangaHolder, Modifier.width(300.dp))
                 Spacer(Modifier.width(16.dp))
-                MangaInfo(manga)
+                MangaInfo(mangaHolder)
             }
         } else {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Cover(
-                    manga,
+                    mangaHolder,
                     Modifier.heightIn(120.dp, 300.dp)
                 )
                 Spacer(Modifier.height(16.dp))
-                MangaInfo(manga)
+                MangaInfo(mangaHolder)
             }
         }
     }
 }
 
 @Composable
-private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
+private fun Cover(mangaHolder: StableHolder<Manga>, modifier: Modifier = Modifier) {
+    val manga = mangaHolder.item
     ImageLoaderImage(
         data = manga,
         contentDescription = manga.title,
@@ -87,7 +90,8 @@ private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
+private fun MangaInfo(mangaHolder: StableHolder<Manga>, modifier: Modifier = Modifier) {
+    val manga = mangaHolder.item
     SelectionContainer {
         Column(modifier) {
             Text(
@@ -161,8 +165,8 @@ private fun Chip(text: String) {
 @Composable
 fun CategorySelectDialog(
     state: MaterialDialogState,
-    categories: List<Category>,
-    oldCategories: List<Category>,
+    categories: ImmutableList<StableHolder<Category>>,
+    oldCategories: ImmutableList<StableHolder<Category>>,
     onPositiveClick: (List<Category>, List<Category>) -> Unit
 ) {
     MaterialDialog(
@@ -178,13 +182,13 @@ fun CategorySelectDialog(
         Box {
             val listState = rememberLazyListState()
             listItemsMultiChoice(
-                list = categories.map { it.name },
+                list = categories.map { it.item.name },
                 state = listState,
                 initialSelection = oldCategories.mapNotNull { category ->
-                    categories.indexOfFirst { it.id == category.id }.takeUnless { it == -1 }
+                    categories.indexOfFirst { it.item.id == category.item.id }.takeUnless { it == -1 }
                 }.toSet(),
                 onCheckedChange = { indexes ->
-                    onPositiveClick(indexes.map { categories[it] }, oldCategories)
+                    onPositiveClick(indexes.map { categories[it].item }, oldCategories.map { it.item })
                 }
             )
             VerticalScrollbar(

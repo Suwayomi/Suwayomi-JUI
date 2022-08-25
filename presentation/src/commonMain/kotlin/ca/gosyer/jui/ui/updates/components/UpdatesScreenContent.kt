@@ -22,6 +22,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,12 +45,13 @@ import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.datetime.LocalDate
 
 @Composable
 fun UpdatesScreenContent(
     isLoading: Boolean,
-    dateWithUpdates: List<Pair<LocalDate, List<ChapterDownloadItem>>>,
+    dateWithUpdates: ImmutableList<Pair<LocalDate, SnapshotStateList<ChapterDownloadItem>>>,
     loadNextPage: () -> Unit,
     openChapter: (Int, Long) -> Unit,
     openManga: (Long) -> Unit,

@@ -6,12 +6,14 @@
 
 package ca.gosyer.jui.ui.reader.navigation
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
 import ca.gosyer.jui.domain.reader.model.TappingInvertMode
 import ca.gosyer.jui.ui.reader.model.Navigation
 
+@Immutable
 abstract class ViewerNavigation {
     data class Rect(val xRange: IntRange, val yRange: IntRange) {
         private val right get() = xRange.last

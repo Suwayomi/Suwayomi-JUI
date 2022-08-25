@@ -70,6 +70,8 @@ import ca.gosyer.jui.uicore.components.keyboardHandler
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.math.round
 
 @Composable
@@ -125,7 +127,7 @@ private fun ColorPresets(
 ) {
     val presets = remember {
         if (initialColor.isSpecified) {
-            (listOf(initialColor) + presetColors).distinct()
+            (listOf(initialColor) + presetColors).distinct().toImmutableList()
         } else {
             presetColors
         }
@@ -203,14 +205,14 @@ private fun ColorPresetItem(
     }
 }
 
-private fun getColorShades(color: Color): List<Color> {
+private fun getColorShades(color: Color): ImmutableList<Color> {
     val f = color.toLong()
     return listOf(
         shadeColor(f, 0.9), shadeColor(f, 0.7), shadeColor(f, 0.5),
         shadeColor(f, 0.333), shadeColor(f, 0.166), shadeColor(f, -0.125),
         shadeColor(f, -0.25), shadeColor(f, -0.375), shadeColor(f, -0.5),
         shadeColor(f, -0.675), shadeColor(f, -0.7), shadeColor(f, -0.775)
-    )
+    ).toImmutableList()
 }
 
 private fun shadeColor(f: Long, percent: Double): Color {
@@ -445,4 +447,4 @@ private val presetColors = listOf(
     Color(0xFF795548), // BROWN 500
     Color(0xFF607D8B), // BLUE GREY 500
     Color(0xFF9E9E9E) // GREY 500
-)
+).toImmutableList()

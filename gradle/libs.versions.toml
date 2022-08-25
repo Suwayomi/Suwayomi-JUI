@@ -55,6 +55,7 @@ kroki = "1.22"
 desugarJdkLibs = "1.2.0"
 aboutLibraries = "10.4.0"
 dateTime = "0.4.0"
+immutableCollections = "0.3.5"
 
 # Localization
 moko = "0.20.1"
@@ -155,6 +156,7 @@ desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = 
 aboutLibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
 aboutLibraries-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutLibraries" }
 dateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "dateTime" }
+immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutableCollections" }
 
 # Localization
 moko-core = { module = "dev.icerock.moko:resources", version.ref = "moko" }

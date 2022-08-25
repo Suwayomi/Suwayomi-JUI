@@ -42,6 +42,8 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import me.tatarka.inject.annotations.Inject
@@ -88,7 +90,7 @@ class SettingsServerViewModel @Inject constructor(
     val proxy = serverPreferences.proxy().asStateIn(scope)
 
     @Composable
-    fun getProxyChoices() = mapOf(
+    fun getProxyChoices(): ImmutableMap<Proxy, String> = persistentMapOf(
         Proxy.NO_PROXY to stringResource(MR.strings.no_proxy),
         Proxy.HTTP_PROXY to stringResource(MR.strings.http_proxy),
         Proxy.SOCKS_PROXY to stringResource(MR.strings.socks_proxy)
@@ -102,7 +104,7 @@ class SettingsServerViewModel @Inject constructor(
     val auth = serverPreferences.auth().asStateIn(scope)
 
     @Composable
-    fun getAuthChoices() = mapOf(
+    fun getAuthChoices(): ImmutableMap<Auth, String> = persistentMapOf(
         Auth.NONE to stringResource(MR.strings.no_auth),
         Auth.BASIC to stringResource(MR.strings.basic_auth),
         Auth.DIGEST to stringResource(MR.strings.digest_auth)
@@ -126,13 +128,13 @@ fun SettingsServerScreenContent(
     serverPort: PreferenceMutableStateFlow<String>,
     serverPathPrefix: PreferenceMutableStateFlow<String>,
     proxy: PreferenceMutableStateFlow<Proxy>,
-    proxyChoices: Map<Proxy, String>,
+    proxyChoices: ImmutableMap<Proxy, String>,
     httpHost: PreferenceMutableStateFlow<String>,
     httpPort: PreferenceMutableStateFlow<String>,
     socksHost: PreferenceMutableStateFlow<String>,
     socksPort: PreferenceMutableStateFlow<String>,
     auth: PreferenceMutableStateFlow<Auth>,
-    authChoices: Map<Auth, String>,
+    authChoices: ImmutableMap<Auth, String>,
     authUsername: PreferenceMutableStateFlow<String>,
     authPassword: PreferenceMutableStateFlow<String>
 ) {

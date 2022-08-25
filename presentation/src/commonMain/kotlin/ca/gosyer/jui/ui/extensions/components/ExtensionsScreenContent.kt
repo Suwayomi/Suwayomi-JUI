@@ -62,15 +62,18 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.listItemsMultiChoice
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ExtensionsScreenContent(
-    extensions: List<ExtensionUI>,
+    extensions: ImmutableList<ExtensionUI>,
     isLoading: Boolean,
     query: String?,
     setQuery: (String) -> Unit,
-    enabledLangs: Set<String>,
-    availableLangs: List<String>,
+    enabledLangs: ImmutableSet<String>,
+    availableLangs: ImmutableList<String>,
     setEnabledLanguages: (Set<String>) -> Unit,
     installExtension: (Extension) -> Unit,
     updateExtension: (Extension) -> Unit,
@@ -118,7 +121,7 @@ fun ExtensionsScreenContent(
                             is ExtensionUI.ExtensionItem -> Column {
                                 ExtensionItem(
                                     Modifier.animateItemPlacement(),
-                                    it.extension,
+                                    it,
                                     onInstallClicked = installExtension,
                                     onUpdateClicked = updateExtension,
                                     onUninstallClicked = uninstallExtension
@@ -159,11 +162,12 @@ fun ExtensionsToolbar(
 @Composable
 fun ExtensionItem(
     modifier: Modifier,
-    extension: Extension,
+    extensionItem: ExtensionUI.ExtensionItem,
     onInstallClicked: (Extension) -> Unit,
     onUpdateClicked: (Extension) -> Unit,
     onUninstallClicked: (Extension) -> Unit
 ) {
+    val extension = extensionItem.extension
     Box(
         modifier = Modifier.fillMaxWidth()
             .padding(end = 12.dp)
@@ -225,8 +229,8 @@ fun ExtensionItem(
 @Composable
 fun LanguageDialog(
     state: MaterialDialogState,
-    enabledLangs: Set<String>,
-    availableLangs: List<String>,
+    enabledLangs: ImmutableSet<String>,
+    availableLangs: ImmutableList<String>,
     setLangs: (Set<String>) -> Unit
 ) {
     MaterialDialog(
@@ -268,12 +272,12 @@ fun LanguageDialog(
 @Composable
 private fun getActionItems(
     openLanguageDialog: () -> Unit
-): List<ActionItem> {
+): ImmutableList<ActionItem> {
     return listOf(
         ActionItem(
             stringResource(MR.strings.enabled_languages),
             Icons.Rounded.Translate,
             doAction = openLanguageDialog
         )
-    )
+    ).toImmutableList()
 }

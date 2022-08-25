@@ -8,9 +8,13 @@ package ca.gosyer.jui.ui.sources.browse.filter
 
 import ca.gosyer.jui.data.source.SourceRepositoryImpl
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -42,7 +46,7 @@ class SourceFiltersViewModel(
     private val _loading = MutableStateFlow(true)
     val loading = _loading.asStateFlow()
 
-    private val _filters = MutableStateFlow<List<SourceFiltersView<*, *>>>(emptyList())
+    private val _filters = MutableStateFlow<ImmutableList<StableHolder<SourceFiltersView<*, *>>>>(persistentListOf())
     val filters = _filters.asStateFlow()
 
     private val _showingFilters = MutableStateFlow(false)
@@ -57,7 +61,7 @@ class SourceFiltersViewModel(
         filters.mapLatest { settings ->
             _filterButtonEnabled.value = settings.isNotEmpty()
             supervisorScope {
-                settings.forEach { filter ->
+                settings.forEach { (filter) ->
                     if (filter is SourceFiltersView.Group) {
                         filter.state.value.forEach { childFilter ->
                             childFilter.state.drop(1)
@@ -117,7 +121,7 @@ class SourceFiltersViewModel(
 
     private fun List<SourceFilter>.toView() = mapIndexed { index, sourcePreference ->
         SourceFiltersView(index, sourcePreference)
-    }
+    }.map(::StableHolder).toImmutableList()
 
     private companion object {
         private val log = logging()

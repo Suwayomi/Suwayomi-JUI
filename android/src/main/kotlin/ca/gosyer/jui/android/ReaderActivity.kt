@@ -15,10 +15,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.lifecycle.lifecycleScope
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.theme.AppTheme
 import ca.gosyer.jui.ui.reader.ReaderMenu
 import ca.gosyer.jui.ui.reader.supportedKeyList
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class ReaderActivity : AppCompatActivity() {
@@ -34,6 +36,7 @@ class ReaderActivity : AppCompatActivity() {
     }
 
     private val hotkeyFlow = MutableSharedFlow<KeyEvent>()
+    private val hotkeyFlowHolder = StableHolder(hotkeyFlow.asSharedFlow())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +55,7 @@ class ReaderActivity : AppCompatActivity() {
                     ReaderMenu(
                         chapterIndex = chapterIndex,
                         mangaId = mangaId,
-                        hotkeyFlow = hotkeyFlow,
+                        hotkeyFlowHolder = hotkeyFlowHolder,
                         onCloseRequest = onBackPressedDispatcher::onBackPressed
                     )
                 }

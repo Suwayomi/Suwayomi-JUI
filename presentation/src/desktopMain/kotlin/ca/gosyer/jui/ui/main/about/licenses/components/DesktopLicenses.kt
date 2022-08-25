@@ -18,6 +18,7 @@ import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
 import com.mikepenz.aboutlibraries.ui.compose.Libraries
 import com.mikepenz.aboutlibraries.ui.compose.LibraryColors
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 actual fun getLicenses(): Libs? {
@@ -34,7 +35,7 @@ actual fun getLicenses(): Libs? {
 
 @Composable
 actual fun InternalAboutLibraries(
-    libraries: List<Library>,
+    libraries: ImmutableList<Library>,
     modifier: Modifier,
     lazyListState: LazyListState,
     contentPadding: PaddingValues,

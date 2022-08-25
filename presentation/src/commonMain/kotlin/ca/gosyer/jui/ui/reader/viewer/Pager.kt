@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import ca.gosyer.jui.domain.reader.model.Direction
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.ChapterSeparator
 import ca.gosyer.jui.ui.reader.ReaderImage
 import ca.gosyer.jui.ui.reader.model.MoveTo
@@ -22,6 +23,7 @@ import ca.gosyer.jui.ui.reader.model.ReaderPage
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
@@ -31,13 +33,13 @@ fun PagerReader(
     parentModifier: Modifier,
     direction: Direction,
     currentPage: Int,
-    pages: List<ReaderPage>,
+    pages: ImmutableList<ReaderPage>,
     previousChapter: ReaderChapter?,
     currentChapter: ReaderChapter,
     nextChapter: ReaderChapter?,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    pageEmitter: SharedFlow<PageMove>,
+    pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
     progress: (Int) -> Unit
 ) {
@@ -45,7 +47,7 @@ fun PagerReader(
 
     LaunchedEffect(pages.size) {
         val pageRange = 0..(pages.size + 1)
-        pageEmitter
+        pageEmitterHolder.item
             .mapLatest { pageMove ->
                 when (pageMove) {
                     is PageMove.Direction -> {
@@ -118,7 +120,7 @@ fun PagerReader(
 
 @Composable
 fun HandlePager(
-    pages: List<ReaderPage>,
+    pages: ImmutableList<ReaderPage>,
     page: Int,
     previousChapter: ReaderChapter?,
     currentChapter: ReaderChapter,
@@ -134,7 +136,7 @@ fun HandlePager(
             val image = pages[page - 1]
             ReaderImage(
                 imageIndex = image.index,
-                drawable = image.bitmap.collectAsState().value,
+                drawableHolder = image.bitmap.collectAsState().value,
                 progress = image.progress.collectAsState().value,
                 status = image.status.collectAsState().value,
                 error = image.error.collectAsState().value,

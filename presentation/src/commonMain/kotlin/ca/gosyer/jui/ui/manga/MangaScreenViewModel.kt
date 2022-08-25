@@ -28,12 +28,17 @@ import ca.gosyer.jui.domain.manga.interactor.RefreshManga
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -64,26 +69,28 @@ class MangaScreenViewModel @Inject constructor(
     contextWrapper: ContextWrapper,
     private val params: Params
 ) : ViewModel(contextWrapper) {
-    private val _manga = MutableStateFlow<Manga?>(null)
+    private val _manga = MutableStateFlow<StableHolder<Manga?>>(StableHolder(null))
     val manga = _manga.asStateFlow()
 
-    private val _chapters = MutableStateFlow(emptyList<ChapterDownloadItem>())
+    private val _chapters = MutableStateFlow<ImmutableList<ChapterDownloadItem>>(persistentListOf())
     val chapters = _chapters.asStateFlow()
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
     val categories = getCategories.asFlow(true)
+        .map { it.map(::StableHolder).toImmutableList() }
         .catch { log.warn(it) { "Failed to get categories" } }
-        .stateIn(scope, SharingStarted.Eagerly, emptyList())
+        .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    private val _mangaCategories = MutableStateFlow(emptyList<Category>())
+    private val _mangaCategories = MutableStateFlow<ImmutableList<StableHolder<Category>>>(persistentListOf())
     val mangaCategories = _mangaCategories.asStateFlow()
 
     val categoriesExist = categories.map { it.isNotEmpty() }
         .stateIn(scope, SharingStarted.Eagerly, true)
 
-    val chooseCategoriesFlow = MutableSharedFlow<Unit>()
+    private val chooseCategoriesFlow = MutableSharedFlow<Unit>()
+    val chooseCategoriesFlowHolder = StableHolder(chooseCategoriesFlow.asSharedFlow())
 
     val dateTimeFormatter = uiPreferences.dateFormat().changes()
         .map {
@@ -132,7 +139,7 @@ class MangaScreenViewModel @Inject constructor(
 
     fun setCategories() {
         scope.launch {
-            manga.value ?: return@launch
+            manga.value.item ?: return@launch
             chooseCategoriesFlow.emit(Unit)
         }
     }
@@ -145,14 +152,14 @@ class MangaScreenViewModel @Inject constructor(
                 getManga.await(mangaId)
             }
             if (manga != null) {
-                _manga.value = manga
+                _manga.value = StableHolder(manga)
             } else {
                 // TODO: 2022-07-01 Error toast
             }
 
             val mangaCategories = getMangaCategories.await(mangaId)
             if (mangaCategories != null) {
-                _mangaCategories.value = mangaCategories
+                _mangaCategories.value = mangaCategories.map(::StableHolder).toImmutableList()
             } else {
                 // TODO: 2022-07-01 Error toast
             }
@@ -176,7 +183,7 @@ class MangaScreenViewModel @Inject constructor(
 
     fun toggleFavorite() {
         scope.launch {
-            manga.value?.let { manga ->
+            manga.value.item?.let { manga ->
                 if (manga.inLibrary) {
                     removeMangaFromLibrary.await(manga)
                     refreshMangaAsync(manga.id).await()
@@ -193,7 +200,7 @@ class MangaScreenViewModel @Inject constructor(
 
     fun addFavorite(categories: List<Category>, oldCategories: List<Category>) {
         scope.launch {
-            manga.value?.let { manga ->
+            manga.value.item?.let { manga ->
                 if (manga.inLibrary) {
                     oldCategories.filterNot { it in categories }.forEach {
                         removeMangaFromCategory.await(manga, it)
@@ -214,7 +221,7 @@ class MangaScreenViewModel @Inject constructor(
     fun toggleRead(index: Int) {
         val chapter = findChapter(index) ?: return
         scope.launch {
-            manga.value?.let { manga ->
+            manga.value.item?.let { manga ->
                 updateChapterFlags.await(manga, index, read = chapter.read.not())
                 refreshChaptersAsync(manga.id).await()
             }
@@ -224,7 +231,7 @@ class MangaScreenViewModel @Inject constructor(
     fun toggleBookmarked(index: Int) {
         val chapter = findChapter(index) ?: return
         scope.launch {
-            manga.value?.let { manga ->
+            manga.value.item?.let { manga ->
                 updateChapterFlags.await(manga, index, bookmarked = chapter.bookmarked.not())
                 refreshChaptersAsync(manga.id).await()
             }
@@ -233,7 +240,7 @@ class MangaScreenViewModel @Inject constructor(
 
     fun markPreviousRead(index: Int) {
         scope.launch {
-            manga.value?.let { manga ->
+            manga.value.item?.let { manga ->
                 updateChapterFlags.await(manga, index, markPreviousRead = true)
                 refreshChaptersAsync(manga.id).await()
             }
@@ -241,7 +248,7 @@ class MangaScreenViewModel @Inject constructor(
     }
 
     fun downloadChapter(index: Int) {
-        manga.value?.let { manga ->
+        manga.value.item?.let { manga ->
             scope.launch { queueChapterDownload.await(manga, index) }
         }
     }
@@ -262,7 +269,7 @@ class MangaScreenViewModel @Inject constructor(
 
     private fun List<Chapter>.toDownloadChapters() = map {
         ChapterDownloadItem(null, it)
-    }
+    }.toImmutableList()
 
     data class Params(val mangaId: Long)
 

@@ -25,9 +25,11 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.jui.presentation.build.BuildKonfig
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.util.lang.launchApplication
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 actual class ReaderLauncher {
@@ -50,6 +52,7 @@ actual class ReaderLauncher {
                 launchApplication {
                     val scope = rememberCoroutineScope()
                     val hotkeyFlow = remember { MutableSharedFlow<KeyEvent>() }
+                    val hotkeyFlowHolder = remember { StableHolder(hotkeyFlow.asSharedFlow()) }
                     val windowState = rememberWindowState(
                         position = WindowPosition.Aligned(Alignment.Center)
                     )
@@ -71,7 +74,7 @@ actual class ReaderLauncher {
                             ReaderMenu(
                                 chapterIndex = chapterIndex,
                                 mangaId = mangaId,
-                                hotkeyFlow = hotkeyFlow,
+                                hotkeyFlowHolder = hotkeyFlowHolder,
                                 onCloseRequest = ::exitApplication
                             )
                         }

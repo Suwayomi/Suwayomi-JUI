@@ -36,12 +36,14 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.components.CursorPoint
 import ca.gosyer.jui.ui.base.components.TooltipArea
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.sources.home.SourceHomeScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.ImageLoaderImage
 import ca.gosyer.jui.uicore.resources.stringResource
+import kotlinx.collections.immutable.ImmutableList
 
 expect fun Modifier.sourceSideMenuItem(
     onSourceTabClick: () -> Unit,
@@ -50,11 +52,11 @@ expect fun Modifier.sourceSideMenuItem(
 
 @Composable
 fun SourcesMenu() {
-    val homeScreen = remember { SourceHomeScreen() }
+    val homeScreenHolder = remember { StableHolder(SourceHomeScreen()) }
     BoxWithConstraints {
         if (maxWidth > 720.dp) {
             SourcesNavigator(
-                homeScreen
+                homeScreenHolder
             ) { navigator ->
                 Row {
                     SourcesSideMenu(
@@ -75,14 +77,14 @@ fun SourcesMenu() {
                 }
             }
         } else {
-            homeScreen.Content()
+            homeScreenHolder.item.Content()
         }
     }
 }
 
 @Composable
 fun SourcesSideMenu(
-    sourceTabs: List<SourceNavigatorScreen>,
+    sourceTabs: ImmutableList<SourceNavigatorScreen>,
     onSourceTabClick: (SourceNavigatorScreen) -> Unit,
     onCloseSourceTabClick: (SourceNavigatorScreen.SourceScreen) -> Unit
 ) {

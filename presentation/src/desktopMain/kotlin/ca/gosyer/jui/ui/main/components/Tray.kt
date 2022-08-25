@@ -17,16 +17,17 @@ import androidx.compose.ui.window.rememberTrayState
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
 import ca.gosyer.jui.ui.base.LocalViewModels
+import ca.gosyer.jui.ui.base.model.StableHolder
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
-fun ApplicationScope.Tray(icon: Painter) {
+fun ApplicationScope.Tray(icon: StableHolder<Painter>) {
     val viewModels = LocalViewModels.current
     val vm = remember { viewModels.trayViewModel() }
     val trayState = rememberTrayState()
     Tray(
-        icon,
+        icon.item,
         trayState,
         tooltip = BuildKonfig.NAME,
         menu = {
@@ -48,3 +49,4 @@ fun ApplicationScope.Tray(icon: Painter) {
         }
     }
 }
+

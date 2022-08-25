@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -45,10 +46,12 @@ import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun LibraryScreenContent(
-    categories: List<Category>,
+    categories: ImmutableList<StableHolder<Category>>,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
@@ -146,7 +149,7 @@ fun LibraryScreenContent(
 @Composable
 fun WideLibraryScreenContent(
     pagerState: PagerState,
-    categories: List<Category>,
+    categories: ImmutableList<StableHolder<Category>>,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
@@ -242,7 +245,7 @@ fun WideLibraryScreenContent(
 @Composable
 fun ThinLibraryScreenContent(
     pagerState: PagerState,
-    categories: List<Category>,
+    categories: ImmutableList<StableHolder<Category>>,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
@@ -343,12 +346,12 @@ fun ThinLibraryScreenContent(
 @Stable
 private fun getActionItems(
     onToggleFiltersClick: () -> Unit
-): List<ActionItem> {
+): ImmutableList<ActionItem> {
     return listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_filter),
             icon = Icons.Rounded.FilterList,
             doAction = onToggleFiltersClick
         )
-    )
+    ).toImmutableList()
 }

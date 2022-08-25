@@ -49,6 +49,7 @@ import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -60,7 +61,7 @@ private val log = logging()
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun CategoriesScreenContent(
-    categories: List<MenuCategory>,
+    categories: ImmutableList<MenuCategory>,
     updateRemoteCategories: suspend () -> Unit,
     moveCategoryUp: (MenuCategory) -> Unit,
     moveCategoryDown: (MenuCategory) -> Unit,

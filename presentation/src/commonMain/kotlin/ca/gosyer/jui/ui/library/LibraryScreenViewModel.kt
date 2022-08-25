@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.library
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import ca.gosyer.jui.core.lang.withDefaultContext
@@ -22,11 +23,16 @@ import ca.gosyer.jui.domain.manga.model.MangaStatus
 import ca.gosyer.jui.domain.updates.interactor.UpdateCategory
 import ca.gosyer.jui.domain.updates.interactor.UpdateLibrary
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.util.lang.Collator
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +45,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
@@ -46,17 +53,21 @@ import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
+@Stable
 sealed class CategoryState {
+    @Stable
     object Loading : CategoryState()
+    @Stable
     data class Failed(val e: Throwable) : CategoryState()
+    @Stable
     data class Loaded(
-        val items: StateFlow<List<Manga>>,
-        val unfilteredItems: MutableStateFlow<List<Manga>>
+        val items: StateFlow<ImmutableList<StableHolder<Manga>>>,
+        val unfilteredItems: MutableStateFlow<ImmutableList<StableHolder<Manga>>>
     ) : CategoryState()
 }
 
 private typealias LibraryMap = MutableMap<Long, MutableStateFlow<CategoryState>>
-private data class Library(val categories: MutableStateFlow<List<Category>>, val mangaMap: LibraryMap)
+private data class Library(val categories: MutableStateFlow<ImmutableList<StableHolder<Category>>>, val mangaMap: LibraryMap)
 
 private fun LibraryMap.getManga(id: Long) =
     getOrPut(id) {
@@ -65,7 +76,7 @@ private fun LibraryMap.getManga(id: Long) =
 private fun LibraryMap.setError(id: Long, e: Throwable) {
     getManga(id).value = CategoryState.Failed(e)
 }
-private fun LibraryMap.setManga(id: Long, manga: List<Manga>, getItemsFlow: (StateFlow<List<Manga>>) -> StateFlow<List<Manga>>) {
+private fun LibraryMap.setManga(id: Long, manga: ImmutableList<StableHolder<Manga>>, getItemsFlow: (StateFlow<List<StableHolder<Manga>>>) -> StateFlow<ImmutableList<StableHolder<Manga>>>) {
     val flow = getManga(id)
     when (val state = flow.value) {
         is CategoryState.Loaded -> state.unfilteredItems.value = manga
@@ -85,7 +96,7 @@ class LibraryScreenViewModel @Inject constructor(
     libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
-    private val library = Library(MutableStateFlow(emptyList()), mutableMapOf())
+    private val library = Library(MutableStateFlow(persistentListOf()), mutableMapOf())
     val categories = library.categories.asStateFlow()
 
     private val _selectedCategoryIndex = MutableStateFlow(0)
@@ -105,12 +116,12 @@ class LibraryScreenViewModel @Inject constructor(
     private val sortMode = libraryPreferences.sortMode().stateIn(scope)
     private val sortAscending = libraryPreferences.sortAscending().stateIn(scope)
 
-    private val filter = combine(
+    private val filter: Flow<(StableHolder<Manga>) -> Boolean> = combine(
         libraryPreferences.filterDownloaded().getAsFlow(),
         libraryPreferences.filterUnread().getAsFlow(),
         libraryPreferences.filterCompleted().getAsFlow()
     ) { downloaded, unread, completed ->
-        { manga: Manga ->
+        { (manga) ->
             when (downloaded) {
                 FilterState.EXCLUDED -> manga.downloadCount == null || manga.downloadCount == 0
                 FilterState.INCLUDED -> manga.downloadCount != null && (manga.downloadCount ?: 0) > 0
@@ -138,7 +149,7 @@ class LibraryScreenViewModel @Inject constructor(
 
     private val comparator = combine(sortMode, sortAscending) { sortMode, sortAscending ->
         getComparator(sortMode, sortAscending)
-    }.stateIn(scope, SharingStarted.Eagerly, compareBy { it.title })
+    }.stateIn(scope, SharingStarted.Eagerly, compareBy { it.item.title })
 
     init {
         getLibrary()
@@ -152,6 +163,8 @@ class LibraryScreenViewModel @Inject constructor(
                     throw Exception(MR.strings.library_empty.toPlatformString())
                 }
                 library.categories.value = categories.sortedBy { it.order }
+                    .map(::StableHolder)
+                    .toImmutableList()
                 updateCategories(categories)
                 _isLoading.value = false
             }
@@ -171,18 +184,18 @@ class LibraryScreenViewModel @Inject constructor(
         _showingMenu.value = showingMenu
     }
 
-    private fun getComparator(sortMode: Sort, ascending: Boolean): Comparator<Manga> {
-        val sortFn: (Manga, Manga) -> Int = when (sortMode) {
+    private fun getComparator(sortMode: Sort, ascending: Boolean): Comparator<StableHolder<Manga>> {
+        val sortFn: (StableHolder<Manga>, StableHolder<Manga>) -> Int = when (sortMode) {
             Sort.ALPHABETICAL -> {
                 val locale = Locale.current
                 val collator = Collator(locale);
 
-                { a, b ->
+                { (a), (b) ->
                     collator.compare(a.title.toLowerCase(locale), b.title.toLowerCase(locale))
                 }
             }
             Sort.UNREAD -> {
-                { a, b ->
+                { (a), (b) ->
                     when {
                         // Ensure unread content comes first
                         (a.unreadCount ?: 0) == (b.unreadCount ?: 0) -> 0
@@ -193,7 +206,7 @@ class LibraryScreenViewModel @Inject constructor(
                 }
             }
             Sort.DATE_ADDED -> {
-                { a, b ->
+                { (a), (b) ->
                     a.inLibraryAt.compareTo(b.inLibraryAt)
                 }
             }
@@ -205,11 +218,11 @@ class LibraryScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun filterManga(query: String, mangaList: List<Manga>): List<Manga> {
+    private suspend fun filterManga(query: String, mangaList: List<StableHolder<Manga>>): List<StableHolder<Manga>> {
         if (query.isBlank()) return mangaList
         val queries = query.split(" ")
         return mangaList.asFlow()
-            .filter { manga ->
+            .filter { (manga) ->
                 queries.all { query ->
                     manga.title.contains(query, true) ||
                         manga.author.orEmpty().contains(query, true) ||
@@ -224,14 +237,16 @@ class LibraryScreenViewModel @Inject constructor(
             .toList()
     }
 
-    private fun getMangaItemsFlow(unfilteredItemsFlow: StateFlow<List<Manga>>): StateFlow<List<Manga>> {
+    private fun getMangaItemsFlow(unfilteredItemsFlow: StateFlow<List<StableHolder<Manga>>>): StateFlow<ImmutableList<StableHolder<Manga>>> {
         return combine(unfilteredItemsFlow, query) { unfilteredItems, query ->
             filterManga(query, unfilteredItems)
         }.combine(filter) { filteredManga, filterer ->
             filteredManga.filter(filterer)
         }.combine(comparator) { filteredManga, comparator ->
             filteredManga.sortedWith(comparator)
-        }.stateIn(scope, SharingStarted.Eagerly, emptyList())
+        }.map {
+            it.toImmutableList()
+        }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
     }
 
     fun getLibraryForCategoryId(id: Long): StateFlow<CategoryState> {
@@ -246,7 +261,7 @@ class LibraryScreenViewModel @Inject constructor(
                         .onEach {
                             library.mangaMap.setManga(
                                 id = category.id,
-                                manga = it,
+                                manga = it.map(::StableHolder).toImmutableList(),
                                 getItemsFlow = ::getMangaItemsFlow
                             )
                         }
@@ -260,12 +275,12 @@ class LibraryScreenViewModel @Inject constructor(
         }
     }
 
-    private fun getCategoriesToUpdate(mangaId: Long): List<Category> {
+    private fun getCategoriesToUpdate(mangaId: Long): List<StableHolder<Category>> {
         return library.mangaMap
             .filter { mangaMapEntry ->
-                (mangaMapEntry.value.value as? CategoryState.Loaded)?.items?.value?.firstOrNull { it.id == mangaId } != null
+                (mangaMapEntry.value.value as? CategoryState.Loaded)?.items?.value?.firstOrNull { it.item.id == mangaId } != null
             }
-            .map { (id) -> library.categories.value.first { it.id == id } }
+            .map { (id) -> library.categories.value.first { it.item.id == id } }
     }
 
     fun removeManga(mangaId: Long) {

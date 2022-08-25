@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.reader.model
 
+import androidx.compose.runtime.Immutable
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.ui.reader.loader.PageLoader
 import ca.gosyer.jui.ui.reader.loader.PagesState
@@ -18,19 +19,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.lighthousegames.logging.logging
 
+@Immutable
 data class ReaderChapter(val chapter: Chapter) {
     val scope = CoroutineScope(Dispatchers.Default + Job())
 
-    var state: State =
-        State.Wait
+    private val _state = MutableStateFlow<State>(State.Wait)
+
+    var state: State
+        get() = _state.value
         set(value) {
-            field = value
-            stateRelay.value = value
+            _state.value = value
         }
 
-    private val stateRelay by lazy { MutableStateFlow(state) }
-
-    val stateObserver by lazy { stateRelay.asStateFlow() }
+    val stateObserver by lazy { _state.asStateFlow() }
 
     val pages: StateFlow<PagesState>?
         get() = (state as? State.Loaded)?.pages

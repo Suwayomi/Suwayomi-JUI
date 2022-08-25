@@ -13,8 +13,14 @@ import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.MangaPage
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.plus
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -52,7 +58,7 @@ class SourceScreenViewModel(
     val gridColumns = libraryPreferences.gridColumns().stateIn(scope)
     val gridSize = libraryPreferences.gridSize().stateIn(scope)
 
-    private val _mangas = MutableStateFlow(emptyList<Manga>())
+    private val _mangas = MutableStateFlow<ImmutableList<StableHolder<Manga>>>(persistentListOf())
     val mangas = _mangas.asStateFlow()
 
     private val _hasNextPage = MutableStateFlow(false)
@@ -82,7 +88,7 @@ class SourceScreenViewModel(
     init {
         scope.launch {
             getPage()?.let { (mangas, hasNextPage) ->
-                _mangas.value = mangas
+                _mangas.value = mangas.map(::StableHolder).toImmutableList()
                 _hasNextPage.value = hasNextPage
             }
 
@@ -96,7 +102,7 @@ class SourceScreenViewModel(
                 _pageNum.value++
                 val page = getPage()
                 if (page != null) {
-                    _mangas.value += page.mangaList
+                    _mangas.value = _mangas.value.toPersistentList() + page.mangaList.map(::StableHolder)
                     _hasNextPage.value = page.hasNextPage
                 } else {
                     _pageNum.value--
@@ -114,7 +120,7 @@ class SourceScreenViewModel(
             _pageNum.value = 0
             _loading.value = true
             _query.value = null
-            _mangas.value = emptyList()
+            _mangas.value = persistentListOf()
             loadNextPage()
         }
     }
@@ -136,7 +142,7 @@ class SourceScreenViewModel(
         _hasNextPage.value = true
         _loading.value = true
         _query.value = query
-        _mangas.value = emptyList()
+        _mangas.value = persistentListOf()
         loadNextPage()
     }
 

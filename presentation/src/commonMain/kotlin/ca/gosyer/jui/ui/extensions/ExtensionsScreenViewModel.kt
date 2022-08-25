@@ -18,6 +18,11 @@ import ca.gosyer.jui.domain.extension.service.ExtensionPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,7 +45,8 @@ class ExtensionsScreenViewModel @Inject constructor(
     private val extensionList = MutableStateFlow<List<Extension>?>(null)
 
     private val _enabledLangs = extensionPreferences.languages().asStateFlow()
-    val enabledLangs = _enabledLangs.asStateFlow()
+    val enabledLangs = _enabledLangs.map { it.toImmutableSet() }
+        .stateIn(scope, SharingStarted.Eagerly, persistentSetOf())
 
     private val _searchQuery = MutableStateFlow<String?>(null)
     val searchQuery = _searchQuery.asStateFlow()
@@ -51,11 +57,11 @@ class ExtensionsScreenViewModel @Inject constructor(
         enabledLangs
     ) { searchQuery, extensions, enabledLangs ->
         search(searchQuery, extensions, enabledLangs)
-    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     val availableLangs = extensionList.filterNotNull().map { langs ->
-        langs.map { it.lang }.distinct()
-    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
+        langs.map { it.lang }.distinct().toImmutableList()
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
@@ -103,7 +109,7 @@ class ExtensionsScreenViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
-    private fun search(searchQuery: String?, extensionList: List<Extension>?, enabledLangs: Set<String>): List<ExtensionUI> {
+    private fun search(searchQuery: String?, extensionList: List<Extension>?, enabledLangs: Set<String>): ImmutableList<ExtensionUI> {
         val extensions = extensionList?.filter { it.lang in enabledLangs }
             .orEmpty()
         return if (searchQuery.isNullOrBlank()) {
@@ -118,7 +124,7 @@ class ExtensionsScreenViewModel @Inject constructor(
         }
     }
 
-    private fun List<Extension>.splitSort(): List<ExtensionUI> {
+    private fun List<Extension>.splitSort(): ImmutableList<ExtensionUI> {
         val all = MR.strings.all.toPlatformString()
         return this
             .filter(Extension::installed)
@@ -165,6 +171,7 @@ class ExtensionsScreenViewModel @Inject constructor(
                         listOf(ExtensionUI.Header(key)) + value
                     }
             )
+            .toImmutableList()
     }
 
     private companion object {

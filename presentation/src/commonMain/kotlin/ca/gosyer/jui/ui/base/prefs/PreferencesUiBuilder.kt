@@ -82,6 +82,9 @@ import com.vanpra.composematerialdialogs.listItemsMultiChoice
 import com.vanpra.composematerialdialogs.listItemsSingleChoice
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun PreferenceRow(
@@ -219,7 +222,7 @@ fun EditTextPreference(
 @Composable
 fun <Key> ChoicePreference(
     preference: PreferenceMutableStateFlow<Key>,
-    choices: Map<Key, String>,
+    choices: ImmutableMap<Key, String>,
     title: String,
     subtitle: String? = null,
     changeListener: () -> Unit = {},
@@ -237,7 +240,7 @@ fun <Key> ChoicePreference(
     )
     ChoiceDialog(
         state = dialogState,
-        items = choices.toList(),
+        items = choices.toList().toImmutableList(),
         selected = prefValue,
         title = title,
         onSelected = { selected ->
@@ -250,7 +253,7 @@ fun <Key> ChoicePreference(
 @Composable
 fun <T> ChoiceDialog(
     state: MaterialDialogState,
-    items: List<Pair<T, String>>,
+    items: ImmutableList<Pair<T, String>>,
     selected: T?,
     onCloseRequest: () -> Unit = {},
     onSelected: (T) -> Unit,
@@ -292,10 +295,10 @@ fun <T> ChoiceDialog(
 @Composable
 fun <T> MultiSelectDialog(
     state: MaterialDialogState,
-    items: List<Pair<T, String>>,
-    selected: List<T>?,
+    items: ImmutableList<Pair<T, String>>,
+    selected: ImmutableList<T>?,
     onCloseRequest: () -> Unit = {},
-    onFinished: (List<T>) -> Unit,
+    onFinished: (ImmutableList<T>) -> Unit,
     title: String
 ) {
     MaterialDialog(
@@ -322,7 +325,7 @@ fun <T> MultiSelectDialog(
                     ?.toSet()
                     .orEmpty(),
                 onCheckedChange = { indexes ->
-                    onFinished(indexes.map { items[it].first })
+                    onFinished(indexes.map { items[it].first }.toImmutableList())
                 }
             )
             VerticalScrollbar(

@@ -19,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.runtime.staticCompositionLocalOf
 import ca.gosyer.jui.domain.source.model.Source
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.sources.browse.SourceScreen
 import ca.gosyer.jui.ui.sources.globalsearch.GlobalSearchScreen
 import ca.gosyer.jui.ui.sources.home.SourceHomeScreen
@@ -29,6 +30,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import kotlinx.collections.immutable.toImmutableList
 
 typealias SourcesNavigatorContent = @Composable (sourcesNavigator: SourcesNavigator) -> Unit
 
@@ -37,11 +39,11 @@ val LocalSourcesNavigator: ProvidableCompositionLocal<SourcesNavigator?> =
 
 @Composable
 fun SourcesNavigator(
-    homeScreen: SourceHomeScreen,
+    homeScreenHolder: StableHolder<SourceHomeScreen>,
     content: SourcesNavigatorContent = { CurrentSource() }
 ) {
-    Navigator(homeScreen, autoDispose = false, onBackPressed = null) { navigator ->
-        val sourcesNavigator = rememberNavigator(navigator, homeScreen)
+    Navigator(homeScreenHolder.item, autoDispose = false, onBackPressed = null) { navigator ->
+        val sourcesNavigator = rememberNavigator(navigator, homeScreenHolder.item)
 
         DisposableEffect(sourcesNavigator) {
             onDispose(sourcesNavigator::dispose)
@@ -176,7 +178,7 @@ class SourcesNavigator internal constructor(
             screens.values.filterIsInstance<SourceScreen>().map {
                 SourceNavigatorScreen.SourceScreen(it.source)
             }.let(::addAll)
-        }
+        }.toImmutableList()
     }
 
     fun clearEvent() = navigator.clearEvent()

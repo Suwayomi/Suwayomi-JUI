@@ -60,6 +60,7 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import ca.gosyer.jui.domain.source.model.sourcefilters.SortFilter
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.prefs.ExpandablePreference
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.jui.uicore.components.Spinner
@@ -68,12 +69,13 @@ import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.filterIsInstance
 
 @Composable
 fun SourceFiltersMenu(
     modifier: Modifier,
-    filters: List<SourceFiltersView<*, *>>,
+    filters: ImmutableList<StableHolder<SourceFiltersView<*, *>>>,
     onSearchClicked: () -> Unit,
     resetFiltersClicked: () -> Unit
 ) {
@@ -98,7 +100,7 @@ fun SourceFiltersMenu(
                 val scrollState = rememberScrollState()
                 Column(Modifier.fillMaxSize().verticalScroll(scrollState)) {
                     filters.fastForEach { item ->
-                        item.toView(startExpanded = item.index in expandedGroups) { expanded, index ->
+                        item.toView(startExpanded = item.item.index in expandedGroups) { expanded, index ->
                             if (expanded) {
                                 expandedGroups += index
                             } else {
@@ -118,17 +120,32 @@ fun SourceFiltersMenu(
     }
 }
 
+@Suppress("UNCHECKED_CAST")
+@Composable
+fun StableHolder<SourceFiltersView<*, *>>.toView(startExpanded: Boolean = false, onExpandChanged: ((Boolean, Int) -> Unit)? = null) {
+    when (this.item) {
+        is SourceFiltersView.CheckBox -> CheckboxView(this as StableHolder<SourceFiltersView.CheckBox>)
+        is SourceFiltersView.Group -> GroupView(this as StableHolder<SourceFiltersView.Group>, startExpanded, onExpandChanged)
+        is SourceFiltersView.Header -> HeaderView(this as StableHolder<SourceFiltersView.Header>)
+        is SourceFiltersView.Select -> SelectView(this as StableHolder<SourceFiltersView.Select>)
+        is SourceFiltersView.Separator -> SeparatorView()
+        is SourceFiltersView.Sort -> SortView(this as StableHolder<SourceFiltersView.Sort>, startExpanded, onExpandChanged)
+        is SourceFiltersView.Text -> TextView(this as StableHolder<SourceFiltersView.Text>)
+        is SourceFiltersView.TriState -> TriStateView(this as StableHolder<SourceFiltersView.TriState>)
+    }
+}
+
 @Composable
 fun SourceFiltersView<*, *>.toView(startExpanded: Boolean = false, onExpandChanged: ((Boolean, Int) -> Unit)? = null) {
     when (this) {
-        is SourceFiltersView.CheckBox -> CheckboxView(this)
-        is SourceFiltersView.Group -> GroupView(this, startExpanded, onExpandChanged)
-        is SourceFiltersView.Header -> HeaderView(this)
-        is SourceFiltersView.Select -> SelectView(this)
+        is SourceFiltersView.CheckBox -> CheckboxView(StableHolder(this))
+        is SourceFiltersView.Group -> GroupView(StableHolder(this), startExpanded, onExpandChanged)
+        is SourceFiltersView.Header -> HeaderView(StableHolder(this))
+        is SourceFiltersView.Select -> SelectView(StableHolder(this))
         is SourceFiltersView.Separator -> SeparatorView()
-        is SourceFiltersView.Sort -> SortView(this, startExpanded, onExpandChanged)
-        is SourceFiltersView.Text -> TextView(this)
-        is SourceFiltersView.TriState -> TriStateView(this)
+        is SourceFiltersView.Sort -> SortView(StableHolder(this), startExpanded, onExpandChanged)
+        is SourceFiltersView.Text -> TextView(StableHolder(this))
+        is SourceFiltersView.TriState -> TriStateView(StableHolder(this))
     }
 }
 
@@ -158,7 +175,8 @@ fun SourceFilterAction(
 }
 
 @Composable
-fun GroupView(group: SourceFiltersView.Group, startExpanded: Boolean, onExpandChanged: ((Boolean, Int) -> Unit)? = null) {
+fun GroupView(groupHolder: StableHolder<SourceFiltersView.Group>, startExpanded: Boolean, onExpandChanged: ((Boolean, Int) -> Unit)? = null) {
+    val group = groupHolder.item
     val state by key(group.hashCode()) { group.state.collectAsState() }
     ExpandablePreference(
         title = group.name,
@@ -174,7 +192,8 @@ fun GroupView(group: SourceFiltersView.Group, startExpanded: Boolean, onExpandCh
 }
 
 @Composable
-fun CheckboxView(checkBox: SourceFiltersView.CheckBox) {
+fun CheckboxView(checkBoxHolder: StableHolder<SourceFiltersView.CheckBox>) {
+    val checkBox = checkBoxHolder.item
     val state by key(checkBox.hashCode()) { checkBox.state.collectAsState() }
     SourceFilterAction(
         name = checkBox.name,
@@ -186,7 +205,8 @@ fun CheckboxView(checkBox: SourceFiltersView.CheckBox) {
 }
 
 @Composable
-fun HeaderView(header: SourceFiltersView.Header) {
+fun HeaderView(headerHolder: StableHolder<SourceFiltersView.Header>) {
+    val header = headerHolder.item
     Box(Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth()) {
         Text(
             text = header.name,
@@ -199,7 +219,8 @@ fun HeaderView(header: SourceFiltersView.Header) {
 }
 
 @Composable
-fun SelectView(select: SourceFiltersView.Select) {
+fun SelectView(selectHolder: StableHolder<SourceFiltersView.Select>) {
+    val select = selectHolder.item
     val state by key(select.hashCode()) { select.state.collectAsState() }
     Row(
         Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp)
@@ -258,7 +279,8 @@ fun SortRow(name: String, selected: Boolean, asc: Boolean, onClick: () -> Unit) 
 }
 
 @Composable
-fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChanged: ((Boolean, Int) -> Unit)?) {
+fun SortView(sortHolder: StableHolder<SourceFiltersView.Sort>, startExpanded: Boolean, onExpandChanged: ((Boolean, Int) -> Unit)?) {
+    val sort = sortHolder.item
     val state by key(sort.hashCode()) { sort.state.collectAsState() }
     ExpandablePreference(
         sort.name,
@@ -289,7 +311,8 @@ fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChang
 }
 
 @Composable
-fun TextView(text: SourceFiltersView.Text) {
+fun TextView(textHolder: StableHolder<SourceFiltersView.Text>) {
+    val text = textHolder.item
     val placeholderText = remember(text) { text.filter.name }
     val state by key(text.hashCode()) { text.state.collectAsState() }
     var stateText by remember(text, state) {
@@ -323,7 +346,8 @@ fun TextView(text: SourceFiltersView.Text) {
 }
 
 @Composable
-fun TriStateView(triState: SourceFiltersView.TriState) {
+fun TriStateView(triStateHolder: StableHolder<SourceFiltersView.TriState>) {
+    val triState = triStateHolder.item
     val state by key(triState.hashCode()) { triState.state.collectAsState() }
     SourceFilterAction(
         name = triState.name,

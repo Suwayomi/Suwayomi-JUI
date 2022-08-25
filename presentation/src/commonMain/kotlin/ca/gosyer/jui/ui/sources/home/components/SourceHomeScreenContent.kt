@@ -60,14 +60,18 @@ import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.ImageLoaderImage
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun SourceHomeScreenContent(
     onAddSource: (Source) -> Unit,
     isLoading: Boolean,
-    sources: List<SourceUI>,
-    languages: Set<String>,
-    sourceLanguages: List<String>,
+    sources: ImmutableList<SourceUI>,
+    languages: ImmutableSet<String>,
+    sourceLanguages: ImmutableList<String>,
     setEnabledLanguages: (Set<String>) -> Unit,
     query: String,
     setQuery: (String) -> Unit,
@@ -125,7 +129,7 @@ fun SourceHomeScreenToolbar(
 
 @Composable
 fun WideSourcesMenu(
-    sources: List<SourceUI>,
+    sources: ImmutableList<SourceUI>,
     onAddSource: (Source) -> Unit
 ) {
     Box {
@@ -159,7 +163,7 @@ fun WideSourcesMenu(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                     )
                     is SourceUI.SourceItem -> WideSourceItem(
-                        sourceUI.source,
+                        sourceUI,
                         onSourceClicked = onAddSource
                     )
                 }
@@ -176,9 +180,10 @@ fun WideSourcesMenu(
 
 @Composable
 fun WideSourceItem(
-    source: Source,
+    sourceItem: SourceUI.SourceItem,
     onSourceClicked: (Source) -> Unit
 ) {
+    val source = sourceItem.source
     TooltipArea(
         {
             Surface(
@@ -216,7 +221,7 @@ fun WideSourceItem(
 
 @Composable
 fun ThinSourcesMenu(
-    sources: List<SourceUI>,
+    sources: ImmutableList<SourceUI>,
     onAddSource: (Source) -> Unit
 ) {
     Box {
@@ -243,7 +248,7 @@ fun ThinSourcesMenu(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                     )
                     is SourceUI.SourceItem -> ThinSourceItem(
-                        sourceUI.source,
+                        sourceUI,
                         onSourceClicked = onAddSource
                     )
                 }
@@ -260,9 +265,10 @@ fun ThinSourcesMenu(
 
 @Composable
 fun ThinSourceItem(
-    source: Source,
+    sourceItem: SourceUI.SourceItem,
     onSourceClicked: (Source) -> Unit
 ) {
+    val source = sourceItem.source
     Row(
         Modifier.fillMaxWidth()
             .height(64.dp)
@@ -301,12 +307,12 @@ fun ThinSourceItem(
 @Stable
 private fun getActionItems(
     openEnabledLanguagesClick: () -> Unit
-): List<ActionItem> {
-    return listOf(
+): ImmutableList<ActionItem> {
+    return persistentListOf(
         ActionItem(
             stringResource(MR.strings.enabled_languages),
             Icons.Rounded.Translate,
             doAction = openEnabledLanguagesClick
         )
-    )
+    ).toImmutableList()
 }

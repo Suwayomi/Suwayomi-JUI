@@ -74,6 +74,8 @@ import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.resources.stringResource
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun Toolbar(
@@ -82,7 +84,7 @@ fun Toolbar(
     closable: Boolean = (navigator?.size ?: 0) > 1,
     onClose: () -> Unit = { navigator?.pop() },
     modifier: Modifier = Modifier,
-    actions: @Composable () -> List<ActionItem> = { emptyList() },
+    actions: @Composable () -> ImmutableList<ActionItem> = { remember { persistentListOf() } },
     backgroundColor: Color = MaterialTheme.colors.surface, // CustomColors.current.bars,
     contentColor: Color = contentColorFor(backgroundColor), // CustomColors.current.onBars,
     elevation: Dp = Dp.Hairline,
@@ -129,7 +131,7 @@ private fun WideToolbar(
     closable: Boolean,
     onClose: () -> Unit,
     modifier: Modifier,
-    actions: @Composable () -> List<ActionItem> = { emptyList() },
+    actions: @Composable () -> ImmutableList<ActionItem> = { remember { persistentListOf() } },
     backgroundColor: Color,
     contentColor: Color,
     elevation: Dp,
@@ -198,7 +200,7 @@ private fun ThinToolbar(
     closable: Boolean,
     onClose: () -> Unit,
     modifier: Modifier,
-    actions: @Composable () -> List<ActionItem> = { emptyList() },
+    actions: @Composable () -> ImmutableList<ActionItem> = { remember { persistentListOf() } },
     backgroundColor: Color,
     contentColor: Color,
     elevation: Dp,
