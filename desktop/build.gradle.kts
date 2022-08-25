@@ -36,7 +36,6 @@ dependencies {
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pagerIndicators)
     implementation(libs.accompanist.flowLayout)
-    implementation(libs.kamel)
     implementation(libs.imageloader)
     implementation(libs.materialDialogs.core)
 
