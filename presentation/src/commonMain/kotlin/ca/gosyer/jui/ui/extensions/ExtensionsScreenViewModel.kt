@@ -150,7 +150,7 @@ class ExtensionsScreenViewModel @Inject constructor(
                     .mapValues {
                         it.value
                             .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, Extension::name))
-                            .map (ExtensionUI::ExtensionItem)
+                            .map(ExtensionUI::ExtensionItem)
                     }
                     .toList()
                     .sortedWith(

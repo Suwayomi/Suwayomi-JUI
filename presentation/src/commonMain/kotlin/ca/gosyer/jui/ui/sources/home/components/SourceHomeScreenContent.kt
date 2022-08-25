@@ -163,7 +163,6 @@ fun WideSourcesMenu(
                         onSourceClicked = onAddSource
                     )
                 }
-
             }
         }
         VerticalScrollbar(
@@ -214,6 +213,7 @@ fun WideSourceItem(
         }
     }
 }
+
 @Composable
 fun ThinSourcesMenu(
     sources: List<SourceUI>,
@@ -247,7 +247,6 @@ fun ThinSourcesMenu(
                         onSourceClicked = onAddSource
                     )
                 }
-
             }
         }
         VerticalScrollbar(

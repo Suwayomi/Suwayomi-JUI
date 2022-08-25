@@ -48,7 +48,6 @@ class SourceHomeScreenViewModel @Inject constructor(
                 it.lang in languages || it.id == Source.LOCAL_SOURCE_ID
             }
             .groupBy(Source::displayLang)
-
             .mapValues {
                 it.value.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, Source::name))
                     .map(SourceUI::SourceItem)
@@ -115,5 +114,5 @@ class SourceHomeScreenViewModel @Inject constructor(
 
 sealed class SourceUI {
     data class Header(val header: String) : SourceUI()
-    data class SourceItem(val source: Source): SourceUI()
+    data class SourceItem(val source: Source) : SourceUI()
 }
