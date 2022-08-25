@@ -119,8 +119,9 @@ class ExtensionsScreenViewModel @Inject constructor(
     }
 
     private fun List<Extension>.splitSort(): List<ExtensionUI> {
+        val all = MR.strings.all.toPlatformString()
         return this
-            .filter { it.installed }
+            .filter(Extension::installed)
             .sortedWith(
                 compareBy<Extension> {
                     when {
@@ -129,29 +130,37 @@ class ExtensionsScreenViewModel @Inject constructor(
                         else -> 3
                     }
                 }
-                    .thenBy { it.lang }
-                    .thenBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    .thenBy(Extension::lang)
+                    .thenBy(String.CASE_INSENSITIVE_ORDER, Extension::name)
             )
-            .map { ExtensionUI.ExtensionItem(it) }
+            .map(ExtensionUI::ExtensionItem)
             .let {
                 if (it.isNotEmpty()) {
                     listOf(ExtensionUI.Header(MR.strings.installed.toPlatformString())) + it
                 } else it
             }.plus(
-                filterNot { it.installed }
-                    .groupBy { it.lang }
-                    .mapKeys {
-                        if (it.key == "all") {
-                            MR.strings.all.toPlatformString()
-                        } else {
-                            Locale(it.key).displayName
+                filterNot(Extension::installed)
+                    .groupBy(Extension::lang)
+                    .mapKeys { (key) ->
+                        when (key) {
+                            "all" -> all
+                            else -> Locale(key).displayName
                         }
                     }
                     .mapValues {
                         it.value
-                            .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.name })
-                            .map { ExtensionUI.ExtensionItem(it) }
+                            .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, Extension::name))
+                            .map (ExtensionUI::ExtensionItem)
                     }
+                    .toList()
+                    .sortedWith(
+                        compareBy<Pair<String, *>> { (key) ->
+                            when (key) {
+                                all -> 1
+                                else -> 2
+                            }
+                        }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<String, *>::first)
+                    )
                     .flatMap { (key, value) ->
                         listOf(ExtensionUI.Header(key)) + value
                     }

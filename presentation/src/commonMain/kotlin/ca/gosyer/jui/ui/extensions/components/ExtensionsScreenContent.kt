@@ -112,10 +112,12 @@ fun ExtensionsScreenContent(
                             is ExtensionUI.Header -> Text(
                                 it.header,
                                 style = MaterialTheme.typography.h6,
-                                modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 4.dp)
+                                modifier = Modifier.animateItemPlacement()
+                                    .padding(16.dp, 16.dp, 16.dp, 4.dp)
                             )
                             is ExtensionUI.ExtensionItem -> Column {
                                 ExtensionItem(
+                                    Modifier.animateItemPlacement(),
                                     it.extension,
                                     onInstallClicked = installExtension,
                                     onUpdateClicked = updateExtension,
@@ -156,12 +158,18 @@ fun ExtensionsToolbar(
 
 @Composable
 fun ExtensionItem(
+    modifier: Modifier,
     extension: Extension,
     onInstallClicked: (Extension) -> Unit,
     onUpdateClicked: (Extension) -> Unit,
     onUninstallClicked: (Extension) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxWidth().padding(end = 12.dp).height(50.dp).background(MaterialTheme.colors.background)) {
+    Box(
+        modifier = Modifier.fillMaxWidth()
+            .padding(end = 12.dp)
+            .height(50.dp)
+            .background(MaterialTheme.colors.background) then modifier
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(Modifier.width(4.dp))
             ImageLoaderImage(
