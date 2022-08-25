@@ -52,7 +52,7 @@ multiplatformSettings = "1.0.0-alpha01"
 
 # Utility
 kroki = "1.22"
-desugarJdkLibs = "1.2.0"
+desugarJdkLibs = "1.2.2"
 aboutLibraries = "10.4.0"
 dateTime = "0.4.0"
 immutableCollections = "0.3.5"
