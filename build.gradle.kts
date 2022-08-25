@@ -50,9 +50,16 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 subprojects {
     tasks.withType<KotlinJvmCompile> {
         kotlinOptions {
-            /*freeCompilerArgs = freeCompilerArgs + listOf(
-                "-Xjvm-default=compatibility",
-            )*/
+            if (project.hasProperty("generateComposeCompilerMetrics")) {
+                freeCompilerArgs = freeCompilerArgs + listOf(
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                            project.buildDir.absolutePath + "/compose_metrics",
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                            project.buildDir.absolutePath + "/compose_metrics"
+                )
+            }
         }
     }
     tasks.withType<org.jmailen.gradle.kotlinter.tasks.LintTask> {
