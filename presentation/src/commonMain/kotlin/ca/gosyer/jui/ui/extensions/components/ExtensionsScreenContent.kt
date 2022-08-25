@@ -50,6 +50,7 @@ import ca.gosyer.jui.presentation.build.BuildKonfig
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.Toolbar
+import ca.gosyer.jui.ui.extensions.ExtensionUI
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
@@ -64,7 +65,7 @@ import com.vanpra.composematerialdialogs.title
 
 @Composable
 fun ExtensionsScreenContent(
-    extensions: Map<String, List<Extension>>,
+    extensions: List<ExtensionUI>,
     isLoading: Boolean,
     query: String?,
     setQuery: (String) -> Unit,
@@ -92,25 +93,36 @@ fun ExtensionsScreenContent(
 
             Box(Modifier.fillMaxSize().padding(padding)) {
                 LazyColumn(Modifier.fillMaxSize(), state) {
-                    extensions.forEach { (header, items) ->
-                        item(key = header) {
-                            Text(
-                                header,
+                    items(
+                        extensions,
+                        contentType = {
+                            when (it) {
+                                is ExtensionUI.Header -> "header"
+                                is ExtensionUI.ExtensionItem -> "extension"
+                            }
+                        },
+                        key = {
+                            when (it) {
+                                is ExtensionUI.Header -> it.header
+                                is ExtensionUI.ExtensionItem -> it.extension.pkgName
+                            }
+                        }
+                    ) {
+                        when (it) {
+                            is ExtensionUI.Header -> Text(
+                                it.header,
                                 style = MaterialTheme.typography.h6,
                                 modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 4.dp)
                             )
-                        }
-                        items(
-                            items,
-                            key = { it.pkgName }
-                        ) { extension ->
-                            ExtensionItem(
-                                extension,
-                                onInstallClicked = installExtension,
-                                onUpdateClicked = updateExtension,
-                                onUninstallClicked = uninstallExtension
-                            )
-                            Spacer(Modifier.height(8.dp))
+                            is ExtensionUI.ExtensionItem -> Column {
+                                ExtensionItem(
+                                    it.extension,
+                                    onInstallClicked = installExtension,
+                                    onUpdateClicked = updateExtension,
+                                    onUninstallClicked = uninstallExtension
+                                )
+                                Spacer(Modifier.height(8.dp))
+                            }
                         }
                     }
                 }
@@ -182,6 +194,7 @@ fun ExtensionItem(
         Button(
             {
                 when {
+                    extension.obsolete -> onUninstallClicked(extension)
                     extension.hasUpdate -> onUpdateClicked(extension)
                     extension.installed -> onUninstallClicked(extension)
                     else -> onInstallClicked(extension)
@@ -191,6 +204,7 @@ fun ExtensionItem(
         ) {
             Text(
                 when {
+                    extension.obsolete -> stringResource(MR.strings.action_uninstall)
                     extension.hasUpdate -> stringResource(MR.strings.action_update)
                     extension.installed -> stringResource(MR.strings.action_uninstall)
                     else -> stringResource(MR.strings.action_install)
