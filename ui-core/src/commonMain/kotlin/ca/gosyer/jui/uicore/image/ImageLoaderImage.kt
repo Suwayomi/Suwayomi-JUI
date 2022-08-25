@@ -82,7 +82,11 @@ fun ImageLoaderImage(
     animationSpec: FiniteAnimationSpec<Float>? = tween()
 ) {
     val request = remember(data) { ImageRequestBuilder().data(data).build() }
-    val painter = rememberAsyncImagePainter(request, contentScale = contentScale)
+    val painter = rememberAsyncImagePainter(
+        request,
+        contentScale = contentScale,
+        filterQuality = filterQuality
+    )
 
     val progress = remember { mutableStateOf(-1F) }
     val error = remember { mutableStateOf<Throwable?>(null) }
