@@ -49,4 +49,3 @@ fun ApplicationScope.Tray(icon: StableHolder<Painter>) {
         }
     }
 }
-

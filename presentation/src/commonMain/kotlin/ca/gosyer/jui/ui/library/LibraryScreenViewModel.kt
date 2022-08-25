@@ -57,8 +57,10 @@ import org.lighthousegames.logging.logging
 sealed class CategoryState {
     @Stable
     object Loading : CategoryState()
+
     @Stable
     data class Failed(val e: Throwable) : CategoryState()
+
     @Stable
     data class Loaded(
         val items: StateFlow<ImmutableList<StableHolder<Manga>>>,

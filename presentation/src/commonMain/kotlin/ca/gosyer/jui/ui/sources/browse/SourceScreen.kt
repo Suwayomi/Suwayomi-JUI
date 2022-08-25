@@ -24,7 +24,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 
 class SourceScreen(val source: Source, private val initialQuery: String? = null) : Screen {
 
-
     override val key: ScreenKey = source.id.toString()
 
     @Composable

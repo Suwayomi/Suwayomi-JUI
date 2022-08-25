@@ -125,6 +125,7 @@ class SourceHomeScreenViewModel @Inject constructor(
 sealed class SourceUI {
     @Stable
     data class Header(val header: String) : SourceUI()
+
     @Stable
     data class SourceItem(val source: Source) : SourceUI()
 }
