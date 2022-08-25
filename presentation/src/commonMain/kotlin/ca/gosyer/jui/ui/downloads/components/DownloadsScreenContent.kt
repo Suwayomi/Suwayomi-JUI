@@ -37,7 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.chapter.model.Chapter
@@ -58,7 +57,6 @@ import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
-import io.kamel.image.lazyPainterResource
 
 @Composable
 fun DownloadsScreenContent(
@@ -128,7 +126,7 @@ fun DownloadsItem(
                 .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
                 .clip(MaterialTheme.shapes.medium)
                 .clickable { onClickCover() },
-            cover = lazyPainterResource(item.manga, filterQuality = FilterQuality.Medium),
+            data = item.manga,
             contentDescription = item.manga.title
         )
         MangaListItemColumn(

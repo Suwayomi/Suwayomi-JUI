@@ -10,8 +10,11 @@ import androidx.compose.runtime.ProvidedValue
 import androidx.compose.runtime.compositionLocalOf
 import ca.gosyer.jui.core.di.AppScope
 import ca.gosyer.jui.ui.ViewModelComponent
+import ca.gosyer.jui.ui.base.image.ImageLoaderProvider
 import ca.gosyer.jui.ui.base.image.KamelConfigProvider
 import ca.gosyer.jui.uicore.vm.ContextWrapper
+import com.seiko.imageloader.ImageLoader
+import com.seiko.imageloader.LocalImageLoader
 import io.kamel.core.config.KamelConfig
 import io.kamel.core.config.KamelConfigBuilder
 import io.kamel.image.config.LocalKamelConfig
@@ -22,6 +25,8 @@ interface UiComponent {
 
     val kamelConfig: KamelConfig
 
+    val imageLoader: ImageLoader
+
     val contextWrapper: ContextWrapper
 
     val hooks: Array<ProvidedValue<out Any>>
@@ -30,10 +35,15 @@ interface UiComponent {
     @Provides
     fun kamelConfigFactory(contextWrapper: ContextWrapper): KamelConfig = kamelConfigProvider.get { kamelPlatformHandler(contextWrapper) }
 
+    @AppScope
+    @Provides
+    fun imageLoaderFactory(imageLoaderProvider: ImageLoaderProvider): ImageLoader = imageLoaderProvider.get()
+
     @Provides
     fun getHooks(viewModelComponent: ViewModelComponent) = arrayOf(
         LocalViewModels provides viewModelComponent,
-        LocalKamelConfig provides kamelConfig
+        LocalKamelConfig provides kamelConfig,
+        LocalImageLoader provides imageLoader
     )
 }
 

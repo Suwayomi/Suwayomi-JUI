@@ -54,14 +54,13 @@ import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
-import ca.gosyer.jui.uicore.image.KamelImage
+import ca.gosyer.jui.uicore.image.ImageLoaderImage
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.listItemsMultiChoice
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
-import io.kamel.image.lazyPainterResource
 
 @Composable
 fun ExtensionsScreenContent(
@@ -153,7 +152,12 @@ fun ExtensionItem(
     Box(modifier = Modifier.fillMaxWidth().padding(end = 12.dp).height(50.dp).background(MaterialTheme.colors.background)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(Modifier.width(4.dp))
-            KamelImage(lazyPainterResource(extension, filterQuality = FilterQuality.Medium), extension.name, Modifier.size(50.dp))
+            ImageLoaderImage(
+                data = extension,
+                contentDescription = extension.name,
+                modifier = Modifier.size(50.dp),
+                filterQuality = FilterQuality.Medium
+            )
             Spacer(Modifier.width(8.dp))
             Column {
                 val title = buildAnnotatedString {

@@ -40,9 +40,8 @@ import ca.gosyer.jui.ui.sources.home.SourceHomeScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
-import ca.gosyer.jui.uicore.image.KamelImage
+import ca.gosyer.jui.uicore.image.ImageLoaderImage
 import ca.gosyer.jui.uicore.resources.stringResource
-import io.kamel.image.lazyPainterResource
 
 expect fun Modifier.sourceSideMenuItem(
     onSourceTabClick: () -> Unit,
@@ -140,10 +139,11 @@ fun SourcesSideMenu(
                                     modifier = modifier
                                 )
                                 is SourceNavigatorScreen.SourceScreen -> Box(Modifier.align(Alignment.Center)) {
-                                    KamelImage(
-                                        resource = lazyPainterResource(screen.source, filterQuality = FilterQuality.Medium),
+                                    ImageLoaderImage(
+                                        data = screen.source,
                                         contentDescription = screen.source.displayName,
-                                        modifier = modifier
+                                        modifier = modifier,
+                                        filterQuality = FilterQuality.Medium
                                     )
                                 }
                             }

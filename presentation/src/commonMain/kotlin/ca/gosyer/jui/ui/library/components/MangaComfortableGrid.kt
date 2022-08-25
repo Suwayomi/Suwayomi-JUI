@@ -35,8 +35,7 @@ import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberVerticalScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
-import ca.gosyer.jui.uicore.image.KamelImage
-import io.kamel.image.lazyPainterResource
+import ca.gosyer.jui.uicore.image.ImageLoaderImage
 
 @Composable
 fun LibraryMangaComfortableGrid(
@@ -94,7 +93,6 @@ private fun LibraryMangaComfortableGridItem(
     showLanguage: Boolean,
     showLocal: Boolean
 ) {
-    val cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium)
     val fontStyle = LocalTextStyle.current.merge(
         TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
     )
@@ -106,14 +104,15 @@ private fun LibraryMangaComfortableGridItem(
             .clip(MaterialTheme.shapes.medium) then modifier
     ) {
         Column {
-            KamelImage(
-                cover,
+            ImageLoaderImage(
+                manga,
                 contentDescription = manga.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(mangaAspectRatio)
                     .clip(MaterialTheme.shapes.medium),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                filterQuality = FilterQuality.Medium
             )
             Text(
                 text = manga.title,

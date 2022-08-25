@@ -41,14 +41,13 @@ import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
-import ca.gosyer.jui.uicore.image.KamelImage
+import ca.gosyer.jui.uicore.image.ImageLoaderImage
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.google.accompanist.flowlayout.FlowRow
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.listItemsMultiChoice
 import com.vanpra.composematerialdialogs.title
-import io.kamel.image.lazyPainterResource
 
 @Composable
 fun MangaItem(manga: Manga) {
@@ -74,15 +73,16 @@ fun MangaItem(manga: Manga) {
 
 @Composable
 private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
-    KamelImage(
-        resource = lazyPainterResource(manga, filterQuality = FilterQuality.Medium),
+    ImageLoaderImage(
+        data = manga,
         contentDescription = manga.title,
         modifier = modifier,
         errorModifier = modifier then Modifier
             .aspectRatio(
                 ratio = mangaAspectRatio,
                 matchHeightConstraintsFirst = true
-            )
+            ),
+        filterQuality = FilterQuality.Medium
     )
 }
 

@@ -23,20 +23,19 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.gosyer.jui.uicore.image.KamelImage
-import io.kamel.core.Resource
+import ca.gosyer.jui.uicore.image.ImageLoaderImage
 
 @Composable
 fun MangaGridItem(
     title: String,
-    cover: Resource<Painter>,
+    data: Any,
     onClick: () -> Unit = {}
 ) {
     val fontStyle = LocalTextStyle.current.merge(
@@ -53,7 +52,7 @@ fun MangaGridItem(
         shape = RoundedCornerShape(4.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            KamelImage(cover, title, contentScale = ContentScale.Crop)
+            ImageLoaderImage(data, title, contentScale = ContentScale.Crop, filterQuality = FilterQuality.Medium)
             Box(modifier = Modifier.fillMaxSize().then(shadowGradient))
             Text(
                 text = title,

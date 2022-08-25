@@ -39,6 +39,7 @@ kotlin {
                 api(kotlin("stdlib-common"))
                 api(libs.coroutines.core)
                 api(libs.kamel)
+                api(libs.imageloader)
                 api(libs.voyager.core)
                 api(libs.dateTime)
                 api(projects.core)

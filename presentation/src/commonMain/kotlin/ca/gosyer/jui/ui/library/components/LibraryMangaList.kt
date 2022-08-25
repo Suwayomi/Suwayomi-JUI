@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.uicore.components.MangaListItem
@@ -31,7 +30,6 @@ import ca.gosyer.jui.uicore.components.MangaListItemTitle
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
-import io.kamel.image.lazyPainterResource
 
 @Composable
 fun LibraryMangaList(
@@ -81,7 +79,6 @@ private fun LibraryMangaListItem(
     showLanguage: Boolean,
     showLocal: Boolean
 ) {
-    val cover = lazyPainterResource(manga, filterQuality = FilterQuality.Medium)
     MangaListItem(
         modifier = modifier then Modifier
             .requiredHeight(56.dp)
@@ -91,7 +88,7 @@ private fun LibraryMangaListItem(
             modifier = Modifier
                 .size(40.dp)
                 .clip(MaterialTheme.shapes.medium),
-            cover = cover,
+            data = manga,
             contentDescription = manga.title
         )
         MangaListItemTitle(

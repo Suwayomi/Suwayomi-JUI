@@ -15,12 +15,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import ca.gosyer.jui.uicore.image.KamelImage
-import io.kamel.core.Resource
+import ca.gosyer.jui.uicore.image.ImageLoaderImage
 
 @Composable
 fun MangaListItem(
@@ -38,14 +37,15 @@ fun MangaListItem(
 @Composable
 fun MangaListItemImage(
     modifier: Modifier = Modifier,
-    cover: Resource<Painter>,
+    data: Any,
     contentDescription: String
 ) {
-    KamelImage(
-        cover,
+    ImageLoaderImage(
+        data,
         contentDescription = contentDescription,
         modifier = modifier,
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Crop,
+        filterQuality = FilterQuality.Medium
     )
 }
 

@@ -56,10 +56,9 @@ import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.rememberVerticalScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
-import ca.gosyer.jui.uicore.image.KamelImage
+import ca.gosyer.jui.uicore.image.ImageLoaderImage
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import io.kamel.image.lazyPainterResource
 
 @Composable
 fun SourceHomeScreenContent(
@@ -175,7 +174,12 @@ fun WideSourceItem(
                 },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            KamelImage(lazyPainterResource(source, filterQuality = FilterQuality.Medium), source.displayName, Modifier.size(96.dp))
+            ImageLoaderImage(
+                data = source,
+                contentDescription = source.displayName,
+                modifier = Modifier.size(96.dp),
+                filterQuality = FilterQuality.Medium
+            )
             Spacer(Modifier.height(4.dp))
             Text(
                 "${source.name} (${source.displayLang.toUpperCase(Locale.current)})",
@@ -199,11 +203,12 @@ fun ThinSourceItem(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        KamelImage(
-            lazyPainterResource(source, filterQuality = FilterQuality.Medium),
+        ImageLoaderImage(
+            source,
             source.displayName,
             Modifier.fillMaxHeight()
-                .aspectRatio(1F, true)
+                .aspectRatio(1F, true),
+            filterQuality = FilterQuality.Medium
         )
         Spacer(Modifier.width(8.dp))
         Column {
