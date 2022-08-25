@@ -7,6 +7,7 @@
 package ca.gosyer.jui.ui.sources.home.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -39,9 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.domain.source.model.Source
@@ -51,6 +51,7 @@ import ca.gosyer.jui.ui.base.components.localeToString
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.extensions.components.LanguageDialog
+import ca.gosyer.jui.ui.sources.home.SourceUI
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
@@ -64,7 +65,7 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 fun SourceHomeScreenContent(
     onAddSource: (Source) -> Unit,
     isLoading: Boolean,
-    sources: List<Source>,
+    sources: List<SourceUI>,
     languages: Set<String>,
     sourceLanguages: List<String>,
     setEnabledLanguages: (Set<String>) -> Unit,
@@ -82,44 +83,15 @@ fun SourceHomeScreenContent(
                 submitSearch = submitSearch
             )
         }
-    ) {
+    ) { padding ->
         if (sources.isEmpty()) {
             LoadingScreen(isLoading)
         } else {
-            BoxWithConstraints(Modifier.fillMaxSize().padding(it), Alignment.TopCenter) {
+            BoxWithConstraints(Modifier.fillMaxSize().padding(padding), Alignment.TopCenter) {
                 if (maxWidth > 720.dp) {
-                    val state = rememberLazyGridState()
-                    val cells = GridCells.Adaptive(120.dp)
-                    LazyVerticalGrid(cells, state = state) {
-                        items(sources) { source ->
-                            WideSourceItem(
-                                source,
-                                onSourceClicked = onAddSource
-                            )
-                        }
-                    }
-                    VerticalScrollbar(
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                            .fillMaxHeight()
-                            .scrollbarPadding(),
-                        adapter = rememberVerticalScrollbarAdapter(state, cells)
-                    )
+                    WideSourcesMenu(sources, onAddSource)
                 } else {
-                    val state = rememberLazyListState()
-                    LazyColumn(state = state) {
-                        items(sources) { source ->
-                            ThinSourceItem(
-                                source,
-                                onSourceClicked = onAddSource
-                            )
-                        }
-                    }
-                    VerticalScrollbar(
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                            .fillMaxHeight()
-                            .scrollbarPadding(),
-                        adapter = rememberScrollbarAdapter(state)
-                    )
+                    ThinSourcesMenu(sources, onAddSource)
                 }
             }
         }
@@ -149,6 +121,58 @@ fun SourceHomeScreenToolbar(
             }
         }
     )
+}
+
+@Composable
+fun WideSourcesMenu(
+    sources: List<SourceUI>,
+    onAddSource: (Source) -> Unit
+) {
+    Box {
+        val state = rememberLazyGridState()
+        val cells = GridCells.Adaptive(120.dp)
+        LazyVerticalGrid(cells, state = state, modifier = Modifier.fillMaxSize()) {
+            items(
+                sources,
+                contentType = {
+                    when (it) {
+                        is SourceUI.Header -> "header"
+                        is SourceUI.SourceItem -> "source"
+                    }
+                },
+                key = {
+                    when (it) {
+                        is SourceUI.Header -> it.header
+                        is SourceUI.SourceItem -> it.source.id
+                    }
+                },
+                span = {
+                    when (it) {
+                        is SourceUI.Header -> GridItemSpan(maxLineSpan)
+                        is SourceUI.SourceItem -> GridItemSpan(1)
+                    }
+                }
+            ) { sourceUI ->
+                when (sourceUI) {
+                    is SourceUI.Header -> Text(
+                        sourceUI.header,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                    )
+                    is SourceUI.SourceItem -> WideSourceItem(
+                        sourceUI.source,
+                        onSourceClicked = onAddSource
+                    )
+                }
+
+            }
+        }
+        VerticalScrollbar(
+            modifier = Modifier.align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .scrollbarPadding(),
+            adapter = rememberVerticalScrollbarAdapter(state, cells)
+        )
+    }
 }
 
 @Composable
@@ -182,12 +206,56 @@ fun WideSourceItem(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                "${source.name} (${source.displayLang.toUpperCase(Locale.current)})",
+                source.name,
                 color = MaterialTheme.colors.onBackground,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
         }
+    }
+}
+@Composable
+fun ThinSourcesMenu(
+    sources: List<SourceUI>,
+    onAddSource: (Source) -> Unit
+) {
+    Box {
+        val state = rememberLazyListState()
+        LazyColumn(state = state, modifier = Modifier.fillMaxSize()) {
+            items(
+                sources,
+                contentType = {
+                    when (it) {
+                        is SourceUI.Header -> "header"
+                        is SourceUI.SourceItem -> "source"
+                    }
+                },
+                key = {
+                    when (it) {
+                        is SourceUI.Header -> it.header
+                        is SourceUI.SourceItem -> it.source.id
+                    }
+                }
+            ) { sourceUI ->
+                when (sourceUI) {
+                    is SourceUI.Header -> Text(
+                        sourceUI.header,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                    )
+                    is SourceUI.SourceItem -> ThinSourceItem(
+                        sourceUI.source,
+                        onSourceClicked = onAddSource
+                    )
+                }
+
+            }
+        }
+        VerticalScrollbar(
+            modifier = Modifier.align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .scrollbarPadding(),
+            adapter = rememberScrollbarAdapter(state)
+        )
     }
 }
 

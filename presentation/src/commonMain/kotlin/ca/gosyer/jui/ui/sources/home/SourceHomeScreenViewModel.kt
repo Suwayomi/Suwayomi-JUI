@@ -6,9 +6,12 @@
 
 package ca.gosyer.jui.ui.sources.home
 
+import androidx.compose.ui.text.intl.Locale
+import ca.gosyer.jui.core.lang.displayName
 import ca.gosyer.jui.data.source.SourceRepositoryImpl
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
+import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,9 +40,39 @@ class SourceHomeScreenViewModel @Inject constructor(
     val languages = _languages.asStateFlow()
 
     val sources = combine(installedSources, languages) { installedSources, languages ->
-        installedSources.filter {
-            it.lang in languages || it.id == Source.LOCAL_SOURCE_ID
-        }
+        val all = MR.strings.all.toPlatformString()
+        val other = MR.strings.other.toPlatformString()
+        installedSources
+            .distinctBy { it.id }
+            .filter {
+                it.lang in languages || it.id == Source.LOCAL_SOURCE_ID
+            }
+            .groupBy(Source::displayLang)
+
+            .mapValues {
+                it.value.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, Source::name))
+                    .map(SourceUI::SourceItem)
+            }
+            .mapKeys { (key) ->
+                when (key) {
+                    "all" -> all
+                    "other" -> other
+                    else -> Locale(key).displayName
+                }
+            }
+            .toList()
+            .sortedWith(
+                compareBy<Pair<String, *>> { (key) ->
+                    when (key) {
+                        all -> 1
+                        other -> 3
+                        else -> 2
+                    }
+                }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<String, *>::first)
+            )
+            .flatMap { (key, value) ->
+                listOf(SourceUI.Header(key)) + value
+            }
     }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     val sourceLanguages = installedSources.map { sources ->
@@ -56,10 +89,7 @@ class SourceHomeScreenViewModel @Inject constructor(
     private fun getSources() {
         sourceHandler.getSourceList()
             .onEach {
-                installedSources.value = it.sortedWith(
-                    compareBy(String.CASE_INSENSITIVE_ORDER, Source::displayLang)
-                        .thenBy(String.CASE_INSENSITIVE_ORDER, Source::name)
-                )
+                installedSources.value = it
                 _isLoading.value = false
             }
             .catch {
@@ -81,4 +111,9 @@ class SourceHomeScreenViewModel @Inject constructor(
     private companion object {
         private val log = logging()
     }
+}
+
+sealed class SourceUI {
+    data class Header(val header: String) : SourceUI()
+    data class SourceItem(val source: Source): SourceUI()
 }
