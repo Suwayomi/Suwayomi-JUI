@@ -119,7 +119,7 @@ internal object StringSetAdapter : Adapter<Set<String>> {
      * TODO make better, doesn't produce updates when you add something and remove something
      */
     override fun addListener(key: String, preferences: ObservableSettings, callback: () -> Unit): SettingsListener {
-        return preferences.addStringOrNullListener("$key.size") { callback() }
+        return preferences.addIntOrNullListener("$key.size") { callback() }
     }
 }
 
