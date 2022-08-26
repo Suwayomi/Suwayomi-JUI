@@ -56,12 +56,12 @@ class MainActivity : AppCompatActivity() {
         DisposableEffect(systemUiController, useDarkIcons, primaryColor) {
             systemUiController.setStatusBarColor(
                 color = primaryColor,
-                darkIcons = useDarkIcons,
+                darkIcons = useDarkIcons
             )
             systemUiController.setNavigationBarColor(
                 color = Color.Transparent,
                 darkIcons = useDarkIcons,
-                navigationBarContrastEnforced = false,
+                navigationBarContrastEnforced = false
             )
 
             onDispose {}

@@ -281,6 +281,7 @@ actual val WindowInsets.Companion.areSystemBarsVisible: Boolean
     @Composable
     @NonRestartableComposable
     get() = areSystemBarsVisible
+
 /**
  * `true` when the [tappableElement] is being displayed, irrespective of
  * whether they intersects with the Window.

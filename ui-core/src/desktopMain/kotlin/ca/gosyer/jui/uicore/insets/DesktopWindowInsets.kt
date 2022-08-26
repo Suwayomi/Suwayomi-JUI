@@ -24,7 +24,6 @@ object EmptyWindowInsets : WindowInsets {
     override fun getTop(density: Density): Int = 0
 }
 
-
 /**
  * For the [WindowInsetsCompat.Type.captionBar].
  */
@@ -268,6 +267,7 @@ actual val WindowInsets.Companion.areSystemBarsVisible: Boolean
     @Composable
     @NonRestartableComposable
     get() = false
+
 /**
  * `true` when the [tappableElement] is being displayed, irrespective of
  * whether they intersects with the Window.
