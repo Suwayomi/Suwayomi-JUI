@@ -80,6 +80,8 @@ kotlin {
             dependsOn(jvmMain)
             dependencies {
                 api(libs.bundles.compose.android)
+                api(libs.androidx.core)
+                api(libs.androidx.appCompat)
             }
         }
         val androidTest by getting {
