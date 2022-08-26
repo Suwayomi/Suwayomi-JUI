@@ -55,36 +55,42 @@ fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navig
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 4.dp)
+                .padding(horizontal = 4.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                Modifier.fillMaxWidth().height(60.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    BuildKonfig.NAME,
-                    fontSize = 24.sp,
-                    modifier = Modifier
-                )
-                IconButton(controller::closeSideMenu) {
-                    Icon(Icons.Rounded.Close, contentDescription = null)
+            Column {
+                Row(
+                    Modifier.fillMaxWidth().height(60.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        BuildKonfig.NAME,
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                    )
+                    IconButton(controller::closeSideMenu) {
+                        Icon(Icons.Rounded.Close, contentDescription = null)
+                    }
+                }
+                Spacer(Modifier.height(20.dp))
+                remember { TopLevelMenus.values().asList().dropLast(1) }.fastForEach { topLevelMenu ->
+                    SideMenuItem(
+                        topLevelMenu.isSelected(navigator),
+                        topLevelMenu
+                    ) { navigator replaceAll it }
                 }
             }
-            Spacer(Modifier.height(20.dp))
-            remember { TopLevelMenus.values().asList().dropLast(1) }.fastForEach { topLevelMenu ->
-                SideMenuItem(
-                    topLevelMenu.isSelected(navigator),
-                    topLevelMenu
-                ) { navigator replaceAll it }
-            }
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-                Column(Modifier.padding(vertical = 8.dp)) {
-                    remember { MoreMenus.values() }.forEach { topLevelMenu ->
-                        SideMenuItem(
-                            topLevelMenu.isSelected(navigator),
-                            topLevelMenu
-                        ) { navigator replaceAll it }
+
+            Column {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
+                    Column(Modifier.padding(vertical = 8.dp)) {
+                        remember { MoreMenus.values() }.forEach { topLevelMenu ->
+                            SideMenuItem(
+                                topLevelMenu.isSelected(navigator),
+                                topLevelMenu
+                            ) { navigator replaceAll it }
+                        }
                     }
                 }
             }
