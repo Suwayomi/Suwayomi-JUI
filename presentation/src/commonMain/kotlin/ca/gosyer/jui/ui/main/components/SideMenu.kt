@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -35,11 +39,18 @@ import ca.gosyer.jui.presentation.build.BuildKonfig
 import ca.gosyer.jui.ui.base.navigation.DisplayController
 import ca.gosyer.jui.ui.main.MoreMenus
 import ca.gosyer.jui.ui.main.TopLevelMenus
+import ca.gosyer.jui.uicore.insets.systemBars
 import cafe.adriel.voyager.navigator.Navigator
 
 @Composable
 fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navigator) {
-    Surface(modifier then Modifier.fillMaxHeight(), elevation = 2.dp) {
+    Surface(
+        Modifier.fillMaxHeight()
+            .windowInsetsPadding(
+                WindowInsets.systemBars.only(WindowInsetsSides.Vertical + WindowInsetsSides.Start)
+            ) then modifier,
+        elevation = 2.dp
+    ) {
         Column(
             Modifier
                 .fillMaxSize()

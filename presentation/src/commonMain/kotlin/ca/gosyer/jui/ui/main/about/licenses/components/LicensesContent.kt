@@ -8,9 +8,15 @@ package ca.gosyer.jui.ui.main.about.licenses.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
@@ -22,10 +28,13 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.Toolbar
+import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
+import ca.gosyer.jui.uicore.insets.navigationBars
+import ca.gosyer.jui.uicore.insets.statusBars
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
@@ -81,6 +90,11 @@ fun AboutLibraries(
 @Composable
 fun LicensesContent() {
     Scaffold(
+        modifier = Modifier.windowInsetsPadding(
+            WindowInsets.statusBars.add(
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
+            )
+        ),
         topBar = {
             Toolbar(stringResource(MR.strings.open_source_licenses))
         }
@@ -95,12 +109,24 @@ fun LicensesContent() {
                     lazyListState = state,
                     onLibraryClick = {
                         it.website?.let(uriHandler::openUri)
-                    }
+                    },
+                    contentPadding = WindowInsets.bottomNav.add(
+                        WindowInsets.navigationBars.only(
+                            WindowInsetsSides.Bottom
+                        )
+                    ).asPaddingValues()
                 )
                 VerticalScrollbar(
                     modifier = Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .scrollbarPadding(),
+                        .scrollbarPadding()
+                        .windowInsetsPadding(
+                            WindowInsets.bottomNav.add(
+                                WindowInsets.navigationBars.only(
+                                    WindowInsetsSides.Bottom
+                                )
+                            )
+                        ),
                     adapter = rememberScrollbarAdapter(state)
                 )
             } else {

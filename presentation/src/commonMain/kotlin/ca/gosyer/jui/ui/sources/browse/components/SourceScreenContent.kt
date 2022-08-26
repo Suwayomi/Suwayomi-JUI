@@ -15,9 +15,14 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetLayout
@@ -51,11 +56,14 @@ import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
+import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.ui.sources.browse.filter.SourceFiltersMenu
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.jui.uicore.components.DropdownMenu
 import ca.gosyer.jui.uicore.components.DropdownMenuItem
 import ca.gosyer.jui.uicore.components.LoadingScreen
+import ca.gosyer.jui.uicore.insets.navigationBars
+import ca.gosyer.jui.uicore.insets.statusBars
 import ca.gosyer.jui.uicore.resources.stringResource
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -190,6 +198,11 @@ private fun SourceWideScreenContent(
     resetFiltersClicked: () -> Unit
 ) {
     Scaffold(
+        modifier = Modifier.windowInsetsPadding(
+            WindowInsets.statusBars.add(
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
+            )
+        ),
         topBar = {
             SourceToolbar(
                 sourceHolder = sourceHolder,
@@ -298,6 +311,11 @@ private fun SourceThinScreenContent(
         }
     }
     Scaffold(
+        modifier = Modifier.windowInsetsPadding(
+            WindowInsets.statusBars.add(
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
+            )
+        ),
         topBar = {
             SourceToolbar(
                 sourceHolder = sourceHolder,
@@ -321,7 +339,13 @@ private fun SourceThinScreenContent(
             modifier = Modifier.padding(padding),
             sheetContent = {
                 SourceFiltersMenu(
-                    modifier = Modifier,
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets.bottomNav.add(
+                            WindowInsets.navigationBars.only(
+                                WindowInsetsSides.Bottom
+                            )
+                        )
+                    ),
                     filters = filters,
                     onSearchClicked = {
                         setUsingFilters(true)
@@ -370,6 +394,13 @@ private fun SourceThinScreenContent(
                         },
                         modifier = Modifier.align(Alignment.BottomEnd)
                             .padding(bottom = 16.dp, end = 16.dp)
+                            .windowInsetsPadding(
+                                WindowInsets.bottomNav.add(
+                                    WindowInsets.navigationBars.only(
+                                        WindowInsetsSides.Bottom
+                                    )
+                                )
+                            )
                     )
                 }
             }

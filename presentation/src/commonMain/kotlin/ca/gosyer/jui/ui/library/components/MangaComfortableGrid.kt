@@ -8,11 +8,17 @@ package ca.gosyer.jui.ui.library.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -32,11 +38,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.ui.base.model.StableHolder
+import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberVerticalScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.ImageLoaderImage
+import ca.gosyer.jui.uicore.insets.navigationBars
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -61,7 +69,12 @@ fun LibraryMangaComfortableGrid(
         LazyVerticalGrid(
             columns = cells,
             state = state,
-            modifier = Modifier.fillMaxSize().padding(4.dp)
+            modifier = Modifier.fillMaxSize().padding(4.dp),
+            contentPadding = WindowInsets.bottomNav.add(
+                WindowInsets.navigationBars.only(
+                    WindowInsetsSides.Bottom
+                )
+            ).asPaddingValues()
         ) {
             items(library) { mangaHolder ->
                 LibraryMangaComfortableGridItem(
@@ -82,6 +95,13 @@ fun LibraryMangaComfortableGrid(
             Modifier.align(Alignment.CenterEnd)
                 .fillMaxHeight()
                 .scrollbarPadding()
+                .windowInsetsPadding(
+                    WindowInsets.bottomNav.add(
+                        WindowInsets.navigationBars.only(
+                            WindowInsetsSides.Bottom
+                        )
+                    )
+                )
         )
     }
 }

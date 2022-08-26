@@ -6,17 +6,19 @@
 
 package ca.gosyer.jui.ui.main
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumedWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Scaffold
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -32,8 +34,9 @@ import ca.gosyer.jui.ui.base.LocalViewModels
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.DisplayController
 import ca.gosyer.jui.ui.base.navigation.withDisplayController
-import ca.gosyer.jui.ui.main.components.BottomNav
 import ca.gosyer.jui.ui.main.components.SideMenu
+import ca.gosyer.jui.ui.main.components.WithBottomNav
+import ca.gosyer.jui.uicore.insets.navigationBars
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.FadeTransition
 import kotlinx.coroutines.delay
@@ -84,23 +87,12 @@ fun MainMenu() {
 fun SkinnyMainMenu(
     navigator: Navigator
 ) {
-    Scaffold(
-        bottomBar = {
-            AnimatedVisibility(
-                navigator.size <= 1,
-                enter = slideInVertically(initialOffsetY = { it }),
-                exit = slideOutVertically(targetOffsetY = { it })
-            ) {
-                BottomNav(navigator)
-            }
-        }
-    ) {
-        Box(Modifier.padding(it)) {
-            MainWindow(navigator, Modifier)
-        }
+    WithBottomNav(navigator) {
+        MainWindow(navigator, Modifier)
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun WideMainMenu(
     navigator: Navigator,
@@ -119,7 +111,8 @@ fun WideMainMenu(
             SideMenu(Modifier.width(200.dp), controller, navigator)
         }
         withDisplayController(controller) {
-            MainWindow(navigator, Modifier.padding(start = startPadding))
+            val insets = WindowInsets.navigationBars.only(WindowInsetsSides.Start)
+            MainWindow(navigator, Modifier.padding(start = startPadding).windowInsetsPadding(insets).consumedWindowInsets(insets))
         }
     }
 }

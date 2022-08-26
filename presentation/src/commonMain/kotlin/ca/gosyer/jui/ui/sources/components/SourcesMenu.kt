@@ -9,12 +9,18 @@ package ca.gosyer.jui.ui.sources.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -37,11 +43,13 @@ import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.components.CursorPoint
 import ca.gosyer.jui.ui.base.components.TooltipArea
 import ca.gosyer.jui.ui.base.model.StableHolder
+import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.ui.sources.home.SourceHomeScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.ImageLoaderImage
+import ca.gosyer.jui.uicore.insets.navigationBars
 import ca.gosyer.jui.uicore.resources.stringResource
 import kotlinx.collections.immutable.ImmutableList
 
@@ -91,7 +99,15 @@ fun SourcesSideMenu(
     Surface(elevation = 1.dp) {
         Box {
             val state = rememberLazyListState()
-            LazyColumn(Modifier.fillMaxHeight().width(64.dp), state) {
+            LazyColumn(
+                modifier = Modifier.fillMaxHeight().width(64.dp),
+                state = state,
+                contentPadding = WindowInsets.bottomNav.add(
+                    WindowInsets.navigationBars.only(
+                        WindowInsetsSides.Bottom
+                    )
+                ).asPaddingValues()
+            ) {
                 items(sourceTabs) { screen ->
                     TooltipArea(
                         {
@@ -158,6 +174,13 @@ fun SourcesSideMenu(
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
                     .scrollbarPadding()
+                    .windowInsetsPadding(
+                        WindowInsets.bottomNav.add(
+                            WindowInsets.navigationBars.only(
+                                WindowInsetsSides.Bottom
+                            )
+                        )
+                    )
             )
         }
     }

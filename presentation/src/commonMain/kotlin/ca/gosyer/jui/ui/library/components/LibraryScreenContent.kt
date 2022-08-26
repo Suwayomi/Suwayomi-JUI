@@ -16,8 +16,13 @@ import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
@@ -43,6 +48,8 @@ import ca.gosyer.jui.ui.library.CategoryState
 import ca.gosyer.jui.ui.library.settings.LibrarySheet
 import ca.gosyer.jui.ui.library.settings.LibrarySideMenu
 import ca.gosyer.jui.uicore.components.LoadingScreen
+import ca.gosyer.jui.uicore.insets.navigationBars
+import ca.gosyer.jui.uicore.insets.statusBars
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
@@ -173,6 +180,11 @@ fun WideLibraryScreenContent(
     showLocal: Boolean
 ) {
     Scaffold(
+        modifier = Modifier.windowInsetsPadding(
+            WindowInsets.statusBars.add(
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
+            )
+        ),
         topBar = {
             Column {
                 Toolbar(
@@ -287,6 +299,11 @@ fun ThinLibraryScreenContent(
         }
     }
     Scaffold(
+        modifier = Modifier.windowInsetsPadding(
+            WindowInsets.statusBars.add(
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
+            )
+        ),
         topBar = {
             Column {
                 Toolbar(

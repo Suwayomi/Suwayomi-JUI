@@ -8,12 +8,18 @@ package ca.gosyer.jui.ui.library.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -25,12 +31,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.ui.base.model.StableHolder
+import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.uicore.components.MangaListItem
 import ca.gosyer.jui.uicore.components.MangaListItemImage
 import ca.gosyer.jui.uicore.components.MangaListItemTitle
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
+import ca.gosyer.jui.uicore.insets.navigationBars
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -47,7 +55,12 @@ fun LibraryMangaList(
         val state = rememberLazyListState()
         LazyColumn(
             state = state,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = WindowInsets.bottomNav.add(
+                WindowInsets.navigationBars.only(
+                    WindowInsetsSides.Bottom
+                )
+            ).asPaddingValues()
         ) {
             items(library) { mangaHolder ->
                 LibraryMangaListItem(
@@ -68,6 +81,13 @@ fun LibraryMangaList(
             Modifier.align(Alignment.CenterEnd)
                 .fillMaxHeight()
                 .scrollbarPadding()
+                .windowInsetsPadding(
+                    WindowInsets.bottomNav.add(
+                        WindowInsets.navigationBars.only(
+                            WindowInsetsSides.Bottom
+                        )
+                    )
+                )
         )
     }
 }
