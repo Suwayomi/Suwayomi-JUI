@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
@@ -38,37 +40,40 @@ import cafe.adriel.voyager.navigator.Navigator
 @Composable
 fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navigator) {
     Surface(modifier then Modifier.fillMaxHeight(), elevation = 2.dp) {
-        Box(Modifier.fillMaxSize()) {
-            Column(Modifier.fillMaxSize().padding(horizontal = 4.dp)) {
-                Row(
-                    Modifier.fillMaxWidth().height(60.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        BuildKonfig.NAME,
-                        fontSize = 24.sp,
-                        modifier = Modifier
-                    )
-                    IconButton(controller::closeSideMenu) {
-                        Icon(Icons.Rounded.Close, contentDescription = null)
-                    }
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 4.dp)
+        ) {
+            Row(
+                Modifier.fillMaxWidth().height(60.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    BuildKonfig.NAME,
+                    fontSize = 24.sp,
+                    modifier = Modifier
+                )
+                IconButton(controller::closeSideMenu) {
+                    Icon(Icons.Rounded.Close, contentDescription = null)
                 }
-                Spacer(Modifier.height(20.dp))
-                remember { TopLevelMenus.values().asList().dropLast(1) }.fastForEach { topLevelMenu ->
-                    SideMenuItem(
-                        topLevelMenu.isSelected(navigator),
-                        topLevelMenu
-                    ) { navigator replaceAll it }
-                }
-                Box(Modifier.fillMaxSize()) {
-                    Column(Modifier.align(Alignment.BottomStart).padding(bottom = 8.dp)) {
-                        remember { MoreMenus.values() }.forEach { topLevelMenu ->
-                            SideMenuItem(
-                                topLevelMenu.isSelected(navigator),
-                                topLevelMenu
-                            ) { navigator replaceAll it }
-                        }
+            }
+            Spacer(Modifier.height(20.dp))
+            remember { TopLevelMenus.values().asList().dropLast(1) }.fastForEach { topLevelMenu ->
+                SideMenuItem(
+                    topLevelMenu.isSelected(navigator),
+                    topLevelMenu
+                ) { navigator replaceAll it }
+            }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
+                Column(Modifier.padding(vertical = 8.dp)) {
+                    remember { MoreMenus.values() }.forEach { topLevelMenu ->
+                        SideMenuItem(
+                            topLevelMenu.isSelected(navigator),
+                            topLevelMenu
+                        ) { navigator replaceAll it }
                     }
                 }
             }

@@ -6,19 +6,21 @@
 
 package ca.gosyer.jui.ui.main.components
 
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.base.WebsocketService
 import ca.gosyer.jui.domain.download.model.DownloaderStatus
 import ca.gosyer.jui.i18n.MR
@@ -56,7 +58,11 @@ fun DownloadsExtraInfo() {
             color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
         )
     } else if (serviceStatus == WebsocketService.Status.STOPPED) {
-        Surface(onClick = vm::restartDownloader, shape = RoundedCornerShape(4.dp)) {
+        Box(
+            Modifier.fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
+                .clickable(onClick = vm::restartDownloader)
+        ) {
             Text(
                 stringResource(MR.strings.downloads_stopped),
                 style = MaterialTheme.typography.body2,
