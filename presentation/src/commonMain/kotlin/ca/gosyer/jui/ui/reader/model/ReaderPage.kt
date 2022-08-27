@@ -30,10 +30,13 @@ data class ReaderPage(
     sealed class ImageDecodeState {
         @Immutable
         data class Success(val bitmap: ImageBitmap) : ImageDecodeState()
+
         @Immutable
         object UnknownDecoder : ImageDecodeState()
+
         @Immutable
         object FailedToGetSnapShot : ImageDecodeState()
+
         @Immutable
         data class FailedToDecode(val exception: Throwable) : ImageDecodeState()
     }

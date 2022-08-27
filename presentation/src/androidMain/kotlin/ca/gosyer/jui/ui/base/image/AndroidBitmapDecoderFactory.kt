@@ -10,5 +10,5 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 import com.seiko.imageloader.component.decoder.BitmapFactoryDecoder
 import com.seiko.imageloader.component.decoder.Decoder
 
-actual class BitmapDecoderFactory actual constructor(contextWrapper: ContextWrapper)
-    : Decoder.Factory by BitmapFactoryDecoder.Factory(contextWrapper)
+actual class BitmapDecoderFactory actual constructor(contextWrapper: ContextWrapper) :
+    Decoder.Factory by BitmapFactoryDecoder.Factory(contextWrapper)

@@ -117,7 +117,7 @@ fun SettingsAdvancedScreenContent(
     imageCacheSize: String,
     clearImageCache: () -> Unit,
     chapterCacheSize: String,
-    clearChapterCache: () -> Unit,
+    clearChapterCache: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(

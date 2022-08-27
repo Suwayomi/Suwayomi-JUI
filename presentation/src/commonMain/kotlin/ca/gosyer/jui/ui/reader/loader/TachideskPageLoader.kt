@@ -102,8 +102,8 @@ class TachideskPageLoader(
                                                     SourceResult(
                                                         ImageRequestBuilder().build(),
                                                         it.source()
-                                                ),
-                                                Options()
+                                                    ),
+                                                    Options()
                                                 )
                                                 if (decoder != null) {
                                                     runCatching { decoder.decode() as DecodeImageResult }
@@ -243,7 +243,7 @@ class TachideskPageLoader(
     }
 
     private val ReaderPage.cacheKey
-        get() = "${chapter.chapter.mangaId}-${chapter.chapter.index}-${index}"
+        get() = "${chapter.chapter.mangaId}-${chapter.chapter.index}-$index"
 
     private fun DiskCache.Snapshot.source(): BufferedSource {
         return FileSystem.SYSTEM.source(data).buffer()
