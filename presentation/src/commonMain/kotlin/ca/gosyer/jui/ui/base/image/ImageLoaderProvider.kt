@@ -16,6 +16,7 @@ import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.ImageLoaderBuilder
 import com.seiko.imageloader.cache.disk.DiskCache
 import com.seiko.imageloader.cache.memory.MemoryCache
+import com.seiko.imageloader.component.keyer.Keyer
 import com.seiko.imageloader.component.mapper.Mapper
 import com.seiko.imageloader.request.Options
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -35,8 +36,11 @@ class ImageLoaderProvider @Inject constructor(
             httpClient { http }
             components {
                 add(MangaCoverMapper())
+                add(MangaCoverKeyer())
                 add(ExtensionIconMapper())
+                add(ExtensionIconKeyer())
                 add(SourceIconMapper())
+                add(SourceIconKeyer())
             }
             options(
                 Options(
@@ -60,6 +64,13 @@ class ImageLoaderProvider @Inject constructor(
         }
     }
 
+    class MangaCoverKeyer : Keyer {
+        override fun key(data: Any, options: Options): String? {
+            if (data !is Manga) return null
+            return "${data.sourceId}-${data.url}"
+        }
+    }
+
     inner class ExtensionIconMapper : Mapper<String> {
         override fun map(data: Any, options: Options): String? {
             if (data !is Extension) return null
@@ -68,11 +79,25 @@ class ImageLoaderProvider @Inject constructor(
         }
     }
 
+    class ExtensionIconKeyer : Keyer {
+        override fun key(data: Any, options: Options): String? {
+            if (data !is Extension) return null
+            return data.iconUrl
+        }
+    }
+
     inner class SourceIconMapper : Mapper<String> {
         override fun map(data: Any, options: Options): String? {
             if (data !is Source) return null
             if (data.iconUrl.isBlank()) return null
             return serverUrl.value.toString() + data.iconUrl
+        }
+    }
+
+    class SourceIconKeyer : Keyer {
+        override fun key(data: Any, options: Options): String? {
+            if (data !is Source) return null
+            return data.iconUrl
         }
     }
 }
