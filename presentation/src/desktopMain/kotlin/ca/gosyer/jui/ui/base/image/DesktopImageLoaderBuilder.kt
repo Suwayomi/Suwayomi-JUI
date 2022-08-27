@@ -18,9 +18,9 @@ actual fun imageLoaderBuilder(contextWrapper: ContextWrapper): ImageLoaderBuilde
     return ImageLoaderBuilder()
 }
 
-actual fun diskCache(contextWrapper: ContextWrapper): DiskCache {
+actual fun diskCache(contextWrapper: ContextWrapper, cacheDir: String): DiskCache {
     return DiskCacheBuilder()
-        .directory(userDataDir / "image_cache")
+        .directory(userDataDir / cacheDir)
         .maxSizeBytes(1024 * 1024 * 150) // 150 MB
         .build()
 }

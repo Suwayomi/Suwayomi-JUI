@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Immutable
 data class ReaderPage(
     val index: Int,
-    val bitmap: MutableStateFlow<StableHolder<ImageBitmap?>>,
+    val bitmap: MutableStateFlow<StableHolder<(suspend () -> ImageDecodeState)?>>,
     val progress: MutableStateFlow<Float>,
     val status: MutableStateFlow<Status>,
     val error: MutableStateFlow<String?>,
@@ -24,5 +24,17 @@ data class ReaderPage(
         QUEUE,
         READY,
         ERROR
+    }
+
+    @Immutable
+    sealed class ImageDecodeState {
+        @Immutable
+        data class Success(val bitmap: ImageBitmap) : ImageDecodeState()
+        @Immutable
+        object UnknownDecoder : ImageDecodeState()
+        @Immutable
+        object FailedToGetSnapShot : ImageDecodeState()
+        @Immutable
+        data class FailedToDecode(val exception: Throwable) : ImageDecodeState()
     }
 }

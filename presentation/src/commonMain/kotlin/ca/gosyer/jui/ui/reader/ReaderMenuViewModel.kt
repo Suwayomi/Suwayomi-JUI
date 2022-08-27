@@ -21,6 +21,8 @@ import ca.gosyer.jui.domain.manga.model.MangaMeta
 import ca.gosyer.jui.domain.reader.ReaderModeWatch
 import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
+import ca.gosyer.jui.ui.base.ChapterCache
+import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.loader.PagesState
 import ca.gosyer.jui.ui.reader.model.MoveTo
@@ -67,6 +69,7 @@ class ReaderMenuViewModel @Inject constructor(
     private val updateChapterFlags: UpdateChapterFlags,
     private val updateMangaMeta: UpdateMangaMeta,
     private val updateChapterMeta: UpdateChapterMeta,
+    private val chapterCache: ChapterCache,
     contextWrapper: ContextWrapper,
     private val params: Params
 ) : ViewModel(contextWrapper) {
@@ -116,7 +119,12 @@ class ReaderMenuViewModel @Inject constructor(
 
     val readerModeSettings = ReaderModeWatch(readerPreferences, scope, readerMode)
 
-    private val loader = ChapterLoader(readerPreferences, getChapterPage)
+    private val loader = ChapterLoader(
+        readerPreferences = readerPreferences,
+        getChapterPage = getChapterPage,
+        chapterCache = chapterCache,
+        bitmapDecoderFactory = BitmapDecoderFactory(contextWrapper)
+    )
 
     init {
         init()

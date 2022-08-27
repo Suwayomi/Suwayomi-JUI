@@ -11,6 +11,7 @@ import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.source.model.Source
+import ca.gosyer.jui.ui.base.ImageCache
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.ImageLoaderBuilder
@@ -31,7 +32,7 @@ class ImageLoaderProvider @Inject constructor(
     @OptIn(DelicateCoroutinesApi::class)
     val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
 
-    fun get(): ImageLoader {
+    fun get(imageCache: ImageCache): ImageLoader {
         return imageLoaderBuilder(context).apply {
             httpClient { http }
             components {
@@ -48,7 +49,7 @@ class ImageLoaderProvider @Inject constructor(
                 )
             )
             diskCache {
-                diskCache(context)
+                imageCache
             }
             memoryCache {
                 memoryCache(context)
@@ -104,6 +105,6 @@ class ImageLoaderProvider @Inject constructor(
 
 expect fun imageLoaderBuilder(contextWrapper: ContextWrapper): ImageLoaderBuilder
 
-expect fun diskCache(contextWrapper: ContextWrapper): DiskCache
+expect fun diskCache(contextWrapper: ContextWrapper, cacheDir: String): DiskCache
 
 expect fun memoryCache(contextWrapper: ContextWrapper): MemoryCache

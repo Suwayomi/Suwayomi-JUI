@@ -6,16 +6,24 @@
 
 package ca.gosyer.jui.ui.reader.loader
 
+import androidx.compose.ui.graphics.asComposeImageBitmap
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
+import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
-import ca.gosyer.jui.ui.util.compose.toImageBitmap
 import ca.gosyer.jui.ui.util.lang.priorityChannel
 import cafe.adriel.voyager.core.concurrent.AtomicInt32
+import com.seiko.imageloader.cache.disk.DiskCache
+import com.seiko.imageloader.component.decoder.DecodeImageResult
+import com.seiko.imageloader.request.ImageRequestBuilder
+import com.seiko.imageloader.request.Options
+import com.seiko.imageloader.request.SourceResult
 import io.ktor.client.plugins.onDownload
+import io.ktor.client.statement.bodyAsChannel
+import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,12 +36,18 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import okio.BufferedSource
+import okio.FileSystem
+import okio.buffer
+import okio.source
 import org.lighthousegames.logging.logging
 
 class TachideskPageLoader(
     val chapter: ReaderChapter,
     readerPreferences: ReaderPreferences,
-    getChapterPage: GetChapterPage
+    getChapterPage: GetChapterPage,
+    private val chapterCache: DiskCache,
+    private val bitmapDecoderFactory: BitmapDecoderFactory
 ) : PageLoader() {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -69,7 +83,39 @@ class TachideskPageLoader(
                                     }
                                 }
                                     .onEach {
-                                        page.bitmap.value = StableHolder(it.toImageBitmap())
+                                        val editor = chapterCache.edit(page.cacheKey)
+                                            ?: throw Exception("Couldn't open cache")
+                                        try {
+                                            FileSystem.SYSTEM.write(editor.data) {
+                                                it.bodyAsChannel().toInputStream().source().use {
+                                                    writeAll(it)
+                                                }
+                                            }
+                                            editor.commit()
+                                        } catch (e: Exception) {
+                                            editor.abortQuietly()
+                                            throw e
+                                        }
+                                        page.bitmap.value = StableHolder {
+                                            chapterCache[page.cacheKey]?.use {
+                                                val decoder = bitmapDecoderFactory.create(
+                                                    SourceResult(
+                                                        ImageRequestBuilder().build(),
+                                                        it.source()
+                                                ),
+                                                Options()
+                                                )
+                                                if (decoder != null) {
+                                                    runCatching { decoder.decode() as DecodeImageResult }
+                                                        .mapCatching {
+                                                            ReaderPage.ImageDecodeState.Success(it.image.asComposeImageBitmap())
+                                                        }
+                                                        .getOrElse {
+                                                            ReaderPage.ImageDecodeState.FailedToDecode(it)
+                                                        }
+                                                } else ReaderPage.ImageDecodeState.UnknownDecoder
+                                            } ?: ReaderPage.ImageDecodeState.FailedToGetSnapShot
+                                        }
                                         page.status.value = ReaderPage.Status.READY
                                         page.error.value = null
                                     }
@@ -194,5 +240,18 @@ class TachideskPageLoader(
 
     private companion object {
         private val log = logging()
+    }
+
+    private val ReaderPage.cacheKey
+        get() = "${chapter.chapter.mangaId}-${chapter.chapter.index}-${index}"
+
+    private fun DiskCache.Snapshot.source(): BufferedSource {
+        return FileSystem.SYSTEM.source(data).buffer()
+    }
+
+    private fun DiskCache.Editor.abortQuietly() {
+        try {
+            abort()
+        } catch (_: Exception) {}
     }
 }

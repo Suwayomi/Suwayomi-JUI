@@ -296,6 +296,9 @@
 
     <!-- Advanced Settings -->
     <string name="update_checker">Check for updates</string>
+    <string name="clear_image_cache">Clear image cache</string>
+    <string name="clear_chapter_cache">Clear chapter cache</string>
+    <string name="clear_cache_sub">Used: %1$s</string>
 
     <!-- Android notifications -->
     <string name="group_downloader">Downloader</string>

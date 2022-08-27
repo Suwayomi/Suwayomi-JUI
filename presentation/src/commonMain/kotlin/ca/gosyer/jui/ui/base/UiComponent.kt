@@ -11,10 +11,16 @@ import androidx.compose.runtime.compositionLocalOf
 import ca.gosyer.jui.core.di.AppScope
 import ca.gosyer.jui.ui.ViewModelComponent
 import ca.gosyer.jui.ui.base.image.ImageLoaderProvider
+import ca.gosyer.jui.ui.base.image.diskCache
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
+import com.seiko.imageloader.cache.disk.DiskCache
 import me.tatarka.inject.annotations.Provides
+
+typealias ImageCache = DiskCache
+
+typealias ChapterCache = DiskCache
 
 interface UiComponent {
     val imageLoader: ImageLoader
@@ -23,9 +29,21 @@ interface UiComponent {
 
     val hooks: Array<ProvidedValue<out Any>>
 
+    val imageCache: ImageCache
+
+    val chapterCache: ChapterCache
+
     @AppScope
     @Provides
-    fun imageLoaderFactory(imageLoaderProvider: ImageLoaderProvider): ImageLoader = imageLoaderProvider.get()
+    fun imageLoaderFactory(imageLoaderProvider: ImageLoaderProvider, imageCache: ImageCache): ImageLoader = imageLoaderProvider.get(imageCache)
+
+    @AppScope
+    @Provides
+    fun imageCacheFactory(): ImageCache = diskCache(contextWrapper, "image_cache")
+
+    @AppScope
+    @Provides
+    fun chapterCacheFactory(): ChapterCache = diskCache(contextWrapper, "chapter_cache")
 
     @Provides
     fun getHooks(viewModelComponent: ViewModelComponent) = arrayOf(

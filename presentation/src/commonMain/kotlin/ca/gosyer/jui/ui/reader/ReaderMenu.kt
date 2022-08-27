@@ -40,17 +40,18 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.domain.reader.model.ImageScale
 import ca.gosyer.jui.domain.reader.model.NavigationMode
@@ -513,7 +514,7 @@ fun SideMenuButton(sideMenuOpen: Boolean, onOpenSideMenuClicked: () -> Unit) {
 @Composable
 fun ReaderImage(
     imageIndex: Int,
-    drawableHolder: StableHolder<ImageBitmap?>,
+    drawableHolder: StableHolder<(suspend () -> ReaderPage.ImageDecodeState)?>,
     progress: Float,
     status: ReaderPage.Status,
     error: String?,
@@ -523,17 +524,35 @@ fun ReaderImage(
     retry: (Int) -> Unit
 ) {
     Crossfade(drawableHolder to status) { (drawableHolder, status) ->
-        val drawable = drawableHolder.item
-        if (drawable != null) {
+        val drawableCallback = drawableHolder.item
+        val decodeState = produceState<ReaderPage.ImageDecodeState?>(null, drawableCallback) {
+            if (drawableCallback != null) {
+                withIOContext {
+                    value = drawableCallback()
+                }
+            }
+        }
+        val decode = decodeState.value
+        if (decode != null && decode is ReaderPage.ImageDecodeState.Success) {
             Image(
-                bitmap = drawable,
+                bitmap = decode.bitmap,
                 modifier = imageModifier,
                 contentDescription = null,
                 contentScale = contentScale,
                 filterQuality = FilterQuality.High
             )
         } else {
-            LoadingScreen(status == ReaderPage.Status.QUEUE, loadingModifier, progress, error) { retry(imageIndex) }
+            LoadingScreen(
+                status == ReaderPage.Status.QUEUE,
+                loadingModifier,
+                progress,
+                error ?: when (decode) {
+                    is ReaderPage.ImageDecodeState.FailedToDecode -> decode.exception.message
+                    ReaderPage.ImageDecodeState.UnknownDecoder -> "Unknown decoder"
+                    ReaderPage.ImageDecodeState.FailedToGetSnapShot -> "Failed to get snapshot"
+                    else -> null
+                }
+            ) { retry(imageIndex) }
         }
     }
 }

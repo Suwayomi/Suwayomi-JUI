@@ -18,9 +18,9 @@ actual fun imageLoaderBuilder(contextWrapper: ContextWrapper): ImageLoaderBuilde
     return ImageLoaderBuilder(contextWrapper)
 }
 
-actual fun diskCache(contextWrapper: ContextWrapper): DiskCache {
+actual fun diskCache(contextWrapper: ContextWrapper, cacheDir: String): DiskCache {
     return DiskCacheBuilder()
-        .directory(contextWrapper.cacheDir.toOkioPath() / "image_cache")
+        .directory(contextWrapper.cacheDir.toOkioPath() / cacheDir)
         .maxSizeBytes(1024 * 1024 * 150) // 150 MB
         .build()
 }

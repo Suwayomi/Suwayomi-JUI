@@ -8,9 +8,11 @@ package ca.gosyer.jui.ui.reader
 
 import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
+import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
 import ca.gosyer.jui.ui.reader.loader.PagesState
 import ca.gosyer.jui.ui.reader.loader.TachideskPageLoader
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
+import com.seiko.imageloader.cache.disk.DiskCache
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.filterIsInstance
@@ -21,7 +23,9 @@ import org.lighthousegames.logging.logging
 
 class ChapterLoader(
     private val readerPreferences: ReaderPreferences,
-    private val getChapterPage: GetChapterPage
+    private val getChapterPage: GetChapterPage,
+    private val chapterCache: DiskCache,
+    private val bitmapDecoderFactory: BitmapDecoderFactory
 ) {
     fun loadChapter(chapter: ReaderChapter): StateFlow<PagesState> {
         if (chapterIsReady(chapter)) {
@@ -30,7 +34,7 @@ class ChapterLoader(
             chapter.state = ReaderChapter.State.Loading
             log.debug { "Loading pages for ${chapter.chapter.name}" }
 
-            val loader = TachideskPageLoader(chapter, readerPreferences, getChapterPage)
+            val loader = TachideskPageLoader(chapter, readerPreferences, getChapterPage, chapterCache, bitmapDecoderFactory)
 
             val pages = loader.getPages()
 
