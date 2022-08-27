@@ -7,6 +7,7 @@
 package ca.gosyer.jui.ui.util.compose
 
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import ca.gosyer.jui.domain.server.Http
 import io.ktor.client.call.body
@@ -18,6 +19,7 @@ import okio.FileSystem
 import okio.Path
 import okio.buffer
 import org.jetbrains.skia.Image
+import com.seiko.imageloader.Image as ImageLoaderImage
 
 fun imageFromFile(file: Path): ImageBitmap {
     return Image.makeFromEncoded(FileSystem.SYSTEM.source(file).buffer().readByteArray())
@@ -33,4 +35,8 @@ suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.()
 
 actual suspend fun HttpResponse.toImageBitmap(): ImageBitmap {
     return Image.makeFromEncoded(body<ByteArray>()).toComposeImageBitmap()
+}
+
+actual fun ImageLoaderImage.asImageBitmap(): ImageBitmap {
+    return asComposeImageBitmap()
 }

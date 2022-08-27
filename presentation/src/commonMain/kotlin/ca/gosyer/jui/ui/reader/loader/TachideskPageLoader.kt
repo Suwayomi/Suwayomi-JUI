@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.reader.loader
 
-import androidx.compose.ui.graphics.asComposeImageBitmap
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
@@ -14,6 +13,7 @@ import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
+import ca.gosyer.jui.ui.util.compose.asImageBitmap
 import ca.gosyer.jui.ui.util.lang.priorityChannel
 import cafe.adriel.voyager.core.concurrent.AtomicInt32
 import com.seiko.imageloader.cache.disk.DiskCache
@@ -108,7 +108,7 @@ class TachideskPageLoader(
                                                 if (decoder != null) {
                                                     runCatching { decoder.decode() as DecodeImageResult }
                                                         .mapCatching {
-                                                            ReaderPage.ImageDecodeState.Success(it.image.asComposeImageBitmap())
+                                                            ReaderPage.ImageDecodeState.Success(it.image.asImageBitmap())
                                                         }
                                                         .getOrElse {
                                                             ReaderPage.ImageDecodeState.FailedToDecode(it)

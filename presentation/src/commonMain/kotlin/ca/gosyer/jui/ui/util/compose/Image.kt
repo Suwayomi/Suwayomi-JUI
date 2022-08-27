@@ -7,6 +7,9 @@
 package ca.gosyer.jui.ui.util.compose
 
 import androidx.compose.ui.graphics.ImageBitmap
+import com.seiko.imageloader.Image
 import io.ktor.client.statement.HttpResponse
 
 expect suspend fun HttpResponse.toImageBitmap(): ImageBitmap
+
+expect fun Image.asImageBitmap(): ImageBitmap
