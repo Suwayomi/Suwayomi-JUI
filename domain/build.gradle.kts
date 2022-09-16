@@ -25,7 +25,7 @@ kotlin {
     }
     iosX64()
     iosArm64()
-    //iosSimulatorArm64()
+    iosSimulatorArm64()
 
     sourceSets {
         all {
@@ -99,11 +99,13 @@ kotlin {
             dependsOn(commonTest)
         }
 
-        listOf("iosX64Main", "iosArm64Main"/*, "iosSimulatorArm64Main"*/).forEach {
-            getByName(it).dependsOn(iosMain)
-        }
-        listOf("iosX64Test", "iosArm64Test"/*, "iosSimulatorArm64Test"*/).forEach {
-            getByName(it).dependsOn(iosTest)
+        listOf(
+            "iosX64",
+            "iosArm64",
+            "iosSimulatorArm64",
+        ).forEach {
+            getByName(it + "Main").dependsOn(iosMain)
+            getByName(it + "Test").dependsOn(iosTest)
         }
     }
 }

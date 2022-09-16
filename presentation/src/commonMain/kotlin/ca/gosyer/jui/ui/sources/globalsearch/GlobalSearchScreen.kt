@@ -8,6 +8,7 @@ package ca.gosyer.jui.ui.sources.globalsearch
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import ca.gosyer.jui.ui.manga.MangaScreen
 import ca.gosyer.jui.ui.sources.browse.SourceScreen
 import ca.gosyer.jui.ui.sources.components.LocalSourcesNavigator
 import ca.gosyer.jui.ui.sources.globalsearch.components.GlobalSearchScreenContent
@@ -45,7 +46,7 @@ class GlobalSearchScreen(private val initialQuery: String) : Screen {
                 }
             },
             onMangaClick = {
-                navigator push ca.gosyer.jui.ui.manga.MangaScreen(it.id)
+                navigator push MangaScreen(it.id)
             }
         )
     }

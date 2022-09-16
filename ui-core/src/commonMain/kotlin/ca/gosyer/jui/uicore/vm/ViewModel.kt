@@ -44,4 +44,9 @@ abstract class ViewModel(private val contextWrapper: ContextWrapper) : ScreenMod
             contextWrapper.toast(string, length)
         }
     }
+
+    @Suppress("RedundantOverride") // So classes that inherit ViewModel can see it
+    override fun onDispose() {
+        super.onDispose()
+    }
 }
