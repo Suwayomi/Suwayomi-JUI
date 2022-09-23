@@ -111,4 +111,19 @@ android {
             setProguardFiles(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"))
         }
     }
+
+    packagingOptions {
+        resources.excludes.addAll(listOf(
+            "META-INF/DEPENDENCIES",
+            "LICENSE.txt",
+            "META-INF/LICENSE",
+            "META-INF/LICENSE.txt",
+            "META-INF/LICENSE.md",
+            "META-INF/LICENSE-notice.md",
+            "META-INF/README.md",
+            "META-INF/NOTICE",
+            "META-INF/*.kotlin_module",
+            "META-INF/*.version",
+        ))
+    }
 }
