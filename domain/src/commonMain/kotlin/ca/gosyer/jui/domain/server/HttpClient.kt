@@ -42,6 +42,8 @@ class HttpProvider @Inject constructor() {
         return HttpClient(Engine) {
             configurePlatform()
 
+            expectSuccess = true
+
             engine {
                 proxy = when (serverPreferences.proxy().get()) {
                     Proxy.NO_PROXY -> null
