@@ -6,10 +6,21 @@
 
 package ca.gosyer.jui.domain.library.service
 
+import de.jensklingenberg.ktorfit.http.DELETE
+import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 
 interface LibraryRepository {
-    fun addMangaToLibrary(mangaId: Long): Flow<HttpResponse>
-    fun removeMangaFromLibrary(mangaId: Long): Flow<HttpResponse>
+
+    @GET("api/v1/manga/{mangaId}/library")
+    fun addMangaToLibrary(
+        @Path("mangaId") mangaId: Long
+    ): Flow<HttpResponse>
+
+    @DELETE("api/v1/manga/{mangaId}/library")
+    fun removeMangaFromLibrary(
+        @Path("mangaId") mangaId: Long
+    ): Flow<HttpResponse>
 }

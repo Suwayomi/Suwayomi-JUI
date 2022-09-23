@@ -9,9 +9,9 @@ package ca.gosyer.jui.ui.sources.home
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.displayName
-import ca.gosyer.jui.data.source.SourceRepositoryImpl
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -32,7 +32,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class SourceHomeScreenViewModel @Inject constructor(
-    private val sourceHandler: SourceRepositoryImpl,
+    private val sourceHandler: SourceRepository,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {

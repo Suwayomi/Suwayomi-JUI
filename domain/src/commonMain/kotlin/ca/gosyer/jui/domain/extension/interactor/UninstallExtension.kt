@@ -19,7 +19,7 @@ class UninstallExtension @Inject constructor(private val extensionRepository: Ex
         .catch { log.warn(it) { "Failed to uninstall extension ${extension.apkName}" } }
         .collect()
 
-    fun asFlow(extension: Extension) = extensionRepository.uninstallExtension(extension)
+    fun asFlow(extension: Extension) = extensionRepository.uninstallExtension(extension.pkgName)
 
     companion object {
         private val log = logging()

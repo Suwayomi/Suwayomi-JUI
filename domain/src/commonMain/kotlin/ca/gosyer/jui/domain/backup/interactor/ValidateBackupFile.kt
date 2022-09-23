@@ -21,7 +21,7 @@ class ValidateBackupFile @Inject constructor(private val backupRepository: Backu
         .singleOrNull()
 
     fun asFlow(file: Path, block: HttpRequestBuilder.() -> Unit = {}) =
-        backupRepository.validateBackupFile(file, block)
+        backupRepository.validateBackupFile(BackupRepository.buildBackupFormData(file), block)
 
     companion object {
         private val log = logging()

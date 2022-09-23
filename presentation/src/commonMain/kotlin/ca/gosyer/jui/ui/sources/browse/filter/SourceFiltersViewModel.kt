@@ -6,8 +6,9 @@
 
 package ca.gosyer.jui.ui.sources.browse.filter
 
-import ca.gosyer.jui.data.source.SourceRepositoryImpl
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterChange
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -25,16 +26,18 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.supervisorScope
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class SourceFiltersViewModel(
     private val sourceId: Long,
-    private val sourceHandler: SourceRepositoryImpl,
+    private val sourceHandler: SourceRepository,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
     @Inject constructor(
-        sourceHandler: SourceRepositoryImpl,
+        sourceHandler: SourceRepository,
         contextWrapper: ContextWrapper,
         params: Params
     ) : this(
@@ -69,11 +72,11 @@ class SourceFiltersViewModel(
                                 .onEach {
                                     sourceHandler.setFilter(
                                         sourceId,
-                                        filter.index,
-                                        childFilter.index,
-                                        it
-                                    )
-                                        .collect()
+                                        SourceFilterChange(
+                                            filter.index,
+                                            Json.encodeToString(SourceFilterChange(childFilter.index, it))
+                                        )
+                                    ).collect()
                                     getFilters()
                                 }
                                 .launchIn(this)
@@ -81,7 +84,7 @@ class SourceFiltersViewModel(
                     } else {
                         filter.state.drop(1).filterNotNull()
                             .onEach {
-                                sourceHandler.setFilter(sourceId, filter.index, it)
+                                sourceHandler.setFilter(sourceId, SourceFilterChange(filter.index, it))
                                     .collect()
                                 getFilters()
                             }

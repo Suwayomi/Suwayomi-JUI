@@ -6,13 +6,13 @@
 
 package ca.gosyer.jui.ui.sources.browse
 
-import ca.gosyer.jui.data.source.SourceRepositoryImpl
 import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.domain.library.service.LibraryPreferences
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.MangaPage
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -32,7 +32,7 @@ import org.lighthousegames.logging.logging
 
 class SourceScreenViewModel(
     private val source: Source,
-    private val sourceHandler: SourceRepositoryImpl,
+    private val sourceHandler: SourceRepository,
     private val catalogPreferences: CatalogPreferences,
     private val libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper,
@@ -40,7 +40,7 @@ class SourceScreenViewModel(
 ) : ViewModel(contextWrapper) {
 
     @Inject constructor(
-        sourceHandler: SourceRepositoryImpl,
+        sourceHandler: SourceRepository,
         catalogPreferences: CatalogPreferences,
         libraryPreferences: LibraryPreferences,
         contextWrapper: ContextWrapper,
@@ -128,7 +128,11 @@ class SourceScreenViewModel(
     private suspend fun getPage(): MangaPage? {
         return when {
             isLatest.value -> sourceHandler.getLatestManga(source.id, pageNum.value)
-            _query.value != null || _usingFilters.value -> sourceHandler.getSearchResults(source.id, _query.value.orEmpty(), pageNum.value)
+            _query.value != null || _usingFilters.value -> sourceHandler.getSearchResults(
+                source.id,
+                _query.value?.ifBlank { null },
+                pageNum.value
+            )
             else -> sourceHandler.getPopularManga(source.id, pageNum.value)
         }
             .catch {

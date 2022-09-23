@@ -6,8 +6,9 @@
 
 package ca.gosyer.jui.ui.sources.settings
 
-import ca.gosyer.jui.data.source.SourceRepositoryImpl
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreferenceChange
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -29,7 +30,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class SourceSettingsScreenViewModel @Inject constructor(
-    private val sourceHandler: SourceRepositoryImpl,
+    private val sourceHandler: SourceRepository,
     contextWrapper: ContextWrapper,
     private val params: Params
 ) : ViewModel(contextWrapper) {
@@ -47,7 +48,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
                     setting.state.drop(1)
                         .filterNotNull()
                         .onEach {
-                            sourceHandler.setSourceSetting(params.sourceId, setting.index, it)
+                            sourceHandler.setSourceSetting(params.sourceId, SourcePreferenceChange(setting.index, it))
                                 .catch {
                                     log.warn(it) { "Error setting source setting" }
                                 }

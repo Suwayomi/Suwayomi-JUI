@@ -8,6 +8,7 @@ package ca.gosyer.jui.domain.category.interactor
 
 import ca.gosyer.jui.domain.category.service.CategoryRepository
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
@@ -18,7 +19,12 @@ class GetCategories @Inject constructor(private val categoryRepository: Category
         .catch { log.warn(it) { "Failed to get categories" } }
         .singleOrNull()
 
-    fun asFlow(dropDefault: Boolean = false) = categoryRepository.getCategories(dropDefault)
+    fun asFlow(dropDefault: Boolean = false) = categoryRepository.getCategories()
+        .map { categories ->
+            if (dropDefault) {
+                categories.filterNot { it.name.equals("default", true) }
+            } else categories
+        }
 
     companion object {
         private val log = logging()

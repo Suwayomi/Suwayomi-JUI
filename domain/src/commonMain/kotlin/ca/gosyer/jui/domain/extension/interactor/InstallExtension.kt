@@ -19,7 +19,7 @@ class InstallExtension @Inject constructor(private val extensionRepository: Exte
         .catch { log.warn(it) { "Failed to install extension ${extension.apkName}" } }
         .collect()
 
-    fun asFlow(extension: Extension) = extensionRepository.installExtension(extension)
+    fun asFlow(extension: Extension) = extensionRepository.installExtension(extension.pkgName)
 
     companion object {
         private val log = logging()

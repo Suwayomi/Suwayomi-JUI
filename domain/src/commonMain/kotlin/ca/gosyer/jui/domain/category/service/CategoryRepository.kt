@@ -8,17 +8,64 @@ package ca.gosyer.jui.domain.category.service
 
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.manga.model.Manga
+import de.jensklingenberg.ktorfit.http.DELETE
+import de.jensklingenberg.ktorfit.http.Field
+import de.jensklingenberg.ktorfit.http.FormUrlEncoded
+import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.PATCH
+import de.jensklingenberg.ktorfit.http.POST
+import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-    fun getMangaCategories(mangaId: Long): Flow<List<Category>>
-    fun addMangaToCategory(mangaId: Long, categoryId: Long): Flow<HttpResponse>
-    fun removeMangaFromCategory(mangaId: Long, categoryId: Long): Flow<HttpResponse>
-    fun getCategories(dropDefault: Boolean = false): Flow<List<Category>>
-    fun createCategory(name: String): Flow<HttpResponse>
-    fun modifyCategory(categoryId: Long, name: String? = null, isLanding: Boolean? = null): Flow<HttpResponse>
-    fun reorderCategory(to: Int, from: Int): Flow<HttpResponse>
-    fun deleteCategory(categoryId: Long): Flow<HttpResponse>
-    fun getMangaFromCategory(categoryId: Long): Flow<List<Manga>>
+    @GET("api/v1/manga/{mangaId}/category/")
+    fun getMangaCategories(
+        @Path("mangaId") mangaId: Long
+    ): Flow<List<Category>>
+
+    @GET("api/v1/manga/{mangaId}/category/{categoryId}")
+    fun addMangaToCategory(
+        @Path("mangaId") mangaId: Long,
+        @Path("categoryId") categoryId: Long
+    ): Flow<HttpResponse>
+
+    @DELETE("api/v1/manga/{mangaId}/category/{categoryId}")
+    fun removeMangaFromCategory(
+        @Path("mangaId") mangaId: Long,
+        @Path("categoryId") categoryId: Long
+    ): Flow<HttpResponse>
+
+    @GET("api/v1/category/")
+    fun getCategories(): Flow<List<Category>>
+
+    @FormUrlEncoded
+    @POST("api/v1/category/")
+    fun createCategory(
+        @Field("name") name: String
+    ): Flow<HttpResponse>
+
+    @FormUrlEncoded
+    @PATCH("api/v1/category/{categoryId}")
+    fun modifyCategory(
+        @Path("categoryId") categoryId: Long,
+        @Field("name") name: String
+    ): Flow<HttpResponse>
+
+    @FormUrlEncoded
+    @PATCH("api/v1/category/reorder")
+    fun reorderCategory(
+        @Field("to") to: Int,
+        @Field("from") from: Int
+    ): Flow<HttpResponse>
+
+    @DELETE("api/v1/category/{categoryId}")
+    fun deleteCategory(
+        @Path("categoryId") categoryId: Long
+    ): Flow<HttpResponse>
+
+    @GET("api/v1/category/{categoryId}")
+    fun getMangaFromCategory(
+        @Path("categoryId") categoryId: Long
+    ): Flow<List<Manga>>
 }

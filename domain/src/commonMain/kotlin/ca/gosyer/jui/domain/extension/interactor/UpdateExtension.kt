@@ -19,7 +19,7 @@ class UpdateExtension @Inject constructor(private val extensionRepository: Exten
         .catch { log.warn(it) { "Failed to update extension ${extension.apkName}" } }
         .collect()
 
-    fun asFlow(extension: Extension) = extensionRepository.updateExtension(extension)
+    fun asFlow(extension: Extension) = extensionRepository.updateExtension(extension.pkgName)
 
     companion object {
         private val log = logging()

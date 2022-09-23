@@ -7,10 +7,10 @@
 package ca.gosyer.jui.ui.sources.globalsearch
 
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import ca.gosyer.jui.data.source.SourceRepositoryImpl
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -40,7 +40,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class GlobalSearchViewModel @Inject constructor(
-    private val sourceHandler: SourceRepositoryImpl,
+    private val sourceHandler: SourceRepository,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper,
     params: Params

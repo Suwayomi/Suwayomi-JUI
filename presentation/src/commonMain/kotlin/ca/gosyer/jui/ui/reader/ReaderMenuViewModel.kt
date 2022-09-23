@@ -11,8 +11,9 @@ import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.domain.chapter.interactor.GetChapter
 import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.chapter.interactor.GetChapters
-import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterFlags
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterLastPageRead
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterMeta
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterRead
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.manga.interactor.GetManga
 import ca.gosyer.jui.domain.manga.interactor.UpdateMangaMeta
@@ -66,7 +67,8 @@ class ReaderMenuViewModel @Inject constructor(
     private val getChapters: GetChapters,
     private val getChapter: GetChapter,
     private val getChapterPage: GetChapterPage,
-    private val updateChapterFlags: UpdateChapterFlags,
+    private val updateChapterRead: UpdateChapterRead,
+    private val updateChapterLastPageRead: UpdateChapterLastPageRead,
     private val updateMangaMeta: UpdateMangaMeta,
     private val updateChapterMeta: UpdateChapterMeta,
     private val chapterCache: ChapterCache,
@@ -305,14 +307,14 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     private fun markChapterRead(chapter: ReaderChapter) {
-        scope.launch { updateChapterFlags.await(chapter.chapter, read = true) }
+        scope.launch { updateChapterRead.await(chapter.chapter, read = true) }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun sendProgress(chapter: Chapter? = this.chapter.value?.chapter, lastPageRead: Int = currentPage.value) {
         chapter ?: return
         if (chapter.read) return
-        GlobalScope.launch { updateChapterFlags.await(chapter, lastPageRead = lastPageRead) }
+        GlobalScope.launch { updateChapterLastPageRead.await(chapter, lastPageRead = lastPageRead) }
     }
 
     fun updateLastPageReadOffset(offset: Int) {

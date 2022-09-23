@@ -9,7 +9,6 @@ package ca.gosyer.jui.domain.library.service
 import ca.gosyer.jui.domain.base.WebsocketService
 import ca.gosyer.jui.domain.library.model.UpdateStatus
 import ca.gosyer.jui.domain.server.Http
-import ca.gosyer.jui.domain.server.model.requests.updatesQuery
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
@@ -26,7 +25,7 @@ class LibraryUpdateService @Inject constructor(
     override val _status: MutableStateFlow<Status> = MutableStateFlow(Status.STARTING)
 
     override val query: String
-        get() = updatesQuery()
+        get() = "/api/v1/update"
 
     override suspend fun onReceived(frame: Frame.Text) {
         val status = json.decodeFromString<UpdateStatus>(frame.readText())

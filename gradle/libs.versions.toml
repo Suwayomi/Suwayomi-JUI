@@ -37,6 +37,7 @@ kotlinInject = "0.5.1"
 
 # Network
 ktor = "2.1.1"
+ktorfit = "1.0.0-beta14"
 
 # Logging
 slf4j = "1.7.36"
@@ -133,6 +134,8 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
 ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
+ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfit" }
 
 # Logging
 logging-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }

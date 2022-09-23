@@ -21,7 +21,7 @@ class ImportBackupFile @Inject constructor(private val backupRepository: BackupR
         .singleOrNull()
 
     fun asFlow(file: Path, block: HttpRequestBuilder.() -> Unit = {}) =
-        backupRepository.importBackupFile(file, block)
+        backupRepository.importBackupFile(BackupRepository.buildBackupFormData(file), block)
 
     companion object {
         private val log = logging()

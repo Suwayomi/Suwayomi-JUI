@@ -11,7 +11,6 @@ import ca.gosyer.jui.domain.download.model.DownloadChapter
 import ca.gosyer.jui.domain.download.model.DownloadStatus
 import ca.gosyer.jui.domain.download.model.DownloaderStatus
 import ca.gosyer.jui.domain.server.Http
-import ca.gosyer.jui.domain.server.model.requests.downloadsQuery
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
@@ -28,7 +27,7 @@ class DownloadService @Inject constructor(
         get() = status
 
     override val query: String
-        get() = downloadsQuery()
+        get() = "/api/v1/downloads"
 
     override suspend fun onReceived(frame: Frame.Text) {
         val status = json.decodeFromString<DownloadStatus>(frame.readText())

@@ -63,6 +63,10 @@ dependencies {
     implementation(libs.ktor.websockets)
     implementation(libs.ktor.auth)
 
+    // Ktorfit
+    implementation(libs.ktorfit.lib)
+    ksp(libs.ktorfit.ksp)
+
     // Logging
     implementation(libs.logging.slf4j.api)
     implementation(libs.logging.slf4j.jul)

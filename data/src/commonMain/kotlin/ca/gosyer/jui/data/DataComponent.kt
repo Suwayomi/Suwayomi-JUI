@@ -6,57 +6,60 @@
 
 package ca.gosyer.jui.data
 
-import ca.gosyer.jui.data.backup.BackupRepositoryImpl
-import ca.gosyer.jui.data.category.CategoryRepositoryImpl
-import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
-import ca.gosyer.jui.data.download.DownloadRepositoryImpl
-import ca.gosyer.jui.data.extension.ExtensionRepositoryImpl
-import ca.gosyer.jui.data.library.LibraryRepositoryImpl
-import ca.gosyer.jui.data.manga.MangaRepositoryImpl
-import ca.gosyer.jui.data.settings.SettingsRepositoryImpl
-import ca.gosyer.jui.data.source.SourceRepositoryImpl
-import ca.gosyer.jui.data.updates.UpdatesRepositoryImpl
+import ca.gosyer.jui.core.lang.addSuffix
 import ca.gosyer.jui.domain.backup.service.BackupRepository
 import ca.gosyer.jui.domain.category.service.CategoryRepository
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
+import ca.gosyer.jui.domain.createIt
 import ca.gosyer.jui.domain.download.service.DownloadRepository
 import ca.gosyer.jui.domain.extension.service.ExtensionRepository
 import ca.gosyer.jui.domain.library.service.LibraryRepository
 import ca.gosyer.jui.domain.manga.service.MangaRepository
+import ca.gosyer.jui.domain.server.Http
+import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.settings.service.SettingsRepository
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.domain.updates.service.UpdatesRepository
+import de.jensklingenberg.ktorfit.Ktorfit
 import me.tatarka.inject.annotations.Provides
 
 interface DataComponent {
 
-    val BackupRepositoryImpl.bind: BackupRepository
-        @Provides get() = this
+    @Provides
+    fun ktorfit(http: Http, serverPreferences: ServerPreferences) = Ktorfit
+        .Builder()
+        .httpClient(http)
+        .requestConverter(FlowIORequestConverter())
+        .baseUrl(serverPreferences.serverUrl().get().toString().addSuffix('/'))
+        .build()
 
-    val CategoryRepositoryImpl.bind: CategoryRepository
-        @Provides get() = this
+    @Provides
+    fun backupRepository(ktorfit: Ktorfit) = ktorfit.createIt<BackupRepository>()
 
-    val ChapterRepositoryImpl.bind: ChapterRepository
-        @Provides get() = this
+    @Provides
+    fun categoryRepository(ktorfit: Ktorfit) = ktorfit.createIt<CategoryRepository>()
 
-    val DownloadRepositoryImpl.bind: DownloadRepository
-        @Provides get() = this
+    @Provides
+    fun chapterRepository(ktorfit: Ktorfit) = ktorfit.createIt<ChapterRepository>()
 
-    val ExtensionRepositoryImpl.bind: ExtensionRepository
-        @Provides get() = this
+    @Provides
+    fun downloadRepository(ktorfit: Ktorfit) = ktorfit.createIt<DownloadRepository>()
 
-    val LibraryRepositoryImpl.bind: LibraryRepository
-        @Provides get() = this
+    @Provides
+    fun extensionRepository(ktorfit: Ktorfit) = ktorfit.createIt<ExtensionRepository>()
 
-    val MangaRepositoryImpl.bind: MangaRepository
-        @Provides get() = this
+    @Provides
+    fun libraryRepository(ktorfit: Ktorfit) = ktorfit.createIt<LibraryRepository>()
 
-    val SettingsRepositoryImpl.bind: SettingsRepository
-        @Provides get() = this
+    @Provides
+    fun mangaRepository(ktorfit: Ktorfit) = ktorfit.createIt<MangaRepository>()
 
-    val SourceRepositoryImpl.bind: SourceRepository
-        @Provides get() = this
+    @Provides
+    fun settingsRepository(ktorfit: Ktorfit) = ktorfit.createIt<SettingsRepository>()
 
-    val UpdatesRepositoryImpl.bind: UpdatesRepository
-        @Provides get() = this
+    @Provides
+    fun sourceRepository(ktorfit: Ktorfit) = ktorfit.createIt<SourceRepository>()
+
+    @Provides
+    fun updatesRepository(ktorfit: Ktorfit) = ktorfit.createIt<UpdatesRepository>()
 }

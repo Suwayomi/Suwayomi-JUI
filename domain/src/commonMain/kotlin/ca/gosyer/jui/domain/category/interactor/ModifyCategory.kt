@@ -15,28 +15,24 @@ import org.lighthousegames.logging.logging
 
 class ModifyCategory @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    suspend fun await(categoryId: Long, name: String? = null, isLanding: Boolean? = null) = asFlow(
+    suspend fun await(categoryId: Long, name: String) = asFlow(
         categoryId = categoryId,
-        name = name,
-        isLanding = isLanding
-    ).catch { log.warn(it) { "Failed to modify category $categoryId with options: name=$name,isLanding=$isLanding" } }.collect()
+        name = name
+    ).catch { log.warn(it) { "Failed to modify category $categoryId with options: name=$name" } }.collect()
 
-    suspend fun await(category: Category, name: String? = null, isLanding: Boolean? = null) = asFlow(
+    suspend fun await(category: Category, name: String? = null) = asFlow(
         category = category,
-        name = name,
-        isLanding = isLanding
-    ).catch { log.warn(it) { "Failed to modify category ${category.name} with options: name=$name,isLanding=$isLanding" } }.collect()
+        name = name
+    ).catch { log.warn(it) { "Failed to modify category ${category.name} with options: name=$name" } }.collect()
 
-    fun asFlow(categoryId: Long, name: String? = null, isLanding: Boolean? = null) = categoryRepository.modifyCategory(
+    fun asFlow(categoryId: Long, name: String) = categoryRepository.modifyCategory(
         categoryId = categoryId,
-        name = name,
-        isLanding = isLanding
+        name = name
     )
 
-    fun asFlow(category: Category, name: String? = null, isLanding: Boolean? = null) = categoryRepository.modifyCategory(
+    fun asFlow(category: Category, name: String? = null) = categoryRepository.modifyCategory(
         categoryId = category.id,
-        name = name,
-        isLanding = isLanding
+        name = name ?: category.name
     )
 
     companion object {

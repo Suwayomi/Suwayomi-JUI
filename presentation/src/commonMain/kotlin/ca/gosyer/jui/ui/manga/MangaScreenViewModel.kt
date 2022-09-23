@@ -18,7 +18,9 @@ import ca.gosyer.jui.domain.chapter.interactor.GetChapters
 import ca.gosyer.jui.domain.chapter.interactor.QueueChapterDownload
 import ca.gosyer.jui.domain.chapter.interactor.RefreshChapters
 import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
-import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterFlags
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterBookmarked
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterMarkPreviousRead
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterRead
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.library.interactor.AddMangaToLibrary
@@ -55,7 +57,9 @@ class MangaScreenViewModel @Inject constructor(
     private val refreshManga: RefreshManga,
     private val getChapters: GetChapters,
     private val refreshChapters: RefreshChapters,
-    private val updateChapterFlags: UpdateChapterFlags,
+    private val updateChapterRead: UpdateChapterRead,
+    private val updateChapterBookmarked: UpdateChapterBookmarked,
+    private val updateChapterMarkPreviousRead: UpdateChapterMarkPreviousRead,
     private val queueChapterDownload: QueueChapterDownload,
     private val stopChapterDownload: StopChapterDownload,
     private val deleteChapterDownload: DeleteChapterDownload,
@@ -222,7 +226,7 @@ class MangaScreenViewModel @Inject constructor(
         val chapter = findChapter(index) ?: return
         scope.launch {
             manga.value.item?.let { manga ->
-                updateChapterFlags.await(manga, index, read = chapter.read.not())
+                updateChapterRead.await(manga, index, read = chapter.read.not())
                 refreshChaptersAsync(manga.id).await()
             }
         }
@@ -232,7 +236,7 @@ class MangaScreenViewModel @Inject constructor(
         val chapter = findChapter(index) ?: return
         scope.launch {
             manga.value.item?.let { manga ->
-                updateChapterFlags.await(manga, index, bookmarked = chapter.bookmarked.not())
+                updateChapterBookmarked.await(manga, index, bookmarked = chapter.bookmarked.not())
                 refreshChaptersAsync(manga.id).await()
             }
         }
@@ -241,7 +245,7 @@ class MangaScreenViewModel @Inject constructor(
     fun markPreviousRead(index: Int) {
         scope.launch {
             manga.value.item?.let { manga ->
-                updateChapterFlags.await(manga, index, markPreviousRead = true)
+                updateChapterMarkPreviousRead.await(manga, index)
                 refreshChaptersAsync(manga.id).await()
             }
         }

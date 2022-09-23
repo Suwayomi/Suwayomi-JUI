@@ -26,7 +26,6 @@ import ca.gosyer.jui.domain.download.model.DownloadState
 import ca.gosyer.jui.domain.download.model.DownloadStatus
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.download.service.DownloadService.Companion.status
-import ca.gosyer.jui.domain.server.model.requests.downloadsQuery
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
@@ -146,7 +145,7 @@ class AndroidDownloadService : Service() {
                         client.ws(
                             host = serverUrl.host,
                             port = serverUrl.port,
-                            path = serverUrl.encodedPath + downloadsQuery()
+                            path = serverUrl.encodedPath + "/api/v1/downloads"
                         ) {
                             errorConnectionCount = 0
                             status.value = Status.RUNNING

@@ -4,12 +4,9 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.domain.server.model.requests
+package ca.gosyer.jui.domain
 
-@Get
-fun aboutQuery() =
-    "/api/v1/settings/about"
+import de.jensklingenberg.ktorfit.Ktorfit
+import de.jensklingenberg.ktorfit.create
 
-@Get
-fun checkUpdateQuery() =
-    "/api/v1/settings/check-update"
+inline fun <reified T> Ktorfit.createIt(): T = create()

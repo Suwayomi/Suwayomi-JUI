@@ -7,15 +7,36 @@
 package ca.gosyer.jui.domain.extension.service
 
 import ca.gosyer.jui.domain.extension.model.Extension
+import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Path
+import de.jensklingenberg.ktorfit.http.ReqBuilder
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.statement.HttpResponse
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.flow.Flow
 
 interface ExtensionRepository {
+    @GET("api/v1/extension/list")
     fun getExtensionList(): Flow<List<Extension>>
-    fun installExtension(extension: Extension): Flow<HttpResponse>
-    fun updateExtension(extension: Extension): Flow<HttpResponse>
-    fun uninstallExtension(extension: Extension): Flow<HttpResponse>
-    fun getApkIcon(extension: Extension, block: HttpRequestBuilder.() -> Unit): Flow<ByteReadChannel>
+
+    @GET("api/v1/extension/install/{pkgName}")
+    fun installExtension(
+        @Path("pkgName") pkgName: String
+    ): Flow<HttpResponse>
+
+    @GET("api/v1/extension/update/{pkgName}")
+    fun updateExtension(
+        @Path("pkgName") pkgName: String
+    ): Flow<HttpResponse>
+
+    @GET("api/v1/extension/uninstall/{pkgName}")
+    fun uninstallExtension(
+        @Path("pkgName") pkgName: String
+    ): Flow<HttpResponse>
+
+    @GET("api/v1/extension/icon/{apkName}")
+    fun getApkIcon(
+        @Path("apkName") apkName: String,
+        @ReqBuilder block: HttpRequestBuilder.() -> Unit
+    ): Flow<ByteReadChannel>
 }

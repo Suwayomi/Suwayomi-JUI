@@ -32,6 +32,7 @@ kotlin {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                optIn("de.jensklingenberg.ktorfit.internal.InternalKtorfitApi")
             }
         }
         val commonMain by getting {
@@ -48,6 +49,7 @@ kotlin {
                 api(libs.ktor.auth)
                 api(libs.ktor.logging)
                 api(libs.ktor.websockets)
+                api(libs.ktorfit.lib)
                 api(libs.okio)
                 api(libs.dateTime)
                 api(projects.core)
@@ -113,6 +115,9 @@ kotlin {
 dependencies {
     add("kspDesktop", libs.kotlinInject.compiler)
     add("kspAndroid", libs.kotlinInject.compiler)
+    add("kspCommonMainMetadata", libs.ktorfit.ksp)
+    add("kspDesktop", libs.ktorfit.ksp)
+    add("kspAndroid", libs.ktorfit.ksp)
 }
 
 buildkonfig {
