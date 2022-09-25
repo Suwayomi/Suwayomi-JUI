@@ -16,6 +16,7 @@ echo "Adding java dependency"
 depends=", java8-runtime-headless, libc++-dev"
 grep -qxF "$depends" "$dir/tmp/control_dir/control" ||\
     sed -i "/^Depends:/s/ $/$depends/" "$dir/tmp/control_dir/control"
+cat "$dir/tmp/control_dir/control"
 echo "Compressing new control tar"
 tar -cf "$dir/tmp/control.tar.xz" -C "$dir/tmp/control_dir" -I "xz" .
 rm -rf "$dir/tmp/control_dir"
