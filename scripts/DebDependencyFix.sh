@@ -10,12 +10,12 @@ ar x "$deb" --output "$dir/tmp"
 mkdir "$dir/tmp/control_dir"
 echo "Extracting control tar"
 tar -xf "$dir/tmp/control.tar.xz" -C "$dir/tmp/control_dir"
-# remove whitespace
+
 echo "Adding java dependency"
-sed -i "/^Depends:/s/ $//" "$dir/tmp/control_dir/control"
 # grep: if rerun on the same file don't change it again
-grep -qxF "java8-runtime-headless" "$dir/tmp/control_dir/control" ||\
-    sed -i "/^Depends:/s/$/, java8-runtime-headless/" "$dir/tmp/control_dir/control"
+depends=", java8-runtime-headless, libc++-dev"
+grep -qxF "$depends" "$dir/tmp/control_dir/control" ||\
+    sed -i "/^Depends:/s/ $/$depends/" "$dir/tmp/control_dir/control"
 echo "Compressing new control tar"
 tar -cf "$dir/tmp/control.tar.xz" -C "$dir/tmp/control_dir" -I "xz" .
 rm -rf "$dir/tmp/control_dir"
