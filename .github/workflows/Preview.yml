@@ -153,7 +153,7 @@ jobs:
         run: ./scripts/DebDependencyFix.sh
 
       - name: Fix filenames
-        run: ./scripts/NamingFix.sh
+        run: ./scripts/NamingFix.sh preview
 
       - name: Get previous release
         id: last_release
