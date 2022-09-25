@@ -1,23 +1,23 @@
 -dontobfuscate
 -keepattributes Signature,LineNumberTable
 
--keep,allowoptimization class ca.gosyer.** { public protected *; }
--keep class ca.gosyer.ui.main.MainKt {
+-keep,includedescriptorclasses,allowoptimization class ca.gosyer.jui.** { public protected *; }
+-keep class ca.gosyer.jui.desktop.MainKt {
     public static void main(java.lang.String[]);
 }
 -keep class 'module-info'
 
 # Kotlin
 # todo optimize more
--keep class kotlin.reflect.** { *; }
+-keep,includedescriptorclasses class kotlin.reflect.** { *; }
 
 # Log4J
 -dontwarn org.apache.logging.log4j.**
--keep class org.apache.logging.log4j.** { *; }
+-keep,includedescriptorclasses class org.apache.logging.log4j.** { *; }
 
 # SLF4J
 -dontwarn org.apache.logging.slf4j.**
--keep class org.apache.logging.slf4j.** { *; }
+-keep,includedescriptorclasses class org.apache.logging.slf4j.** { *; }
 
 # OKHTTP
 -dontwarn org.codehaus.mojo.animal_sniffer.*
@@ -25,20 +25,20 @@
 
 # DarkLaf
 # todo optimize more
--keep class com.github.weisj.darklaf.** { *; }
+-keep,includedescriptorclasses class com.github.weisj.darklaf.** { *; }
 -dontwarn com.github.weisj.darklaf.**
+-keep class com.github.weisj.jsvg.** { *; }
+-dontwarn com.github.weisj.jsvg.**
 
 # Ktor
+-keep,includedescriptorclasses class * extends io.ktor.client.HttpClientEngineContainer
 -dontwarn io.ktor.network.sockets.DatagramSendChannel
 
 # Coroutines
--keep class kotlinx.coroutines.swing.** { *; }
--dontwarn kotlinx.coroutines.**
+-keep,includedescriptorclasses class kotlinx.coroutines.swing.** { *; }
 
 # Other
 -dontwarn org.pbjar.jxlayer.plaf.ext.TransformUI
--dontwarn com.kitfox.svg.app.ant.SVGToImageAntTask
--dontwarn nl.adaptivity.xmlutil.StAXWriter
 -keep class com.sun.jna.** { *; }
 
 # Kotlin Serialization
@@ -53,14 +53,13 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
--keep,includedescriptorclasses class ca.gosyer.**$$serializer { *; }
--keepclassmembers class ca.gosyer.** {
+-keep,includedescriptorclasses class ca.gosyer.jui.**$$serializer { *; }
+-keepclassmembers class ca.gosyer.jui.** {
     *** Companion;
 }
--keepclasseswithmembers class ca.gosyer.** {
+-keepclasseswithmembers class ca.gosyer.jui.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 
-# Keep Skia
--keep class org.jetbrains.skia.** { *; }
--keep class org.jetbrains.skiko.** { *; }
+# Skiko
+-dontwarn org.jetbrains.skiko.**

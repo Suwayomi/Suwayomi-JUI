@@ -22,13 +22,6 @@ plugins {
     alias(libs.plugins.versions)
 }
 
-buildscript {
-    dependencies {
-        // Waiting on https://github.com/Guardsquare/proguard/issues/225
-        classpath(libs.proguard)
-    }
-}
-
 allprojects {
     group = "ca.gosyer"
     version = "1.3.0"

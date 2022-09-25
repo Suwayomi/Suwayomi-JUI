@@ -5,7 +5,6 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import proguard.gradle.ProGuardTask
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -122,23 +121,6 @@ tasks {
     }
 
     registerTachideskTasks(project)
-
-    register<ProGuardTask>("optimizeUberJar") {
-        group = "compose desktop"
-        val packageUberJarForCurrentOS = getByName("packageUberJarForCurrentOS")
-        dependsOn(packageUberJarForCurrentOS)
-        val uberJar = packageUberJarForCurrentOS.outputs.files.first()
-        injars(uberJar)
-        outjars(File(uberJar.parentFile, "min/" + uberJar.name))
-        val javaHome = System.getProperty("java.home")
-        if (JavaVersion.current().isJava9Compatible) {
-            libraryjars("$javaHome/jmods")
-        } else {
-            libraryjars("$javaHome/lib/rt.jar")
-            libraryjars("$javaHome/lib/jce.jar")
-        }
-        configuration("proguard-rules.pro")
-    }
 }
 
 kotlin {
@@ -193,6 +175,13 @@ compose.desktop {
             if (isPreview) {
                 packageVersion = "${version.toString().substringBeforeLast('.')}.$previewCode"
             }
+
+            args(project.projectDir.absolutePath)
+            buildTypes.release.proguard {
+                version.set(libs.versions.proguard.get())
+                configurationFiles.from("proguard-rules.pro")
+            }
+
             windows {
                 dirChooser = true
                 upgradeUuid = if (!isPreview) {
