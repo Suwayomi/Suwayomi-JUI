@@ -18,7 +18,6 @@ fun String.chop(count: Int, replacement: String = "…"): String {
     }
 }
 
-
 fun String.addSuffix(char: Char): String {
     return if (endsWith(char)) {
         this

@@ -19,7 +19,7 @@ class UpdateChapterBookmarked @Inject constructor(private val chapterRepository:
     suspend fun await(
         mangaId: Long,
         index: Int,
-        bookmarked: Boolean,
+        bookmarked: Boolean
     ) = asFlow(mangaId, index, bookmarked)
         .catch { log.warn(it) { "Failed to update chapter bookmark for chapter $index of $mangaId" } }
         .collect()
@@ -27,14 +27,14 @@ class UpdateChapterBookmarked @Inject constructor(private val chapterRepository:
     suspend fun await(
         manga: Manga,
         index: Int,
-        bookmarked: Boolean,
+        bookmarked: Boolean
     ) = asFlow(manga, index, bookmarked)
         .catch { log.warn(it) { "Failed to update chapter bookmark for chapter $index of ${manga.title}(${manga.id})" } }
         .collect()
 
     suspend fun await(
         chapter: Chapter,
-        bookmarked: Boolean,
+        bookmarked: Boolean
     ) = asFlow(chapter, bookmarked)
         .catch { log.warn(it) { "Failed to update chapter bookmark for chapter ${chapter.index} of ${chapter.mangaId}" } }
         .collect()
@@ -42,30 +42,30 @@ class UpdateChapterBookmarked @Inject constructor(private val chapterRepository:
     fun asFlow(
         mangaId: Long,
         index: Int,
-        bookmarked: Boolean,
+        bookmarked: Boolean
     ) = chapterRepository.updateChapterBookmarked(
         mangaId = mangaId,
         chapterIndex = index,
-        bookmarked = bookmarked,
+        bookmarked = bookmarked
     )
 
     fun asFlow(
         manga: Manga,
         index: Int,
-        bookmarked: Boolean,
+        bookmarked: Boolean
     ) = chapterRepository.updateChapterBookmarked(
         mangaId = manga.id,
         chapterIndex = index,
-        bookmarked = bookmarked,
+        bookmarked = bookmarked
     )
 
     fun asFlow(
         chapter: Chapter,
-        bookmarked: Boolean,
+        bookmarked: Boolean
     ) = chapterRepository.updateChapterBookmarked(
         mangaId = chapter.mangaId,
         chapterIndex = chapter.index,
-        bookmarked = bookmarked,
+        bookmarked = bookmarked
     )
 
     companion object {

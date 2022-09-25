@@ -19,7 +19,7 @@ class UpdateChapterRead @Inject constructor(private val chapterRepository: Chapt
     suspend fun await(
         mangaId: Long,
         index: Int,
-        read: Boolean,
+        read: Boolean
     ) = asFlow(mangaId, index, read)
         .catch { log.warn(it) { "Failed to update chapter read status for chapter $index of $mangaId" } }
         .collect()
@@ -27,14 +27,14 @@ class UpdateChapterRead @Inject constructor(private val chapterRepository: Chapt
     suspend fun await(
         manga: Manga,
         index: Int,
-        read: Boolean,
+        read: Boolean
     ) = asFlow(manga, index, read)
         .catch { log.warn(it) { "Failed to update chapter read status for chapter $index of ${manga.title}(${manga.id})" } }
         .collect()
 
     suspend fun await(
         chapter: Chapter,
-        read: Boolean,
+        read: Boolean
     ) = asFlow(chapter, read)
         .catch { log.warn(it) { "Failed to update chapter read status for chapter ${chapter.index} of ${chapter.mangaId}" } }
         .collect()
@@ -42,30 +42,30 @@ class UpdateChapterRead @Inject constructor(private val chapterRepository: Chapt
     fun asFlow(
         mangaId: Long,
         index: Int,
-        read: Boolean,
+        read: Boolean
     ) = chapterRepository.updateChapterRead(
         mangaId = mangaId,
         chapterIndex = index,
-        read = read,
+        read = read
     )
 
     fun asFlow(
         manga: Manga,
         index: Int,
-        read: Boolean,
+        read: Boolean
     ) = chapterRepository.updateChapterRead(
         mangaId = manga.id,
         chapterIndex = index,
-        read = read,
+        read = read
     )
 
     fun asFlow(
         chapter: Chapter,
-        read: Boolean,
+        read: Boolean
     ) = chapterRepository.updateChapterRead(
         mangaId = chapter.mangaId,
         chapterIndex = chapter.index,
-        read = read,
+        read = read
     )
 
     companion object {

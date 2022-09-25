@@ -19,7 +19,7 @@ class UpdateChapterLastPageRead @Inject constructor(private val chapterRepositor
     suspend fun await(
         mangaId: Long,
         index: Int,
-        lastPageRead: Int,
+        lastPageRead: Int
     ) = asFlow(mangaId, index, lastPageRead)
         .catch { log.warn(it) { "Failed to update chapter last page read for chapter $index of $mangaId" } }
         .collect()
@@ -27,14 +27,14 @@ class UpdateChapterLastPageRead @Inject constructor(private val chapterRepositor
     suspend fun await(
         manga: Manga,
         index: Int,
-        lastPageRead: Int,
+        lastPageRead: Int
     ) = asFlow(manga, index, lastPageRead)
         .catch { log.warn(it) { "Failed to update chapter last page read for chapter $index of ${manga.title}(${manga.id})" } }
         .collect()
 
     suspend fun await(
         chapter: Chapter,
-        lastPageRead: Int,
+        lastPageRead: Int
     ) = asFlow(chapter, lastPageRead)
         .catch { log.warn(it) { "Failed to update chapter last page read for chapter ${chapter.index} of ${chapter.mangaId}" } }
         .collect()
@@ -42,30 +42,30 @@ class UpdateChapterLastPageRead @Inject constructor(private val chapterRepositor
     fun asFlow(
         mangaId: Long,
         index: Int,
-        lastPageRead: Int,
+        lastPageRead: Int
     ) = chapterRepository.updateChapterLastPageRead(
         mangaId = mangaId,
         chapterIndex = index,
-        lastPageRead = lastPageRead,
+        lastPageRead = lastPageRead
     )
 
     fun asFlow(
         manga: Manga,
         index: Int,
-        lastPageRead: Int,
+        lastPageRead: Int
     ) = chapterRepository.updateChapterLastPageRead(
         mangaId = manga.id,
         chapterIndex = index,
-        lastPageRead = lastPageRead,
+        lastPageRead = lastPageRead
     )
 
     fun asFlow(
         chapter: Chapter,
-        lastPageRead: Int,
+        lastPageRead: Int
     ) = chapterRepository.updateChapterLastPageRead(
         mangaId = chapter.mangaId,
         chapterIndex = chapter.index,
-        lastPageRead = lastPageRead,
+        lastPageRead = lastPageRead
     )
 
     companion object {

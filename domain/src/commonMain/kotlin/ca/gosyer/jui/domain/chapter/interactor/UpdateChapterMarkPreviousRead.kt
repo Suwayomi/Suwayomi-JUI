@@ -38,7 +38,7 @@ class UpdateChapterMarkPreviousRead @Inject constructor(private val chapterRepos
 
     fun asFlow(
         mangaId: Long,
-        index: Int,
+        index: Int
     ) = chapterRepository.updateChapterMarkPrevRead(
         mangaId = mangaId,
         chapterIndex = index
@@ -46,17 +46,17 @@ class UpdateChapterMarkPreviousRead @Inject constructor(private val chapterRepos
 
     fun asFlow(
         manga: Manga,
-        index: Int,
+        index: Int
     ) = chapterRepository.updateChapterMarkPrevRead(
         mangaId = manga.id,
-        chapterIndex = index,
+        chapterIndex = index
     )
 
     fun asFlow(
-        chapter: Chapter,
+        chapter: Chapter
     ) = chapterRepository.updateChapterMarkPrevRead(
         mangaId = chapter.mangaId,
-        chapterIndex = chapter.index,
+        chapterIndex = chapter.index
     )
 
     companion object {

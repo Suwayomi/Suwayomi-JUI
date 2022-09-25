@@ -45,13 +45,13 @@ interface ChapterRepository {
         @Field("markPrevRead") markPreviousRead: Boolean? = null
     ): Flow<HttpResponse>*/
 
-    //todo remove following updateChapter functions once ktorfit supports nullable parameters
+    // todo remove following updateChapter functions once ktorfit supports nullable parameters
     @FormUrlEncoded
     @PATCH("api/v1/manga/{mangaId}/chapter/{chapterIndex}")
     fun updateChapterRead(
         @Path("mangaId") mangaId: Long,
         @Path("chapterIndex") chapterIndex: Int,
-        @Field("read") read: Boolean,
+        @Field("read") read: Boolean
     ): Flow<HttpResponse>
 
     @FormUrlEncoded
@@ -59,7 +59,7 @@ interface ChapterRepository {
     fun updateChapterBookmarked(
         @Path("mangaId") mangaId: Long,
         @Path("chapterIndex") chapterIndex: Int,
-        @Field("bookmarked") bookmarked: Boolean,
+        @Field("bookmarked") bookmarked: Boolean
     ): Flow<HttpResponse>
 
     @FormUrlEncoded
@@ -67,7 +67,7 @@ interface ChapterRepository {
     fun updateChapterLastPageRead(
         @Path("mangaId") mangaId: Long,
         @Path("chapterIndex") chapterIndex: Int,
-        @Field("lastPageRead") lastPageRead: Int,
+        @Field("lastPageRead") lastPageRead: Int
     ): Flow<HttpResponse>
 
     @FormUrlEncoded
