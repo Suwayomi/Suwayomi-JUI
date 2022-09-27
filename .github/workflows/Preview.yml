@@ -199,7 +199,7 @@ jobs:
       - name: Prune old releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
         with:
           keep_latest: 15
           delete_tags: true
