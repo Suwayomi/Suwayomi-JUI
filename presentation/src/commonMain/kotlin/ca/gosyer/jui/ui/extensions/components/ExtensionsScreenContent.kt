@@ -43,10 +43,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.core.lang.getDisplayName
@@ -268,23 +268,40 @@ fun LanguageDialog(
             positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties()
+        properties = getMaterialDialogProperties(size = DpSize(400.dp, 600.dp))
     ) {
         title(BuildKonfig.NAME)
 
         Box {
             val locale = remember { Locale.current }
             val listState = rememberLazyListState()
+            val all = stringResource(MR.strings.all)
+            val other = stringResource(MR.strings.other)
+            val list = remember(availableLangs, all, other) {
+                availableLangs.map { lang ->
+                    lang to when (lang) {
+                        "all" -> all
+                        "other" -> other
+                        else -> Locale(lang).getDisplayName(locale)
+                    }
+                }.sortedWith(
+                    compareBy<Pair<String, String>> { (lang, _) ->
+                        when (lang) {
+                            "all" -> 1
+                            "other" -> 3
+                            else -> 2
+                        }
+                    }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<*, String>::second)
+                )
+            }
             listItemsMultiChoice(
-                list = availableLangs.map { lang ->
-                    Locale(lang).getDisplayName(locale).ifBlank { lang.capitalize(Locale.current) }
-                },
+                list = list.map { it.second },
                 state = listState,
                 initialSelection = enabledLangs.mapNotNull { lang ->
-                    availableLangs.indexOfFirst { it == lang }.takeUnless { it == -1 }
+                    list.indexOfFirst { it.first == lang }.takeUnless { it == -1 }
                 }.toSet(),
                 onCheckedChange = { indexes ->
-                    setLangs(indexes.map { availableLangs[it] }.toSet())
+                    setLangs(indexes.map { list[it].first }.toSet())
                 }
             )
             VerticalScrollbar(
