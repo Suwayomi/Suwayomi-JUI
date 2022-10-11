@@ -14,6 +14,7 @@ import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreferenceChange
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
@@ -55,6 +56,7 @@ interface SourceRepository {
     ): Flow<List<SourceFilter>>
 
     @POST("api/v1/source/{sourceId}/filters")
+    @Headers("Content-Type: application/json")
     fun setFilter(
         @Path("sourceId") sourceId: Long,
         @Body sourceFilter: SourceFilterChange
@@ -66,6 +68,7 @@ interface SourceRepository {
     ): Flow<List<SourcePreference>>
 
     @POST("api/v1/source/{sourceId}/preferences")
+    @Headers("Content-Type: application/json")
     fun setSourceSetting(
         @Path("sourceId") sourceId: Long,
         @Body sourcePreference: SourcePreferenceChange
