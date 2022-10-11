@@ -29,7 +29,7 @@ interface DataComponent {
     fun ktorfit(http: Http, serverPreferences: ServerPreferences) = Ktorfit
         .Builder()
         .httpClient(http)
-        .requestConverter(FlowIORequestConverter())
+        .responseConverter(FlowIOResponseConverter())
         .baseUrl(serverPreferences.serverUrl().get().toString().addSuffix('/'))
         .build()
 

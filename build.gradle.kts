@@ -2,6 +2,7 @@ import Config.migrationCode
 import Config.serverCode
 import Config.tachideskVersion
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
+import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -141,7 +142,9 @@ subprojects {
         }
     }
     plugins.withType<ComposePlugin> {
-        ext["compose.compiler.version"] = libs.versions.composeCompiler.get()
+        configure<ComposeExtension> {
+            kotlinCompilerPlugin.set(libs.versions.composeCompiler.get())
+        }
     }
     afterEvaluate {
         extensions.findByType<KotlinMultiplatformExtension>()?.let { ext ->

@@ -8,7 +8,7 @@ package ca.gosyer.jui.data
 
 import ca.gosyer.jui.core.lang.IO
 import de.jensklingenberg.ktorfit.Ktorfit
-import de.jensklingenberg.ktorfit.converter.request.RequestConverter
+import de.jensklingenberg.ktorfit.converter.request.ResponseConverter
 import de.jensklingenberg.ktorfit.internal.TypeData
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
@@ -17,13 +17,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class FlowIORequestConverter : RequestConverter {
+class FlowIOResponseConverter : ResponseConverter {
 
     override fun supportedType(typeData: TypeData, isSuspend: Boolean): Boolean {
         return typeData.qualifiedName == "kotlinx.coroutines.flow.Flow"
     }
 
-    override fun <RequestType> convertRequest(
+    override fun <RequestType : Any?> wrapResponse(
         typeData: TypeData,
         requestFunction: suspend () -> Pair<TypeInfo, HttpResponse?>,
         ktorfit: Ktorfit
