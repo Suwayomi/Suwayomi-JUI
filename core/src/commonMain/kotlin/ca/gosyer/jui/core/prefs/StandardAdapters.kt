@@ -167,7 +167,7 @@ internal class JsonObjectAdapter<T>(
      * Todo doesn't work
      */
     override fun addListener(key: String, preferences: ObservableSettings, callback: () -> Unit): SettingsListener {
-        @Suppress("DEPRECATION") // Because we don't cate about the type, and it crashes with any other listener
+        @Suppress("DEPRECATION") // Because we don't care about the type, and it crashes with any other listener
         return preferences.addListener(key) { callback() }
     }
 }

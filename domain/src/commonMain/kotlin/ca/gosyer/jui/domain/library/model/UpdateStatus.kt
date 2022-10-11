@@ -6,10 +6,11 @@
 
 package ca.gosyer.jui.domain.library.model
 
+import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class UpdateStatus(
-    val statusMap: Map<JobStatus, Int>,
+    val statusMap: Map<JobStatus, List<Manga>>,
     val running: Boolean
 )
