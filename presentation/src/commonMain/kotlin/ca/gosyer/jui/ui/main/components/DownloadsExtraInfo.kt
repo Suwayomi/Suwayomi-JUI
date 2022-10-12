@@ -47,7 +47,9 @@ fun DownloadsExtraInfo() {
                 } else {
                     remainingDownloads
                 }
-            } else null
+            } else {
+                null
+            }
         }
         WebsocketService.Status.STOPPED -> null
     }

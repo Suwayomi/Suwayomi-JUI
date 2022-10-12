@@ -547,7 +547,9 @@ private fun getActionItems(
                 doAction = onToggleFiltersClick,
                 enabled = !isLatest
             )
-        } else null,
+        } else {
+            null
+        },
         if (showLatestButton) {
             ActionItem(
                 name = stringResource(
@@ -564,7 +566,9 @@ private fun getActionItems(
                 },
                 doAction = onClickMode
             )
-        } else null,
+        } else {
+            null
+        },
         ActionItem(
             name = stringResource(MR.strings.display_mode),
             icon = Icons.Rounded.ViewModule,
@@ -576,6 +580,8 @@ private fun getActionItems(
                 icon = Icons.Rounded.Settings,
                 doAction = onSourceSettingsClick
             )
-        } else null
+        } else {
+            null
+        }
     ).toImmutableList()
 }

@@ -89,8 +89,12 @@ class ServerService @Inject constructor(
                 if (file.toString().contains("java") || file.toString().contains("jdk")) {
                     if (file.name.equals("bin", true)) {
                         file
-                    } else file.resolve("bin")
-                } else null
+                    } else {
+                        file.resolve("bin")
+                    }
+                } else {
+                    null
+                }
             }
             .mapNotNull { getJavaFromPath(it) }
             .firstOrNull()

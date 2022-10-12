@@ -42,7 +42,9 @@ class DownloadsScreenViewModel @Inject constructor(
 ) : ViewModel(contextWrapper) {
     private val uiScope = if (standalone) {
         MainScope()
-    } else null
+    } else {
+        null
+    }
 
     override val scope: CoroutineScope
         get() = uiScope ?: super.scope

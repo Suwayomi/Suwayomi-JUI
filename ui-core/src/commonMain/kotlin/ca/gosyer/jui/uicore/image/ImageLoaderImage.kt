@@ -44,7 +44,7 @@ private val log = logging()
 private enum class ImageLoaderImageState {
     Loading,
     Success,
-    Failure,
+    Failure
 }
 
 @Composable

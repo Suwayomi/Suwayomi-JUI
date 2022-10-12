@@ -198,11 +198,15 @@ private fun Modifier.drawScrollbar(
     val totalSize = estimatedItemSize * layoutInfo.totalItemsCount
     val canvasSize = if (orientation == Orientation.Horizontal) size.width else size.height
     val thumbSize = viewportSize / totalSize * canvasSize
-    val startOffset = if (items.isEmpty()) 0f else items
-        .first()
-        .run {
-            (estimatedItemSize * index - offset) / totalSize * canvasSize
-        }
+    val startOffset = if (items.isEmpty()) {
+        0f
+    } else {
+        items
+            .first()
+            .run {
+                (estimatedItemSize * index - offset) / totalSize * canvasSize
+            }
+    }
     val drawScrollbar = onDrawScrollbar(
         orientation = orientation,
         reverseDirection = reverseDirection,
@@ -245,11 +249,15 @@ private fun Modifier.drawScrollbar(
     val totalSize = estimatedItemSize * layoutInfo.totalItemsCount
     val canvasSize = if (orientation == Orientation.Horizontal) size.width else size.height
     val thumbSize = viewportSize / totalSize * canvasSize
-    val startOffset = if (items.isEmpty()) 0f else items
-        .first()
-        .run {
-            (estimatedItemSize * index - if (orientation == Orientation.Vertical) offset.y else offset.x) / totalSize * canvasSize
-        }
+    val startOffset = if (items.isEmpty()) {
+        0f
+    } else {
+        items
+            .first()
+            .run {
+                (estimatedItemSize * index - if (orientation == Orientation.Vertical) offset.y else offset.x) / totalSize * canvasSize
+            }
+    }
     val drawScrollbar = onDrawScrollbar(
         orientation = orientation,
         reverseDirection = reverseDirection,
@@ -332,7 +340,9 @@ private fun Modifier.drawScrollbar(
     val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
     val reverseDirection = if (orientation == Orientation.Horizontal) {
         if (isLtr) reverseScrolling else !reverseScrolling
-    } else reverseScrolling
+    } else {
+        reverseScrolling
+    }
     val atEnd = if (orientation == Orientation.Vertical) isLtr else true
 
     // Calculate thickness here to workaround https://issuetracker.google.com/issues/206972664

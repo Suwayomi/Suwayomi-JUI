@@ -301,7 +301,9 @@ fun SortView(sortHolder: StableHolder<SourceFiltersView.Sort>, startExpanded: Bo
                             index,
                             if (state?.index == index) {
                                 state?.ascending?.not() ?: false
-                            } else false
+                            } else {
+                                false
+                            }
                         )
                     )
                 }
@@ -319,7 +321,9 @@ fun TextView(textHolder: StableHolder<SourceFiltersView.Text>) {
         mutableStateOf(
             if (state == placeholderText) {
                 ""
-            } else state
+            } else {
+                state
+            }
         )
     }
     val interactionSource = remember { MutableInteractionSource() }

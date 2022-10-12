@@ -16,6 +16,8 @@ data class SourceFilterChange(val position: Int, val state: String) {
         position,
         if (state is SortFilter.Selection) {
             Json.encodeToString(state)
-        } else state.toString()
+        } else {
+            state.toString()
+        }
     )
 }

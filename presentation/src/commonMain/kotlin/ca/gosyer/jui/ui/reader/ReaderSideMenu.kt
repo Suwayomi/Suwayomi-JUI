@@ -277,7 +277,9 @@ private fun ReaderProgressSlider(
         modifier = modifier.let {
             if (isRtL) {
                 it then Modifier.rotate(180F)
-            } else it
+            } else {
+                it
+            }
         }
     )
 }

@@ -143,7 +143,9 @@ class ExtensionsScreenViewModel @Inject constructor(
             .let {
                 if (it.isNotEmpty()) {
                     listOf(ExtensionUI.Header(MR.strings.installed.toPlatformString())) + it
-                } else it
+                } else {
+                    it
+                }
             }.plus(
                 filterNot(Extension::installed)
                     .groupBy(Extension::lang)

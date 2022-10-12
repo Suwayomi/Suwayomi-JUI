@@ -52,7 +52,9 @@ class ReaderModePreferences(private val mode: String, private val preferenceStor
                 } else {
                     700
                 }
-            } else 0
+            } else {
+                0
+            }
         )
     }
 

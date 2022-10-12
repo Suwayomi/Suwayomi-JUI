@@ -18,5 +18,5 @@ enum class ImageScale(@Transient val res: StringResource) {
     FitWidth(MR.strings.scale_fit_width),
     FitHeight(MR.strings.scale_fit_height),
     OriginalSize(MR.strings.scale_original),
-    SmartFit(MR.strings.scale_smart),
+    SmartFit(MR.strings.scale_smart)
 }

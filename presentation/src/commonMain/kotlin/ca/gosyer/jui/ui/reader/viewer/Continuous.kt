@@ -114,7 +114,9 @@ fun ContinuousReader(
                 Direction.Up, Direction.Down -> Modifier.width(maxSize.dp)
                 Direction.Left, Direction.Right -> Modifier.height(maxSize.dp)
             }
-        } else Modifier
+        } else {
+            Modifier
+        }
         val contentPadding = when (direction) {
             Direction.Right -> PaddingValues(end = padding.dp)
             Direction.Left -> PaddingValues(start = padding.dp)

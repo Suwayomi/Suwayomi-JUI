@@ -23,7 +23,9 @@ class GetCategories @Inject constructor(private val categoryRepository: Category
         .map { categories ->
             if (dropDefault) {
                 categories.filterNot { it.name.equals("default", true) }
-            } else categories
+            } else {
+                categories
+            }
         }
 
     companion object {

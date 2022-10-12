@@ -30,7 +30,9 @@ class UpdateCheckWorker(private val context: Context, workerParams: WorkerParame
                 .let {
                     if (it.updatePreferences.enabled().get()) {
                         it.updateChecker.await(false)
-                    } else null
+                    } else {
+                        null
+                    }
                 }
 
             if (update is Update.UpdateFound) {

@@ -30,7 +30,11 @@ fun Modifier.keyboardHandler(
             } else if (it.key == Key.Tab) {
                 action(focusManager)
                 true
-            } else false
-        } else false
+            } else {
+                false
+            }
+        } else {
+            false
+        }
     }
 }

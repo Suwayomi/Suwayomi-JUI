@@ -113,7 +113,9 @@ class TachideskPageLoader(
                                                         .getOrElse {
                                                             ReaderPage.ImageDecodeState.FailedToDecode(it)
                                                         }
-                                                } else ReaderPage.ImageDecodeState.UnknownDecoder
+                                                } else {
+                                                    ReaderPage.ImageDecodeState.UnknownDecoder
+                                                }
                                             } ?: ReaderPage.ImageDecodeState.FailedToGetSnapShot
                                         }
                                         page.status.value = ReaderPage.Status.READY
@@ -156,7 +158,9 @@ class TachideskPageLoader(
                             channel.send(it)
                         }
                     }
-                } else null
+                } else {
+                    null
+                }
             }
     }
 

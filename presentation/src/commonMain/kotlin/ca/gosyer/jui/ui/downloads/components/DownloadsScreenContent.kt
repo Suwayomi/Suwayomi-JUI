@@ -173,7 +173,9 @@ fun DownloadsItem(
             )
             val progress = if (item.chapter.pageCount != null && item.chapter.pageCount != -1) {
                 " - " + "${(item.chapter.pageCount!! * item.progress).toInt()}/${item.chapter.pageCount}"
-            } else ""
+            } else {
+                ""
+            }
             MangaListItemSubtitle(
                 text = item.chapter.name + progress
             )

@@ -17,6 +17,8 @@ data class SourcePreferenceChange(val position: Int, val value: String) {
         if (value is List<*>) {
             @Suppress("UNCHECKED_CAST")
             Json.encodeToString(value as List<String>)
-        } else value.toString()
+        } else {
+            value.toString()
+        }
     )
 }

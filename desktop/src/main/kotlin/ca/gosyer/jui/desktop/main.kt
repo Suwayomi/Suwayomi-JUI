@@ -173,7 +173,9 @@ suspend fun main() {
                             }
                             else -> false
                         }
-                    } else false
+                    } else {
+                        false
+                    }
                 }
             ) {
                 AppTheme {

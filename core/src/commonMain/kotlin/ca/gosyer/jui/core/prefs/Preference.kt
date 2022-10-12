@@ -65,5 +65,7 @@ fun <T> Preference<T>.getAsFlow(action: (suspend (T) -> Unit)? = null): Flow<T> 
         .onStart { emit(get()) }
     return if (action != null) {
         flow.onEach(action = action)
-    } else flow
+    } else {
+        flow
+    }
 }

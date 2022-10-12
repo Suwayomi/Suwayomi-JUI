@@ -24,7 +24,9 @@ sealed class ServerHostPreference<T : Any> {
         val preference = preference().get().takeIf(::validate)
         return if (preference != null) {
             propertyPrefix + preference.toString()
-        } else null
+        } else {
+            null
+        }
     }
 
     protected abstract val preferenceStore: PreferenceStore

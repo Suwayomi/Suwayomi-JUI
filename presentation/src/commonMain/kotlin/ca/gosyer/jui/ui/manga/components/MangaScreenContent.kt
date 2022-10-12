@@ -213,7 +213,9 @@ private fun getActionItems(
                 icon = Icons.Rounded.Label,
                 doAction = setCategories
             )
-        } else null,
+        } else {
+            null
+        },
         ActionItem(
             name = stringResource(if (inLibrary) MR.strings.action_remove_favorite else MR.strings.action_favorite),
             icon = if (inLibrary) {
