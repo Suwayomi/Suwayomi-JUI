@@ -38,6 +38,8 @@ Double-click on the jar file or run `java -jar Tachidesk-JUI-os-arch-X.Y.Z.jar` 
 ### Windows (x64, Java 8+ required for server)
 #### Installer
 Download the latest msi release from [the releases section][release] (Or from [the preview releases][preview]).
+#### [Chocolatey](https://community.chocolatey.org/packages/tachidesk)
+`choco install tachidesk`
 #### Winget
 `winget install tachidesk-jui`
 #### Scoop
