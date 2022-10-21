@@ -6,4 +6,5 @@
   --><resources>
     <string name="action_favorite">Favourite</string>
     <string name="action_remove_favorite">Unfavourite</string>
+    <string name="downloads_remaining">%1$d remaining</string>
 </resources>
