@@ -86,7 +86,7 @@ private fun navigatorSaver(
                 homeScreen,
                 SnapshotStateMap<Long, Screen>().also { map ->
                     map.putAll(items.map { it.key.toLong() to (it.value as Screen) })
-                },
+                }
             )
         }
     )
@@ -122,7 +122,7 @@ class SourcesNavigator internal constructor(
     private val navigator: Navigator,
     homeScreen: SourceHomeScreen,
     val screens: SnapshotStateMap<Long, Screen> = SnapshotStateMap<Long, Screen>()
-        .also { it[-1] = homeScreen },
+        .also { it[-1] = homeScreen }
 ) {
 
     fun remove(source: Source) {
