@@ -8,11 +8,9 @@ package ca.gosyer.jui.ui.sources.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,12 +21,11 @@ import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.sources.browse.SourceScreen
 import ca.gosyer.jui.ui.sources.globalsearch.GlobalSearchScreen
 import ca.gosyer.jui.ui.sources.home.SourceHomeScreen
-import cafe.adriel.voyager.core.lifecycle.ScreenLifecycleStore
-import cafe.adriel.voyager.core.lifecycle.rememberScreenLifecycleOwner
-import cafe.adriel.voyager.core.model.ScreenModelStore
+import cafe.adriel.voyager.core.lifecycle.DisposableEffectIgnoringConfiguration
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.NavigatorDisposeBehavior
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.collections.immutable.toImmutableList
 
@@ -42,10 +39,17 @@ fun SourcesNavigator(
     homeScreenHolder: StableHolder<SourceHomeScreen>,
     content: SourcesNavigatorContent = { CurrentSource() }
 ) {
-    Navigator(homeScreenHolder.item, autoDispose = false, onBackPressed = null) { navigator ->
+    Navigator(
+        homeScreenHolder.item,
+        onBackPressed = null,
+        disposeBehavior = NavigatorDisposeBehavior(
+            disposeSteps = false,
+            disposeNestedNavigators = false
+        )
+    ) { navigator ->
         val sourcesNavigator = rememberNavigator(navigator, homeScreenHolder.item)
 
-        DisposableEffect(sourcesNavigator) {
+        DisposableEffectIgnoringConfiguration(sourcesNavigator) {
             onDispose(sourcesNavigator::dispose)
         }
 
@@ -65,13 +69,12 @@ private fun rememberNavigator(
     parent: Navigator,
     homeScreen: SourceHomeScreen
 ): SourcesNavigator {
-    return rememberSaveable(saver = navigatorSaver(parent.stateHolder, parent, homeScreen)) {
+    return rememberSaveable(saver = navigatorSaver(parent, homeScreen)) {
         SourcesNavigator(parent, homeScreen)
     }
 }
 
 private fun navigatorSaver(
-    stateHolder: SaveableStateHolder,
     parent: Navigator,
     homeScreen: SourceHomeScreen
 ): Saver<SourcesNavigator, Any> =
@@ -84,7 +87,6 @@ private fun navigatorSaver(
                 SnapshotStateMap<Long, Screen>().also { map ->
                     map.putAll(items.map { it.key.toLong() to (it.value as Screen) })
                 },
-                stateHolder
             )
         }
     )
@@ -94,10 +96,8 @@ private fun SourceNavigatorDisposableEffect(
     navigator: SourcesNavigator
 ) {
     val currentScreen = navigator.current
-    val lifecycle = rememberScreenLifecycleOwner(currentScreen)
-    val hooks = lifecycle.getHooks()
 
-    DisposableEffect(currentScreen.key) {
+    DisposableEffectIgnoringConfiguration(currentScreen.key) {
         onDispose {
             if (
                 navigator.lastEvent in disposableEvents &&
@@ -105,10 +105,7 @@ private fun SourceNavigatorDisposableEffect(
                 currentScreen !is SourceHomeScreen &&
                 currentScreen !is GlobalSearchScreen
             ) {
-                hooks.onDispose()
-                ScreenModelStore.remove(currentScreen)
-                ScreenLifecycleStore.remove(currentScreen)
-                navigator.stateHolder.removeState(currentScreen.key)
+                navigator.dispose(currentScreen)
                 navigator.clearEvent()
             }
         }
@@ -126,12 +123,11 @@ class SourcesNavigator internal constructor(
     homeScreen: SourceHomeScreen,
     val screens: SnapshotStateMap<Long, Screen> = SnapshotStateMap<Long, Screen>()
         .also { it[-1] = homeScreen },
-    val stateHolder: SaveableStateHolder = navigator.stateHolder
 ) {
 
     fun remove(source: Source) {
         navigator replaceAll screens[-1]!!
-        screens.remove(source.id)?.let(::cleanup)
+        screens.remove(source.id)?.let(this::dispose)
     }
 
     fun select(source: Source) {
@@ -139,19 +135,26 @@ class SourcesNavigator internal constructor(
     }
 
     fun open(source: Source, query: String? = null) {
-        screens.remove(source.id)?.let(::cleanup)
+        screens.remove(source.id)?.let(this::dispose)
         navigator replaceAll SourceScreen(source, query).also { screens[source.id] = it }
     }
 
     fun search(query: String) {
-        screens[-2]?.let(::cleanup)
+        screens[-2]?.let(this::dispose)
         navigator replaceAll GlobalSearchScreen(query).also { screens[-2] = it }
     }
 
-    private fun cleanup(screen: Screen) {
-        ScreenModelStore.remove(screen)
-        ScreenLifecycleStore.remove(screen)
-        stateHolder.removeState(screen.key)
+    @Composable
+    fun saveableState(
+        key: String,
+        screen: Screen,
+        content: @Composable () -> Unit
+    ) {
+        navigator.saveableState(key, screen, content)
+    }
+
+    fun dispose(screen: Screen) {
+        navigator.dispose(screen)
     }
 
     fun goHome() {
@@ -164,7 +167,7 @@ class SourcesNavigator internal constructor(
 
     fun dispose() {
         screens.forEach {
-            cleanup(it.value)
+            dispose(it.value)
         }
         navigator.clearEvent()
     }
@@ -194,7 +197,7 @@ fun CurrentSource() {
     val sourcesNavigator = LocalSourcesNavigator.currentOrThrow
     val currentSource = sourcesNavigator.current
 
-    sourcesNavigator.stateHolder.SaveableStateProvider(currentSource.key) {
+    sourcesNavigator.saveableState("sources", currentSource) {
         currentSource.Content()
     }
 }
