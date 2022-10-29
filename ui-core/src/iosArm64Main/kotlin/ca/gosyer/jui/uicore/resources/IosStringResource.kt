@@ -8,11 +8,8 @@ package ca.gosyer.jui.uicore.resources
 
 import androidx.compose.runtime.Composable
 import dev.icerock.moko.resources.PluralsResource
-import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.desc.Plural
 import dev.icerock.moko.resources.desc.PluralFormatted
-import dev.icerock.moko.resources.desc.Resource
-import dev.icerock.moko.resources.desc.ResourceFormatted
 import dev.icerock.moko.resources.desc.StringDesc
 
 @Composable

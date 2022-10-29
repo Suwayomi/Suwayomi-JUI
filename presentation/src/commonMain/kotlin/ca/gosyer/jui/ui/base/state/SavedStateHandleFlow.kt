@@ -12,14 +12,14 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 fun <T> SavedStateHandle.getStateFlow(
-    initialValue: () -> T,
+    initialValue: () -> T
 ): SavedStateHandleDelegate<T> {
     return SavedStateHandleDelegate(this, initialValue)
 }
 
 class SavedStateHandleDelegate<T>(
     private val savedStateHandle: SavedStateHandle,
-    private val initialValue: () -> T,
+    private val initialValue: () -> T
 ) : ReadOnlyProperty<ViewModel, SavedStateHandleStateFlow<T>> {
     private var item: SavedStateHandleStateFlow<T>? = null
 
@@ -28,7 +28,9 @@ class SavedStateHandleDelegate<T>(
             if (item == null) {
                 savedStateHandle.getSavedStateFlow(property.name, initialValue)
                     .also { item = it }
-            } else item!!
+            } else {
+                item!!
+            }
         }
     }
 }
@@ -36,7 +38,7 @@ class SavedStateHandleDelegate<T>(
 class SavedStateHandleStateFlow<T>(
     private val key: String,
     private val savedStateHandle: SavedStateHandle,
-    private val stateFlow: StateFlow<T>,
+    private val stateFlow: StateFlow<T>
 ) : StateFlow<T> by stateFlow {
 
     override var value: T
@@ -52,7 +54,7 @@ class SavedStateHandleStateFlow<T>(
 
 fun <T> SavedStateHandle.getSavedStateFlow(
     key: String,
-    initialValue: () -> T,
+    initialValue: () -> T
 ): SavedStateHandleStateFlow<T> {
     val value = get<T>(key)
 
@@ -65,6 +67,6 @@ fun <T> SavedStateHandle.getSavedStateFlow(
     return SavedStateHandleStateFlow(
         key = key,
         savedStateHandle = this,
-        stateFlow = flow,
+        stateFlow = flow
     )
 }

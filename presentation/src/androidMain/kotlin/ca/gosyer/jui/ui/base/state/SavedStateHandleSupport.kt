@@ -23,7 +23,6 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import java.lang.reflect.Method
 
-
 private const val SAVED_STATE_KEY = "androidx.lifecycle.internal.SavedStateHandlesProvider"
 
 val SavedStateHandleSupportClass: Class<*> by lazy {
@@ -46,7 +45,8 @@ private fun createSavedStateHandle(
     val vm = getSavedStateHandlesVM.invoke(null, viewModelStoreOwner)!!
     val handles = vm::class.java.methods.first { it.name == "getHandles" }.invoke(vm) as MutableMap<String, SavedStateHandle>
     return handles[key] ?: SavedStateHandle.createHandle(
-        provider.consumeRestoredStateForKey(key), defaultArgs
+        provider.consumeRestoredStateForKey(key),
+        defaultArgs
     ).also { handles[key] = it }
 }
 
@@ -78,21 +78,26 @@ fun CreationExtras.createSavedStateHandle(): SavedStateHandle {
         "CreationExtras must have a value by `VIEW_MODEL_KEY`"
     )
     return createSavedStateHandle(
-        savedStateRegistryOwner, viewModelStateRegistryOwner, key, defaultArgs
+        savedStateRegistryOwner,
+        viewModelStateRegistryOwner,
+        key,
+        defaultArgs
     )
 }
 
 internal val SavedStateRegistryOwner.savedStateHandlesProvider: SavedStateHandlesProvider
     get() = savedStateRegistry.getSavedStateProvider(SAVED_STATE_KEY)?.let(::SavedStateHandlesProvider)
-        ?: throw IllegalStateException("enableSavedStateHandles() wasn't called " +
-                "prior to createSavedStateHandle() call")
+        ?: throw IllegalStateException(
+            "enableSavedStateHandles() wasn't called " +
+                "prior to createSavedStateHandle() call"
+        )
 
 /**
  * This single SavedStateProvider is responsible for saving the state of every
  * SavedStateHandle associated with the SavedState/ViewModel pair.
  */
 internal class SavedStateHandlesProvider(
-    private val savedStateRegistry: SavedStateRegistry.SavedStateProvider,
+    private val savedStateRegistry: SavedStateRegistry.SavedStateProvider
 ) {
     /**
      * Restore the state associated with a particular SavedStateHandle, identified by its [key]
