@@ -9,6 +9,7 @@ package ca.gosyer.jui.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import ca.gosyer.jui.ui.base.LocalViewModels
+import ca.gosyer.jui.ui.base.state.SavedStateHandle
 import ca.gosyer.jui.ui.base.theme.AppThemeViewModel
 import ca.gosyer.jui.ui.categories.CategoriesScreenViewModel
 import ca.gosyer.jui.ui.downloads.DownloadsScreenViewModel
@@ -44,7 +45,7 @@ interface SharedViewModelComponent {
     val categoryViewModel: () -> CategoriesScreenViewModel
     val downloadsViewModel: (Boolean) -> DownloadsScreenViewModel
     val extensionsViewModel: () -> ExtensionsScreenViewModel
-    val libraryViewModel: () -> LibraryScreenViewModel
+    val libraryViewModel: (SavedStateHandle) -> LibraryScreenViewModel
     val librarySettingsViewModel: () -> LibrarySettingsViewModel
     val debugOverlayViewModel: () -> DebugOverlayViewModel
     val mainViewModel: () -> MainViewModel
@@ -67,6 +68,12 @@ interface SharedViewModelComponent {
 }
 
 expect interface ViewModelComponent : SharedViewModelComponent
+
+@Composable
+expect inline fun <reified VM : ViewModel> Screen.stateViewModel(
+    tag: String? = null,
+    crossinline factory: @DisallowComposableCalls ViewModelComponent.(SavedStateHandle) -> VM
+): VM
 
 @Composable
 inline fun <reified VM : ViewModel> Screen.viewModel(

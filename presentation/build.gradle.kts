@@ -102,6 +102,7 @@ kotlin {
                 api(libs.androidx.core)
                 api(libs.androidx.appCompat)
                 api(libs.androidx.activity.compose)
+                api(libs.voyager.androidx)
             }
         }
         val androidTest by getting {

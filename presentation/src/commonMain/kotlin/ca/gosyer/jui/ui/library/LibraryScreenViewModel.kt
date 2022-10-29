@@ -24,6 +24,8 @@ import ca.gosyer.jui.domain.updates.interactor.UpdateCategory
 import ca.gosyer.jui.domain.updates.interactor.UpdateLibrary
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.model.StableHolder
+import ca.gosyer.jui.ui.base.state.SavedStateHandle
+import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.ui.util.lang.Collator
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -96,15 +98,16 @@ class LibraryScreenViewModel @Inject constructor(
     private val updateLibrary: UpdateLibrary,
     private val updateCategory: UpdateCategory,
     libraryPreferences: LibraryPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel(contextWrapper) {
     private val library = Library(MutableStateFlow(persistentListOf()), mutableMapOf())
     val categories = library.categories.asStateFlow()
 
-    private val _selectedCategoryIndex = MutableStateFlow(0)
+    private val _selectedCategoryIndex by savedStateHandle.getStateFlow { 0 }
     val selectedCategoryIndex = _selectedCategoryIndex.asStateFlow()
 
-    private val _showingMenu = MutableStateFlow(false)
+    private val _showingMenu by savedStateHandle.getStateFlow { false }
     val showingMenu = _showingMenu.asStateFlow()
 
     val displayMode = libraryPreferences.displayMode().stateIn(scope)
@@ -146,7 +149,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error = _error.asStateFlow()
 
-    private val _query = MutableStateFlow("")
+    private val _query by savedStateHandle.getStateFlow { "" }
     val query = _query.asStateFlow()
 
     private val comparator = combine(sortMode, sortAscending) { sortMode, sortAscending ->

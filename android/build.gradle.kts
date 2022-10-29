@@ -23,6 +23,7 @@ dependencies {
     implementation(libs.voyager.core)
     implementation(libs.voyager.navigation)
     implementation(libs.voyager.transitions)
+    implementation(libs.voyager.androidx)
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pagerIndicators)
     implementation(libs.accompanist.flowLayout)
