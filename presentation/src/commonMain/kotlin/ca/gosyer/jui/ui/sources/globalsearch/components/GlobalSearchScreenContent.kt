@@ -47,7 +47,6 @@ import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.components.localeToString
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.ui.sources.globalsearch.GlobalSearchViewModel.Search
@@ -63,7 +62,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun GlobalSearchScreenContent(
-    sources: ImmutableList<StableHolder<Source>>,
+    sources: ImmutableList<Source>,
     results: SnapshotStateMap<Long, Search>,
     displayMode: DisplayMode,
     query: String,
@@ -91,17 +90,17 @@ fun GlobalSearchScreenContent(
             val state = rememberLazyListState()
             val sourcesSuccess by remember(sources) {
                 derivedStateOf {
-                    sources.filter { results[it.item.id] is Search.Success }
+                    sources.filter { results[it.id] is Search.Success }
                 }
             }
             val loadingSources by remember(sources) {
                 derivedStateOf {
-                    sources.filter { results[it.item.id] == null }
+                    sources.filter { results[it.id] == null }
                 }
             }
             val failedSources by remember(sources) {
                 derivedStateOf {
-                    sources.filter { results[it.item.id] is Search.Failure }
+                    sources.filter { results[it.id] is Search.Failure }
                 }
             }
             LazyColumn(
@@ -115,8 +114,8 @@ fun GlobalSearchScreenContent(
             ) {
                 items(sourcesSuccess) {
                     GlobalSearchItem(
-                        sourceHolder = it,
-                        search = results[it.item.id] ?: Search.Searching,
+                        source = it,
+                        search = results[it.id] ?: Search.Searching,
                         displayMode = displayMode,
                         onSourceClick = onSourceClick,
                         onMangaClick = onMangaClick
@@ -124,8 +123,8 @@ fun GlobalSearchScreenContent(
                 }
                 items(loadingSources) {
                     GlobalSearchItem(
-                        sourceHolder = it,
-                        search = results[it.item.id] ?: Search.Searching,
+                        source = it,
+                        search = results[it.id] ?: Search.Searching,
                         displayMode = displayMode,
                         onSourceClick = onSourceClick,
                         onMangaClick = onMangaClick
@@ -133,8 +132,8 @@ fun GlobalSearchScreenContent(
                 }
                 items(failedSources) {
                     GlobalSearchItem(
-                        sourceHolder = it,
-                        search = results[it.item.id] ?: Search.Searching,
+                        source = it,
+                        search = results[it.id] ?: Search.Searching,
                         displayMode = displayMode,
                         onSourceClick = onSourceClick,
                         onMangaClick = onMangaClick
@@ -160,13 +159,12 @@ fun GlobalSearchScreenContent(
 
 @Composable
 fun GlobalSearchItem(
-    sourceHolder: StableHolder<Source>,
+    source: Source,
     search: Search,
     displayMode: DisplayMode,
     onSourceClick: (Source) -> Unit,
     onMangaClick: (Manga) -> Unit
 ) {
-    val source = sourceHolder.item
     Column {
         Row(
             Modifier.fillMaxWidth()
@@ -209,15 +207,15 @@ fun GlobalSearchItem(
                     items(search.mangaList) {
                         if (displayMode == DisplayMode.ComfortableGrid) {
                             GlobalSearchMangaComfortableGridItem(
-                                Modifier.clickable { onMangaClick(it.item) },
+                                Modifier.clickable { onMangaClick(it) },
                                 it,
-                                it.item.inLibrary
+                                it.inLibrary
                             )
                         } else {
                             GlobalSearchMangaCompactGridItem(
-                                Modifier.clickable { onMangaClick(it.item) },
+                                Modifier.clickable { onMangaClick(it) },
                                 it,
-                                it.item.inLibrary
+                                it.inLibrary
                             )
                         }
                     }

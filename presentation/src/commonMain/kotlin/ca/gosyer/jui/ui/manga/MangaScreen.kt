@@ -26,7 +26,7 @@ class MangaScreen(private val mangaId: Long) : Screen {
 
         MangaScreenContent(
             isLoading = vm.isLoading.collectAsState().value,
-            mangaHolder = vm.manga.collectAsState().value,
+            manga = vm.manga.collectAsState().value,
             chapters = vm.chapters.collectAsState().value,
             dateTimeFormatter = vm.dateTimeFormatter.collectAsState().value,
             categoriesExist = vm.categoriesExist.collectAsState().value,

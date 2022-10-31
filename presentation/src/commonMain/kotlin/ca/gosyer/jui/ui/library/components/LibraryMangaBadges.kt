@@ -23,19 +23,17 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.resources.stringResource
 
 @Composable
 fun LibraryMangaBadges(
     modifier: Modifier = Modifier,
-    mangaHolder: StableHolder<Manga>,
+    manga: Manga,
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
     showLocal: Boolean
 ) {
-    val manga = mangaHolder.item
     val unread = manga.unreadCount
     val downloaded = manga.downloadCount
     val isLocal = manga.sourceId == Source.LOCAL_SOURCE_ID

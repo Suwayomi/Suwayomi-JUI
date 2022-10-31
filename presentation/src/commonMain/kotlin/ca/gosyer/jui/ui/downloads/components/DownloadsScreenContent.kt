@@ -49,7 +49,6 @@ import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.model.DownloadChapter
 import ca.gosyer.jui.domain.download.model.DownloaderStatus
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.main.components.bottomNav
@@ -72,7 +71,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun DownloadsScreenContent(
-    downloadQueue: ImmutableList<StableHolder<DownloadChapter>>,
+    downloadQueue: ImmutableList<DownloadChapter>,
     downloadStatus: DownloaderStatus,
     startDownloading: () -> Unit,
     pauseDownloading: () -> Unit,
@@ -115,7 +114,7 @@ fun DownloadsScreenContent(
                 items(downloadQueue) {
                     DownloadsItem(
                         it,
-                        { onMangaClick(it.item.mangaId) },
+                        { onMangaClick(it.mangaId) },
                         stopDownload,
                         moveDownloadToBottom
                     )
@@ -140,12 +139,11 @@ fun DownloadsScreenContent(
 
 @Composable
 fun DownloadsItem(
-    itemHolder: StableHolder<DownloadChapter>,
+    item: DownloadChapter,
     onClickCover: () -> Unit,
     onClickCancel: (Chapter) -> Unit,
     onClickMoveToBottom: (Chapter) -> Unit
 ) {
-    val item = itemHolder.item
     MangaListItem(
         modifier = Modifier
             .height(96.dp)

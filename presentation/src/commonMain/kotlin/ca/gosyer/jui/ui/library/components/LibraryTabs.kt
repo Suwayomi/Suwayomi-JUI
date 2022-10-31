@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import ca.gosyer.jui.domain.category.model.Category
-import ca.gosyer.jui.ui.base.model.StableHolder
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import kotlinx.collections.immutable.ImmutableList
@@ -28,7 +27,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun LibraryTabs(
     visible: Boolean,
     pagerState: PagerState,
-    categories: ImmutableList<StableHolder<Category>>,
+    categories: ImmutableList<Category>,
     selectedPage: Int,
     onPageChanged: (Int) -> Unit
 ) {
@@ -50,7 +49,7 @@ fun LibraryTabs(
                 )
             }
         ) {
-            categories.fastForEachIndexed { i, (category) ->
+            categories.fastForEachIndexed { i, category ->
                 Tab(
                     selected = selectedPage == i,
                     onClick = { onPageChanged(i) },

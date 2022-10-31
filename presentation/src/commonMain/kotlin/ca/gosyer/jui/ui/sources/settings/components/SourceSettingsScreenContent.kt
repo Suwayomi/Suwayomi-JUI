@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.ChoiceDialog
 import ca.gosyer.jui.ui.base.prefs.MultiSelectDialog
@@ -61,7 +60,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun SourceSettingsScreenContent(
-    settings: ImmutableList<StableHolder<SourceSettingsView<*, *>>>
+    settings: ImmutableList<SourceSettingsView<*, *>>
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
@@ -84,20 +83,20 @@ fun SourceSettingsScreenContent(
                     )
                 ).asPaddingValues()
             ) {
-                items(settings, { it.item.props.hashCode() }) {
+                items(settings, { it.props.hashCode() }) {
                     @Suppress("UNCHECKED_CAST")
-                    when (it.item) {
+                    when (it) {
                         is CheckBox, is Switch -> {
-                            TwoStatePreference(it as StableHolder<TwoState>, it.item is CheckBox)
+                            TwoStatePreference(it as TwoState, it is CheckBox)
                         }
                         is List -> {
-                            ListPreference(it as StableHolder<List>)
+                            ListPreference(it)
                         }
                         is EditText -> {
-                            EditTextPreference(it as StableHolder<EditText>)
+                            EditTextPreference(it)
                         }
                         is MultiSelect -> {
-                            MultiSelectPreference(it as StableHolder<MultiSelect>)
+                            MultiSelectPreference(it)
                         }
                     }
                 }
@@ -120,8 +119,7 @@ fun SourceSettingsScreenContent(
 }
 
 @Composable
-private fun TwoStatePreference(twoStateHolder: StableHolder<TwoState>, checkbox: Boolean) {
-    val twoState = twoStateHolder.item
+private fun TwoStatePreference(twoState: TwoState, checkbox: Boolean) {
     val state by twoState.state.collectAsState()
     val title = remember(state) { twoState.title ?: twoState.summary ?: "No title" }
     val subtitle = remember(state) {
@@ -146,8 +144,7 @@ private fun TwoStatePreference(twoStateHolder: StableHolder<TwoState>, checkbox:
 }
 
 @Composable
-private fun ListPreference(listHolder: StableHolder<List>) {
-    val list = listHolder.item
+private fun ListPreference(list: List) {
     val state by list.state.collectAsState()
     val title = remember(state) { list.title ?: list.summary ?: "No title" }
     val subtitle = remember(state) {
@@ -175,8 +172,7 @@ private fun ListPreference(listHolder: StableHolder<List>) {
 }
 
 @Composable
-private fun MultiSelectPreference(multiSelectHolder: StableHolder<MultiSelect>) {
-    val multiSelect = multiSelectHolder.item
+private fun MultiSelectPreference(multiSelect: MultiSelect) {
     val state by multiSelect.state.collectAsState()
     val title = remember(state) { multiSelect.title ?: multiSelect.summary ?: "No title" }
     val subtitle = remember(state) {
@@ -205,8 +201,7 @@ private fun MultiSelectPreference(multiSelectHolder: StableHolder<MultiSelect>) 
 }
 
 @Composable
-private fun EditTextPreference(editTextHolder: StableHolder<EditText>) {
-    val editText = editTextHolder.item
+private fun EditTextPreference(editText: EditText) {
     val state by editText.state.collectAsState()
     val title = remember(state) { editText.title ?: editText.summary ?: "No title" }
     val subtitle = remember(state) {

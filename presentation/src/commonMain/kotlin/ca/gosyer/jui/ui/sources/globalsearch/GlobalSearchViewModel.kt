@@ -12,7 +12,6 @@ import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -59,7 +58,7 @@ class GlobalSearchViewModel @Inject constructor(
     val sources = combine(installedSources, languages) { installedSources, languages ->
         installedSources.filter {
             it.lang in languages || it.id == Source.LOCAL_SOURCE_ID
-        }.map(::StableHolder).toImmutableList()
+        }.toImmutableList()
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     private val search = MutableStateFlow(params.initialQuery)
@@ -99,7 +98,7 @@ class GlobalSearchViewModel @Inject constructor(
             .mapLatest { (query, sources) ->
                 results.clear()
                 supervisorScope {
-                    sources.map { (source) ->
+                    sources.map { source ->
                         async {
                             semaphore.withPermit {
                                 sourceHandler
@@ -108,7 +107,7 @@ class GlobalSearchViewModel @Inject constructor(
                                         if (it.mangaList.isEmpty()) {
                                             Search.Failure(MR.strings.no_results_found.toPlatformString())
                                         } else {
-                                            Search.Success(it.mangaList.map(::StableHolder).toImmutableList())
+                                            Search.Success(it.mangaList.toImmutableList())
                                         }
                                     }
                                     .catch {
@@ -143,7 +142,7 @@ class GlobalSearchViewModel @Inject constructor(
 
     sealed class Search {
         object Searching : Search()
-        data class Success(val mangaList: ImmutableList<StableHolder<Manga>>) : Search()
+        data class Success(val mangaList: ImmutableList<Manga>) : Search()
         data class Failure(val e: String?) : Search() {
             constructor(e: Throwable) : this(e.message)
         }

@@ -40,7 +40,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.domain.manga.model.Manga
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
@@ -57,7 +56,7 @@ expect fun Modifier.libraryMangaModifier(
 
 @Composable
 fun LibraryMangaCompactGrid(
-    library: ImmutableList<StableHolder<Manga>>,
+    library: ImmutableList<Manga>,
     gridColumns: Int,
     gridSize: Int,
     onClickManga: (Long) -> Unit,
@@ -84,13 +83,13 @@ fun LibraryMangaCompactGrid(
                 )
             ).asPaddingValues()
         ) {
-            items(library) { mangaHolder ->
+            items(library) { manga ->
                 LibraryMangaCompactGridItem(
                     modifier = Modifier.libraryMangaModifier(
-                        { onClickManga(mangaHolder.item.id) },
-                        { onRemoveMangaClicked(mangaHolder.item.id) }
+                        { onClickManga(manga.id) },
+                        { onRemoveMangaClicked(manga.id) }
                     ),
-                    mangaHolder = mangaHolder,
+                    manga = manga,
                     showUnread = showUnread,
                     showDownloaded = showDownloaded,
                     showLanguage = showLanguage,
@@ -117,13 +116,12 @@ fun LibraryMangaCompactGrid(
 @Composable
 private fun LibraryMangaCompactGridItem(
     modifier: Modifier,
-    mangaHolder: StableHolder<Manga>,
+    manga: Manga,
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
     showLocal: Boolean
 ) {
-    val manga = mangaHolder.item
     val fontStyle = LocalTextStyle.current.merge(
         TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
     )
@@ -151,7 +149,7 @@ private fun LibraryMangaCompactGridItem(
         )
         LibraryMangaBadges(
             modifier = Modifier.padding(4.dp),
-            mangaHolder = mangaHolder,
+            manga = manga,
             showUnread = showUnread,
             showDownloaded = showDownloaded,
             showLanguage = showLanguage,

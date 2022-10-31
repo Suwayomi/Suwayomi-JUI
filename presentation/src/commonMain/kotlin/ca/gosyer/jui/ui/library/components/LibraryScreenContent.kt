@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -58,7 +57,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun LibraryScreenContent(
-    categories: ImmutableList<StableHolder<Category>>,
+    categories: ImmutableList<Category>,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
@@ -156,7 +155,7 @@ fun LibraryScreenContent(
 @Composable
 fun WideLibraryScreenContent(
     pagerState: PagerState,
-    categories: ImmutableList<StableHolder<Category>>,
+    categories: ImmutableList<Category>,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
@@ -257,7 +256,7 @@ fun WideLibraryScreenContent(
 @Composable
 fun ThinLibraryScreenContent(
     pagerState: PagerState,
-    categories: ImmutableList<StableHolder<Category>>,
+    categories: ImmutableList<Category>,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,

@@ -52,7 +52,6 @@ import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -70,14 +69,14 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun SourceScreenContent(
-    sourceHolder: StableHolder<Source>,
+    source: Source,
     onMangaClick: (Long) -> Unit,
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    mangas: ImmutableList<StableHolder<Manga>>,
+    mangas: ImmutableList<Manga>,
     hasNextPage: Boolean,
     loading: Boolean,
     isLatest: Boolean,
@@ -91,13 +90,12 @@ fun SourceScreenContent(
     setUsingFilters: (Boolean) -> Unit,
     onSelectDisplayMode: (DisplayMode) -> Unit,
     // filter
-    filters: ImmutableList<StableHolder<SourceFiltersView<*, *>>>,
+    filters: ImmutableList<SourceFiltersView<*, *>>,
     showingFilters: Boolean,
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
     resetFiltersClicked: () -> Unit
 ) {
-    val source = sourceHolder.item
     LaunchedEffect(source) {
         enableLatest(source.supportsLatest)
     }
@@ -113,7 +111,7 @@ fun SourceScreenContent(
     BoxWithConstraints {
         if (maxWidth > 720.dp) {
             SourceWideScreenContent(
-                sourceHolder = sourceHolder,
+                source = source,
                 onMangaClick = onMangaClick,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 onSourceSettingsClick = onSourceSettingsClick,
@@ -140,7 +138,7 @@ fun SourceScreenContent(
             )
         } else {
             SourceThinScreenContent(
-                sourceHolder = sourceHolder,
+                source = source,
                 onMangaClick = onMangaClick,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 onSourceSettingsClick = onSourceSettingsClick,
@@ -171,14 +169,14 @@ fun SourceScreenContent(
 
 @Composable
 private fun SourceWideScreenContent(
-    sourceHolder: StableHolder<Source>,
+    source: Source,
     onMangaClick: (Long) -> Unit,
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    mangas: ImmutableList<StableHolder<Manga>>,
+    mangas: ImmutableList<Manga>,
     hasNextPage: Boolean,
     loading: Boolean,
     isLatest: Boolean,
@@ -190,7 +188,7 @@ private fun SourceWideScreenContent(
     loadNextPage: () -> Unit,
     setUsingFilters: (Boolean) -> Unit,
     // filter
-    filters: ImmutableList<StableHolder<SourceFiltersView<*, *>>>,
+    filters: ImmutableList<SourceFiltersView<*, *>>,
     showingFilters: Boolean,
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
@@ -205,7 +203,7 @@ private fun SourceWideScreenContent(
         ),
         topBar = {
             SourceToolbar(
-                sourceHolder = sourceHolder,
+                source = source,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 sourceSearchQuery = sourceSearchQuery,
                 onSearch = search,
@@ -266,14 +264,14 @@ private fun SourceWideScreenContent(
 
 @Composable
 private fun SourceThinScreenContent(
-    sourceHolder: StableHolder<Source>,
+    source: Source,
     onMangaClick: (Long) -> Unit,
     onCloseSourceTabClick: (Source) -> Unit,
     onSourceSettingsClick: (Long) -> Unit,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    mangas: ImmutableList<StableHolder<Manga>>,
+    mangas: ImmutableList<Manga>,
     hasNextPage: Boolean,
     loading: Boolean,
     isLatest: Boolean,
@@ -285,7 +283,7 @@ private fun SourceThinScreenContent(
     loadNextPage: () -> Unit,
     setUsingFilters: (Boolean) -> Unit,
     // filter
-    filters: ImmutableList<StableHolder<SourceFiltersView<*, *>>>,
+    filters: ImmutableList<SourceFiltersView<*, *>>,
     showingFilters: Boolean,
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
@@ -318,7 +316,7 @@ private fun SourceThinScreenContent(
         ),
         topBar = {
             SourceToolbar(
-                sourceHolder = sourceHolder,
+                source = source,
                 onCloseSourceTabClick = onCloseSourceTabClick,
                 sourceSearchQuery = sourceSearchQuery,
                 onSearch = search,
@@ -410,7 +408,7 @@ private fun SourceThinScreenContent(
 
 @Composable
 fun SourceToolbar(
-    sourceHolder: StableHolder<Source>,
+    source: Source,
     onCloseSourceTabClick: (Source) -> Unit,
     sourceSearchQuery: String?,
     onSearch: (String) -> Unit,
@@ -424,7 +422,6 @@ fun SourceToolbar(
     onToggleFiltersClick: (Boolean) -> Unit,
     onSelectDisplayMode: (DisplayMode) -> Unit
 ) {
-    val source = sourceHolder.item
     Toolbar(
         source.name,
         closable = true,
@@ -490,7 +487,7 @@ private fun MangaTable(
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    mangas: ImmutableList<StableHolder<Manga>>,
+    mangas: ImmutableList<Manga>,
     isLoading: Boolean = false,
     hasNextPage: Boolean = false,
     onLoadNextPage: () -> Unit,

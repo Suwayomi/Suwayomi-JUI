@@ -61,13 +61,13 @@ import kotlinx.datetime.Instant
 @Composable
 fun MangaScreenContent(
     isLoading: Boolean,
-    mangaHolder: StableHolder<Manga?>,
+    manga: Manga?,
     chapters: ImmutableList<ChapterDownloadItem>,
     dateTimeFormatter: (Instant) -> String,
     categoriesExist: Boolean,
     chooseCategoriesFlowHolder: StableHolder<SharedFlow<Unit>>,
-    availableCategories: ImmutableList<StableHolder<Category>>,
-    mangaCategories: ImmutableList<StableHolder<Category>>,
+    availableCategories: ImmutableList<Category>,
+    mangaCategories: ImmutableList<Category>,
     addFavorite: (List<Category>, List<Category>) -> Unit,
     setCategories: () -> Unit,
     toggleFavorite: () -> Unit,
@@ -100,7 +100,6 @@ fun MangaScreenContent(
             Toolbar(
                 stringResource(MR.strings.location_manga),
                 actions = {
-                    val manga = mangaHolder.item
                     val uriHandler = LocalUriHandler.current
                     getActionItems(
                         refreshManga = refreshManga,
@@ -120,8 +119,8 @@ fun MangaScreenContent(
         }
     ) {
         Box(Modifier.padding(it)) {
-            mangaHolder.let { mangaHolder ->
-                if (mangaHolder.item != null) {
+            manga.let { manga ->
+                if (manga != null) {
                     Box {
                         val state = rememberLazyListState()
                         LazyColumn(
@@ -135,14 +134,14 @@ fun MangaScreenContent(
                         ) {
                             item {
                                 @Suppress("UNCHECKED_CAST")
-                                MangaItem(mangaHolder as StableHolder<Manga>)
+                                MangaItem(manga)
                             }
                             if (chapters.isNotEmpty()) {
                                 items(chapters) { chapter ->
                                     ChapterItem(
                                         chapter,
                                         dateTimeFormatter,
-                                        onClick = { readerLauncher.launch(it, mangaHolder.item.id) },
+                                        onClick = { readerLauncher.launch(it, manga.id) },
                                         toggleRead = toggleRead,
                                         toggleBookmarked = toggleBookmarked,
                                         markPreviousAsRead = markPreviousRead,

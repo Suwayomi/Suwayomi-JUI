@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.manga.model.Manga
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.uicore.components.MangaListItem
 import ca.gosyer.jui.uicore.components.MangaListItemImage
@@ -43,7 +42,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun LibraryMangaList(
-    library: ImmutableList<StableHolder<Manga>>,
+    library: ImmutableList<Manga>,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit,
     showUnread: Boolean,
@@ -62,13 +61,13 @@ fun LibraryMangaList(
                 )
             ).asPaddingValues()
         ) {
-            items(library) { mangaHolder ->
+            items(library) { manga ->
                 LibraryMangaListItem(
                     modifier = Modifier.libraryMangaModifier(
-                        { onClickManga(mangaHolder.item.id) },
-                        { onRemoveMangaClicked(mangaHolder.item.id) }
+                        { onClickManga(manga.id) },
+                        { onRemoveMangaClicked(manga.id) }
                     ),
-                    mangaHolder = mangaHolder,
+                    manga = manga,
                     showUnread = showUnread,
                     showDownloaded = showDownloaded,
                     showLanguage = showLanguage,
@@ -95,13 +94,12 @@ fun LibraryMangaList(
 @Composable
 private fun LibraryMangaListItem(
     modifier: Modifier,
-    mangaHolder: StableHolder<Manga>,
+    manga: Manga,
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
     showLocal: Boolean
 ) {
-    val manga = mangaHolder.item
     MangaListItem(
         modifier = modifier then Modifier
             .requiredHeight(56.dp)
@@ -122,7 +120,7 @@ private fun LibraryMangaListItem(
         )
         Box(Modifier.width(IntrinsicSize.Min)) {
             LibraryMangaBadges(
-                mangaHolder = mangaHolder,
+                manga = manga,
                 showUnread = showUnread,
                 showDownloaded = showDownloaded,
                 showLanguage = showLanguage,

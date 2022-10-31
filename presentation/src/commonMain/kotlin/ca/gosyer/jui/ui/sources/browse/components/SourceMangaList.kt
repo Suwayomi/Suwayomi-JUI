@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.manga.model.Manga
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.uicore.components.MangaListItem
 import ca.gosyer.jui.uicore.components.MangaListItemImage
@@ -43,7 +42,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun SourceMangaList(
-    mangas: ImmutableList<StableHolder<Manga>>,
+    mangas: ImmutableList<Manga>,
     onClickManga: (Long) -> Unit,
     hasNextPage: Boolean = false,
     onLoadNextPage: () -> Unit
@@ -59,16 +58,16 @@ fun SourceMangaList(
                 )
             ).asPaddingValues()
         ) {
-            itemsIndexed(mangas) { index, mangaHolder ->
+            itemsIndexed(mangas) { index, manga ->
                 if (hasNextPage && index == mangas.lastIndex) {
                     LaunchedEffect(Unit) { onLoadNextPage() }
                 }
                 MangaListItem(
                     modifier = Modifier.clickable(
-                        onClick = { onClickManga(mangaHolder.item.id) }
+                        onClick = { onClickManga(manga.id) }
                     ),
-                    mangaHolder = mangaHolder,
-                    inLibrary = mangaHolder.item.inLibrary
+                    manga = manga,
+                    inLibrary = manga.inLibrary
                 )
             }
         }
@@ -91,10 +90,9 @@ fun SourceMangaList(
 @Composable
 private fun MangaListItem(
     modifier: Modifier,
-    mangaHolder: StableHolder<Manga>,
+    manga: Manga,
     inLibrary: Boolean
 ) {
-    val manga = mangaHolder.item
     MangaListItem(
         modifier = modifier then Modifier
             .requiredHeight(56.dp)

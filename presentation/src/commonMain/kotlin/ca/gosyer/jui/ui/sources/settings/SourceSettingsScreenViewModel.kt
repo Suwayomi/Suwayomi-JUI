@@ -9,7 +9,6 @@ package ca.gosyer.jui.ui.sources.settings
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreferenceChange
 import ca.gosyer.jui.domain.source.service.SourceRepository
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -37,14 +36,14 @@ class SourceSettingsScreenViewModel @Inject constructor(
     private val _loading = MutableStateFlow(true)
     val loading = _loading.asStateFlow()
 
-    private val _sourceSettings = MutableStateFlow<ImmutableList<StableHolder<SourceSettingsView<*, *>>>>(persistentListOf())
+    private val _sourceSettings = MutableStateFlow<ImmutableList<SourceSettingsView<*, *>>>(persistentListOf())
     val sourceSettings = _sourceSettings.asStateFlow()
 
     init {
         getSourceSettings()
         sourceSettings.mapLatest { settings ->
             supervisorScope {
-                settings.forEach { (setting) ->
+                settings.forEach { setting ->
                     setting.state.drop(1)
                         .filterNotNull()
                         .onEach {
@@ -78,7 +77,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
 
     private fun List<SourcePreference>.toView() = mapIndexed { index, sourcePreference ->
         SourceSettingsView(index, sourcePreference)
-    }.map(::StableHolder).toImmutableList()
+    }.toImmutableList()
 
     private companion object {
         private val log = logging()

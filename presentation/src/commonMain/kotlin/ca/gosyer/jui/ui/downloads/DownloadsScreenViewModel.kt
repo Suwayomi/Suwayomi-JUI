@@ -14,7 +14,6 @@ import ca.gosyer.jui.domain.download.interactor.ClearDownloadQueue
 import ca.gosyer.jui.domain.download.interactor.StartDownloading
 import ca.gosyer.jui.domain.download.interactor.StopDownloading
 import ca.gosyer.jui.domain.download.service.DownloadService
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.collections.immutable.persistentListOf
@@ -51,7 +50,7 @@ class DownloadsScreenViewModel @Inject constructor(
 
     val serviceStatus get() = DownloadService.status.asStateFlow()
     val downloaderStatus get() = DownloadService.downloaderStatus.asStateFlow()
-    val downloadQueue get() = DownloadService.downloadQueue.map { it.map(::StableHolder).toImmutableList() }
+    val downloadQueue get() = DownloadService.downloadQueue.map { it.toImmutableList() }
         .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     fun start() {

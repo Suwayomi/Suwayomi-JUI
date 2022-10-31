@@ -73,7 +73,7 @@ class MangaScreenViewModel @Inject constructor(
     contextWrapper: ContextWrapper,
     private val params: Params
 ) : ViewModel(contextWrapper) {
-    private val _manga = MutableStateFlow<StableHolder<Manga?>>(StableHolder(null))
+    private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()
 
     private val _chapters = MutableStateFlow<ImmutableList<ChapterDownloadItem>>(persistentListOf())
@@ -83,11 +83,11 @@ class MangaScreenViewModel @Inject constructor(
     val isLoading = _isLoading.asStateFlow()
 
     val categories = getCategories.asFlow(true)
-        .map { it.map(::StableHolder).toImmutableList() }
+        .map { it.toImmutableList() }
         .catch { log.warn(it) { "Failed to get categories" } }
         .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    private val _mangaCategories = MutableStateFlow<ImmutableList<StableHolder<Category>>>(persistentListOf())
+    private val _mangaCategories = MutableStateFlow<ImmutableList<Category>>(persistentListOf())
     val mangaCategories = _mangaCategories.asStateFlow()
 
     val categoriesExist = categories.map { it.isNotEmpty() }
@@ -143,7 +143,7 @@ class MangaScreenViewModel @Inject constructor(
 
     fun setCategories() {
         scope.launch {
-            manga.value.item ?: return@launch
+            manga.value ?: return@launch
             chooseCategoriesFlow.emit(Unit)
         }
     }
@@ -156,14 +156,14 @@ class MangaScreenViewModel @Inject constructor(
                 getManga.await(mangaId)
             }
             if (manga != null) {
-                _manga.value = StableHolder(manga)
+                _manga.value = manga
             } else {
                 // TODO: 2022-07-01 Error toast
             }
 
             val mangaCategories = getMangaCategories.await(mangaId)
             if (mangaCategories != null) {
-                _mangaCategories.value = mangaCategories.map(::StableHolder).toImmutableList()
+                _mangaCategories.value = mangaCategories.toImmutableList()
             } else {
                 // TODO: 2022-07-01 Error toast
             }
@@ -187,7 +187,7 @@ class MangaScreenViewModel @Inject constructor(
 
     fun toggleFavorite() {
         scope.launch {
-            manga.value.item?.let { manga ->
+            manga.value?.let { manga ->
                 if (manga.inLibrary) {
                     removeMangaFromLibrary.await(manga)
                     refreshMangaAsync(manga.id).await()
@@ -204,7 +204,7 @@ class MangaScreenViewModel @Inject constructor(
 
     fun addFavorite(categories: List<Category>, oldCategories: List<Category>) {
         scope.launch {
-            manga.value.item?.let { manga ->
+            manga.value?.let { manga ->
                 if (manga.inLibrary) {
                     oldCategories.filterNot { it in categories }.forEach {
                         removeMangaFromCategory.await(manga, it)
@@ -225,7 +225,7 @@ class MangaScreenViewModel @Inject constructor(
     fun toggleRead(index: Int) {
         val chapter = findChapter(index) ?: return
         scope.launch {
-            manga.value.item?.let { manga ->
+            manga.value?.let { manga ->
                 updateChapterRead.await(manga, index, read = chapter.read.not())
                 refreshChaptersAsync(manga.id).await()
             }
@@ -235,7 +235,7 @@ class MangaScreenViewModel @Inject constructor(
     fun toggleBookmarked(index: Int) {
         val chapter = findChapter(index) ?: return
         scope.launch {
-            manga.value.item?.let { manga ->
+            manga.value?.let { manga ->
                 updateChapterBookmarked.await(manga, index, bookmarked = chapter.bookmarked.not())
                 refreshChaptersAsync(manga.id).await()
             }
@@ -244,7 +244,7 @@ class MangaScreenViewModel @Inject constructor(
 
     fun markPreviousRead(index: Int) {
         scope.launch {
-            manga.value.item?.let { manga ->
+            manga.value?.let { manga ->
                 updateChapterMarkPreviousRead.await(manga, index)
                 refreshChaptersAsync(manga.id).await()
             }
@@ -252,7 +252,7 @@ class MangaScreenViewModel @Inject constructor(
     }
 
     fun downloadChapter(index: Int) {
-        manga.value.item?.let { manga ->
+        manga.value?.let { manga ->
             scope.launch { queueChapterDownload.await(manga, index) }
         }
     }

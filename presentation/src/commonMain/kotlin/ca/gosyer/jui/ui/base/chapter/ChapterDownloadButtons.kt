@@ -39,7 +39,6 @@ import ca.gosyer.jui.domain.download.model.DownloadChapter
 import ca.gosyer.jui.domain.download.model.DownloadState
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.components.DropdownIconButton
 import ca.gosyer.jui.uicore.components.DropdownMenuItem
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -57,7 +56,7 @@ data class ChapterDownloadItem(
             ChapterDownloadState.NotDownloaded
         }
     ),
-    private val _downloadChapterFlow: MutableStateFlow<StableHolder<DownloadChapter?>> = MutableStateFlow(StableHolder(null))
+    private val _downloadChapterFlow: MutableStateFlow<DownloadChapter?> = MutableStateFlow(null)
 ) {
     val downloadState = _downloadState.asStateFlow()
     val downloadChapterFlow = _downloadChapterFlow.asStateFlow()
@@ -72,7 +71,7 @@ data class ChapterDownloadItem(
         if (downloadState.value == ChapterDownloadState.Downloading && downloadingChapter == null) {
             _downloadState.value = ChapterDownloadState.Downloaded
         }
-        _downloadChapterFlow.value = StableHolder(downloadingChapter)
+        _downloadChapterFlow.value = downloadingChapter
     }
 
     suspend fun deleteDownload(deleteChapterDownload: DeleteChapterDownload) {
@@ -144,8 +143,7 @@ private fun DownloadIconButton(onClick: () -> Unit) {
 }
 
 @Composable
-private fun DownloadingIconButton(downloadChapterHolder: StableHolder<DownloadChapter?>, onClick: () -> Unit) {
-    val downloadChapter = downloadChapterHolder.item
+private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: () -> Unit) {
     DropdownIconButton(
         downloadChapter?.mangaId to downloadChapter?.chapterIndex,
         {

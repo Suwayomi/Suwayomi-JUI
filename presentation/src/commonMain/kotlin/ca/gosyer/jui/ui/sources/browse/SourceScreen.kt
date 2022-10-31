@@ -8,9 +8,7 @@ package ca.gosyer.jui.ui.sources.browse
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import ca.gosyer.jui.domain.source.model.Source
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.manga.MangaScreen
 import ca.gosyer.jui.ui.sources.browse.components.SourceScreenContent
 import ca.gosyer.jui.ui.sources.browse.filter.SourceFiltersViewModel
@@ -28,7 +26,6 @@ class SourceScreen(val source: Source, private val initialQuery: String? = null)
 
     @Composable
     override fun Content() {
-        val sourceHolder = remember { StableHolder(source) }
         val sourceVM = viewModel {
             sourceViewModel(SourceScreenViewModel.Params(source, initialQuery))
         }
@@ -38,7 +35,7 @@ class SourceScreen(val source: Source, private val initialQuery: String? = null)
         val sourcesNavigator = LocalSourcesNavigator.current
         val navigator = LocalNavigator.currentOrThrow
         SourceScreenContent(
-            sourceHolder = sourceHolder,
+            source = source,
             onMangaClick = { navigator push MangaScreen(it) },
             onCloseSourceTabClick = if (sourcesNavigator != null) {
                 { sourcesNavigator.remove(it) }
