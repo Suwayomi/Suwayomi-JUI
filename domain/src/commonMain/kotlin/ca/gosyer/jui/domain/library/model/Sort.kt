@@ -6,12 +6,14 @@
 
 package ca.gosyer.jui.domain.library.model
 
+import androidx.compose.runtime.Stable
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.StringResource
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
+@Stable
 enum class Sort(@Transient val res: StringResource) {
     ALPHABETICAL(MR.strings.sort_alphabetical),
 

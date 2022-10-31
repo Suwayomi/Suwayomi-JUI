@@ -6,9 +6,11 @@
 
 package ca.gosyer.jui.domain.chapter.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class Chapter(
     val url: String,
     val name: String,
@@ -29,6 +31,7 @@ data class Chapter(
 )
 
 @Serializable
+@Immutable
 data class ChapterMeta(
-    var juiPageOffset: Int = 0
+    val juiPageOffset: Int = 0
 )

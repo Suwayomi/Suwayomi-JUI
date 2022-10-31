@@ -6,9 +6,11 @@
 
 package ca.gosyer.jui.domain.reader.model
 
+import androidx.compose.runtime.Stable
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Stable
 enum class TappingInvertMode(val shouldInvertHorizontal: Boolean = false, val shouldInvertVertical: Boolean = false) {
     NONE,
     HORIZONTAL(shouldInvertHorizontal = true),

@@ -6,12 +6,14 @@
 
 package ca.gosyer.jui.domain.reader.model
 
+import androidx.compose.runtime.Stable
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.StringResource
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
+@Stable
 enum class ImageScale(@Transient val res: StringResource) {
     FitScreen(MR.strings.scale_fit_screen),
     Stretch(MR.strings.scale_stretch),

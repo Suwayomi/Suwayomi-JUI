@@ -6,13 +6,16 @@
 
 package ca.gosyer.jui.domain.source.model.sourcepreference
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("ListPreference")
+@Immutable
 data class ListPreference(override val props: ListProps) : SourcePreference() {
     @Serializable
+    @Immutable
     data class ListProps(
         override val key: String,
         override val title: String,

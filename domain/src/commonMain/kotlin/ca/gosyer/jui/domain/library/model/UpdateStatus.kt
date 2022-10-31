@@ -6,10 +6,12 @@
 
 package ca.gosyer.jui.domain.library.model
 
+import androidx.compose.runtime.Immutable
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class UpdateStatus(
     val statusMap: Map<JobStatus, List<Manga>>,
     val running: Boolean

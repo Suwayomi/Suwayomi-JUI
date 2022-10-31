@@ -6,6 +6,8 @@
 
 package ca.gosyer.jui.domain.manga.model
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.StringResource
@@ -13,6 +15,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
+@Immutable
 data class Manga(
     val id: Long,
     val sourceId: Long,
@@ -36,6 +39,7 @@ data class Manga(
 )
 
 @Serializable
+@Immutable
 data class MangaMeta(
     val juiReaderMode: String = DEFAULT_READER_MODE
 ) {
@@ -45,6 +49,7 @@ data class MangaMeta(
 }
 
 @Serializable
+@Stable
 enum class MangaStatus(@Transient val res: StringResource) {
     UNKNOWN(MR.strings.status_unknown),
     ONGOING(MR.strings.status_ongoing),

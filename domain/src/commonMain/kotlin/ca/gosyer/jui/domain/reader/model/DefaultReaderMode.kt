@@ -6,6 +6,9 @@
 
 package ca.gosyer.jui.domain.reader.model
 
+import androidx.compose.runtime.Stable
+
+@Stable
 enum class DefaultReaderMode(
     val res: String,
     val continuous: Boolean,

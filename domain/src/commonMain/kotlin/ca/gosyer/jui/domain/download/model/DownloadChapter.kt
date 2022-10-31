@@ -6,11 +6,13 @@
 
 package ca.gosyer.jui.domain.download.model
 
+import androidx.compose.runtime.Immutable
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class DownloadChapter(
     val chapterIndex: Int,
     val mangaId: Long,

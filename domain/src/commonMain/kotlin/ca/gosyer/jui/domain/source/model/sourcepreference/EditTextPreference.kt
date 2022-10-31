@@ -6,15 +6,18 @@
 
 package ca.gosyer.jui.domain.source.model.sourcepreference
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("EditTextPreference")
+@Immutable
 data class EditTextPreference(
     override val props: EditTextProps
 ) : SourcePreference() {
     @Serializable
+    @Immutable
     data class EditTextProps(
         override val key: String,
         override val title: String?,

@@ -6,11 +6,13 @@
 
 package ca.gosyer.jui.domain.source.model.sourcepreference
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("SwitchPreferenceCompat")
+@Immutable
 data class SwitchPreference(
     override val props: TwoStateProps
 ) : SourcePreference()

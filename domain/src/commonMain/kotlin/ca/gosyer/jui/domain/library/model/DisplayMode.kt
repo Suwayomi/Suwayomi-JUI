@@ -6,12 +6,14 @@
 
 package ca.gosyer.jui.domain.library.model
 
+import androidx.compose.runtime.Stable
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.StringResource
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
+@Stable
 enum class DisplayMode(@Transient val res: StringResource) {
     CompactGrid(MR.strings.display_compact),
     ComfortableGrid(MR.strings.display_comfortable),
@@ -19,6 +21,8 @@ enum class DisplayMode(@Transient val res: StringResource) {
     List(MR.strings.display_list);
 
     companion object {
-        val values = values().asList()
+        val values by lazy {
+            values().asList()
+        }
     }
 }

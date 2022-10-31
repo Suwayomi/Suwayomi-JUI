@@ -6,10 +6,12 @@
 
 package ca.gosyer.jui.domain.source.model
 
+import androidx.compose.runtime.Stable
 import kotlinx.serialization.Serializable
 import ca.gosyer.jui.core.io.Serializable as JvmSerializable
 
 @Serializable
+@Stable
 data class Source(
     val id: Long,
     val name: String,

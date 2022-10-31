@@ -6,9 +6,11 @@
 
 package ca.gosyer.jui.domain.server.model
 
+import androidx.compose.runtime.Stable
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Stable
 enum class Auth {
     NONE,
     BASIC,

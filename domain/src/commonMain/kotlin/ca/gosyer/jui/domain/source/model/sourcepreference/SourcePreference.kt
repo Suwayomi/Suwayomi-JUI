@@ -6,13 +6,16 @@
 
 package ca.gosyer.jui.domain.source.model.sourcepreference
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 sealed class SourcePreference {
     abstract val props: Props<*>
 }
 
+@Immutable
 interface Props<T> {
     val key: String
     val title: String?

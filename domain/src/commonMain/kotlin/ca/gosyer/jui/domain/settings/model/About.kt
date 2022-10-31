@@ -6,9 +6,12 @@
 
 package ca.gosyer.jui.domain.settings.model
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class About(
     val name: String,
     val version: String,
@@ -20,6 +23,7 @@ data class About(
 )
 
 @Serializable
+@Stable
 enum class AboutBuildType {
     Preview,
     Stable

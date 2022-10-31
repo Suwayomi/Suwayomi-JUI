@@ -6,10 +6,12 @@
 
 package ca.gosyer.jui.domain.updates.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class GithubRelease(
     @SerialName("tag_name") val version: String,
     @SerialName("body") val info: String,

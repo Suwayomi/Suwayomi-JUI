@@ -1,3 +1,5 @@
+import org.jetbrains.compose.compose
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
@@ -52,6 +54,7 @@ kotlin {
                 api(libs.ktorfit.lib)
                 api(libs.okio)
                 api(libs.dateTime)
+                api(compose("org.jetbrains.compose.runtime:runtime"))
                 api(projects.core)
                 api(projects.i18n)
             }

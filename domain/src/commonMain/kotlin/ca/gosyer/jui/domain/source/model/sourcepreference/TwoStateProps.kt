@@ -6,9 +6,11 @@
 
 package ca.gosyer.jui.domain.source.model.sourcepreference
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class TwoStateProps(
     override val key: String,
     override val title: String?,

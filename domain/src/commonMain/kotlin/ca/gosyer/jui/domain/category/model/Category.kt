@@ -6,9 +6,11 @@
 
 package ca.gosyer.jui.domain.category.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class Category(
     val id: Long,
     val order: Int,

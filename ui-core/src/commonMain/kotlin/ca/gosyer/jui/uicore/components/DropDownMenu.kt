@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.MenuDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 /**
  * Policy on setting [WindowManager.LayoutParams.FLAG_SECURE] on a window.
  */
+@Stable
 enum class SecureFlagPolicy {
     /**
      * Inherit [WindowManager.LayoutParams.FLAG_SECURE] from the parent window and pass it on the

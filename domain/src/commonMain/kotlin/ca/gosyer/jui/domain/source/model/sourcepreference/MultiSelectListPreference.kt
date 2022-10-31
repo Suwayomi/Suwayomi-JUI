@@ -6,13 +6,16 @@
 
 package ca.gosyer.jui.domain.source.model.sourcepreference
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("MultiSelectListPreference")
+@Immutable
 data class MultiSelectListPreference(override val props: MultiSelectListProps) : SourcePreference() {
     @Serializable
+    @Immutable
     data class MultiSelectListProps(
         override val key: String,
         override val title: String,
