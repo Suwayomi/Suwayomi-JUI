@@ -10,12 +10,12 @@
     <!-- Actions -->
     <string name="action_yes">हाँ</string>
     <string name="action_no">नहीं</string>
-    <string name="action_cancel">कॅन्सल</string>
+    <string name="action_cancel">रद्द करना</string>
     <string name="action_delete">डेलीट</string>
     <string name="action_start_anyway">जबरन स्टार्ट करे</string>
     <string name="action_rename">रिनेम</string>
     <string name="action_create">क्रियेट</string>
-    <string name="action_add">एड</string>
+    <string name="action_add">डालना</string>
     <string name="action_pause">पॉज़</string>
     <string name="action_continue">कंटिन्यू</string>
     <string name="action_clear_queue">क्लियर क्यू</string>
@@ -35,7 +35,7 @@
     <string name="location_extensions">एक्सटेंशन्स</string>
     <string name="location_downloads">डाउनलोडस</string>
     <string name="location_settings">सेटिंग्स</string>
-    <string name="location_categories">कैटगरीएस</string>
+    <string name="location_categories">श्रेणियाँ</string>
     <string name="location_manga">Manga</string>
     <!-- Categories Menu -->
     <string name="categories_delete_confirm">%1$s श्रेणी को हटाएं\?</string>
@@ -59,7 +59,7 @@
     <string name="no_next_chapter">कोई अगला चैप्टर नहीं है</string>
     <!-- Settings-->
     <string name="settings_advanced">एडवांस्ड</string>
-    <string name="settings_appearance">अपीयरेंस</string>
+    <string name="settings_appearance">रूप</string>
     <string name="settings_backup">बैकअप</string>
     <string name="settings_browse">ब्राउज</string>
     <string name="settings_download">डाउनलोड</string>
@@ -72,7 +72,7 @@
     <string name="settings_tracking">ट्रैकिंग</string>
     <!-- Settings Menu Titles-->
     <string name="settings_advanced_screen">एडवांस्ड सेटिंग्स</string>
-    <string name="settings_appearance_screen">अपीयरेंस सेटिंग्स</string>
+    <string name="settings_appearance_screen">रूप का समायोजन</string>
     <string name="settings_backup_screen">बैकअप सेटिंग्स</string>
     <string name="settings_browse_screen">ब्राउज सेटिंग्स</string>
     <string name="settings_download_screen">डाउनलोड सेटिंग्स</string>
@@ -156,8 +156,8 @@
     <string name="http_port">HTTP पोर्ट</string>
     <string name="theme_follow_system">सिस्टम सेटिंग्स का पालन करें</string>
     <string name="failed_manga_fetch">मंगा लोड करने में विफल</string>
-    <string name="auth_username">यूजरनेम</string>
-    <string name="auth_password">पासवर्ड</string>
+    <string name="auth_username">उपयोगकर्ता नाम</string>
+    <string name="auth_password">सांकेतिक शब्द</string>
     <string name="host_webui_sub">क्या सर्वर का डिफ़ॉल्ट वेबयूआई सक्षम है, आप अपने ब्राउज़र में टैचिडस्क का उपयोग करने में सक्षम बनाता है</string>
     <string name="server_preference_warning">चेतावनी</string>
     <string name="host_system_tray_sub">सर्वर चल रहा है या नहीं, यह देखने के लिए सिस्टम ट्रे आइकन का उपयोग करें</string>
@@ -187,6 +187,13 @@
     <string name="host_socks_port_sub">वर्तमान प्रॉक्सी पोर्ट: %1$s</string>
     <string name="host_socks_host_sub">वर्तमान प्रॉक्सी होस्ट: %1$s</string>
     <string name="basic_auth">बेसिक ऑथ</string>
-    <string name="confirm_exit_message">क्या आप सुनिश्चित हैं कि आप बाहर निकलना चाहते हैं\?</string>
+    <string name="confirm_exit_message">क्या आप निश्चित हैं आपकी बाहर निकलने की इच्छा है\?</string>
     <string name="all">समस्त</string>
+    <string name="display_badges">बिल्ले</string>
+    <string name="status_cancelled">रद्द</string>
+    <string name="location_about">जानकारी</string>
+    <string name="sort_alphabetical">वर्णानुक्रम</string>
+    <string name="update_checker">अपडेट के लिये जांचें</string>
+    <string name="action_close">बंद करना</string>
+    <string name="new_update_message">%1$sअब उपलब्ध है</string>
 </resources>

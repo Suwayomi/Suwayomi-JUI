@@ -233,4 +233,6 @@
     <string name="action_more_actions">المزيد من الإجراءات</string>
     <string name="host_download_path">مسار التنزيل</string>
     <string name="host_download_path_sub">مسار التنزيل الحالي:%1$s</string>
+    <string name="clear_chapter_cache">مسح ذاكرة التخزين المؤقت للفصل</string>
+    <string name="clear_image_cache">مسح ذاكرة التخزين المؤقت للصور</string>
 </resources>
