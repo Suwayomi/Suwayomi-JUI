@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -81,67 +82,69 @@ fun ImageLoaderImage(
     contentAlignment: Alignment = Alignment.Center,
     animationSpec: FiniteAnimationSpec<Float>? = tween()
 ) {
-    val request = remember(data) { ImageRequestBuilder().data(data).build() }
-    val painter = rememberAsyncImagePainter(
-        request,
-        contentScale = contentScale,
-        filterQuality = filterQuality
-    )
+    key(data) {
+        val request = remember { ImageRequestBuilder().data(data).build() }
+        val painter = rememberAsyncImagePainter(
+            request,
+            contentScale = contentScale,
+            filterQuality = filterQuality
+        )
 
-    val progress = remember { mutableStateOf(-1F) }
-    val error = remember { mutableStateOf<Throwable?>(null) }
-    val state by derivedStateOf {
-        when (val state = painter.requestState) {
-            is ImageRequestState.Failure -> {
-                progress.value = 0.0F
-                error.value = state.error
-                ImageLoaderImageState.Failure
-            }
-            ImageRequestState.Loading -> {
-                progress.value = 0.0F
-                ImageLoaderImageState.Loading
-            }
-            ImageRequestState.Success -> {
-                progress.value = 1.0F
-                ImageLoaderImageState.Success
+        val progress = remember { mutableStateOf(-1F) }
+        val error = remember { mutableStateOf<Throwable?>(null) }
+        val state by derivedStateOf {
+            when (val state = painter.requestState) {
+                is ImageRequestState.Failure -> {
+                    progress.value = 0.0F
+                    error.value = state.error
+                    ImageLoaderImageState.Failure
+                }
+                ImageRequestState.Loading -> {
+                    progress.value = 0.0F
+                    ImageLoaderImageState.Loading
+                }
+                ImageRequestState.Success -> {
+                    progress.value = 1.0F
+                    ImageLoaderImageState.Success
+                }
             }
         }
-    }
-    if (animationSpec != null) {
-        Crossfade(state, animationSpec = animationSpec, modifier = modifier) {
-            Box(Modifier.fillMaxSize(), contentAlignment) {
-                when (it) {
-                    ImageLoaderImageState.Loading -> if (onLoading != null) {
-                        onLoading(progress.value)
-                    }
-                    ImageLoaderImageState.Success -> Image(
-                        painter = painter,
-                        contentDescription = contentDescription,
-                        modifier = Modifier.fillMaxSize(),
-                        alignment = alignment,
-                        contentScale = contentScale,
-                        alpha = alpha,
-                        colorFilter = colorFilter
-                    )
-                    ImageLoaderImageState.Failure -> {
-                        if (onFailure != null) {
-                            onFailure(error.value ?: return@Crossfade)
+        if (animationSpec != null) {
+            Crossfade(state, animationSpec = animationSpec, modifier = modifier) {
+                Box(Modifier.fillMaxSize(), contentAlignment) {
+                    when (it) {
+                        ImageLoaderImageState.Loading -> if (onLoading != null) {
+                            onLoading(progress.value)
+                        }
+                        ImageLoaderImageState.Success -> Image(
+                            painter = painter,
+                            contentDescription = contentDescription,
+                            modifier = Modifier.fillMaxSize(),
+                            alignment = alignment,
+                            contentScale = contentScale,
+                            alpha = alpha,
+                            colorFilter = colorFilter
+                        )
+                        ImageLoaderImageState.Failure -> {
+                            if (onFailure != null) {
+                                onFailure(error.value ?: return@Crossfade)
+                            }
                         }
                     }
                 }
             }
-        }
-    } else {
-        Box(modifier, contentAlignment) {
-            Image(
-                painter = painter,
-                contentDescription = contentDescription,
-                modifier = Modifier.fillMaxSize(),
-                alignment = alignment,
-                contentScale = contentScale,
-                alpha = alpha,
-                colorFilter = colorFilter
-            )
+        } else {
+            Box(modifier, contentAlignment) {
+                Image(
+                    painter = painter,
+                    contentDescription = contentDescription,
+                    modifier = Modifier.fillMaxSize(),
+                    alignment = alignment,
+                    contentScale = contentScale,
+                    alpha = alpha,
+                    colorFilter = colorFilter
+                )
+            }
         }
     }
 }
