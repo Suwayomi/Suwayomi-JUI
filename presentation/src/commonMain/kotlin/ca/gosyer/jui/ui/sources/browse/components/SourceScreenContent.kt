@@ -82,7 +82,6 @@ fun SourceScreenContent(
     isLatest: Boolean,
     showLatestButton: Boolean,
     sourceSearchQuery: String?,
-    enableLatest: (Boolean) -> Unit,
     search: (String) -> Unit,
     submitSearch: () -> Unit,
     setMode: (Boolean) -> Unit,
@@ -96,10 +95,6 @@ fun SourceScreenContent(
     setShowingFilters: (Boolean) -> Unit,
     resetFiltersClicked: () -> Unit
 ) {
-    LaunchedEffect(source) {
-        enableLatest(source.supportsLatest)
-    }
-
     BackHandler {
         onCloseSourceTabClick(source)
     }

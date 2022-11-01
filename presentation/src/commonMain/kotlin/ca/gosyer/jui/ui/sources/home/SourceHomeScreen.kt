@@ -8,24 +8,20 @@ package ca.gosyer.jui.ui.sources.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import ca.gosyer.jui.ui.base.screen.BaseScreen
 import ca.gosyer.jui.ui.sources.browse.SourceScreen
 import ca.gosyer.jui.ui.sources.components.LocalSourcesNavigator
 import ca.gosyer.jui.ui.sources.globalsearch.GlobalSearchScreen
 import ca.gosyer.jui.ui.sources.home.components.SourceHomeScreenContent
-import ca.gosyer.jui.ui.viewModel
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
-import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import ca.gosyer.jui.ui.stateViewModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
-class SourceHomeScreen : Screen {
-
-    override val key: ScreenKey = uniqueScreenKey
+class SourceHomeScreen : BaseScreen() {
 
     @Composable
     override fun Content() {
-        val vm = viewModel { sourceHomeViewModel() }
+        val vm = stateViewModel { sourceHomeViewModel(it) }
         val sourcesNavigator = LocalSourcesNavigator.current
         val navigator = LocalNavigator.currentOrThrow
         SourceHomeScreenContent(

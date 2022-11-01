@@ -13,6 +13,8 @@ import ca.gosyer.jui.domain.source.model.MangaPage
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.domain.source.service.SourceRepository
+import ca.gosyer.jui.ui.base.state.SavedStateHandle
+import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -35,7 +37,8 @@ class SourceScreenViewModel(
     private val catalogPreferences: CatalogPreferences,
     private val libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper,
-    initialQuery: String?
+    private val savedStateHandle: SavedStateHandle,
+    initialQuery: String?,
 ) : ViewModel(contextWrapper) {
 
     @Inject constructor(
@@ -43,6 +46,7 @@ class SourceScreenViewModel(
         catalogPreferences: CatalogPreferences,
         libraryPreferences: LibraryPreferences,
         contextWrapper: ContextWrapper,
+        savedStateHandle: SavedStateHandle,
         params: Params
     ) : this(
         params.source,
@@ -50,6 +54,7 @@ class SourceScreenViewModel(
         catalogPreferences,
         libraryPreferences,
         contextWrapper,
+        savedStateHandle,
         params.initialQuery
     )
 
@@ -66,15 +71,12 @@ class SourceScreenViewModel(
     private val _loading = MutableStateFlow(true)
     val loading = _loading.asStateFlow()
 
-    private val _isLatest = MutableStateFlow(false)
+    private val _isLatest by savedStateHandle.getStateFlow { false }
     val isLatest = _isLatest.asStateFlow()
 
-    private val _latestButtonEnabled = MutableStateFlow(false)
-    val latestButtonEnabled = _latestButtonEnabled.asStateFlow()
+    private val _usingFilters by savedStateHandle.getStateFlow { false }
 
-    private val _usingFilters = MutableStateFlow(false)
-
-    private val _sourceSearchQuery = MutableStateFlow(initialQuery)
+    private val _sourceSearchQuery  by savedStateHandle.getStateFlow<String?>{ initialQuery }
     val sourceSearchQuery = _sourceSearchQuery.asStateFlow()
 
     private val _query = MutableStateFlow(sourceSearchQuery.value)
@@ -151,9 +153,6 @@ class SourceScreenViewModel(
 
     fun setUsingFilters(usingFilters: Boolean) {
         _usingFilters.value = usingFilters
-    }
-    fun enableLatest(enabled: Boolean) {
-        _latestButtonEnabled.value = enabled
     }
 
     fun search(query: String) {

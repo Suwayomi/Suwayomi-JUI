@@ -51,6 +51,8 @@ import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.image.ImageLoaderImage
 import ca.gosyer.jui.uicore.insets.navigationBars
 import ca.gosyer.jui.uicore.resources.stringResource
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.collections.immutable.ImmutableList
 
 expect fun Modifier.sourceSideMenuItem(
@@ -85,7 +87,9 @@ fun SourcesMenu() {
                 }
             }
         } else {
-            homeScreenHolder.item.Content()
+            LocalNavigator.currentOrThrow.saveableState("sourcesHome", homeScreenHolder.item) {
+                homeScreenHolder.item.Content()
+            }
         }
     }
 }

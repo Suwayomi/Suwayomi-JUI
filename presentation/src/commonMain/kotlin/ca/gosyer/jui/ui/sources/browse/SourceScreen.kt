@@ -9,28 +9,28 @@ package ca.gosyer.jui.ui.sources.browse
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.jui.domain.source.model.Source
+import ca.gosyer.jui.ui.base.screen.BaseScreen
 import ca.gosyer.jui.ui.manga.MangaScreen
 import ca.gosyer.jui.ui.sources.browse.components.SourceScreenContent
 import ca.gosyer.jui.ui.sources.browse.filter.SourceFiltersViewModel
 import ca.gosyer.jui.ui.sources.components.LocalSourcesNavigator
 import ca.gosyer.jui.ui.sources.settings.SourceSettingsScreen
-import ca.gosyer.jui.ui.viewModel
-import cafe.adriel.voyager.core.screen.Screen
+import ca.gosyer.jui.ui.stateViewModel
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
-class SourceScreen(val source: Source, private val initialQuery: String? = null) : Screen {
+class SourceScreen(val source: Source, private val initialQuery: String? = null) : BaseScreen() {
 
     override val key: ScreenKey = source.id.toString()
 
     @Composable
     override fun Content() {
-        val sourceVM = viewModel {
-            sourceViewModel(SourceScreenViewModel.Params(source, initialQuery))
+        val sourceVM = stateViewModel {
+            sourceViewModel(it, SourceScreenViewModel.Params(source, initialQuery))
         }
-        val filterVM = viewModel {
-            sourceFiltersViewModel(SourceFiltersViewModel.Params(source.id))
+        val filterVM = stateViewModel {
+            sourceFiltersViewModel(it, SourceFiltersViewModel.Params(source.id))
         }
         val sourcesNavigator = LocalSourcesNavigator.current
         val navigator = LocalNavigator.currentOrThrow
@@ -54,7 +54,6 @@ class SourceScreen(val source: Source, private val initialQuery: String? = null)
             isLatest = sourceVM.isLatest.collectAsState().value,
             showLatestButton = source.supportsLatest,
             sourceSearchQuery = sourceVM.sourceSearchQuery.collectAsState().value,
-            enableLatest = sourceVM::enableLatest,
             search = sourceVM::search,
             submitSearch = sourceVM::submitSearch,
             setMode = sourceVM::setMode,

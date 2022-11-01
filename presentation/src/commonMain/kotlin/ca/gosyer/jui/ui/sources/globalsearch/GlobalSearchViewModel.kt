@@ -12,6 +12,8 @@ import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.state.SavedStateHandle
+import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -42,9 +44,10 @@ class GlobalSearchViewModel @Inject constructor(
     private val sourceHandler: SourceRepository,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper,
+    private val savedStateHandle: SavedStateHandle,
     params: Params
 ) : ViewModel(contextWrapper) {
-    private val _query = MutableStateFlow(params.initialQuery)
+    private val _query by savedStateHandle.getStateFlow { params.initialQuery }
     val query = _query.asStateFlow()
 
     private val installedSources = MutableStateFlow(emptyList<Source>())
@@ -61,7 +64,7 @@ class GlobalSearchViewModel @Inject constructor(
         }.toImmutableList()
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    private val search = MutableStateFlow(params.initialQuery)
+    private val search by savedStateHandle.getStateFlow { params.initialQuery }
 
     val results = SnapshotStateMap<Long, Search>()
 

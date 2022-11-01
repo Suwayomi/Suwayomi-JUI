@@ -9,6 +9,8 @@ package ca.gosyer.jui.ui.sources.browse.filter
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterChange
 import ca.gosyer.jui.domain.source.service.SourceRepository
+import ca.gosyer.jui.ui.base.state.SavedStateHandle
+import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -33,16 +35,19 @@ import org.lighthousegames.logging.logging
 class SourceFiltersViewModel(
     private val sourceId: Long,
     private val sourceHandler: SourceRepository,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(contextWrapper) {
     @Inject constructor(
         sourceHandler: SourceRepository,
         contextWrapper: ContextWrapper,
+        savedStateHandle: SavedStateHandle,
         params: Params
     ) : this(
         params.sourceId,
         sourceHandler,
-        contextWrapper
+        contextWrapper,
+        savedStateHandle,
     )
 
     private val _loading = MutableStateFlow(true)
@@ -51,14 +56,15 @@ class SourceFiltersViewModel(
     private val _filters = MutableStateFlow<ImmutableList<SourceFiltersView<*, *>>>(persistentListOf())
     val filters = _filters.asStateFlow()
 
-    private val _showingFilters = MutableStateFlow(false)
+    private val _showingFilters by savedStateHandle.getStateFlow { false }
     val showingFilters = _showingFilters.asStateFlow()
 
     private val _filterButtonEnabled = MutableStateFlow(false)
     val filterButtonEnabled = _filterButtonEnabled.asStateFlow()
 
     init {
-        getFilters(initialLoad = true)
+        getFilters(initialLoad = savedStateHandle["initialLoad"] ?: true)
+        savedStateHandle["initialLoad"] = false
 
         filters.mapLatest { settings ->
             _filterButtonEnabled.value = settings.isNotEmpty()

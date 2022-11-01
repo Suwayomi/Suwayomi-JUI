@@ -13,6 +13,8 @@ import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.state.SavedStateHandle
+import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.collections.immutable.persistentListOf
@@ -34,7 +36,8 @@ import org.lighthousegames.logging.logging
 class SourceHomeScreenViewModel @Inject constructor(
     private val sourceHandler: SourceRepository,
     catalogPreferences: CatalogPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(contextWrapper) {
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
@@ -87,7 +90,7 @@ class SourceHomeScreenViewModel @Inject constructor(
             .toImmutableList()
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    private val _query = MutableStateFlow("")
+    private val _query by savedStateHandle.getStateFlow { "" }
     val query = _query.asStateFlow()
 
     init {

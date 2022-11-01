@@ -59,11 +59,11 @@ interface SharedViewModelComponent {
     val settingsReaderViewModel: () -> SettingsReaderViewModel
     val settingsServerViewModel: () -> SettingsServerViewModel
     val settingsServerHostViewModel: () -> SettingsServerHostViewModel
-    val sourceFiltersViewModel: (params: SourceFiltersViewModel.Params) -> SourceFiltersViewModel
+    val sourceFiltersViewModel: (SavedStateHandle, params: SourceFiltersViewModel.Params) -> SourceFiltersViewModel
     val sourceSettingsViewModel: (params: SourceSettingsScreenViewModel.Params) -> SourceSettingsScreenViewModel
-    val sourceHomeViewModel: () -> SourceHomeScreenViewModel
-    val globalSearchViewModel: (params: GlobalSearchViewModel.Params) -> GlobalSearchViewModel
-    val sourceViewModel: (params: SourceScreenViewModel.Params) -> SourceScreenViewModel
+    val sourceHomeViewModel: (SavedStateHandle) -> SourceHomeScreenViewModel
+    val globalSearchViewModel: (SavedStateHandle, params: GlobalSearchViewModel.Params) -> GlobalSearchViewModel
+    val sourceViewModel: (SavedStateHandle, params: SourceScreenViewModel.Params) -> SourceScreenViewModel
     val updatesViewModel: () -> UpdatesScreenViewModel
 }
 
