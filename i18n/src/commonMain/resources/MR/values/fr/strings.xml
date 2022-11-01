@@ -172,7 +172,6 @@
     <string name="host_settings">Paramètres du serveur Tachidesk</string>
     <string name="server_preference_warning_sub">Les paramètres ci-dessous nécessitent un redémarrage pour être pris en compte</string>
     <string name="dir_rtl">De droite à gauche</string>
-    <string name="app_name">Tachidesk-JUI</string>
     <string name="action_start_anyway">Démarrer quand même</string>
     <string name="select_categories">Sélectionner des catégories</string>
     <string name="version">Version</string>

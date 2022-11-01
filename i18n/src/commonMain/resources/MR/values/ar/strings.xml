@@ -158,7 +158,6 @@
     <string name="host_settings_sub">الإعدادات أدناه تكوين خادم Tachidesk الداخلي</string>
     <string name="host_system_tray_sub">استخدم رمز علبة النظام لعرض ما إذا كان الخادم قيد التشغيل</string>
     <string name="missing_sources">مصادر مفقودة:</string>
-    <string name="app_name">تاشيديسك- جوي</string>
     <string name="nav_l_shaped">على شكل حرف L</string>
     <string name="location_updates">تحديثات</string>
     <string name="new_update_title">يتوفر تحديث Tachidesk-JUI</string>

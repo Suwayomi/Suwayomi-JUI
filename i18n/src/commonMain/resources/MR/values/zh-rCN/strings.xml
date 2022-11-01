@@ -136,7 +136,6 @@
     <string name="theme">主题</string>
     <string name="server_preference_warning_sub">以下设置需要重启才能生效</string>
     <string name="theme_text">文本</string>
-    <string name="app_name">Tachidesk-JUI</string>
     <string name="language_system_default">系统默认(%1$s)</string>
     <string name="date_system_default">系统默认</string>
     <string name="scale_stretch">伸展</string>

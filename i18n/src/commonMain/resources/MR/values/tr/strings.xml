@@ -6,7 +6,6 @@
     <string name="no_previous_chapter">Önceki bölüm yok</string>
     <string name="theme">Tema</string>
     <string name="server_preference_warning_sub">Aşağıdaki ayarların etkili olması için yeniden başlatma gerekir</string>
-    <string name="app_name">Tachidesk-JUI</string>
     <string name="language_system_default">Sistem Varsayılanı (%1$s)</string>
     <string name="date_system_default">Sistem Varsayılanı</string>
     <string name="downloads_stopped">Durduruldu</string>

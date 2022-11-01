@@ -28,7 +28,6 @@
     <string name="http_port">พอร์ต HTTP</string>
     <string name="action_yes">ใช่</string>
     <string name="action_no">ไม่</string>
-    <string name="app_name">Tachidesk-JUI</string>
     <string name="new_update_title">Tachidesk-JUI มีอัปเดตพร้อมใช้งาน</string>
     <string name="action_cancel">ยกเลิก</string>
     <string name="confirm_exit">ยืนยันการออก</string>

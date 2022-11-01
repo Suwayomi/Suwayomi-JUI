@@ -180,7 +180,6 @@
     <string name="server_preference_warning_sub">Le impostazioni seguenti richiedono un riavvio per avere effetto</string>
     <string name="server_proxy">Proxy di accesso al server</string>
     <string name="action_yes">Sì</string>
-    <string name="app_name">Tachidesk-JUI</string>
     <string name="action_retry">Riprova</string>
     <string name="sources_home">Home</string>
     <string name="settings_server">Server</string>
