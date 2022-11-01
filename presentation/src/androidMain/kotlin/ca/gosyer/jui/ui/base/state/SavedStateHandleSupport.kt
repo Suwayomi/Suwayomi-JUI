@@ -42,6 +42,7 @@ private fun createSavedStateHandle(
     // for a given key stored in our ViewModel, use that. Otherwise, create
     // a new SavedStateHandle, providing it any restored state we might have saved
     val vm = getSavedStateHandlesVM.invoke(null, viewModelStoreOwner)!!
+
     @Suppress("UNCHECKED_CAST")
     val handles = vm::class.java
         .methods

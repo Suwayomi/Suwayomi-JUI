@@ -38,7 +38,7 @@ class SourceScreenViewModel(
     private val libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper,
     private val savedStateHandle: SavedStateHandle,
-    initialQuery: String?,
+    initialQuery: String?
 ) : ViewModel(contextWrapper) {
 
     @Inject constructor(
@@ -76,7 +76,7 @@ class SourceScreenViewModel(
 
     private val _usingFilters by savedStateHandle.getStateFlow { false }
 
-    private val _sourceSearchQuery  by savedStateHandle.getStateFlow<String?>{ initialQuery }
+    private val _sourceSearchQuery by savedStateHandle.getStateFlow<String?> { initialQuery }
     val sourceSearchQuery = _sourceSearchQuery.asStateFlow()
 
     private val _query = MutableStateFlow(sourceSearchQuery.value)

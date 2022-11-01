@@ -37,7 +37,7 @@ class SourceHomeScreenViewModel @Inject constructor(
     private val sourceHandler: SourceRepository,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper,
-    private val savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel(contextWrapper) {
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()

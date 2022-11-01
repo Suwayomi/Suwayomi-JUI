@@ -36,7 +36,7 @@ class SourceFiltersViewModel(
     private val sourceId: Long,
     private val sourceHandler: SourceRepository,
     contextWrapper: ContextWrapper,
-    private val savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel(contextWrapper) {
     @Inject constructor(
         sourceHandler: SourceRepository,
@@ -47,7 +47,7 @@ class SourceFiltersViewModel(
         params.sourceId,
         sourceHandler,
         contextWrapper,
-        savedStateHandle,
+        savedStateHandle
     )
 
     private val _loading = MutableStateFlow(true)
