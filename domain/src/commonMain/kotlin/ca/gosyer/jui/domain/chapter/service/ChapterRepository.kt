@@ -35,7 +35,7 @@ interface ChapterRepository {
 
     /* TODO add once ktorfit supports nullable paremters
     @FormUrlEncoded
-    @PATCH("/api/v1/manga/{mangaId}/chapter/{chapterIndex}")
+    @PATCH("api/v1/manga/{mangaId}/chapter/{chapterIndex}")
     fun updateChapter(
         @Path("mangaId") mangaId: Long,
         @Path("chapterIndex") chapterIndex: Int,

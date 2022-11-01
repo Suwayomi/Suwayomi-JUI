@@ -29,7 +29,9 @@ actual inline fun <reified VM : ViewModel> Screen.stateViewModel(
     val viewModelFactory = LocalViewModels.current
     val lifecycle = LocalLifecycleOwner.current as AndroidScreenLifecycleOwner
     val handle = remember {
-        lifecycle.defaultViewModelCreationExtras.addScreenModelKey<VM>(this, tag).createSavedStateHandle()
+        lifecycle.defaultViewModelCreationExtras
+            .addScreenModelKey<VM>(this, tag)
+            .createSavedStateHandle()
     }
     return rememberScreenModel(tag) { viewModelFactory.factory(handle) }
 }

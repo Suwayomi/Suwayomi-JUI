@@ -25,11 +25,10 @@ import java.lang.reflect.Method
 
 private const val SAVED_STATE_KEY = "androidx.lifecycle.internal.SavedStateHandlesProvider"
 
-val SavedStateHandleSupportClass: Class<*> by lazy {
-    Class.forName("androidx.lifecycle.SavedStateHandleSupport")
-}
 val getSavedStateHandlesVM: Method by lazy {
-    SavedStateHandleSupportClass.methods.first { it.name == "getSavedStateHandlesVM" }
+    Class.forName("androidx.lifecycle.SavedStateHandleSupport")
+        .methods
+        .first { it.name == "getSavedStateHandlesVM" }
 }
 
 private fun createSavedStateHandle(
@@ -43,7 +42,12 @@ private fun createSavedStateHandle(
     // for a given key stored in our ViewModel, use that. Otherwise, create
     // a new SavedStateHandle, providing it any restored state we might have saved
     val vm = getSavedStateHandlesVM.invoke(null, viewModelStoreOwner)!!
-    val handles = vm::class.java.methods.first { it.name == "getHandles" }.invoke(vm) as MutableMap<String, SavedStateHandle>
+    @Suppress("UNCHECKED_CAST")
+    val handles = vm::class.java
+        .methods
+        .first { it.name == "getHandles" }
+        .invoke(vm) as MutableMap<String, SavedStateHandle>
+
     return handles[key] ?: SavedStateHandle.createHandle(
         provider.consumeRestoredStateForKey(key),
         defaultArgs
@@ -103,7 +107,8 @@ internal class SavedStateHandlesProvider(
      * Restore the state associated with a particular SavedStateHandle, identified by its [key]
      */
     fun consumeRestoredStateForKey(key: String): Bundle? {
-        return savedStateRegistry::class.java.methods
+        return savedStateRegistry::class.java
+            .methods
             .find { it.name == "consumeRestoredStateForKey" }
             ?.invoke(savedStateRegistry, key) as? Bundle
     }
