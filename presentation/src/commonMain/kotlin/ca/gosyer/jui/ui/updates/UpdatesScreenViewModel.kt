@@ -98,9 +98,9 @@ class UpdatesScreenViewModel @Inject constructor(
                     items
                         .flatMap { (date, updates) ->
                             listOf(UpdatesUI.Header(date.toString())).dropWhile { it.date == lastUpdateDate } +
-                                    updates
-                                        .sortedByDescending { it.chapter.fetchedAt }
-                                        .map { UpdatesUI.Item(it) }
+                                updates
+                                    .sortedByDescending { it.chapter.fetchedAt }
+                                    .map { UpdatesUI.Item(it) }
                         }
                 ).toImmutableList()
 
@@ -140,7 +140,7 @@ class UpdatesScreenViewModel @Inject constructor(
                 .filterIsInstance<UpdatesUI.Item>()
                 .find { (chapterDownloadItem) ->
                     chapterDownloadItem.chapter.mangaId == chapter.mangaId &&
-                            chapterDownloadItem.chapter.index == chapter.index
+                        chapterDownloadItem.chapter.index == chapter.index
                 }
                 ?.chapterDownloadItem
                 ?.deleteDownload(deleteChapterDownload)
@@ -153,7 +153,7 @@ class UpdatesScreenViewModel @Inject constructor(
                 .filterIsInstance<UpdatesUI.Item>()
                 .find { (chapterDownloadItem) ->
                     chapterDownloadItem.chapter.mangaId == chapter.mangaId &&
-                            chapterDownloadItem.chapter.index == chapter.index
+                        chapterDownloadItem.chapter.index == chapter.index
                 }
                 ?.chapterDownloadItem
                 ?.stopDownloading(stopChapterDownload)
