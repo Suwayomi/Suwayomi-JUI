@@ -6,10 +6,6 @@
 
 package ca.gosyer.jui.ui.updates
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
 import ca.gosyer.jui.domain.chapter.interactor.QueueChapterDownload
 import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
@@ -19,22 +15,22 @@ import ca.gosyer.jui.domain.updates.interactor.GetRecentUpdates
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import me.tatarka.inject.annotations.Inject
@@ -51,9 +47,8 @@ class UpdatesScreenViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _updates = mutableStateMapOf<LocalDate, SnapshotStateList<ChapterDownloadItem>>()
-    val updates = snapshotFlow { _updates.toList().sortedByDescending { it.first }.toImmutableList() }
-        .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
+    private val _updates = MutableStateFlow<ImmutableList<UpdatesUI>>(persistentListOf())
+    val updates = _updates.asStateFlow()
 
     private val currentPage = MutableStateFlow(1)
     private val hasNextPage = MutableStateFlow(false)
@@ -80,7 +75,14 @@ class UpdatesScreenViewModel @Inject constructor(
     private suspend fun getUpdates(page: Int) {
         getRecentUpdates.asFlow(page)
             .onEach { updates ->
-                updates.page
+                val lastUpdateDate = (_updates.value.lastOrNull() as? UpdatesUI.Item)
+                    ?.let {
+                        Instant.fromEpochSeconds(it.chapterDownloadItem.chapter.fetchedAt)
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                            .date
+                            .toString()
+                    }
+                val items = updates.page
                     .map {
                         ChapterDownloadItem(
                             it.manga,
@@ -89,22 +91,28 @@ class UpdatesScreenViewModel @Inject constructor(
                     }
                     .groupBy {
                         Instant.fromEpochSeconds(it.chapter.fetchedAt).toLocalDateTime(TimeZone.currentSystemDefault()).date
-                    }.forEach { (date, chapters) ->
-                        val list = _updates.getOrPut(date, ::mutableStateListOf)
-                        list += chapters
-                        list.sortByDescending { it.chapter.fetchedAt }
                     }
+                    .entries
+                    .sortedByDescending { it.key.toEpochDays() }
+                _updates.value = _updates.value.plus(
+                    items
+                        .flatMap { (date, updates) ->
+                            listOf(UpdatesUI.Header(date.toString())).dropWhile { it.date == lastUpdateDate } +
+                                    updates
+                                        .sortedByDescending { it.chapter.fetchedAt }
+                                        .map { UpdatesUI.Item(it) }
+                        }
+                ).toImmutableList()
 
                 downloadServiceJob?.cancel()
-                val mangaIds = _updates.values.flatMap { items ->
-                    items.mapNotNull { it.manga?.id }
+                val mangaIds = _updates.value.filterIsInstance<UpdatesUI.Item>().mapNotNull {
+                    it.chapterDownloadItem.manga?.id
                 }.toSet()
                 downloadServiceJob = DownloadService.registerWatches(mangaIds)
+                    .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
                     .onEach { chapters ->
-                        _updates.forEach { (_, updates) ->
-                            updates.forEach {
-                                it.updateFrom(chapters)
-                            }
+                        _updates.value.filterIsInstance<UpdatesUI.Item>().forEach {
+                            it.chapterDownloadItem.updateFrom(chapters)
                         }
                     }
                     .launchIn(scope)
@@ -128,26 +136,26 @@ class UpdatesScreenViewModel @Inject constructor(
 
     fun deleteDownloadedChapter(chapter: Chapter) {
         scope.launch {
-            _updates
-                .firstNotNullOfOrNull { (_, chapters) ->
-                    chapters.find {
-                        it.chapter.mangaId == chapter.mangaId &&
-                            it.chapter.index == chapter.index
-                    }
+            _updates.value
+                .filterIsInstance<UpdatesUI.Item>()
+                .find { (chapterDownloadItem) ->
+                    chapterDownloadItem.chapter.mangaId == chapter.mangaId &&
+                            chapterDownloadItem.chapter.index == chapter.index
                 }
+                ?.chapterDownloadItem
                 ?.deleteDownload(deleteChapterDownload)
         }
     }
 
     fun stopDownloadingChapter(chapter: Chapter) {
         scope.launch {
-            _updates
-                .firstNotNullOfOrNull { (_, chapters) ->
-                    chapters.find {
-                        it.chapter.mangaId == chapter.mangaId &&
-                            it.chapter.index == chapter.index
-                    }
+            _updates.value
+                .filterIsInstance<UpdatesUI.Item>()
+                .find { (chapterDownloadItem) ->
+                    chapterDownloadItem.chapter.mangaId == chapter.mangaId &&
+                            chapterDownloadItem.chapter.index == chapter.index
                 }
+                ?.chapterDownloadItem
                 ?.stopDownloading(stopChapterDownload)
         }
     }
@@ -155,4 +163,9 @@ class UpdatesScreenViewModel @Inject constructor(
     private companion object {
         private val log = logging()
     }
+}
+
+sealed class UpdatesUI {
+    data class Item(val chapterDownloadItem: ChapterDownloadItem) : UpdatesUI()
+    data class Header(val date: String) : UpdatesUI()
 }

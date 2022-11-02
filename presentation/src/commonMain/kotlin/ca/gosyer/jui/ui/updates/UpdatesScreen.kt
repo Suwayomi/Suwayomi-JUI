@@ -29,7 +29,7 @@ class UpdatesScreen : Screen {
         val readerLauncher = rememberReaderLauncher()
         UpdatesScreenContent(
             isLoading = vm.isLoading.collectAsState().value,
-            dateWithUpdates = vm.updates.collectAsState().value,
+            updates = vm.updates.collectAsState().value,
             loadNextPage = vm::loadNextPage,
             openChapter = readerLauncher::launch,
             openManga = { navigator push MangaScreen(it) },

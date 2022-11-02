@@ -28,7 +28,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -41,6 +40,7 @@ import ca.gosyer.jui.ui.base.chapter.ChapterDownloadIcon
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.main.components.bottomNav
+import ca.gosyer.jui.ui.updates.UpdatesUI
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.MangaListItem
 import ca.gosyer.jui.uicore.components.MangaListItemColumn
@@ -55,12 +55,11 @@ import ca.gosyer.jui.uicore.insets.navigationBars
 import ca.gosyer.jui.uicore.insets.statusBars
 import ca.gosyer.jui.uicore.resources.stringResource
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.datetime.LocalDate
 
 @Composable
 fun UpdatesScreenContent(
     isLoading: Boolean,
-    dateWithUpdates: ImmutableList<Pair<LocalDate, SnapshotStateList<ChapterDownloadItem>>>,
+    updates: ImmutableList<UpdatesUI>,
     loadNextPage: () -> Unit,
     openChapter: (Int, Long) -> Unit,
     openManga: (Long) -> Unit,
@@ -78,7 +77,7 @@ fun UpdatesScreenContent(
             Toolbar(stringResource(MR.strings.location_updates))
         }
     ) {
-        if (isLoading || dateWithUpdates.isEmpty()) {
+        if (isLoading || updates.isEmpty()) {
             LoadingScreen(isLoading)
         } else {
             Box(Modifier.padding(it)) {
@@ -92,31 +91,32 @@ fun UpdatesScreenContent(
                         )
                     ).asPaddingValues()
                 ) {
-                    dateWithUpdates.forEachIndexed { index, (date, updates) ->
-                        item {
-                            Text(
-                                text = date.toString(),
+                    itemsIndexed(updates) { index, item ->
+                        LaunchedEffect(Unit) {
+                            if (index == updates.lastIndex) {
+                                loadNextPage()
+                            }
+                        }
+                        when (item) {
+                            is UpdatesUI.Header -> Text(
+                                text = item.date,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                 fontWeight = FontWeight.Medium
                             )
-                        }
-                        itemsIndexed(updates) { itemIndex, item ->
-                            LaunchedEffect(Unit) {
-                                if (index == dateWithUpdates.lastIndex && itemIndex == updates.lastIndex) {
-                                    loadNextPage()
-                                }
+                            is UpdatesUI.Item -> {
+                                val manga = item.chapterDownloadItem.manga!!
+                                val chapter = item.chapterDownloadItem.chapter
+                                UpdatesItem(
+                                    chapterDownloadItem = item.chapterDownloadItem,
+                                    onClickItem = { openChapter(chapter.index, chapter.mangaId) },
+                                    onClickCover = { openManga(manga.id) },
+                                    onClickDownload = downloadChapter,
+                                    onClickDeleteDownload = deleteDownloadedChapter,
+                                    onClickStopDownload = stopDownloadingChapter
+                                )
                             }
-                            val manga = item.manga!!
-                            val chapter = item.chapter
-                            UpdatesItem(
-                                chapterDownloadItem = item,
-                                onClickItem = { openChapter(chapter.index, chapter.mangaId) },
-                                onClickCover = { openManga(manga.id) },
-                                onClickDownload = downloadChapter,
-                                onClickDeleteDownload = deleteDownloadedChapter,
-                                onClickStopDownload = stopDownloadingChapter
-                            )
                         }
+
                     }
                 }
                 VerticalScrollbar(
