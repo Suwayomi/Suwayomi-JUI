@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -74,7 +75,6 @@ suspend fun main() {
     appComponent.appMigrations.runMigrations()
 
     val serverService = appComponent.serverService
-    serverService.startServer()
     serverService.initialized
         .filter { it == ServerResult.STARTED || it == ServerResult.UNUSED }
         .onEach {
@@ -178,6 +178,9 @@ suspend fun main() {
                     }
                 }
             ) {
+                LaunchedEffect(Unit) {
+                    serverService.startServer()
+                }
                 AppTheme {
                     Crossfade(serverService.initialized.collectAsState().value) { initialized ->
                         when (initialized) {
