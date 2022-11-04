@@ -53,6 +53,7 @@ kotlin {
                 api(libs.multiplatformSettings.coroutines)
                 api(libs.multiplatformSettings.serialization)
                 api(libs.dateTime)
+                api(libs.kds)
                 api(compose("org.jetbrains.compose.ui:ui-text"))
             }
         }

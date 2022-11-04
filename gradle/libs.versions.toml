@@ -52,11 +52,11 @@ appDirs = "1.2.1"
 multiplatformSettings = "1.0.0-alpha01"
 
 # Utility
-kroki = "1.23"
 desugarJdkLibs = "1.2.2"
 aboutLibraries = "10.5.1"
 dateTime = "0.4.0"
 immutableCollections = "0.3.5"
+kds = "3.3.1"
 
 # Localization
 moko = "0.20.1"
@@ -155,12 +155,12 @@ multiplatformSettings-serialization = { module = "com.russhwolf:multiplatform-se
 multiplatformSettings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettings" }
 
 # Utility
-krokiCoroutines = { module = "io.github.kerubistan.kroki:kroki-coroutines", version.ref = "kroki" }
 desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 aboutLibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
 aboutLibraries-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutLibraries" }
 dateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "dateTime" }
 immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutableCollections" }
+kds = { module = "com.soywiz.korlibs.kds:kds", version.ref = "kds" }
 
 # Localization
 moko-core = { module = "dev.icerock.moko:resources", version.ref = "moko" }

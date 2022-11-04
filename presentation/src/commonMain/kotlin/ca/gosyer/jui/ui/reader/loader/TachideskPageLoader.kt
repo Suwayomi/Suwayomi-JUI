@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.reader.loader
 
+import ca.gosyer.jui.core.lang.PriorityChannel
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
@@ -14,7 +15,6 @@ import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.util.compose.asImageBitmap
-import ca.gosyer.jui.ui.util.lang.priorityChannel
 import cafe.adriel.voyager.core.concurrent.AtomicInt32
 import com.seiko.imageloader.cache.disk.DiskCache
 import com.seiko.imageloader.component.decoder.DecodeImageResult
@@ -54,7 +54,7 @@ class TachideskPageLoader(
     /**
      * A channel used to manage requests one by one while allowing priorities.
      */
-    private val channel = priorityChannel<PriorityPage>(scope = scope)
+    private val channel = PriorityChannel<PriorityPage>(scope = scope, comparator = { i1, i2 -> i1.compareTo(i2) })
 
     /**
      * The amount of pages to preload before stopping

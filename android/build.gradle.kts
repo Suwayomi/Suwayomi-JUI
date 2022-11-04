@@ -79,9 +79,9 @@ dependencies {
     implementation(libs.multiplatformSettings.coroutines)
 
     // Utility
-    implementation(libs.krokiCoroutines)
     implementation(libs.dateTime)
     implementation(libs.immutableCollections)
+    implementation(libs.kds)
 
     // Localization
     implementation(libs.moko.core)
