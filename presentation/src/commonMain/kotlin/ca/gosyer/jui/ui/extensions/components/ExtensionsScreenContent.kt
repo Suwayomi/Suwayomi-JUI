@@ -33,6 +33,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -54,6 +55,7 @@ import ca.gosyer.jui.domain.extension.model.Extension
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.presentation.build.BuildKonfig
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
+import ca.gosyer.jui.ui.base.file.rememberFileChooser
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.extensions.ExtensionUI
@@ -74,6 +76,7 @@ import com.vanpra.composematerialdialogs.title
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList
+import okio.Source
 
 @Composable
 fun ExtensionsScreenContent(
@@ -84,11 +87,13 @@ fun ExtensionsScreenContent(
     enabledLangs: ImmutableSet<String>,
     availableLangs: ImmutableList<String>,
     setEnabledLanguages: (Set<String>) -> Unit,
+    installExtensionFile: (Source) -> Unit,
     installExtension: (Extension) -> Unit,
     updateExtension: (Extension) -> Unit,
     uninstallExtension: (Extension) -> Unit
 ) {
     val languageDialogState = rememberMaterialDialogState()
+    val chooser = rememberFileChooser(installExtensionFile)
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
@@ -97,9 +102,12 @@ fun ExtensionsScreenContent(
         ),
         topBar = {
             ExtensionsToolbar(
-                query,
-                setQuery,
-                languageDialogState::show
+                searchText = query,
+                search = setQuery,
+                openLanguageDialog = languageDialogState::show,
+                openInstallExtensionFile = {
+                    chooser.launch("apk")
+                }
             )
         }
     ) { padding ->
@@ -176,14 +184,18 @@ fun ExtensionsScreenContent(
 fun ExtensionsToolbar(
     searchText: String?,
     search: (String) -> Unit,
-    openLanguageDialog: () -> Unit
+    openLanguageDialog: () -> Unit,
+    openInstallExtensionFile: () -> Unit,
 ) {
     Toolbar(
         stringResource(MR.strings.location_extensions),
         searchText = searchText,
         search = search,
         actions = {
-            getActionItems(openLanguageDialog)
+            getActionItems(
+                openLanguageDialog,
+                openInstallExtensionFile
+            )
         }
     )
 }
@@ -317,13 +329,19 @@ fun LanguageDialog(
 @Stable
 @Composable
 private fun getActionItems(
-    openLanguageDialog: () -> Unit
+    openLanguageDialog: () -> Unit,
+    openInstallExtensionFile: () -> Unit,
 ): ImmutableList<ActionItem> {
     return listOf(
         ActionItem(
             stringResource(MR.strings.enabled_languages),
             Icons.Rounded.Translate,
             doAction = openLanguageDialog
+        ),
+        ActionItem(
+            stringResource(MR.strings.action_install),
+            Icons.Rounded.Add,
+            doAction = openInstallExtensionFile
         )
     ).toImmutableList()
 }

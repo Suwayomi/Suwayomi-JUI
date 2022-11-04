@@ -8,9 +8,12 @@ package ca.gosyer.jui.ui.extensions
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.intl.Locale
+import ca.gosyer.jui.core.io.saveTo
 import ca.gosyer.jui.core.lang.displayName
+import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.extension.interactor.GetExtensionList
 import ca.gosyer.jui.domain.extension.interactor.InstallExtension
+import ca.gosyer.jui.domain.extension.interactor.InstallExtensionFile
 import ca.gosyer.jui.domain.extension.interactor.UninstallExtension
 import ca.gosyer.jui.domain.extension.interactor.UpdateExtension
 import ca.gosyer.jui.domain.extension.model.Extension
@@ -32,10 +35,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
+import okio.FileSystem
+import okio.Source
 import org.lighthousegames.logging.logging
+import kotlin.random.Random
 
 class ExtensionsScreenViewModel @Inject constructor(
     private val getExtensionList: GetExtensionList,
+    private val installExtensionFile: InstallExtensionFile,
     private val installExtension: InstallExtension,
     private val updateExtension: UpdateExtension,
     private val uninstallExtension: UninstallExtension,
@@ -75,6 +82,26 @@ class ExtensionsScreenViewModel @Inject constructor(
     private suspend fun getExtensions() {
         extensionList.value = getExtensionList.await().orEmpty()
         _isLoading.value = false
+    }
+
+    fun install(source: Source) {
+        log.info { "Install file clicked" }
+        scope.launch {
+            try {
+                val file = FileSystem.SYSTEM_TEMPORARY_DIRECTORY
+                    .resolve("tachidesk.${Random.nextLong()}.proto.gz")
+                    .also { file ->
+                        source.saveTo(file)
+                    }
+                installExtensionFile.await(file)
+            } catch (e: Exception) {
+                log.warn(e) { "Error creating apk file" }
+                // todo toast if error
+                e.throwIfCancellation()
+            }
+
+            getExtensions()
+        }
     }
 
     fun install(extension: Extension) {

@@ -30,6 +30,7 @@ class ExtensionsScreen : Screen {
             enabledLangs = vm.enabledLangs.collectAsState().value,
             availableLangs = vm.availableLangs.collectAsState().value,
             setEnabledLanguages = vm::setEnabledLanguages,
+            installExtensionFile = vm::install,
             installExtension = vm::install,
             updateExtension = vm::update,
             uninstallExtension = vm::uninstall
