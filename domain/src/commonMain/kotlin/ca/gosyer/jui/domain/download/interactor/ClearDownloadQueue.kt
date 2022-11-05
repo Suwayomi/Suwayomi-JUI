@@ -14,8 +14,11 @@ import org.lighthousegames.logging.logging
 
 class ClearDownloadQueue @Inject constructor(private val downloadRepository: DownloadRepository) {
 
-    suspend fun await() = asFlow()
-        .catch { log.warn(it) { "Failed to clear download queue" } }
+    suspend fun await(onError: suspend (Throwable) -> Unit = {}) = asFlow()
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to clear download queue" }
+        }
         .collect()
 
     fun asFlow() = downloadRepository.clearDownloadQueue()

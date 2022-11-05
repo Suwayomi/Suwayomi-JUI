@@ -18,9 +18,13 @@ class UpdateChapterMeta @Inject constructor(private val chapterRepository: Chapt
 
     suspend fun await(
         chapter: Chapter,
-        pageOffset: Int = chapter.meta.juiPageOffset
+        pageOffset: Int = chapter.meta.juiPageOffset,
+        onError: suspend (Throwable) -> Unit = {}
     ) = asFlow(chapter, pageOffset)
-        .catch { log.warn(it) { "Failed to update ${chapter.name}(${chapter.index}) meta" } }
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update ${chapter.name}(${chapter.index}) meta" }
+        }
         .collect()
 
     fun asFlow(

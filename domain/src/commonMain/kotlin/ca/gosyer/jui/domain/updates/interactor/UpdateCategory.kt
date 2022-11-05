@@ -15,12 +15,18 @@ import org.lighthousegames.logging.logging
 
 class UpdateCategory @Inject constructor(private val updatesRepository: UpdatesRepository) {
 
-    suspend fun await(categoryId: Long) = asFlow(categoryId)
-        .catch { log.warn(it) { "Failed to update category $categoryId" } }
+    suspend fun await(categoryId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(categoryId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update category $categoryId" }
+        }
         .collect()
 
-    suspend fun await(category: Category) = asFlow(category)
-        .catch { log.warn(it) { "Failed to update category ${category.name}(${category.id})" } }
+    suspend fun await(category: Category, onError: suspend (Throwable) -> Unit = {}) = asFlow(category)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update category ${category.name}(${category.id})" }
+        }
         .collect()
 
     fun asFlow(categoryId: Long) = updatesRepository.updateCategory(categoryId)

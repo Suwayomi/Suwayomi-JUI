@@ -15,12 +15,18 @@ import org.lighthousegames.logging.logging
 
 class GetFilterList @Inject constructor(private val sourceRepository: SourceRepository) {
 
-    suspend fun await(source: Source, reset: Boolean) = asFlow(source.id, reset)
-        .catch { log.warn(it) { "Failed to get filter list for ${source.displayName} with reset = $reset" } }
+    suspend fun await(source: Source, reset: Boolean, onError: suspend (Throwable) -> Unit = {}) = asFlow(source.id, reset)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get filter list for ${source.displayName} with reset = $reset" }
+        }
         .singleOrNull()
 
-    suspend fun await(sourceId: Long, reset: Boolean) = asFlow(sourceId, reset)
-        .catch { log.warn(it) { "Failed to get filter list for $sourceId with reset = $reset" } }
+    suspend fun await(sourceId: Long, reset: Boolean, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, reset)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get filter list for $sourceId with reset = $reset" }
+        }
         .singleOrNull()
 
     fun asFlow(source: Source, reset: Boolean) = sourceRepository.getFilterList(source.id, reset)

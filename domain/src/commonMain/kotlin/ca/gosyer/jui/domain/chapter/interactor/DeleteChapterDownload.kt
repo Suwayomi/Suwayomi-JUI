@@ -16,16 +16,25 @@ import org.lighthousegames.logging.logging
 
 class DeleteChapterDownload @Inject constructor(private val chapterRepository: ChapterRepository) {
 
-    suspend fun await(mangaId: Long, index: Int) = asFlow(mangaId, index)
-        .catch { log.warn(it) { "Failed to delete chapter download for $index of $mangaId" } }
+    suspend fun await(mangaId: Long, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, index)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to delete chapter download for $index of $mangaId" }
+        }
         .collect()
 
-    suspend fun await(manga: Manga, index: Int) = asFlow(manga, index)
-        .catch { log.warn(it) { "Failed to delete chapter download for $index of ${manga.title}(${manga.id})" } }
+    suspend fun await(manga: Manga, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga, index)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to delete chapter download for $index of ${manga.title}(${manga.id})" }
+        }
         .collect()
 
-    suspend fun await(chapter: Chapter) = asFlow(chapter)
-        .catch { log.warn(it) { "Failed to delete chapter download for ${chapter.index} of ${chapter.mangaId}" } }
+    suspend fun await(chapter: Chapter, onError: suspend (Throwable) -> Unit = {}) = asFlow(chapter)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to delete chapter download for ${chapter.index} of ${chapter.mangaId}" }
+        }
         .collect()
 
     fun asFlow(mangaId: Long, index: Int) = chapterRepository.deleteChapterDownload(mangaId, index)

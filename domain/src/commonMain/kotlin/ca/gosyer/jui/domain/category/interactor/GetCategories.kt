@@ -15,11 +15,14 @@ import org.lighthousegames.logging.logging
 
 class GetCategories @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    suspend fun await(dropDefault: Boolean = false) = asFlow(dropDefault)
-        .catch { log.warn(it) { "Failed to get categories" } }
+    suspend fun await(dropDefault: Boolean = false, onError: suspend (Throwable) -> Unit = {}) = asFlow(dropDefault)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get categories" }
+        }
         .singleOrNull()
 
-    fun asFlow(dropDefault: Boolean = false) = categoryRepository.getCategories()
+    fun asFlow(dropDefault: Boolean = false, onError: suspend (Throwable) -> Unit = {}) = categoryRepository.getCategories()
         .map { categories ->
             if (dropDefault) {
                 categories.filterNot { it.name.equals("default", true) }

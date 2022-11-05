@@ -18,20 +18,32 @@ import org.lighthousegames.logging.logging
 
 class SetSourceFilter @Inject constructor(private val sourceRepository: SourceRepository) {
 
-    suspend fun await(source: Source, filterIndex: Int, filter: Any) = asFlow(source, filterIndex, filter)
-        .catch { log.warn(it) { "Failed to set filter for ${source.displayName} with index = $filterIndex and value = $filter" } }
+    suspend fun await(source: Source, filterIndex: Int, filter: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(source, filterIndex, filter)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to set filter for ${source.displayName} with index = $filterIndex and value = $filter" }
+        }
         .collect()
 
-    suspend fun await(sourceId: Long, filterIndex: Int, filter: Any) = asFlow(sourceId, filterIndex, filter)
-        .catch { log.warn(it) { "Failed to set filter for $sourceId with index = $filterIndex and value = $filter" } }
+    suspend fun await(sourceId: Long, filterIndex: Int, filter: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, filterIndex, filter)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to set filter for $sourceId with index = $filterIndex and value = $filter" }
+        }
         .collect()
 
-    suspend fun await(source: Source, filterIndex: Int, childFilterIndex: Int, filter: Any) = asFlow(source, filterIndex, childFilterIndex, filter)
-        .catch { log.warn(it) { "Failed to set filter for ${source.displayName} with index = $filterIndex and childIndex = $childFilterIndex and value = $filter" } }
+    suspend fun await(source: Source, filterIndex: Int, childFilterIndex: Int, filter: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(source, filterIndex, childFilterIndex, filter)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to set filter for ${source.displayName} with index = $filterIndex and childIndex = $childFilterIndex and value = $filter" }
+        }
         .collect()
 
-    suspend fun await(sourceId: Long, filterIndex: Int, childFilterIndex: Int, filter: Any) = asFlow(sourceId, filterIndex, childFilterIndex, filter)
-        .catch { log.warn(it) { "Failed to set filter for $sourceId with index = $filterIndex and childIndex = $childFilterIndex and value = $filter" } }
+    suspend fun await(sourceId: Long, filterIndex: Int, childFilterIndex: Int, filter: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, filterIndex, childFilterIndex, filter)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to set filter for $sourceId with index = $filterIndex and childIndex = $childFilterIndex and value = $filter" }
+        }
         .collect()
 
     fun asFlow(source: Source, filterIndex: Int, filter: Any) = sourceRepository.setFilter(

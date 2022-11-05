@@ -16,16 +16,25 @@ import org.lighthousegames.logging.logging
 
 class QueueChapterDownload @Inject constructor(private val chapterRepository: ChapterRepository) {
 
-    suspend fun await(mangaId: Long, index: Int) = asFlow(mangaId, index)
-        .catch { log.warn(it) { "Failed to queue chapter $index of $mangaId for a download" } }
+    suspend fun await(mangaId: Long, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, index)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to queue chapter $index of $mangaId for a download" }
+        }
         .collect()
 
-    suspend fun await(manga: Manga, index: Int) = asFlow(manga, index)
-        .catch { log.warn(it) { "Failed to queue chapter $index of ${manga.title}(${manga.id}) for a download" } }
+    suspend fun await(manga: Manga, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga, index)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to queue chapter $index of ${manga.title}(${manga.id}) for a download" }
+        }
         .collect()
 
-    suspend fun await(chapter: Chapter) = asFlow(chapter)
-        .catch { log.warn(it) { "Failed to queue chapter ${chapter.index} of ${chapter.mangaId} for a download" } }
+    suspend fun await(chapter: Chapter, onError: suspend (Throwable) -> Unit = {}) = asFlow(chapter)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to queue chapter ${chapter.index} of ${chapter.mangaId} for a download" }
+        }
         .collect()
 
     fun asFlow(mangaId: Long, index: Int) = chapterRepository.queueChapterDownload(mangaId, index)

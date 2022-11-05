@@ -18,9 +18,13 @@ class UpdateMangaMeta @Inject constructor(private val mangaRepository: MangaRepo
 
     suspend fun await(
         manga: Manga,
-        readerMode: String = manga.meta.juiReaderMode
+        readerMode: String = manga.meta.juiReaderMode,
+        onError: suspend (Throwable) -> Unit = {}
     ) = asFlow(manga, readerMode)
-        .catch { log.warn(it) { "Failed to update ${manga.title}(${manga.id}) meta" } }
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update ${manga.title}(${manga.id}) meta" }
+        }
         .collect()
 
     fun asFlow(

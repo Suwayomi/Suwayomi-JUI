@@ -25,8 +25,11 @@ class UpdateChecker @Inject constructor(
     private val updatePreferences: UpdatePreferences,
     private val client: Http
 ) {
-    suspend fun await(manualFetch: Boolean) = asFlow(manualFetch)
-        .catch { log.warn(it) { "Failed to check for updates" } }
+    suspend fun await(manualFetch: Boolean, onError: suspend (Throwable) -> Unit = {}) = asFlow(manualFetch)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to check for updates" }
+        }
         .singleOrNull()
 
     fun asFlow(manualFetch: Boolean) = flow {

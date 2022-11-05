@@ -14,8 +14,11 @@ import org.lighthousegames.logging.logging
 
 class AboutServer @Inject constructor(private val settingsRepository: SettingsRepository) {
 
-    suspend fun await() = asFlow()
-        .catch { log.warn(it) { "Failed to get server information" } }
+    suspend fun await(onError: suspend (Throwable) -> Unit = {}) = asFlow()
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get server information" }
+        }
         .singleOrNull()
 
     fun asFlow() = settingsRepository.aboutServer()

@@ -14,8 +14,11 @@ import org.lighthousegames.logging.logging
 
 class CheckUpdate @Inject constructor(private val settingsRepository: SettingsRepository) {
 
-    suspend fun await() = asFlow()
-        .catch { log.warn(it) { "Failed to check for server updates" } }
+    suspend fun await(onError: suspend (Throwable) -> Unit = {}) = asFlow()
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to check for server updates" }
+        }
         .singleOrNull()
 
     fun asFlow() = settingsRepository.checkUpdate()

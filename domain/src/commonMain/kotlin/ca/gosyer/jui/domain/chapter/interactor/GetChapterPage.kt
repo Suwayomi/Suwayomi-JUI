@@ -21,26 +21,38 @@ class GetChapterPage @Inject constructor(private val chapterRepository: ChapterR
         mangaId: Long,
         index: Int,
         pageNum: Int,
-        block: HttpRequestBuilder.() -> Unit
+        block: HttpRequestBuilder.() -> Unit,
+        onError: suspend (Throwable) -> Unit = {}
     ) = asFlow(mangaId, index, pageNum, block)
-        .catch { log.warn(it) { "Failed to get page $pageNum for chapter $index for $mangaId" } }
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get page $pageNum for chapter $index for $mangaId" }
+        }
         .singleOrNull()
 
     suspend fun await(
         manga: Manga,
         index: Int,
         pageNum: Int,
-        block: HttpRequestBuilder.() -> Unit
+        block: HttpRequestBuilder.() -> Unit,
+        onError: suspend (Throwable) -> Unit = {}
     ) = asFlow(manga, index, pageNum, block)
-        .catch { log.warn(it) { "Failed to get page $pageNum for chapter $index for ${manga.title}(${manga.id})" } }
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get page $pageNum for chapter $index for ${manga.title}(${manga.id})" }
+        }
         .singleOrNull()
 
     suspend fun await(
         chapter: Chapter,
         pageNum: Int,
-        block: HttpRequestBuilder.() -> Unit
+        block: HttpRequestBuilder.() -> Unit,
+        onError: suspend (Throwable) -> Unit = {}
     ) = asFlow(chapter, pageNum, block)
-        .catch { log.warn(it) { "Failed to get page $pageNum for chapter ${chapter.index} for ${chapter.mangaId}" } }
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get page $pageNum for chapter ${chapter.index} for ${chapter.mangaId}" }
+        }
         .singleOrNull()
 
     fun asFlow(

@@ -15,12 +15,18 @@ import org.lighthousegames.logging.logging
 
 class AddMangaToLibrary @Inject constructor(private val libraryRepository: LibraryRepository) {
 
-    suspend fun await(mangaId: Long) = asFlow(mangaId)
-        .catch { log.warn(it) { "Failed to add $mangaId to library" } }
+    suspend fun await(mangaId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to add $mangaId to library" }
+        }
         .singleOrNull()
 
-    suspend fun await(manga: Manga) = asFlow(manga)
-        .catch { log.warn(it) { "Failed to add ${manga.title}(${manga.id}) to library" } }
+    suspend fun await(manga: Manga, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to add ${manga.title}(${manga.id}) to library" }
+        }
         .singleOrNull()
 
     fun asFlow(mangaId: Long) = libraryRepository.addMangaToLibrary(mangaId)

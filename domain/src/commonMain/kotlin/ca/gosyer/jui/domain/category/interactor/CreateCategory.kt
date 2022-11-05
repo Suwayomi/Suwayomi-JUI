@@ -14,8 +14,11 @@ import org.lighthousegames.logging.logging
 
 class CreateCategory @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    suspend fun await(name: String) = asFlow(name)
-        .catch { log.warn(it) { "Failed to create category $name" } }
+    suspend fun await(name: String, onError: suspend (Throwable) -> Unit = {}) = asFlow(name)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to create category $name" }
+        }
         .collect()
 
     fun asFlow(name: String) = categoryRepository.createCategory(name)

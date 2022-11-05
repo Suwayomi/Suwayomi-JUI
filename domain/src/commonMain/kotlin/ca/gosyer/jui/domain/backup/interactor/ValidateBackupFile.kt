@@ -16,8 +16,11 @@ import org.lighthousegames.logging.logging
 
 class ValidateBackupFile @Inject constructor(private val backupRepository: BackupRepository) {
 
-    suspend fun await(file: Path, block: HttpRequestBuilder.() -> Unit = {}) = asFlow(file, block)
-        .catch { log.warn(it) { "Failed to validate backup ${file.name}" } }
+    suspend fun await(file: Path, block: HttpRequestBuilder.() -> Unit = {}, onError: suspend (Throwable) -> Unit = {}) = asFlow(file, block)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to validate backup ${file.name}" }
+        }
         .singleOrNull()
 
     fun asFlow(file: Path, block: HttpRequestBuilder.() -> Unit = {}) =

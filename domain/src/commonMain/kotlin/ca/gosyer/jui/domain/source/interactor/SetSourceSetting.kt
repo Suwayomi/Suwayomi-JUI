@@ -16,12 +16,18 @@ import org.lighthousegames.logging.logging
 
 class SetSourceSetting @Inject constructor(private val sourceRepository: SourceRepository) {
 
-    suspend fun await(source: Source, settingIndex: Int, setting: Any) = asFlow(source, settingIndex, setting)
-        .catch { log.warn(it) { "Failed to set setting for ${source.displayName} with index = $settingIndex and value = $setting" } }
+    suspend fun await(source: Source, settingIndex: Int, setting: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(source, settingIndex, setting)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to set setting for ${source.displayName} with index = $settingIndex and value = $setting" }
+        }
         .collect()
 
-    suspend fun await(sourceId: Long, settingIndex: Int, setting: Any) = asFlow(sourceId, settingIndex, setting)
-        .catch { log.warn(it) { "Failed to set setting for $sourceId with index = $settingIndex and value = $setting" } }
+    suspend fun await(sourceId: Long, settingIndex: Int, setting: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, settingIndex, setting)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to set setting for $sourceId with index = $settingIndex and value = $setting" }
+        }
         .collect()
 
     fun asFlow(source: Source, settingIndex: Int, setting: Any) = sourceRepository.setSourceSetting(

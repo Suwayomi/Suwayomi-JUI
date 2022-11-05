@@ -15,12 +15,18 @@ import org.lighthousegames.logging.logging
 
 class DeleteCategory @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    suspend fun await(categoryId: Long) = asFlow(categoryId)
-        .catch { log.warn(it) { "Failed to delete category $categoryId" } }
+    suspend fun await(categoryId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(categoryId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to delete category $categoryId" }
+        }
         .collect()
 
-    suspend fun await(category: Category) = asFlow(category)
-        .catch { log.warn(it) { "Failed to delete category ${category.name}" } }
+    suspend fun await(category: Category, onError: suspend (Throwable) -> Unit = {}) = asFlow(category)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to delete category ${category.name}" }
+        }
         .collect()
 
     fun asFlow(categoryId: Long) = categoryRepository.deleteCategory(categoryId)

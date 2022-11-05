@@ -14,8 +14,11 @@ import org.lighthousegames.logging.logging
 
 class ReorderCategory @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    suspend fun await(to: Int, from: Int) = asFlow(to, from)
-        .catch { log.warn(it) { "Failed to move category from $from to $to" } }
+    suspend fun await(to: Int, from: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(to, from)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to move category from $from to $to" }
+        }
         .collect()
 
     fun asFlow(to: Int, from: Int) = categoryRepository.reorderCategory(to, from)

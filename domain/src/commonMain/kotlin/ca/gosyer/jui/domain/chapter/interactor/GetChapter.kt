@@ -16,16 +16,25 @@ import org.lighthousegames.logging.logging
 
 class GetChapter @Inject constructor(private val chapterRepository: ChapterRepository) {
 
-    suspend fun await(mangaId: Long, index: Int) = asFlow(mangaId, index)
-        .catch { log.warn(it) { "Failed to get chapter $index for $mangaId" } }
+    suspend fun await(mangaId: Long, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, index)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get chapter $index for $mangaId" }
+        }
         .singleOrNull()
 
-    suspend fun await(manga: Manga, index: Int) = asFlow(manga, index)
-        .catch { log.warn(it) { "Failed to get chapter $index for ${manga.title}(${manga.id})" } }
+    suspend fun await(manga: Manga, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga, index)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get chapter $index for ${manga.title}(${manga.id})" }
+        }
         .singleOrNull()
 
-    suspend fun await(chapter: Chapter) = asFlow(chapter)
-        .catch { log.warn(it) { "Failed to get chapter ${chapter.index} for ${chapter.mangaId}" } }
+    suspend fun await(chapter: Chapter, onError: suspend (Throwable) -> Unit = {}) = asFlow(chapter)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get chapter ${chapter.index} for ${chapter.mangaId}" }
+        }
         .singleOrNull()
 
     fun asFlow(mangaId: Long, index: Int) = chapterRepository.getChapter(mangaId, index)

@@ -14,8 +14,11 @@ import org.lighthousegames.logging.logging
 
 class StopDownloading @Inject constructor(private val downloadRepository: DownloadRepository) {
 
-    suspend fun await() = asFlow()
-        .catch { log.warn(it) { "Failed to stop downloader" } }
+    suspend fun await(onError: suspend (Throwable) -> Unit = {}) = asFlow()
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to stop downloader" }
+        }
         .collect()
 
     fun asFlow() = downloadRepository.stopDownloading()

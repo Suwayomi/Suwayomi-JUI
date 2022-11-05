@@ -19,24 +19,36 @@ class UpdateChapterRead @Inject constructor(private val chapterRepository: Chapt
     suspend fun await(
         mangaId: Long,
         index: Int,
-        read: Boolean
+        read: Boolean,
+        onError: suspend (Throwable) -> Unit = {}
     ) = asFlow(mangaId, index, read)
-        .catch { log.warn(it) { "Failed to update chapter read status for chapter $index of $mangaId" } }
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update chapter read status for chapter $index of $mangaId" }
+        }
         .collect()
 
     suspend fun await(
         manga: Manga,
         index: Int,
-        read: Boolean
+        read: Boolean,
+        onError: suspend (Throwable) -> Unit = {}
     ) = asFlow(manga, index, read)
-        .catch { log.warn(it) { "Failed to update chapter read status for chapter $index of ${manga.title}(${manga.id})" } }
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update chapter read status for chapter $index of ${manga.title}(${manga.id})" }
+        }
         .collect()
 
     suspend fun await(
         chapter: Chapter,
-        read: Boolean
+        read: Boolean,
+        onError: suspend (Throwable) -> Unit = {}
     ) = asFlow(chapter, read)
-        .catch { log.warn(it) { "Failed to update chapter read status for chapter ${chapter.index} of ${chapter.mangaId}" } }
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update chapter read status for chapter ${chapter.index} of ${chapter.mangaId}" }
+        }
         .collect()
 
     fun asFlow(

@@ -15,8 +15,11 @@ import org.lighthousegames.logging.logging
 
 class InstallExtensionFile @Inject constructor(private val extensionRepository: ExtensionRepository) {
 
-    suspend fun await(path: Path) = asFlow(path)
-        .catch { log.warn(it) { "Failed to install extension from $path" } }
+    suspend fun await(path: Path, onError: suspend (Throwable) -> Unit = {}) = asFlow(path)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to install extension from $path" }
+        }
         .collect()
 
     fun asFlow(path: Path) = extensionRepository.installExtension(ExtensionRepository.buildExtensionFormData(path))

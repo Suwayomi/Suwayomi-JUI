@@ -15,15 +15,21 @@ import org.lighthousegames.logging.logging
 
 class ModifyCategory @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    suspend fun await(categoryId: Long, name: String) = asFlow(
+    suspend fun await(categoryId: Long, name: String, onError: suspend (Throwable) -> Unit = {}) = asFlow(
         categoryId = categoryId,
         name = name
-    ).catch { log.warn(it) { "Failed to modify category $categoryId with options: name=$name" } }.collect()
+    ).catch {
+        onError(it)
+        log.warn(it) { "Failed to modify category $categoryId with options: name=$name" }
+    }.collect()
 
-    suspend fun await(category: Category, name: String? = null) = asFlow(
+    suspend fun await(category: Category, name: String? = null, onError: suspend (Throwable) -> Unit = {}) = asFlow(
         category = category,
         name = name
-    ).catch { log.warn(it) { "Failed to modify category ${category.name} with options: name=$name" } }.collect()
+    ).catch {
+        onError(it)
+        log.warn(it) { "Failed to modify category ${category.name} with options: name=$name" }
+    }.collect()
 
     fun asFlow(categoryId: Long, name: String) = categoryRepository.modifyCategory(
         categoryId = categoryId,

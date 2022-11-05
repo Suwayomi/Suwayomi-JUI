@@ -15,12 +15,18 @@ import org.lighthousegames.logging.logging
 
 class GetSourceSettings @Inject constructor(private val sourceRepository: SourceRepository) {
 
-    suspend fun await(source: Source) = asFlow(source.id)
-        .catch { log.warn(it) { "Failed to get source settings for ${source.displayName}" } }
+    suspend fun await(source: Source, onError: suspend (Throwable) -> Unit = {}) = asFlow(source.id)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get source settings for ${source.displayName}" }
+        }
         .singleOrNull()
 
-    suspend fun await(sourceId: Long) = asFlow(sourceId)
-        .catch { log.warn(it) { "Failed to get source settings for $sourceId" } }
+    suspend fun await(sourceId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get source settings for $sourceId" }
+        }
         .singleOrNull()
 
     fun asFlow(source: Source) = sourceRepository.getSourceSettings(source.id)

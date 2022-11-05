@@ -15,8 +15,11 @@ import org.lighthousegames.logging.logging
 
 class UninstallExtension @Inject constructor(private val extensionRepository: ExtensionRepository) {
 
-    suspend fun await(extension: Extension) = asFlow(extension)
-        .catch { log.warn(it) { "Failed to uninstall extension ${extension.apkName}" } }
+    suspend fun await(extension: Extension, onError: suspend (Throwable) -> Unit = {}) = asFlow(extension)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to uninstall extension ${extension.apkName}" }
+        }
         .collect()
 
     fun asFlow(extension: Extension) = extensionRepository.uninstallExtension(extension.pkgName)

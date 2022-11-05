@@ -16,12 +16,18 @@ import org.lighthousegames.logging.logging
 
 class RemoveMangaFromCategory @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    suspend fun await(mangaId: Long, categoryId: Long) = asFlow(mangaId, categoryId)
-        .catch { log.warn(it) { "Failed to remove $mangaId from category $categoryId" } }
+    suspend fun await(mangaId: Long, categoryId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, categoryId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to remove $mangaId from category $categoryId" }
+        }
         .collect()
 
-    suspend fun await(manga: Manga, category: Category) = asFlow(manga, category)
-        .catch { log.warn(it) { "Failed to remove ${manga.title}(${manga.id}) from category ${category.name}" } }
+    suspend fun await(manga: Manga, category: Category, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga, category)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to remove ${manga.title}(${manga.id}) from category ${category.name}" }
+        }
         .collect()
 
     fun asFlow(mangaId: Long, categoryId: Long) = categoryRepository.removeMangaFromCategory(mangaId, categoryId)
