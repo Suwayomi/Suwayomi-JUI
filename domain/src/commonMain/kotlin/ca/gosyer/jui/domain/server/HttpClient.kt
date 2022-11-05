@@ -15,6 +15,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.ProxyBuilder
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
 import io.ktor.client.plugins.auth.providers.DigestAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
@@ -29,6 +30,8 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 import io.ktor.client.plugins.auth.Auth as AuthPlugin
 
 typealias Http = HttpClient
@@ -81,6 +84,11 @@ class HttpProvider @Inject constructor() {
                         }
                     }
                 }
+            }
+            install(HttpTimeout) {
+                connectTimeoutMillis = 30.seconds.inWholeMilliseconds
+                requestTimeoutMillis = 30.seconds.inWholeMilliseconds
+                socketTimeoutMillis = 2.minutes.inWholeMilliseconds
             }
             install(ContentNegotiation) {
                 json(
