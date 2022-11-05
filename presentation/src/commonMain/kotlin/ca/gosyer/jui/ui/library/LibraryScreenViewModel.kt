@@ -288,7 +288,7 @@ class LibraryScreenViewModel @Inject constructor(
 
     fun removeManga(mangaId: Long) {
         scope.launch {
-            removeMangaFromLibrary.await(mangaId)
+            removeMangaFromLibrary.await(mangaId, onError = { toast(it.message.orEmpty()) })
         }
     }
 
@@ -297,11 +297,11 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     fun updateLibrary() {
-        scope.launch { updateLibrary.await() }
+        scope.launch { updateLibrary.await(onError = { toast(it.message.orEmpty()) }) }
     }
 
     fun updateCategory(category: Category) {
-        scope.launch { updateCategory.await(category) }
+        scope.launch { updateCategory.await(category, onError = { toast(it.message.orEmpty()) }) }
     }
 
     private companion object {

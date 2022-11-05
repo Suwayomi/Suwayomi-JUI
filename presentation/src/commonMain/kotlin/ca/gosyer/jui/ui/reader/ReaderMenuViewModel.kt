@@ -191,7 +191,7 @@ class ReaderMenuViewModel @Inject constructor(
     fun setMangaReaderMode(mode: String) {
         scope.launchDefault {
             _manga.value?.let {
-                updateMangaMeta.await(it, mode)
+                updateMangaMeta.await(it, mode, onError = { toast(it.message.orEmpty()) })
             }
             initManga(params.mangaId)
         }
@@ -307,14 +307,14 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     private fun markChapterRead(chapter: ReaderChapter) {
-        scope.launch { updateChapterRead.await(chapter.chapter, read = true) }
+        scope.launch { updateChapterRead.await(chapter.chapter, read = true, onError = { toast(it.message.orEmpty()) }) }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun sendProgress(chapter: Chapter? = this.chapter.value?.chapter, lastPageRead: Int = currentPage.value) {
         chapter ?: return
         if (chapter.read) return
-        GlobalScope.launch { updateChapterLastPageRead.await(chapter, lastPageRead = lastPageRead) }
+        GlobalScope.launch { updateChapterLastPageRead.await(chapter, lastPageRead = lastPageRead, onError = { toast(it.message.orEmpty()) }) }
     }
 
     fun updateLastPageReadOffset(offset: Int) {
@@ -323,7 +323,7 @@ class ReaderMenuViewModel @Inject constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun updateLastPageReadOffset(chapter: Chapter, offset: Int) {
-        GlobalScope.launch { updateChapterMeta.await(chapter, offset) }
+        GlobalScope.launch { updateChapterMeta.await(chapter, offset, onError = { toast(it.message.orEmpty()) }) }
     }
 
     override fun onDispose() {

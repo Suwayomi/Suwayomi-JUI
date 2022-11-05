@@ -9,7 +9,6 @@ package ca.gosyer.jui.ui.main
 import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
-import ca.gosyer.jui.uicore.vm.Length
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -30,6 +29,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun confirmExitToast() {
-        toast(MR.strings.confirm_exit_toast.toPlatformString(), Length.SHORT)
+        toast(MR.strings.confirm_exit_toast.toPlatformString())
     }
 }

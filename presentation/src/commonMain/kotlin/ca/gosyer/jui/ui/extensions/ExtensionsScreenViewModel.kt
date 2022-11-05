@@ -80,7 +80,7 @@ class ExtensionsScreenViewModel @Inject constructor(
     }
 
     private suspend fun getExtensions() {
-        extensionList.value = getExtensionList.await().orEmpty()
+        extensionList.value = getExtensionList.await(onError = { toast(it.message.orEmpty()) }).orEmpty()
         _isLoading.value = false
     }
 
@@ -93,7 +93,7 @@ class ExtensionsScreenViewModel @Inject constructor(
                     .also { file ->
                         source.saveTo(file)
                     }
-                installExtensionFile.await(file)
+                installExtensionFile.await(file, onError = { toast(it.message.orEmpty()) })
             } catch (e: Exception) {
                 log.warn(e) { "Error creating apk file" }
                 // todo toast if error
@@ -107,7 +107,7 @@ class ExtensionsScreenViewModel @Inject constructor(
     fun install(extension: Extension) {
         log.info { "Install clicked" }
         scope.launch {
-            installExtension.await(extension)
+            installExtension.await(extension, onError = { toast(it.message.orEmpty()) })
             getExtensions()
         }
     }
@@ -115,7 +115,7 @@ class ExtensionsScreenViewModel @Inject constructor(
     fun update(extension: Extension) {
         log.info { "Update clicked" }
         scope.launch {
-            updateExtension.await(extension)
+            updateExtension.await(extension, onError = { toast(it.message.orEmpty()) })
             getExtensions()
         }
     }
@@ -123,7 +123,7 @@ class ExtensionsScreenViewModel @Inject constructor(
     fun uninstall(extension: Extension) {
         log.info { "Uninstall clicked" }
         scope.launch {
-            uninstallExtension.await(extension)
+            uninstallExtension.await(extension, onError = { toast(it.message.orEmpty()) })
             getExtensions()
         }
     }

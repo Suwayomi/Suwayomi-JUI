@@ -87,6 +87,7 @@ class GlobalSearchViewModel @Inject constructor(
                 _isLoading.value = false
             }
             .catch {
+                toast(it.message.orEmpty())
                 log.warn(it) { "Error getting sources" }
                 _isLoading.value = false
             }

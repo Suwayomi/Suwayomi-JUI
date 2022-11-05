@@ -54,25 +54,25 @@ class DownloadsScreenViewModel @Inject constructor(
         .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     fun start() {
-        scope.launch { startDownloading.await() }
+        scope.launch { startDownloading.await(onError = { toast(it.message.orEmpty()) }) }
     }
 
     fun pause() {
-        scope.launch { stopDownloading.await() }
+        scope.launch { stopDownloading.await(onError = { toast(it.message.orEmpty()) }) }
     }
 
     fun clear() {
-        scope.launch { clearDownloadQueue.await() }
+        scope.launch { clearDownloadQueue.await(onError = { toast(it.message.orEmpty()) }) }
     }
 
     fun stopDownload(chapter: Chapter) {
-        scope.launch { stopChapterDownload.await(chapter) }
+        scope.launch { stopChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) }) }
     }
 
     fun moveToBottom(chapter: Chapter) {
         scope.launch {
-            stopChapterDownload.await(chapter)
-            queueChapterDownload.await(chapter)
+            stopChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) })
+            queueChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) })
         }
     }
 

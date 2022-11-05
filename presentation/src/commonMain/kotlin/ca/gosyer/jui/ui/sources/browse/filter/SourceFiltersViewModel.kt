@@ -76,10 +76,11 @@ class SourceFiltersViewModel(
                                 .filterNotNull()
                                 .onEach {
                                     setSourceFilter.await(
-                                        sourceId,
-                                        filter.index,
-                                        childFilter.index,
-                                        it
+                                        sourceId = sourceId,
+                                        filterIndex = filter.index,
+                                        childFilterIndex = childFilter.index,
+                                        filter = it,
+                                        onError = { toast(it.message.orEmpty()) }
                                     )
                                     getFilters()
                                 }
@@ -89,9 +90,10 @@ class SourceFiltersViewModel(
                         filter.state.drop(1).filterNotNull()
                             .onEach {
                                 setSourceFilter.await(
-                                    sourceId,
-                                    filter.index,
-                                    it
+                                    sourceId = sourceId,
+                                    filterIndex = filter.index,
+                                    filter = it,
+                                    onError = { toast(it.message.orEmpty()) }
                                 )
                                 getFilters()
                             }
@@ -117,6 +119,7 @@ class SourceFiltersViewModel(
                 _loading.value = false
             }
             .catch {
+                toast(it.message.orEmpty())
                 log.warn(it) { "Error getting filters" }
                 _loading.value = false
             }

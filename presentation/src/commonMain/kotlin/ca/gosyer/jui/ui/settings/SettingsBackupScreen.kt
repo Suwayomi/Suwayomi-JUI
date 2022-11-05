@@ -157,6 +157,7 @@ class SettingsBackupViewModel @Inject constructor(
                     }
                 }
                 .catch {
+                    toast(it.message.orEmpty())
                     log.warn(it) { "Error importing backup" }
                     _restoreStatus.value = Status.Error
                 }
@@ -181,6 +182,7 @@ class SettingsBackupViewModel @Inject constructor(
                 _restoreStatus.value = Status.Success
             }
             .catch {
+                toast(it.message.orEmpty())
                 log.warn(it) { "Error importing backup" }
                 _restoreStatus.value = Status.Error
             }
@@ -228,6 +230,7 @@ class SettingsBackupViewModel @Inject constructor(
                 _createFlow.emit(filename)
             }
             .catch {
+                toast(it.message.orEmpty())
                 log.warn(it) { "Error exporting backup" }
                 _creatingStatus.value = Status.Error
             }

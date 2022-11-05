@@ -84,7 +84,10 @@ class MangaScreenViewModel @Inject constructor(
 
     val categories = getCategories.asFlow(true)
         .map { it.toImmutableList() }
-        .catch { log.warn(it) { "Failed to get categories" } }
+        .catch {
+            toast(it.message.orEmpty())
+            log.warn(it) { "Failed to get categories" }
+        }
         .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     private val _mangaCategories = MutableStateFlow<ImmutableList<Category>>(persistentListOf())
@@ -169,14 +172,12 @@ class MangaScreenViewModel @Inject constructor(
     private suspend fun refreshChaptersAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
             val chapters = if (refresh) {
-                refreshChapters.await(mangaId)
+                refreshChapters.await(mangaId, onError = { toast(it.message.orEmpty()) })
             } else {
-                getChapters.await(mangaId)
+                getChapters.await(mangaId, onError = { toast(it.message.orEmpty()) })
             }
             if (chapters != null) {
                 _chapters.value = chapters.toDownloadChapters()
-            } else {
-                // TODO: 2022-07-01 Error toast
             }
         }
     }
@@ -185,7 +186,7 @@ class MangaScreenViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 if (manga.inLibrary) {
-                    removeMangaFromLibrary.await(manga)
+                    removeMangaFromLibrary.await(manga, onError = { toast(it.message.orEmpty()) })
                     refreshMangaAsync(manga.id).await()
                 } else {
                     if (categories.value.isEmpty()) {
@@ -203,13 +204,13 @@ class MangaScreenViewModel @Inject constructor(
             manga.value?.let { manga ->
                 if (manga.inLibrary) {
                     oldCategories.filterNot { it in categories }.forEach {
-                        removeMangaFromCategory.await(manga, it)
+                        removeMangaFromCategory.await(manga, it, onError = { toast(it.message.orEmpty()) })
                     }
                 } else {
-                    addMangaToLibrary.await(manga)
+                    addMangaToLibrary.await(manga, onError = { toast(it.message.orEmpty()) })
                 }
                 categories.filterNot { it in oldCategories }.forEach {
-                    addMangaToCategory.await(manga, it)
+                    addMangaToCategory.await(manga, it, onError = { toast(it.message.orEmpty()) })
                 }
                 refreshMangaAsync(manga.id).await()
             }
@@ -222,7 +223,7 @@ class MangaScreenViewModel @Inject constructor(
         val chapter = findChapter(index) ?: return
         scope.launch {
             manga.value?.let { manga ->
-                updateChapterRead.await(manga, index, read = chapter.read.not())
+                updateChapterRead.await(manga, index, read = chapter.read.not(), onError = { toast(it.message.orEmpty()) })
                 refreshChaptersAsync(manga.id).await()
             }
         }
@@ -232,7 +233,7 @@ class MangaScreenViewModel @Inject constructor(
         val chapter = findChapter(index) ?: return
         scope.launch {
             manga.value?.let { manga ->
-                updateChapterBookmarked.await(manga, index, bookmarked = chapter.bookmarked.not())
+                updateChapterBookmarked.await(manga, index, bookmarked = chapter.bookmarked.not(), onError = { toast(it.message.orEmpty()) })
                 refreshChaptersAsync(manga.id).await()
             }
         }
@@ -241,7 +242,7 @@ class MangaScreenViewModel @Inject constructor(
     fun markPreviousRead(index: Int) {
         scope.launch {
             manga.value?.let { manga ->
-                updateChapterMarkPreviousRead.await(manga, index)
+                updateChapterMarkPreviousRead.await(manga, index, onError = { toast(it.message.orEmpty()) })
                 refreshChaptersAsync(manga.id).await()
             }
         }
@@ -249,7 +250,7 @@ class MangaScreenViewModel @Inject constructor(
 
     fun downloadChapter(index: Int) {
         manga.value?.let { manga ->
-            scope.launch { queueChapterDownload.await(manga, index) }
+            scope.launch { queueChapterDownload.await(manga, index, onError = { toast(it.message.orEmpty()) }) }
         }
     }
 

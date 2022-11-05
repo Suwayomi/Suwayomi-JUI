@@ -49,13 +49,13 @@ class AboutViewModel @Inject constructor(
 
     private fun getAbout() {
         scope.launch {
-            _aboutHolder.value = aboutServer.await()
+            _aboutHolder.value = aboutServer.await(onError = { toast(it.message.orEmpty()) })
         }
     }
 
     fun checkForUpdates() {
         scope.launch {
-            when (val update = updateChecker.await(true)) {
+            when (val update = updateChecker.await(true, onError = { toast(it.message.orEmpty()) })) {
                 is Update.UpdateFound -> _updates.emit(update)
                 else -> Unit
             }

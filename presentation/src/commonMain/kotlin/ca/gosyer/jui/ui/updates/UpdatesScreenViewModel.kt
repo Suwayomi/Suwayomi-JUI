@@ -121,6 +121,7 @@ class UpdatesScreenViewModel @Inject constructor(
                 _isLoading.value = false
             }
             .catch {
+                toast(it.message.orEmpty())
                 log.warn(it) { "Failed to get updates for page $page" }
                 if (page > 1) {
                     currentPage.value = page - 1
@@ -131,7 +132,7 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun downloadChapter(chapter: Chapter) {
-        scope.launch { queueChapterDownload.await(chapter) }
+        scope.launch { queueChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) }) }
     }
 
     fun deleteDownloadedChapter(chapter: Chapter) {

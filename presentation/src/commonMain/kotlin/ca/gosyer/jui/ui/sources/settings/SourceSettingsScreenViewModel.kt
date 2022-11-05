@@ -47,7 +47,11 @@ class SourceSettingsScreenViewModel @Inject constructor(
                     setting.state.drop(1)
                         .filterNotNull()
                         .onEach {
-                            setSourceSetting.await(params.sourceId, setting.index, it)
+                            setSourceSetting.await(
+                                sourceId = params.sourceId,
+                                settingIndex = setting.index,
+                                setting = it,
+                                onError = { toast(it.message.orEmpty()) })
                             getSourceSettings()
                         }
                         .launchIn(this)
@@ -63,6 +67,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
                 _loading.value = false
             }
             .catch {
+                toast(it.message.orEmpty())
                 log.warn(it) { "Error setting source setting" }
                 _loading.value = false
             }

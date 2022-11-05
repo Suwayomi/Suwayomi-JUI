@@ -114,7 +114,7 @@ class SettingsLibraryViewModel @Inject constructor(
 
     fun refreshCategoryCount() {
         scope.launch {
-            _categories.value = getCategories.await(true)?.size ?: 0
+            _categories.value = getCategories.await(true, onError = { toast(it.message.orEmpty()) })?.size ?: 0
         }
     }
 

@@ -47,7 +47,7 @@ class CategoriesScreenViewModel @Inject constructor(
 
     private suspend fun getCategories() {
         _categories.value = persistentListOf()
-        val categories = getCategories.await(true)
+        val categories = getCategories.await(true, onError = { toast(it.message.orEmpty()) })
         if (categories != null) {
             _categories.value = categories
                 .sortedBy { it.order }
@@ -61,24 +61,24 @@ class CategoriesScreenViewModel @Inject constructor(
         val categories = _categories.value
         val newCategories = categories.filter { it.id == null }
         newCategories.forEach {
-            createCategory.await(it.name)
+            createCategory.await(it.name, onError = { toast(it.message.orEmpty()) })
         }
         originalCategories.forEach { originalCategory ->
             val category = categories.find { it.id == originalCategory.id }
             if (category == null) {
-                deleteCategory.await(originalCategory)
+                deleteCategory.await(originalCategory, onError = { toast(it.message.orEmpty()) })
             } else if (category.name != originalCategory.name) {
-                modifyCategory.await(originalCategory, category.name)
+                modifyCategory.await(originalCategory, category.name, onError = { toast(it.message.orEmpty()) })
             }
         }
-        var updatedCategories = getCategories.await(true)
+        var updatedCategories = getCategories.await(true, onError = { toast(it.message.orEmpty()) })
         categories.forEach { category ->
             val updatedCategory = updatedCategories?.find { it.id == category.id || it.name == category.name } ?: return@forEach
             if (category.order != updatedCategory.order) {
                 log.debug { "${category.name}: ${updatedCategory.order} to ${category.order}" }
-                reorderCategory.await(category.order, updatedCategory.order)
+                reorderCategory.await(category.order, updatedCategory.order, onError = { toast(it.message.orEmpty()) })
             }
-            updatedCategories = getCategories.await(true)
+            updatedCategories = getCategories.await(true, onError = { toast(it.message.orEmpty()) })
         }
 
         if (manualUpdate) {
