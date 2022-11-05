@@ -11,6 +11,7 @@ import ca.gosyer.jui.domain.settings.interactor.AboutServer
 import ca.gosyer.jui.domain.settings.model.About
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker.Update
+import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -55,9 +56,11 @@ class AboutViewModel @Inject constructor(
 
     fun checkForUpdates() {
         scope.launch {
+            toast(MR.strings.update_check_look_for_updates.toPlatformString())
             when (val update = updateChecker.await(true, onError = { toast(it.message.orEmpty()) })) {
                 is Update.UpdateFound -> _updates.emit(update)
-                else -> Unit
+                is Update.NoUpdatesFound -> toast(MR.strings.update_check_no_new_updates.toPlatformString())
+                null -> Unit
             }
         }
     }

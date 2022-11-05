@@ -138,6 +138,8 @@
     <string name="version">Version</string>
     <string name="server_version">Server version</string>
     <string name="whats_new">What\'s new</string>
+    <string name="update_check_no_new_updates">No new updates available</string>
+    <string name="update_check_look_for_updates">Searching for updates…</string>
     <string name="help_translate">Help translate</string>
     <string name="github">Github</string>
     <string name="discord">Discord</string>
