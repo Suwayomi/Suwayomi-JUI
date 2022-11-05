@@ -96,7 +96,6 @@ internal open class ProcessChannel<T>(
     override fun trySend(element: T): ChannelResult<Unit> {
         TODO("not implemented")
     }
-
 }
 
 @ExperimentalCoroutinesApi
@@ -185,7 +184,6 @@ internal class PriorityChannelImpl<T>(
                 outChannel.close()
             }
         }.start()
-
     }
 }
 

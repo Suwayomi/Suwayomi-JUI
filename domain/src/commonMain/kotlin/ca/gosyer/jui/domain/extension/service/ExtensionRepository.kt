@@ -33,7 +33,7 @@ interface ExtensionRepository {
     @Multipart
     @POST("api/v1/extension/install")
     fun installExtension(
-        @Part("") formData: List<PartData>,
+        @Part("") formData: List<PartData>
     ): Flow<HttpResponse>
 
     @GET("api/v1/extension/install/{pkgName}")

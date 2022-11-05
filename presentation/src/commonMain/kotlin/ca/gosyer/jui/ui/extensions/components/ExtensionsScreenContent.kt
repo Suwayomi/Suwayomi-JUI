@@ -185,7 +185,7 @@ fun ExtensionsToolbar(
     searchText: String?,
     search: (String) -> Unit,
     openLanguageDialog: () -> Unit,
-    openInstallExtensionFile: () -> Unit,
+    openInstallExtensionFile: () -> Unit
 ) {
     Toolbar(
         stringResource(MR.strings.location_extensions),
@@ -330,7 +330,7 @@ fun LanguageDialog(
 @Composable
 private fun getActionItems(
     openLanguageDialog: () -> Unit,
-    openInstallExtensionFile: () -> Unit,
+    openInstallExtensionFile: () -> Unit
 ): ImmutableList<ActionItem> {
     return listOf(
         ActionItem(
