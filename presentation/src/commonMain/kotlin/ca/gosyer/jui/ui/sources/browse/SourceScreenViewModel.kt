@@ -134,13 +134,14 @@ class SourceScreenViewModel(
 
     private suspend fun getPage(): MangaPage? {
         return when {
-            isLatest.value -> getLatestManga.await(source, pageNum.value)
+            isLatest.value -> getLatestManga.await(source, pageNum.value, onError = { toast(it.message.orEmpty()) })
             _query.value != null || _usingFilters.value -> getSearchManga.await(
-                source.id,
-                _query.value,
-                pageNum.value
+                sourceId = source.id,
+                searchTerm = _query.value,
+                page = pageNum.value,
+                onError = { toast(it.message.orEmpty()) }
             )
-            else -> getPopularManga.await(source.id, pageNum.value)
+            else -> getPopularManga.await(source.id, pageNum.value, onError = { toast(it.message.orEmpty()) })
         }
     }
 

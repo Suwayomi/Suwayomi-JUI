@@ -39,7 +39,7 @@ abstract class ViewModel(private val contextWrapper: ContextWrapper) : ScreenMod
     fun StringResource.toPlatformString(vararg args: Any): String {
         return contextWrapper.toPlatformString(this, *args)
     }
-    fun toast(string: String, length: Length) {
+    fun toast(string: String, length: Length = Length.SHORT) {
         scope.launchUI {
             contextWrapper.toast(string, length)
         }

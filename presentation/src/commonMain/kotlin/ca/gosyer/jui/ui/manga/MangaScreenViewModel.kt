@@ -151,21 +151,17 @@ class MangaScreenViewModel @Inject constructor(
     private suspend fun refreshMangaAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
         async {
             val manga = if (refresh) {
-                refreshManga.await(mangaId)
+                refreshManga.await(mangaId, onError = { toast(it.message.orEmpty()) })
             } else {
-                getManga.await(mangaId)
+                getManga.await(mangaId, onError = { toast(it.message.orEmpty()) })
             }
             if (manga != null) {
                 _manga.value = manga
-            } else {
-                // TODO: 2022-07-01 Error toast
             }
 
-            val mangaCategories = getMangaCategories.await(mangaId)
+            val mangaCategories = getMangaCategories.await(mangaId, onError = { toast(it.message.orEmpty()) })
             if (mangaCategories != null) {
                 _mangaCategories.value = mangaCategories.toImmutableList()
-            } else {
-                // TODO: 2022-07-01 Error toast
             }
         }
     }

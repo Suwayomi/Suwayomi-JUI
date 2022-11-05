@@ -11,12 +11,16 @@ import ca.gosyer.jui.data.DataComponent
 import ca.gosyer.jui.domain.DomainComponent
 import ca.gosyer.jui.ui.ViewModelComponent
 import ca.gosyer.jui.ui.base.UiComponent
+import ca.gosyer.jui.uicore.vm.ContextWrapper
 import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Provides
 
 @AppScope
 @Component
-abstract class AppComponent : ViewModelComponent, DataComponent, DomainComponent, UiComponent {
+abstract class AppComponent(
+    @get:Provides
+    val context: ContextWrapper
+) : ViewModelComponent, DataComponent, DomainComponent, UiComponent {
 
     abstract val appMigrations: AppMigrations
 
@@ -31,7 +35,7 @@ abstract class AppComponent : ViewModelComponent, DataComponent, DomainComponent
     companion object {
         private var appComponentInstance: AppComponent? = null
 
-        fun getInstance() = appComponentInstance ?: create()
+        fun getInstance(context: ContextWrapper) = appComponentInstance ?: create(context)
             .also { appComponentInstance = it }
     }
 }

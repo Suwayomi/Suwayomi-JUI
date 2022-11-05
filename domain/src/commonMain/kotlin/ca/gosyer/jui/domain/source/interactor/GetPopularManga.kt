@@ -15,12 +15,18 @@ import org.lighthousegames.logging.logging
 
 class GetPopularManga @Inject constructor(private val sourceRepository: SourceRepository) {
 
-    suspend fun await(source: Source, page: Int) = asFlow(source.id, page)
-        .catch { log.warn(it) { "Failed to get popular manga from ${source.displayName} on page $page" } }
+    suspend fun await(source: Source, page: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(source.id, page)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get popular manga from ${source.displayName} on page $page" }
+        }
         .singleOrNull()
 
-    suspend fun await(sourceId: Long, page: Int) = asFlow(sourceId, page)
-        .catch { log.warn(it) { "Failed to get popular manga from $sourceId on page $page" } }
+    suspend fun await(sourceId: Long, page: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, page)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get popular manga from $sourceId on page $page" }
+        }
         .singleOrNull()
 
     fun asFlow(source: Source, page: Int) = sourceRepository.getPopularManga(source.id, page)

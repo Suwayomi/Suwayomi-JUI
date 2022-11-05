@@ -15,12 +15,18 @@ import org.lighthousegames.logging.logging
 
 class GetMangaCategories @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    suspend fun await(mangaId: Long) = asFlow(mangaId)
-        .catch { log.warn(it) { "Failed to get categories for $mangaId" } }
+    suspend fun await(mangaId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get categories for $mangaId" }
+        }
         .singleOrNull()
 
-    suspend fun await(manga: Manga) = asFlow(manga)
-        .catch { log.warn(it) { "Failed to get categories for ${manga.title}(${manga.id})" } }
+    suspend fun await(manga: Manga, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get categories for ${manga.title}(${manga.id})" }
+        }
         .singleOrNull()
 
     fun asFlow(mangaId: Long) = categoryRepository.getMangaCategories(mangaId)

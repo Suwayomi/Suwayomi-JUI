@@ -6,11 +6,19 @@
 
 package ca.gosyer.jui.uicore.vm
 
+import androidx.compose.runtime.Stable
+import ca.gosyer.jui.core.lang.launchDefault
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.format
-import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
-actual class ContextWrapper @Inject constructor() {
+@Stable
+actual class ContextWrapper {
+    private val _toasts = MutableSharedFlow<Pair<String, Length>>()
+    val toasts = _toasts.asSharedFlow()
+
     actual fun toPlatformString(stringResource: StringResource): String {
         return stringResource.localized()
     }
@@ -18,5 +26,8 @@ actual class ContextWrapper @Inject constructor() {
         return stringResource.format(*args).localized()
     }
     actual fun toast(string: String, length: Length) {
+        GlobalScope.launchDefault {
+            _toasts.emit(string to length)
+        }
     }
 }
