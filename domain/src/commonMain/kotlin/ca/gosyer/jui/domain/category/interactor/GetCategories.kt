@@ -22,7 +22,7 @@ class GetCategories @Inject constructor(private val categoryRepository: Category
         }
         .singleOrNull()
 
-    fun asFlow(dropDefault: Boolean = false, onError: suspend (Throwable) -> Unit = {}) = categoryRepository.getCategories()
+    fun asFlow(dropDefault: Boolean = false) = categoryRepository.getCategories()
         .map { categories ->
             if (dropDefault) {
                 categories.filterNot { it.name.equals("default", true) }
