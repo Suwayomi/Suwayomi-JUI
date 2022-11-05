@@ -283,7 +283,7 @@ fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
             Card(
                 Modifier.sizeIn(maxWidth = 200.dp),
                 shape = CircleShape,
-                backgroundColor = Color.DarkGray,
+                backgroundColor = Color.DarkGray
             ) {
                 Text(
                     toast,
