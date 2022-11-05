@@ -9,9 +9,9 @@ package ca.gosyer.jui.ui.sources.home
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.displayName
+import ca.gosyer.jui.domain.source.interactor.GetSourceList
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
-import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.state.SavedStateHandle
 import ca.gosyer.jui.ui.base.state.getStateFlow
@@ -34,7 +34,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class SourceHomeScreenViewModel @Inject constructor(
-    private val sourceHandler: SourceRepository,
+    private val getSourceList: GetSourceList,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper,
     private val savedStateHandle: SavedStateHandle
@@ -98,7 +98,7 @@ class SourceHomeScreenViewModel @Inject constructor(
     }
 
     private fun getSources() {
-        sourceHandler.getSourceList()
+        getSourceList.asFlow()
             .onEach {
                 installedSources.value = it
                 _isLoading.value = false

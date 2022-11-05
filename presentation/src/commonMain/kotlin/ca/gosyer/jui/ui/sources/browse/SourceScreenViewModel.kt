@@ -9,10 +9,12 @@ package ca.gosyer.jui.ui.sources.browse
 import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.domain.library.service.LibraryPreferences
 import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.source.interactor.GetLatestManga
+import ca.gosyer.jui.domain.source.interactor.GetPopularManga
+import ca.gosyer.jui.domain.source.interactor.GetSearchManga
 import ca.gosyer.jui.domain.source.model.MangaPage
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
-import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.ui.base.state.SavedStateHandle
 import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -24,8 +26,6 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import me.tatarka.inject.annotations.Inject
@@ -33,7 +33,9 @@ import org.lighthousegames.logging.logging
 
 class SourceScreenViewModel(
     private val source: Source,
-    private val sourceHandler: SourceRepository,
+    private val getLatestManga: GetLatestManga,
+    private val getPopularManga: GetPopularManga,
+    private val getSearchManga: GetSearchManga,
     private val catalogPreferences: CatalogPreferences,
     private val libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper,
@@ -42,7 +44,9 @@ class SourceScreenViewModel(
 ) : ViewModel(contextWrapper) {
 
     @Inject constructor(
-        sourceHandler: SourceRepository,
+        getLatestManga: GetLatestManga,
+        getPopularManga: GetPopularManga,
+        getSearchManga: GetSearchManga,
         catalogPreferences: CatalogPreferences,
         libraryPreferences: LibraryPreferences,
         contextWrapper: ContextWrapper,
@@ -50,7 +54,9 @@ class SourceScreenViewModel(
         params: Params
     ) : this(
         params.source,
-        sourceHandler,
+        getLatestManga,
+        getPopularManga,
+        getSearchManga,
         catalogPreferences,
         libraryPreferences,
         contextWrapper,
@@ -128,18 +134,14 @@ class SourceScreenViewModel(
 
     private suspend fun getPage(): MangaPage? {
         return when {
-            isLatest.value -> sourceHandler.getLatestManga(source.id, pageNum.value)
-            _query.value != null || _usingFilters.value -> sourceHandler.getSearchResults(
+            isLatest.value -> getLatestManga.await(source, pageNum.value)
+            _query.value != null || _usingFilters.value -> getSearchManga.await(
                 source.id,
-                _query.value?.ifBlank { null },
+                _query.value,
                 pageNum.value
             )
-            else -> sourceHandler.getPopularManga(source.id, pageNum.value)
+            else -> getPopularManga.await(source.id, pageNum.value)
         }
-            .catch {
-                log.warn(it) { "Error getting source page" }
-            }
-            .singleOrNull()
     }
 
     fun startSearch(query: String?) {

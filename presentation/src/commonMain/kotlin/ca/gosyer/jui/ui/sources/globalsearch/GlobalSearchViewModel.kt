@@ -8,9 +8,10 @@ package ca.gosyer.jui.ui.sources.globalsearch
 
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.source.interactor.GetSearchManga
+import ca.gosyer.jui.domain.source.interactor.GetSourceList
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
-import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.state.SavedStateHandle
 import ca.gosyer.jui.ui.base.state.getStateFlow
@@ -41,7 +42,8 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class GlobalSearchViewModel @Inject constructor(
-    private val sourceHandler: SourceRepository,
+    private val getSourceList: GetSourceList,
+    private val getSearchManga: GetSearchManga,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper,
     private val savedStateHandle: SavedStateHandle,
@@ -74,7 +76,7 @@ class GlobalSearchViewModel @Inject constructor(
     }
 
     private fun getSources() {
-        sourceHandler.getSourceList()
+        getSourceList.asFlow()
             .onEach { sources ->
                 installedSources.value = sources.sortedWith(
                     compareBy<Source, String>(String.CASE_INSENSITIVE_ORDER) { it.lang }
@@ -104,8 +106,7 @@ class GlobalSearchViewModel @Inject constructor(
                     sources.map { source ->
                         async {
                             semaphore.withPermit {
-                                sourceHandler
-                                    .getSearchResults(source.id, query, 1)
+                                getSearchManga.asFlow(source, query, 1)
                                     .map {
                                         if (it.mangaList.isEmpty()) {
                                             Search.Failure(MR.strings.no_results_found.toPlatformString())

@@ -6,9 +6,9 @@
 
 package ca.gosyer.jui.ui.sources.browse.filter
 
+import ca.gosyer.jui.domain.source.interactor.GetFilterList
+import ca.gosyer.jui.domain.source.interactor.SetSourceFilter
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
-import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterChange
-import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.ui.base.state.SavedStateHandle
 import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
@@ -20,32 +20,32 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.supervisorScope
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class SourceFiltersViewModel(
     private val sourceId: Long,
-    private val sourceHandler: SourceRepository,
+    private val getFilterList: GetFilterList,
+    private val setSourceFilter: SetSourceFilter,
     contextWrapper: ContextWrapper,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel(contextWrapper) {
     @Inject constructor(
-        sourceHandler: SourceRepository,
+        getFilterList: GetFilterList,
+        setSourceFilter: SetSourceFilter,
         contextWrapper: ContextWrapper,
         savedStateHandle: SavedStateHandle,
         params: Params
     ) : this(
         params.sourceId,
-        sourceHandler,
+        getFilterList,
+        setSourceFilter,
         contextWrapper,
         savedStateHandle
     )
@@ -75,13 +75,12 @@ class SourceFiltersViewModel(
                             childFilter.state.drop(1)
                                 .filterNotNull()
                                 .onEach {
-                                    sourceHandler.setFilter(
+                                    setSourceFilter.await(
                                         sourceId,
-                                        SourceFilterChange(
-                                            filter.index,
-                                            Json.encodeToString(SourceFilterChange(childFilter.index, it))
-                                        )
-                                    ).collect()
+                                        filter.index,
+                                        childFilter.index,
+                                        it
+                                    )
                                     getFilters()
                                 }
                                 .launchIn(this)
@@ -89,8 +88,11 @@ class SourceFiltersViewModel(
                     } else {
                         filter.state.drop(1).filterNotNull()
                             .onEach {
-                                sourceHandler.setFilter(sourceId, SourceFilterChange(filter.index, it))
-                                    .collect()
+                                setSourceFilter.await(
+                                    sourceId,
+                                    filter.index,
+                                    it
+                                )
                                 getFilters()
                             }
                             .launchIn(this)
@@ -109,7 +111,7 @@ class SourceFiltersViewModel(
     }
 
     private fun getFilters(initialLoad: Boolean = false) {
-        sourceHandler.getFilterList(sourceId, reset = initialLoad)
+        getFilterList.asFlow(sourceId, reset = initialLoad)
             .onEach {
                 _filters.value = it.toView()
                 _loading.value = false

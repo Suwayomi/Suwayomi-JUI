@@ -6,9 +6,9 @@
 
 package ca.gosyer.jui.ui.sources.settings
 
+import ca.gosyer.jui.domain.source.interactor.GetSourceSettings
+import ca.gosyer.jui.domain.source.interactor.SetSourceSetting
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
-import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreferenceChange
-import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -18,7 +18,6 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
@@ -29,7 +28,8 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class SourceSettingsScreenViewModel @Inject constructor(
-    private val sourceHandler: SourceRepository,
+    private val getSourceSettings: GetSourceSettings,
+    private val setSourceSetting: SetSourceSetting,
     contextWrapper: ContextWrapper,
     private val params: Params
 ) : ViewModel(contextWrapper) {
@@ -47,11 +47,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
                     setting.state.drop(1)
                         .filterNotNull()
                         .onEach {
-                            sourceHandler.setSourceSetting(params.sourceId, SourcePreferenceChange(setting.index, it))
-                                .catch {
-                                    log.warn(it) { "Error setting source setting" }
-                                }
-                                .collect()
+                            setSourceSetting.await(params.sourceId, setting.index, it)
                             getSourceSettings()
                         }
                         .launchIn(this)
@@ -61,7 +57,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
     }
 
     private fun getSourceSettings() {
-        sourceHandler.getSourceSettings(params.sourceId)
+        getSourceSettings.asFlow(params.sourceId)
             .onEach {
                 _sourceSettings.value = it.toView()
                 _loading.value = false
