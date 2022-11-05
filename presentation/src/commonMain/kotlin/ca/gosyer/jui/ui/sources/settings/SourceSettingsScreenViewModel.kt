@@ -51,7 +51,8 @@ class SourceSettingsScreenViewModel @Inject constructor(
                                 sourceId = params.sourceId,
                                 settingIndex = setting.index,
                                 setting = it,
-                                onError = { toast(it.message.orEmpty()) })
+                                onError = { toast(it.message.orEmpty()) }
+                            )
                             getSourceSettings()
                         }
                         .launchIn(this)
