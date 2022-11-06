@@ -99,8 +99,8 @@ fun DownloadsScreenContent(
                 }
             )
         }
-    ) {
-        Box(Modifier.padding(it)) {
+    ) { paddingValues ->
+        Box(Modifier.padding(paddingValues)) {
             val state = rememberLazyListState()
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -111,12 +111,13 @@ fun DownloadsScreenContent(
                     )
                 ).asPaddingValues()
             ) {
-                items(downloadQueue) {
+                items(downloadQueue, key = { "${it.mangaId}-${it.chapterIndex}" }) {
                     DownloadsItem(
-                        it,
-                        { onMangaClick(it.mangaId) },
-                        stopDownload,
-                        moveDownloadToBottom
+                        modifier = Modifier.animateItemPlacement(),
+                        item = it,
+                        onClickCover = { onMangaClick(it.mangaId) },
+                        onClickCancel = stopDownload,
+                        onClickMoveToBottom = moveDownloadToBottom
                     )
                 }
             }
@@ -139,13 +140,14 @@ fun DownloadsScreenContent(
 
 @Composable
 fun DownloadsItem(
+    modifier: Modifier = Modifier,
     item: DownloadChapter,
     onClickCover: () -> Unit,
     onClickCancel: (Chapter) -> Unit,
     onClickMoveToBottom: (Chapter) -> Unit
 ) {
     MangaListItem(
-        modifier = Modifier
+        modifier = modifier
             .height(96.dp)
             .fillMaxWidth()
             .padding(end = 4.dp)
