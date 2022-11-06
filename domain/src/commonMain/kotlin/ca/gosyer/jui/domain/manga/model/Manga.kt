@@ -35,7 +35,9 @@ data class Manga(
     val realUrl: String?,
     val inLibraryAt: Long,
     val unreadCount: Int?,
-    val downloadCount: Int?
+    val downloadCount: Int?,
+    val age: Long? = null, // todo remove default
+    val chaptersAge: Long? = null // todo remove default
 )
 
 @Serializable

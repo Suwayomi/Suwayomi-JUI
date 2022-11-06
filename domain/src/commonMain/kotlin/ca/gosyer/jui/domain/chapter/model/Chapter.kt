@@ -12,6 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Immutable
 data class Chapter(
+    val id: Long = -1, // todo remove default
     val url: String,
     val name: String,
     val uploadDate: Long,
