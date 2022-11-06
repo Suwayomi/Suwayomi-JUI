@@ -4,17 +4,17 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.domain.chapter.interactor
+package ca.gosyer.jui.domain.download.interactor
 
 import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.chapter.service.ChapterRepository
+import ca.gosyer.jui.domain.download.service.DownloadRepository
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class QueueChapterDownload @Inject constructor(private val chapterRepository: ChapterRepository) {
+class QueueChapterDownload @Inject constructor(private val downloadRepository: DownloadRepository) {
 
     suspend fun await(mangaId: Long, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, index)
         .catch {
@@ -37,11 +37,11 @@ class QueueChapterDownload @Inject constructor(private val chapterRepository: Ch
         }
         .collect()
 
-    fun asFlow(mangaId: Long, index: Int) = chapterRepository.queueChapterDownload(mangaId, index)
+    fun asFlow(mangaId: Long, index: Int) = downloadRepository.queueChapterDownload(mangaId, index)
 
-    fun asFlow(manga: Manga, index: Int) = chapterRepository.queueChapterDownload(manga.id, index)
+    fun asFlow(manga: Manga, index: Int) = downloadRepository.queueChapterDownload(manga.id, index)
 
-    fun asFlow(chapter: Chapter) = chapterRepository.queueChapterDownload(chapter.mangaId, chapter.index)
+    fun asFlow(chapter: Chapter) = downloadRepository.queueChapterDownload(chapter.mangaId, chapter.index)
 
     companion object {
         private val log = logging()

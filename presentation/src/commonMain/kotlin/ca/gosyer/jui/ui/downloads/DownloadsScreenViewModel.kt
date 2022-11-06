@@ -7,11 +7,11 @@
 package ca.gosyer.jui.ui.downloads
 
 import ca.gosyer.jui.domain.base.WebsocketService.Actions
-import ca.gosyer.jui.domain.chapter.interactor.QueueChapterDownload
-import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.interactor.ClearDownloadQueue
+import ca.gosyer.jui.domain.download.interactor.QueueChapterDownload
 import ca.gosyer.jui.domain.download.interactor.StartDownloading
+import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.download.interactor.StopDownloading
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.uicore.vm.ContextWrapper

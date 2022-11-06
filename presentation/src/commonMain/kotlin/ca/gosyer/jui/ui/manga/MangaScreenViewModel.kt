@@ -15,13 +15,13 @@ import ca.gosyer.jui.domain.category.interactor.RemoveMangaFromCategory
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
 import ca.gosyer.jui.domain.chapter.interactor.GetChapters
-import ca.gosyer.jui.domain.chapter.interactor.QueueChapterDownload
 import ca.gosyer.jui.domain.chapter.interactor.RefreshChapters
-import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterBookmarked
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterMarkPreviousRead
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterRead
 import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.interactor.QueueChapterDownload
+import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.library.interactor.AddMangaToLibrary
 import ca.gosyer.jui.domain.library.interactor.RemoveMangaFromLibrary

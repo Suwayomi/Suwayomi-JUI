@@ -33,8 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
-import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.download.model.DownloadChapter
 import ca.gosyer.jui.domain.download.model.DownloadState
 import ca.gosyer.jui.domain.manga.model.Manga

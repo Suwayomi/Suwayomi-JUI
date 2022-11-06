@@ -7,9 +7,9 @@
 package ca.gosyer.jui.ui.updates
 
 import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
-import ca.gosyer.jui.domain.chapter.interactor.QueueChapterDownload
-import ca.gosyer.jui.domain.chapter.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.interactor.QueueChapterDownload
+import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.updates.interactor.GetRecentUpdates
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem

@@ -92,18 +92,6 @@ interface ChapterRepository {
         @Path("chapterIndex") chapterIndex: Int
     ): Flow<HttpResponse>
 
-    @GET("api/v1/download/{mangaId}/chapter/{chapterIndex}")
-    fun queueChapterDownload(
-        @Path("mangaId") mangaId: Long,
-        @Path("chapterIndex") chapterIndex: Int
-    ): Flow<HttpResponse>
-
-    @DELETE("api/v1/download/{mangaId}/chapter/{chapterIndex}")
-    fun stopChapterDownload(
-        @Path("mangaId") mangaId: Long,
-        @Path("chapterIndex") chapterIndex: Int
-    ): Flow<HttpResponse>
-
     @FormUrlEncoded
     @PATCH("api/v1/manga/{mangaId}/chapter/{chapterIndex}/meta")
     fun updateChapterMeta(
