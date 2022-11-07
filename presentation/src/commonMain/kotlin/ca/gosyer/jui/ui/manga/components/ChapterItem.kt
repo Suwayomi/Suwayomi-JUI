@@ -96,7 +96,7 @@ fun ChapterItem(
         }
 
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
                 Modifier.padding(4.dp).width(this@BoxWithConstraints.maxWidth - 60.dp)
@@ -109,7 +109,7 @@ fun ChapterItem(
                             contentDescription = stringResource(MR.strings.action_filter_bookmarked),
                             modifier = Modifier
                                 .sizeIn(maxHeight = with(LocalDensity.current) { textHeight.toDp() - 2.dp }),
-                            tint = MaterialTheme.colors.primary,
+                            tint = MaterialTheme.colors.primary
                         )
                         Spacer(modifier = Modifier.width(2.dp))
                     }

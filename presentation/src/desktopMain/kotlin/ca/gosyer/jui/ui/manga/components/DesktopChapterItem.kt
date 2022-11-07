@@ -60,6 +60,6 @@ private fun getContextItems(
         if (unBookmarkChapter != null) ContextMenuItem(stringResource(MR.strings.action_remove_bookmark), unBookmarkChapter) else null,
         if (markRead != null) ContextMenuItem(stringResource(MR.strings.action_mark_as_read), markRead) else null,
         if (markUnread != null) ContextMenuItem(stringResource(MR.strings.action_mark_as_unread), markUnread) else null,
-        ContextMenuItem(stringResource(MR.strings.action_mark_previous_read), markPreviousAsRead),
+        ContextMenuItem(stringResource(MR.strings.action_mark_previous_read), markPreviousAsRead)
     )
 }

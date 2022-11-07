@@ -9,15 +9,15 @@ import kotlin.collections.List as ____KtList
 public object CaGroup
 
 public val JuiAssets.Ca: CaGroup
-  get() = CaGroup
+    get() = CaGroup
 
 private var __AllAssets: ____KtList<ImageVector>? = null
 
 public val CaGroup.AllAssets: ____KtList<ImageVector>
-  get() {
-    if (__AllAssets != null) {
-      return __AllAssets!!
+    get() {
+        if (__AllAssets != null) {
+            return __AllAssets!!
+        }
+        __AllAssets = Gosyer.AllAssets + listOf()
+        return __AllAssets!!
     }
-    __AllAssets= Gosyer.AllAssets + listOf()
-    return __AllAssets!!
-  }

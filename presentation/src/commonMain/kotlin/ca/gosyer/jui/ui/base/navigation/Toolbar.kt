@@ -192,7 +192,7 @@ private fun WideToolbar(
                     TextActionIcon(
                         onClick = onClose,
                         text = stringResource(MR.strings.action_close),
-                        icon = if (closeIcon === ToolbarDefault) Icons.Rounded.Close else closeIcon,
+                        icon = if (closeIcon === ToolbarDefault) Icons.Rounded.Close else closeIcon
                     )
                 }
             }

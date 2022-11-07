@@ -130,8 +130,6 @@ class MangaScreenViewModel @Inject constructor(
             refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
             _isLoading.value = false
         }
-
-
     }
 
     fun loadManga() {

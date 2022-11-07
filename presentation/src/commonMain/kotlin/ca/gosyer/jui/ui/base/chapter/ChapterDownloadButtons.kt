@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.asStateFlow
 @Stable
 data class ChapterDownloadItem(
     val manga: Manga?,
-    val chapter: Chapter,
+    val chapter: Chapter
 ) {
     private val _isSelected = MutableStateFlow(false)
     val isSelected = _isSelected.asStateFlow()

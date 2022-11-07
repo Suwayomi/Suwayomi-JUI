@@ -120,7 +120,7 @@ fun ActionMenu(
         DropdownMenu(
             expanded = menuVisible.value,
             onDismissRequest = { menuVisible.value = false },
-            offset = DpOffset(8.dp, (-56).dp),
+            offset = DpOffset(8.dp, (-56).dp)
         ) {
             overflowActions.fastForEach { item ->
                 key(item.hashCode()) {
@@ -144,7 +144,7 @@ fun ActionMenu(
     DropdownMenu(
         openGroup != null,
         onDismissRequest = { openGroup = null },
-        offset = DpOffset(8.dp, (-56).dp),
+        offset = DpOffset(8.dp, (-56).dp)
     ) {
         openGroup?.actions?.fastForEach { item ->
             key(item.hashCode()) {

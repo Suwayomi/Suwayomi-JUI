@@ -60,18 +60,18 @@ data class BottomActionItem(
 fun BottomActionMenu(
     visible: Boolean,
     modifier: Modifier = Modifier,
-    items: ImmutableList<BottomActionItem>,
+    items: ImmutableList<BottomActionItem>
 ) {
     AnimatedVisibility(
         visible = visible,
         enter = expandVertically(expandFrom = Alignment.Bottom),
-        exit = shrinkVertically(shrinkTowards = Alignment.Bottom),
+        exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
     ) {
         val scope = rememberCoroutineScope()
         Surface(
             modifier = modifier,
             shape = MaterialTheme.shapes.large.copy(bottomEnd = ZeroCornerSize, bottomStart = ZeroCornerSize),
-            elevation = 3.dp,
+            elevation = 3.dp
         ) {
             val haptic = LocalHapticFeedback.current
             var confirm by remember { mutableStateOf<Int?>(null) }
@@ -88,7 +88,7 @@ fun BottomActionMenu(
             Row(
                 modifier = Modifier
                     .padding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom).asPaddingValues())
-                    .padding(horizontal = 8.dp, vertical = 12.dp),
+                    .padding(horizontal = 8.dp, vertical = 12.dp)
             ) {
                 items.forEachIndexed { index, item ->
                     Button(
@@ -96,7 +96,7 @@ fun BottomActionMenu(
                         icon = item.icon,
                         toConfirm = confirm == index,
                         onLongClick = { onLongClickItem(index) },
-                        onClick = item.onClick,
+                        onClick = item.onClick
                     )
                 }
             }
@@ -106,7 +106,7 @@ fun BottomActionMenu(
 
 expect fun Modifier.buttonModifier(
     onClick: () -> Unit,
-    onHintClick: () -> Unit,
+    onHintClick: () -> Unit
 ): Modifier
 
 @Composable
@@ -116,7 +116,7 @@ private fun RowScope.Button(
     toConfirm: Boolean,
     onLongClick: () -> Unit,
     onClick: () -> Unit,
-    content: (@Composable () -> Unit)? = null,
+    content: (@Composable () -> Unit)? = null
 ) {
     val animatedWeight by animateFloatAsState(if (toConfirm) 2f else 1f)
     Column(
@@ -125,25 +125,25 @@ private fun RowScope.Button(
             .weight(animatedWeight)
             .buttonModifier(
                 onHintClick = onLongClick,
-                onClick = onClick,
+                onClick = onClick
             ),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = title,
+            contentDescription = title
         )
         AnimatedVisibility(
             visible = toConfirm,
             enter = expandVertically(expandFrom = Alignment.Top) + fadeIn(),
-            exit = shrinkVertically(shrinkTowards = Alignment.Top) + fadeOut(),
+            exit = shrinkVertically(shrinkTowards = Alignment.Top) + fadeOut()
         ) {
             Text(
                 text = title,
                 overflow = TextOverflow.Visible,
                 maxLines = 1,
-                style = MaterialTheme.typography.overline,
+                style = MaterialTheme.typography.overline
             )
         }
         content?.invoke()

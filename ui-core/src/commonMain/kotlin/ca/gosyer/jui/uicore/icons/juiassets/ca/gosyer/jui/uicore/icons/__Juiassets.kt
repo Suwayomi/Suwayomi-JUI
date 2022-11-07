@@ -7,15 +7,15 @@ import kotlin.collections.List as ____KtList
 public object JuiassetsGroup
 
 public val IconsGroup.Juiassets: JuiassetsGroup
-  get() = JuiassetsGroup
+    get() = JuiassetsGroup
 
 private var __AllAssets: ____KtList<ImageVector>? = null
 
 public val JuiassetsGroup.AllAssets: ____KtList<ImageVector>
-  get() {
-    if (__AllAssets != null) {
-      return __AllAssets!!
+    get() {
+        if (__AllAssets != null) {
+            return __AllAssets!!
+        }
+        __AllAssets = listOf()
+        return __AllAssets!!
     }
-    __AllAssets= listOf()
-    return __AllAssets!!
-  }

@@ -22,7 +22,7 @@ import kotlin.time.Duration.Companion.seconds
 
 actual fun Modifier.buttonModifier(
     onClick: () -> Unit,
-    onHintClick: () -> Unit,
+    onHintClick: () -> Unit
 ): Modifier = composed {
     val interactionSource = remember { MutableInteractionSource() }
     LaunchedEffect(interactionSource) {

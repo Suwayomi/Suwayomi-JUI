@@ -378,27 +378,27 @@ private fun getBottomActionItems(
         BottomActionItem(
             name = stringResource(MR.strings.action_bookmark),
             icon = Icons.Rounded.BookmarkAdd,
-            onClick = { bookmarkChapter(selectedItems.first().chapter.index) },
+            onClick = { bookmarkChapter(selectedItems.first().chapter.index) }
         ).takeIf { selectedItems.fastAny { !it.chapter.bookmarked } && selectedItems.size == 1 },
         BottomActionItem(
             name = stringResource(MR.strings.action_remove_bookmark),
             icon = Icons.Rounded.BookmarkRemove,
-            onClick = { unBookmarkChapter(selectedItems.first().chapter.index) },
+            onClick = { unBookmarkChapter(selectedItems.first().chapter.index) }
         ).takeIf { selectedItems.fastAny { it.chapter.bookmarked } && selectedItems.size == 1 },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_as_read),
             icon = Icons.Rounded.DoneAll,
-            onClick = { markRead(selectedItems.first().chapter.index) },
+            onClick = { markRead(selectedItems.first().chapter.index) }
         ).takeIf { selectedItems.fastAny { !it.chapter.read } && selectedItems.size == 1 },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_as_unread),
             icon = Icons.Rounded.RemoveDone,
-            onClick = { markUnread(selectedItems.first().chapter.index) },
+            onClick = { markUnread(selectedItems.first().chapter.index) }
         ).takeIf { selectedItems.fastAny { !it.chapter.read } && selectedItems.size == 1 },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_previous_read),
             icon = JuiAssets.DonePrev,
-            onClick = { markPreviousAsRead(selectedItems.first().chapter.index) },
+            onClick = { markPreviousAsRead(selectedItems.first().chapter.index) }
         ).takeIf { selectedItems.size == 1 },
         BottomActionItem(
             name = stringResource(MR.strings.action_download),

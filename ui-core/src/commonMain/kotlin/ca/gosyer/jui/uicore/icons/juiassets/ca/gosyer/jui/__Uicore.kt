@@ -9,15 +9,15 @@ import kotlin.collections.List as ____KtList
 public object UicoreGroup
 
 public val JuiGroup.Uicore: UicoreGroup
-  get() = UicoreGroup
+    get() = UicoreGroup
 
 private var __AllAssets: ____KtList<ImageVector>? = null
 
 public val UicoreGroup.AllAssets: ____KtList<ImageVector>
-  get() {
-    if (__AllAssets != null) {
-      return __AllAssets!!
+    get() {
+        if (__AllAssets != null) {
+            return __AllAssets!!
+        }
+        __AllAssets = Icons.AllAssets + listOf()
+        return __AllAssets!!
     }
-    __AllAssets= Icons.AllAssets + listOf()
-    return __AllAssets!!
-  }

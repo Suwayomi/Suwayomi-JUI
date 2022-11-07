@@ -11,10 +11,10 @@ public object JuiAssets
 private var __AllAssets: ____KtList<ImageVector>? = null
 
 public val JuiAssets.AllAssets: ____KtList<ImageVector>
-  get() {
-    if (__AllAssets != null) {
-      return __AllAssets!!
+    get() {
+        if (__AllAssets != null) {
+            return __AllAssets!!
+        }
+        __AllAssets = Ca.AllAssets + listOf(DonePrev)
+        return __AllAssets!!
     }
-    __AllAssets= Ca.AllAssets + listOf(DonePrev)
-    return __AllAssets!!
-  }
