@@ -77,14 +77,17 @@ import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+val ToolbarDefault = ImageVector.Builder(defaultWidth = 24.dp, defaultHeight = 24.dp, viewportWidth = 24f, viewportHeight = 24f).build()
+
 @Composable
 fun Toolbar(
     name: String,
     navigator: Navigator? = LocalNavigator.current,
     closable: Boolean = (navigator?.size ?: 0) > 1,
     onClose: () -> Unit = { navigator?.pop() },
+    closeIcon: ImageVector = ToolbarDefault,
     modifier: Modifier = Modifier,
-    actions: @Composable () -> ImmutableList<ActionItem> = { remember { persistentListOf() } },
+    actions: @Composable () -> ImmutableList<Action> = { remember { persistentListOf() } },
     backgroundColor: Color = MaterialTheme.colors.surface, // CustomColors.current.bars,
     contentColor: Color = contentColorFor(backgroundColor), // CustomColors.current.onBars,
     elevation: Dp = Dp.Hairline,
@@ -98,6 +101,7 @@ fun Toolbar(
                 name = name,
                 closable = closable,
                 onClose = onClose,
+                closeIcon = closeIcon,
                 modifier = modifier,
                 actions = actions,
                 backgroundColor = backgroundColor,
@@ -112,6 +116,7 @@ fun Toolbar(
                 name = name,
                 closable = closable,
                 onClose = onClose,
+                closeIcon = closeIcon,
                 modifier = modifier,
                 actions = actions,
                 backgroundColor = backgroundColor,
@@ -130,8 +135,9 @@ private fun WideToolbar(
     name: String,
     closable: Boolean,
     onClose: () -> Unit,
+    closeIcon: ImageVector,
     modifier: Modifier,
-    actions: @Composable () -> ImmutableList<ActionItem> = { remember { persistentListOf() } },
+    actions: @Composable () -> ImmutableList<Action> = { remember { persistentListOf() } },
     backgroundColor: Color,
     contentColor: Color,
     elevation: Dp,
@@ -186,7 +192,7 @@ private fun WideToolbar(
                     TextActionIcon(
                         onClick = onClose,
                         text = stringResource(MR.strings.action_close),
-                        icon = Icons.Rounded.Close
+                        icon = if (closeIcon === ToolbarDefault) Icons.Rounded.Close else closeIcon,
                     )
                 }
             }
@@ -199,8 +205,9 @@ private fun ThinToolbar(
     name: String,
     closable: Boolean,
     onClose: () -> Unit,
+    closeIcon: ImageVector,
     modifier: Modifier,
-    actions: @Composable () -> ImmutableList<ActionItem> = { remember { persistentListOf() } },
+    actions: @Composable () -> ImmutableList<Action> = { remember { persistentListOf() } },
     backgroundColor: Color,
     contentColor: Color,
     elevation: Dp,
@@ -247,7 +254,7 @@ private fun ThinToolbar(
                                 }
                             ) {
                                 Icon(
-                                    Icons.Rounded.ArrowBack,
+                                    if (closeIcon === ToolbarDefault) Icons.Rounded.ArrowBack else closeIcon,
                                     stringResource(MR.strings.action_close)
                                 )
                             }

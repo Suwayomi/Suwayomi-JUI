@@ -23,11 +23,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.BookmarkAdd
+import androidx.compose.material.icons.rounded.BookmarkRemove
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.DoneAll
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.FlipToBack
 import androidx.compose.material.icons.rounded.Label
 import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.RemoveDone
+import androidx.compose.material.icons.rounded.SelectAll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -35,23 +44,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastAny
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
+import ca.gosyer.jui.ui.base.chapter.ChapterDownloadState
 import ca.gosyer.jui.ui.base.model.StableHolder
+import ca.gosyer.jui.ui.base.navigation.Action
+import ca.gosyer.jui.ui.base.navigation.ActionGroup
 import ca.gosyer.jui.ui.base.navigation.ActionItem
+import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.Toolbar
+import ca.gosyer.jui.ui.base.navigation.ToolbarDefault
 import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.ui.reader.rememberReaderLauncher
+import ca.gosyer.jui.uicore.components.BottomActionItem
+import ca.gosyer.jui.uicore.components.BottomActionMenu
 import ca.gosyer.jui.uicore.components.ErrorScreen
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
+import ca.gosyer.jui.uicore.icons.JuiAssets
+import ca.gosyer.jui.uicore.icons.juiassets.DonePrev
 import ca.gosyer.jui.uicore.insets.navigationBars
 import ca.gosyer.jui.uicore.insets.statusBars
 import ca.gosyer.jui.uicore.resources.stringResource
+import cafe.adriel.voyager.navigator.LocalNavigator
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -68,16 +88,29 @@ fun MangaScreenContent(
     chooseCategoriesFlowHolder: StableHolder<SharedFlow<Unit>>,
     availableCategories: ImmutableList<Category>,
     mangaCategories: ImmutableList<Category>,
+    inActionMode: Boolean,
+    selectedItems: ImmutableList<ChapterDownloadItem>,
     addFavorite: (List<Category>, List<Category>) -> Unit,
     setCategories: () -> Unit,
     toggleFavorite: () -> Unit,
     refreshManga: () -> Unit,
-    toggleRead: (Int) -> Unit,
-    toggleBookmarked: (Int) -> Unit,
+    downloadNext: (Int) -> Unit,
+    downloadUnread: () -> Unit,
+    downloadAll: () -> Unit,
+    markRead: (Int) -> Unit,
+    markUnread: (Int) -> Unit,
+    bookmarkChapter: (Int) -> Unit,
+    unBookmarkChapter: (Int) -> Unit,
     markPreviousRead: (Int) -> Unit,
     downloadChapter: (Int) -> Unit,
     deleteDownload: (Int) -> Unit,
     stopDownloadingChapter: (Int) -> Unit,
+    onSelectChapter: (Int) -> Unit,
+    onUnselectChapter: (Int) -> Unit,
+    selectAll: () -> Unit,
+    invertSelection: () -> Unit,
+    clearSelection: () -> Unit,
+    downloadChapters: () -> Unit,
     loadChapters: () -> Unit,
     loadManga: () -> Unit
 ) {
@@ -90,6 +123,10 @@ fun MangaScreenContent(
     val readerLauncher = rememberReaderLauncher()
     readerLauncher.Reader()
 
+    BackHandler(inActionMode) {
+        clearSelection()
+    }
+
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
@@ -97,24 +134,58 @@ fun MangaScreenContent(
             )
         ),
         topBar = {
+            val navigator = LocalNavigator.current
             Toolbar(
-                stringResource(MR.strings.location_manga),
+                if (inActionMode) selectedItems.size.toString() else stringResource(MR.strings.location_manga),
                 actions = {
-                    val uriHandler = LocalUriHandler.current
-                    getActionItems(
-                        refreshManga = refreshManga,
-                        refreshMangaEnabled = !isLoading,
-                        categoryItemVisible = categoriesExist && manga?.inLibrary == true,
-                        setCategories = setCategories,
-                        inLibrary = manga?.inLibrary == true,
-                        toggleFavorite = toggleFavorite,
-                        favoritesButtonEnabled = manga != null,
-                        openInBrowserEnabled = manga?.realUrl != null,
-                        openInBrowser = {
-                            manga?.realUrl?.let { uriHandler.openUri(it) }
-                        }
-                    )
-                }
+                    if (inActionMode) {
+                        getActionModeActionItems(
+                            selectAll = selectAll,
+                            invertSelection = invertSelection
+                        )
+                    } else {
+                        val uriHandler = LocalUriHandler.current
+                        getActionItems(
+                            refreshManga = refreshManga,
+                            refreshMangaEnabled = !isLoading,
+                            categoryItemVisible = categoriesExist && manga?.inLibrary == true,
+                            setCategories = setCategories,
+                            inLibrary = manga?.inLibrary == true,
+                            toggleFavorite = toggleFavorite,
+                            favoritesButtonEnabled = manga != null,
+                            openInBrowserEnabled = manga?.realUrl != null,
+                            openInBrowser = {
+                                manga?.realUrl?.let { uriHandler.openUri(it) }
+                            },
+                            downloadNext = downloadNext,
+                            downloadUnread = downloadUnread,
+                            downloadAll = downloadAll
+                        )
+                    }
+                },
+                onClose = {
+                    if (inActionMode) {
+                        clearSelection()
+                    } else {
+                        navigator?.pop()
+                    }
+                },
+                closeIcon = if (inActionMode) Icons.Rounded.Close else ToolbarDefault
+            )
+        },
+        bottomBar = {
+            BottomActionMenu(
+                visible = inActionMode,
+                items = getBottomActionItems(
+                    selectedItems = selectedItems,
+                    markRead = markRead,
+                    markUnread = markUnread,
+                    bookmarkChapter = bookmarkChapter,
+                    unBookmarkChapter = unBookmarkChapter,
+                    markPreviousAsRead = markPreviousRead,
+                    deleteChapter = deleteDownload,
+                    downloadChapters = downloadChapters
+                )
             )
         }
     ) {
@@ -141,13 +212,21 @@ fun MangaScreenContent(
                                     ChapterItem(
                                         chapter,
                                         dateTimeFormatter,
-                                        onClick = { readerLauncher.launch(it, manga.id) },
-                                        toggleRead = toggleRead,
-                                        toggleBookmarked = toggleBookmarked,
+                                        onClick = if (inActionMode) {
+                                            { if (chapter.isSelected.value) onUnselectChapter(chapter.chapter.index) else onSelectChapter(chapter.chapter.index) }
+                                        } else {
+                                            { readerLauncher.launch(it, manga.id) }
+                                        },
+                                        markRead = markRead,
+                                        markUnread = markUnread,
+                                        bookmarkChapter = bookmarkChapter,
+                                        unBookmarkChapter = unBookmarkChapter,
                                         markPreviousAsRead = markPreviousRead,
                                         onClickDownload = downloadChapter,
                                         onClickDeleteChapter = deleteDownload,
-                                        onClickStopDownload = stopDownloadingChapter
+                                        onClickStopDownload = stopDownloadingChapter,
+                                        onSelectChapter = onSelectChapter,
+                                        onUnselectChapter = onUnselectChapter
                                     )
                                 }
                             } else if (!isLoading) {
@@ -197,8 +276,11 @@ private fun getActionItems(
     toggleFavorite: () -> Unit,
     favoritesButtonEnabled: Boolean,
     openInBrowserEnabled: Boolean,
-    openInBrowser: () -> Unit
-): ImmutableList<ActionItem> {
+    openInBrowser: () -> Unit,
+    downloadNext: (Int) -> Unit,
+    downloadUnread: () -> Unit,
+    downloadAll: () -> Unit
+): ImmutableList<Action> {
     return listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_refresh_manga),
@@ -225,11 +307,108 @@ private fun getActionItems(
             doAction = toggleFavorite,
             enabled = favoritesButtonEnabled
         ),
+        ActionGroup(
+            name = stringResource(MR.strings.action_download),
+            icon = Icons.Rounded.Download,
+            actions = listOf(
+                ActionItem(
+                    name = stringResource(MR.strings.download_1),
+                    doAction = { downloadNext(1) }
+                ),
+                ActionItem(
+                    name = stringResource(MR.strings.download_5),
+                    doAction = { downloadNext(5) }
+                ),
+                ActionItem(
+                    name = stringResource(MR.strings.download_10),
+                    doAction = { downloadNext(10) }
+                ),
+                ActionItem(
+                    name = stringResource(MR.strings.download_unread),
+                    doAction = downloadUnread
+                ),
+                ActionItem(
+                    name = stringResource(MR.strings.download_all),
+                    doAction = downloadAll
+                )
+            ).toImmutableList()
+        ),
         ActionItem(
             name = stringResource(MR.strings.action_browser),
             icon = Icons.Rounded.OpenInBrowser,
             enabled = openInBrowserEnabled,
             doAction = openInBrowser
         )
+    ).toImmutableList()
+}
+
+@Composable
+@Stable
+private fun getActionModeActionItems(
+    selectAll: () -> Unit,
+    invertSelection: () -> Unit
+): ImmutableList<ActionItem> {
+    return listOf(
+        ActionItem(
+            name = stringResource(MR.strings.action_select_all),
+            icon = Icons.Rounded.SelectAll,
+            doAction = selectAll
+        ),
+        ActionItem(
+            name = stringResource(MR.strings.action_select_inverse),
+            icon = Icons.Rounded.FlipToBack,
+            doAction = invertSelection
+        )
+    ).toImmutableList()
+}
+
+@Composable
+@Stable
+private fun getBottomActionItems(
+    selectedItems: ImmutableList<ChapterDownloadItem>,
+    markRead: (Int) -> Unit,
+    markUnread: (Int) -> Unit,
+    bookmarkChapter: (Int) -> Unit,
+    unBookmarkChapter: (Int) -> Unit,
+    markPreviousAsRead: (Int) -> Unit,
+    deleteChapter: (Int) -> Unit,
+    downloadChapters: () -> Unit
+): ImmutableList<BottomActionItem> {
+    return listOfNotNull(
+        BottomActionItem(
+            name = stringResource(MR.strings.action_bookmark),
+            icon = Icons.Rounded.BookmarkAdd,
+            onClick = { bookmarkChapter(selectedItems.first().chapter.index) },
+        ).takeIf { selectedItems.fastAny { !it.chapter.bookmarked } && selectedItems.size == 1 },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_remove_bookmark),
+            icon = Icons.Rounded.BookmarkRemove,
+            onClick = { unBookmarkChapter(selectedItems.first().chapter.index) },
+        ).takeIf { selectedItems.fastAny { it.chapter.bookmarked } && selectedItems.size == 1 },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_mark_as_read),
+            icon = Icons.Rounded.DoneAll,
+            onClick = { markRead(selectedItems.first().chapter.index) },
+        ).takeIf { selectedItems.fastAny { !it.chapter.read } && selectedItems.size == 1 },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_mark_as_unread),
+            icon = Icons.Rounded.RemoveDone,
+            onClick = { markUnread(selectedItems.first().chapter.index) },
+        ).takeIf { selectedItems.fastAny { !it.chapter.read } && selectedItems.size == 1 },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_mark_previous_read),
+            icon = JuiAssets.DonePrev,
+            onClick = { markPreviousAsRead(selectedItems.first().chapter.index) },
+        ).takeIf { selectedItems.size == 1 },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_download),
+            icon = Icons.Rounded.Download,
+            onClick = downloadChapters
+        ).takeIf { selectedItems.fastAny { it.downloadState.value != ChapterDownloadState.Downloaded } },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_delete),
+            icon = Icons.Rounded.Delete,
+            onClick = { deleteChapter(selectedItems.first().chapter.index) }
+        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } && selectedItems.size == 1 }
     ).toImmutableList()
 }

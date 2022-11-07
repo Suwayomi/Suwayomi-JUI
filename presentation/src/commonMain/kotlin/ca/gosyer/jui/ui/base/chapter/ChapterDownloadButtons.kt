@@ -49,16 +49,19 @@ import kotlinx.coroutines.flow.asStateFlow
 data class ChapterDownloadItem(
     val manga: Manga?,
     val chapter: Chapter,
-    private val _downloadState: MutableStateFlow<ChapterDownloadState> = MutableStateFlow(
-        if (chapter.downloaded) {
-            ChapterDownloadState.Downloaded
-        } else {
-            ChapterDownloadState.NotDownloaded
-        }
-    ),
-    private val _downloadChapterFlow: MutableStateFlow<DownloadChapter?> = MutableStateFlow(null)
 ) {
+    private val _isSelected = MutableStateFlow(false)
+    val isSelected = _isSelected.asStateFlow()
+
+    private val _downloadState: MutableStateFlow<ChapterDownloadState> = MutableStateFlow(
+        when (chapter.downloaded) {
+            true -> ChapterDownloadState.Downloaded
+            false -> ChapterDownloadState.NotDownloaded
+        }
+    )
     val downloadState = _downloadState.asStateFlow()
+
+    private val _downloadChapterFlow: MutableStateFlow<DownloadChapter?> = MutableStateFlow(null)
     val downloadChapterFlow = _downloadChapterFlow.asStateFlow()
 
     fun updateFrom(downloadingChapters: List<DownloadChapter>) {
@@ -82,6 +85,10 @@ data class ChapterDownloadItem(
     suspend fun stopDownloading(stopChapterDownload: StopChapterDownload) {
         stopChapterDownload.await(chapter)
         _downloadState.value = ChapterDownloadState.NotDownloaded
+    }
+
+    fun isSelected(selectedItems: List<Long>): Boolean {
+        return (chapter.id in selectedItems).also { _isSelected.value = it }
     }
 }
 

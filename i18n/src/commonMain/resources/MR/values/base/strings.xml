@@ -32,9 +32,6 @@
     <string name="action_install">Install</string>
     <string name="action_uninstall">Uninstall</string>
     <string name="action_update">Update</string>
-    <string name="action_toggle_read">Toggle read</string>
-    <string name="action_mark_previous_read">Mark previous as read</string>
-    <string name="action_toggle_bookmarked">Toggle bookmarked</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_remove_favorite">Unfavorite</string>
     <string name="action_refresh_manga">Refresh</string>
@@ -46,6 +43,15 @@
     <string name="action_ok">Ok</string>
     <string name="action_browser">Browser</string>
     <string name="action_filter">Filter</string>
+    <string name="action_mark_as_read">Mark as read</string>
+    <string name="action_mark_as_unread">Mark as unread</string>
+    <string name="action_download">Download</string>
+    <string name="action_bookmark">Bookmark chapter</string>
+    <string name="action_remove_bookmark">Unbookmark chapter</string>
+    <string name="action_mark_previous_read">Mark previous as read</string>
+    <string name="action_filter_bookmarked">Bookmarked</string>
+    <string name="action_select_all">Select all</string>
+    <string name="action_select_inverse">Select inverse</string>
 
     <!-- Locations -->
     <string name="location_library">Library</string>
@@ -107,6 +113,11 @@
     <string name="failed_manga_fetch">Failed to load manga</string>
     <string name="edit_categories">Categories</string>
     <string name="select_categories">Select Categories</string>
+    <string name="download_1">Next chapter</string>
+    <string name="download_5">Next 5 chapters</string>
+    <string name="download_10">Next 10 chapters</string>
+    <string name="download_all">All</string>
+    <string name="download_unread">Unread</string>
 
     <string name="status_unknown">Unknown</string>
     <string name="status_ongoing">Ongoing</string>

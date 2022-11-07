@@ -20,6 +20,7 @@ import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterBookmarked
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterMarkPreviousRead
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterRead
 import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.interactor.BatchChapterDownload
 import ca.gosyer.jui.domain.download.interactor.QueueChapterDownload
 import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.download.service.DownloadService
@@ -30,6 +31,7 @@ import ca.gosyer.jui.domain.manga.interactor.RefreshManga
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
+import ca.gosyer.jui.ui.base.chapter.ChapterDownloadState
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -43,6 +45,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -69,6 +72,7 @@ class MangaScreenViewModel @Inject constructor(
     private val removeMangaFromCategory: RemoveMangaFromCategory,
     private val addMangaToLibrary: AddMangaToLibrary,
     private val removeMangaFromLibrary: RemoveMangaFromLibrary,
+    private val batchChapterDownload: BatchChapterDownload,
     uiPreferences: UiPreferences,
     contextWrapper: ContextWrapper,
     private val params: Params
@@ -78,6 +82,11 @@ class MangaScreenViewModel @Inject constructor(
 
     private val _chapters = MutableStateFlow<ImmutableList<ChapterDownloadItem>>(persistentListOf())
     val chapters = _chapters.asStateFlow()
+
+    private val _selectedIds = MutableStateFlow<ImmutableList<Long>>(persistentListOf())
+    val selectedItems = combine(chapters, _selectedIds) { chapters, selecteditems ->
+        chapters.filter { it.isSelected(selecteditems) }.toImmutableList()
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
@@ -95,6 +104,9 @@ class MangaScreenViewModel @Inject constructor(
 
     val categoriesExist = categories.map { it.isNotEmpty() }
         .stateIn(scope, SharingStarted.Eagerly, true)
+
+    val inActionMode = _selectedIds.map { it.isNotEmpty() }
+        .stateIn(scope, SharingStarted.Eagerly, false)
 
     private val chooseCategoriesFlow = MutableSharedFlow<Unit>()
     val chooseCategoriesFlowHolder = StableHolder(chooseCategoriesFlow.asSharedFlow())
@@ -118,6 +130,8 @@ class MangaScreenViewModel @Inject constructor(
             refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
             _isLoading.value = false
         }
+
+
     }
 
     fun loadManga() {
@@ -219,31 +233,40 @@ class MangaScreenViewModel @Inject constructor(
 
     private fun findChapter(index: Int) = chapters.value.find { it.chapter.index == index }?.chapter
 
-    fun toggleRead(index: Int) {
+    private fun setRead(index: Int, read: Boolean) {
         val chapter = findChapter(index) ?: return
+        if (chapter.read == read) return
         scope.launch {
             manga.value?.let { manga ->
-                updateChapterRead.await(manga, index, read = chapter.read.not(), onError = { toast(it.message.orEmpty()) })
+                updateChapterRead.await(manga, index, read = read, onError = { toast(it.message.orEmpty()) })
                 refreshChaptersAsync(manga.id).await()
+                _selectedIds.value = _selectedIds.value.minus(chapter.id).toImmutableList()
             }
         }
     }
+    fun markRead(index: Int) = setRead(index, true)
+    fun markUnread(index: Int) = setRead(index, false)
 
-    fun toggleBookmarked(index: Int) {
+    private fun setBookmarked(index: Int, bookmark: Boolean) {
         val chapter = findChapter(index) ?: return
+        if (chapter.bookmarked == bookmark) return
         scope.launch {
             manga.value?.let { manga ->
-                updateChapterBookmarked.await(manga, index, bookmarked = chapter.bookmarked.not(), onError = { toast(it.message.orEmpty()) })
+                updateChapterBookmarked.await(manga, index, bookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
                 refreshChaptersAsync(manga.id).await()
+                _selectedIds.value = _selectedIds.value.minus(chapter.id).toImmutableList()
             }
         }
     }
+    fun bookmarkChapter(index: Int) = setBookmarked(index, true)
+    fun unBookmarkChapter(index: Int) = setBookmarked(index, false)
 
     fun markPreviousRead(index: Int) {
         scope.launch {
             manga.value?.let { manga ->
                 updateChapterMarkPreviousRead.await(manga, index, onError = { toast(it.message.orEmpty()) })
                 refreshChaptersAsync(manga.id).await()
+                _selectedIds.value = persistentListOf()
             }
         }
     }
@@ -265,6 +288,73 @@ class MangaScreenViewModel @Inject constructor(
         scope.launch {
             chapters.value.find { it.chapter.index == index }
                 ?.stopDownloading(stopChapterDownload)
+        }
+    }
+
+    fun selectAll() {
+        scope.launch {
+            _selectedIds.value = chapters.value.map { it.chapter.id }.toImmutableList()
+        }
+    }
+
+    fun invertSelection() {
+        scope.launch {
+            _selectedIds.value = chapters.value.map { it.chapter.id }.minus(_selectedIds.value).toImmutableList()
+        }
+    }
+
+    fun selectChapter(index: Int) {
+        scope.launch {
+            chapters.value.find { it.chapter.index == index }
+                ?.let { _selectedIds.value = _selectedIds.value.plus(it.chapter.id).toImmutableList() }
+        }
+    }
+    fun unselectChapter(index: Int) {
+        scope.launch {
+            chapters.value.find { it.chapter.index == index }
+                ?.let { _selectedIds.value = _selectedIds.value.minus(it.chapter.id).toImmutableList() }
+        }
+    }
+
+    fun clearSelection() {
+        scope.launch {
+            _selectedIds.value = persistentListOf()
+        }
+    }
+
+    fun downloadChapters() {
+        scope.launch {
+            batchChapterDownload.await(_selectedIds.value)
+            _selectedIds.value = persistentListOf()
+        }
+    }
+
+    fun downloadNext(next: Int) {
+        scope.launch {
+            batchChapterDownload.await(
+                _chapters.value.filter { !it.chapter.read && it.downloadState.value == ChapterDownloadState.NotDownloaded }
+                    .map { it.chapter.id }
+                    .takeLast(next)
+            )
+        }
+    }
+
+    fun downloadUnread() {
+        scope.launch {
+            batchChapterDownload.await(
+                _chapters.value.filter { !it.chapter.read && it.downloadState.value == ChapterDownloadState.NotDownloaded }
+                    .map { it.chapter.id }
+            )
+        }
+    }
+
+    fun downloadAll() {
+        scope.launch {
+            batchChapterDownload.await(
+                _chapters.value
+                    .filter { it.downloadState.value == ChapterDownloadState.NotDownloaded }
+                    .map { it.chapter.id }
+            )
         }
     }
 
