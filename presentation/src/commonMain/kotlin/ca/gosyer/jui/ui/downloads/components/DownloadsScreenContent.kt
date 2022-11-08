@@ -78,6 +78,9 @@ fun DownloadsScreenContent(
     clearQueue: () -> Unit,
     onMangaClick: (Long) -> Unit,
     stopDownload: (Chapter) -> Unit,
+    moveDownloadUp: (Chapter) -> Unit,
+    moveDownloadDown: (Chapter) -> Unit,
+    moveDownloadToTop: (Chapter) -> Unit,
     moveDownloadToBottom: (Chapter) -> Unit
 ) {
     Scaffold(
@@ -117,6 +120,9 @@ fun DownloadsScreenContent(
                         item = it,
                         onClickCover = { onMangaClick(it.mangaId) },
                         onClickCancel = stopDownload,
+                        onClickMoveUp = moveDownloadUp,
+                        onClickMoveDown = moveDownloadDown,
+                        onClickMoveToTop = moveDownloadToTop,
                         onClickMoveToBottom = moveDownloadToBottom
                     )
                 }
@@ -144,6 +150,9 @@ fun DownloadsItem(
     item: DownloadChapter,
     onClickCover: () -> Unit,
     onClickCancel: (Chapter) -> Unit,
+    onClickMoveUp: (Chapter) -> Unit,
+    onClickMoveDown: (Chapter) -> Unit,
+    onClickMoveToTop: (Chapter) -> Unit,
     onClickMoveToBottom: (Chapter) -> Unit
 ) {
     MangaListItem(
@@ -195,6 +204,15 @@ fun DownloadsItem(
             {
                 DropdownMenuItem(onClick = { onClickCancel(item.chapter) }) {
                     Text(stringResource(MR.strings.action_cancel))
+                }
+                DropdownMenuItem(onClick = { onClickMoveToTop(item.chapter) }) {
+                    Text(stringResource(MR.strings.action_move_to_top))
+                }
+                DropdownMenuItem(onClick = { onClickMoveUp(item.chapter) }) {
+                    Text(stringResource(MR.strings.action_move_up))
+                }
+                DropdownMenuItem(onClick = { onClickMoveDown(item.chapter) }) {
+                    Text(stringResource(MR.strings.action_move_down))
                 }
                 DropdownMenuItem(onClick = { onClickMoveToBottom(item.chapter) }) {
                     Text(stringResource(MR.strings.action_move_to_bottom))

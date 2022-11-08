@@ -28,6 +28,9 @@
     <string name="action_pause">Pause</string>
     <string name="action_continue">Continue</string>
     <string name="action_clear_queue">Clear queue</string>
+    <string name="action_move_up">Move up</string>
+    <string name="action_move_down">Move down</string>
+    <string name="action_move_to_top">Move to top</string>
     <string name="action_move_to_bottom">Move to bottom</string>
     <string name="action_install">Install</string>
     <string name="action_uninstall">Uninstall</string>

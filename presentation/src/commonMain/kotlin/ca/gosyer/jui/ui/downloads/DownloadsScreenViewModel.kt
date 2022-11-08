@@ -10,6 +10,7 @@ import ca.gosyer.jui.domain.base.WebsocketService.Actions
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.interactor.ClearDownloadQueue
 import ca.gosyer.jui.domain.download.interactor.QueueChapterDownload
+import ca.gosyer.jui.domain.download.interactor.ReorderChapterDownload
 import ca.gosyer.jui.domain.download.interactor.StartDownloading
 import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.download.interactor.StopDownloading
@@ -36,6 +37,7 @@ class DownloadsScreenViewModel @Inject constructor(
     private val clearDownloadQueue: ClearDownloadQueue,
     private val queueChapterDownload: QueueChapterDownload,
     private val stopChapterDownload: StopChapterDownload,
+    private val reorderChapterDownload: ReorderChapterDownload,
     private val contextWrapper: ContextWrapper,
     standalone: Boolean
 ) : ViewModel(contextWrapper) {
@@ -48,9 +50,9 @@ class DownloadsScreenViewModel @Inject constructor(
     override val scope: CoroutineScope
         get() = uiScope ?: super.scope
 
-    val serviceStatus get() = DownloadService.status.asStateFlow()
-    val downloaderStatus get() = DownloadService.downloaderStatus.asStateFlow()
-    val downloadQueue get() = DownloadService.downloadQueue.map { it.toImmutableList() }
+    val serviceStatus = DownloadService.status.asStateFlow()
+    val downloaderStatus = DownloadService.downloaderStatus.asStateFlow()
+    val downloadQueue = DownloadService.downloadQueue.map { it.toImmutableList() }
         .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     fun start() {
@@ -69,10 +71,31 @@ class DownloadsScreenViewModel @Inject constructor(
         scope.launch { stopChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) }) }
     }
 
+    fun moveUp(chapter: Chapter) {
+        scope.launch {
+            val index = downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
+            if (index == -1 || index <= 0) return@launch
+            reorderChapterDownload.await(chapter, index - 1, onError = { toast(it.message.orEmpty()) })
+        }
+    }
+
+    fun moveDown(chapter: Chapter) {
+        scope.launch {
+            val index = downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
+            if (index == -1 || index >= downloadQueue.value.lastIndex) return@launch
+            reorderChapterDownload.await(chapter, index + 1, onError = { toast(it.message.orEmpty()) })
+        }
+    }
+
+    fun moveToTop(chapter: Chapter) {
+        scope.launch {
+            reorderChapterDownload.await(chapter, 0, onError = { toast(it.message.orEmpty()) })
+        }
+    }
+
     fun moveToBottom(chapter: Chapter) {
         scope.launch {
-            stopChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) })
-            queueChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) })
+            reorderChapterDownload.await(chapter, downloadQueue.value.lastIndex, onError = { toast(it.message.orEmpty()) })
         }
     }
 

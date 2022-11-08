@@ -32,6 +32,9 @@ class DownloadsScreen : Screen {
             clearQueue = vm::clear,
             onMangaClick = { navigator push MangaScreen(it) },
             stopDownload = vm::stopDownload,
+            moveDownloadUp = vm::moveUp,
+            moveDownloadDown = vm::moveDown,
+            moveDownloadToTop = vm::moveToTop,
             moveDownloadToBottom = vm::moveToBottom
         )
     }
