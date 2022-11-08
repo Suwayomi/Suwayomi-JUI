@@ -54,7 +54,10 @@ class TachideskPageLoader(
     /**
      * A channel used to manage requests one by one while allowing priorities.
      */
-    private val channel = PriorityChannel<PriorityPage>(scope = scope, comparator = { i1, i2 -> i1.compareTo(i2) })
+    private val channel = PriorityChannel<PriorityPage>(
+        scope = scope,
+        comparator = { i1, i2 -> i1.compareTo(i2) }
+    )
 
     /**
      * The amount of pages to preload before stopping

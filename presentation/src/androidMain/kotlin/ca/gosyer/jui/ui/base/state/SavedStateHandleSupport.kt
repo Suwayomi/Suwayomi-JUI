@@ -115,11 +115,11 @@ internal class SavedStateHandlesProvider(
     }
 }
 
-inline fun <reified T : ScreenModel> getKey(screen: Screen, tag: String?): String =
-    "${screen.key}:${T::class.qualifiedName}:${tag ?: "default"}"
-
 inline fun <reified T : ScreenModel> CreationExtras.addScreenModelKey(screen: Screen, tag: String?): CreationExtras {
     return MutableCreationExtras(this).apply {
-        set(VIEW_MODEL_KEY, getKey<T>(screen, tag))
+        set(
+            VIEW_MODEL_KEY,
+            "${screen.key}:${T::class.qualifiedName}:${tag ?: "default"}"
+        )
     }
 }

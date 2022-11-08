@@ -10,7 +10,6 @@ import com.soywiz.kds.PriorityQueue
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ChannelIterator
@@ -198,6 +197,6 @@ internal class PriorityChannelImpl<T>(
 @ExperimentalCoroutinesApi
 fun <T> PriorityChannel(
     maxCapacity: Int = 4096,
-    scope: CoroutineScope = GlobalScope,
+    scope: CoroutineScope,
     comparator: Comparator<T>
 ): Channel<T> = PriorityChannelImpl(maxCapacity, scope, comparator)
