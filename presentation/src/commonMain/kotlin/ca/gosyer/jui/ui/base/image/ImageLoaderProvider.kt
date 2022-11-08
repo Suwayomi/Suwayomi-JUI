@@ -44,9 +44,7 @@ class ImageLoaderProvider @Inject constructor(
                 add(SourceIconKeyer())
             }
             options(
-                Options(
-                    config = Options.ImageConfig.HARDWARE
-                )
+                Options(config = imageConfig)
             )
             diskCache {
                 imageCache
@@ -102,6 +100,8 @@ class ImageLoaderProvider @Inject constructor(
         }
     }
 }
+
+expect val imageConfig: Options.ImageConfig
 
 expect fun imageLoaderBuilder(contextWrapper: ContextWrapper): ImageLoaderBuilder
 

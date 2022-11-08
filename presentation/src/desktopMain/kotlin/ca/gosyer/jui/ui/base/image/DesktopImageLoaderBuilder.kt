@@ -13,6 +13,9 @@ import com.seiko.imageloader.cache.disk.DiskCache
 import com.seiko.imageloader.cache.disk.DiskCacheBuilder
 import com.seiko.imageloader.cache.memory.MemoryCache
 import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
+import com.seiko.imageloader.request.Options
+
+actual val imageConfig: Options.ImageConfig = Options.ImageConfig.ARGB_8888
 
 actual fun imageLoaderBuilder(contextWrapper: ContextWrapper): ImageLoaderBuilder {
     return ImageLoaderBuilder()
