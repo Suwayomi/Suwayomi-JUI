@@ -33,9 +33,12 @@ data class Manga(
     val freshData: Boolean,
     val meta: MangaMeta,
     val realUrl: String?,
+    val lastFetchedAt: Long? = 0, // todo remove default
+    val chaptersLastFetchedAt: Long? = 0, // todo remove default
     val inLibraryAt: Long,
     val unreadCount: Int?,
     val downloadCount: Int?,
+    val chapterCount: Int? = null, // todo remove default
     val age: Long? = null, // todo remove default
     val chaptersAge: Long? = null // todo remove default
 )
