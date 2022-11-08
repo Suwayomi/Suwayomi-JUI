@@ -25,6 +25,7 @@ class LibraryScreen : BaseScreen() {
     override fun Content() {
         val vm = stateViewModel { libraryViewModel(it) }
         val settingsVM = viewModel { librarySettingsViewModel() }
+        val updatesVM = viewModel { libraryUpdatesViewModel(false) }
         val navigator = LocalNavigator.currentOrThrow
         LibraryScreenContent(
             categories = vm.categories.collectAsState().value,
@@ -40,6 +41,7 @@ class LibraryScreen : BaseScreen() {
             onPageChanged = vm::setSelectedPage,
             onClickManga = { navigator push MangaScreen(it) },
             onRemoveMangaClicked = vm::removeManga,
+            onUpdateLibrary = vm::updateLibrary,
             showingMenu = vm.showingMenu.collectAsState().value,
             setShowingMenu = vm::setShowingMenu,
             libraryFilters = getLibraryFilters(settingsVM),
@@ -48,7 +50,9 @@ class LibraryScreen : BaseScreen() {
             showUnread = vm.unreadBadges.collectAsState().value,
             showDownloaded = vm.downloadBadges.collectAsState().value,
             showLanguage = vm.languageBadges.collectAsState().value,
-            showLocal = vm.localBadges.collectAsState().value
+            showLocal = vm.localBadges.collectAsState().value,
+            updateWebsocketStatus = updatesVM.serviceStatus.collectAsState().value,
+            restartLibraryUpdates = updatesVM::restartLibraryUpdates
         )
     }
 }

@@ -31,6 +31,7 @@ import ca.gosyer.jui.ui.extensions.ExtensionsScreen
 import ca.gosyer.jui.ui.library.LibraryScreen
 import ca.gosyer.jui.ui.main.about.AboutScreen
 import ca.gosyer.jui.ui.main.components.DownloadsExtraInfo
+import ca.gosyer.jui.ui.main.components.LibraryUpdatesExtraInfo
 import ca.gosyer.jui.ui.main.more.MoreScreen
 import ca.gosyer.jui.ui.settings.SettingsScreen
 import ca.gosyer.jui.ui.sources.SourcesScreen
@@ -59,7 +60,7 @@ enum class TopLevelMenus(
     override val createScreen: () -> Screen,
     override val extraInfo: (@Composable () -> Unit)? = null
 ) : Menu {
-    Library(MR.strings.location_library, Icons.Outlined.Book, Icons.Rounded.Book, LibraryScreen::class, { LibraryScreen() }),
+    Library(MR.strings.location_library, Icons.Outlined.Book, Icons.Rounded.Book, LibraryScreen::class, { LibraryScreen() }, extraInfo = { LibraryUpdatesExtraInfo() }),
     Updates(MR.strings.location_updates, Icons.Outlined.NewReleases, Icons.Rounded.NewReleases, UpdatesScreen::class, { UpdatesScreen() }),
     Sources(MR.strings.location_sources, Icons.Outlined.Explore, Icons.Rounded.Explore, SourcesScreen::class, { SourcesScreen() }),
     Extensions(MR.strings.location_extensions, Icons.Outlined.Store, Icons.Rounded.Store, ExtensionsScreen::class, { ExtensionsScreen() }),

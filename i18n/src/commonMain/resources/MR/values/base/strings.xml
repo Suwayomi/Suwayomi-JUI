@@ -55,6 +55,8 @@
     <string name="action_filter_bookmarked">Bookmarked</string>
     <string name="action_select_all">Select all</string>
     <string name="action_select_inverse">Select inverse</string>
+    <string name="action_update_library">Update library</string>
+    <string name="action_restart_library">Restart library service</string>
 
     <!-- Locations -->
     <string name="location_library">Library</string>
@@ -318,10 +320,15 @@
 
     <!-- Android notifications -->
     <string name="group_downloader">Downloader</string>
-    <string name="group_downloader_channel">Progress</string>
+    <string name="group_library">Library</string>
+    <string name="channel_progress">Progress</string>
+    <string name="channel_downloading">Progress</string>
+    <string name="channel_active">Active</string>
     <string name="group_updates">Updates</string>
     <string name="group_updates_channel_app">App updates</string>
     <string name="group_updates_channel_ext">Extension Updates</string>
     <string name="downloader_running">Downloader running</string>
-    <string name="chapter_downloading_progress">Downloading (%1$d/%2$d)</string>
+    <string name="chapter_downloading_progress">Downloading… (%1$d/%2$d)</string>
+    <string name="library_updater_running">Library updater running</string>
+    <string name="notification_updating">Updating library… (%1$d/%2$d)</string>
 </resources>

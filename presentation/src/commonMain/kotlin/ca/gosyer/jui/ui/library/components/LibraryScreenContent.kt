@@ -28,6 +28,7 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FilterList
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,11 +38,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import ca.gosyer.jui.domain.base.WebsocketService
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.BackHandler
+import ca.gosyer.jui.ui.base.navigation.OverflowMode
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.library.CategoryState
 import ca.gosyer.jui.ui.library.settings.LibrarySheet
@@ -70,6 +73,7 @@ fun LibraryScreenContent(
     onPageChanged: (Int) -> Unit,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit,
+    onUpdateLibrary: () -> Unit,
     showingMenu: Boolean,
     setShowingMenu: (Boolean) -> Unit,
     libraryFilters: @Composable () -> Unit,
@@ -78,7 +82,9 @@ fun LibraryScreenContent(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
+    updateWebsocketStatus: WebsocketService.Status,
+    restartLibraryUpdates: () -> Unit
 ) {
     BackHandler(showingMenu) {
         setShowingMenu(false)
@@ -112,6 +118,7 @@ fun LibraryScreenContent(
                 onPageChanged = onPageChanged,
                 onClickManga = onClickManga,
                 onRemoveMangaClicked = onRemoveMangaClicked,
+                onUpdateLibrary = onUpdateLibrary,
                 showingMenu = showingMenu,
                 setShowingMenu = setShowingMenu,
                 libraryFilters = libraryFilters,
@@ -138,6 +145,7 @@ fun LibraryScreenContent(
                 onPageChanged = onPageChanged,
                 onClickManga = onClickManga,
                 onRemoveMangaClicked = onRemoveMangaClicked,
+                onUpdateLibrary = onUpdateLibrary,
                 showingSheet = showingMenu,
                 setShowingSheet = setShowingMenu,
                 libraryFilters = libraryFilters,
@@ -146,7 +154,9 @@ fun LibraryScreenContent(
                 showUnread = showUnread,
                 showDownloaded = showDownloaded,
                 showLanguage = showLanguage,
-                showLocal = showLocal
+                showLocal = showLocal,
+                updateWebsocketStatus = updateWebsocketStatus,
+                restartLibraryUpdates = restartLibraryUpdates
             )
         }
     }
@@ -168,6 +178,7 @@ fun WideLibraryScreenContent(
     onPageChanged: (Int) -> Unit,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit,
+    onUpdateLibrary: () -> Unit,
     showingMenu: Boolean,
     setShowingMenu: (Boolean) -> Unit,
     libraryFilters: @Composable () -> Unit,
@@ -192,7 +203,8 @@ fun WideLibraryScreenContent(
                     search = updateQuery,
                     actions = {
                         getActionItems(
-                            onToggleFiltersClick = { setShowingMenu(true) }
+                            onToggleFiltersClick = { setShowingMenu(true) },
+                            onUpdateLibrary = onUpdateLibrary,
                         )
                     }
                 )
@@ -269,6 +281,7 @@ fun ThinLibraryScreenContent(
     onPageChanged: (Int) -> Unit,
     onClickManga: (Long) -> Unit,
     onRemoveMangaClicked: (Long) -> Unit,
+    onUpdateLibrary: () -> Unit,
     showingSheet: Boolean,
     setShowingSheet: (Boolean) -> Unit,
     libraryFilters: @Composable () -> Unit,
@@ -277,7 +290,9 @@ fun ThinLibraryScreenContent(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
+    updateWebsocketStatus: WebsocketService.Status,
+    restartLibraryUpdates: () -> Unit
 ) {
     val bottomSheetState = rememberModalBottomSheetState(
         ModalBottomSheetValue.Hidden,
@@ -311,7 +326,10 @@ fun ThinLibraryScreenContent(
                     search = updateQuery,
                     actions = {
                         getActionItems(
-                            onToggleFiltersClick = { setShowingSheet(true) }
+                            onToggleFiltersClick = { setShowingSheet(true) },
+                            onUpdateLibrary = onUpdateLibrary,
+                            updateWebsocketStatus = updateWebsocketStatus,
+                            restartLibraryUpdates = restartLibraryUpdates
                         )
                     }
                 )
@@ -361,13 +379,30 @@ fun ThinLibraryScreenContent(
 @Composable
 @Stable
 private fun getActionItems(
-    onToggleFiltersClick: () -> Unit
+    onToggleFiltersClick: () -> Unit,
+    onUpdateLibrary: () -> Unit,
+    updateWebsocketStatus: WebsocketService.Status? = null,
+    restartLibraryUpdates: (() -> Unit)? = null
 ): ImmutableList<ActionItem> {
     return listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_filter),
             icon = Icons.Rounded.FilterList,
             doAction = onToggleFiltersClick
-        )
+        ),
+        ActionItem(
+            name = stringResource(MR.strings.action_update_library),
+            icon = Icons.Rounded.Refresh,
+            doAction = onUpdateLibrary
+        ),
+        if (updateWebsocketStatus == WebsocketService.Status.STOPPED && restartLibraryUpdates != null) {
+            ActionItem(
+                name = stringResource(MR.strings.action_restart_library),
+                overflowMode = OverflowMode.ALWAYS_OVERFLOW,
+                doAction = restartLibraryUpdates
+            )
+        } else {
+            null
+        }
     ).toImmutableList()
 }

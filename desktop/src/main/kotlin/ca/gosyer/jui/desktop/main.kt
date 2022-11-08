@@ -100,7 +100,7 @@ suspend fun main() {
         .filter { it == ServerResult.STARTED || it == ServerResult.UNUSED }
         .onEach {
             appComponent.downloadService.init()
-            // dataComponent.libraryUpdateService.init()
+            appComponent.libraryUpdateService.init()
         }
         .launchIn(GlobalScope)
 

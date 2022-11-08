@@ -22,17 +22,20 @@ class LibraryUpdateService @Inject constructor(
     client: Http
 ) : WebsocketService(serverPreferences, client) {
 
-    override val _status: MutableStateFlow<Status> = MutableStateFlow(Status.STARTING)
+    override val _status: MutableStateFlow<Status>
+        get() = status
 
     override val query: String
         get() = "/api/v1/update"
 
     override suspend fun onReceived(frame: Frame.Text) {
-        val status = json.decodeFromString<UpdateStatus>(frame.readText())
-        log.info { status }
+        updateStatus.value = json.decodeFromString<UpdateStatus>(frame.readText())
     }
 
-    private companion object {
+    companion object {
         private val log = logging()
+
+        val status = MutableStateFlow(Status.STARTING)
+        val updateStatus = MutableStateFlow(UpdateStatus(emptyMap(), false))
     }
 }

@@ -4,12 +4,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.android.data.download
+package ca.gosyer.jui.android.data.library
 
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import ca.gosyer.jui.android.AppComponent
 import ca.gosyer.jui.android.R
@@ -22,10 +23,10 @@ import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.domain.base.WebsocketService.Actions
 import ca.gosyer.jui.domain.base.WebsocketService.Status
-import ca.gosyer.jui.domain.download.model.DownloadState
-import ca.gosyer.jui.domain.download.model.DownloadStatus
-import ca.gosyer.jui.domain.download.service.DownloadService
-import ca.gosyer.jui.domain.download.service.DownloadService.Companion.status
+import ca.gosyer.jui.domain.library.model.JobStatus
+import ca.gosyer.jui.domain.library.model.UpdateStatus
+import ca.gosyer.jui.domain.library.service.LibraryUpdateService
+import ca.gosyer.jui.domain.library.service.LibraryUpdateService.Companion.status
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
@@ -51,16 +52,15 @@ import kotlinx.coroutines.job
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.lighthousegames.logging.logging
-import java.util.regex.Pattern
 
-class AndroidDownloadService : Service() {
+class AndroidLibraryService : Service() {
 
     companion object {
-        private var instance: AndroidDownloadService? = null
+        private var instance: AndroidLibraryService? = null
 
         fun start(context: Context, actions: Actions) {
             if (!isRunning() && actions != Actions.STOP) {
-                val intent = Intent(context, AndroidDownloadService::class.java).apply {
+                val intent = Intent(context, AndroidLibraryService::class.java).apply {
                     action = actions.name
                 }
                 ContextCompat.startForegroundService(context, intent)
@@ -68,7 +68,7 @@ class AndroidDownloadService : Service() {
         }
 
         fun stop(context: Context) {
-            context.stopService(Intent(context, AndroidDownloadService::class.java))
+            context.stopService(Intent(context, AndroidLibraryService::class.java))
         }
 
         fun isRunning(): Boolean {
@@ -91,14 +91,14 @@ class AndroidDownloadService : Service() {
     override fun onCreate() {
         super.onCreate()
         ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-        startForeground(Notifications.ID_DOWNLOADER_RUNNING, placeholderNotification)
+        startForeground(Notifications.ID_LIBRARY_UPDATES, placeholderNotification)
         status.value = Status.STARTING
     }
 
     override fun onDestroy() {
         ioScope.cancel()
         status.value = Status.STOPPED
-        notificationManager.cancel(Notifications.ID_DOWNLOADER_RUNNING)
+        notificationManager.cancel(Notifications.ID_LIBRARY_UPDATES)
         if (instance == this) {
             instance = null
         }
@@ -152,7 +152,7 @@ class AndroidDownloadService : Service() {
                         client.ws(
                             host = serverUrl.host,
                             port = serverUrl.port,
-                            path = serverUrl.encodedPath + "/api/v1/downloads"
+                            path = serverUrl.encodedPath + "/api/v1/update"
                         ) {
                             errorConnectionCount = 0
                             status.value = Status.RUNNING
@@ -160,12 +160,12 @@ class AndroidDownloadService : Service() {
 
                             incoming.receiveAsFlow()
                                 .filterIsInstance<Frame.Text>()
-                                .map { json.decodeFromString<DownloadStatus>(it.readText()) }
+                                .map { json.decodeFromString<UpdateStatus>(it.readText()) }
                                 .distinctUntilChanged()
                                 .drop(1)
                                 .mapLatest(::onReceived)
                                 .catch {
-                                    log.warn(it) { "Error running downloader" }
+                                    log.warn(it) { "Error running library update" }
                                 }
                                 .collect()
                         }
@@ -183,47 +183,44 @@ class AndroidDownloadService : Service() {
             .launchIn(ioScope)
     }
 
-    private fun onReceived(status: DownloadStatus) {
-        DownloadService.downloaderStatus.value = status.status
-        DownloadService.downloadQueue.value = status.queue
-        val downloadingChapter = status.queue.lastOrNull { it.state == DownloadState.Downloading }
-        if (downloadingChapter != null) {
+    private fun onReceived(status: UpdateStatus) {
+        LibraryUpdateService.updateStatus.value = status
+
+        val complete = status.statusMap[JobStatus.COMPLETE]?.size ?: 0
+        val failed = status.statusMap[JobStatus.FAILED]?.size ?: 0
+        val running = status.statusMap[JobStatus.RUNNING]?.size ?: 0
+        val pending = status.statusMap[JobStatus.PENDING]?.size ?: 0
+        val total = complete + failed + running + pending
+        val current = complete + failed
+        if (current != total) {
             val notification = with(progressNotificationBuilder) {
-                val max = downloadingChapter.chapter.pageCount ?: 0
-                val current = (max * downloadingChapter.progress).toInt().coerceIn(0, max)
-                setProgress(max, current, false)
-
-                val title = downloadingChapter.manga.title.chop(15)
-                val quotedTitle = Pattern.quote(title)
-                val chapter = downloadingChapter.chapter.name.replaceFirst("$quotedTitle[\\s]*[-]*[\\s]*".toRegex(RegexOption.IGNORE_CASE), "")
-                setContentTitle("$title - $chapter".chop(30))
-
-                setContentText(
-                    MR.strings.chapter_downloading_progress
-                        .format(
-                            current,
-                            max
-                        )
-                        .toString(this@AndroidDownloadService)
+                val updatingText = status.statusMap[JobStatus.RUNNING]
+                    ?.joinToString("\n") { it.title.chop(40) }
+                setContentTitle(
+                    MR.strings.notification_updating
+                        .format(current, total)
+                        .toString(this@AndroidLibraryService)
                 )
+                setStyle(NotificationCompat.BigTextStyle().bigText(updatingText))
+                setProgress(total, current, false)
             }.build()
             notificationManager.notify(
-                Notifications.ID_DOWNLOADER_DOWNLOADING,
+                Notifications.ID_LIBRARY_PROGRESS,
                 notification
             )
         } else {
-            notificationManager.cancel(Notifications.ID_DOWNLOADER_DOWNLOADING)
+            notificationManager.cancel(Notifications.ID_LIBRARY_PROGRESS)
         }
     }
 
     private val placeholderNotification by lazy {
-        notification(Notifications.CHANNEL_DOWNLOADER_RUNNING) {
-            setContentTitle(MR.strings.downloader_running.desc().toString(this@AndroidDownloadService))
+        notification(Notifications.CHANNEL_LIBRARY_UPDATES) {
+            setContentTitle(MR.strings.library_updater_running.desc().toString(this@AndroidLibraryService))
             setSmallIcon(R.drawable.ic_round_get_app_24)
         }
     }
     private val progressNotificationBuilder by lazy {
-        notificationBuilder(Notifications.CHANNEL_DOWNLOADER_DOWNLOADING) {
+        notificationBuilder(Notifications.CHANNEL_LIBRARY_PROGRESS) {
             setSmallIcon(R.drawable.ic_round_get_app_24)
             setAutoCancel(false)
             setOnlyAlertOnce(true)

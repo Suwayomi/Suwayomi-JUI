@@ -19,6 +19,7 @@ import ca.gosyer.jui.ui.library.settings.LibrarySettingsViewModel
 import ca.gosyer.jui.ui.main.MainViewModel
 import ca.gosyer.jui.ui.main.about.AboutViewModel
 import ca.gosyer.jui.ui.main.components.DebugOverlayViewModel
+import ca.gosyer.jui.ui.main.components.LibraryUpdatesViewModel
 import ca.gosyer.jui.ui.manga.MangaScreenViewModel
 import ca.gosyer.jui.ui.reader.ReaderMenuViewModel
 import ca.gosyer.jui.ui.settings.SettingsAdvancedViewModel
@@ -47,6 +48,7 @@ interface SharedViewModelComponent {
     val extensionsViewModel: () -> ExtensionsScreenViewModel
     val libraryViewModel: (SavedStateHandle) -> LibraryScreenViewModel
     val librarySettingsViewModel: () -> LibrarySettingsViewModel
+    val libraryUpdatesViewModel: (Boolean) -> LibraryUpdatesViewModel
     val debugOverlayViewModel: () -> DebugOverlayViewModel
     val mainViewModel: () -> MainViewModel
     val mangaViewModel: (params: MangaScreenViewModel.Params) -> MangaScreenViewModel

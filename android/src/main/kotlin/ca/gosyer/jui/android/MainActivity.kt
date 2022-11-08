@@ -11,6 +11,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import ca.gosyer.jui.android.data.download.AndroidDownloadService
+import ca.gosyer.jui.android.data.library.AndroidLibraryService
 import ca.gosyer.jui.domain.base.WebsocketService.Actions
 import ca.gosyer.jui.ui.base.theme.AppTheme
 import ca.gosyer.jui.ui.main.MainMenu
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         AndroidDownloadService.start(this, Actions.START)
+        AndroidLibraryService.start(this, Actions.START)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -71,5 +73,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         AndroidDownloadService.stop(this)
+        AndroidLibraryService.stop(this)
     }
 }

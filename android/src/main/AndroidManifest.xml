@@ -37,5 +37,8 @@
         <service
             android:name=".data.download.AndroidDownloadService"
             android:exported="false" />
+        <service
+            android:name=".data.library.AndroidLibraryService"
+            android:exported="false" />
     </application>
 </manifest>
