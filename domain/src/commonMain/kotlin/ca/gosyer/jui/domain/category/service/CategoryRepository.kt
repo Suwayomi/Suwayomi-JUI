@@ -68,4 +68,12 @@ interface CategoryRepository {
     fun getMangaFromCategory(
         @Path("categoryId") categoryId: Long
     ): Flow<List<Manga>>
+
+    @FormUrlEncoded
+    @PATCH("api/v1/category/{categoryId}/meta")
+    fun updateCategoryMeta(
+        @Path("categoryId") categoryId: Long,
+        @Field("key") key: String,
+        @Field("value") value: String
+    ): Flow<HttpResponse>
 }

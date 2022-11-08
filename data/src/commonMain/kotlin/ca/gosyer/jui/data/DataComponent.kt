@@ -13,6 +13,7 @@ import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import ca.gosyer.jui.domain.createIt
 import ca.gosyer.jui.domain.download.service.DownloadRepository
 import ca.gosyer.jui.domain.extension.service.ExtensionRepository
+import ca.gosyer.jui.domain.global.service.GlobalRepository
 import ca.gosyer.jui.domain.library.service.LibraryRepository
 import ca.gosyer.jui.domain.manga.service.MangaRepository
 import ca.gosyer.jui.domain.server.Http
@@ -47,6 +48,9 @@ interface DataComponent {
 
     @Provides
     fun extensionRepository(ktorfit: Ktorfit) = ktorfit.createIt<ExtensionRepository>()
+
+    @Provides
+    fun globalRepository(ktorfit: Ktorfit) = ktorfit.createIt<GlobalRepository>()
 
     @Provides
     fun libraryRepository(ktorfit: Ktorfit) = ktorfit.createIt<LibraryRepository>()

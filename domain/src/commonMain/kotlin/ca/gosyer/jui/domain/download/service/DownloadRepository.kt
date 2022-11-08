@@ -11,6 +11,7 @@ import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
+import de.jensklingenberg.ktorfit.http.PATCH
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.statement.HttpResponse
@@ -36,6 +37,13 @@ interface DownloadRepository {
     fun stopChapterDownload(
         @Path("mangaId") mangaId: Long,
         @Path("chapterIndex") chapterIndex: Int
+    ): Flow<HttpResponse>
+
+    @PATCH("api/v1/download/{mangaId}/chapter/{chapterIndex}/reorder/{to}")
+    fun reorderChapterDownload(
+        @Path("mangaId") mangaId: Long,
+        @Path("chapterIndex") chapterIndex: Int,
+        @Path("to") to: Int
     ): Flow<HttpResponse>
 
     @POST("api/v1/download/batch")

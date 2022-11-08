@@ -10,6 +10,7 @@ import ca.gosyer.jui.domain.source.model.MangaPage
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterChange
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterData
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreferenceChange
 import de.jensklingenberg.ktorfit.http.Body
@@ -61,6 +62,21 @@ interface SourceRepository {
         @Path("sourceId") sourceId: Long,
         @Body sourceFilter: SourceFilterChange
     ): Flow<HttpResponse>
+
+    @POST("api/v1/source/{sourceId}/filters")
+    @Headers("Content-Type: application/json")
+    fun setFilters(
+        @Path("sourceId") sourceId: Long,
+        @Body sourceFilters: List<SourceFilterChange>
+    ): Flow<HttpResponse>
+
+    @POST("api/v1/source/{sourceId}/quick-search")
+    @Headers("Content-Type: application/json")
+    fun getQuickSearchResults(
+        @Path("sourceId") sourceId: Long,
+        @Query("pageNum") pageNum: Int,
+        @Body filterData: SourceFilterData
+    ): Flow<MangaPage>
 
     @GET("api/v1/source/{sourceId}/preferences")
     fun getSourceSettings(

@@ -4,23 +4,13 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.domain.category.model
+package ca.gosyer.jui.domain.global.model
 
 import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 @Serializable
 @Immutable
-data class Category(
-    val id: Long,
-    val order: Int,
-    val name: String,
-    val default: Boolean,
-    val meta: CategoryMeta
-)
-
-@Serializable
-@Immutable
-data class CategoryMeta(
+data class GlobalMeta(
     val example: Int = 0
 )
