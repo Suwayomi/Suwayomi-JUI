@@ -140,8 +140,6 @@
     <string name="auth_username">مصادقة أسم المستخدم</string>
     <string name="auth_password">مصادقة كلمة السر</string>
     <string name="all">الكل</string>
-    <string name="action_toggle_read">تبديل القراءة</string>
-    <string name="action_toggle_bookmarked">تبديل العلامة المرجعية</string>
     <string name="theme_follow_system">إتبع إعدادات النظام</string>
     <string name="edit_categories">التصنيفات</string>
     <string name="host_port_sub">منفذ الخادم الحالي: %1$s</string>

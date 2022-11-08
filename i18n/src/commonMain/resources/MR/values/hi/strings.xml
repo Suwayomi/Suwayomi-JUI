@@ -3,8 +3,7 @@
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
-  -->
-<resources>
+  --><resources>
     <!-- Main Menu -->
     <string name="unable_to_start_server">सर्वर शुरू नहीं कर सकते</string>
     <!-- Actions -->
@@ -23,12 +22,10 @@
     <string name="action_install">इनस्टॉल</string>
     <string name="action_uninstall">अनइनस्टॉल</string>
     <string name="action_update">अपडेट</string>
-    <string name="action_toggle_read">टॉगल रीड</string>
     <string name="action_mark_previous_read">मार्क प्रीवियस एज रीड</string>
-    <string name="action_toggle_bookmarked">टॉगल बुकमार्क्ड</string>
     <string name="action_favorite">फेवरेट</string>
     <string name="action_remove_favorite">नापसंद करें</string>
-    <string name="action_refresh_manga">रिफ्रेश  Manga</string>
+    <string name="action_refresh_manga">रिफ्रेश Manga</string>
     <!-- Locations -->
     <string name="location_library">लाइब्रेरी</string>
     <string name="location_sources">सोर्सेज</string>
@@ -54,8 +51,10 @@
     <!-- Reader Menu -->
     <string name="no_pages_found">कोई पेज नहीं मिला</string>
     <string name="no_previous_chapter">कोई पिछला चैप्टर नहीं है</string>
-    <string name="previous_chapter">प्रीवियस:\n %1$s</string>
-    <string name="next_chapter">नेक्स्ट :\n %1$s</string>
+    <string name="previous_chapter">प्रीवियस:
+\n %1$s</string>
+    <string name="next_chapter">नेक्स्ट :
+\n %1$s</string>
     <string name="no_next_chapter">कोई अगला चैप्टर नहीं है</string>
     <!-- Settings-->
     <string name="settings_advanced">एडवांस्ड</string>
