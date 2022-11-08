@@ -29,7 +29,7 @@ class UpdateGlobalMeta @Inject constructor(private val globalRepository: GlobalR
 
     fun asFlow(
         globalMeta: GlobalMeta,
-        example: Int = globalMeta.example,
+        example: Int = globalMeta.example
     ) = flow {
         if (example != globalMeta.example) {
             globalRepository.updateGlobalMeta(

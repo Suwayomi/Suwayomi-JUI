@@ -33,7 +33,6 @@ object Notifications {
     const val CHANNEL_LIBRARY_PROGRESS = "library_progress_channel"
     const val ID_LIBRARY_PROGRESS = -302
 
-
     /**
      * Notification channel and ids used for app updates.
      */

@@ -29,7 +29,7 @@ class UpdateCategoryMeta @Inject constructor(private val categoryRepository: Cat
 
     fun asFlow(
         category: Category,
-        example: Int = category.meta.example,
+        example: Int = category.meta.example
     ) = flow {
         if (example != category.meta.example) {
             categoryRepository.updateCategoryMeta(

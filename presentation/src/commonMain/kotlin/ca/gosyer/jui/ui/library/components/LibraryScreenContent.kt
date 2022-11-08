@@ -204,7 +204,7 @@ fun WideLibraryScreenContent(
                     actions = {
                         getActionItems(
                             onToggleFiltersClick = { setShowingMenu(true) },
-                            onUpdateLibrary = onUpdateLibrary,
+                            onUpdateLibrary = onUpdateLibrary
                         )
                     }
                 )
