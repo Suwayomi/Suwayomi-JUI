@@ -25,7 +25,7 @@ These are the versions of [Tachidesk-Server][tachidesk-server] that JUI supports
 #### [Release build][release]
 - [Tachidesk-Server][tachidesk-server] v0.6.0+
 #### [Preview build][preview]
-- [Tachidesk-Server Preview][tachidesk-server-preview] v0.6.0+
+- [Tachidesk-Server Preview][tachidesk-server-preview] v0.6.5-r1148+
 
 ## Downloading and Running the app
 ### All Desktop Operating Systems (x64, Java Not Included)
@@ -95,7 +95,7 @@ Feel free to translate the project on [Weblate](https://hosted.weblate.org/proje
 </details>
 
 ## Credit
-The `Tachidesk` project is developed by [@AriaMoradi](https://github.com/AriaMoradi) and contributors, a link for [Tachidesk is provided here](https://github.com/Suwayomi/Tachidesk) and is licensed under `Mozilla Public License v2.0`.
+The `Tachidesk-Server` project is developed by [@AriaMoradi](https://github.com/AriaMoradi) and contributors, a link for [Tachidesk-Server is provided here][tachidesk-server] and is licensed under `Mozilla Public License v2.0`.
 
 Parts of [Tachiyomi-1.x](https://github.com/tachiyomiorg/tachiyomi-1.x) is adopted into this codebase, also licensed under `Mozilla Public License v2.0`.
 
