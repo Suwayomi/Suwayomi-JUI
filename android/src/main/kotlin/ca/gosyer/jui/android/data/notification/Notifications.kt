@@ -71,7 +71,7 @@ object Notifications {
                 },
                 buildNotificationChannel(
                     CHANNEL_DOWNLOADER_DOWNLOADING,
-                    NotificationManagerCompat.IMPORTANCE_DEFAULT
+                    NotificationManagerCompat.IMPORTANCE_LOW
                 ) {
                     setName(MR.strings.channel_progress.desc().toString(context))
                     setGroup(GROUP_DOWNLOADER)
@@ -79,7 +79,7 @@ object Notifications {
                 },
                 buildNotificationChannel(
                     CHANNEL_LIBRARY_UPDATES,
-                    NotificationManagerCompat.IMPORTANCE_DEFAULT
+                    NotificationManagerCompat.IMPORTANCE_LOW
                 ) {
                     setName(MR.strings.channel_active.desc().toString(context))
                     setGroup(GROUP_LIBRARY)
