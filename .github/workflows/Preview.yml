@@ -57,13 +57,14 @@ jobs:
       run:
         shell: ${{ matrix.shell }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-java@v1
+      - uses: actions/setup-java@v3
         if: ${{ matrix.runtime != 'linux-fedora-x64' }}
         with:
+          distribution: 'temurin'
           java-version: '17'
           architecture: ${{ matrix.arch }}
 
@@ -115,7 +116,7 @@ jobs:
 
       # Upload runner package tar.gz/zip as artifact
       - name: Publish Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: runner-package-${{ matrix.runtime }}
           path: |
@@ -126,7 +127,7 @@ jobs:
 
         # Upload runner errors
       - name: Upload error logs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
           name: runner-errors-${{ matrix.runtime }}
@@ -137,12 +138,12 @@ jobs:
     needs: [ BuildBinaries ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
 
       - name: Fix rpm java dependency
         uses: Syer10/Fedora-Java17-Action@v1
