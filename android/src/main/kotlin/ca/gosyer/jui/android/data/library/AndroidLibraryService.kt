@@ -31,6 +31,7 @@ import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
 import io.ktor.client.plugins.websocket.ws
+import io.ktor.http.URLProtocol
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CancellationException
@@ -152,7 +153,12 @@ class AndroidLibraryService : Service() {
                         client.ws(
                             host = serverUrl.host,
                             port = serverUrl.port,
-                            path = serverUrl.encodedPath + "/api/v1/update"
+                            path = serverUrl.encodedPath + "/api/v1/update",
+                            request = {
+                                if (serverUrl.protocol == URLProtocol.HTTPS) {
+                                    url.protocol = URLProtocol.WSS
+                                }
+                            }
                         ) {
                             errorConnectionCount = 0
                             status.value = Status.RUNNING

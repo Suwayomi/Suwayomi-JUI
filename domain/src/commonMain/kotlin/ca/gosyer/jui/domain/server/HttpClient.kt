@@ -26,6 +26,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.http.URLBuilder
+import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Inject
@@ -66,6 +67,9 @@ class HttpProvider @Inject constructor() {
                 Auth.NONE -> Unit
                 Auth.BASIC -> AuthPlugin {
                     basic {
+                        sendWithoutRequest {
+                            it.url.protocol == URLProtocol.WS || it.url.protocol == URLProtocol.WSS
+                        }
                         credentials {
                             BasicAuthCredentials(
                                 serverPreferences.authUsername().get(),

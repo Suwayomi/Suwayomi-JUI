@@ -59,9 +59,8 @@ abstract class WebsocketService(
                             port = serverUrl.port,
                             path = serverUrl.encodedPath + query,
                             request = {
-                                if (serverUrl.port == 443) {
+                                if (serverUrl.protocol == URLProtocol.HTTPS) {
                                     url.protocol = URLProtocol.WSS
-                                    url.port = serverUrl.port
                                 }
                             }
                         ) {
