@@ -13,7 +13,7 @@ tar -xf "$dir/tmp/control.tar.xz" -C "$dir/tmp/control_dir"
 
 echo "Adding java dependency"
 # grep: if rerun on the same file don't change it again
-depends=", java8-runtime-headless, libc++-dev"
+depends=", java8-runtime-headless"
 grep -qxF "$depends" "$dir/tmp/control_dir/control" ||\
     sed -i "/^Depends:/s/ $/$depends/" "$dir/tmp/control_dir/control"
 cat "$dir/tmp/control_dir/control"

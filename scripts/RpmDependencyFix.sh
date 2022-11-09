@@ -3,9 +3,9 @@
 rpm="$(find ./ -iname '*.rpm')"
 dir="$(dirname "$rpm")"
 
-echo "Adding java and libc++ dependency to rpm file $rpm in $dir"
+echo "Adding java dependency to rpm file $rpm in $dir"
 
-rpmrebuild -d "$dir" -np --change-spec-requires="echo Requires: java-1.8.0-openjdk-headless,libcxx" "$rpm"
+rpmrebuild -d "$dir" -np --change-spec-requires="echo Requires: java-1.8.0-openjdk-headless" "$rpm"
 
 echo "Cleaning up"
 rm -f "$rpm"
