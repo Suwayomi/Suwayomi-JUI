@@ -49,7 +49,6 @@
     <string name="action_mark_previous_read">ทำเครื่องหมายก่อนหน้าว่าอ่านแล้ว</string>
     <string name="action_refresh_manga">โหลดใหม่</string>
     <string name="action_retry">ลองใหม่</string>
-    <string name="action_toggle_read">สลับอ่าน</string>
     <string name="action_remove_favorite">ลบออกจากรายการโปรด</string>
     <string name="action_update">อัปเดต</string>
     <string name="action_close">ปิด</string>
@@ -111,7 +110,6 @@
     <string name="socks_proxy">พร็อกซี SOCKS</string>
     <string name="chapter_downloading_progress">กำลังดาวน์โหลด (%1$d/%2$d)</string>
     <string name="group_updates_channel_ext">การอัปเดตส่วนขยาย</string>
-    <string name="group_downloader_channel">ความคืบหน้า</string>
     <string name="group_updates">การอัปเดต</string>
     <string name="group_updates_channel_app">การอัปเดตแอป</string>
     <string name="location_library">คลัง</string>
@@ -149,7 +147,6 @@
     <string name="host_ip">IP เซิร์ฟเวอร์</string>
     <string name="action_start_anyway">เริ่มเลย</string>
     <string name="server_preference_warning_sub">การตั้งค่าด้านล่างจะต้องรีสตาร์ทจึงจะมีผล</string>
-    <string name="action_toggle_bookmarked">สลับการใช้บุ๊คมาร์ค</string>
     <string name="host_system_tray_sub">ใช้ไอคอนถาดระบบเพื่อดูว่าเซิร์ฟเวอร์กำลังทำงานอยู่หรือไม่</string>
     <string name="host_basic_auth_sub">ใช้การยืนยันพื้นฐานเพื่อปกป้องคลัง ต้องมีชื่อผู้ใช้และรหัสผ่าน</string>
     <string name="unable_to_start_server">ไม่สามารถเริ่มเซิร์ฟเวอร์</string>

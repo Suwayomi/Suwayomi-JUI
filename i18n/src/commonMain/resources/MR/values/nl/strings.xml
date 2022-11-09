@@ -22,8 +22,6 @@
     <string name="location_sources">Bronnen</string>
     <string name="action_start_anyway">Alsnog starten</string>
     <string name="new_update_title">Tachidesk-JUI update beschikbaar</string>
-    <string name="action_toggle_bookmarked">Bladwijzer in/uitschakelen</string>
-    <string name="action_toggle_read">Gelezen in/uitschakelen</string>
     <string name="action_uninstall">Verwijderen</string>
     <string name="action_update">Bijwerken</string>
     <string name="location_updates">Updates</string>

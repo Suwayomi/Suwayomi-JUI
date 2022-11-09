@@ -124,8 +124,6 @@
     <string name="action_refresh_manga">Aggiorna</string>
     <string name="action_start_anyway">Avvia lo stesso</string>
     <string name="new_update_title">Aggiornamento di Tachidesk-JUI disponibile</string>
-    <string name="action_toggle_bookmarked">Aggiungi/togli segnalibro</string>
-    <string name="action_toggle_read">Segna come letto/non letto</string>
     <string name="action_remove_favorite">Rimuovi</string>
     <string name="action_uninstall">Disinstalla</string>
     <string name="location_updates">Aggiornamenti</string>

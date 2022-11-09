@@ -3,8 +3,7 @@
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
-  -->
-<resources>
+  --><resources>
     <!--தாச்சிடெஸ்க் - Tachidesk ஜெ.யு.ஐ. - JUI-->
     <!-- Main Menu -->
     <!--Rough Translation, Jar cant be found, start Jar yourself -->
@@ -26,9 +25,7 @@
     <string name="action_install">நிறுவுக</string>
     <string name="action_uninstall">நிறுவல் நீக்கம்</string>
     <string name="action_update">புதுப்பிப்பு</string>
-    <string name="action_toggle_read">வாசிப்பு நிலை மாற்று</string>
     <string name="action_mark_previous_read">முந்தியதை வாசித்ததாகக் குறி</string>
-    <string name="action_toggle_bookmarked">புத்தக அடையாள குறி மாற்று</string>
     <!--Rough translation;means change bookmark-->
     <string name="action_favorite">பிடித்ததுனு குறி</string>
     <!--Rough translation;Mark favorite-->
@@ -45,7 +42,7 @@
     <string name="location_categories">பிரிவுகள்</string>
     <string name="location_manga">மங்கா</string>
     <!-- Categories Menu -->
-    <string name="categories_delete_confirm">%1$s-ஐ அழிக்க வரும்புகிறீர்களா?</string>
+    <string name="categories_delete_confirm">%1$s-ஐ அழிக்க வரும்புகிறீர்களா\?</string>
     <!-- Downloads Menu -->
     <string name="downloads_remaining">%1$d மீதி</string>
     <!--Translation;%1$s remaining; or "பதிவிறக்கம் மீதி"-download remaining, if needed to be specific-->
@@ -63,9 +60,11 @@
     <!-- Reader Menu -->
     <string name="no_pages_found">எந்தப் பக்கமும் கிடைக்கவில்லை</string>
     <string name="no_previous_chapter">முந்தைய அதிகாரம் இல்லை</string>
-    <string name="previous_chapter">முந்தைய அதிகாரம்:\n %1$s</string>
+    <string name="previous_chapter">முந்தைய அதிகாரம்:
+\n %1$s</string>
     <!--முந்தைய - previous, அதிகாரம்- chapter;change to "முந்தையது:\n %1$s" if space is limited-->
-    <string name="next_chapter">அடுத்த அதிகாரம்:\n %1$s</string>
+    <string name="next_chapter">அடுத்த அதிகாரம்:
+\n %1$s</string>
     <!--அடுத்த - next, அதிகாரம்- chapter;change to "அடுத்தது:\n %1$s" if space is limited-->
     <string name="no_next_chapter">அடுத்த அதிகாரம் இல்லை</string>
     <!-- Settings-->
@@ -111,7 +110,7 @@
     <string name="window_decorations_sub">இந்த அமைப்பு மாற்றப்படும்போது தாச்சிடெஸ்க் ஜெ.யு.ஐ.-ஐ மறுதொடக்கம் செய்யுங்கள்</string>
     <!-- Backup Settings -->
     <string name="backup_restore">பின்சேமிப்பு மீட்டுதல்</string>
-    <string name="backup_restore_sub">தாச்சிடெஸ்கில் பின்சேமிப்பை மீட்க்கபடும் </string>
+    <string name="backup_restore_sub">தாச்சிடெஸ்கில் பின்சேமிப்பை மீட்க்கபடும்</string>
     <string name="backup_create">பின்சேமிப்பை உருவாக்கு</string>
     <string name="backup_create_sub">தாச்சிடெஸ்கில் பின்சேமிப்பை உருவாக்கபடும்</string>
     <!-- General Settings -->

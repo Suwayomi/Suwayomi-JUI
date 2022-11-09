@@ -128,8 +128,6 @@
     <string name="settings_tracking_screen">追踪设置</string>
     <string name="settings_tracking">追踪</string>
     <string name="move_to_latest">到最新</string>
-    <string name="action_toggle_read">切换已读</string>
-    <string name="action_toggle_bookmarked">切换书签</string>
     <string name="move_to_browse">浏览</string>
     <string name="no_previous_chapter">没有前一章</string>
     <string name="no_next_chapter">没有下一章</string>
@@ -247,7 +245,6 @@
     <string name="status_publishing_finished">出版完毕</string>
     <string name="local_badge">本地</string>
     <string name="items_per_row">每行项目数</string>
-    <string name="group_downloader_channel">进行中</string>
     <string name="action_more_actions">更多操作</string>
     <string name="action_ok">确认</string>
     <string name="adaptive">自适应</string>

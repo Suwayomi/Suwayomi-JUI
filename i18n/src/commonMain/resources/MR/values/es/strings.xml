@@ -96,7 +96,6 @@
     <string name="color_primary">Primario</string>
     <string name="action_mark_previous_read">Marcar lo anterior como leído</string>
     <string name="action_start_anyway">Iniciar de todas formas</string>
-    <string name="action_toggle_read">Alternar lectura</string>
     <string name="color_primary_sub">Mostrado por la aplicación con mayor frecuencia</string>
     <string name="action_move_to_bottom">Mover al fondo</string>
     <string name="page_padding">Espacio entre la pagina y los bordes</string>
@@ -105,7 +104,6 @@
     <string name="action_uninstall">Desinstalar</string>
     <string name="downloads_stopped">Detenida</string>
     <string name="action_yes">Si</string>
-    <string name="action_toggle_bookmarked">Alternar marcado</string>
     <string name="action_remove_favorite">Quitar favorito</string>
     <string name="no_previous_chapter">No hay capítulo previo</string>
     <string name="confirm_exit">Confirmar salida</string>

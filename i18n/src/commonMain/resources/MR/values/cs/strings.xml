@@ -11,8 +11,6 @@
     <string name="settings_tracking_screen">Nastavení Sledování průběhu</string>
     <string name="settings_tracking">Sledování Průběhu Četby</string>
     <string name="move_to_latest">K nejnovějšímu</string>
-    <string name="action_toggle_read">Přidat k přečetným</string>
-    <string name="action_toggle_bookmarked">Přidat do záložek</string>
     <string name="move_to_browse">Procházet</string>
     <string name="no_previous_chapter">Toto je první kapitola</string>
     <string name="no_next_chapter">Toto je poslední kapitola</string>
