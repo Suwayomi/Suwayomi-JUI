@@ -102,9 +102,9 @@ class AppThemeViewModel @Inject constructor(
         lightTheme: Int,
         darkTheme: Int
     ): Theme {
-        fun getTheme(id: Int, fallbackIsLight: Boolean): Theme {
-            return themes.find { it.id == id }
-                ?: themes.first { it.colors.isLight == fallbackIsLight }
+        fun getTheme(id: Int, isLight: Boolean): Theme {
+            return themes.find { it.id == id && it.colors.isLight == isLight }
+                ?: themes.first { it.colors.isLight == isLight }
         }
 
         return when (themeMode) {
