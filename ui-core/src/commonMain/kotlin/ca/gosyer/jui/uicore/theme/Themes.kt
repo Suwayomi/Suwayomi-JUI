@@ -78,7 +78,7 @@ fun tachiyomiDarkColors(
 
 fun extraColors(
     tertiary: Color = Color(0xFF006E17),
-    onTertiary: Color = Color.White,
+    onTertiary: Color = Color.White
 ) = ExtraColors(
     tertiary = tertiary,
     onTertiary = onTertiary
