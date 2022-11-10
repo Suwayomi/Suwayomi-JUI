@@ -200,7 +200,7 @@ fun SettingsAppearanceScreenContent(
                                         .padding(top = 8.dp)
                                 ) {
                                     val isSelected = (isLight && currentLightTheme == theme.id) ||
-                                            (!isLight && currentDarkTheme == theme.id)
+                                        (!isLight && currentDarkTheme == theme.id)
                                     MaterialTheme(
                                         colors = if (isSelected) customColors else theme.colors
                                     ) {
