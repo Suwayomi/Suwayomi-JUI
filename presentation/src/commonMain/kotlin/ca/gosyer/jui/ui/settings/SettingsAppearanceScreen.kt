@@ -67,6 +67,7 @@ import ca.gosyer.jui.ui.base.theme.getDarkColors
 import ca.gosyer.jui.ui.base.theme.getLightColors
 import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.ui.viewModel
+import ca.gosyer.jui.uicore.components.HorizontalScrollbar
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
@@ -182,52 +183,61 @@ fun SettingsAppearanceScreenContent(
                         stringResource(MR.strings.preset_themes),
                         modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
                     )
-                    LazyRow(
-                        modifier = Modifier
-                            .animateContentSize()
-                            .padding(vertical = 8.dp),
-                        contentPadding = PaddingValues(horizontal = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(themesForCurrentMode) { theme ->
-                            Column(
-                                modifier = Modifier
-                                    .width(114.dp)
-                                    .padding(top = 8.dp)
-                            ) {
-                                val isSelected = (isLight && currentLightTheme == theme.id) ||
-                                    (!isLight && currentDarkTheme == theme.id)
-                                MaterialTheme(
-                                    colors = if (isSelected) customColors else theme.colors
-                                ) {
-                                    ExtraColors.WithExtraColors(
-                                        if (isSelected) customExtraColors else theme.extraColors
-                                    ) {
-                                        AppThemePreviewItem(
-                                            selected = isSelected,
-                                            onClick = {
-                                                (if (isLight) lightTheme else darkTheme).value = theme.id
-                                                activeColors.primaryStateFlow.value = theme.colors.primary
-                                                activeColors.secondaryStateFlow.value = theme.colors.secondary
-                                                activeColors.tertiaryStateFlow.value = theme.extraColors.tertiary
-                                            }
-                                        )
-                                    }
-                                }
-
-                                Text(
-                                    text = stringResource(theme.titleRes),
+                    val lazyListState = rememberLazyListState()
+                    Box {
+                        LazyRow(
+                            state = lazyListState,
+                            modifier = Modifier
+                                .animateContentSize()
+                                .padding(vertical = 8.dp),
+                            contentPadding = PaddingValues(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(themesForCurrentMode) { theme ->
+                                Column(
                                     modifier = Modifier
-                                        .fillMaxWidth()
+                                        .width(114.dp)
                                         .padding(top = 8.dp)
-                                        .secondaryItemAlpha(),
-                                    color = MaterialTheme.colors.onSurface,
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 2,
-                                    style = MaterialTheme.typography.body2
-                                )
+                                ) {
+                                    val isSelected = (isLight && currentLightTheme == theme.id) ||
+                                            (!isLight && currentDarkTheme == theme.id)
+                                    MaterialTheme(
+                                        colors = if (isSelected) customColors else theme.colors
+                                    ) {
+                                        ExtraColors.WithExtraColors(
+                                            if (isSelected) customExtraColors else theme.extraColors
+                                        ) {
+                                            AppThemePreviewItem(
+                                                selected = isSelected,
+                                                onClick = {
+                                                    (if (isLight) lightTheme else darkTheme).value = theme.id
+                                                    activeColors.primaryStateFlow.value = theme.colors.primary
+                                                    activeColors.secondaryStateFlow.value = theme.colors.secondary
+                                                    activeColors.tertiaryStateFlow.value = theme.extraColors.tertiary
+                                                }
+                                            )
+                                        }
+                                    }
+
+                                    Text(
+                                        text = stringResource(theme.titleRes),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 8.dp)
+                                            .secondaryItemAlpha(),
+                                        color = MaterialTheme.colors.onSurface,
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 2,
+                                        style = MaterialTheme.typography.body2
+                                    )
+                                }
                             }
                         }
+                        HorizontalScrollbar(
+                            adapter = rememberScrollbarAdapter(lazyListState),
+                            modifier = Modifier.align(Alignment.BottomCenter)
+                                .fillMaxWidth()
+                        )
                     }
                 }
                 item {
