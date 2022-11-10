@@ -6,23 +6,22 @@
 
 package ca.gosyer.jui.ui.library.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.uicore.components.Badge
+import ca.gosyer.jui.uicore.components.BadgeGroup
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.theme.extraColors
 
@@ -35,37 +34,22 @@ fun LibraryMangaBadges(
     showLanguage: Boolean,
     showLocal: Boolean
 ) {
-    val unread = manga.unreadCount
-    val downloaded = manga.downloadCount
-    val isLocal = manga.sourceId == Source.LOCAL_SOURCE_ID
+    val unread = manga.unreadCount?.takeIf { showUnread && it > 0 }
+    val downloaded = manga.downloadCount?.takeIf { showDownloaded && it > 0 }
+    val isLocal = (manga.sourceId == Source.LOCAL_SOURCE_ID).takeIf { showLocal } ?: false
+    val language = manga.source?.lang?.takeIf { showLanguage }?.toUpperCase(Locale.current)
 
     Row(modifier then Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        if ((unread != null && unread > 0) || (downloaded != null && downloaded > 0) || isLocal) {
-            Row(modifier = Modifier.clip(MaterialTheme.shapes.medium)) {
-                if (showLocal && isLocal) {
-                    Text(
-                        text = stringResource(MR.strings.local_badge),
-                        modifier = Modifier.background(MaterialTheme.colors.secondary).then(BadgesInnerPadding),
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.onSecondary
-                    )
+        if (unread != null || downloaded != null || isLocal) {
+            BadgeGroup {
+                if (downloaded != null) {
+                    Badge(text = downloaded.toString())
                 }
-                if (showUnread && unread != null && unread > 0) {
-                    Text(
+                if (unread != null) {
+                    Badge(
                         text = unread.toString(),
-                        modifier = Modifier.background(MaterialTheme.extraColors.tertiary).then(BadgesInnerPadding),
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.extraColors.onTertiary
-                    )
-                }
-                if (showDownloaded && downloaded != null && downloaded > 0) {
-                    Text(
-                        text = downloaded.toString(),
-                        modifier = Modifier.background(MaterialTheme.colors.secondary).then(
-                            BadgesInnerPadding
-                        ),
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.onSecondary
+                        color = MaterialTheme.extraColors.tertiary,
+                        textColor = MaterialTheme.extraColors.onTertiary
                     )
                 }
             }
@@ -73,16 +57,10 @@ fun LibraryMangaBadges(
             Spacer(Modifier)
         }
 
-        val lang = manga.source?.lang
-        if (showLanguage && lang != null) {
-            Row(modifier = Modifier.clip(MaterialTheme.shapes.medium)) {
-                Text(
-                    text = lang.toUpperCase(Locale.current),
-                    modifier = Modifier.background(MaterialTheme.colors.secondary).then(BadgesInnerPadding),
-                    style = MaterialTheme.typography.caption,
-                    color = MaterialTheme.colors.onSecondary
-                )
-            }
+        if (isLocal) {
+            Badge(text = stringResource(MR.strings.local_badge))
+        } else if (language != null) {
+            Badge(text = language)
         }
     }
 }
