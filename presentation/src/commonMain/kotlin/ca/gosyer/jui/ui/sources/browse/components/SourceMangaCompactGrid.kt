@@ -130,12 +130,12 @@ private fun SourceMangaCompactGridItem(
                 .background(
                     Brush.verticalGradient(
                         0f to Color.Transparent,
-                        1f to Color(0xAA000000),
-                    ),
+                        1f to Color(0xAA000000)
+                    )
                 )
                 .fillMaxHeight(0.33f)
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter),
+                .align(Alignment.BottomCenter)
         )
         Text(
             modifier = Modifier
@@ -147,13 +147,13 @@ private fun SourceMangaCompactGridItem(
                 color = Color.White,
                 shadow = Shadow(
                     color = Color.Black,
-                    blurRadius = 4f,
-                ),
+                    blurRadius = 4f
+                )
             ),
             fontSize = 12.sp,
             lineHeight = 18.sp,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis
         )
         SourceMangaBadges(
             inLibrary = inLibrary,

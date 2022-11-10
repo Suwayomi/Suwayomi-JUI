@@ -136,7 +136,7 @@ private fun LibraryMangaComfortableGridItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
-                style = MaterialTheme.typography.subtitle2,
+                style = MaterialTheme.typography.subtitle2
             )
         }
         LibraryMangaBadges(
