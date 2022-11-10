@@ -394,7 +394,7 @@ private fun getBottomActionItems(
             name = stringResource(MR.strings.action_mark_as_unread),
             icon = Icons.Rounded.RemoveDone,
             onClick = { markUnread(selectedItems.first().chapter.index) }
-        ).takeIf { selectedItems.fastAny { !it.chapter.read } && selectedItems.size == 1 },
+        ).takeIf { selectedItems.fastAny { it.chapter.read } && selectedItems.size == 1 },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_previous_read),
             icon = JuiAssets.DonePrev,
