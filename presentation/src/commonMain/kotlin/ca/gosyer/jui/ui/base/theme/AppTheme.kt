@@ -23,6 +23,7 @@ import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.ui.base.LocalViewModels
 import ca.gosyer.jui.ui.base.theme.ThemeScrollbarStyle.getScrollbarStyle
 import ca.gosyer.jui.uicore.components.LocalScrollbarStyle
+import ca.gosyer.jui.uicore.theme.ExtraColors
 import ca.gosyer.jui.uicore.theme.Theme
 import ca.gosyer.jui.uicore.theme.themes
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -42,17 +43,19 @@ import me.tatarka.inject.annotations.Inject
 fun AppTheme(content: @Composable () -> Unit) {
     val viewModels = LocalViewModels.current
     val vm = remember { viewModels.appThemeViewModel() }
-    val colors = vm.getColors()
+    val (colors, extraColors) = vm.getColors()
     /*val systemUiController = rememberSystemUiController()*/
     DisposableEffect(vm) {
         onDispose(vm::onDispose)
     }
 
     MaterialTheme(colors = colors) {
-        CompositionLocalProvider(
-            LocalScrollbarStyle provides getScrollbarStyle(),
-            content = content
-        )
+        ExtraColors.WithExtraColors(extraColors) {
+            CompositionLocalProvider(
+                LocalScrollbarStyle provides getScrollbarStyle(),
+                content = content
+            )
+        }
     }
 }
 
@@ -70,7 +73,7 @@ class AppThemeViewModel @Inject constructor(
     private val baseThemeScope = CoroutineScope(baseThemeJob)
 
     @Composable
-    fun getColors(): Colors {
+    fun getColors(): Pair<Colors, ExtraColors> {
         val themeMode by themeMode.collectAsState()
         val lightTheme by lightTheme.collectAsState()
         val darkTheme by darkTheme.collectAsState()
@@ -88,8 +91,9 @@ class AppThemeViewModel @Inject constructor(
 
         val primary by colors.primaryStateFlow.collectAsState()
         val secondary by colors.secondaryStateFlow.collectAsState()
+        val tertiary by colors.tertiaryStateFlow.collectAsState()
 
-        return getMaterialColors(baseTheme.colors, primary, secondary)
+        return getMaterialColors(baseTheme.colors, primary, secondary) to getExtraColors(baseTheme.extraColors, tertiary)
     }
 
     @Composable
@@ -128,6 +132,16 @@ class AppThemeViewModel @Inject constructor(
             secondaryVariant = secondary,
             onPrimary = if (primary.luminance() > 0.5) Color.Black else Color.White,
             onSecondary = if (secondary.luminance() > 0.5) Color.Black else Color.White
+        )
+    }
+
+    private fun getExtraColors(
+        baseExtraColors: ExtraColors,
+        colorTertiary: Color
+    ): ExtraColors {
+        val tertiary = colorTertiary.takeOrElse { baseExtraColors.tertiary }
+        return baseExtraColors.copy(
+            tertiary = tertiary
         )
     }
 

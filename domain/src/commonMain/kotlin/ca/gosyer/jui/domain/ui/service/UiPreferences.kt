@@ -42,6 +42,14 @@ class UiPreferences(private val preferenceStore: PreferenceStore) {
         return preferenceStore.getInt("color_secondary_dark", 0)
     }
 
+    fun colorTertiaryLight(): Preference<Int> {
+        return preferenceStore.getInt("color_tertiary_light", 0)
+    }
+
+    fun colorTertiaryDark(): Preference<Int> {
+        return preferenceStore.getInt("color_tertiary_dark", 0)
+    }
+
     fun startScreen(): Preference<StartScreen> {
         return preferenceStore.getJsonObject("start_screen", StartScreen.Library, StartScreen.serializer())
     }

@@ -198,10 +198,14 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_text">Text</string>
     <string name="preset_themes">Preset themes</string>
+    <string name="theme_default">Default</string>
+    <string name="theme_legacy_blue">Legacy Blue</string>
+    <string name="theme_amoled">AMOLED</string>
     <string name="color_primary">Primary</string>
     <string name="color_primary_sub">Displayed most frequently across your app</string>
     <string name="color_secondary">Secondary</string>
     <string name="color_secondary_sub">Accents select parts of the UI</string>
+    <string name="color_tertiary">Tertiary</string>
     <string name="window_decorations">Window decorations</string>
     <string name="window_decorations_sub">Restart JUI when this setting is changed</string>
 

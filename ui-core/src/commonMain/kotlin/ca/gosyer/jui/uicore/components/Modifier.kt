@@ -11,6 +11,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.alpha
 
 fun Modifier.selectedBackground(isSelected: Boolean): Modifier = composed {
     if (isSelected) {
@@ -20,3 +21,5 @@ fun Modifier.selectedBackground(isSelected: Boolean): Modifier = composed {
         this
     }
 }
+
+fun Modifier.secondaryItemAlpha(): Modifier = this.alpha(SecondaryItemAlpha)

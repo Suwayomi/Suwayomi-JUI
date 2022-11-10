@@ -24,6 +24,7 @@ import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.resources.stringResource
+import ca.gosyer.jui.uicore.theme.extraColors
 
 @Composable
 fun LibraryMangaBadges(
@@ -52,9 +53,9 @@ fun LibraryMangaBadges(
                 if (showUnread && unread != null && unread > 0) {
                     Text(
                         text = unread.toString(),
-                        modifier = Modifier.background(MaterialTheme.colors.primary).then(BadgesInnerPadding),
+                        modifier = Modifier.background(MaterialTheme.extraColors.tertiary).then(BadgesInnerPadding),
                         style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.onPrimary
+                        color = MaterialTheme.extraColors.onTertiary
                     )
                 }
                 if (showDownloaded && downloaded != null && downloaded > 0) {
