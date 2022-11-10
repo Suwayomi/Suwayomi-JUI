@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -20,8 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
@@ -36,10 +34,6 @@ fun GlobalSearchMangaComfortableGridItem(
     manga: Manga,
     inLibrary: Boolean
 ) {
-    val fontStyle = LocalTextStyle.current.merge(
-        TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
-    )
-
     Box(
         modifier = Modifier
             .padding(4.dp)
@@ -59,9 +53,12 @@ fun GlobalSearchMangaComfortableGridItem(
             )
             Text(
                 text = manga.title,
-                style = fontStyle,
-                maxLines = 3,
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp)
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
+                style = MaterialTheme.typography.subtitle2,
             )
         }
         SourceMangaBadges(

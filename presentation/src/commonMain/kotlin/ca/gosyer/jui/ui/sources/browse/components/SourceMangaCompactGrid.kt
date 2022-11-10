@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.sources.browse.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -23,7 +24,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.LocalTextStyle
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -31,14 +32,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.domain.manga.model.Manga
@@ -112,10 +111,6 @@ private fun SourceMangaCompactGridItem(
     manga: Manga,
     inLibrary: Boolean
 ) {
-    val fontStyle = LocalTextStyle.current.merge(
-        TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
-    )
-
     Box(
         modifier = Modifier.padding(4.dp)
             .fillMaxWidth()
@@ -129,29 +124,40 @@ private fun SourceMangaCompactGridItem(
             contentScale = ContentScale.Crop,
             filterQuality = FilterQuality.Medium
         )
-        Box(modifier = Modifier.fillMaxSize().then(shadowGradient))
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(bottomStart = 4.dp, bottomEnd = 4.dp))
+                .background(
+                    Brush.verticalGradient(
+                        0f to Color.Transparent,
+                        1f to Color(0xAA000000),
+                    ),
+                )
+                .fillMaxHeight(0.33f)
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter),
+        )
         Text(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(8.dp),
             text = manga.title,
             color = Color.White,
-            style = fontStyle,
+            style = MaterialTheme.typography.subtitle2.copy(
+                color = Color.White,
+                shadow = Shadow(
+                    color = Color.Black,
+                    blurRadius = 4f,
+                ),
+            ),
+            fontSize = 12.sp,
+            lineHeight = 18.sp,
             maxLines = 2,
-            modifier = Modifier.align(Alignment.BottomStart).padding(8.dp)
+            overflow = TextOverflow.Ellipsis,
         )
         SourceMangaBadges(
             inLibrary = inLibrary,
             modifier = Modifier.padding(4.dp)
         )
-    }
-}
-
-private val shadowGradient = Modifier.drawWithCache {
-    val gradient = Brush.linearGradient(
-        0.75f to Color.Transparent,
-        1.0f to Color(0xAA000000),
-        start = Offset(0f, 0f),
-        end = Offset(0f, size.height)
-    )
-    onDrawBehind {
-        drawRect(gradient)
     }
 }
