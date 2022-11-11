@@ -9,6 +9,10 @@ package ca.gosyer.jui.ui.library.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
@@ -16,6 +20,7 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import ca.gosyer.jui.domain.category.model.Category
@@ -38,24 +43,33 @@ fun LibraryTabs(
         enter = expandVertically(),
         exit = shrinkVertically()
     ) {
-        ScrollableTabRow(
-            selectedTabIndex = selectedPage,
-            backgroundColor = MaterialTheme.colors.surface,
-            // contentColor = CustomColors.current.onBars,
-            edgePadding = 0.dp,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-                )
+        Column {
+            ScrollableTabRow(
+                selectedTabIndex = selectedPage,
+                backgroundColor = MaterialTheme.colors.surface,
+                edgePadding = 0.dp,
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                            .padding(horizontal = 8.dp)
+                            .clip(RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp)),
+                        height = 3.dp,
+                        color = MaterialTheme.colors.primary
+                    )
+                },
+                divider = {},
+            ) {
+                categories.fastForEachIndexed { i, category ->
+                    Tab(
+                        selected = selectedPage == i,
+                        onClick = { onPageChanged(i) },
+                        text = { Text(category.name) },
+                        selectedContentColor = MaterialTheme.colors.primary,
+                        unselectedContentColor = MaterialTheme.colors.onSurface,
+                    )
+                }
             }
-        ) {
-            categories.fastForEachIndexed { i, category ->
-                Tab(
-                    selected = selectedPage == i,
-                    onClick = { onPageChanged(i) },
-                    text = { Text(category.name) }
-                )
-            }
+            Divider()
         }
     }
 }
