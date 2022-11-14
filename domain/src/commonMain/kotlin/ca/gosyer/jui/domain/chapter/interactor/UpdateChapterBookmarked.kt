@@ -55,7 +55,7 @@ class UpdateChapterBookmarked @Inject constructor(private val chapterRepository:
         mangaId: Long,
         index: Int,
         bookmarked: Boolean
-    ) = chapterRepository.updateChapterBookmarked(
+    ) = chapterRepository.updateChapter(
         mangaId = mangaId,
         chapterIndex = index,
         bookmarked = bookmarked
@@ -65,7 +65,7 @@ class UpdateChapterBookmarked @Inject constructor(private val chapterRepository:
         manga: Manga,
         index: Int,
         bookmarked: Boolean
-    ) = chapterRepository.updateChapterBookmarked(
+    ) = chapterRepository.updateChapter(
         mangaId = manga.id,
         chapterIndex = index,
         bookmarked = bookmarked
@@ -74,7 +74,7 @@ class UpdateChapterBookmarked @Inject constructor(private val chapterRepository:
     fun asFlow(
         chapter: Chapter,
         bookmarked: Boolean
-    ) = chapterRepository.updateChapterBookmarked(
+    ) = chapterRepository.updateChapter(
         mangaId = chapter.mangaId,
         chapterIndex = chapter.index,
         bookmarked = bookmarked

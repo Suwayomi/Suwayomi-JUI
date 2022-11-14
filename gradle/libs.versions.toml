@@ -14,7 +14,7 @@ voyager = "1.0.0-rc06"
 accompanist = "0.25.2"
 googleAccompanist = "0.25.1"
 imageloader = "1.2.2.1"
-materialDialogs = "0.8.0"
+materialDialogs = "0.9.0"
 
 # Android
 androidGradle = "7.3.1"
@@ -37,7 +37,7 @@ kotlinInject = "0.5.1"
 
 # Network
 ktor = "2.1.3"
-ktorfit = "1.0.0-beta15"
+ktorfit = "1.0.0-beta16"
 
 # Logging
 slf4j = "2.0.3"

@@ -33,7 +33,6 @@ interface ChapterRepository {
         @Path("chapterIndex") chapterIndex: Int
     ): Flow<Chapter>
 
-    /* TODO add once ktorfit supports nullable paremters
     @FormUrlEncoded
     @PATCH("api/v1/manga/{mangaId}/chapter/{chapterIndex}")
     fun updateChapter(
@@ -43,39 +42,6 @@ interface ChapterRepository {
         @Field("bookmarked") bookmarked: Boolean? = null,
         @Field("lastPageRead") lastPageRead: Int? = null,
         @Field("markPrevRead") markPreviousRead: Boolean? = null
-    ): Flow<HttpResponse>*/
-
-    // todo remove following updateChapter functions once ktorfit supports nullable parameters
-    @FormUrlEncoded
-    @PATCH("api/v1/manga/{mangaId}/chapter/{chapterIndex}")
-    fun updateChapterRead(
-        @Path("mangaId") mangaId: Long,
-        @Path("chapterIndex") chapterIndex: Int,
-        @Field("read") read: Boolean
-    ): Flow<HttpResponse>
-
-    @FormUrlEncoded
-    @PATCH("api/v1/manga/{mangaId}/chapter/{chapterIndex}")
-    fun updateChapterBookmarked(
-        @Path("mangaId") mangaId: Long,
-        @Path("chapterIndex") chapterIndex: Int,
-        @Field("bookmarked") bookmarked: Boolean
-    ): Flow<HttpResponse>
-
-    @FormUrlEncoded
-    @PATCH("api/v1/manga/{mangaId}/chapter/{chapterIndex}")
-    fun updateChapterLastPageRead(
-        @Path("mangaId") mangaId: Long,
-        @Path("chapterIndex") chapterIndex: Int,
-        @Field("lastPageRead") lastPageRead: Int
-    ): Flow<HttpResponse>
-
-    @FormUrlEncoded
-    @PATCH("api/v1/manga/{mangaId}/chapter/{chapterIndex}")
-    fun updateChapterMarkPrevRead(
-        @Path("mangaId") mangaId: Long,
-        @Path("chapterIndex") chapterIndex: Int,
-        @Field("markPrevRead") markPreviousRead: Boolean = true
     ): Flow<HttpResponse>
 
     @GET("api/v1/manga/{mangaId}/chapter/{chapterIndex}/page/{pageNum}")

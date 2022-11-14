@@ -55,7 +55,7 @@ class UpdateChapterRead @Inject constructor(private val chapterRepository: Chapt
         mangaId: Long,
         index: Int,
         read: Boolean
-    ) = chapterRepository.updateChapterRead(
+    ) = chapterRepository.updateChapter(
         mangaId = mangaId,
         chapterIndex = index,
         read = read
@@ -65,7 +65,7 @@ class UpdateChapterRead @Inject constructor(private val chapterRepository: Chapt
         manga: Manga,
         index: Int,
         read: Boolean
-    ) = chapterRepository.updateChapterRead(
+    ) = chapterRepository.updateChapter(
         mangaId = manga.id,
         chapterIndex = index,
         read = read
@@ -74,7 +74,7 @@ class UpdateChapterRead @Inject constructor(private val chapterRepository: Chapt
     fun asFlow(
         chapter: Chapter,
         read: Boolean
-    ) = chapterRepository.updateChapterRead(
+    ) = chapterRepository.updateChapter(
         mangaId = chapter.mangaId,
         chapterIndex = chapter.index,
         read = read
