@@ -7,11 +7,16 @@
 package ca.gosyer.jui.domain.chapter.service
 
 import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.chapter.model.ChapterBatchEditInput
+import ca.gosyer.jui.domain.chapter.model.MangaChapterBatchEditInput
+import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.Field
 import de.jensklingenberg.ktorfit.http.FormUrlEncoded
 import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.PATCH
+import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 import de.jensklingenberg.ktorfit.http.ReqBuilder
@@ -42,6 +47,19 @@ interface ChapterRepository {
         @Field("bookmarked") bookmarked: Boolean? = null,
         @Field("lastPageRead") lastPageRead: Int? = null,
         @Field("markPrevRead") markPreviousRead: Boolean? = null
+    ): Flow<HttpResponse>
+
+    @POST("api/v1/manga/{mangaId}/chapter/batch")
+    @Headers("Content-Type: application/json")
+    fun batchUpdateChapter(
+        @Path("mangaId") mangaId: Long,
+        @Body input: MangaChapterBatchEditInput
+    ): Flow<HttpResponse>
+
+    @POST("api/v1/chapter/batch")
+    @Headers("Content-Type: application/json")
+    fun batchUpdateChapter(
+        @Body input: ChapterBatchEditInput
     ): Flow<HttpResponse>
 
     @GET("api/v1/manga/{mangaId}/chapter/{chapterIndex}/page/{pageNum}")

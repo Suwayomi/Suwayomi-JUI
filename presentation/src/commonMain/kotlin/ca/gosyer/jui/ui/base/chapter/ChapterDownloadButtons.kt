@@ -87,6 +87,10 @@ data class ChapterDownloadItem(
         _downloadState.value = ChapterDownloadState.NotDownloaded
     }
 
+    fun setNotDownloaded() {
+        _downloadState.value = ChapterDownloadState.NotDownloaded
+    }
+
     fun isSelected(selectedItems: List<Long>): Boolean {
         return (chapter.id in selectedItems).also { _isSelected.value = it }
     }

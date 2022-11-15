@@ -97,13 +97,13 @@ fun MangaScreenContent(
     downloadNext: (Int) -> Unit,
     downloadUnread: () -> Unit,
     downloadAll: () -> Unit,
-    markRead: (Int) -> Unit,
-    markUnread: (Int) -> Unit,
-    bookmarkChapter: (Int) -> Unit,
-    unBookmarkChapter: (Int) -> Unit,
+    markRead: (Long?) -> Unit,
+    markUnread: (Long?) -> Unit,
+    bookmarkChapter: (Long?) -> Unit,
+    unBookmarkChapter: (Long?) -> Unit,
     markPreviousRead: (Int) -> Unit,
     downloadChapter: (Int) -> Unit,
-    deleteDownload: (Int) -> Unit,
+    deleteDownload: (Long?) -> Unit,
     stopDownloadingChapter: (Int) -> Unit,
     onSelectChapter: (Int) -> Unit,
     onUnselectChapter: (Int) -> Unit,
@@ -178,12 +178,12 @@ fun MangaScreenContent(
                 visible = inActionMode,
                 items = getBottomActionItems(
                     selectedItems = selectedItems,
-                    markRead = markRead,
-                    markUnread = markUnread,
-                    bookmarkChapter = bookmarkChapter,
-                    unBookmarkChapter = unBookmarkChapter,
+                    markRead = { markRead(null) },
+                    markUnread = { markUnread(null) },
+                    bookmarkChapter = { bookmarkChapter(null) },
+                    unBookmarkChapter = { unBookmarkChapter(null) },
                     markPreviousAsRead = markPreviousRead,
-                    deleteChapter = deleteDownload,
+                    deleteChapter = { deleteDownload(null) },
                     downloadChapters = downloadChapters
                 )
             )
@@ -366,35 +366,35 @@ private fun getActionModeActionItems(
 @Stable
 private fun getBottomActionItems(
     selectedItems: ImmutableList<ChapterDownloadItem>,
-    markRead: (Int) -> Unit,
-    markUnread: (Int) -> Unit,
-    bookmarkChapter: (Int) -> Unit,
-    unBookmarkChapter: (Int) -> Unit,
+    markRead: () -> Unit,
+    markUnread: () -> Unit,
+    bookmarkChapter: () -> Unit,
+    unBookmarkChapter: () -> Unit,
     markPreviousAsRead: (Int) -> Unit,
-    deleteChapter: (Int) -> Unit,
+    deleteChapter: () -> Unit,
     downloadChapters: () -> Unit
 ): ImmutableList<BottomActionItem> {
     return listOfNotNull(
         BottomActionItem(
             name = stringResource(MR.strings.action_bookmark),
             icon = Icons.Rounded.BookmarkAdd,
-            onClick = { bookmarkChapter(selectedItems.first().chapter.index) }
-        ).takeIf { selectedItems.fastAny { !it.chapter.bookmarked } && selectedItems.size == 1 },
+            onClick = bookmarkChapter
+        ).takeIf { selectedItems.fastAny { !it.chapter.bookmarked } },
         BottomActionItem(
             name = stringResource(MR.strings.action_remove_bookmark),
             icon = Icons.Rounded.BookmarkRemove,
-            onClick = { unBookmarkChapter(selectedItems.first().chapter.index) }
-        ).takeIf { selectedItems.fastAny { it.chapter.bookmarked } && selectedItems.size == 1 },
+            onClick = unBookmarkChapter
+        ).takeIf { selectedItems.fastAny { it.chapter.bookmarked } },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_as_read),
             icon = Icons.Rounded.DoneAll,
-            onClick = { markRead(selectedItems.first().chapter.index) }
-        ).takeIf { selectedItems.fastAny { !it.chapter.read } && selectedItems.size == 1 },
+            onClick = markRead
+        ).takeIf { selectedItems.fastAny { !it.chapter.read } },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_as_unread),
             icon = Icons.Rounded.RemoveDone,
-            onClick = { markUnread(selectedItems.first().chapter.index) }
-        ).takeIf { selectedItems.fastAny { it.chapter.read } && selectedItems.size == 1 },
+            onClick = markUnread
+        ).takeIf { selectedItems.fastAny { it.chapter.read } },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_previous_read),
             icon = JuiAssets.DonePrev,
@@ -408,7 +408,7 @@ private fun getBottomActionItems(
         BottomActionItem(
             name = stringResource(MR.strings.action_delete),
             icon = Icons.Rounded.Delete,
-            onClick = { deleteChapter(selectedItems.first().chapter.index) }
-        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } && selectedItems.size == 1 }
+            onClick = deleteChapter
+        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } }
     ).toImmutableList()
 }

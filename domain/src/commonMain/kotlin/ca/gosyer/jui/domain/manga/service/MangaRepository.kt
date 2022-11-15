@@ -26,6 +26,12 @@ interface MangaRepository {
         @Query("onlineFetch") refresh: Boolean = false
     ): Flow<Manga>
 
+    @GET("api/v1/manga/{mangaId}/full")
+    fun getMangaFull(
+        @Path("mangaId") mangaId: Long,
+        @Query("onlineFetch") refresh: Boolean = false
+    ): Flow<Manga>
+
     @GET("api/v1/manga/{mangaId}/thumbnail")
     fun getMangaThumbnail(
         @Path("mangaId") mangaId: Long,

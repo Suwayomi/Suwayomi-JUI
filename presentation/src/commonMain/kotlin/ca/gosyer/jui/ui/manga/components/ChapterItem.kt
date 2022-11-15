@@ -59,14 +59,14 @@ fun ChapterItem(
     chapterDownload: ChapterDownloadItem,
     format: (Instant) -> String,
     onClick: (Int) -> Unit,
-    markRead: (Int) -> Unit,
-    markUnread: (Int) -> Unit,
-    bookmarkChapter: (Int) -> Unit,
-    unBookmarkChapter: (Int) -> Unit,
+    markRead: (Long) -> Unit,
+    markUnread: (Long) -> Unit,
+    bookmarkChapter: (Long) -> Unit,
+    unBookmarkChapter: (Long) -> Unit,
     markPreviousAsRead: (Int) -> Unit,
     onClickDownload: (Int) -> Unit,
     onClickStopDownload: (Int) -> Unit,
-    onClickDeleteChapter: (Int) -> Unit,
+    onClickDeleteChapter: (Long) -> Unit,
     onSelectChapter: (Int) -> Unit,
     onUnselectChapter: (Int) -> Unit
 ) {
@@ -79,10 +79,10 @@ fun ChapterItem(
             .selectedBackground(isSelected)
             .chapterItemModifier(
                 onClick = { onClick(chapter.index) },
-                markRead = { markRead(chapter.index) }.takeUnless { chapter.read },
-                markUnread = { markUnread(chapter.index) }.takeIf { chapter.read },
-                bookmarkChapter = { bookmarkChapter(chapter.index) }.takeUnless { chapter.bookmarked },
-                unBookmarkChapter = { unBookmarkChapter(chapter.index) }.takeIf { chapter.bookmarked },
+                markRead = { markRead(chapter.id) }.takeUnless { chapter.read },
+                markUnread = { markUnread(chapter.id) }.takeIf { chapter.read },
+                bookmarkChapter = { bookmarkChapter(chapter.id) }.takeUnless { chapter.bookmarked },
+                unBookmarkChapter = { unBookmarkChapter(chapter.id) }.takeIf { chapter.bookmarked },
                 markPreviousAsRead = { markPreviousAsRead(chapter.index) },
                 onSelectChapter = { onSelectChapter(chapter.index) }.takeUnless { chapterDownload.isSelected.value },
                 onUnselectChapter = { onUnselectChapter(chapter.index) }.takeIf { chapterDownload.isSelected.value }
@@ -157,7 +157,7 @@ fun ChapterItem(
                 chapterDownload,
                 { onClickDownload(it.index) },
                 { onClickStopDownload(it.index) },
-                { onClickDeleteChapter(it.index) }
+                { onClickDeleteChapter(it.id) }
             )
         }
     }
