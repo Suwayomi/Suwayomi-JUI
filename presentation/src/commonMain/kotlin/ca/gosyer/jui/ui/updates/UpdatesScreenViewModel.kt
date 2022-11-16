@@ -217,7 +217,6 @@ class UpdatesScreenViewModel @Inject constructor(
         }
     }
 
-
     fun selectAll() {
         scope.launch {
             _selectedIds.value = updates.value.filterIsInstance<UpdatesUI.Item>()

@@ -57,7 +57,7 @@ fun LibraryTabs(
                         color = MaterialTheme.colors.primary
                     )
                 },
-                divider = {},
+                divider = {}
             ) {
                 categories.fastForEachIndexed { i, category ->
                     Tab(
@@ -65,7 +65,7 @@ fun LibraryTabs(
                         onClick = { onPageChanged(i) },
                         text = { Text(category.name) },
                         selectedContentColor = MaterialTheme.colors.primary,
-                        unselectedContentColor = MaterialTheme.colors.onSurface,
+                        unselectedContentColor = MaterialTheme.colors.onSurface
                     )
                 }
             }

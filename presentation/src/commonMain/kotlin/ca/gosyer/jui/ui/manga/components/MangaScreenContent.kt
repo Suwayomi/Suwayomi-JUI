@@ -138,7 +138,9 @@ fun MangaScreenContent(
                 if (inActionMode && it.type == KeyEventType.KeyUp && it.key == Key.Escape) {
                     clearSelection()
                     true
-                } else false
+                } else {
+                    false
+                }
             }
             .windowInsetsPadding(
                 WindowInsets.statusBars.add(

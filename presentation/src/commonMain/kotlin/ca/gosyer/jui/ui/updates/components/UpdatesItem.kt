@@ -42,7 +42,6 @@ expect fun Modifier.updatesItemModifier(
     onUnselectChapter: (() -> Unit)?
 ): Modifier
 
-
 @Composable
 fun UpdatesItem(
     chapterDownloadItem: ChapterDownloadItem,

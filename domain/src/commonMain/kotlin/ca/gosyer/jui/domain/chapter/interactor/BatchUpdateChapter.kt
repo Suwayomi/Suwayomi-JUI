@@ -67,7 +67,6 @@ class BatchUpdateChapter @Inject constructor(private val chapterRepository: Chap
         }
         .collect()
 
-
     suspend fun await(
         manga: Manga,
         chapterIds: List<Long>,
@@ -193,7 +192,6 @@ class BatchUpdateChapter @Inject constructor(private val chapterRepository: Chap
         lastPageRead = lastPageRead,
         delete = delete
     )
-
 
     fun asFlow(
         chapterIds: List<Long>,
