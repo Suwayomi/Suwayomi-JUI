@@ -273,8 +273,8 @@ class MangaScreenViewModel @Inject constructor(
                 val manga = _manga.value ?: return@launch
                 val chapterIds = _selectedIds.value
                 batchUpdateChapter.await(manga, chapterIds, delete = true, onError = { toast(it.message.orEmpty()) })
-                chapterIds.forEach { id ->
-                    chapters.value.find { it.chapter.id == id }?.setNotDownloaded()
+                selectedItems.value.forEach {
+                    it.setNotDownloaded()
                 }
                 _selectedIds.value = persistentListOf()
             } else {
@@ -303,16 +303,14 @@ class MangaScreenViewModel @Inject constructor(
         }
     }
 
-    fun selectChapter(index: Int) {
+    fun selectChapter(id: Long) {
         scope.launch {
-            chapters.value.find { it.chapter.index == index }
-                ?.let { _selectedIds.value = _selectedIds.value.plus(it.chapter.id).toImmutableList() }
+            _selectedIds.value = _selectedIds.value.plus(id).toImmutableList()
         }
     }
-    fun unselectChapter(index: Int) {
+    fun unselectChapter(id: Long) {
         scope.launch {
-            chapters.value.find { it.chapter.index == index }
-                ?.let { _selectedIds.value = _selectedIds.value.minus(it.chapter.id).toImmutableList() }
+            _selectedIds.value = _selectedIds.value.minus(id).toImmutableList()
         }
     }
 

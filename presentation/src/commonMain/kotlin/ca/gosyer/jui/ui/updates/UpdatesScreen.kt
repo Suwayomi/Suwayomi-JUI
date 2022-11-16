@@ -25,17 +25,32 @@ class UpdatesScreen : Screen {
     @Composable
     override fun Content() {
         val vm = viewModel { updatesViewModel() }
+        val updatesVM = viewModel { libraryUpdatesViewModel(false) }
         val navigator = LocalNavigator.currentOrThrow
         val readerLauncher = rememberReaderLauncher()
         UpdatesScreenContent(
             isLoading = vm.isLoading.collectAsState().value,
             updates = vm.updates.collectAsState().value,
+            inActionMode = vm.inActionMode.collectAsState().value,
+            selectedItems = vm.selectedItems.collectAsState().value,
             loadNextPage = vm::loadNextPage,
             openChapter = readerLauncher::launch,
             openManga = { navigator push MangaScreen(it) },
+            markRead = vm::markRead,
+            markUnread = vm::markUnread,
+            bookmarkChapter = vm::bookmarkChapter,
+            unBookmarkChapter = vm::unBookmarkChapter,
             downloadChapter = vm::downloadChapter,
             deleteDownloadedChapter = vm::deleteDownloadedChapter,
-            stopDownloadingChapter = vm::stopDownloadingChapter
+            stopDownloadingChapter = vm::stopDownloadingChapter,
+            onSelectChapter = vm::selectChapter,
+            onUnselectChapter = vm::unselectChapter,
+            selectAll = vm::selectAll,
+            invertSelection = vm::invertSelection,
+            clearSelection = vm::clearSelection,
+            onUpdateLibrary = vm::updateLibrary,
+            updateWebsocketStatus = updatesVM.serviceStatus.collectAsState().value,
+            restartLibraryUpdates = updatesVM::restartLibraryUpdates,
         )
         readerLauncher.Reader()
     }

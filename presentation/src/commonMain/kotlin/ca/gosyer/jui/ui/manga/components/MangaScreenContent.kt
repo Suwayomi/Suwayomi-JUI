@@ -42,6 +42,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAny
@@ -105,8 +110,8 @@ fun MangaScreenContent(
     downloadChapter: (Int) -> Unit,
     deleteDownload: (Long?) -> Unit,
     stopDownloadingChapter: (Int) -> Unit,
-    onSelectChapter: (Int) -> Unit,
-    onUnselectChapter: (Int) -> Unit,
+    onSelectChapter: (Long) -> Unit,
+    onUnselectChapter: (Long) -> Unit,
     selectAll: () -> Unit,
     invertSelection: () -> Unit,
     clearSelection: () -> Unit,
@@ -128,11 +133,18 @@ fun MangaScreenContent(
     }
 
     Scaffold(
-        modifier = Modifier.windowInsetsPadding(
-            WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
-        ),
+        modifier = Modifier
+            .onKeyEvent {
+                if (inActionMode && it.type == KeyEventType.KeyUp && it.key == Key.Escape) {
+                    clearSelection()
+                    true
+                } else false
+            }
+            .windowInsetsPadding(
+                WindowInsets.statusBars.add(
+                    WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
+                )
+            ),
         topBar = {
             val navigator = LocalNavigator.current
             Toolbar(
@@ -213,7 +225,7 @@ fun MangaScreenContent(
                                         chapter,
                                         dateTimeFormatter,
                                         onClick = if (inActionMode) {
-                                            { if (chapter.isSelected.value) onUnselectChapter(chapter.chapter.index) else onSelectChapter(chapter.chapter.index) }
+                                            { if (chapter.isSelected.value) onUnselectChapter(chapter.chapter.id) else onSelectChapter(chapter.chapter.id) }
                                         } else {
                                             { readerLauncher.launch(it, manga.id) }
                                         },
@@ -404,7 +416,7 @@ private fun getBottomActionItems(
             name = stringResource(MR.strings.action_download),
             icon = Icons.Rounded.Download,
             onClick = downloadChapters
-        ).takeIf { selectedItems.fastAny { it.downloadState.value != ChapterDownloadState.Downloaded } },
+        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.NotDownloaded } },
         BottomActionItem(
             name = stringResource(MR.strings.action_delete),
             icon = Icons.Rounded.Delete,

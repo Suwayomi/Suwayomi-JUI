@@ -6,12 +6,15 @@
 
 package ca.gosyer.jui.ui.updates
 
+import ca.gosyer.jui.domain.chapter.interactor.BatchUpdateChapter
 import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
 import ca.gosyer.jui.domain.chapter.model.Chapter
+import ca.gosyer.jui.domain.download.interactor.BatchChapterDownload
 import ca.gosyer.jui.domain.download.interactor.QueueChapterDownload
 import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.updates.interactor.GetRecentUpdates
+import ca.gosyer.jui.domain.updates.interactor.UpdateLibrary
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -22,12 +25,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Instant
@@ -41,6 +48,9 @@ class UpdatesScreenViewModel @Inject constructor(
     private val stopChapterDownload: StopChapterDownload,
     private val deleteChapterDownload: DeleteChapterDownload,
     private val getRecentUpdates: GetRecentUpdates,
+    private val batchUpdateChapter: BatchUpdateChapter,
+    private val batchChapterDownload: BatchChapterDownload,
+    private val updateLibrary: UpdateLibrary,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
 
@@ -55,6 +65,17 @@ class UpdatesScreenViewModel @Inject constructor(
 
     private val updatesMutex = Mutex()
     private var downloadServiceJob: Job? = null
+
+    private val _selectedIds = MutableStateFlow<ImmutableList<Long>>(persistentListOf())
+    val selectedItems = combine(updates, _selectedIds) { updates, selecteditems ->
+        updates.filterIsInstance<UpdatesUI.Item>()
+            .filter { it.chapterDownloadItem.isSelected(selecteditems) }
+            .map { it.chapterDownloadItem }
+            .toImmutableList()
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
+
+    val inActionMode = _selectedIds.map { it.isNotEmpty() }
+        .stateIn(scope, SharingStarted.Eagerly, false)
 
     init {
         scope.launch(Dispatchers.Default) {
@@ -131,12 +152,47 @@ class UpdatesScreenViewModel @Inject constructor(
             .collect()
     }
 
-    fun downloadChapter(chapter: Chapter) {
-        scope.launch { queueChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) }) }
+    private fun setRead(chapterIds: List<Long>, read: Boolean) {
+        scope.launch {
+            batchUpdateChapter.await(chapterIds, isRead = read, onError = { toast(it.message.orEmpty()) })
+            _selectedIds.value = persistentListOf()
+        }
+    }
+    fun markRead(id: Long?) = setRead(listOfNotNull(id).ifEmpty { _selectedIds.value }, true)
+    fun markUnread(id: Long?) = setRead(listOfNotNull(id).ifEmpty { _selectedIds.value }, false)
+
+    private fun setBookmarked(chapterIds: List<Long>, bookmark: Boolean) {
+        scope.launch {
+            batchUpdateChapter.await(chapterIds, isBookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
+            _selectedIds.value = persistentListOf()
+        }
+    }
+    fun bookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { _selectedIds.value }, true)
+    fun unBookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { _selectedIds.value }, false)
+
+    fun downloadChapter(chapter: Chapter?) {
+        scope.launch {
+            if (chapter == null) {
+                val selectedIds = _selectedIds.value
+                batchChapterDownload.await(selectedIds, onError = { toast(it.message.orEmpty()) })
+                _selectedIds.value = persistentListOf()
+                return@launch
+            }
+            queueChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) })
+        }
     }
 
-    fun deleteDownloadedChapter(chapter: Chapter) {
+    fun deleteDownloadedChapter(chapter: Chapter?) {
         scope.launch {
+            if (chapter == null) {
+                val selectedIds = _selectedIds.value
+                batchUpdateChapter.await(selectedIds, delete = true, onError = { toast(it.message.orEmpty()) })
+                selectedItems.value.forEach {
+                    it.setNotDownloaded()
+                }
+                _selectedIds.value = persistentListOf()
+                return@launch
+            }
             _updates.value
                 .filterIsInstance<UpdatesUI.Item>()
                 .find { (chapterDownloadItem) ->
@@ -159,6 +215,45 @@ class UpdatesScreenViewModel @Inject constructor(
                 ?.chapterDownloadItem
                 ?.stopDownloading(stopChapterDownload)
         }
+    }
+
+
+    fun selectAll() {
+        scope.launch {
+            _selectedIds.value = updates.value.filterIsInstance<UpdatesUI.Item>()
+                .map { it.chapterDownloadItem.chapter.id }
+                .toImmutableList()
+        }
+    }
+
+    fun invertSelection() {
+        scope.launch {
+            _selectedIds.value = updates.value.filterIsInstance<UpdatesUI.Item>()
+                .map { it.chapterDownloadItem.chapter.id }
+                .minus(_selectedIds.value)
+                .toImmutableList()
+        }
+    }
+
+    fun selectChapter(id: Long) {
+        scope.launch {
+            _selectedIds.value = _selectedIds.value.plus(id).toImmutableList()
+        }
+    }
+    fun unselectChapter(id: Long) {
+        scope.launch {
+            _selectedIds.value = _selectedIds.value.minus(id).toImmutableList()
+        }
+    }
+
+    fun clearSelection() {
+        scope.launch {
+            _selectedIds.value = persistentListOf()
+        }
+    }
+
+    fun updateLibrary() {
+        scope.launch { updateLibrary.await(onError = { toast(it.message.orEmpty()) }) }
     }
 
     private companion object {

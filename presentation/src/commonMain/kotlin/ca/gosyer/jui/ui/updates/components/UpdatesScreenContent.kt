@@ -6,75 +6,153 @@
 
 package ca.gosyer.jui.ui.updates.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.BookmarkAdd
+import androidx.compose.material.icons.rounded.BookmarkRemove
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.DoneAll
+import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.FlipToBack
+import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.RemoveDone
+import androidx.compose.material.icons.rounded.SelectAll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastAny
+import ca.gosyer.jui.domain.base.WebsocketService
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.i18n.MR
-import ca.gosyer.jui.ui.base.chapter.ChapterDownloadIcon
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
+import ca.gosyer.jui.ui.base.chapter.ChapterDownloadState
+import ca.gosyer.jui.ui.base.navigation.ActionItem
+import ca.gosyer.jui.ui.base.navigation.BackHandler
+import ca.gosyer.jui.ui.base.navigation.OverflowMode
 import ca.gosyer.jui.ui.base.navigation.Toolbar
+import ca.gosyer.jui.ui.base.navigation.ToolbarDefault
 import ca.gosyer.jui.ui.main.components.bottomNav
 import ca.gosyer.jui.ui.updates.UpdatesUI
+import ca.gosyer.jui.uicore.components.BottomActionItem
+import ca.gosyer.jui.uicore.components.BottomActionMenu
 import ca.gosyer.jui.uicore.components.LoadingScreen
-import ca.gosyer.jui.uicore.components.MangaListItem
-import ca.gosyer.jui.uicore.components.MangaListItemColumn
-import ca.gosyer.jui.uicore.components.MangaListItemImage
-import ca.gosyer.jui.uicore.components.MangaListItemSubtitle
-import ca.gosyer.jui.uicore.components.MangaListItemTitle
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
-import ca.gosyer.jui.uicore.components.mangaAspectRatio
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.insets.navigationBars
 import ca.gosyer.jui.uicore.insets.statusBars
 import ca.gosyer.jui.uicore.resources.stringResource
+import cafe.adriel.voyager.navigator.LocalNavigator
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun UpdatesScreenContent(
     isLoading: Boolean,
     updates: ImmutableList<UpdatesUI>,
+    inActionMode: Boolean,
+    selectedItems: ImmutableList<ChapterDownloadItem>,
     loadNextPage: () -> Unit,
-    openChapter: (Int, Long) -> Unit,
+    openChapter: (index: Int, mangaId: Long) -> Unit,
     openManga: (Long) -> Unit,
-    downloadChapter: (Chapter) -> Unit,
-    deleteDownloadedChapter: (Chapter) -> Unit,
-    stopDownloadingChapter: (Chapter) -> Unit
+    markRead: (Long?) -> Unit,
+    markUnread: (Long?) -> Unit,
+    bookmarkChapter: (Long?) -> Unit,
+    unBookmarkChapter: (Long?) -> Unit,
+    downloadChapter: (Chapter?) -> Unit,
+    deleteDownloadedChapter: (Chapter?) -> Unit,
+    stopDownloadingChapter: (Chapter) -> Unit,
+    onSelectChapter: (Long) -> Unit,
+    onUnselectChapter: (Long) -> Unit,
+    selectAll: () -> Unit,
+    invertSelection: () -> Unit,
+    clearSelection: () -> Unit,
+    onUpdateLibrary: () -> Unit,
+    updateWebsocketStatus: WebsocketService.Status,
+    restartLibraryUpdates: () -> Unit
 ) {
+    BackHandler(inActionMode) {
+        clearSelection()
+    }
+
     Scaffold(
-        modifier = Modifier.windowInsetsPadding(
-            WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
-        ),
+        modifier = Modifier
+            .onKeyEvent {
+                if (inActionMode && it.type == KeyEventType.KeyUp && it.key == Key.Escape) {
+                    clearSelection()
+                    true
+                } else false
+            }
+            .windowInsetsPadding(
+                WindowInsets.statusBars.add(
+                    WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
+                )
+            ),
         topBar = {
-            Toolbar(stringResource(MR.strings.location_updates))
+            val navigator = LocalNavigator.current
+            Toolbar(
+                if (inActionMode) selectedItems.size.toString() else stringResource(MR.strings.location_updates),
+                actions = {
+                    if (inActionMode) {
+                        getActionModeActionItems(
+                            selectAll = selectAll,
+                            invertSelection = invertSelection
+                        )
+                    } else {
+                        getActionItems(
+                            onUpdateLibrary,
+                            updateWebsocketStatus,
+                            restartLibraryUpdates // todo set null if wide screen
+                        )
+                    }
+                },
+                onClose = {
+                    if (inActionMode) {
+                        clearSelection()
+                    } else {
+                        navigator?.pop()
+                    }
+                },
+                closeIcon = if (inActionMode) Icons.Rounded.Close else ToolbarDefault
+            )
+        },
+        bottomBar = {
+            BottomActionMenu(
+                visible = inActionMode,
+                items = getBottomActionItems(
+                    selectedItems = selectedItems,
+                    markRead = { markRead(null) },
+                    markUnread = { markUnread(null) },
+                    bookmarkChapter = { bookmarkChapter(null) },
+                    unBookmarkChapter = { unBookmarkChapter(null) },
+                    deleteChapter = { deleteDownloadedChapter(null) },
+                    downloadChapters = { downloadChapter(null) }
+                )
+            )
         }
     ) {
         if (isLoading || updates.isEmpty()) {
@@ -108,7 +186,17 @@ fun UpdatesScreenContent(
                                 val chapter = item.chapterDownloadItem.chapter
                                 UpdatesItem(
                                     chapterDownloadItem = item.chapterDownloadItem,
-                                    onClickItem = { openChapter(chapter.index, chapter.mangaId) },
+                                    onClickItem = if (inActionMode) {
+                                        { if (item.chapterDownloadItem.isSelected.value) onUnselectChapter(item.chapterDownloadItem.chapter.id) else onSelectChapter(item.chapterDownloadItem.chapter.id) }
+                                    } else {
+                                        { openChapter(chapter.index, manga.id) }
+                                    },
+                                    markRead = markRead,
+                                    markUnread = markUnread,
+                                    bookmarkChapter = bookmarkChapter,
+                                    unBookmarkChapter = unBookmarkChapter,
+                                    onSelectChapter = onSelectChapter,
+                                    onUnselectChapter = onUnselectChapter,
                                     onClickCover = { openManga(manga.id) },
                                     onClickDownload = downloadChapter,
                                     onClickDeleteDownload = deleteDownloadedChapter,
@@ -137,57 +225,91 @@ fun UpdatesScreenContent(
 }
 
 @Composable
-fun UpdatesItem(
-    chapterDownloadItem: ChapterDownloadItem,
-    onClickItem: () -> Unit,
-    onClickCover: () -> Unit,
-    onClickDownload: (Chapter) -> Unit,
-    onClickDeleteDownload: (Chapter) -> Unit,
-    onClickStopDownload: (Chapter) -> Unit
-) {
-    val manga = chapterDownloadItem.manga!!
-    val chapter = chapterDownloadItem.chapter
-    val alpha = if (chapter.read) 0.38f else 1f
-
-    MangaListItem(
-        modifier = Modifier
-            .clickable(
-                onClick = { onClickItem() }
+@Stable
+private fun getActionItems(
+    onUpdateLibrary: () -> Unit,
+    updateWebsocketStatus: WebsocketService.Status? = null,
+    restartLibraryUpdates: (() -> Unit)? = null
+): ImmutableList<ActionItem> {
+    return listOfNotNull(
+        ActionItem(
+            name = stringResource(MR.strings.action_update_library),
+            icon = Icons.Rounded.Refresh,
+            doAction = onUpdateLibrary
+        ),
+        if (updateWebsocketStatus == WebsocketService.Status.STOPPED && restartLibraryUpdates != null) {
+            ActionItem(
+                name = stringResource(MR.strings.action_restart_library),
+                overflowMode = OverflowMode.ALWAYS_OVERFLOW,
+                doAction = restartLibraryUpdates
             )
-            .height(96.dp)
-            .fillMaxWidth()
-            .padding(end = 4.dp)
-    ) {
-        MangaListItemImage(
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(mangaAspectRatio)
-                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
-                .clip(MaterialTheme.shapes.medium)
-                .clickable { onClickCover() },
-            data = manga,
-            contentDescription = manga.title
-        )
-        MangaListItemColumn(
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 16.dp)
-                .alpha(alpha)
-        ) {
-            MangaListItemTitle(
-                text = manga.title,
-                fontWeight = FontWeight.SemiBold
-            )
-            MangaListItemSubtitle(
-                text = chapter.name
-            )
+        } else {
+            null
         }
+    ).toImmutableList()
+}
 
-        ChapterDownloadIcon(
-            chapterDownloadItem,
-            onClickDownload,
-            onClickStopDownload,
-            onClickDeleteDownload
+@Composable
+@Stable
+private fun getActionModeActionItems(
+    selectAll: () -> Unit,
+    invertSelection: () -> Unit
+): ImmutableList<ActionItem> {
+    return listOf(
+        ActionItem(
+            name = stringResource(MR.strings.action_select_all),
+            icon = Icons.Rounded.SelectAll,
+            doAction = selectAll
+        ),
+        ActionItem(
+            name = stringResource(MR.strings.action_select_inverse),
+            icon = Icons.Rounded.FlipToBack,
+            doAction = invertSelection
         )
-    }
+    ).toImmutableList()
+}
+
+@Composable
+@Stable
+private fun getBottomActionItems(
+    selectedItems: ImmutableList<ChapterDownloadItem>,
+    markRead: () -> Unit,
+    markUnread: () -> Unit,
+    bookmarkChapter: () -> Unit,
+    unBookmarkChapter: () -> Unit,
+    deleteChapter: () -> Unit,
+    downloadChapters: () -> Unit
+): ImmutableList<BottomActionItem> {
+    return listOfNotNull(
+        BottomActionItem(
+            name = stringResource(MR.strings.action_bookmark),
+            icon = Icons.Rounded.BookmarkAdd,
+            onClick = bookmarkChapter
+        ).takeIf { selectedItems.fastAny { !it.chapter.bookmarked } },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_remove_bookmark),
+            icon = Icons.Rounded.BookmarkRemove,
+            onClick = unBookmarkChapter
+        ).takeIf { selectedItems.fastAny { it.chapter.bookmarked } },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_mark_as_read),
+            icon = Icons.Rounded.DoneAll,
+            onClick = markRead
+        ).takeIf { selectedItems.fastAny { !it.chapter.read } },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_mark_as_unread),
+            icon = Icons.Rounded.RemoveDone,
+            onClick = markUnread
+        ).takeIf { selectedItems.fastAny { it.chapter.read } },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_download),
+            icon = Icons.Rounded.Download,
+            onClick = downloadChapters
+        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.NotDownloaded } },
+        BottomActionItem(
+            name = stringResource(MR.strings.action_delete),
+            icon = Icons.Rounded.Delete,
+            onClick = deleteChapter
+        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } }
+    ).toImmutableList()
 }

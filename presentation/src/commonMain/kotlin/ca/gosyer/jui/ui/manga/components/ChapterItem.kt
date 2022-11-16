@@ -67,8 +67,8 @@ fun ChapterItem(
     onClickDownload: (Int) -> Unit,
     onClickStopDownload: (Int) -> Unit,
     onClickDeleteChapter: (Long) -> Unit,
-    onSelectChapter: (Int) -> Unit,
-    onUnselectChapter: (Int) -> Unit
+    onSelectChapter: (Long) -> Unit,
+    onUnselectChapter: (Long) -> Unit
 ) {
     val chapter = chapterDownload.chapter
     val isSelected by chapterDownload.isSelected.collectAsState()
@@ -84,8 +84,8 @@ fun ChapterItem(
                 bookmarkChapter = { bookmarkChapter(chapter.id) }.takeUnless { chapter.bookmarked },
                 unBookmarkChapter = { unBookmarkChapter(chapter.id) }.takeIf { chapter.bookmarked },
                 markPreviousAsRead = { markPreviousAsRead(chapter.index) },
-                onSelectChapter = { onSelectChapter(chapter.index) }.takeUnless { chapterDownload.isSelected.value },
-                onUnselectChapter = { onUnselectChapter(chapter.index) }.takeIf { chapterDownload.isSelected.value }
+                onSelectChapter = { onSelectChapter(chapter.id) }.takeUnless { isSelected },
+                onUnselectChapter = { onUnselectChapter(chapter.id) }.takeIf { isSelected }
             )
             .padding(4.dp)
     ) {
