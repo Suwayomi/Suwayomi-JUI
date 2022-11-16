@@ -15,6 +15,7 @@ import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.util.compose.asImageBitmap
+import ca.gosyer.jui.ui.util.lang.toSource
 import cafe.adriel.voyager.core.concurrent.AtomicInt32
 import com.seiko.imageloader.cache.disk.DiskCache
 import com.seiko.imageloader.component.decoder.DecodeImageResult
@@ -23,7 +24,6 @@ import com.seiko.imageloader.request.Options
 import com.seiko.imageloader.request.SourceResult
 import io.ktor.client.plugins.onDownload
 import io.ktor.client.statement.bodyAsChannel
-import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -39,7 +39,6 @@ import kotlinx.coroutines.launch
 import okio.BufferedSource
 import okio.FileSystem
 import okio.buffer
-import okio.source
 import org.lighthousegames.logging.logging
 
 class TachideskPageLoader(
@@ -78,9 +77,9 @@ class TachideskPageLoader(
                     try {
                         for (priorityPage in channel) {
                             val page = priorityPage.page
-                            log.debug { "Loading page ${page.index}" }
                             if (page.status.value == ReaderPage.Status.QUEUE) {
                                 page.status.value = ReaderPage.Status.WORKING
+                                log.debug { "Loading page ${page.index}" }
                                 getChapterPage.asFlow(chapter.chapter, page.index) {
                                     onDownload { bytesSentTotal, contentLength ->
                                         page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
@@ -91,7 +90,7 @@ class TachideskPageLoader(
                                             ?: throw Exception("Couldn't open cache")
                                         try {
                                             FileSystem.SYSTEM.write(editor.data) {
-                                                it.bodyAsChannel().toInputStream().source().use {
+                                                it.bodyAsChannel().toSource().use {
                                                     writeAll(it)
                                                 }
                                             }
