@@ -446,7 +446,9 @@ fun ReaderLayout(
     progress: (Int) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit
 ) {
-    val loadingModifier = Modifier.fillMaxWidth().aspectRatio(mangaAspectRatio)
+    val loadingModifier = Modifier.widthIn(max = 700.dp)
+        .fillMaxWidth()
+        .aspectRatio(mangaAspectRatio)
     val readerModifier = Modifier
         .navigationClickable(
             navigation = navigationViewer,
@@ -524,11 +526,11 @@ fun ReaderImage(
     retry: (Int) -> Unit
 ) {
     Crossfade(drawableHolder to status) { (drawableHolder, status) ->
-        val drawableCallback = drawableHolder.item
-        val decodeState = produceState<ReaderPage.ImageDecodeState?>(null, drawableCallback) {
-            if (drawableCallback != null) {
+        val decodeState = produceState<ReaderPage.ImageDecodeState?>(null, drawableHolder) {
+            val callback = drawableHolder.item
+            if (callback != null) {
                 withIOContext {
-                    value = drawableCallback()
+                    value = callback()
                 }
             }
         }
@@ -543,7 +545,7 @@ fun ReaderImage(
             )
         } else {
             LoadingScreen(
-                status == ReaderPage.Status.QUEUE,
+                status == ReaderPage.Status.QUEUE || status == ReaderPage.Status.WORKING,
                 loadingModifier,
                 progress,
                 error ?: when (decode) {

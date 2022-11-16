@@ -80,6 +80,7 @@ class TachideskPageLoader(
                             val page = priorityPage.page
                             log.debug { "Loading page ${page.index}" }
                             if (page.status.value == ReaderPage.Status.QUEUE) {
+                                page.status.value = ReaderPage.Status.WORKING
                                 getChapterPage.asFlow(chapter.chapter, page.index) {
                                     onDownload { bytesSentTotal, contentLength ->
                                         page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)

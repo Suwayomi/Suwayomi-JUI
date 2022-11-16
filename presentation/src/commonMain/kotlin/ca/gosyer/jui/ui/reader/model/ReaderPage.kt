@@ -22,6 +22,7 @@ data class ReaderPage(
 ) {
     enum class Status {
         QUEUE,
+        WORKING,
         READY,
         ERROR
     }
