@@ -37,8 +37,9 @@ import ca.gosyer.jui.ui.reader.ChapterSeparator
 import ca.gosyer.jui.ui.reader.ReaderImage
 import ca.gosyer.jui.ui.reader.model.MoveTo
 import ca.gosyer.jui.ui.reader.model.PageMove
-import ca.gosyer.jui.ui.reader.model.ReaderChapter
+import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.ui.reader.model.ReaderPage
+import ca.gosyer.jui.ui.reader.model.ReaderPageSeparator
 import ca.gosyer.jui.uicore.components.HorizontalScrollbar
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
@@ -52,15 +53,12 @@ import kotlinx.coroutines.flow.mapLatest
 @Composable
 fun ContinuousReader(
     modifier: Modifier,
-    pages: ImmutableList<ReaderPage>,
+    pages: ImmutableList<ReaderItem>,
     direction: Direction,
     maxSize: Int,
     padding: Int,
     currentPage: Int,
     currentPageOffset: Int,
-    previousChapter: ReaderChapter?,
-    currentChapter: ReaderChapter,
-    nextChapter: ReaderChapter?,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
     pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
@@ -123,7 +121,7 @@ fun ContinuousReader(
             Direction.Up -> PaddingValues(top = padding.dp)
             Direction.Down -> PaddingValues(bottom = padding.dp)
         }
-        fun retry(index: Int) { pages.find { it.index == index }?.let { retry(it) } }
+        fun retry(index: Int) { pages.find { it is ReaderPage && it.index == index }?.let { retry(it as ReaderPage) } }
 
         when (direction) {
             Direction.Down, Direction.Up -> {
@@ -137,9 +135,6 @@ fun ContinuousReader(
                         modifier = Modifier.fillMaxWidth()
                             .padding(contentPadding),
                         pages = pages,
-                        previousChapter = previousChapter,
-                        currentChapter = currentChapter,
-                        nextChapter = nextChapter,
                         imageModifier = imageModifier,
                         loadingModifier = loadingModifier,
                         pageContentScale = pageContentScale,
@@ -165,9 +160,6 @@ fun ContinuousReader(
                         modifier = Modifier.fillMaxHeight()
                             .padding(contentPadding),
                         pages = pages,
-                        previousChapter = previousChapter,
-                        currentChapter = currentChapter,
-                        nextChapter = nextChapter,
                         imageModifier = imageModifier,
                         loadingModifier = loadingModifier,
                         pageContentScale = pageContentScale,
@@ -187,34 +179,36 @@ fun ContinuousReader(
 
 private fun LazyListScope.items(
     modifier: Modifier,
-    pages: ImmutableList<ReaderPage>,
-    previousChapter: ReaderChapter?,
-    currentChapter: ReaderChapter,
-    nextChapter: ReaderChapter?,
+    pages: ImmutableList<ReaderItem>,
     imageModifier: Modifier,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
     retry: (Int) -> Unit
 ) {
-    item {
-        ChapterSeparator(previousChapter, currentChapter)
-    }
-    items(pages) { image ->
-        Box(modifier, contentAlignment = Alignment.Center) {
-            ReaderImage(
-                imageIndex = image.index,
-                drawableHolder = image.bitmap.collectAsState().value,
-                progress = image.progress.collectAsState().value,
-                status = image.status.collectAsState().value,
-                error = image.error.collectAsState().value,
-                imageModifier = imageModifier,
-                loadingModifier = loadingModifier,
-                contentScale = pageContentScale,
-                retry = retry
-            )
+    items(
+        pages,
+        key = {
+            when (it) {
+                is ReaderPage -> it.chapter.chapter.index to it.index
+                is ReaderPageSeparator -> it.previousChapter?.chapter?.index to it.nextChapter?.chapter?.index
+            }
         }
-    }
-    item {
-        ChapterSeparator(previousChapter = currentChapter, nextChapter = nextChapter)
+    ) { image ->
+        when (image) {
+            is ReaderPage -> Box(modifier, contentAlignment = Alignment.Center) {
+                ReaderImage(
+                    imageIndex = image.index,
+                    drawableHolder = image.bitmap.collectAsState().value,
+                    progress = image.progress.collectAsState().value,
+                    status = image.status.collectAsState().value,
+                    error = image.error.collectAsState().value,
+                    imageModifier = imageModifier,
+                    loadingModifier = loadingModifier,
+                    contentScale = pageContentScale,
+                    retry = retry
+                )
+            }
+            is ReaderPageSeparator -> ChapterSeparator(previousChapter = image.previousChapter, nextChapter = image.nextChapter)
+        }
     }
 }

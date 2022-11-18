@@ -30,7 +30,9 @@ import ca.gosyer.jui.ui.reader.model.MoveTo
 import ca.gosyer.jui.ui.reader.model.Navigation
 import ca.gosyer.jui.ui.reader.model.PageMove
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
+import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.ui.reader.model.ReaderPage
+import ca.gosyer.jui.ui.reader.model.ReaderPageSeparator
 import ca.gosyer.jui.ui.reader.model.ViewerChapters
 import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.vm.ContextWrapper
@@ -89,7 +91,7 @@ class ReaderMenuViewModel @Inject constructor(
     private val _state = MutableStateFlow<ReaderChapter.State>(ReaderChapter.State.Wait)
     val state = _state.asStateFlow()
 
-    private val _pages = MutableStateFlow<ImmutableList<ReaderPage>>(persistentListOf())
+    private val _pages = MutableStateFlow<ImmutableList<ReaderItem>>(persistentListOf())
     val pages = _pages.asStateFlow()
 
     private val _currentPage = MutableStateFlow(1)
@@ -251,28 +253,28 @@ class ReaderMenuViewModel @Inject constructor(
         )
         val pages = loader.loadChapter(chapter)
         viewerChapters.currChapter.value = chapter
-        scope.launchDefault {
-            val chapters = getChapters.asFlow(mangaId)
-                .catch {
-                    log.warn(it) { "Error getting chapter list" }
-                    // TODO: 2022-07-01 Error toast
-                    emit(emptyList())
-                }
-                .single()
 
-            val nextChapter = chapters.find { it.index == chapterIndex + 1 }
-            if (nextChapter != null) {
-                viewerChapters.nextChapter.value = ReaderChapter(
-                    nextChapter
-                )
+        val chapters = getChapters.asFlow(mangaId)
+            .catch {
+                log.warn(it) { "Error getting chapter list" }
+                // TODO: 2022-07-01 Error toast
+                emit(emptyList())
             }
-            val prevChapter = chapters.find { it.index == chapterIndex - 1 }
-            if (prevChapter != null) {
-                viewerChapters.prevChapter.value = ReaderChapter(
-                    prevChapter
-                )
-            }
+            .single()
+
+        val nextChapter = chapters.find { it.index == chapterIndex + 1 }
+        if (nextChapter != null) {
+            viewerChapters.nextChapter.value = ReaderChapter(
+                nextChapter
+            )
         }
+        val prevChapter = chapters.find { it.index == chapterIndex - 1 }
+        if (prevChapter != null) {
+            viewerChapters.prevChapter.value = ReaderChapter(
+                prevChapter
+            )
+        }
+
         val lastPageRead = chapter.chapter.lastPageRead
         if (lastPageRead != 0) {
             _currentPage.value = lastPageRead.coerceAtMost(chapter.chapter.pageCount!!)
@@ -291,14 +293,16 @@ class ReaderMenuViewModel @Inject constructor(
         pages
             .filterIsInstance<PagesState.Success>()
             .onEach { (pageList) ->
-                _pages.value = pageList.toImmutableList()
+                val prevSeparator = ReaderPageSeparator(viewerChapters.prevChapter.value, chapter)
+                val nextSeparator = ReaderPageSeparator(chapter, viewerChapters.nextChapter.value)
+                _pages.value = (_pages.value.ifEmpty { listOf(prevSeparator) } + pageList + nextSeparator).toImmutableList()
                 pageList.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
             }
             .launchIn(chapter.scope)
 
         _currentPage
             .onEach { index ->
-                _pages.value.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
+                (_pages.value.getOrNull(_currentPage.value - 1) as? ReaderPage)?.let { chapter.pageLoader?.loadPage(it) }
                 if (index == _pages.value.size) {
                     markChapterRead(chapter)
                 }

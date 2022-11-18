@@ -19,7 +19,7 @@ data class ReaderPage(
     val status: MutableStateFlow<Status>,
     val error: MutableStateFlow<String?>,
     val chapter: ReaderChapter
-) {
+) : ReaderItem() {
     enum class Status {
         QUEUE,
         WORKING,

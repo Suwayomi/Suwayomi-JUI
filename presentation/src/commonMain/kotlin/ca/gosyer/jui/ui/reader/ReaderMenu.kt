@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
@@ -64,6 +65,7 @@ import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.reader.model.Navigation
 import ca.gosyer.jui.ui.reader.model.PageMove
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
+import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.reader.navigation.EdgeNavigation
 import ca.gosyer.jui.ui.reader.navigation.KindlishNavigation
@@ -159,9 +161,7 @@ fun ReaderMenu(
                     BoxWithConstraints {
                         if (maxWidth > 720.dp) {
                             WideReaderMenu(
-                                previousChapter = previousChapter,
                                 chapter = chapter,
-                                nextChapter = nextChapter,
                                 pages = pages,
                                 readerModes = readerModes,
                                 readerMode = readerMode,
@@ -233,10 +233,8 @@ fun ReaderMenu(
 
 @Composable
 fun WideReaderMenu(
-    previousChapter: ReaderChapter?,
     chapter: ReaderChapter,
-    nextChapter: ReaderChapter?,
-    pages: ImmutableList<ReaderPage>,
+    pages: ImmutableList<ReaderItem>,
     readerModes: ImmutableList<String>,
     readerMode: String,
     continuous: Boolean,
@@ -292,9 +290,6 @@ fun WideReaderMenu(
         Modifier.padding(start = sideMenuSize).fillMaxSize()
     ) {
         ReaderLayout(
-            previousChapter = previousChapter,
-            chapter = chapter,
-            nextChapter = nextChapter,
             pages = pages,
             continuous = continuous,
             direction = direction,
@@ -320,7 +315,7 @@ fun ThinReaderMenu(
     previousChapter: ReaderChapter?,
     chapter: ReaderChapter,
     nextChapter: ReaderChapter?,
-    pages: ImmutableList<ReaderPage>,
+    pages: ImmutableList<ReaderItem>,
     readerModes: ImmutableList<String>,
     readerMode: String,
     continuous: Boolean,
@@ -365,9 +360,6 @@ fun ThinReaderMenu(
     ) {
         Box {
             ReaderLayout(
-                previousChapter = previousChapter,
-                chapter = chapter,
-                nextChapter = nextChapter,
                 pages = pages,
                 continuous = continuous,
                 direction = direction,
@@ -427,10 +419,7 @@ fun ThinReaderMenu(
 
 @Composable
 fun ReaderLayout(
-    previousChapter: ReaderChapter?,
-    chapter: ReaderChapter,
-    nextChapter: ReaderChapter?,
-    pages: ImmutableList<ReaderPage>,
+    pages: ImmutableList<ReaderItem>,
     continuous: Boolean,
     direction: Direction,
     padding: Int,
@@ -464,9 +453,6 @@ fun ReaderLayout(
             padding = padding,
             currentPage = currentPage,
             currentPageOffset = currentPageOffset,
-            previousChapter = previousChapter,
-            currentChapter = chapter,
-            nextChapter = nextChapter,
             loadingModifier = loadingModifier,
             pageContentScale = if (fitSize) {
                 if (direction == Direction.Up || direction == Direction.Down) {
@@ -488,9 +474,6 @@ fun ReaderLayout(
             direction = direction,
             currentPage = currentPage,
             pages = pages,
-            previousChapter = previousChapter,
-            currentChapter = chapter,
-            nextChapter = nextChapter,
             loadingModifier = loadingModifier,
             pageContentScale = imageScale.toContentScale(),
             pageEmitterHolder = pageEmitterHolder,

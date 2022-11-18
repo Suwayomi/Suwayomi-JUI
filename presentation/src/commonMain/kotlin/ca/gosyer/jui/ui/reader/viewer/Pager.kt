@@ -18,8 +18,9 @@ import ca.gosyer.jui.ui.reader.ChapterSeparator
 import ca.gosyer.jui.ui.reader.ReaderImage
 import ca.gosyer.jui.ui.reader.model.MoveTo
 import ca.gosyer.jui.ui.reader.model.PageMove
-import ca.gosyer.jui.ui.reader.model.ReaderChapter
+import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.ui.reader.model.ReaderPage
+import ca.gosyer.jui.ui.reader.model.ReaderPageSeparator
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -33,10 +34,7 @@ fun PagerReader(
     parentModifier: Modifier,
     direction: Direction,
     currentPage: Int,
-    pages: ImmutableList<ReaderPage>,
-    previousChapter: ReaderChapter?,
-    currentChapter: ReaderChapter,
-    nextChapter: ReaderChapter?,
+    pages: ImmutableList<ReaderItem>,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
     pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
@@ -77,11 +75,11 @@ fun PagerReader(
         }
     }
     val modifier = parentModifier then Modifier.fillMaxSize()
-    fun retry(index: Int) { pages.find { it.index == index }?.let { retry(it) } }
+    fun retry(index: Int) { pages.find { it is ReaderPage && it.index == index }?.let { retry(it as ReaderPage) } }
 
     if (direction == Direction.Down || direction == Direction.Up) {
         VerticalPager(
-            count = pages.size + 2,
+            count = pages.size,
             state = state,
             reverseLayout = direction == Direction.Up,
             modifier = modifier
@@ -89,9 +87,6 @@ fun PagerReader(
             HandlePager(
                 pages = pages,
                 page = it,
-                previousChapter = previousChapter,
-                currentChapter = currentChapter,
-                nextChapter = nextChapter,
                 loadingModifier = loadingModifier,
                 pageContentScale = pageContentScale,
                 retry = ::retry
@@ -99,7 +94,7 @@ fun PagerReader(
         }
     } else {
         HorizontalPager(
-            count = pages.size + 2,
+            count = pages.size,
             state = state,
             reverseLayout = direction == Direction.Left,
             modifier = modifier
@@ -107,9 +102,6 @@ fun PagerReader(
             HandlePager(
                 pages = pages,
                 page = it,
-                previousChapter = previousChapter,
-                currentChapter = currentChapter,
-                nextChapter = nextChapter,
                 loadingModifier = loadingModifier,
                 pageContentScale = pageContentScale,
                 retry = ::retry
@@ -120,20 +112,14 @@ fun PagerReader(
 
 @Composable
 fun HandlePager(
-    pages: ImmutableList<ReaderPage>,
+    pages: ImmutableList<ReaderItem>,
     page: Int,
-    previousChapter: ReaderChapter?,
-    currentChapter: ReaderChapter,
-    nextChapter: ReaderChapter?,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
     retry: (Int) -> Unit
 ) {
-    when (page) {
-        0 -> ChapterSeparator(previousChapter, currentChapter)
-        pages.size + 1 -> ChapterSeparator(currentChapter, nextChapter)
-        else -> {
-            val image = pages[page - 1]
+    when (val image = pages[page]) {
+        is ReaderPage -> {
             ReaderImage(
                 imageIndex = image.index,
                 drawableHolder = image.bitmap.collectAsState().value,
@@ -145,5 +131,6 @@ fun HandlePager(
                 contentScale = pageContentScale
             )
         }
+        is ReaderPageSeparator -> ChapterSeparator(image.previousChapter, image.nextChapter)
     }
 }
