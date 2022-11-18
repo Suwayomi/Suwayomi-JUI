@@ -202,8 +202,8 @@ fun MangaScreenContent(
                 )
             )
         }
-    ) {
-        Box(Modifier.padding(it)) {
+    ) { padding ->
+        Box(Modifier.padding(padding)) {
             manga.let { manga ->
                 if (manga != null) {
                     Box {
@@ -218,7 +218,6 @@ fun MangaScreenContent(
                             ).asPaddingValues()
                         ) {
                             item {
-                                @Suppress("UNCHECKED_CAST")
                                 MangaItem(manga)
                             }
                             if (chapters.isNotEmpty()) {
