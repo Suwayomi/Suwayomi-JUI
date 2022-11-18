@@ -24,7 +24,7 @@ fun Modifier.keyboardHandler(
     val focusManager = LocalFocusManager.current
     Modifier.onPreviewKeyEvent {
         if (it.type == KeyEventType.KeyDown) {
-            if (singleLine && it.key == Key.Enter) {
+            if (singleLine && (it.key == Key.Enter || it.key == Key.NumPadEnter)) {
                 enterAction?.invoke(focusManager) ?: action(focusManager)
                 true
             } else if (it.key == Key.Tab) {
