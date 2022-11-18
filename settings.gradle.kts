@@ -16,7 +16,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Tachidesk-JUI"
 
-include("desktop")
 include("core")
 include("i18n")
 include("data")
@@ -24,6 +23,8 @@ include("domain")
 include("ui-core")
 include("presentation")
 include("android")
+include("desktop")
+include("ios")
 
 enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
