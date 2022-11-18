@@ -123,7 +123,7 @@ actual fun rememberScrollbarAdapter(
 }
 
 @Composable
-actual fun rememberVerticalScrollbarAdapter(
+internal actual fun realRememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Vertical?
@@ -134,7 +134,7 @@ actual fun rememberVerticalScrollbarAdapter(
 }
 
 @Composable
-actual fun rememberHorizontalScrollbarAdapter(
+internal actual fun realRememberHorizontalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Horizontal?

@@ -70,17 +70,35 @@ expect fun rememberScrollbarAdapter(
 ): ScrollbarAdapter
 
 @Composable
-expect fun rememberVerticalScrollbarAdapter(
+fun rememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Vertical? = null
-): ScrollbarAdapter
+): ScrollbarAdapter = realRememberVerticalScrollbarAdapter(
+    scrollState, gridCells, arrangement
+)
 
 @Composable
-expect fun rememberHorizontalScrollbarAdapter(
+fun rememberHorizontalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Horizontal? = null
+): ScrollbarAdapter = realRememberHorizontalScrollbarAdapter(
+    scrollState, gridCells, arrangement
+)
+
+@Composable
+internal expect fun realRememberVerticalScrollbarAdapter(
+    scrollState: LazyGridState,
+    gridCells: GridCells,
+    arrangement: Arrangement.Vertical?
+): ScrollbarAdapter
+
+@Composable
+internal expect fun realRememberHorizontalScrollbarAdapter(
+    scrollState: LazyGridState,
+    gridCells: GridCells,
+    arrangement: Arrangement.Horizontal?
 ): ScrollbarAdapter
 
 expect fun Modifier.scrollbarPadding(): Modifier
