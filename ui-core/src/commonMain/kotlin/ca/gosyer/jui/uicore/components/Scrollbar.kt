@@ -75,7 +75,9 @@ fun rememberVerticalScrollbarAdapter(
     gridCells: GridCells,
     arrangement: Arrangement.Vertical? = null
 ): ScrollbarAdapter = realRememberVerticalScrollbarAdapter(
-    scrollState, gridCells, arrangement
+    scrollState,
+    gridCells,
+    arrangement
 )
 
 @Composable
@@ -84,7 +86,9 @@ fun rememberHorizontalScrollbarAdapter(
     gridCells: GridCells,
     arrangement: Arrangement.Horizontal? = null
 ): ScrollbarAdapter = realRememberHorizontalScrollbarAdapter(
-    scrollState, gridCells, arrangement
+    scrollState,
+    gridCells,
+    arrangement
 )
 
 @Composable
