@@ -97,7 +97,6 @@ class SkikoAppDelegate @OverrideInit constructor() : UIResponder(), UIApplicatio
     }
 }
 
-
 @Composable
 fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
     var toast by remember { mutableStateOf<Pair<String, Length>?>(null) }
@@ -121,26 +120,28 @@ fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
         }
     }
     @Suppress("NAME_SHADOWING")
-    (Crossfade(
-        toast?.first,
-        modifier = modifier
-    ) { toast ->
-        if (toast != null) {
-            Card(
-                Modifier.sizeIn(maxWidth = 200.dp),
-                shape = CircleShape,
-                backgroundColor = Color.DarkGray
-            ) {
-                Text(
-                    toast,
-                    Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    color = Color.White,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center
-                )
+    (
+        Crossfade(
+            toast?.first,
+            modifier = modifier
+        ) { toast ->
+            if (toast != null) {
+                Card(
+                    Modifier.sizeIn(maxWidth = 200.dp),
+                    shape = CircleShape,
+                    backgroundColor = Color.DarkGray
+                ) {
+                    Text(
+                        toast,
+                        Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        color = Color.White,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
-    })
+        )
 }

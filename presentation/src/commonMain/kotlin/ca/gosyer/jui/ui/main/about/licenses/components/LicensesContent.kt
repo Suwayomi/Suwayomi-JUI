@@ -68,7 +68,7 @@ expect object LibraryDefaults {
         backgroundColor: Color = MaterialTheme.colors.background,
         contentColor: Color = contentColorFor(backgroundColor),
         badgeBackgroundColor: Color = MaterialTheme.colors.primary,
-        badgeContentColor: Color = contentColorFor(badgeBackgroundColor),
+        badgeContentColor: Color = contentColorFor(badgeBackgroundColor)
     ): LibraryColors
     val ContentPadding: PaddingValues
 }

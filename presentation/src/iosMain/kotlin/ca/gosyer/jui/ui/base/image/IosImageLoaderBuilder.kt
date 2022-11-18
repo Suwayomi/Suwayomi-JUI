@@ -33,7 +33,11 @@ actual fun diskCache(contextWrapper: ContextWrapper, cacheDir: String): DiskCach
 
 private fun getCacheDir(): String {
     return NSFileManager.defaultManager.URLForDirectory(
-        NSCachesDirectory, NSUserDomainMask, null, true, null
+        NSCachesDirectory,
+        NSUserDomainMask,
+        null,
+        true,
+        null
     )!!.path.orEmpty()
 }
 

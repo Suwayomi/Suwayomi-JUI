@@ -38,7 +38,7 @@ actual object LibraryDefaults {
         backgroundColor: Color,
         contentColor: Color,
         badgeBackgroundColor: Color,
-        badgeContentColor: Color,
+        badgeContentColor: Color
     ): LibraryColors = object : LibraryColors {}
 
     actual val ContentPadding: PaddingValues get() = PaddingValues()
