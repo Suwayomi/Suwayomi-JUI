@@ -103,8 +103,15 @@ kotlin {
 }
 
 dependencies {
-    add("kspDesktop", libs.kotlinInject.compiler)
-    add("kspAndroid", libs.kotlinInject.compiler)
+    listOf(
+        "kspDesktop",
+        "kspAndroid",
+        "kspIosArm64",
+        "kspIosSimulatorArm64",
+        "kspIosX64"
+    ).forEach {
+        add(it, libs.kotlinInject.compiler)
+    }
 }
 
 buildkonfig {
