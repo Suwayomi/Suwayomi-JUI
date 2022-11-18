@@ -7,7 +7,10 @@
 package ca.gosyer.jui.ui.base.state
 
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.internal.SynchronizedObject
+import kotlinx.coroutines.internal.synchronized
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -17,14 +20,17 @@ fun <T> SavedStateHandle.getStateFlow(
     return SavedStateHandleDelegate(this, initialValue)
 }
 
+@OptIn(InternalCoroutinesApi::class)
 class SavedStateHandleDelegate<T>(
     private val savedStateHandle: SavedStateHandle,
     private val initialValue: () -> T
 ) : ReadOnlyProperty<ViewModel, SavedStateHandleStateFlow<T>> {
+    private val synchronizedObject = SynchronizedObject()
+
     private var item: SavedStateHandleStateFlow<T>? = null
 
     override fun getValue(thisRef: ViewModel, property: KProperty<*>): SavedStateHandleStateFlow<T> {
-        return item ?: synchronized(this) {
+        return item ?: synchronized(synchronizedObject) {
             if (item == null) {
                 savedStateHandle.getSavedStateFlow(property.name, initialValue)
                     .also { item = it }

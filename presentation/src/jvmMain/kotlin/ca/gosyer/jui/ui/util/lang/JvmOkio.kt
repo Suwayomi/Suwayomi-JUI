@@ -11,6 +11,6 @@ import io.ktor.utils.io.jvm.javaio.toInputStream
 import okio.Source
 import okio.source
 
-actual fun ByteReadChannel.toSource(): Source {
+actual suspend fun ByteReadChannel.toSource(): Source {
     return toInputStream().source()
 }

@@ -9,4 +9,4 @@ package ca.gosyer.jui.ui.util.lang
 import io.ktor.utils.io.ByteReadChannel
 import okio.Source
 
-expect fun ByteReadChannel.toSource(): Source
+expect suspend fun ByteReadChannel.toSource(): Source

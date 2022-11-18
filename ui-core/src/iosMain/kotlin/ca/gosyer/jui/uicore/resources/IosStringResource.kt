@@ -7,10 +7,18 @@
 package ca.gosyer.jui.uicore.resources
 
 import androidx.compose.runtime.Composable
+import dev.icerock.moko.resources.PluralsResource
 import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.desc.Plural
+import dev.icerock.moko.resources.desc.PluralFormatted
+import dev.icerock.moko.resources.desc.PluralFormattedStringDesc
+import dev.icerock.moko.resources.desc.PluralStringDesc
 import dev.icerock.moko.resources.desc.Resource
 import dev.icerock.moko.resources.desc.ResourceFormatted
 import dev.icerock.moko.resources.desc.StringDesc
+
+expect fun PluralStringDesc.localized(): String
+expect fun PluralFormattedStringDesc.localized(): String
 
 @Composable
 actual fun stringResource(resource: StringResource): String =
@@ -20,7 +28,6 @@ actual fun stringResource(resource: StringResource): String =
 actual fun stringResource(resource: StringResource, vararg args: Any): String =
     StringDesc.ResourceFormatted(resource, *args).localized()
 
-/* TODO the commonizer chokes on .localized()
 @Composable
 actual fun stringResource(resource: PluralsResource, quantity: Int): String =
     StringDesc.Plural(resource, quantity).localized()
@@ -28,4 +35,3 @@ actual fun stringResource(resource: PluralsResource, quantity: Int): String =
 @Composable
 actual fun stringResource(resource: PluralsResource, quantity: Int, vararg args: Any): String =
     StringDesc.PluralFormatted(resource, quantity, *args).localized()
-*/

@@ -13,6 +13,7 @@ import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import kotlin.jvm.Transient
 
 expect class CategoriesLauncher {
 

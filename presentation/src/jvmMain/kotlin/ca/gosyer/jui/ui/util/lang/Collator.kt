@@ -8,17 +8,17 @@ package ca.gosyer.jui.ui.util.lang
 
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.toPlatform
-import java.text.Collator as JvmCollator
+import java.text.Collator
 
-actual fun Collator(locale: Locale): Collator {
-    return Collator(JvmCollator.getInstance(locale.toPlatform()))
-}
+actual class CollatorComparator(private val collator: Collator) : Comparator<String> {
 
-actual class Collator(private val jvmCollator: JvmCollator) {
+    actual constructor(locale: Locale) : this(Collator.getInstance(locale.toPlatform()))
+
     init {
-        jvmCollator.strength = JvmCollator.PRIMARY
+        collator.strength = Collator.PRIMARY
     }
-    actual fun compare(source: String, target: String): Int {
-        return jvmCollator.compare(source, target)
+
+    actual override fun compare(source: String, target: String): Int {
+        return collator.compare(source, target)
     }
 }

@@ -18,6 +18,7 @@ import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
 import com.mikepenz.aboutlibraries.ui.compose.Libraries
 import com.mikepenz.aboutlibraries.ui.compose.LibraryColors
+import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -32,6 +33,10 @@ actual fun getLicenses(): Libs? {
     }
     return libs
 }
+
+actual typealias LibraryDefaults = LibraryDefaults
+
+actual typealias LibraryColors = LibraryColors
 
 @Composable
 actual fun InternalAboutLibraries(

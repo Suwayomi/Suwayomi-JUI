@@ -6,6 +6,8 @@
 
 package ca.gosyer.jui.ui.reader.loader
 
+import ca.gosyer.jui.core.io.SYSTEM
+import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.PriorityChannel
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
@@ -39,6 +41,7 @@ import kotlinx.coroutines.launch
 import okio.BufferedSource
 import okio.FileSystem
 import okio.buffer
+import okio.use
 import org.lighthousegames.logging.logging
 
 class TachideskPageLoader(

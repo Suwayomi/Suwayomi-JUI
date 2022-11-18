@@ -6,16 +6,8 @@
 
 package ca.gosyer.jui.uicore.resources
 
-import androidx.compose.runtime.Composable
-import dev.icerock.moko.resources.PluralsResource
-import dev.icerock.moko.resources.desc.Plural
-import dev.icerock.moko.resources.desc.PluralFormatted
-import dev.icerock.moko.resources.desc.StringDesc
+import dev.icerock.moko.resources.desc.PluralFormattedStringDesc
+import dev.icerock.moko.resources.desc.PluralStringDesc
 
-@Composable
-actual fun stringResource(resource: PluralsResource, quantity: Int): String =
-    StringDesc.Plural(resource, quantity).localized()
-
-@Composable
-actual fun stringResource(resource: PluralsResource, quantity: Int, vararg args: Any): String =
-    StringDesc.PluralFormatted(resource, quantity, *args).localized()
+actual fun PluralStringDesc.localized(): String = localized()
+actual fun PluralFormattedStringDesc.localized() = localized()

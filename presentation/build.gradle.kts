@@ -25,6 +25,9 @@ kotlin {
             }
         }
     }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     sourceSets {
         all {
@@ -53,13 +56,16 @@ kotlin {
                 api(libs.dateTime)
                 api(libs.immutableCollections)
                 api(libs.aboutLibraries.core)
-                api(libs.aboutLibraries.ui)
+
                 api(projects.core)
                 api(projects.i18n)
                 api(projects.domain)
                 api(projects.data)
                 api(projects.uiCore)
-                api(compose.desktop.currentOs)
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.ui)
+                api(compose.material)
                 api(compose("org.jetbrains.compose.ui:ui-util"))
                 api(compose.materialIconsExtended)
             }
@@ -75,6 +81,8 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 api(kotlin("stdlib-jdk8"))
+                api(libs.aboutLibraries.ui)
+                api(compose.desktop.currentOs)
             }
         }
         val jvmTest by creating {
@@ -106,6 +114,22 @@ kotlin {
         }
         val androidTest by getting {
             dependsOn(jvmTest)
+        }
+
+        val iosMain by creating {
+            dependsOn(commonMain)
+        }
+        val iosTest by creating {
+            dependsOn(commonTest)
+        }
+
+        listOf(
+            "iosX64",
+            "iosArm64",
+            "iosSimulatorArm64",
+        ).forEach {
+            getByName(it + "Main").dependsOn(iosMain)
+            getByName(it + "Test").dependsOn(iosTest)
         }
     }
 }

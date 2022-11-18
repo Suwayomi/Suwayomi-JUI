@@ -25,7 +25,7 @@ import ca.gosyer.jui.domain.updates.interactor.UpdateLibrary
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.state.SavedStateHandle
 import ca.gosyer.jui.ui.base.state.getStateFlow
-import ca.gosyer.jui.ui.util.lang.Collator
+import ca.gosyer.jui.ui.util.lang.CollatorComparator
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -191,7 +191,7 @@ class LibraryScreenViewModel @Inject constructor(
         val sortFn: (Manga, Manga) -> Int = when (sortMode) {
             Sort.ALPHABETICAL -> {
                 val locale = Locale.current
-                val collator = Collator(locale);
+                val collator = CollatorComparator(locale);
 
                 { a, b ->
                     collator.compare(a.title.toLowerCase(locale), b.title.toLowerCase(locale))

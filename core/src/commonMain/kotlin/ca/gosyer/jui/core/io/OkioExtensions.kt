@@ -7,7 +7,9 @@
 package ca.gosyer.jui.core.io
 
 import ca.gosyer.jui.core.lang.withIOContext
+import okio.Buffer
 import okio.BufferedSink
+import okio.BufferedSource
 import okio.FileSystem
 import okio.Path
 import okio.Source
@@ -31,4 +33,8 @@ suspend fun Source.copyTo(sink: BufferedSink) {
             sink.use { it.writeAll(source) }
         }
     }
+}
+
+fun ByteArray.source(): BufferedSource {
+    return Buffer().write(this)
 }

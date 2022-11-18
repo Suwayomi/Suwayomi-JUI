@@ -19,11 +19,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.i18n.MR
@@ -38,8 +41,6 @@ import ca.gosyer.jui.uicore.insets.statusBars
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
-import com.mikepenz.aboutlibraries.ui.compose.LibraryColors
-import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
@@ -59,6 +60,18 @@ internal expect fun InternalAboutLibraries(
     itemContentPadding: PaddingValues,
     onLibraryClick: ((Library) -> Unit)?
 )
+
+expect interface LibraryColors
+expect object LibraryDefaults {
+    @Composable
+    fun libraryColors(
+        backgroundColor: Color = MaterialTheme.colors.background,
+        contentColor: Color = contentColorFor(backgroundColor),
+        badgeBackgroundColor: Color = MaterialTheme.colors.primary,
+        badgeContentColor: Color = contentColorFor(badgeBackgroundColor),
+    ): LibraryColors
+    val ContentPadding: PaddingValues
+}
 
 @Composable
 fun AboutLibraries(
