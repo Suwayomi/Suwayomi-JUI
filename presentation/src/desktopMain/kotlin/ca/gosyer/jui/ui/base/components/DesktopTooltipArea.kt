@@ -18,7 +18,7 @@ actual typealias ComponentRect = androidx.compose.foundation.TooltipPlacement.Co
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-actual fun TooltipArea(
+internal actual fun RealTooltipArea(
     tooltip: @Composable () -> Unit,
     modifier: Modifier,
     delayMillis: Int,

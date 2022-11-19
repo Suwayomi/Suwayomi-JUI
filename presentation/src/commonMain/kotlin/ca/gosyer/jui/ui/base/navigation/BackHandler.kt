@@ -9,4 +9,7 @@ package ca.gosyer.jui.ui.base.navigation
 import androidx.compose.runtime.Composable
 
 @Composable
-expect fun BackHandler(enabled: Boolean = true, onBack: () -> Unit)
+fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) = RealBackHandler(enabled, onBack)
+
+@Composable
+internal expect fun RealBackHandler(enabled: Boolean, onBack: () -> Unit)

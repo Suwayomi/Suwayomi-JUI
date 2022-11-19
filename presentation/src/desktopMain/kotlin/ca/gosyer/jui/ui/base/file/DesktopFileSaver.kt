@@ -40,7 +40,7 @@ actual class FileSaver(
 }
 
 @Composable
-actual fun rememberFileSaver(
+internal actual fun realRememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit,
     onError: () -> Unit

@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.base.file
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -24,8 +25,9 @@ actual class FileSaver(
     }
 }
 
+@SuppressLint("Recycle")
 @Composable
-actual fun rememberFileSaver(
+internal actual fun realRememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit,
     onError: () -> Unit

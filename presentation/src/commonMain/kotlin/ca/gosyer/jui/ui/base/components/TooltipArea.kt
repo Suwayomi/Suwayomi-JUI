@@ -45,12 +45,29 @@ expect class ComponentRect(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-expect fun TooltipArea(
+fun TooltipArea(
     tooltip: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     delayMillis: Int = 500,
     tooltipPlacement: TooltipPlacement = CursorPoint(
         offset = DpOffset(0.dp, 16.dp)
     ),
+    content: @Composable () -> Unit
+) = RealTooltipArea(
+    tooltip = tooltip,
+    modifier = modifier,
+    delayMillis = delayMillis,
+    tooltipPlacement = tooltipPlacement,
+    content = content
+)
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+internal expect fun RealTooltipArea(
+    tooltip: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    delayMillis: Int = 500,
+    tooltipPlacement: TooltipPlacement,
     content: @Composable () -> Unit
 )

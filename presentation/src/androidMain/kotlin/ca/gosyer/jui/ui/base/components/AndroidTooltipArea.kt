@@ -28,7 +28,7 @@ actual class ComponentRect actual constructor(
 ) : TooltipPlacement
 
 @Composable
-actual fun TooltipArea(
+internal actual fun RealTooltipArea(
     tooltip: @Composable () -> Unit,
     modifier: Modifier,
     delayMillis: Int,
