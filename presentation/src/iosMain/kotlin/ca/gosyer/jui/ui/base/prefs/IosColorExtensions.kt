@@ -14,7 +14,7 @@ import kotlinx.cinterop.value
 import platform.CoreGraphics.CGFloatVar
 import platform.UIKit.UIColor
 
-fun Color.toUIColor() = UIColor(red.toDouble(), green.toDouble(), blue.toDouble(), 1.0)
+fun Color.toUIColor() = UIColor(red = red.toDouble(), green = green.toDouble(), blue = blue.toDouble(), alpha = 1.0)
 
 internal actual fun Color.toHsv(): FloatArray = memScoped {
     val uiColor = toUIColor()
