@@ -7,8 +7,6 @@
 package ca.gosyer.jui.ui.library.components
 
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +15,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.uicore.components.DropdownMenu
+import ca.gosyer.jui.uicore.components.DropdownMenuItem
 import ca.gosyer.jui.uicore.resources.stringResource
 
 actual fun Modifier.libraryMangaModifier(
