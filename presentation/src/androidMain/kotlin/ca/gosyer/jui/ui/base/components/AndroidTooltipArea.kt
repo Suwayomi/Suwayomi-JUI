@@ -15,13 +15,13 @@ import androidx.compose.ui.unit.DpOffset
 
 actual interface TooltipPlacement
 
-actual class CursorPoint actual constructor(
+actual class CursorPointImpl actual constructor(
     offset: DpOffset,
     alignment: Alignment,
     windowMargin: Dp
 ) : TooltipPlacement
 
-actual class ComponentRect actual constructor(
+actual class ComponentRectImpl actual constructor(
     anchor: Alignment,
     alignment: Alignment,
     offset: DpOffset

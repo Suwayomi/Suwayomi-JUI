@@ -72,8 +72,14 @@ interface SharedViewModelComponent {
 expect interface ViewModelComponent : SharedViewModelComponent
 
 @Composable
-expect inline fun <reified VM : ViewModel> Screen.stateViewModel(
+inline fun <reified VM : ViewModel> Screen.stateViewModel(
     tag: String? = null,
+    crossinline factory: @DisallowComposableCalls ViewModelComponent.(SavedStateHandle) -> VM
+): VM = realStateViewModel(tag, factory)
+
+@Composable
+expect inline fun <reified VM : ViewModel> Screen.realStateViewModel(
+    tag: String?,
     crossinline factory: @DisallowComposableCalls ViewModelComponent.(SavedStateHandle) -> VM
 ): VM
 

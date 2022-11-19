@@ -79,7 +79,7 @@ fun DropdownMenu(
 @Composable
 internal expect fun RealDropdownMenuItem(
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     enabled: Boolean,
     contentPadding: PaddingValues,
     interactionSource: MutableInteractionSource,

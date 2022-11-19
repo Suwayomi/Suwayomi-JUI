@@ -21,7 +21,7 @@ actual interface ViewModelComponent : SharedViewModelComponent {
 }
 
 @Composable
-actual inline fun <reified VM : ViewModel> Screen.stateViewModel(
+actual inline fun <reified VM : ViewModel> Screen.realStateViewModel(
     tag: String?,
     crossinline factory: @DisallowComposableCalls ViewModelComponent.(SavedStateHandle) -> VM
 ): VM {

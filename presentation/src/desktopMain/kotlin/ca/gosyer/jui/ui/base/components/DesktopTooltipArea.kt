@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 
 actual typealias TooltipPlacement = androidx.compose.foundation.TooltipPlacement
 
-actual typealias CursorPoint = androidx.compose.foundation.TooltipPlacement.CursorPoint
+actual typealias CursorPointImpl = androidx.compose.foundation.TooltipPlacement.CursorPoint
 
-actual typealias ComponentRect = androidx.compose.foundation.TooltipPlacement.ComponentRect
+actual typealias ComponentRectImpl = androidx.compose.foundation.TooltipPlacement.ComponentRect
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

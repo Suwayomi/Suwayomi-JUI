@@ -17,30 +17,30 @@ import androidx.compose.ui.unit.dp
 @ExperimentalFoundationApi
 expect interface TooltipPlacement
 
-fun TooltipPlacement.CursorPoint(
+fun CursorPoint(
     offset: DpOffset = DpOffset.Zero,
     alignment: Alignment = Alignment.BottomEnd,
     windowMargin: Dp = 4.dp
-) = ca.gosyer.jui.ui.base.components.CursorPoint(offset, alignment, windowMargin)
+) = CursorPointImpl(offset, alignment, windowMargin)
 
 @ExperimentalFoundationApi
-expect class CursorPoint(
-    offset: DpOffset = DpOffset.Zero,
-    alignment: Alignment = Alignment.BottomEnd,
-    windowMargin: Dp = 4.dp
+expect class CursorPointImpl(
+    offset: DpOffset,
+    alignment: Alignment,
+    windowMargin: Dp
 ) : TooltipPlacement
 
-fun TooltipPlacement.ComponentRect(
+fun ComponentRect(
     anchor: Alignment = Alignment.BottomCenter,
     alignment: Alignment = Alignment.BottomCenter,
     offset: DpOffset = DpOffset.Zero
-) = ca.gosyer.jui.ui.base.components.ComponentRect(anchor, alignment, offset)
+) = ca.gosyer.jui.ui.base.components.ComponentRectImpl(anchor, alignment, offset)
 
 @ExperimentalFoundationApi
-expect class ComponentRect(
-    anchor: Alignment = Alignment.BottomCenter,
-    alignment: Alignment = Alignment.BottomCenter,
-    offset: DpOffset = DpOffset.Zero
+expect class ComponentRectImpl(
+    anchor: Alignment,
+    alignment: Alignment,
+    offset: DpOffset
 ) : TooltipPlacement
 
 @OptIn(ExperimentalFoundationApi::class)
