@@ -50,7 +50,7 @@ expect fun getLicenses(): Libs?
 @Composable
 internal expect fun InternalAboutLibraries(
     libraries: ImmutableList<Library>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     lazyListState: LazyListState,
     contentPadding: PaddingValues,
     showAuthor: Boolean,

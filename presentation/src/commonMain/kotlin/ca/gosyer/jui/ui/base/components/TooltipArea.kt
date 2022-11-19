@@ -34,7 +34,7 @@ fun ComponentRect(
     anchor: Alignment = Alignment.BottomCenter,
     alignment: Alignment = Alignment.BottomCenter,
     offset: DpOffset = DpOffset.Zero
-) = ca.gosyer.jui.ui.base.components.ComponentRectImpl(anchor, alignment, offset)
+) = ComponentRectImpl(anchor, alignment, offset)
 
 @ExperimentalFoundationApi
 expect class ComponentRectImpl(
@@ -65,8 +65,8 @@ fun TooltipArea(
 @Composable
 internal expect fun RealTooltipArea(
     tooltip: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
-    delayMillis: Int = 500,
+    modifier: Modifier,
+    delayMillis: Int,
     tooltipPlacement: TooltipPlacement,
     content: @Composable () -> Unit
 )
