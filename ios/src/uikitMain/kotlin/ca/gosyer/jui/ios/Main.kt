@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Card
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +17,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Application
@@ -120,28 +126,26 @@ fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
         }
     }
     @Suppress("NAME_SHADOWING")
-    (
-        Crossfade(
-            toast?.first,
-            modifier = modifier
-        ) { toast ->
-            if (toast != null) {
-                Card(
-                    Modifier.sizeIn(maxWidth = 200.dp),
-                    shape = CircleShape,
-                    backgroundColor = Color.DarkGray
-                ) {
-                    Text(
-                        toast,
-                        Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        color = Color.White,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = 12.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
+    Crossfade(
+        toast?.first,
+        modifier = modifier
+    ) { toast ->
+        if (toast != null) {
+            Card(
+                Modifier.sizeIn(maxWidth = 200.dp),
+                shape = CircleShape,
+                backgroundColor = Color.DarkGray
+            ) {
+                Text(
+                    toast,
+                    Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center
+                )
             }
         }
-        )
+    }
 }
