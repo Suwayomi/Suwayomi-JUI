@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import ca.gosyer.jui.core.lang.withIOContext
 import com.mikepenz.aboutlibraries.Libs
@@ -36,7 +37,16 @@ actual fun getLicenses(): Libs? {
     return libs
 }
 
-actual typealias LibraryDefaults = LibraryDefaults
+actual val LibraryDefaultsContentPadding
+    get() = LibraryDefaults.ContentPadding
+
+@Composable
+actual fun RealLibraryDefaultsLibraryColors(
+    backgroundColor: Color,
+    contentColor: Color,
+    badgeBackgroundColor: Color,
+    badgeContentColor: Color
+) = LibraryDefaults.libraryColors(backgroundColor, contentColor, badgeBackgroundColor, badgeContentColor)
 
 actual typealias LibraryColors = LibraryColors
 

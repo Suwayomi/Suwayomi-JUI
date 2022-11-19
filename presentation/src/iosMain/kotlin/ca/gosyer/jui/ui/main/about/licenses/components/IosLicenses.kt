@@ -32,17 +32,16 @@ actual fun getLicenses(): Libs? {
     return libs
 }
 
-actual object LibraryDefaults {
-    @Composable
-    actual fun libraryColors(
-        backgroundColor: Color,
-        contentColor: Color,
-        badgeBackgroundColor: Color,
-        badgeContentColor: Color
-    ): LibraryColors = object : LibraryColors {}
+actual val LibraryDefaultsContentPadding
+    get() = PaddingValues()
 
-    actual val ContentPadding: PaddingValues get() = PaddingValues()
-}
+@Composable
+actual fun RealLibraryDefaultsLibraryColors(
+    backgroundColor: Color,
+    contentColor: Color,
+    badgeBackgroundColor: Color,
+    badgeContentColor: Color
+) = object : LibraryColors {}
 
 actual interface LibraryColors
 

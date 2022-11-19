@@ -61,17 +61,30 @@ internal expect fun InternalAboutLibraries(
     onLibraryClick: ((Library) -> Unit)?
 )
 
+expect val LibraryDefaultsContentPadding: PaddingValues
+
+@Composable
+fun LibraryDefaultsLibraryColors(
+    backgroundColor: Color = MaterialTheme.colors.background,
+    contentColor: Color = contentColorFor(backgroundColor),
+    badgeBackgroundColor: Color = MaterialTheme.colors.primary,
+    badgeContentColor: Color = contentColorFor(badgeBackgroundColor)
+) = RealLibraryDefaultsLibraryColors(
+    backgroundColor = backgroundColor,
+    contentColor = contentColor,
+    badgeBackgroundColor = badgeBackgroundColor,
+    badgeContentColor = badgeContentColor
+)
+
+@Composable
+internal expect fun RealLibraryDefaultsLibraryColors(
+    backgroundColor: Color,
+    contentColor: Color,
+    badgeBackgroundColor: Color,
+    badgeContentColor: Color
+): LibraryColors
+
 expect interface LibraryColors
-expect object LibraryDefaults {
-    @Composable
-    fun libraryColors(
-        backgroundColor: Color = MaterialTheme.colors.background,
-        contentColor: Color = contentColorFor(backgroundColor),
-        badgeBackgroundColor: Color = MaterialTheme.colors.primary,
-        badgeContentColor: Color = contentColorFor(badgeBackgroundColor)
-    ): LibraryColors
-    val ContentPadding: PaddingValues
-}
 
 @Composable
 fun AboutLibraries(
@@ -82,8 +95,8 @@ fun AboutLibraries(
     showAuthor: Boolean = true,
     showVersion: Boolean = true,
     showLicenseBadges: Boolean = true,
-    colors: LibraryColors = LibraryDefaults.libraryColors(),
-    itemContentPadding: PaddingValues = LibraryDefaults.ContentPadding,
+    colors: LibraryColors = LibraryDefaultsLibraryColors(),
+    itemContentPadding: PaddingValues = LibraryDefaultsContentPadding,
     onLibraryClick: ((Library) -> Unit)? = null
 ) {
     InternalAboutLibraries(
