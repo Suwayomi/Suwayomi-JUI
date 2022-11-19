@@ -61,7 +61,6 @@ fun TooltipArea(
     content = content
 )
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal expect fun RealTooltipArea(
