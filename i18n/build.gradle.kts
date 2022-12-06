@@ -20,9 +20,16 @@ kotlin {
             }
         }
     }
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
+    val configuration: org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.() -> Unit = {
+        binaries {
+            framework {
+                baseName = "i18n"
+            }
+        }
+    }
+    iosX64(configure = configuration)
+    iosArm64(configure = configuration)
+    iosSimulatorArm64(configure = configuration)
 
     sourceSets {
         val commonMain by getting {
