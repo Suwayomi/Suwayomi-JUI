@@ -49,7 +49,7 @@ fun Context.notificationBuilder(channelId: String, block: (NotificationCompat.Bu
 /**
  * Helper method to create a notification.
  *
- * @param id the channel id.
+ * @param channelId the channel id.
  * @param block the function that will execute inside the builder.
  * @return a notification to be displayed or updated.
  */

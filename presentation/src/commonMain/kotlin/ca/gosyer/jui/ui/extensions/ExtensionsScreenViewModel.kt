@@ -74,8 +74,7 @@ class ExtensionsScreenViewModel @Inject constructor(
         langs.map { it.lang }.distinct().toImmutableList()
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading = _isLoading.asStateFlow()
+    val isLoading = extensionList.map { it == null }.stateIn(scope, SharingStarted.Eagerly, true)
 
     init {
         scope.launch {
@@ -85,7 +84,6 @@ class ExtensionsScreenViewModel @Inject constructor(
 
     private suspend fun getExtensions() {
         extensionList.value = getExtensionList.await(onError = { toast(it.message.orEmpty()) }).orEmpty()
-        _isLoading.value = false
     }
 
     fun install(source: Source) {
