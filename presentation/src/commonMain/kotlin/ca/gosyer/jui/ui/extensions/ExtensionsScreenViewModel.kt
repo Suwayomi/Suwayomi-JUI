@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
@@ -58,12 +59,15 @@ class ExtensionsScreenViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow<String?>(null)
     val searchQuery = _searchQuery.asStateFlow()
 
+    private val workingExtensions = MutableStateFlow<List<String>>(emptyList())
+
     val extensions = combine(
         searchQuery,
         extensionList,
-        enabledLangs
-    ) { searchQuery, extensions, enabledLangs ->
-        search(searchQuery, extensions, enabledLangs)
+        enabledLangs,
+        workingExtensions
+    ) { searchQuery, extensions, enabledLangs, workingExtensions ->
+        search(searchQuery, extensions, enabledLangs, workingExtensions)
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     val availableLangs = extensionList.filterNotNull().map { langs ->
@@ -107,24 +111,30 @@ class ExtensionsScreenViewModel @Inject constructor(
     fun install(extension: Extension) {
         log.info { "Install clicked" }
         scope.launch {
+            workingExtensions.update { it + extension.apkName }
             installExtension.await(extension, onError = { toast(it.message.orEmpty()) })
             getExtensions()
+            workingExtensions.update { it - extension.apkName }
         }
     }
 
     fun update(extension: Extension) {
         log.info { "Update clicked" }
         scope.launch {
+            workingExtensions.update { it + extension.apkName }
             updateExtension.await(extension, onError = { toast(it.message.orEmpty()) })
             getExtensions()
+            workingExtensions.update { it - extension.apkName }
         }
     }
 
     fun uninstall(extension: Extension) {
         log.info { "Uninstall clicked" }
         scope.launch {
+            workingExtensions.update { it + extension.apkName }
             uninstallExtension.await(extension, onError = { toast(it.message.orEmpty()) })
             getExtensions()
+            workingExtensions.update { it - extension.apkName }
         }
     }
 
@@ -136,22 +146,27 @@ class ExtensionsScreenViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
-    private fun search(searchQuery: String?, extensionList: List<Extension>?, enabledLangs: Set<String>): ImmutableList<ExtensionUI> {
+    private fun search(
+        searchQuery: String?,
+        extensionList: List<Extension>?,
+        enabledLangs: Set<String>,
+        workingExtensions: List<String>
+    ): ImmutableList<ExtensionUI> {
         val extensions = extensionList?.filter { it.lang in enabledLangs }
             .orEmpty()
         return if (searchQuery.isNullOrBlank()) {
-            extensions.splitSort()
+            extensions.splitSort(workingExtensions)
         } else {
             val queries = searchQuery.split(" ")
             val filteredExtensions = extensions.toMutableList()
             queries.forEach { query ->
                 filteredExtensions.removeAll { !it.name.contains(query, true) }
             }
-            filteredExtensions.toList().splitSort()
+            filteredExtensions.toList().splitSort(workingExtensions)
         }
     }
 
-    private fun List<Extension>.splitSort(): ImmutableList<ExtensionUI> {
+    private fun List<Extension>.splitSort(workingExtensions: List<String>): ImmutableList<ExtensionUI> {
         val all = MR.strings.all.toPlatformString()
         return this
             .filter(Extension::installed)
@@ -166,7 +181,7 @@ class ExtensionsScreenViewModel @Inject constructor(
                     .thenBy(Extension::lang)
                     .thenBy(String.CASE_INSENSITIVE_ORDER, Extension::name)
             )
-            .map(ExtensionUI::ExtensionItem)
+            .map { ExtensionUI.ExtensionItem(it, it.apkName in workingExtensions) }
             .let {
                 if (it.isNotEmpty()) {
                     listOf(ExtensionUI.Header(MR.strings.installed.toPlatformString())) + it
@@ -185,7 +200,7 @@ class ExtensionsScreenViewModel @Inject constructor(
                     .mapValues {
                         it.value
                             .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, Extension::name))
-                            .map(ExtensionUI::ExtensionItem)
+                            .map { ExtensionUI.ExtensionItem(it, it.apkName in workingExtensions) }
                     }
                     .toList()
                     .sortedWith(
@@ -211,5 +226,5 @@ class ExtensionsScreenViewModel @Inject constructor(
 @Immutable
 sealed class ExtensionUI {
     data class Header(val header: String) : ExtensionUI()
-    data class ExtensionItem(val extension: Extension) : ExtensionUI()
+    data class ExtensionItem(val extension: Extension, val isWorking: Boolean = false) : ExtensionUI()
 }

@@ -254,7 +254,8 @@ fun ExtensionItem(
                     else -> onInstallClicked(extension)
                 }
             },
-            modifier = Modifier.align(Alignment.CenterEnd)
+            modifier = Modifier.align(Alignment.CenterEnd),
+            enabled = !extensionItem.isWorking
         ) {
             Text(
                 when {
