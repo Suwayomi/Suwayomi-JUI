@@ -23,6 +23,7 @@ data class Manga(
     val url: String,
     val title: String,
     val thumbnailUrl: String?,
+    val thumbnailUrlLastFetched: Long = 0,
     val initialized: Boolean,
     val artist: String?,
     val author: String?,

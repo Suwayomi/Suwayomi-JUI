@@ -66,7 +66,7 @@ class ImageLoaderProvider @Inject constructor(
     class MangaCoverKeyer : Keyer {
         override fun key(data: Any, options: Options): String? {
             if (data !is Manga) return null
-            return "${data.sourceId}-${data.url}"
+            return "${data.sourceId}-${data.thumbnailUrl}-${data.thumbnailUrlLastFetched}"
         }
     }
 
@@ -74,7 +74,7 @@ class ImageLoaderProvider @Inject constructor(
         override fun map(data: Any, options: Options): String? {
             if (data !is Extension) return null
             if (data.iconUrl.isBlank()) return null
-            return serverUrl.value.toString() + data.iconUrl
+            return "${serverUrl.value}${data.iconUrl}"
         }
     }
 
