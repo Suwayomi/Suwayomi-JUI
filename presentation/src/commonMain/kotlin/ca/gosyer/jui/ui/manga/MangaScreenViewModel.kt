@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.manga
 
-import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.data.base.DateHandler
 import ca.gosyer.jui.domain.category.interactor.AddMangaToCategory
 import ca.gosyer.jui.domain.category.interactor.GetCategories
@@ -34,10 +33,10 @@ import ca.gosyer.jui.ui.base.chapter.ChapterDownloadState
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -45,9 +44,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -86,8 +88,10 @@ class MangaScreenViewModel @Inject constructor(
         chapters.filter { it.isSelected(selecteditems) }.toImmutableList()
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading = _isLoading.asStateFlow()
+    private val loadingManga = MutableStateFlow(true)
+    private val loadingChapters = MutableStateFlow(true)
+    val isLoading = combine(loadingManga, loadingChapters) { a, b -> a || b }
+        .stateIn(coroutineScope, SharingStarted.Eagerly, true)
 
     val categories = getCategories.asFlow(true)
         .map { it.toImmutableList() }
@@ -109,6 +113,9 @@ class MangaScreenViewModel @Inject constructor(
     private val chooseCategoriesFlow = MutableSharedFlow<Unit>()
     val chooseCategoriesFlowHolder = StableHolder(chooseCategoriesFlow.asSharedFlow())
 
+    private val reloadManga = MutableSharedFlow<Unit>()
+    private val reloadChapters = MutableSharedFlow<Unit>()
+
     val dateTimeFormatter = uiPreferences.dateFormat().changes()
         .map {
             dateHandler.getDateFormat(it)
@@ -124,33 +131,62 @@ class MangaScreenViewModel @Inject constructor(
             }
             .launchIn(scope)
 
+        reloadManga.onStart { emit(Unit) }.flatMapLatest {
+            loadingManga.value = true
+            getManga.asFlow(params.mangaId)
+        }
+            .onEach {
+                _manga.value = it
+                loadingManga.value = false
+            }
+            .catch {
+                toast(it.message.orEmpty())
+                loadingManga.value = false
+            }
+            .launchIn(scope)
+
+        reloadChapters.onStart { emit(Unit) }.flatMapLatest {
+            loadingChapters.value = true
+            getChapters.asFlow(params.mangaId)
+        }
+            .onEach {
+                _chapters.value = it.toDownloadChapters()
+                loadingChapters.value = false
+            }
+            .catch {
+                toast(it.message.orEmpty())
+                loadingChapters.value = false
+            }
+            .launchIn(scope)
+
         scope.launch {
-            refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
-            _isLoading.value = false
+            val mangaCategories = getMangaCategories.await(params.mangaId, onError = { toast(it.message.orEmpty()) })
+            if (mangaCategories != null) {
+                _mangaCategories.value = mangaCategories.toImmutableList()
+            }
         }
     }
 
     fun loadManga() {
         scope.launch {
-            _isLoading.value = true
-            refreshMangaAsync(params.mangaId).await() to refreshChaptersAsync(params.mangaId).await()
-            _isLoading.value = false
+            reloadManga.emit(Unit)
         }
     }
 
     fun loadChapters() {
         scope.launch {
-            _isLoading.value = true
-            refreshChaptersAsync(params.mangaId).await()
-            _isLoading.value = false
+            reloadChapters.emit(Unit)
         }
     }
 
     fun refreshManga() {
         scope.launch {
-            _isLoading.value = true
-            refreshMangaAsync(params.mangaId, true).await() to refreshChaptersAsync(params.mangaId, true).await()
-            _isLoading.value = false
+            loadingManga.value = true
+            refreshManga.await(params.mangaId, onError = { toast(it.message.orEmpty()) })
+        }
+        scope.launch {
+            loadingChapters.value = true
+            refreshChapters.await(params.mangaId, onError = { toast(it.message.orEmpty()) })
         }
     }
 
@@ -161,43 +197,11 @@ class MangaScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun refreshMangaAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
-        async {
-            val manga = if (refresh) {
-                refreshManga.await(mangaId, onError = { toast(it.message.orEmpty()) })
-            } else {
-                getManga.await(mangaId, onError = { toast(it.message.orEmpty()) })
-            }
-            if (manga != null) {
-                _manga.value = manga
-            }
-
-            val mangaCategories = getMangaCategories.await(mangaId, onError = { toast(it.message.orEmpty()) })
-            if (mangaCategories != null) {
-                _mangaCategories.value = mangaCategories.toImmutableList()
-            }
-        }
-    }
-
-    private suspend fun refreshChaptersAsync(mangaId: Long, refresh: Boolean = false) = withIOContext {
-        async {
-            val chapters = if (refresh) {
-                refreshChapters.await(mangaId, onError = { toast(it.message.orEmpty()) })
-            } else {
-                getChapters.await(mangaId, onError = { toast(it.message.orEmpty()) })
-            }
-            if (chapters != null) {
-                _chapters.value = chapters.toDownloadChapters()
-            }
-        }
-    }
-
     fun toggleFavorite() {
         scope.launch {
             manga.value?.let { manga ->
                 if (manga.inLibrary) {
                     removeMangaFromLibrary.await(manga, onError = { toast(it.message.orEmpty()) })
-                    refreshMangaAsync(manga.id).await()
                 } else {
                     if (categories.value.isEmpty()) {
                         addFavorite(emptyList(), emptyList())
@@ -213,16 +217,28 @@ class MangaScreenViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 if (manga.inLibrary) {
-                    oldCategories.filterNot { it in categories }.forEach {
-                        removeMangaFromCategory.await(manga, it, onError = { toast(it.message.orEmpty()) })
+                    if (oldCategories.isEmpty()) {
+                        removeMangaFromCategory.await(manga.id, 0, onError = { toast(it.message.orEmpty()) })
+                    } else {
+                        oldCategories.filterNot { it in categories }.forEach {
+                            removeMangaFromCategory.await(manga, it, onError = { toast(it.message.orEmpty()) })
+                        }
                     }
                 } else {
                     addMangaToLibrary.await(manga, onError = { toast(it.message.orEmpty()) })
                 }
-                categories.filterNot { it in oldCategories }.forEach {
-                    addMangaToCategory.await(manga, it, onError = { toast(it.message.orEmpty()) })
+                if (categories.isEmpty()) {
+                    addMangaToCategory.await(manga.id, 0, onError = { toast(it.message.orEmpty()) })
+                } else {
+                    categories.filterNot { it in oldCategories }.forEach {
+                        addMangaToCategory.await(manga, it, onError = { toast(it.message.orEmpty()) })
+                    }
                 }
-                refreshMangaAsync(manga.id).await()
+
+                val mangaCategories = getMangaCategories.await(manga.id, onError = { toast(it.message.orEmpty()) })
+                if (mangaCategories != null) {
+                    _mangaCategories.value = mangaCategories.toImmutableList()
+                }
             }
         }
     }
@@ -231,7 +247,6 @@ class MangaScreenViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 batchUpdateChapter.await(manga, chapterIds, isRead = read, onError = { toast(it.message.orEmpty()) })
-                refreshChaptersAsync(manga.id).await()
                 _selectedIds.value = persistentListOf()
             }
         }
@@ -243,7 +258,6 @@ class MangaScreenViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 batchUpdateChapter.await(manga, chapterIds, isBookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
-                refreshChaptersAsync(manga.id).await()
                 _selectedIds.value = persistentListOf()
             }
         }
@@ -255,7 +269,6 @@ class MangaScreenViewModel @Inject constructor(
         scope.launch {
             manga.value?.let { manga ->
                 updateChapterMarkPreviousRead.await(manga, index, onError = { toast(it.message.orEmpty()) })
-                refreshChaptersAsync(manga.id).await()
                 _selectedIds.value = persistentListOf()
             }
         }

@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.domain.manga.interactor
 
+import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.manga.service.MangaRepository
 import kotlinx.coroutines.flow.catch
@@ -14,7 +15,10 @@ import kotlinx.coroutines.flow.flow
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateMangaMeta @Inject constructor(private val mangaRepository: MangaRepository) {
+class UpdateMangaMeta @Inject constructor(
+    private val mangaRepository: MangaRepository,
+    private val serverListeners: ServerListeners,
+) {
 
     suspend fun await(
         manga: Manga,
@@ -37,6 +41,7 @@ class UpdateMangaMeta @Inject constructor(private val mangaRepository: MangaRepo
                 "juiReaderMode",
                 readerMode
             ).collect()
+            serverListeners.updateManga(manga.id)
         }
         emit(Unit)
     }

@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.domain.chapter.interactor
 
+import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.chapter.model.ChapterBatchEditInput
 import ca.gosyer.jui.domain.chapter.model.ChapterChange
@@ -14,11 +15,15 @@ import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 import kotlin.jvm.JvmName
 
-class BatchUpdateChapter @Inject constructor(private val chapterRepository: ChapterRepository) {
+class BatchUpdateChapter @Inject constructor(
+    private val chapterRepository: ChapterRepository,
+    private val serverListeners: ServerListeners,
+) {
 
     @JvmName("awaitChapters")
     suspend fun await(
@@ -240,6 +245,8 @@ class BatchUpdateChapter @Inject constructor(private val chapterRepository: Chap
                 )
             )
         )
+    }.onEach {
+        serverListeners.updateChapters(mangaId, chapterIds)
     }
 
     companion object {

@@ -6,15 +6,20 @@
 
 package ca.gosyer.jui.domain.chapter.interactor
 
+import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateChapterLastPageRead @Inject constructor(private val chapterRepository: ChapterRepository) {
+class UpdateChapterLastPageRead @Inject constructor(
+    private val chapterRepository: ChapterRepository,
+    private val serverListeners: ServerListeners,
+) {
 
     suspend fun await(
         mangaId: Long,
@@ -59,7 +64,7 @@ class UpdateChapterLastPageRead @Inject constructor(private val chapterRepositor
         mangaId = mangaId,
         chapterIndex = index,
         lastPageRead = lastPageRead
-    )
+    ).onEach { serverListeners.updateChapters(mangaId, index) }
 
     fun asFlow(
         manga: Manga,
@@ -69,7 +74,7 @@ class UpdateChapterLastPageRead @Inject constructor(private val chapterRepositor
         mangaId = manga.id,
         chapterIndex = index,
         lastPageRead = lastPageRead
-    )
+    ).onEach { serverListeners.updateChapters(manga.id, index) }
 
     fun asFlow(
         chapter: Chapter,
@@ -78,7 +83,7 @@ class UpdateChapterLastPageRead @Inject constructor(private val chapterRepositor
         mangaId = chapter.mangaId,
         chapterIndex = chapter.index,
         lastPageRead = lastPageRead
-    )
+    ).onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
 
     companion object {
         private val log = logging()

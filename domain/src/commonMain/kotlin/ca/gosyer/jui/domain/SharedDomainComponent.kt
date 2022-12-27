@@ -56,6 +56,8 @@ interface SharedDomainComponent : CoreComponent {
 
     val updatePreferences: UpdatePreferences
 
+    val serverListeners: ServerListeners
+
     @get:AppScope
     @get:Provides
     val serverPreferencesFactory: ServerPreferences
@@ -112,4 +114,9 @@ interface SharedDomainComponent : CoreComponent {
     @get:Provides
     val downloadServiceFactory: DownloadService
         get() = DownloadService(serverPreferences, http)
+
+    @get:AppScope
+    @get:Provides
+    val serverListenersFactory: ServerListeners
+        get() = ServerListeners()
 }

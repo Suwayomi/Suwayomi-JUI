@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.domain.chapter.interactor
 
+import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import kotlinx.coroutines.flow.catch
@@ -14,7 +15,10 @@ import kotlinx.coroutines.flow.flow
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateChapterMeta @Inject constructor(private val chapterRepository: ChapterRepository) {
+class UpdateChapterMeta @Inject constructor(
+    private val chapterRepository: ChapterRepository,
+    private val serverListeners: ServerListeners,
+) {
 
     suspend fun await(
         chapter: Chapter,
@@ -38,6 +42,7 @@ class UpdateChapterMeta @Inject constructor(private val chapterRepository: Chapt
                 "juiPageOffset",
                 pageOffset.toString()
             ).collect()
+            serverListeners.updateChapters(chapter.mangaId, chapter.index)
         }
         emit(Unit)
     }

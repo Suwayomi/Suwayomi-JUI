@@ -6,14 +6,19 @@
 
 package ca.gosyer.jui.domain.library.interactor
 
+import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.library.service.LibraryRepository
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class RemoveMangaFromLibrary @Inject constructor(private val libraryRepository: LibraryRepository) {
+class RemoveMangaFromLibrary @Inject constructor(
+    private val libraryRepository: LibraryRepository,
+    private val serverListeners: ServerListeners,
+) {
 
     suspend fun await(mangaId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId)
         .catch {
@@ -30,8 +35,10 @@ class RemoveMangaFromLibrary @Inject constructor(private val libraryRepository: 
         .singleOrNull()
 
     fun asFlow(mangaId: Long) = libraryRepository.removeMangaFromLibrary(mangaId)
+        .onEach { serverListeners.updateManga(mangaId) }
 
     fun asFlow(manga: Manga) = libraryRepository.removeMangaFromLibrary(manga.id)
+        .onEach { serverListeners.updateManga(manga.id) }
 
     companion object {
         private val log = logging()

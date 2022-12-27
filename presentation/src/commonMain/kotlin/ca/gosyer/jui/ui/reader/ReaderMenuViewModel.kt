@@ -59,6 +59,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
@@ -231,6 +232,7 @@ class ReaderMenuViewModel @Inject constructor(
 
     private suspend fun initManga(mangaId: Long) {
         getManga.asFlow(mangaId)
+            .take(1)
             .onEach {
                 _manga.value = it
             }
@@ -245,6 +247,7 @@ class ReaderMenuViewModel @Inject constructor(
         resetValues()
         val chapter = ReaderChapter(
             getChapter.asFlow(mangaId, chapterIndex)
+                .take(1)
                 .catch {
                     _state.value = ReaderChapter.State.Error(it)
                     log.warn(it) { "Error getting chapter" }
@@ -255,6 +258,7 @@ class ReaderMenuViewModel @Inject constructor(
         viewerChapters.currChapter.value = chapter
 
         val chapters = getChapters.asFlow(mangaId)
+            .take(1)
             .catch {
                 log.warn(it) { "Error getting chapter list" }
                 // TODO: 2022-07-01 Error toast

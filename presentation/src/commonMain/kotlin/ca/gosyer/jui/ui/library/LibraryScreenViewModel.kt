@@ -9,7 +9,6 @@ package ca.gosyer.jui.ui.library
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
-import ca.gosyer.jui.core.lang.withDefaultContext
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.domain.category.interactor.GetCategories
 import ca.gosyer.jui.domain.category.interactor.GetMangaListFromCategory
@@ -28,11 +27,10 @@ import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.ui.util.lang.CollatorComparator
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,7 +40,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
@@ -168,7 +165,21 @@ class LibraryScreenViewModel @Inject constructor(
                 }
                 library.categories.value = categories.sortedBy { it.order }
                     .toImmutableList()
-                updateCategories(categories)
+                categories.forEach { category ->
+                    getMangaListFromCategory.asFlow(category)
+                        .onEach {
+                            library.mangaMap.setManga(
+                                id = category.id,
+                                manga = it.toImmutableList(),
+                                getItemsFlow = ::getMangaItemsFlow
+                            )
+                        }
+                        .catch {
+                            log.warn(it) { "Failed to get manga list from category ${category.name}" }
+                            library.mangaMap.setError(category.id, it)
+                        }
+                        .launchIn(coroutineScope)
+                }
                 _isLoading.value = false
             }
             .catch {
@@ -254,28 +265,6 @@ class LibraryScreenViewModel @Inject constructor(
 
     fun getLibraryForCategoryId(id: Long): StateFlow<CategoryState> {
         return library.mangaMap.getManga(id)
-    }
-
-    private suspend fun updateCategories(categories: List<Category>) {
-        withDefaultContext {
-            categories.map { category ->
-                async {
-                    getMangaListFromCategory.asFlow(category)
-                        .onEach {
-                            library.mangaMap.setManga(
-                                id = category.id,
-                                manga = it.toImmutableList(),
-                                getItemsFlow = ::getMangaItemsFlow
-                            )
-                        }
-                        .catch {
-                            log.warn(it) { "Failed to get manga list from category ${category.name}" }
-                            library.mangaMap.setError(category.id, it)
-                        }
-                        .collect()
-                }
-            }.awaitAll()
-        }
     }
 
     private fun getCategoriesToUpdate(mangaId: Long): List<Category> {
