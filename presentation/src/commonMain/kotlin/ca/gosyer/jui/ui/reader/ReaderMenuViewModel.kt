@@ -303,7 +303,7 @@ class ReaderMenuViewModel @Inject constructor(
         _currentPage
             .onEach { index ->
                 (_pages.value.getOrNull(_currentPage.value - 1) as? ReaderPage)?.let { chapter.pageLoader?.loadPage(it) }
-                if (index == _pages.value.size) {
+                if (index == _pages.value.lastIndex) {
                     markChapterRead(chapter)
                 }
             }
