@@ -17,7 +17,7 @@ import org.lighthousegames.logging.logging
 
 class GetMangaListFromCategory @Inject constructor(
     private val categoryRepository: CategoryRepository,
-    private val serverListeners: ServerListeners,
+    private val serverListeners: ServerListeners
 ) {
 
     suspend fun await(categoryId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(categoryId)

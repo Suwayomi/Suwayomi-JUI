@@ -17,7 +17,7 @@ import org.lighthousegames.logging.logging
 
 class GetMangaFull @Inject constructor(
     private val mangaRepository: MangaRepository,
-    private val serverListeners: ServerListeners,
+    private val serverListeners: ServerListeners
 ) {
 
     suspend fun await(mangaId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId)

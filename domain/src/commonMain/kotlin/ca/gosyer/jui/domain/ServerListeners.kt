@@ -28,23 +28,23 @@ class ServerListeners @Inject constructor() {
     private fun <T> Flow<T>.startWith(value: T) = onStart { emit(value) }
 
     private val mangaListener = MutableSharedFlow<List<Long>>(
-        extraBufferCapacity = Channel.UNLIMITED,
+        extraBufferCapacity = Channel.UNLIMITED
     )
 
     private val chapterIndexesListener = MutableSharedFlow<Pair<Long, List<Int>?>>(
-        extraBufferCapacity = Channel.UNLIMITED,
+        extraBufferCapacity = Channel.UNLIMITED
     )
 
     private val chapterIdsListener = MutableSharedFlow<Pair<Long?, List<Long>>>(
-        extraBufferCapacity = Channel.UNLIMITED,
+        extraBufferCapacity = Channel.UNLIMITED
     )
 
     private val categoryMangaListener = MutableSharedFlow<Long>(
-        extraBufferCapacity = Channel.UNLIMITED,
+        extraBufferCapacity = Channel.UNLIMITED
     )
 
     private val extensionListener = MutableSharedFlow<List<String>>(
-        extraBufferCapacity = Channel.UNLIMITED,
+        extraBufferCapacity = Channel.UNLIMITED
     )
 
     fun <T> combineMangaUpdates(flow: Flow<T>, predate: (suspend (List<Long>) -> Boolean)? = null) =

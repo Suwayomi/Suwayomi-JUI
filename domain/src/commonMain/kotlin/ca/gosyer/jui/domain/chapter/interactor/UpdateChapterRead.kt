@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 
 class UpdateChapterRead @Inject constructor(
     private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners,
+    private val serverListeners: ServerListeners
 ) {
 
     suspend fun await(

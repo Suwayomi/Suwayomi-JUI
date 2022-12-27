@@ -17,7 +17,7 @@ import org.lighthousegames.logging.logging
 
 class RemoveMangaFromLibrary @Inject constructor(
     private val libraryRepository: LibraryRepository,
-    private val serverListeners: ServerListeners,
+    private val serverListeners: ServerListeners
 ) {
 
     suspend fun await(mangaId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId)

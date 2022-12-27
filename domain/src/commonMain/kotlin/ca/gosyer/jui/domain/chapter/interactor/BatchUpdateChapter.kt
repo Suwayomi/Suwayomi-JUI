@@ -22,7 +22,7 @@ import kotlin.jvm.JvmName
 
 class BatchUpdateChapter @Inject constructor(
     private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners,
+    private val serverListeners: ServerListeners
 ) {
 
     @JvmName("awaitChapters")

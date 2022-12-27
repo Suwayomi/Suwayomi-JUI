@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 
 class RefreshManga @Inject constructor(
     private val mangaRepository: MangaRepository,
-    private val serverListeners: ServerListeners,
+    private val serverListeners: ServerListeners
 ) {
 
     suspend fun await(mangaId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId)
@@ -40,10 +40,8 @@ class RefreshManga @Inject constructor(
     fun asFlow(mangaId: Long) =
         mangaRepository.getManga(mangaId, true).onEach { serverListeners.updateManga(mangaId) }
 
-
     fun asFlow(manga: Manga) =
         mangaRepository.getManga(manga.id, true).onEach { serverListeners.updateManga(manga.id) }
-
 
     companion object {
         private val log = logging()
