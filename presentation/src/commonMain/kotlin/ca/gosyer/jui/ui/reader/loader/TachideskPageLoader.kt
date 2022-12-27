@@ -104,23 +104,25 @@ class TachideskPageLoader(
                                         }
                                         page.bitmap.value = StableHolder {
                                             chapterCache[page.cacheKey]?.use {
-                                                val decoder = bitmapDecoderFactory.create(
-                                                    SourceResult(
-                                                        ImageRequestBuilder().build(),
-                                                        it.source()
-                                                    ),
-                                                    Options()
-                                                )
-                                                if (decoder != null) {
-                                                    runCatching { decoder.decode() as DecodeImageResult }
-                                                        .mapCatching {
-                                                            ReaderPage.ImageDecodeState.Success(it.image.asImageBitmap())
-                                                        }
-                                                        .getOrElse {
-                                                            ReaderPage.ImageDecodeState.FailedToDecode(it)
-                                                        }
-                                                } else {
-                                                    ReaderPage.ImageDecodeState.UnknownDecoder
+                                                it.source().use { source ->
+                                                    val decoder = bitmapDecoderFactory.create(
+                                                        SourceResult(
+                                                            ImageRequestBuilder().build(),
+                                                            source
+                                                        ),
+                                                        Options()
+                                                    )
+                                                    if (decoder != null) {
+                                                        runCatching { decoder.decode() as DecodeImageResult }
+                                                            .mapCatching {
+                                                                ReaderPage.ImageDecodeState.Success(it.image.asImageBitmap())
+                                                            }
+                                                            .getOrElse {
+                                                                ReaderPage.ImageDecodeState.FailedToDecode(it)
+                                                            }
+                                                    } else {
+                                                        ReaderPage.ImageDecodeState.UnknownDecoder
+                                                    }
                                                 }
                                             } ?: ReaderPage.ImageDecodeState.FailedToGetSnapShot
                                         }
