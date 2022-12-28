@@ -52,6 +52,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -210,7 +211,8 @@ class ReaderMenuViewModel @Inject constructor(
             try {
                 _state.value = ReaderChapter.State.Wait
                 sendProgress()
-                initChapters(params.mangaId, prevChapter.chapter.index)
+                viewerChapters.movePrev()
+                initChapters(params.mangaId, prevChapter.chapter.index, fromMenuButton = true)
             } catch (e: Exception) {
                 log.warn(e) { "Error loading prev chapter" }
             }
@@ -223,7 +225,8 @@ class ReaderMenuViewModel @Inject constructor(
             try {
                 _state.value = ReaderChapter.State.Wait
                 sendProgress()
-                initChapters(params.mangaId, nextChapter.chapter.index)
+                viewerChapters.moveNext()
+                initChapters(params.mangaId, nextChapter.chapter.index, fromMenuButton = true)
             } catch (e: Exception) {
                 log.warn(e) { "Error loading next chapter" }
             }
@@ -243,17 +246,25 @@ class ReaderMenuViewModel @Inject constructor(
             .collect()
     }
 
-    private suspend fun initChapters(mangaId: Long, chapterIndex: Int) {
-        resetValues()
-        val chapter = ReaderChapter(
-            getChapter.asFlow(mangaId, chapterIndex)
-                .take(1)
-                .catch {
-                    _state.value = ReaderChapter.State.Error(it)
-                    log.warn(it) { "Error getting chapter" }
-                }
-                .singleOrNull() ?: return
-        )
+    private suspend fun initChapters(
+        mangaId: Long,
+        chapterIndex: Int,
+        fromMenuButton: Boolean = true,
+    ) {
+        //resetValues()
+        val chapter = if (viewerChapters.currChapter.value == null) {
+            ReaderChapter(
+                getChapter.asFlow(mangaId, chapterIndex)
+                    .take(1)
+                    .catch {
+                        _state.value = ReaderChapter.State.Error(it)
+                        log.warn(it) { "Error getting chapter" }
+                    }
+                    .singleOrNull() ?: return
+            )
+        } else {
+            viewerChapters.currChapter.value!!
+        }
         val pages = loader.loadChapter(chapter)
         viewerChapters.currChapter.value = chapter
 
@@ -266,22 +277,25 @@ class ReaderMenuViewModel @Inject constructor(
             }
             .single()
 
-        val nextChapter = chapters.find { it.index == chapterIndex + 1 }
-        if (nextChapter != null) {
-            viewerChapters.nextChapter.value = ReaderChapter(
-                nextChapter
-            )
+        if (viewerChapters.nextChapter.value == null) {
+            val nextChapter = chapters.find { it.index == chapterIndex + 1 }
+            if (nextChapter != null) {
+                viewerChapters.nextChapter.value = ReaderChapter(
+                    nextChapter
+                )
+            } else {
+                viewerChapters.nextChapter.value = null
+            }
         }
-        val prevChapter = chapters.find { it.index == chapterIndex - 1 }
-        if (prevChapter != null) {
-            viewerChapters.prevChapter.value = ReaderChapter(
-                prevChapter
-            )
-        }
-
-        val lastPageReadOffset = chapter.chapter.meta.juiPageOffset
-        if (lastPageReadOffset != 0) {
-            _currentPageOffset.value = lastPageReadOffset
+        if (viewerChapters.prevChapter.value == null) {
+            val prevChapter = chapters.find { it.index == chapterIndex - 1 }
+            if (prevChapter != null) {
+                viewerChapters.prevChapter.value = ReaderChapter(
+                    prevChapter
+                )
+            } else {
+                viewerChapters.prevChapter.value = null
+            }
         }
 
         chapter.stateObserver
@@ -295,17 +309,25 @@ class ReaderMenuViewModel @Inject constructor(
                 val prevSeparator = ReaderPageSeparator(viewerChapters.prevChapter.value, chapter)
                 val nextSeparator = ReaderPageSeparator(chapter, viewerChapters.nextChapter.value)
                 _pages.value = (_pages.value.ifEmpty { listOf(prevSeparator) } + pageList + nextSeparator).toImmutableList()
-                val lastPageRead = chapter.chapter.lastPageRead
-                _currentPage.value = if (lastPageRead != 0) {
-                    pageList[lastPageRead.coerceAtMost(pageList.lastIndex)]
-                } else {
-                    pageList.first()
-                }.also { chapter.pageLoader?.loadPage(it) }
+
+                if (fromMenuButton) {
+                    val lastPageReadOffset = chapter.chapter.meta.juiPageOffset
+                    if (lastPageReadOffset != 0) {
+                        _currentPageOffset.value = lastPageReadOffset
+                    }
+                    val lastPageRead = chapter.chapter.lastPageRead
+                    _currentPage.value = if (lastPageRead != 0) {
+                        pageList[lastPageRead.coerceAtMost(pageList.lastIndex)]
+                    } else {
+                        pageList.first()
+                    }.also { chapter.pageLoader?.loadPage(it) }
+                }
             }
             .launchIn(chapter.scope)
 
         _currentPage
             .filterIsInstance<ReaderPage>()
+            .filter { it.chapter.chapter.index == chapterIndex }
             .onEach { page ->
                 chapter.pageLoader?.loadPage(page)
                 if ((page.index + 1) >= chapter.chapter.pageCount!!) {

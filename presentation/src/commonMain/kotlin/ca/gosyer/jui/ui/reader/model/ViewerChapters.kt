@@ -21,4 +21,18 @@ data class ViewerChapters(
         prevChapter.value = null
         nextChapter.value = null
     }
+
+    fun movePrev() {
+        nextChapter.value?.recycle()
+        nextChapter.value = currChapter.value
+        currChapter.value = prevChapter.value
+        prevChapter.value = null
+    }
+
+    fun moveNext() {
+        prevChapter.value?.recycle()
+        prevChapter.value = currChapter.value
+        currChapter.value = nextChapter.value
+        nextChapter.value = null
+    }
 }
