@@ -56,6 +56,7 @@ import ca.gosyer.jui.domain.manga.model.MangaMeta
 import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
+import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.uicore.components.AroundLayout
 import ca.gosyer.jui.uicore.components.Spinner
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -67,7 +68,8 @@ import kotlin.math.roundToInt
 @Composable
 fun ReaderSideMenu(
     chapter: ReaderChapter,
-    currentPage: Int,
+    pages: ImmutableList<ReaderItem>,
+    currentPage: ReaderItem?,
     readerModes: ImmutableList<String>,
     selectedMode: String,
     onNewPageClicked: (Int) -> Unit,
@@ -86,6 +88,7 @@ fun ReaderSideMenu(
                 onSetReaderMode = onSetReaderMode
             )
             ReaderProgressSlider(
+                pages = pages,
                 currentPage = currentPage,
                 pageCount = pageCount,
                 onNewPageClicked = onNewPageClicked,
@@ -106,7 +109,8 @@ fun ReaderExpandBottomMenu(
     chapter: ReaderChapter,
     nextChapter: ReaderChapter?,
     direction: Direction,
-    currentPage: Int,
+    pages: ImmutableList<ReaderItem>,
+    currentPage: ReaderItem?,
     navigate: (Int) -> Unit,
     readerMenuOpen: Boolean,
     movePrevChapter: () -> Unit,
@@ -170,7 +174,7 @@ fun ReaderExpandBottomMenu(
                     startLayout = {
                         Box(Modifier.fillMaxHeight().width(32.dp), contentAlignment = Alignment.Center) {
                             val text = if (!isRtL) {
-                                currentPage
+                                pages.indexOf(currentPage)
                             } else {
                                 chapter.chapter.pageCount!!
                             }.toString()
@@ -180,7 +184,7 @@ fun ReaderExpandBottomMenu(
                     endLayout = {
                         Box(Modifier.fillMaxHeight().width(32.dp), contentAlignment = Alignment.Center) {
                             val text = if (isRtL) {
-                                currentPage
+                                pages.indexOf(currentPage)
                             } else {
                                 chapter.chapter.pageCount!!
                             }.toString()
@@ -192,6 +196,7 @@ fun ReaderExpandBottomMenu(
                         modifier = Modifier.fillMaxWidth()
                             .padding(paddingValues)
                             .padding(horizontal = 4.dp),
+                        pages = pages,
                         currentPage = currentPage,
                         pageCount = chapter.chapter.pageCount!!,
                         onNewPageClicked = navigate,
@@ -253,13 +258,14 @@ private fun ReaderMenuToolbar(onCloseSideMenuClicked: () -> Unit) {
 @Composable
 private fun ReaderProgressSlider(
     modifier: Modifier = Modifier,
-    currentPage: Int,
+    pages: ImmutableList<ReaderItem>,
+    currentPage: ReaderItem?,
     pageCount: Int,
     onNewPageClicked: (Int) -> Unit,
     isRtL: Boolean
 ) {
     val animatedProgress by animateFloatAsState(
-        targetValue = currentPage.toFloat(),
+        targetValue = pages.indexOf(currentPage).toFloat(),
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     )
     var isValueChanging by remember { mutableStateOf(false) }

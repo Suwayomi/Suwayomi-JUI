@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.mapNotNull
 
 @Composable
 fun ContinuousReader(
@@ -57,17 +58,17 @@ fun ContinuousReader(
     direction: Direction,
     maxSize: Int,
     padding: Int,
-    currentPage: Int,
+    currentPage: ReaderItem?,
     currentPageOffset: Int,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
     pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
-    progress: (Int) -> Unit,
+    progress: (ReaderItem) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit
 ) {
     BoxWithConstraints(modifier then Modifier.fillMaxSize()) {
-        val state = rememberLazyListState(currentPage, currentPageOffset)
+        val state = rememberLazyListState(pages.indexOf(currentPage).coerceAtLeast(1), currentPageOffset)
         val density = LocalDensity.current
         LaunchedEffect(Unit) {
             pageEmitterHolder.item
@@ -87,8 +88,8 @@ fun ContinuousReader(
                             Unit
                         }
                         is PageMove.Page -> {
-                            val (pageNumber) = pageMove
-                            if (pageNumber in 0..pages.size) {
+                            val pageNumber = pages.indexOf(pageMove.page)
+                            if (pageNumber > -1) {
                                 state.animateScrollToItem(pageNumber)
                             }
                         }
@@ -104,6 +105,7 @@ fun ContinuousReader(
         LaunchedEffect(state) {
             snapshotFlow { state.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                 .filterNotNull()
+                .mapNotNull { pages.getOrNull(it) }
                 .collect(progress)
         }
 

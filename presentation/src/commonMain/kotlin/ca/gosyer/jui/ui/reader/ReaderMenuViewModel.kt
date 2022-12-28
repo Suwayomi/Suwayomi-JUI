@@ -95,7 +95,7 @@ class ReaderMenuViewModel @Inject constructor(
     private val _pages = MutableStateFlow<ImmutableList<ReaderItem>>(persistentListOf())
     val pages = _pages.asStateFlow()
 
-    private val _currentPage = MutableStateFlow(1)
+    private val _currentPage = MutableStateFlow<ReaderItem?>(null)
     val currentPage = _currentPage.asStateFlow()
 
     private val _currentPageOffset = MutableStateFlow(1)
@@ -163,7 +163,7 @@ class ReaderMenuViewModel @Inject constructor(
                 }
             }
             if (moveTo != null) {
-                _pageEmitter.emit(PageMove.Direction(moveTo, currentPage.value))
+                _pageEmitter.emit(PageMove.Direction(moveTo))
             }
         }
     }
@@ -171,24 +171,24 @@ class ReaderMenuViewModel @Inject constructor(
     fun navigate(page: Int) {
         log.info { "Navigate to $page" }
         scope.launch {
-            _pageEmitter.emit(PageMove.Page(page))
+            _pageEmitter.emit(PageMove.Page(pages.value.getOrNull(page) ?: return@launch))
         }
     }
 
-    fun progress(index: Int) {
-        log.info { "Progressed to $index" }
-        _currentPage.value = index
+    fun progress(page: ReaderItem) {
+        log.info { "Progressed to $page" }
+        _currentPage.value = page
     }
 
     fun retry(page: ReaderPage) {
-        log.info { "Retrying $page" }
+        log.info { "Retrying ${page.index}" }
         chapter.value?.pageLoader?.retryPage(page)
     }
 
     private fun resetValues() {
         viewerChapters.recycle()
         _pages.value = persistentListOf()
-        _currentPage.value = 1
+        _currentPage.value = null
     }
 
     fun setMangaReaderMode(mode: String) {
@@ -279,11 +279,6 @@ class ReaderMenuViewModel @Inject constructor(
             )
         }
 
-        val lastPageRead = chapter.chapter.lastPageRead
-        if (lastPageRead != 0) {
-            _currentPage.value = lastPageRead.coerceAtMost(chapter.chapter.pageCount!!)
-        }
-
         val lastPageReadOffset = chapter.chapter.meta.juiPageOffset
         if (lastPageReadOffset != 0) {
             _currentPageOffset.value = lastPageReadOffset
@@ -300,14 +295,20 @@ class ReaderMenuViewModel @Inject constructor(
                 val prevSeparator = ReaderPageSeparator(viewerChapters.prevChapter.value, chapter)
                 val nextSeparator = ReaderPageSeparator(chapter, viewerChapters.nextChapter.value)
                 _pages.value = (_pages.value.ifEmpty { listOf(prevSeparator) } + pageList + nextSeparator).toImmutableList()
-                pageList.getOrNull(_currentPage.value - 1)?.let { chapter.pageLoader?.loadPage(it) }
+                val lastPageRead = chapter.chapter.lastPageRead
+                _currentPage.value = if (lastPageRead != 0) {
+                    pageList[lastPageRead.coerceAtMost(pageList.lastIndex)]
+                } else {
+                    pageList.first()
+                }.also { chapter.pageLoader?.loadPage(it) }
             }
             .launchIn(chapter.scope)
 
         _currentPage
-            .onEach { index ->
-                (_pages.value.getOrNull(_currentPage.value - 1) as? ReaderPage)?.let { chapter.pageLoader?.loadPage(it) }
-                if (index == _pages.value.lastIndex) {
+            .filterIsInstance<ReaderPage>()
+            .onEach { page ->
+                chapter.pageLoader?.loadPage(page)
+                if ((page.index + 1) >= chapter.chapter.pageCount!!) {
                     markChapterRead(chapter)
                 }
             }
@@ -315,14 +316,25 @@ class ReaderMenuViewModel @Inject constructor(
     }
 
     private fun markChapterRead(chapter: ReaderChapter) {
-        scope.launch { updateChapterRead.await(chapter.chapter, read = true, onError = { toast(it.message.orEmpty()) }) }
+        scope.launch {
+            updateChapterRead.await(chapter.chapter, read = true, onError = { toast(it.message.orEmpty()) })
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun sendProgress(chapter: Chapter? = this.chapter.value?.chapter, lastPageRead: Int = currentPage.value) {
+    fun sendProgress(
+        chapter: Chapter? = this.chapter.value?.chapter,
+        lastPageRead: Int = (currentPage.value as? ReaderPage)?.index ?: 0
+    ) {
         chapter ?: return
         if (chapter.read) return
-        GlobalScope.launch { updateChapterLastPageRead.await(chapter, lastPageRead = lastPageRead, onError = { toast(it.message.orEmpty()) }) }
+        GlobalScope.launch {
+            updateChapterLastPageRead.await(
+                chapter,
+                lastPageRead = lastPageRead,
+                onError = { toast(it.message.orEmpty()) }
+            )
+        }
     }
 
     fun updateLastPageReadOffset(offset: Int) {
@@ -331,7 +343,9 @@ class ReaderMenuViewModel @Inject constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun updateLastPageReadOffset(chapter: Chapter, offset: Int) {
-        GlobalScope.launch { updateChapterMeta.await(chapter, offset, onError = { toast(it.message.orEmpty()) }) }
+        GlobalScope.launch {
+            updateChapterMeta.await(chapter, offset, onError = { toast(it.message.orEmpty()) })
+        }
     }
 
     override fun onDispose() {
