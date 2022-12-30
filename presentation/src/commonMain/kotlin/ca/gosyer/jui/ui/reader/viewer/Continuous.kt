@@ -201,6 +201,7 @@ private fun LazyListScope.items(
                 ReaderImage(
                     imageIndex = image.index,
                     drawableHolder = image.bitmap.collectAsState().value,
+                    bitmapInfo = image.bitmapInfo.collectAsState().value,
                     progress = image.progress.collectAsState().value,
                     status = image.status.collectAsState().value,
                     error = image.error.collectAsState().value,
