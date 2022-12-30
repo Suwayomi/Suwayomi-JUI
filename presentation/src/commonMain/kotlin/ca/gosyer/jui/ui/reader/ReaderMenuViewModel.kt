@@ -43,7 +43,9 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -252,51 +254,51 @@ class ReaderMenuViewModel @Inject constructor(
         fromMenuButton: Boolean = true,
     ) {
         //resetValues()
-        val chapter = if (viewerChapters.currChapter.value == null) {
-            ReaderChapter(
-                getChapter.asFlow(mangaId, chapterIndex)
+        val (chapter, pages) = coroutineScope {
+            val getCurrentChapter = async {
+                val chapter = getReaderChapter(chapterIndex) ?: return@async null
+                val pages = loader.loadChapter(chapter)
+                viewerChapters.currChapter.value = chapter
+                chapter to pages
+            }
+
+            val getAdjacentChapters = async {
+                val chapters = getChapters.asFlow(mangaId)
                     .take(1)
                     .catch {
-                        _state.value = ReaderChapter.State.Error(it)
-                        log.warn(it) { "Error getting chapter" }
+                        log.warn(it) { "Error getting chapter list" }
+                        // TODO: 2022-07-01 Error toast
+                        emit(emptyList())
                     }
-                    .singleOrNull() ?: return
-            )
-        } else {
-            viewerChapters.currChapter.value!!
-        }
-        val pages = loader.loadChapter(chapter)
-        viewerChapters.currChapter.value = chapter
+                    .single()
 
-        val chapters = getChapters.asFlow(mangaId)
-            .take(1)
-            .catch {
-                log.warn(it) { "Error getting chapter list" }
-                // TODO: 2022-07-01 Error toast
-                emit(emptyList())
+                val nextChapter = async {
+                    if (viewerChapters.nextChapter.value == null) {
+                        val nextChapter = chapters.find { it.index == chapterIndex + 1 }
+                        if (nextChapter != null) {
+                            viewerChapters.nextChapter.value = getReaderChapter(nextChapter.index)
+                        } else {
+                            viewerChapters.nextChapter.value = null
+                        }
+                    }
+                }
+                val prevChapter = async {
+                    if (viewerChapters.prevChapter.value == null) {
+                        val prevChapter = chapters.find { it.index == chapterIndex - 1 }
+                        if (prevChapter != null) {
+                            viewerChapters.prevChapter.value = getReaderChapter(prevChapter.index)
+                        } else {
+                            viewerChapters.prevChapter.value = null
+                        }
+                    }
+                }
+                nextChapter.await()
+                prevChapter.await()
             }
-            .single()
 
-        if (viewerChapters.nextChapter.value == null) {
-            val nextChapter = chapters.find { it.index == chapterIndex + 1 }
-            if (nextChapter != null) {
-                viewerChapters.nextChapter.value = ReaderChapter(
-                    nextChapter
-                )
-            } else {
-                viewerChapters.nextChapter.value = null
-            }
-        }
-        if (viewerChapters.prevChapter.value == null) {
-            val prevChapter = chapters.find { it.index == chapterIndex - 1 }
-            if (prevChapter != null) {
-                viewerChapters.prevChapter.value = ReaderChapter(
-                    prevChapter
-                )
-            } else {
-                viewerChapters.prevChapter.value = null
-            }
-        }
+            getAdjacentChapters.await()
+            getCurrentChapter.await()
+        } ?: return
 
         chapter.stateObserver
             .onEach {
@@ -308,7 +310,7 @@ class ReaderMenuViewModel @Inject constructor(
             .onEach { (pageList) ->
                 val prevSeparator = ReaderPageSeparator(viewerChapters.prevChapter.value, chapter)
                 val nextSeparator = ReaderPageSeparator(chapter, viewerChapters.nextChapter.value)
-                _pages.value = (_pages.value.ifEmpty { listOf(prevSeparator) } + pageList + nextSeparator).toImmutableList()
+                _pages.value = (listOf(prevSeparator) + pageList + nextSeparator).toImmutableList()
 
                 if (fromMenuButton) {
                     val lastPageReadOffset = chapter.chapter.meta.juiPageOffset
@@ -335,6 +337,18 @@ class ReaderMenuViewModel @Inject constructor(
                 }
             }
             .launchIn(chapter.scope)
+    }
+
+    private suspend fun getReaderChapter(chapterIndex: Int): ReaderChapter? {
+        return ReaderChapter(
+            getChapter.asFlow(params.mangaId, chapterIndex)
+                .take(1)
+                .catch {
+                    _state.value = ReaderChapter.State.Error(it)
+                    log.warn(it) { "Error getting chapter $chapterIndex" }
+                }
+                .singleOrNull() ?: return null
+        )
     }
 
     private fun markChapterRead(chapter: ReaderChapter) {
