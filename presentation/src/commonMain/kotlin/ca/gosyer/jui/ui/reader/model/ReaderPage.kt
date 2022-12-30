@@ -8,6 +8,7 @@ package ca.gosyer.jui.ui.reader.model
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.unit.IntSize
 import ca.gosyer.jui.ui.base.model.StableHolder
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 data class ReaderPage(
     val index: Int,
     val bitmap: MutableStateFlow<StableHolder<(suspend () -> ImageDecodeState)?>>,
+    val bitmapInfo: MutableStateFlow<BitmapInfo?>,
     val progress: MutableStateFlow<Float>,
     val status: MutableStateFlow<Status>,
     val error: MutableStateFlow<String?>,
@@ -26,6 +28,9 @@ data class ReaderPage(
         READY,
         ERROR
     }
+
+    @Immutable
+    data class BitmapInfo(val size: IntSize)
 
     @Immutable
     sealed class ImageDecodeState {

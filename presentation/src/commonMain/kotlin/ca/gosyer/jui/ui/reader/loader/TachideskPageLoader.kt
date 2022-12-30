@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.reader.loader
 
+import androidx.compose.ui.unit.IntSize
 import ca.gosyer.jui.core.io.SYSTEM
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.PriorityChannel
@@ -115,7 +116,13 @@ class TachideskPageLoader(
                                                     if (decoder != null) {
                                                         runCatching { decoder.decode() as DecodeImageResult }
                                                             .mapCatching {
-                                                                ReaderPage.ImageDecodeState.Success(it.image.asImageBitmap())
+                                                                ReaderPage.ImageDecodeState.Success(
+                                                                    it.image.asImageBitmap().also {
+                                                                        page.bitmapInfo.value = ReaderPage.BitmapInfo(
+                                                                            IntSize(it.width, it.height)
+                                                                        )
+                                                                    }
+                                                                )
                                                             }
                                                             .getOrElse {
                                                                 ReaderPage.ImageDecodeState.FailedToDecode(it)
@@ -184,6 +191,7 @@ class TachideskPageLoader(
                         ReaderPage(
                             index = it,
                             bitmap = MutableStateFlow(StableHolder(null)),
+                            bitmapInfo = MutableStateFlow(null),
                             progress = MutableStateFlow(0.0F),
                             status = MutableStateFlow(ReaderPage.Status.QUEUE),
                             error = MutableStateFlow(null),

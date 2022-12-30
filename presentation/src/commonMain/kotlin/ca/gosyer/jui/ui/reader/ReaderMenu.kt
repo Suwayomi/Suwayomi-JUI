@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Icon
@@ -51,6 +52,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.domain.reader.model.Direction
@@ -502,6 +504,7 @@ fun SideMenuButton(sideMenuOpen: Boolean, onOpenSideMenuClicked: () -> Unit) {
 fun ReaderImage(
     imageIndex: Int,
     drawableHolder: StableHolder<(suspend () -> ReaderPage.ImageDecodeState)?>,
+    bitmapInfo: ReaderPage.BitmapInfo?,
     progress: Float,
     status: ReaderPage.Status,
     error: String?,
@@ -531,7 +534,13 @@ fun ReaderImage(
         } else {
             LoadingScreen(
                 status == ReaderPage.Status.QUEUE || status == ReaderPage.Status.WORKING,
-                loadingModifier,
+                loadingModifier.let { modifier ->
+                    if (bitmapInfo != null) {
+                        modifier.heightIn(min = with(LocalDensity.current) { bitmapInfo.size.height.toDp() })
+                    } else {
+                        modifier
+                    }
+                },
                 progress,
                 error ?: when (decode) {
                     is ReaderPage.ImageDecodeState.FailedToDecode -> decode.exception.message
