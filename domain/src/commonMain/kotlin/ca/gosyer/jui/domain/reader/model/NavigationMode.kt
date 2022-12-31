@@ -15,6 +15,7 @@ import kotlinx.serialization.Transient
 @Serializable
 @Stable
 enum class NavigationMode(@Transient val res: StringResource) {
+    Disabled(MR.strings.disabled),
     LNavigation(MR.strings.nav_l_shaped),
     KindlishNavigation(MR.strings.nav_kindle_ish),
     EdgeNavigation(MR.strings.nav_edge),

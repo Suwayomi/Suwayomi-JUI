@@ -16,6 +16,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -245,7 +247,7 @@ fun WideReaderMenu(
     imageScale: ImageScale,
     fitSize: Boolean,
     maxSize: Int,
-    navigationViewer: ViewerNavigation,
+    navigationViewer: ViewerNavigation?,
     currentPage: ReaderItem?,
     currentPageOffset: Int,
     navigate: (Int) -> Unit,
@@ -327,7 +329,7 @@ fun ThinReaderMenu(
     imageScale: ImageScale,
     fitSize: Boolean,
     maxSize: Int,
-    navigationViewer: ViewerNavigation,
+    navigationViewer: ViewerNavigation?,
     currentPage: ReaderItem?,
     currentPageOffset: Int,
     navigate: (Int) -> Unit,
@@ -430,7 +432,7 @@ fun ReaderLayout(
     imageScale: ImageScale,
     fitSize: Boolean,
     maxSize: Int,
-    navigationViewer: ViewerNavigation,
+    navigationViewer: ViewerNavigation?,
     currentPage: ReaderItem?,
     currentPageOffset: Int,
     navigateTap: (Navigation) -> Unit,
@@ -443,10 +445,20 @@ fun ReaderLayout(
         .fillMaxWidth()
         .aspectRatio(mangaAspectRatio)
     val readerModifier = Modifier
-        .navigationClickable(
-            navigation = navigationViewer,
-            onClick = navigateTap
-        )
+        .let {
+            if (navigationViewer != null) {
+                it.navigationClickable(
+                    navigation = navigationViewer,
+                    onClick = navigateTap
+                )
+            } else {
+                it.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { navigateTap(Navigation.MENU) }
+            }
+        }
+
 
     if (continuous) {
         ContinuousReader(
@@ -578,6 +590,7 @@ fun ChapterSeparator(
 }
 
 fun NavigationMode.toNavigation() = when (this) {
+    NavigationMode.Disabled -> null
     NavigationMode.RightAndLeftNavigation -> RightAndLeftNavigation()
     NavigationMode.KindlishNavigation -> KindlishNavigation()
     NavigationMode.LNavigation -> LNavigation()

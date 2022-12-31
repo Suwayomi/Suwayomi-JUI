@@ -278,6 +278,7 @@
     <string name="nav_kindle_ish">Kindle-ish</string>
     <string name="nav_edge">Edge</string>
     <string name="nav_left_right">Right and left</string>
+    <string name="disabled">Disabled</string>
 
     <!-- Server Settings -->
     <string name="host_server">Host server inside Tachidesk-JUI</string>
