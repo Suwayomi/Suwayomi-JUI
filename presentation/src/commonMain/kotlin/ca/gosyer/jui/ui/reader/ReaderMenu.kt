@@ -154,12 +154,10 @@ fun ReaderMenu(
             .onKeyEvent {
                 if (it.type != KeyEventType.KeyDown) return@onKeyEvent false
                 when (it.key) {
-                    Key.W, Key.DirectionUp -> vm.navigate(Navigation.PREV)
-                    Key.S, Key.DirectionDown -> vm.navigate(Navigation.NEXT)
+                    Key.W, Key.DirectionUp, Key.VolumeUp -> vm.navigate(Navigation.UP)
+                    Key.S, Key.DirectionDown, Key.VolumeDown -> vm.navigate(Navigation.DOWN)
                     Key.A, Key.DirectionLeft -> vm.navigate(Navigation.LEFT)
                     Key.D, Key.DirectionRight -> vm.navigate(Navigation.RIGHT)
-                    Key.VolumeDown -> vm.navigate(Navigation.DOWN)
-                    Key.VolumeUp -> vm.navigate(Navigation.UP)
                     Key.Spacebar -> vm.navigate(Navigation.NEXT)
                     else -> false
                 }
