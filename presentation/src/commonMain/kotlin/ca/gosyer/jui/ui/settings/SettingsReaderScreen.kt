@@ -242,7 +242,7 @@ fun SettingsReaderScreenContent(
                                     stringResource(MR.strings.page_padding)
                                 )
                                 val direction by it.direction.collectAsState()
-                                val (title, subtitle) = if (direction == Direction.Up || direction == Direction.Down) {
+                                val (title, subtitle) = if (direction.isVertical) {
                                     stringResource(MR.strings.force_fit_width) to stringResource(MR.strings.force_fit_width_sub)
                                 } else {
                                     stringResource(MR.strings.force_fit_height) to stringResource(MR.strings.force_fit_height_sub)
@@ -253,7 +253,7 @@ fun SettingsReaderScreenContent(
                                     subtitle
                                 )
                                 val maxSize by it.maxSize.collectAsState()
-                                val (maxSizeTitle, maxSizeSubtitle) = if (direction == Direction.Up || direction == Direction.Down) {
+                                val (maxSizeTitle, maxSizeSubtitle) = if (direction.isVertical) {
                                     stringResource(MR.strings.max_width) to stringResource(
                                         MR.strings.max_width_sub,
                                         maxSize

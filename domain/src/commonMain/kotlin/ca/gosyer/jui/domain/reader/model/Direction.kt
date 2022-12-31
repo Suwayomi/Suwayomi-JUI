@@ -18,5 +18,8 @@ enum class Direction(@Transient val res: StringResource) {
     Down(MR.strings.dir_down),
     Left(MR.strings.dir_rtl),
     Right(MR.strings.dir_ltr),
-    Up(MR.strings.dir_up)
+    Up(MR.strings.dir_up);
+
+    val isVertical
+        get() = this == Down || this == Up
 }

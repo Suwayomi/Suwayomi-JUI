@@ -471,7 +471,7 @@ fun ReaderLayout(
             currentPageOffset = currentPageOffset,
             loadingModifier = loadingModifier,
             pageContentScale = if (fitSize) {
-                if (direction == Direction.Up || direction == Direction.Down) {
+                if (direction.isVertical) {
                     ContentScale.FillWidth
                 } else {
                     ContentScale.FillHeight

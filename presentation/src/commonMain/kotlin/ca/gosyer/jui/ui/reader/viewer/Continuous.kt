@@ -110,9 +110,9 @@ fun ContinuousReader(
         }
 
         val imageModifier = if (maxSize != 0) {
-            when (direction) {
-                Direction.Up, Direction.Down -> Modifier.width(maxSize.dp)
-                Direction.Left, Direction.Right -> Modifier.height(maxSize.dp)
+            when (direction.isVertical) {
+                true -> Modifier.width(maxSize.dp)
+                false -> Modifier.height(maxSize.dp)
             }
         } else {
             Modifier
@@ -125,8 +125,8 @@ fun ContinuousReader(
         }
         fun retry(index: Int) { pages.find { it is ReaderPage && it.index == index }?.let { retry(it as ReaderPage) } }
 
-        when (direction) {
-            Direction.Down, Direction.Up -> {
+        when (direction.isVertical) {
+            true -> {
                 LazyColumn(
                     state = state,
                     reverseLayout = direction == Direction.Up,
@@ -151,7 +151,7 @@ fun ContinuousReader(
                     reverseLayout = direction == Direction.Up
                 )
             }
-            Direction.Left, Direction.Right -> {
+            false -> {
                 LazyRow(
                     state = state,
                     reverseLayout = direction == Direction.Left,
