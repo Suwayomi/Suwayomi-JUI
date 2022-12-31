@@ -50,7 +50,7 @@ actual class ReaderLauncher {
                             onCloseRequest = ::exitApplication,
                             title = "${BuildKonfig.NAME} - Reader",
                             icon = icon,
-                            state = windowState,
+                            state = windowState
                         ) {
                             ReaderMenu(
                                 chapterIndex = chapterIndex,

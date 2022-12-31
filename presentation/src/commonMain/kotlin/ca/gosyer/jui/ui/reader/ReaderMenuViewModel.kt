@@ -261,9 +261,9 @@ class ReaderMenuViewModel @Inject constructor(
     private suspend fun initChapters(
         mangaId: Long,
         chapterIndex: Int,
-        fromMenuButton: Boolean = true,
+        fromMenuButton: Boolean = true
     ) {
-        //resetValues()
+        // resetValues()
         val (chapter, pages) = coroutineScope {
             val getCurrentChapter = async {
                 val chapter = getReaderChapter(chapterIndex) ?: return@async null

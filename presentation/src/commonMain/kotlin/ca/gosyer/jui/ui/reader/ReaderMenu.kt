@@ -163,7 +163,7 @@ fun ReaderMenu(
                     Key.Spacebar -> vm.navigate(Navigation.NEXT)
                     else -> false
                 }
-        }
+            }
     ) {
         Crossfade(state to chapter) { (state, chapter) ->
             if (state is ReaderChapter.State.Loaded && chapter != null) {
@@ -239,7 +239,6 @@ fun ReaderMenu(
             }
         }
     }
-
 
     LaunchedEffect(hasFocus) {
         if (!hasFocus) {
@@ -471,7 +470,6 @@ fun ReaderLayout(
                 ) { navigateTap(Navigation.MENU) }
             }
         }
-
 
     if (continuous) {
         ContinuousReader(
