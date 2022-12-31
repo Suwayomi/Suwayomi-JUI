@@ -41,7 +41,7 @@ data class Manga(
     val unreadCount: Int?,
     val downloadCount: Int?,
     val chapterCount: Int?,
-    val lastChapterRead: Chapter?,
+    val lastChapterRead: Chapter? = null,
     val age: Long?,
     val chaptersAge: Long?
 )
