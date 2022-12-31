@@ -34,7 +34,6 @@ import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.reader.model.ReaderPageSeparator
 import ca.gosyer.jui.ui.reader.model.ViewerChapters
-import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import io.ktor.http.decodeURLQueryComponent
@@ -60,7 +59,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
@@ -111,7 +109,8 @@ class ReaderMenuViewModel @Inject constructor(
     private val _pageEmitter = MutableSharedFlow<PageMove>()
     val pageEmitter = StableHolder(_pageEmitter.asSharedFlow())
 
-    val readerModes = readerPreferences.modes().asStateIn(scope)
+    val readerModes = readerPreferences.modes()
+        .getAsFlow()
         .map { it.toImmutableList() }
         .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
     val readerMode = combine(readerPreferences.mode().getAsFlow(), _manga) { mode, manga ->
@@ -265,14 +264,10 @@ class ReaderMenuViewModel @Inject constructor(
             }
 
             val getAdjacentChapters = async {
-                val chapters = getChapters.asFlow(mangaId)
-                    .take(1)
-                    .catch {
-                        log.warn(it) { "Error getting chapter list" }
-                        // TODO: 2022-07-01 Error toast
-                        emit(emptyList())
-                    }
-                    .single()
+                val chapters = getChapters.await(
+                    mangaId,
+                    onError = { /* TODO: 2022-07-01 Error toast */ }
+                ).orEmpty()
 
                 val nextChapter = async {
                     if (viewerChapters.nextChapter.value == null) {
@@ -320,7 +315,7 @@ class ReaderMenuViewModel @Inject constructor(
                         _currentPageOffset.value = lastPageReadOffset
                     }
                     val lastPageRead = chapter.chapter.lastPageRead
-                    _currentPage.value = if (lastPageRead != 0) {
+                    _currentPage.value = if (lastPageRead > 0) {
                         pageList[lastPageRead.coerceAtMost(pageList.lastIndex)]
                     } else {
                         pageList.first()
