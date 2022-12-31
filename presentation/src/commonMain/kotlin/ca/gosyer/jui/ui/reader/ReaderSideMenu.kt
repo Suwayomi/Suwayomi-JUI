@@ -41,7 +41,6 @@ import androidx.compose.material.icons.rounded.NavigateNext
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +62,7 @@ import ca.gosyer.jui.uicore.resources.stringResource
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.plus
+import kotlinx.collections.immutable.toPersistentList
 import kotlin.math.roundToInt
 
 @Composable
@@ -221,10 +221,10 @@ fun ReaderSheet(
 
 @Composable
 fun ReaderModeSetting(readerModes: ImmutableList<String>, selectedMode: String, onSetReaderMode: (String) -> Unit) {
-    val modes by derivedStateOf { persistentListOf(MangaMeta.DEFAULT_READER_MODE) + readerModes }
+    val modes = remember { persistentListOf(MangaMeta.DEFAULT_READER_MODE) + readerModes }
     val defaultModeString = stringResource(MR.strings.default_reader_mode)
-    val displayModes by derivedStateOf { modes.replace(0, defaultModeString) }
-    val selectedModeIndex by derivedStateOf { modes.indexOf(selectedMode) }
+    val displayModes = remember { modes.replace(0, defaultModeString).toPersistentList() }
+    val selectedModeIndex = remember(selectedMode) { modes.indexOf(selectedMode) }
     Row(
         Modifier.fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp)

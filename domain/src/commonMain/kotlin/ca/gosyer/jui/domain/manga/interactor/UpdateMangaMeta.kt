@@ -9,6 +9,7 @@ package ca.gosyer.jui.domain.manga.interactor
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.manga.service.MangaRepository
+import io.ktor.http.encodeURLQueryComponent
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -35,7 +36,7 @@ class UpdateMangaMeta @Inject constructor(
         manga: Manga,
         readerMode: String = manga.meta.juiReaderMode
     ) = flow {
-        if (readerMode != manga.meta.juiReaderMode) {
+        if (readerMode.encodeURLQueryComponent() != manga.meta.juiReaderMode.encodeURLQueryComponent()) {
             mangaRepository.updateMangaMeta(
                 manga.id,
                 "juiReaderMode",

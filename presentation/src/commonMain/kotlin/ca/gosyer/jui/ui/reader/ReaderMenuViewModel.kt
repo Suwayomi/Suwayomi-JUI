@@ -37,6 +37,7 @@ import ca.gosyer.jui.ui.reader.model.ViewerChapters
 import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import io.ktor.http.decodeURLQueryComponent
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -114,12 +115,13 @@ class ReaderMenuViewModel @Inject constructor(
         .map { it.toImmutableList() }
         .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
     val readerMode = combine(readerPreferences.mode().getAsFlow(), _manga) { mode, manga ->
+        val mangaMode = manga?.meta?.juiReaderMode?.decodeURLQueryComponent()
         if (
-            manga != null &&
-            manga.meta.juiReaderMode != MangaMeta.DEFAULT_READER_MODE &&
-            manga.meta.juiReaderMode in readerModes.value
+            mangaMode != null &&
+            mangaMode != MangaMeta.DEFAULT_READER_MODE &&
+            mangaMode in readerModes.value
         ) {
-            manga.meta.juiReaderMode
+            mangaMode
         } else {
             mode
         }
