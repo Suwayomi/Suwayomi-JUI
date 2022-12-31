@@ -17,6 +17,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -44,15 +45,22 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -86,19 +94,7 @@ import ca.gosyer.jui.uicore.resources.stringResource
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
-val supportedKeyList = listOf(
-    Key.W,
-    Key.DirectionUp,
-    Key.S,
-    Key.DirectionDown,
-    Key.A,
-    Key.DirectionLeft,
-    Key.D,
-    Key.DirectionRight
-)
 
 expect class ReaderLauncher {
     fun launch(
@@ -117,7 +113,6 @@ expect fun rememberReaderLauncher(): ReaderLauncher
 fun ReaderMenu(
     chapterIndex: Int,
     mangaId: Long,
-    hotkeyFlowHolder: StableHolder<SharedFlow<KeyEvent>>,
     onCloseRequest: () -> Unit
 ) {
     val viewModels = LocalViewModels.current
@@ -147,18 +142,29 @@ fun ReaderMenu(
     val currentPageOffset by vm.currentPageOffset.collectAsState()
     val readerSettingsMenuOpen by vm.readerSettingsMenuOpen.collectAsState()
 
-    LaunchedEffect(hotkeyFlowHolder) {
-        hotkeyFlowHolder.item.collectLatest {
-            when (it.key) {
-                Key.W, Key.DirectionUp -> vm.navigate(Navigation.PREV)
-                Key.S, Key.DirectionDown -> vm.navigate(Navigation.NEXT)
-                Key.A, Key.DirectionLeft -> vm.navigate(Navigation.LEFT)
-                Key.D, Key.DirectionRight -> vm.navigate(Navigation.RIGHT)
+    val focusRequester = remember { FocusRequester() }
+    var hasFocus by remember { mutableStateOf(false) }
+    Surface(
+        Modifier
+            .focusRequester(focusRequester)
+            .onFocusChanged {
+                hasFocus = it.hasFocus
             }
+            .focusable()
+            .onKeyEvent {
+                if (it.type != KeyEventType.KeyDown) return@onKeyEvent false
+                when (it.key) {
+                    Key.W, Key.DirectionUp -> vm.navigate(Navigation.PREV)
+                    Key.S, Key.DirectionDown -> vm.navigate(Navigation.NEXT)
+                    Key.A, Key.DirectionLeft -> vm.navigate(Navigation.LEFT)
+                    Key.D, Key.DirectionRight -> vm.navigate(Navigation.RIGHT)
+                    Key.VolumeDown -> vm.navigate(Navigation.DOWN)
+                    Key.VolumeUp -> vm.navigate(Navigation.UP)
+                    Key.Spacebar -> vm.navigate(Navigation.NEXT)
+                    else -> false
+                }
         }
-    }
-
-    Surface {
+    ) {
         Crossfade(state to chapter) { (state, chapter) ->
             if (state is ReaderChapter.State.Loaded && chapter != null) {
                 if (pages.isNotEmpty()) {
@@ -231,6 +237,13 @@ fun ReaderMenu(
                     retry = vm::init
                 )
             }
+        }
+    }
+
+
+    LaunchedEffect(hasFocus) {
+        if (!hasFocus) {
+            focusRequester.requestFocus()
         }
     }
 }

@@ -13,24 +13,15 @@ import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.input.key.KeyEvent
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import ca.gosyer.jui.presentation.build.BuildKonfig
-import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.util.lang.launchApplication
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
 
 actual class ReaderLauncher {
 
@@ -50,9 +41,6 @@ actual class ReaderLauncher {
         DisposableEffect(isOpen) {
             isOpen?.let { (chapterIndex, mangaId) ->
                 launchApplication {
-                    val scope = rememberCoroutineScope()
-                    val hotkeyFlow = remember { MutableSharedFlow<KeyEvent>() }
-                    val hotkeyFlowHolder = remember { StableHolder(hotkeyFlow.asSharedFlow()) }
                     val windowState = rememberWindowState(
                         position = WindowPosition.Aligned(Alignment.Center)
                     )
@@ -63,18 +51,10 @@ actual class ReaderLauncher {
                             title = "${BuildKonfig.NAME} - Reader",
                             icon = icon,
                             state = windowState,
-                            onKeyEvent = {
-                                if (it.type != KeyEventType.KeyDown) return@Window false
-                                scope.launch {
-                                    hotkeyFlow.emit(it)
-                                }
-                                it.key in supportedKeyList
-                            }
                         ) {
                             ReaderMenu(
                                 chapterIndex = chapterIndex,
                                 mangaId = mangaId,
-                                hotkeyFlowHolder = hotkeyFlowHolder,
                                 onCloseRequest = ::exitApplication
                             )
                         }

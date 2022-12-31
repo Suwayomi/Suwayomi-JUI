@@ -12,4 +12,6 @@ sealed class Navigation(val name: String) {
     object NEXT : Navigation("Next")
     object LEFT : Navigation("Left")
     object RIGHT : Navigation("Right")
+    object UP : Navigation("Up")
+    object DOWN : Navigation("Down")
 }

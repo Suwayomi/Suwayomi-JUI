@@ -148,7 +148,7 @@ class ReaderMenuViewModel @Inject constructor(
         }
     }
 
-    fun navigate(navigationRegion: Navigation) {
+    fun navigate(navigationRegion: Navigation): Boolean {
         scope.launch {
             val moveTo = when (navigationRegion) {
                 Navigation.MENU -> {
@@ -165,11 +165,20 @@ class ReaderMenuViewModel @Inject constructor(
                     Direction.Left -> MoveTo.Next
                     else -> MoveTo.Previous
                 }
+                Navigation.DOWN -> when (readerModeSettings.direction.value) {
+                    Direction.Up -> MoveTo.Previous
+                    else -> MoveTo.Next
+                }
+                Navigation.UP -> when (readerModeSettings.direction.value) {
+                    Direction.Up -> MoveTo.Next
+                    else -> MoveTo.Previous
+                }
             }
             if (moveTo != null) {
                 _pageEmitter.emit(PageMove.Direction(moveTo))
             }
         }
+        return true
     }
 
     fun navigate(page: Int) {

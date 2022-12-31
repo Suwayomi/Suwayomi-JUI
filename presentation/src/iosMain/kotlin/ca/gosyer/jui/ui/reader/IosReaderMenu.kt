@@ -8,12 +8,10 @@ package ca.gosyer.jui.ui.reader
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import ca.gosyer.jui.ui.base.model.StableHolder
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import kotlinx.coroutines.flow.MutableSharedFlow
 
 class ReaderScreen(val chapterIndex: Int, val mangaId: Long) : Screen {
 
@@ -23,7 +21,6 @@ class ReaderScreen(val chapterIndex: Int, val mangaId: Long) : Screen {
         ReaderMenu(
             chapterIndex,
             mangaId,
-            remember { StableHolder(MutableSharedFlow()) },
             navigator::pop
         )
     }
