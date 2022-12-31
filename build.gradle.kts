@@ -107,6 +107,9 @@ subprojects {
                 buildConfigField(Type.STRING, "VERSION", project.version.toString(), const = true)
                 buildConfigField(Type.INT, "MIGRATION_CODE", migrationCode.toString(), const = true)
                 buildConfigField(Type.BOOLEAN, "DEBUG", project.hasProperty("debugApp").toString(), const = true)
+                plugins.withType<com.android.build.gradle.BasePlugin> {
+                    buildConfigField(Type.BOOLEAN, "DEBUG", gradle.startParameter.taskRequests.toString().contains("Debug").toString(), const = true)
+                }
                 buildConfigField(Type.BOOLEAN, "IS_PREVIEW", project.hasProperty("preview").toString(), const = true)
                 buildConfigField(Type.INT, "PREVIEW_BUILD", project.properties["preview"]?.toString()?.trim('"') ?: 0.toString(), const = true)
 
