@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
@@ -27,9 +28,10 @@ class ServerListeners @Inject constructor() {
 
     private fun <T> Flow<T>.startWith(value: T) = onStart { emit(value) }
 
-    private val mangaListener = MutableSharedFlow<List<Long>>(
+    private val _mangaListener = MutableSharedFlow<List<Long>>(
         extraBufferCapacity = Channel.UNLIMITED
     )
+    val mangaListener = _mangaListener.asSharedFlow()
 
     private val chapterIndexesListener = MutableSharedFlow<Pair<Long, List<Int>?>>(
         extraBufferCapacity = Channel.UNLIMITED
@@ -49,18 +51,18 @@ class ServerListeners @Inject constructor() {
 
     fun <T> combineMangaUpdates(flow: Flow<T>, predate: (suspend (List<Long>) -> Boolean)? = null) =
         if (predate != null) {
-            mangaListener
+            _mangaListener
                 .filter(predate)
                 .startWith(Unit)
         } else {
-            mangaListener.startWith(Unit)
+            _mangaListener.startWith(Unit)
         }
             .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
             .flatMapLatest { flow }
 
     fun updateManga(vararg ids: Long) {
         scope.launch {
-            mangaListener.emit(ids.toList())
+            _mangaListener.emit(ids.toList())
         }
     }
 

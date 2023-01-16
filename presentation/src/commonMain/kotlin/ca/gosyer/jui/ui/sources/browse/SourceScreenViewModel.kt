@@ -8,10 +8,10 @@ package ca.gosyer.jui.ui.sources.browse
 
 import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.domain.library.service.LibraryPreferences
-import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.interactor.GetLatestManga
 import ca.gosyer.jui.domain.source.interactor.GetPopularManga
 import ca.gosyer.jui.domain.source.interactor.GetSearchManga
+import ca.gosyer.jui.domain.source.interactor.SourcePager
 import ca.gosyer.jui.domain.source.model.MangaPage
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
@@ -19,15 +19,14 @@ import ca.gosyer.jui.ui.base.state.SavedStateHandle
 import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.plus
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -38,6 +37,7 @@ class SourceScreenViewModel(
     private val getSearchManga: GetSearchManga,
     private val catalogPreferences: CatalogPreferences,
     private val libraryPreferences: LibraryPreferences,
+    private val getSourcePager: (suspend (page: Int) -> MangaPage?) -> SourcePager,
     contextWrapper: ContextWrapper,
     private val savedStateHandle: SavedStateHandle,
     initialQuery: String?
@@ -49,6 +49,7 @@ class SourceScreenViewModel(
         getSearchManga: GetSearchManga,
         catalogPreferences: CatalogPreferences,
         libraryPreferences: LibraryPreferences,
+        getSourcePager: (suspend (page: Int) -> MangaPage?) -> SourcePager,
         contextWrapper: ContextWrapper,
         savedStateHandle: SavedStateHandle,
         params: Params
@@ -59,6 +60,7 @@ class SourceScreenViewModel(
         getSearchManga,
         catalogPreferences,
         libraryPreferences,
+        getSourcePager,
         contextWrapper,
         savedStateHandle,
         params.initialQuery
@@ -67,15 +69,6 @@ class SourceScreenViewModel(
     val displayMode = catalogPreferences.displayMode().stateIn(scope)
     val gridColumns = libraryPreferences.gridColumns().stateIn(scope)
     val gridSize = libraryPreferences.gridSize().stateIn(scope)
-
-    private val _mangas = MutableStateFlow<ImmutableList<Manga>>(persistentListOf())
-    val mangas = _mangas.asStateFlow()
-
-    private val _hasNextPage = MutableStateFlow(false)
-    val hasNextPage = _hasNextPage.asStateFlow()
-
-    private val _loading = MutableStateFlow(true)
-    val loading = _loading.asStateFlow()
 
     private val _isLatest by savedStateHandle.getStateFlow { false }
     val isLatest = _isLatest.asStateFlow()
@@ -87,71 +80,74 @@ class SourceScreenViewModel(
 
     private val _query = MutableStateFlow(sourceSearchQuery.value)
 
-    private val _pageNum = MutableStateFlow(1)
-    val pageNum = _pageNum.asStateFlow()
+    private val pager = MutableStateFlow(getPager())
 
-    private val sourceMutex = Mutex()
+    val mangas = pager.flatMapLatest { it.mangas.map { mangas -> mangas.toImmutableList() } }
+        .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
+    val loading = pager.flatMapLatest { it.loading }
+        .stateIn(scope, SharingStarted.Eagerly, true)
+    val hasNextPage = pager.flatMapLatest { it.hasNextPage }
+        .stateIn(scope, SharingStarted.Eagerly, true)
+
 
     init {
-        scope.launch {
-            getPage()?.let { (mangas, hasNextPage) ->
-                _mangas.value = mangas.toImmutableList()
-                _hasNextPage.value = hasNextPage
-            }
-
-            _loading.value = false
-        }
+        pager.value.loadNextPage()
     }
 
     fun loadNextPage() {
-        scope.launch {
-            if (hasNextPage.value && sourceMutex.tryLock()) {
-                _pageNum.value++
-                val page = getPage()
-                if (page != null) {
-                    _mangas.value = _mangas.value.toPersistentList() + page.mangaList
-                    _hasNextPage.value = page.hasNextPage
-                } else {
-                    _pageNum.value--
-                }
-                sourceMutex.unlock()
-            }
-            _loading.value = false
-        }
+        pager.value.loadNextPage()
     }
 
     fun setMode(toLatest: Boolean) {
         if (isLatest.value != toLatest) {
             _isLatest.value = toLatest
-            // [loadNextPage] increments by 1
-            _pageNum.value = 0
-            _loading.value = true
             _query.value = null
-            _mangas.value = persistentListOf()
-            loadNextPage()
+            updatePager()
         }
     }
 
-    private suspend fun getPage(): MangaPage? {
-        return when {
-            isLatest.value -> getLatestManga.await(source, pageNum.value, onError = { toast(it.message.orEmpty()) })
-            _query.value != null || _usingFilters.value -> getSearchManga.await(
-                sourceId = source.id,
-                searchTerm = _query.value,
-                page = pageNum.value,
-                onError = { toast(it.message.orEmpty()) }
-            )
-            else -> getPopularManga.await(source.id, pageNum.value, onError = { toast(it.message.orEmpty()) })
+    private fun getPager(): SourcePager {
+        val fetcher: suspend (page: Int) -> MangaPage? = when {
+            _query.value != null || _usingFilters.value -> {
+                { page ->
+                    getSearchManga.await(
+                        sourceId = source.id,
+                        searchTerm = _query.value,
+                        page = page,
+                        onError = { toast(it.message.orEmpty()) }
+                    )
+                }
+            }
+            isLatest.value -> {
+                { page ->
+                    getLatestManga.await(
+                        source,
+                        page,
+                        onError = { toast(it.message.orEmpty()) })
+                }
+            }
+            else -> {
+                { page ->
+                    getPopularManga.await(
+                        source.id,
+                        page,
+                        onError = { toast(it.message.orEmpty()) })
+                }
+            }
         }
+
+        return getSourcePager(fetcher)
+    }
+
+    private fun updatePager() {
+        pager.value.cancel()
+        pager.value = getPager()
+        pager.value.loadNextPage()
     }
 
     fun startSearch(query: String?) {
-        _pageNum.value = 0
-        _hasNextPage.value = true
-        _loading.value = true
         _query.value = query
-        _mangas.value = persistentListOf()
-        loadNextPage()
+        updatePager()
     }
 
     fun setUsingFilters(usingFilters: Boolean) {
@@ -170,6 +166,11 @@ class SourceScreenViewModel(
     }
 
     data class Params(val source: Source, val initialQuery: String?)
+
+    override fun onDispose() {
+        super.onDispose()
+        pager.value.cancel()
+    }
 
     private companion object {
         private val log = logging()
