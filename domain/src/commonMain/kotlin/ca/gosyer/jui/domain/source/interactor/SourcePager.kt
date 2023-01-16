@@ -31,7 +31,7 @@ import org.lighthousegames.logging.logging
 class SourcePager @Inject constructor(
     private val getManga: GetManga,
     private val serverListeners: ServerListeners,
-    private val fetcher: suspend (page: Int) -> MangaPage?,
+    private val fetcher: suspend (page: Int) -> MangaPage?
 ) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
     private val sourceMutex = Mutex()
 

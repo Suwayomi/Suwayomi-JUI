@@ -107,15 +107,19 @@ class ReaderMenuViewModel @Inject constructor(
             ?: flowOf(null)
         combine(previousChapterPages, chapterPages, nextChapterPages, readerModeSettings.continuous) { prev, cur, next, cont ->
             if (cont) {
-                (prev.orEmpty() +
+                (
+                    prev.orEmpty() +
                         ReaderPageSeparator(it.prevChapter, it.currChapter) +
                         cur.orEmpty() +
                         ReaderPageSeparator(it.currChapter, it.nextChapter) +
-                        next.orEmpty()).toImmutableList()
+                        next.orEmpty()
+                    ).toImmutableList()
             } else {
-                (listOf(ReaderPageSeparator(it.prevChapter, it.currChapter)) +
+                (
+                    listOf(ReaderPageSeparator(it.prevChapter, it.currChapter)) +
                         cur.orEmpty() +
-                        ReaderPageSeparator(it.currChapter, it.nextChapter)).toImmutableList()
+                        ReaderPageSeparator(it.currChapter, it.nextChapter)
+                    ).toImmutableList()
             }
         }
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
@@ -377,7 +381,6 @@ class ReaderMenuViewModel @Inject constructor(
                 }
                 .launchIn(chapter.scope)
         }
-
     }
 
     private suspend fun getReaderChapter(chapterIndex: Int): ReaderChapter? {

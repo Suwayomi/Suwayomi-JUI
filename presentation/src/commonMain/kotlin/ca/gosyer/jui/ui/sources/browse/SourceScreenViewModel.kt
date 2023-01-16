@@ -89,7 +89,6 @@ class SourceScreenViewModel(
     val hasNextPage = pager.flatMapLatest { it.hasNextPage }
         .stateIn(scope, SharingStarted.Eagerly, true)
 
-
     init {
         pager.value.loadNextPage()
     }
@@ -123,7 +122,8 @@ class SourceScreenViewModel(
                     getLatestManga.await(
                         source,
                         page,
-                        onError = { toast(it.message.orEmpty()) })
+                        onError = { toast(it.message.orEmpty()) }
+                    )
                 }
             }
             else -> {
@@ -131,7 +131,8 @@ class SourceScreenViewModel(
                     getPopularManga.await(
                         source.id,
                         page,
-                        onError = { toast(it.message.orEmpty()) })
+                        onError = { toast(it.message.orEmpty()) }
+                    )
                 }
             }
         }
