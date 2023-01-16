@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
@@ -188,6 +189,7 @@ fun ReaderMenu(
                                 retry = vm::retry,
                                 progress = vm::progress,
                                 updateLastPageReadOffset = vm::updateLastPageReadOffset,
+                                requestPreloadChapter = vm::requestPreloadChapter,
                                 sideMenuOpen = readerSettingsMenuOpen,
                                 setSideMenuOpen = vm::setReaderSettingsMenuOpen,
                                 setMangaReaderMode = vm::setMangaReaderMode,
@@ -217,6 +219,7 @@ fun ReaderMenu(
                                 retry = vm::retry,
                                 progress = vm::progress,
                                 updateLastPageReadOffset = vm::updateLastPageReadOffset,
+                                requestPreloadChapter = vm::requestPreloadChapter,
                                 readerMenuOpen = readerSettingsMenuOpen,
                                 setMangaReaderMode = vm::setMangaReaderMode,
                                 movePrevChapter = vm::prevChapter,
@@ -266,6 +269,7 @@ fun WideReaderMenu(
     retry: (ReaderPage) -> Unit,
     progress: (ReaderItem) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit,
+    requestPreloadChapter: (ReaderChapter) -> Unit,
     sideMenuOpen: Boolean,
     setSideMenuOpen: (Boolean) -> Unit,
     setMangaReaderMode: (String) -> Unit,
@@ -319,7 +323,8 @@ fun WideReaderMenu(
             pageEmitterHolder = pageEmitterHolder,
             retry = retry,
             progress = progress,
-            updateLastPageReadOffset = updateLastPageReadOffset
+            updateLastPageReadOffset = updateLastPageReadOffset,
+            requestPreloadChapter = requestPreloadChapter
         )
         SideMenuButton(sideMenuOpen, onOpenSideMenuClicked = { setSideMenuOpen(true) })
     }
@@ -348,6 +353,7 @@ fun ThinReaderMenu(
     retry: (ReaderPage) -> Unit,
     progress: (ReaderItem) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit,
+    requestPreloadChapter: (ReaderChapter) -> Unit,
     readerMenuOpen: Boolean,
     setMangaReaderMode: (String) -> Unit,
     movePrevChapter: () -> Unit,
@@ -389,7 +395,8 @@ fun ThinReaderMenu(
                 pageEmitterHolder = pageEmitterHolder,
                 retry = retry,
                 progress = progress,
-                updateLastPageReadOffset = updateLastPageReadOffset
+                updateLastPageReadOffset = updateLastPageReadOffset,
+                requestPreloadChapter = requestPreloadChapter
             )
             AnimatedVisibility(
                 readerMenuOpen,
@@ -449,7 +456,8 @@ fun ReaderLayout(
     pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
     progress: (ReaderItem) -> Unit,
-    updateLastPageReadOffset: (Int) -> Unit
+    updateLastPageReadOffset: (Int) -> Unit,
+    requestPreloadChapter: (ReaderChapter) -> Unit
 ) {
     val loadingModifier = Modifier.widthIn(max = 700.dp)
         .fillMaxWidth()
@@ -491,7 +499,8 @@ fun ReaderLayout(
             pageEmitterHolder = pageEmitterHolder,
             retry = retry,
             progress = progress,
-            updateLastPageReadOffset = updateLastPageReadOffset
+            updateLastPageReadOffset = updateLastPageReadOffset,
+            requestPreloadChapter = requestPreloadChapter
         )
     } else {
         PagerReader(
@@ -503,7 +512,8 @@ fun ReaderLayout(
             pageContentScale = imageScale.toContentScale(),
             pageEmitterHolder = pageEmitterHolder,
             retry = retry,
-            progress = progress
+            progress = progress,
+            requestPreloadChapter = requestPreloadChapter
         )
     }
 }
@@ -577,18 +587,39 @@ fun ReaderImage(
 @Composable
 fun ChapterSeparator(
     previousChapter: ReaderChapter?,
-    nextChapter: ReaderChapter?
+    nextChapter: ReaderChapter?,
+    requestPreloadChapter: (ReaderChapter) -> Unit
 ) {
     Box(Modifier.fillMaxWidth().height(350.dp), contentAlignment = Alignment.Center) {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             when {
                 previousChapter == null && nextChapter != null -> {
                     Text(stringResource(MR.strings.no_previous_chapter))
                 }
                 previousChapter != null && nextChapter != null -> {
+                    val prevChapter by previousChapter.stateObserver.collectAsState()
+                    when (prevChapter) {
+                        ReaderChapter.State.Loading, ReaderChapter.State.Wait -> {
+                            LaunchedEffect(Unit) {
+                                requestPreloadChapter(previousChapter)
+                            }
+                            CircularProgressIndicator()
+                        }
+                        else -> Unit
+                    }
                     Text(stringResource(MR.strings.previous_chapter, previousChapter.chapter.name))
                     Spacer(Modifier.height(8.dp))
                     Text(stringResource(MR.strings.next_chapter, nextChapter.chapter.name))
+                    val nexChapter by previousChapter.stateObserver.collectAsState()
+                    when (nexChapter) {
+                        ReaderChapter.State.Loading, ReaderChapter.State.Wait -> {
+                            LaunchedEffect(Unit) {
+                                requestPreloadChapter(nextChapter)
+                            }
+                            CircularProgressIndicator()
+                        }
+                        else -> Unit
+                    }
                 }
                 previousChapter != null && nextChapter == null -> {
                     Text(stringResource(MR.strings.no_next_chapter))

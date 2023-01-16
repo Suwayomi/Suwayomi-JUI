@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,6 +36,7 @@ import ca.gosyer.jui.ui.reader.ChapterSeparator
 import ca.gosyer.jui.ui.reader.ReaderImage
 import ca.gosyer.jui.ui.reader.model.MoveTo
 import ca.gosyer.jui.ui.reader.model.PageMove
+import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.reader.model.ReaderPageSeparator
@@ -46,10 +46,8 @@ import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.mapNotNull
 
 @Composable
 fun ContinuousReader(
@@ -65,7 +63,8 @@ fun ContinuousReader(
     pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
     progress: (ReaderItem) -> Unit,
-    updateLastPageReadOffset: (Int) -> Unit
+    updateLastPageReadOffset: (Int) -> Unit,
+    requestPreloadChapter: (ReaderChapter) -> Unit
 ) {
     BoxWithConstraints(modifier then Modifier.fillMaxSize()) {
         val state = rememberLazyListState(pages.indexOf(currentPage).coerceAtLeast(1), currentPageOffset)
@@ -102,11 +101,12 @@ fun ContinuousReader(
                 updateLastPageReadOffset(state.firstVisibleItemScrollOffset)
             }
         }
-        LaunchedEffect(state) {
-            snapshotFlow { state.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
-                .filterNotNull()
-                .mapNotNull { pages.getOrNull(it) }
-                .collect(progress)
+        LaunchedEffect(state.layoutInfo.visibleItemsInfo.lastOrNull()?.index) {
+            val index = state.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+            val page = index?.let { pages.getOrNull(it) }
+            if (page != null) {
+                progress(page)
+            }
         }
 
         val imageModifier = if (maxSize != 0) {
@@ -140,7 +140,8 @@ fun ContinuousReader(
                         imageModifier = imageModifier,
                         loadingModifier = loadingModifier,
                         pageContentScale = pageContentScale,
-                        retry = ::retry
+                        retry = ::retry,
+                        requestPreloadChapter = requestPreloadChapter
                     )
                 }
                 VerticalScrollbar(
@@ -165,7 +166,8 @@ fun ContinuousReader(
                         imageModifier = imageModifier,
                         loadingModifier = loadingModifier,
                         pageContentScale = pageContentScale,
-                        retry = ::retry
+                        retry = ::retry,
+                        requestPreloadChapter = requestPreloadChapter
                     )
                 }
                 HorizontalScrollbar(
@@ -185,7 +187,8 @@ private fun LazyListScope.items(
     imageModifier: Modifier,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    retry: (Int) -> Unit
+    retry: (Int) -> Unit,
+    requestPreloadChapter: (ReaderChapter) -> Unit
 ) {
     items(
         pages,
@@ -211,7 +214,11 @@ private fun LazyListScope.items(
                     retry = retry
                 )
             }
-            is ReaderPageSeparator -> ChapterSeparator(previousChapter = image.previousChapter, nextChapter = image.nextChapter)
+            is ReaderPageSeparator -> ChapterSeparator(
+                previousChapter = image.previousChapter,
+                nextChapter = image.nextChapter,
+                requestPreloadChapter = requestPreloadChapter
+            )
         }
     }
 }

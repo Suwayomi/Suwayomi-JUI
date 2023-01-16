@@ -6,33 +6,32 @@
 
 package ca.gosyer.jui.ui.reader.model
 
-import kotlinx.coroutines.flow.MutableStateFlow
-
 data class ViewerChapters(
-    val currChapter: MutableStateFlow<ReaderChapter?>,
-    val prevChapter: MutableStateFlow<ReaderChapter?>,
-    val nextChapter: MutableStateFlow<ReaderChapter?>
+    val currChapter: ReaderChapter?,
+    val prevChapter: ReaderChapter?,
+    val nextChapter: ReaderChapter?
 ) {
     fun recycle() {
-        currChapter.value?.recycle()
-        prevChapter.value?.recycle()
-        nextChapter.value?.recycle()
-        currChapter.value = null
-        prevChapter.value = null
-        nextChapter.value = null
+        currChapter?.recycle()
+        prevChapter?.recycle()
+        nextChapter?.recycle()
     }
 
-    fun movePrev() {
-        nextChapter.value?.recycle()
-        nextChapter.value = currChapter.value
-        currChapter.value = prevChapter.value
-        prevChapter.value = null
+    fun movePrev(): ViewerChapters {
+        nextChapter?.recycle()
+        return ViewerChapters(
+            nextChapter = currChapter,
+            currChapter = prevChapter,
+            prevChapter = null
+        )
     }
 
-    fun moveNext() {
-        prevChapter.value?.recycle()
-        prevChapter.value = currChapter.value
-        currChapter.value = nextChapter.value
-        nextChapter.value = null
+    fun moveNext(): ViewerChapters {
+        prevChapter?.recycle()
+        return ViewerChapters(
+            prevChapter = currChapter,
+            currChapter = nextChapter,
+            nextChapter = null
+        )
     }
 }

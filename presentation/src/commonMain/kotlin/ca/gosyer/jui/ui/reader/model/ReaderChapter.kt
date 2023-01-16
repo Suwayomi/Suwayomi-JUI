@@ -15,8 +15,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import org.lighthousegames.logging.logging
 
 @Immutable
@@ -31,10 +35,11 @@ data class ReaderChapter(val chapter: Chapter) {
             _state.value = value
         }
 
-    val stateObserver by lazy { _state.asStateFlow() }
+    val stateObserver = _state.asStateFlow()
 
-    val pages: StateFlow<PagesState>?
-        get() = (state as? State.Loaded)?.pages
+    val pages: StateFlow<PagesState> = _state.filterIsInstance<State.Loaded>()
+        .flatMapLatest { it.pages }
+        .stateIn(scope, SharingStarted.Eagerly, PagesState.Loading)
 
     var pageLoader: PageLoader? = null
 

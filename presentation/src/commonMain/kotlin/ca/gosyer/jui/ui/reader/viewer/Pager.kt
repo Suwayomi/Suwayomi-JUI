@@ -19,6 +19,7 @@ import ca.gosyer.jui.ui.reader.ChapterSeparator
 import ca.gosyer.jui.ui.reader.ReaderImage
 import ca.gosyer.jui.ui.reader.model.MoveTo
 import ca.gosyer.jui.ui.reader.model.PageMove
+import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.reader.model.ReaderPageSeparator
@@ -40,7 +41,8 @@ fun PagerReader(
     pageContentScale: ContentScale,
     pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
-    progress: (ReaderItem) -> Unit
+    progress: (ReaderItem) -> Unit,
+    requestPreloadChapter: (ReaderChapter) -> Unit
 ) {
     val state = rememberPagerState(initialPage = pages.indexOf(currentPage).coerceAtLeast(1))
     val currentPageState = rememberUpdatedState(currentPage)
@@ -93,7 +95,8 @@ fun PagerReader(
                 page = it,
                 loadingModifier = loadingModifier,
                 pageContentScale = pageContentScale,
-                retry = ::retry
+                retry = ::retry,
+                requestPreloadChapter = requestPreloadChapter
             )
         }
     } else {
@@ -108,7 +111,8 @@ fun PagerReader(
                 page = it,
                 loadingModifier = loadingModifier,
                 pageContentScale = pageContentScale,
-                retry = ::retry
+                retry = ::retry,
+                requestPreloadChapter = requestPreloadChapter
             )
         }
     }
@@ -120,7 +124,8 @@ fun HandlePager(
     page: Int,
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
-    retry: (Int) -> Unit
+    retry: (Int) -> Unit,
+    requestPreloadChapter: (ReaderChapter) -> Unit
 ) {
     when (val image = pages[page]) {
         is ReaderPage -> {
@@ -136,6 +141,10 @@ fun HandlePager(
                 contentScale = pageContentScale
             )
         }
-        is ReaderPageSeparator -> ChapterSeparator(image.previousChapter, image.nextChapter)
+        is ReaderPageSeparator -> ChapterSeparator(
+            previousChapter = image.previousChapter,
+            nextChapter = image.nextChapter,
+            requestPreloadChapter = requestPreloadChapter
+        )
     }
 }
