@@ -232,4 +232,9 @@
     <string name="host_download_path_sub">مسار التنزيل الحالي:%1$s</string>
     <string name="clear_chapter_cache">مسح ذاكرة التخزين المؤقت للفصل</string>
     <string name="clear_image_cache">مسح ذاكرة التخزين المؤقت للصور</string>
+    <string name="action_bookmark">فصل المرجعية</string>
+    <string name="action_filter_bookmarked">مرجعية</string>
+    <string name="download_all">الكل</string>
+    <string name="theme_amoled">امولاد</string>
+    <string name="channel_active">مفعل</string>
 </resources>
