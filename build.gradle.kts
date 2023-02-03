@@ -126,7 +126,8 @@ subprojects {
             disabledRules = arrayOf(
                 "filename",
                 "experimental:argument-list-wrapping",
-                "experimental:trailing-comma"
+                "experimental:trailing-comma",
+                "experimental:comment-wrapping"
             )
         }
     }
