@@ -26,17 +26,21 @@ import com.seiko.imageloader.request.ImageRequestBuilder
 import com.seiko.imageloader.request.Options
 import com.seiko.imageloader.request.SourceResult
 import io.ktor.client.plugins.onDownload
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import okio.BufferedSource
@@ -48,7 +52,7 @@ import org.lighthousegames.logging.logging
 class TachideskPageLoader(
     val chapter: ReaderChapter,
     readerPreferences: ReaderPreferences,
-    getChapterPage: GetChapterPage,
+    private val getChapterPage: GetChapterPage,
     private val chapterCache: DiskCache,
     private val bitmapDecoderFactory: BitmapDecoderFactory
 ) : PageLoader() {
@@ -75,84 +79,101 @@ class TachideskPageLoader(
     }
 
     init {
-        repeat(readerPreferences.threads().get()) {
-            scope.launch {
-                while (true) {
-                    try {
-                        for (priorityPage in channel) {
-                            val page = priorityPage.page
-                            if (page.status.value == ReaderPage.Status.QUEUE) {
-                                page.status.value = ReaderPage.Status.WORKING
-                                log.debug { "Loading page ${page.index}" }
-                                getChapterPage.asFlow(chapter.chapter, page.index) {
-                                    onDownload { bytesSentTotal, contentLength ->
-                                        page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
+        readerPreferences.threads()
+            .stateIn(scope)
+            .mapLatest {
+                coroutineScope {
+                    repeat(it) {
+                        launch {
+                            while (true) {
+                                try {
+                                    for (priorityPage in channel) {
+                                        val page = priorityPage.page
+                                        if (page.status.value == ReaderPage.Status.QUEUE) {
+                                            page.status.value = ReaderPage.Status.WORKING
+                                            fetchImage(page)
+                                        }
                                     }
+                                } catch (e: Exception) {
+                                    e.throwIfCancellation()
+                                    log.warn(e) { "Error in loop" }
                                 }
-                                    .onEach {
-                                        val editor = chapterCache.edit(page.cacheKey)
-                                            ?: throw Exception("Couldn't open cache")
-                                        try {
-                                            FileSystem.SYSTEM.write(editor.data) {
-                                                it.bodyAsChannel().toSource().use {
-                                                    writeAll(it)
-                                                }
-                                            }
-                                            editor.commit()
-                                        } catch (e: Exception) {
-                                            editor.abortQuietly()
-                                            throw e
-                                        }
-                                        page.bitmap.value = StableHolder {
-                                            chapterCache[page.cacheKey]?.use {
-                                                it.source().use { source ->
-                                                    val decoder = bitmapDecoderFactory.create(
-                                                        SourceResult(
-                                                            ImageRequestBuilder().build(),
-                                                            source
-                                                        ),
-                                                        Options()
-                                                    )
-                                                    if (decoder != null) {
-                                                        runCatching { decoder.decode() as DecodeImageResult }
-                                                            .mapCatching {
-                                                                ReaderPage.ImageDecodeState.Success(
-                                                                    it.image.asImageBitmap().also {
-                                                                        page.bitmapInfo.value = ReaderPage.BitmapInfo(
-                                                                            IntSize(it.width, it.height)
-                                                                        )
-                                                                    }
-                                                                )
-                                                            }
-                                                            .getOrElse {
-                                                                ReaderPage.ImageDecodeState.FailedToDecode(it)
-                                                            }
-                                                    } else {
-                                                        ReaderPage.ImageDecodeState.UnknownDecoder
-                                                    }
-                                                }
-                                            } ?: ReaderPage.ImageDecodeState.FailedToGetSnapShot
-                                        }
-                                        page.status.value = ReaderPage.Status.READY
-                                        page.error.value = null
-                                    }
-                                    .catch {
-                                        page.bitmap.value = StableHolder(null)
-                                        page.status.value = ReaderPage.Status.ERROR
-                                        page.error.value = it.message
-                                        log.warn(it) { "Failed to get page ${page.index} for chapter ${chapter.chapter.index} for ${chapter.chapter.mangaId}" }
-                                    }
-                                    .flowOn(Dispatchers.IO)
-                                    .collect()
                             }
                         }
-                    } catch (e: Exception) {
-                        e.throwIfCancellation()
-                        log.warn(e) { "Error in loop" }
                     }
                 }
             }
+            .launchIn(scope)
+    }
+
+    private suspend fun fetchImage(page: ReaderPage) {
+        log.debug { "Loading page ${page.index}" }
+        getChapterPage.asFlow(chapter.chapter, page.index) {
+            onDownload { bytesSentTotal, contentLength ->
+                page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
+            }
         }
+            .onEach {
+                putImageInCache(it, page)
+                page.bitmap.value = StableHolder { getImageFromCache(page) }
+                page.status.value = ReaderPage.Status.READY
+                page.error.value = null
+            }
+            .catch {
+                page.bitmap.value = StableHolder(null)
+                page.status.value = ReaderPage.Status.ERROR
+                page.error.value = it.message
+                log.warn(it) { "Failed to get page ${page.index} for chapter ${chapter.chapter.index} for ${chapter.chapter.mangaId}" }
+            }
+            .flowOn(Dispatchers.IO)
+            .collect()
+    }
+
+    private suspend fun putImageInCache(response: HttpResponse, page: ReaderPage) {
+        val editor = chapterCache.edit(page.cacheKey)
+            ?: throw Exception("Couldn't open cache")
+        try {
+            FileSystem.SYSTEM.write(editor.data) {
+                response.bodyAsChannel().toSource().use {
+                    writeAll(it)
+                }
+            }
+            editor.commit()
+        } catch (e: Exception) {
+            editor.abortQuietly()
+            throw e
+        }
+    }
+
+    private suspend fun getImageFromCache(page: ReaderPage): ReaderPage.ImageDecodeState {
+        return chapterCache[page.cacheKey]?.use {
+            it.source().use { source ->
+                val decoder = bitmapDecoderFactory.create(
+                    SourceResult(
+                        ImageRequestBuilder().build(),
+                        source
+                    ),
+                    Options()
+                )
+                if (decoder != null) {
+                    runCatching { decoder.decode() as DecodeImageResult }
+                        .mapCatching {
+                            ReaderPage.ImageDecodeState.Success(
+                                it.image.asImageBitmap().also {
+                                    page.bitmapInfo.value = ReaderPage.BitmapInfo(
+                                        IntSize(it.width, it.height)
+                                    )
+                                }
+                            )
+                        }
+                        .getOrElse {
+                            ReaderPage.ImageDecodeState.FailedToDecode(it)
+                        }
+                } else {
+                    ReaderPage.ImageDecodeState.UnknownDecoder
+                }
+            }
+        } ?: ReaderPage.ImageDecodeState.FailedToGetSnapShot
     }
 
     /**
