@@ -75,10 +75,12 @@ class UpdatesPager @Inject constructor(
         }
     }.stateIn(this, SharingStarted.Eagerly, emptyList())
 
-    private val mangaIds = fetchedUpdates.map { updates -> updates.map { it.manga.id } }
-        .stateIn(this, SharingStarted.Eagerly, emptyList())
-    private val chapterIds = fetchedUpdates.map { updates -> updates.map { Triple(it.manga.id, it.chapter.index, it.chapter.id) } }
-        .stateIn(this, SharingStarted.Eagerly, emptyList())
+    private val mangaIds = foldedUpdates.map { updates ->
+        updates.filterIsInstance<Updates.Update>().map { it.manga.id }
+    }.stateIn(this, SharingStarted.Eagerly, emptyList())
+    private val chapterIds = foldedUpdates.map { updates ->
+        updates.filterIsInstance<Updates.Update>().map { Triple(it.manga.id, it.chapter.index, it.chapter.id) }
+    }.stateIn(this, SharingStarted.Eagerly, emptyList())
 
     private val changedManga = serverListeners.mangaListener.runningFold(emptyMap<Long, Manga>()) { manga, updatedMangaIds ->
         coroutineScope {
