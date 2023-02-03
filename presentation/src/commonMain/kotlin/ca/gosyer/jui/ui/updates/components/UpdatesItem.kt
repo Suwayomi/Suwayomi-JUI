@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -88,6 +89,13 @@ fun UpdatesItem(
             data = manga,
             contentDescription = manga.title
         )
+        val textColor = if (chapter.bookmarked && !chapter.read) {
+            MaterialTheme.colors.primary
+        } else {
+            MaterialTheme.colors.onSurface.copy(
+                alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.medium
+            )
+        }
         MangaListItemColumn(
             modifier = Modifier
                 .weight(1f)
@@ -96,10 +104,13 @@ fun UpdatesItem(
         ) {
             MangaListItemTitle(
                 text = manga.title,
-                fontWeight = FontWeight.SemiBold
+                bookmarked = chapter.bookmarked,
+                fontWeight = FontWeight.SemiBold,
+                textColor = textColor
             )
             MangaListItemSubtitle(
-                text = chapter.name
+                text = chapter.name,
+                textColor = textColor
             )
         }
 

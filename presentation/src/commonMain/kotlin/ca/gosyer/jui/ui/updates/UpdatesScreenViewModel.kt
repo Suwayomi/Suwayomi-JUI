@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.updates
 
+import ca.gosyer.jui.core.lang.launchDefault
 import ca.gosyer.jui.domain.chapter.interactor.BatchUpdateChapter
 import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
 import ca.gosyer.jui.domain.chapter.model.Chapter
@@ -15,6 +16,7 @@ import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.updates.interactor.GetRecentUpdates
 import ca.gosyer.jui.domain.updates.interactor.UpdateLibrary
+import ca.gosyer.jui.domain.updates.interactor.UpdatesPager
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -22,24 +24,19 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -51,25 +48,27 @@ class UpdatesScreenViewModel @Inject constructor(
     private val batchUpdateChapter: BatchUpdateChapter,
     private val batchChapterDownload: BatchChapterDownload,
     private val updateLibrary: UpdateLibrary,
+    private val updatesPager: UpdatesPager,
     contextWrapper: ContextWrapper
 ) : ViewModel(contextWrapper) {
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
-    private val _updates = MutableStateFlow<ImmutableList<UpdatesUI>>(persistentListOf())
-    val updates = _updates.asStateFlow()
-
-    private val currentPage = MutableStateFlow(1)
-    private val hasNextPage = MutableStateFlow(false)
-
-    private val updatesMutex = Mutex()
-    private var downloadServiceJob: Job? = null
+    val updates = updatesPager.updates.map {
+        it.map {
+            when (it) {
+                is UpdatesPager.Updates.Date -> UpdatesUI.Header(it.date)
+                is UpdatesPager.Updates.Update -> UpdatesUI.Item(ChapterDownloadItem(it.manga, it.chapter))
+            }
+        }.toImmutableList()
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
     private val _selectedIds = MutableStateFlow<ImmutableList<Long>>(persistentListOf())
-    val selectedItems = combine(updates, _selectedIds) { updates, selecteditems ->
-        updates.filterIsInstance<UpdatesUI.Item>()
-            .filter { it.chapterDownloadItem.isSelected(selecteditems) }
+    val selectedItems = combine(updates, _selectedIds) { updates, selectedItems ->
+        updates.asSequence()
+            .filterIsInstance<UpdatesUI.Item>()
+            .filter { it.chapterDownloadItem.isSelected(selectedItems) }
             .map { it.chapterDownloadItem }
             .toImmutableList()
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
@@ -78,78 +77,40 @@ class UpdatesScreenViewModel @Inject constructor(
         .stateIn(scope, SharingStarted.Eagerly, false)
 
     init {
-        scope.launch(Dispatchers.Default) {
-            getUpdates(currentPage.value)
-        }
+        updatesPager.loadNextPage(
+            onComplete = {
+                _isLoading.value = false
+            },
+            onError = {
+                toast(it.message.orEmpty())
+            }
+        )
+        updates
+            .map { updates ->
+                updates.filterIsInstance<UpdatesUI.Item>().mapNotNull {
+                    it.chapterDownloadItem.manga?.id
+                }.toSet()
+            }
+            .combine(DownloadService.downloadQueue) { mangaIds, queue ->
+                mangaIds to queue
+            }
+            .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+            .onEach { (mangaIds, queue) ->
+                val chapters = queue.filter { it.mangaId in mangaIds }
+                updates.value.filterIsInstance<UpdatesUI.Item>().forEach {
+                    it.chapterDownloadItem.updateFrom(chapters)
+                }
+            }
+            .flowOn(Dispatchers.Default)
+            .launchIn(scope)
     }
 
     fun loadNextPage() {
-        scope.launch(Dispatchers.Default) {
-            if (hasNextPage.value && updatesMutex.tryLock()) {
-                currentPage.value++
-                getUpdates(currentPage.value)
-                updatesMutex.unlock()
-            }
-        }
-    }
-
-    private suspend fun getUpdates(page: Int) {
-        getRecentUpdates.asFlow(page)
-            .onEach { updates ->
-                val lastUpdateDate = (_updates.value.lastOrNull() as? UpdatesUI.Item)
-                    ?.let {
-                        Instant.fromEpochSeconds(it.chapterDownloadItem.chapter.fetchedAt)
-                            .toLocalDateTime(TimeZone.currentSystemDefault())
-                            .date
-                            .toString()
-                    }
-                val items = updates.page
-                    .map {
-                        ChapterDownloadItem(
-                            it.manga,
-                            it.chapter
-                        )
-                    }
-                    .groupBy {
-                        Instant.fromEpochSeconds(it.chapter.fetchedAt).toLocalDateTime(TimeZone.currentSystemDefault()).date
-                    }
-                    .entries
-                    .sortedByDescending { it.key.toEpochDays() }
-                _updates.value = _updates.value.plus(
-                    items
-                        .flatMap { (date, updates) ->
-                            listOf(UpdatesUI.Header(date.toString())).dropWhile { it.date == lastUpdateDate } +
-                                updates
-                                    .sortedByDescending { it.chapter.fetchedAt }
-                                    .map { UpdatesUI.Item(it) }
-                        }
-                ).toImmutableList()
-
-                downloadServiceJob?.cancel()
-                val mangaIds = _updates.value.filterIsInstance<UpdatesUI.Item>().mapNotNull {
-                    it.chapterDownloadItem.manga?.id
-                }.toSet()
-                downloadServiceJob = DownloadService.registerWatches(mangaIds)
-                    .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-                    .onEach { chapters ->
-                        _updates.value.filterIsInstance<UpdatesUI.Item>().forEach {
-                            it.chapterDownloadItem.updateFrom(chapters)
-                        }
-                    }
-                    .launchIn(scope)
-
-                hasNextPage.value = updates.hasNextPage
-                _isLoading.value = false
-            }
-            .catch {
+        updatesPager.loadNextPage(
+            onError = {
                 toast(it.message.orEmpty())
-                log.warn(it) { "Failed to get updates for page $page" }
-                if (page > 1) {
-                    currentPage.value = page - 1
-                }
-                _isLoading.value = false
             }
-            .collect()
+        )
     }
 
     private fun setRead(chapterIds: List<Long>, read: Boolean) {
@@ -183,7 +144,7 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun deleteDownloadedChapter(chapter: Chapter?) {
-        scope.launch {
+        scope.launchDefault {
             if (chapter == null) {
                 val selectedIds = _selectedIds.value
                 batchUpdateChapter.await(selectedIds, delete = true, onError = { toast(it.message.orEmpty()) })
@@ -191,9 +152,9 @@ class UpdatesScreenViewModel @Inject constructor(
                     it.setNotDownloaded()
                 }
                 _selectedIds.value = persistentListOf()
-                return@launch
+                return@launchDefault
             }
-            _updates.value
+            updates.value
                 .filterIsInstance<UpdatesUI.Item>()
                 .find { (chapterDownloadItem) ->
                     chapterDownloadItem.chapter.mangaId == chapter.mangaId &&
@@ -205,8 +166,8 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun stopDownloadingChapter(chapter: Chapter) {
-        scope.launch {
-            _updates.value
+        scope.launchDefault {
+            updates.value
                 .filterIsInstance<UpdatesUI.Item>()
                 .find { (chapterDownloadItem) ->
                     chapterDownloadItem.chapter.mangaId == chapter.mangaId &&
@@ -218,7 +179,7 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun selectAll() {
-        scope.launch {
+        scope.launchDefault {
             _selectedIds.value = updates.value.filterIsInstance<UpdatesUI.Item>()
                 .map { it.chapterDownloadItem.chapter.id }
                 .toImmutableList()
@@ -226,7 +187,7 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun invertSelection() {
-        scope.launch {
+        scope.launchDefault {
             _selectedIds.value = updates.value.filterIsInstance<UpdatesUI.Item>()
                 .map { it.chapterDownloadItem.chapter.id }
                 .minus(_selectedIds.value)
@@ -235,24 +196,29 @@ class UpdatesScreenViewModel @Inject constructor(
     }
 
     fun selectChapter(id: Long) {
-        scope.launch {
+        scope.launchDefault {
             _selectedIds.value = _selectedIds.value.plus(id).toImmutableList()
         }
     }
     fun unselectChapter(id: Long) {
-        scope.launch {
+        scope.launchDefault {
             _selectedIds.value = _selectedIds.value.minus(id).toImmutableList()
         }
     }
 
     fun clearSelection() {
-        scope.launch {
+        scope.launchDefault {
             _selectedIds.value = persistentListOf()
         }
     }
 
     fun updateLibrary() {
-        scope.launch { updateLibrary.await(onError = { toast(it.message.orEmpty()) }) }
+        scope.launchDefault { updateLibrary.await(onError = { toast(it.message.orEmpty()) }) }
+    }
+
+    override fun onDispose() {
+        super.onDispose()
+        updatesPager.cancel()
     }
 
     private companion object {

@@ -33,13 +33,15 @@ class ServerListeners @Inject constructor() {
     )
     val mangaListener = _mangaListener.asSharedFlow()
 
-    private val chapterIndexesListener = MutableSharedFlow<Pair<Long, List<Int>?>>(
+    private val _chapterIndexesListener = MutableSharedFlow<Pair<Long, List<Int>?>>(
         extraBufferCapacity = Channel.UNLIMITED
     )
+    val chapterIndexesListener = _chapterIndexesListener.asSharedFlow()
 
-    private val chapterIdsListener = MutableSharedFlow<Pair<Long?, List<Long>>>(
+    private val _chapterIdsListener = MutableSharedFlow<Pair<Long?, List<Long>>>(
         extraBufferCapacity = Channel.UNLIMITED
     )
+    val chapterIdsListener = _chapterIdsListener.asSharedFlow()
 
     private val categoryMangaListener = MutableSharedFlow<Long>(
         extraBufferCapacity = Channel.UNLIMITED
@@ -87,14 +89,14 @@ class ServerListeners @Inject constructor() {
         idPredate: (suspend (Long?, List<Long>) -> Boolean)? = null
     ): Flow<T> {
         val indexListener = if (indexPredate != null) {
-            chapterIndexesListener.filter { indexPredate(it.first, it.second) }.startWith(Unit)
+            _chapterIndexesListener.filter { indexPredate(it.first, it.second) }.startWith(Unit)
         } else {
-            chapterIndexesListener.startWith(Unit)
+            _chapterIndexesListener.startWith(Unit)
         }
         val idsListener = if (idPredate != null) {
-            chapterIdsListener.filter { idPredate(it.first, it.second) }.startWith(Unit)
+            _chapterIdsListener.filter { idPredate(it.first, it.second) }.startWith(Unit)
         } else {
-            chapterIdsListener.startWith(Unit)
+            _chapterIdsListener.startWith(Unit)
         }
 
         return combine(indexListener, idsListener) { _, _ -> }
@@ -104,25 +106,25 @@ class ServerListeners @Inject constructor() {
 
     fun updateChapters(mangaId: Long, chapterIndexes: List<Int>) {
         scope.launch {
-            chapterIndexesListener.emit(mangaId to chapterIndexes.ifEmpty { null })
+            _chapterIndexesListener.emit(mangaId to chapterIndexes.ifEmpty { null })
         }
     }
 
     fun updateChapters(mangaId: Long, vararg chapterIndexes: Int) {
         scope.launch {
-            chapterIndexesListener.emit(mangaId to chapterIndexes.toList().ifEmpty { null })
+            _chapterIndexesListener.emit(mangaId to chapterIndexes.toList().ifEmpty { null })
         }
     }
 
     fun updateChapters(mangaId: Long?, chapterIds: List<Long>) {
         scope.launch {
-            chapterIdsListener.emit(mangaId to chapterIds)
+            _chapterIdsListener.emit(mangaId to chapterIds)
         }
     }
 
     fun updateChapters(mangaId: Long?, vararg chapterIds: Long) {
         scope.launch {
-            chapterIdsListener.emit(mangaId to chapterIds.toList())
+            _chapterIdsListener.emit(mangaId to chapterIds.toList())
         }
     }
 
