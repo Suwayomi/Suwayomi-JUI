@@ -7,28 +7,24 @@
 package ca.gosyer.jui.ui.base.image
 
 import ca.gosyer.jui.core.io.userDataDir
+import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.uicore.vm.ContextWrapper
-import com.seiko.imageloader.ImageLoaderBuilder
-import com.seiko.imageloader.cache.disk.DiskCache
 import com.seiko.imageloader.cache.disk.DiskCacheBuilder
-import com.seiko.imageloader.cache.memory.MemoryCache
 import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
-import com.seiko.imageloader.request.Options
+import com.seiko.imageloader.component.ComponentRegistryBuilder
+import com.seiko.imageloader.component.setupDefaultComponents
+import com.seiko.imageloader.option.Options
 
 actual val imageConfig: Options.ImageConfig = Options.ImageConfig.ARGB_8888
 
-actual fun imageLoaderBuilder(contextWrapper: ContextWrapper): ImageLoaderBuilder {
-    return ImageLoaderBuilder()
+actual fun ComponentRegistryBuilder.register(contextWrapper: ContextWrapper, http: Http) {
+    setupDefaultComponents(httpClient = { http })
 }
 
-actual fun diskCache(contextWrapper: ContextWrapper, cacheDir: String): DiskCache {
-    return DiskCacheBuilder()
-        .directory(userDataDir / cacheDir)
-        .maxSizeBytes(1024 * 1024 * 150) // 150 MB
-        .build()
+actual fun DiskCacheBuilder.configure(contextWrapper: ContextWrapper, cacheDir: String) {
+    directory(userDataDir / cacheDir)
+    maxSizeBytes(1024 * 1024 * 150) // 150 MB
 }
 
-actual fun memoryCache(contextWrapper: ContextWrapper): MemoryCache {
-    return MemoryCacheBuilder()
-        .build()
+actual fun MemoryCacheBuilder.configure(contextWrapper: ContextWrapper) {
 }

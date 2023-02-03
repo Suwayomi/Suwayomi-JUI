@@ -14,12 +14,13 @@ import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.ui.base.ImageCache
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import com.seiko.imageloader.ImageLoader
-import com.seiko.imageloader.ImageLoaderBuilder
-import com.seiko.imageloader.cache.disk.DiskCache
-import com.seiko.imageloader.cache.memory.MemoryCache
+import com.seiko.imageloader.cache.disk.DiskCacheBuilder
+import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
+import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.keyer.Keyer
 import com.seiko.imageloader.component.mapper.Mapper
-import com.seiko.imageloader.request.Options
+import com.seiko.imageloader.option.Options
+import io.ktor.http.Url
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import me.tatarka.inject.annotations.Inject
@@ -33,9 +34,9 @@ class ImageLoaderProvider @Inject constructor(
     val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
 
     fun get(imageCache: ImageCache): ImageLoader {
-        return imageLoaderBuilder(context).apply {
-            httpClient { http }
+        return ImageLoader {
             components {
+                register(context, http)
                 add(MangaCoverMapper())
                 add(MangaCoverKeyer())
                 add(ExtensionIconMapper())
@@ -43,23 +44,19 @@ class ImageLoaderProvider @Inject constructor(
                 add(SourceIconMapper())
                 add(SourceIconKeyer())
             }
-            options(
-                Options(config = imageConfig)
-            )
-            diskCache {
-                imageCache
+            options.config = imageConfig
+            interceptor {
+                diskCache { imageCache }
+                memoryCacheConfig { configure(context) }
             }
-            memoryCache {
-                memoryCache(context)
-            }
-        }.build()
+        }
     }
 
-    inner class MangaCoverMapper : Mapper<String> {
-        override fun map(data: Any, options: Options): String? {
+    inner class MangaCoverMapper : Mapper<Url> {
+        override fun map(data: Any, options: Options): Url? {
             if (data !is Manga) return null
             if (data.thumbnailUrl.isNullOrBlank()) return null
-            return serverUrl.value.toString() + data.thumbnailUrl
+            return Url(serverUrl.value.toString() + data.thumbnailUrl)
         }
     }
 
@@ -70,11 +67,11 @@ class ImageLoaderProvider @Inject constructor(
         }
     }
 
-    inner class ExtensionIconMapper : Mapper<String> {
-        override fun map(data: Any, options: Options): String? {
+    inner class ExtensionIconMapper : Mapper<Url> {
+        override fun map(data: Any, options: Options): Url? {
             if (data !is Extension) return null
             if (data.iconUrl.isBlank()) return null
-            return "${serverUrl.value}${data.iconUrl}"
+            return Url("${serverUrl.value}${data.iconUrl}")
         }
     }
 
@@ -85,11 +82,11 @@ class ImageLoaderProvider @Inject constructor(
         }
     }
 
-    inner class SourceIconMapper : Mapper<String> {
-        override fun map(data: Any, options: Options): String? {
+    inner class SourceIconMapper : Mapper<Url> {
+        override fun map(data: Any, options: Options): Url? {
             if (data !is Source) return null
             if (data.iconUrl.isBlank()) return null
-            return serverUrl.value.toString() + data.iconUrl
+            return Url(serverUrl.value.toString() + data.iconUrl)
         }
     }
 
@@ -103,8 +100,8 @@ class ImageLoaderProvider @Inject constructor(
 
 expect val imageConfig: Options.ImageConfig
 
-expect fun imageLoaderBuilder(contextWrapper: ContextWrapper): ImageLoaderBuilder
+expect fun ComponentRegistryBuilder.register(contextWrapper: ContextWrapper, http: Http)
 
-expect fun diskCache(contextWrapper: ContextWrapper, cacheDir: String): DiskCache
+expect fun DiskCacheBuilder.configure(contextWrapper: ContextWrapper, cacheDir: String)
 
-expect fun memoryCache(contextWrapper: ContextWrapper): MemoryCache
+expect fun MemoryCacheBuilder.configure(contextWrapper: ContextWrapper)

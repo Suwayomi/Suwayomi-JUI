@@ -10,7 +10,6 @@ import ca.gosyer.jui.core.lang.addSuffix
 import ca.gosyer.jui.domain.backup.service.BackupRepository
 import ca.gosyer.jui.domain.category.service.CategoryRepository
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
-import ca.gosyer.jui.domain.createIt
 import ca.gosyer.jui.domain.download.service.DownloadRepository
 import ca.gosyer.jui.domain.extension.service.ExtensionRepository
 import ca.gosyer.jui.domain.global.service.GlobalRepository
@@ -35,35 +34,35 @@ interface DataComponent {
         .build()
 
     @Provides
-    fun backupRepository(ktorfit: Ktorfit) = ktorfit.createIt<BackupRepository>()
+    fun backupRepository(ktorfit: Ktorfit) = ktorfit.create<BackupRepository>()
 
     @Provides
-    fun categoryRepository(ktorfit: Ktorfit) = ktorfit.createIt<CategoryRepository>()
+    fun categoryRepository(ktorfit: Ktorfit) = ktorfit.create<CategoryRepository>()
 
     @Provides
-    fun chapterRepository(ktorfit: Ktorfit) = ktorfit.createIt<ChapterRepository>()
+    fun chapterRepository(ktorfit: Ktorfit) = ktorfit.create<ChapterRepository>()
 
     @Provides
-    fun downloadRepository(ktorfit: Ktorfit) = ktorfit.createIt<DownloadRepository>()
+    fun downloadRepository(ktorfit: Ktorfit) = ktorfit.create<DownloadRepository>()
 
     @Provides
-    fun extensionRepository(ktorfit: Ktorfit) = ktorfit.createIt<ExtensionRepository>()
+    fun extensionRepository(ktorfit: Ktorfit) = ktorfit.create<ExtensionRepository>()
 
     @Provides
-    fun globalRepository(ktorfit: Ktorfit) = ktorfit.createIt<GlobalRepository>()
+    fun globalRepository(ktorfit: Ktorfit) = ktorfit.create<GlobalRepository>()
 
     @Provides
-    fun libraryRepository(ktorfit: Ktorfit) = ktorfit.createIt<LibraryRepository>()
+    fun libraryRepository(ktorfit: Ktorfit) = ktorfit.create<LibraryRepository>()
 
     @Provides
-    fun mangaRepository(ktorfit: Ktorfit) = ktorfit.createIt<MangaRepository>()
+    fun mangaRepository(ktorfit: Ktorfit) = ktorfit.create<MangaRepository>()
 
     @Provides
-    fun settingsRepository(ktorfit: Ktorfit) = ktorfit.createIt<SettingsRepository>()
+    fun settingsRepository(ktorfit: Ktorfit) = ktorfit.create<SettingsRepository>()
 
     @Provides
-    fun sourceRepository(ktorfit: Ktorfit) = ktorfit.createIt<SourceRepository>()
+    fun sourceRepository(ktorfit: Ktorfit) = ktorfit.create<SourceRepository>()
 
     @Provides
-    fun updatesRepository(ktorfit: Ktorfit) = ktorfit.createIt<UpdatesRepository>()
+    fun updatesRepository(ktorfit: Ktorfit) = ktorfit.create<UpdatesRepository>()
 }

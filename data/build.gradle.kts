@@ -6,6 +6,7 @@ plugins {
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.buildkonfig.get().pluginId)
     id(libs.plugins.kotlinter.get().pluginId)
+    id(libs.plugins.ktorfit.get().pluginId)
 }
 
 kotlin {

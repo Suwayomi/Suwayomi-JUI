@@ -36,8 +36,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import com.seiko.imageloader.ImageRequestState
+import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberAsyncImagePainter
-import com.seiko.imageloader.request.ImageRequestBuilder
 import org.lighthousegames.logging.logging
 
 private val log = logging()
@@ -83,7 +83,7 @@ fun ImageLoaderImage(
     animationSpec: FiniteAnimationSpec<Float>? = tween()
 ) {
     key(data) {
-        val request = remember { ImageRequestBuilder().data(data).build() }
+        val request = remember { ImageRequest(data) }
         val painter = rememberAsyncImagePainter(
             request,
             contentScale = contentScale,

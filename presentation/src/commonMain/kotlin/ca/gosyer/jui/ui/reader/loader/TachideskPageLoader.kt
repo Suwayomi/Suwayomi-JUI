@@ -17,14 +17,15 @@ import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
-import ca.gosyer.jui.ui.util.compose.asImageBitmap
 import ca.gosyer.jui.ui.util.lang.toSource
 import cafe.adriel.voyager.core.concurrent.AtomicInt32
+import com.seiko.imageloader.asImageBitmap
 import com.seiko.imageloader.cache.disk.DiskCache
-import com.seiko.imageloader.component.decoder.DecodeImageResult
-import com.seiko.imageloader.request.ImageRequestBuilder
-import com.seiko.imageloader.request.Options
-import com.seiko.imageloader.request.SourceResult
+import com.seiko.imageloader.component.decoder.DecodeResult
+import com.seiko.imageloader.model.DataSource
+import com.seiko.imageloader.model.ImageRequest
+import com.seiko.imageloader.model.ImageResult
+import com.seiko.imageloader.option.Options
 import io.ktor.client.plugins.onDownload
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
@@ -149,17 +150,18 @@ class TachideskPageLoader(
         return chapterCache[page.cacheKey]?.use {
             it.source().use { source ->
                 val decoder = bitmapDecoderFactory.create(
-                    SourceResult(
-                        ImageRequestBuilder().build(),
-                        source
+                    ImageResult.Source(
+                        ImageRequest(Any()),
+                        source,
+                        DataSource.Engine
                     ),
                     Options()
                 )
                 if (decoder != null) {
-                    runCatching { decoder.decode() as DecodeImageResult }
+                    runCatching { decoder.decode() as DecodeResult.Bitmap }
                         .mapCatching {
                             ReaderPage.ImageDecodeState.Success(
-                                it.image.asImageBitmap().also {
+                                it.bitmap.asImageBitmap().also {
                                     page.bitmapInfo.value = ReaderPage.BitmapInfo(
                                         IntSize(it.width, it.height)
                                     )

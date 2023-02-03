@@ -11,4 +11,4 @@ import com.seiko.imageloader.component.decoder.BitmapFactoryDecoder
 import com.seiko.imageloader.component.decoder.Decoder
 
 actual class BitmapDecoderFactory actual constructor(contextWrapper: ContextWrapper) :
-    Decoder.Factory by BitmapFactoryDecoder.Factory(contextWrapper)
+    Decoder.Factory by BitmapFactoryDecoder.Factory(contextWrapper, Int.MAX_VALUE)

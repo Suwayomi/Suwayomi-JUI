@@ -7,13 +7,13 @@
 package ca.gosyer.jui.ui.base.image
 
 import android.os.Build
+import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.uicore.vm.ContextWrapper
-import com.seiko.imageloader.ImageLoaderBuilder
-import com.seiko.imageloader.cache.disk.DiskCache
 import com.seiko.imageloader.cache.disk.DiskCacheBuilder
-import com.seiko.imageloader.cache.memory.MemoryCache
 import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
-import com.seiko.imageloader.request.Options
+import com.seiko.imageloader.component.ComponentRegistryBuilder
+import com.seiko.imageloader.component.setupDefaultComponents
+import com.seiko.imageloader.option.Options
 import okio.Path.Companion.toOkioPath
 
 actual val imageConfig: Options.ImageConfig = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -22,18 +22,14 @@ actual val imageConfig: Options.ImageConfig = if (Build.VERSION.SDK_INT < Build.
     Options.ImageConfig.HARDWARE
 }
 
-actual fun imageLoaderBuilder(contextWrapper: ContextWrapper): ImageLoaderBuilder {
-    return ImageLoaderBuilder(contextWrapper)
+actual fun ComponentRegistryBuilder.register(contextWrapper: ContextWrapper, http: Http) {
+    setupDefaultComponents(contextWrapper, httpClient = { http })
 }
 
-actual fun diskCache(contextWrapper: ContextWrapper, cacheDir: String): DiskCache {
-    return DiskCacheBuilder()
-        .directory(contextWrapper.cacheDir.toOkioPath() / cacheDir)
-        .maxSizeBytes(1024 * 1024 * 150) // 150 MB
-        .build()
+actual fun DiskCacheBuilder.configure(contextWrapper: ContextWrapper, cacheDir: String) {
+    directory(contextWrapper.cacheDir.toOkioPath() / cacheDir)
+    maxSizeBytes(1024 * 1024 * 150) // 150 MB
 }
 
-actual fun memoryCache(contextWrapper: ContextWrapper): MemoryCache {
-    return MemoryCacheBuilder(contextWrapper)
-        .build()
+actual fun MemoryCacheBuilder.configure(contextWrapper: ContextWrapper) {
 }
