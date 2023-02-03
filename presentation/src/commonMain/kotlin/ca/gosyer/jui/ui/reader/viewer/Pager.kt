@@ -23,9 +23,9 @@ import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import ca.gosyer.jui.ui.reader.model.ReaderPageSeparator
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.VerticalPager
-import com.google.accompanist.pager.rememberPagerState
+import ca.gosyer.jui.uicore.pager.HorizontalPager
+import ca.gosyer.jui.uicore.pager.VerticalPager
+import ca.gosyer.jui.uicore.pager.rememberPagerState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -88,7 +88,14 @@ fun PagerReader(
             count = pages.size,
             state = state,
             reverseLayout = direction == Direction.Up,
-            modifier = modifier
+            modifier = modifier,
+            key = {
+                when (val page = pages.getOrNull(it)) {
+                    is ReaderPage -> page.chapter.chapter.index to page.index
+                    is ReaderPageSeparator -> page.previousChapter?.chapter?.index to page.nextChapter?.chapter?.index
+                    else -> it
+                }
+            }
         ) {
             HandlePager(
                 pages = pages,
@@ -104,7 +111,14 @@ fun PagerReader(
             count = pages.size,
             state = state,
             reverseLayout = direction == Direction.Left,
-            modifier = modifier
+            modifier = modifier,
+            key = {
+                when (val page = pages.getOrNull(it)) {
+                    is ReaderPage -> page.chapter.chapter.index to page.index
+                    is ReaderPageSeparator -> page.previousChapter?.chapter?.index to page.nextChapter?.chapter?.index
+                    else -> it
+                }
+            }
         ) {
             HandlePager(
                 pages = pages,

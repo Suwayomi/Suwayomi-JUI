@@ -105,8 +105,7 @@ class ReaderMenuViewModel @Inject constructor(
             ?.pages
             ?.map { (it as? PagesState.Success)?.pages }
             ?: flowOf(null)
-        combine(previousChapterPages, chapterPages, nextChapterPages, readerModeSettings.continuous) { prev, cur, next, cont ->
-            if (cont) {
+        combine(previousChapterPages, chapterPages, nextChapterPages) { prev, cur, next ->
                 (
                     prev.orEmpty() +
                         ReaderPageSeparator(it.prevChapter, it.currChapter) +
@@ -114,13 +113,7 @@ class ReaderMenuViewModel @Inject constructor(
                         ReaderPageSeparator(it.currChapter, it.nextChapter) +
                         next.orEmpty()
                     ).toImmutableList()
-            } else {
-                (
-                    listOf(ReaderPageSeparator(it.prevChapter, it.currChapter)) +
-                        cur.orEmpty() +
-                        ReaderPageSeparator(it.currChapter, it.nextChapter)
-                    ).toImmutableList()
-            }
+
         }
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
