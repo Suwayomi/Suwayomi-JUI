@@ -93,25 +93,25 @@ class ReaderMenuViewModel @Inject constructor(
     private val _state = MutableStateFlow<ReaderChapter.State>(ReaderChapter.State.Wait)
     val state = _state.asStateFlow()
 
-    val pages = viewerChapters.flatMapLatest {
-        val previousChapterPages = it.prevChapter
+    val pages = viewerChapters.flatMapLatest { viewerChapters ->
+        val previousChapterPages = viewerChapters.prevChapter
             ?.pages
             ?.map { (it as? PagesState.Success)?.pages }
             ?: flowOf(null)
-        val chapterPages = it.currChapter
+        val chapterPages = viewerChapters.currChapter
             ?.pages
             ?.map { (it as? PagesState.Success)?.pages }
             ?: flowOf(null)
-        val nextChapterPages = it.nextChapter
+        val nextChapterPages = viewerChapters.nextChapter
             ?.pages
             ?.map { (it as? PagesState.Success)?.pages }
             ?: flowOf(null)
         combine(previousChapterPages, chapterPages, nextChapterPages) { prev, cur, next ->
                 (
                     prev.orEmpty() +
-                        ReaderPageSeparator(it.prevChapter, it.currChapter) +
+                        ReaderPageSeparator(viewerChapters.prevChapter, viewerChapters.currChapter) +
                         cur.orEmpty() +
-                        ReaderPageSeparator(it.currChapter, it.nextChapter) +
+                        ReaderPageSeparator(viewerChapters.currChapter, viewerChapters.nextChapter) +
                         next.orEmpty()
                     ).toImmutableList()
 

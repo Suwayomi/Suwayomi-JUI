@@ -34,6 +34,7 @@ import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronLeft
 import androidx.compose.material.icons.rounded.NavigateBefore
@@ -48,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.gosyer.jui.core.util.replace
@@ -82,11 +84,13 @@ fun ReaderSideMenu(
         Column(Modifier.fillMaxSize()) {
             val pageCount = chapter.chapter.pageCount!!
             ReaderMenuToolbar(onCloseSideMenuClicked = onCloseSideMenuClicked)
+            Spacer(Modifier.height(4.dp))
             ReaderModeSetting(
                 readerModes = readerModes,
                 selectedMode = selectedMode,
                 onSetReaderMode = onSetReaderMode
             )
+            Spacer(Modifier.height(4.dp))
             ReaderProgressSlider(
                 pages = pages,
                 currentPage = currentPage,
@@ -94,6 +98,16 @@ fun ReaderSideMenu(
                 onNewPageClicked = onNewPageClicked,
                 isRtL = false
             )
+            Spacer(Modifier.height(4.dp))
+            val uriHandler = LocalUriHandler.current
+            TextButton(
+                onClick = { uriHandler.openUri(chapter.chapter.realUrl ?: return@TextButton) },
+                enabled = chapter.chapter.realUrl != null,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp)
+            ) {
+                Text(stringResource(MR.strings.action_open_in_browser))
+            }
+            Spacer(Modifier.height(4.dp))
             NavigateChapters(
                 loadPrevChapter = onPrevChapterClicked,
                 loadNextChapter = onNextChapterClicked
@@ -214,7 +228,7 @@ fun ReaderSheet(
     selectedMode: String,
     onSetReaderMode: (String) -> Unit
 ) {
-    Column(Modifier.fillMaxWidth()) {
+    Column(Modifier.fillMaxSize()) {
         ReaderModeSetting(readerModes, selectedMode, onSetReaderMode)
     }
 }

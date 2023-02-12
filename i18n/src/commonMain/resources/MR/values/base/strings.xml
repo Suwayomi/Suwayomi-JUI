@@ -44,7 +44,7 @@
     <string name="action_searching">Search…</string>
     <string name="action_more_actions">More actions</string>
     <string name="action_ok">Ok</string>
-    <string name="action_browser">Browser</string>
+    <string name="action_open_in_browser">Open in Browser</string>
     <string name="action_filter">Filter</string>
     <string name="action_mark_as_read">Mark as read</string>
     <string name="action_mark_as_unread">Mark as unread</string>

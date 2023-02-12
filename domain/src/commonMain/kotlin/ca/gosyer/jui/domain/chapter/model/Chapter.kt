@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Immutable
 data class Chapter(
-    val id: Long = -1, // todo remove default
+    val id: Long,
     val url: String,
     val name: String,
     val uploadDate: Long,
@@ -24,6 +24,7 @@ data class Chapter(
     val lastPageRead: Int,
     val index: Int,
     val fetchedAt: Long,
+    val realUrl: String?,
     val chapterCount: Int?,
     val pageCount: Int?,
     val lastReadAt: Int?,

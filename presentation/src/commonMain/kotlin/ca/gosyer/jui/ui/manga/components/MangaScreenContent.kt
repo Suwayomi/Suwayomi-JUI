@@ -33,7 +33,7 @@ import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.FlipToBack
 import androidx.compose.material.icons.rounded.Label
-import androidx.compose.material.icons.rounded.OpenInBrowser
+import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RemoveDone
 import androidx.compose.material.icons.rounded.SelectAll
@@ -347,8 +347,8 @@ private fun getActionItems(
             ).toImmutableList()
         ),
         ActionItem(
-            name = stringResource(MR.strings.action_browser),
-            icon = Icons.Rounded.OpenInBrowser,
+            name = stringResource(MR.strings.action_open_in_browser),
+            icon = Icons.Rounded.Public,
             enabled = openInBrowserEnabled,
             doAction = openInBrowser
         )

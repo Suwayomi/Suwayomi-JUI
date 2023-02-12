@@ -32,6 +32,7 @@ data class Manga(
     val status: MangaStatus,
     val inLibrary: Boolean,
     val source: Source?,
+    val updateStrategy: UpdateStrategy,
     val freshData: Boolean,
     val meta: MangaMeta,
     val realUrl: String?,
@@ -66,4 +67,11 @@ enum class MangaStatus(@Transient val res: StringResource) {
     PUBLISHING_FINISHED(MR.strings.status_publishing_finished),
     CANCELLED(MR.strings.status_cancelled),
     ON_HIATUS(MR.strings.status_on_hiatus);
+}
+
+@Serializable
+@Stable
+enum class UpdateStrategy {
+    ALWAYS_UPDATE,
+    ONLY_FETCH_ONCE
 }

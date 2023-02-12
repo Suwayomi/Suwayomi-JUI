@@ -39,6 +39,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -64,6 +65,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.domain.reader.model.Direction
@@ -409,7 +411,24 @@ fun ThinReaderMenu(
                     closable = true,
                     onClose = onCloseRequest,
                     actions = {
-                        listOf(
+                        val uriHandler = LocalUriHandler.current
+                        listOfNotNull(
+                            if (chapter.chapter.realUrl != null) {
+                                ActionItem(
+                                    stringResource(MR.strings.action_open_in_browser),
+                                    Icons.Rounded.Public,
+                                    doAction = {
+                                        uriHandler.openUri(
+                                            chapter.chapter.realUrl ?: return@ActionItem
+                                        )
+                                        scope.launch {
+                                            sheetState.show()
+                                        }
+                                    }
+                                )
+                            } else {
+                                null
+                            },
                             ActionItem(
                                 stringResource(MR.strings.location_settings),
                                 Icons.Rounded.Settings,
@@ -418,7 +437,7 @@ fun ThinReaderMenu(
                                         sheetState.show()
                                     }
                                 }
-                            )
+                            ),
                         ).toImmutableList()
                     }
                 )
