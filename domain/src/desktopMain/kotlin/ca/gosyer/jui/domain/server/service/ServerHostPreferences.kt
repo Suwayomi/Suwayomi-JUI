@@ -48,9 +48,15 @@ class ServerHostPreferences(private val preferenceStore: PreferenceStore) {
     fun systemTrayEnabled(): Preference<Boolean> {
         return systemTrayEnabled.preference()
     }
+
+    // Downloader
     private val downloadPath = ServerHostPreference.DownloadPath(preferenceStore)
     fun downloadPath(): Preference<String> {
         return downloadPath.preference()
+    }
+    private val downloadAsCbz = ServerHostPreference.DownloadAsCbz(preferenceStore)
+    fun downloadAsCbz(): Preference<Boolean> {
+        return downloadAsCbz.preference()
     }
 
     // WebUI
@@ -87,6 +93,7 @@ class ServerHostPreferences(private val preferenceStore: PreferenceStore) {
             debugLogsEnabled,
             systemTrayEnabled,
             downloadPath,
+            downloadAsCbz,
             webUIEnabled,
             openInBrowserEnabled,
             basicAuthEnabled,

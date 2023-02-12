@@ -300,6 +300,8 @@
     <string name="host_download_path">Download path</string>
     <string name="host_download_path_sub">Current download path: %1$s</string>
     <string name="host_download_path_sub_empty">Using default download path</string>
+    <string name="host_download_as_cbz">Download as CBZ</string>
+    <string name="host_download_as_cbz_sub">Download chapters into CBZ archives</string>
     <string name="host_webui">Server WebUI</string>
     <string name="host_webui_sub">Whether the server\'s default WebUI is enabled, makes you able to use Tachidesk in your browser</string>
     <string name="host_open_in_browser">Open Server WebUI on startup</string>

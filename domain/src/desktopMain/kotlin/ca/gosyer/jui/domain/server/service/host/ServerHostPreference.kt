@@ -108,10 +108,17 @@ sealed class ServerHostPreference<T : Any> {
         false,
         true
     )
+
+    // Downloader
     class DownloadPath(preferenceStore: PreferenceStore) : StringServerHostPreference(
         preferenceStore,
         "downloadsPath",
         ""
+    )
+    class DownloadAsCbz(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
+        preferenceStore,
+        "downloadAsCbz",
+        false
     )
 
     // WebUI

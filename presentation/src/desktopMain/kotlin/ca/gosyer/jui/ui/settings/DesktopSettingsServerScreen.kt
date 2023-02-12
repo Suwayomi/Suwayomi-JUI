@@ -62,6 +62,7 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
             debugLogsEnabled = serverVm.debugLogsEnabled,
             systemTrayEnabled = serverVm.systemTrayEnabled,
             downloadPath = serverVm.downloadPath,
+            downloadAsCbz = serverVm.downloadAsCbz,
             webUIEnabled = serverVm.webUIEnabled,
             openInBrowserEnabled = serverVm.openInBrowserEnabled,
             basicAuthEnabled = serverVm.basicAuthEnabled,
@@ -89,7 +90,10 @@ actual class SettingsServerHostViewModel @Inject constructor(
     // Misc
     val debugLogsEnabled = serverHostPreferences.debugLogsEnabled().asStateIn(scope)
     val systemTrayEnabled = serverHostPreferences.systemTrayEnabled().asStateIn(scope)
+
+    // Downloader
     val downloadPath = serverHostPreferences.downloadPath().asStateIn(scope)
+    val downloadAsCbz = serverHostPreferences.downloadAsCbz().asStateIn(scope)
 
     // WebUI
     val webUIEnabled = serverHostPreferences.webUIEnabled().asStateIn(scope)
@@ -145,6 +149,7 @@ fun LazyListScope.ServerHostItems(
     debugLogsEnabled: PreferenceMutableStateFlow<Boolean>,
     systemTrayEnabled: PreferenceMutableStateFlow<Boolean>,
     downloadPath: PreferenceMutableStateFlow<String>,
+    downloadAsCbz: PreferenceMutableStateFlow<Boolean>,
     webUIEnabled: PreferenceMutableStateFlow<Boolean>,
     openInBrowserEnabled: PreferenceMutableStateFlow<Boolean>,
     basicAuthEnabled: PreferenceMutableStateFlow<Boolean>,
@@ -240,6 +245,14 @@ fun LazyListScope.ServerHostItems(
                     downloadPath.value = ""
                     serverSettingChanged()
                 }
+            )
+        }
+        item {
+            SwitchPreference(
+                preference = downloadAsCbz,
+                title = stringResource(MR.strings.host_download_as_cbz),
+                subtitle = stringResource(MR.strings.host_download_as_cbz_sub),
+                changeListener = serverSettingChanged
             )
         }
         item {
