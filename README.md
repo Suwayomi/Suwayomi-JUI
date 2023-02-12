@@ -25,7 +25,7 @@ These are the versions of [Tachidesk-Server][tachidesk-server] that JUI supports
 #### [Release build][release]
 - [Tachidesk-Server][tachidesk-server] v0.6.0+
 #### [Preview build][preview]
-- [Tachidesk-Server Preview][tachidesk-server-preview] v0.6.5-r1148+
+- [Tachidesk-Server Preview][tachidesk-server-preview] v0.7.0-r1197+
 
 ## Downloading and Running the app
 ### All Desktop Operating Systems (x64, Java Not Included)
