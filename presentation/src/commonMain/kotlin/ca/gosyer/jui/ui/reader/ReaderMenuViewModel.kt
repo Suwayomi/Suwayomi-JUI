@@ -65,6 +65,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -80,7 +81,7 @@ class ReaderMenuViewModel @Inject constructor(
     private val updateChapterMeta: UpdateChapterMeta,
     private val chapterCache: ChapterCache,
     contextWrapper: ContextWrapper,
-    private val params: Params
+    @Assisted private val params: Params
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()
     private val _manga = MutableStateFlow<Manga?>(null)

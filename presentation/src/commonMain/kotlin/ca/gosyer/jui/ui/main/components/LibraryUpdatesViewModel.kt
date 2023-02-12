@@ -14,13 +14,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.asStateFlow
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 class LibraryUpdatesViewModel @Inject constructor(
     private val libraryUpdateService: LibraryUpdateService,
     private val contextWrapper: ContextWrapper,
-    standalone: Boolean
+    @Assisted standalone: Boolean
 ) : ViewModel(contextWrapper) {
     private val uiScope = if (standalone) {
         MainScope()

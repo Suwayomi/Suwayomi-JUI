@@ -68,7 +68,7 @@ class UpdateCheckWorker(private val context: Context, workerParams: WorkerParame
                 .setConstraints(constraints)
                 .build()
 
-            WorkManager.getInstance(context).enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.REPLACE, request)
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
         }
 
         fun cancelTask(context: Context) {

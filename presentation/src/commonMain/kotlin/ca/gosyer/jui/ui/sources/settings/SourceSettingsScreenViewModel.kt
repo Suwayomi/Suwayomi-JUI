@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.supervisorScope
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -31,7 +32,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
     private val getSourceSettings: GetSourceSettings,
     private val setSourceSetting: SetSourceSetting,
     contextWrapper: ContextWrapper,
-    private val params: Params
+    @Assisted private val params: Params
 ) : ViewModel(contextWrapper) {
     private val _loading = MutableStateFlow(true)
     val loading = _loading.asStateFlow()

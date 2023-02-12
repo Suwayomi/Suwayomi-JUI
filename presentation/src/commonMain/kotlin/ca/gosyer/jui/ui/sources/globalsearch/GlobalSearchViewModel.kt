@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -47,8 +48,8 @@ class GlobalSearchViewModel @Inject constructor(
     private val getSearchManga: GetSearchManga,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper,
-    private val savedStateHandle: SavedStateHandle,
-    params: Params
+    @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted params: Params
 ) : ViewModel(contextWrapper) {
     private val _query by savedStateHandle.getStateFlow { params.initialQuery }
     val query = _query.asStateFlow()

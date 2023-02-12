@@ -52,6 +52,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -75,7 +76,7 @@ class MangaScreenViewModel @Inject constructor(
     private val batchChapterDownload: BatchChapterDownload,
     uiPreferences: UiPreferences,
     contextWrapper: ContextWrapper,
-    private val params: Params
+    @Assisted private val params: Params
 ) : ViewModel(contextWrapper) {
     private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()

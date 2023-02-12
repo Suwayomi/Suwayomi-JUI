@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -95,7 +96,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val updateCategory: UpdateCategory,
     libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper,
-    private val savedStateHandle: SavedStateHandle
+    @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel(contextWrapper) {
     private val library = Library(MutableStateFlow(persistentListOf()), mutableMapOf())
     val categories = library.categories.asStateFlow()

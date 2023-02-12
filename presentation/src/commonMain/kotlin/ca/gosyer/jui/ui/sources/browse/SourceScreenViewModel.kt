@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -51,8 +52,8 @@ class SourceScreenViewModel(
         libraryPreferences: LibraryPreferences,
         getSourcePager: (suspend (page: Int) -> MangaPage?) -> SourcePager,
         contextWrapper: ContextWrapper,
-        savedStateHandle: SavedStateHandle,
-        params: Params
+        @Assisted savedStateHandle: SavedStateHandle,
+        @Assisted params: Params
     ) : this(
         params.source,
         getLatestManga,

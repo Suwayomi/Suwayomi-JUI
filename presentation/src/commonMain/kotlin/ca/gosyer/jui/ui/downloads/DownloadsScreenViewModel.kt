@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -39,7 +40,7 @@ class DownloadsScreenViewModel @Inject constructor(
     private val stopChapterDownload: StopChapterDownload,
     private val reorderChapterDownload: ReorderChapterDownload,
     private val contextWrapper: ContextWrapper,
-    standalone: Boolean
+    @Assisted standalone: Boolean
 ) : ViewModel(contextWrapper) {
     private val uiScope = if (standalone) {
         MainScope()
