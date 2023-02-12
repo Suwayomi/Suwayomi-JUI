@@ -132,4 +132,25 @@
     <string name="force_fit_width_sub">Escala la imagen para que se ajuste a la anchura de la ventana</string>
     <string name="force_fit_height_sub">Escala la imagen para que se ajuste a la altura de la ventana</string>
     <string name="max_width">Anchura máxima</string>
+    <string name="adaptive">Adaptable</string>
+    <string name="action_browser">Navegador</string>
+    <string name="action_bookmark">Marcar capítulo</string>
+    <string name="status_cancelled">Cancelado</string>
+    <string name="action_filter_bookmarked">Marcado</string>
+    <string name="sort_alphabetical">Alfabético</string>
+    <string name="download_all">Todo</string>
+    <string name="items_per_row_sub">Columnas: %1$d</string>
+    <string name="basic_auth">Autenticación Básica</string>
+    <string name="clear_chapter_cache">Limpiar caché de capítulos</string>
+    <string name="clear_image_cache">Limpiar caché de imágenes</string>
+    <string name="channel_active">Activo</string>
+    <string name="group_updates_channel_app">Actualizaciones de la App</string>
+    <string name="host_basic_auth_username">Usuario para autenticación básica</string>
+    <string name="theme_amoled">AMOLED</string>
+    <string name="auth_username">Usuario de autenticación</string>
+    <string name="host_basic_auth_password">Clave de autenticación básica</string>
+    <string name="location_about">Acerca de</string>
+    <string name="display_badges">Insignias</string>
+    <string name="auth_password">Clave de autorización</string>
+    <string name="grid_columns">Columnas</string>
 </resources>
