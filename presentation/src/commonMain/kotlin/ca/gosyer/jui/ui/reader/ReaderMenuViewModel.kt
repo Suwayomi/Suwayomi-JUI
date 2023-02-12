@@ -107,14 +107,13 @@ class ReaderMenuViewModel @Inject constructor(
             ?.map { (it as? PagesState.Success)?.pages }
             ?: flowOf(null)
         combine(previousChapterPages, chapterPages, nextChapterPages) { prev, cur, next ->
-                (
-                    prev.orEmpty() +
-                        ReaderPageSeparator(viewerChapters.prevChapter, viewerChapters.currChapter) +
-                        cur.orEmpty() +
-                        ReaderPageSeparator(viewerChapters.currChapter, viewerChapters.nextChapter) +
-                        next.orEmpty()
-                    ).toImmutableList()
-
+            (
+                prev.orEmpty() +
+                    ReaderPageSeparator(viewerChapters.prevChapter, viewerChapters.currChapter) +
+                    cur.orEmpty() +
+                    ReaderPageSeparator(viewerChapters.currChapter, viewerChapters.nextChapter) +
+                    next.orEmpty()
+                ).toImmutableList()
         }
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 

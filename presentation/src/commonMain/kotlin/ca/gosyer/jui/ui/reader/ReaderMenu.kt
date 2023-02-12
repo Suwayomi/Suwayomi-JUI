@@ -437,7 +437,7 @@ fun ThinReaderMenu(
                                         sheetState.show()
                                     }
                                 }
-                            ),
+                            )
                         ).toImmutableList()
                     }
                 )

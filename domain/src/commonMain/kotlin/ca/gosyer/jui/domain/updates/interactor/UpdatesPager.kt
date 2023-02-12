@@ -41,8 +41,8 @@ class UpdatesPager @Inject constructor(
     private val getRecentUpdates: GetRecentUpdates,
     private val getManga: GetManga,
     private val getChapter: GetChapter,
-    private val serverListeners: ServerListeners,
-) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()){
+    private val serverListeners: ServerListeners
+) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
     private val updatesMutex = Mutex()
 
     private val fetchedUpdates = MutableSharedFlow<List<MangaAndChapter>>()
@@ -96,7 +96,7 @@ class UpdatesPager @Inject constructor(
 
     init {
         serverListeners.chapterIndexesListener
-            .onEach {(mangaId, chapterIndexes) ->
+            .onEach { (mangaId, chapterIndexes) ->
                 if (chapterIndexes == null) {
                     val chapters = coroutineScope {
                         foldedUpdates.value.filterIsInstance<Updates.Update>().filter { it.manga.id == mangaId }.map {
@@ -133,7 +133,6 @@ class UpdatesPager @Inject constructor(
             .launchIn(this)
     }
 
-
     val updates = combine(
         foldedUpdates,
         changedManga,
@@ -157,6 +156,7 @@ class UpdatesPager @Inject constructor(
     sealed class Updates {
         @Immutable
         data class Update(val manga: Manga, val chapter: Chapter) : Updates()
+
         @Immutable
         data class Date(val date: String) : Updates() {
             constructor(date: LocalDate) : this(date.toString())
