@@ -23,7 +23,7 @@ Here is a list of current features for interaction with Tachidesk-JUI:
 ### Supported Tachidesk versions
 These are the versions of [Tachidesk-Server][tachidesk-server] that JUI supports.
 #### [Release build][release]
-- [Tachidesk-Server][tachidesk-server] v0.6.0+
+- [Tachidesk-Server][tachidesk-server] v0.7.0+
 #### [Preview build][preview]
 - [Tachidesk-Server Preview][tachidesk-server-preview] v0.7.0-r1197+
 
