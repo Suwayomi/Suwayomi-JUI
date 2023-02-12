@@ -421,9 +421,6 @@ fun ThinReaderMenu(
                                         uriHandler.openUri(
                                             chapter.chapter.realUrl ?: return@ActionItem
                                         )
-                                        scope.launch {
-                                            sheetState.show()
-                                        }
                                     }
                                 )
                             } else {
