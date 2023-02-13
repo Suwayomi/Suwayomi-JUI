@@ -121,6 +121,7 @@ jobs:
           name: runner-package-${{ matrix.runtime }}
           path: |
             desktop/build/compose/binaries/main/*/
+            desktop/build/compose/binaries/main-release/*/
             desktop/build/compose/jars/
             !desktop/build/compose/binaries/main/app/
             ${{ env.SIGNED_RELEASE_FILE }}
@@ -186,7 +187,7 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "*/binaries/main/*/*.*,*/jars/*.jar,*/android/build/outputs/apk/release/*.apk"
+          artifacts: "*/binaries/main/*/*.*,*/binaries/main-release/*/*.*,*/jars/*.jar,*/android/build/outputs/apk/release/*.apk"
           token: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
           repo: Tachidesk-JUI-preview
           tag: r${{ env.COMMIT_COUNT }}
