@@ -9,6 +9,7 @@ package ca.gosyer.jui.ui.sources.browse
 import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.domain.library.service.LibraryPreferences
 import ca.gosyer.jui.domain.source.interactor.GetLatestManga
+import ca.gosyer.jui.domain.source.interactor.GetMangaPage
 import ca.gosyer.jui.domain.source.interactor.GetPopularManga
 import ca.gosyer.jui.domain.source.interactor.GetSearchManga
 import ca.gosyer.jui.domain.source.interactor.SourcePager
@@ -38,7 +39,7 @@ class SourceScreenViewModel(
     private val getSearchManga: GetSearchManga,
     private val catalogPreferences: CatalogPreferences,
     private val libraryPreferences: LibraryPreferences,
-    private val getSourcePager: (suspend (page: Int) -> MangaPage?) -> SourcePager,
+    private val getSourcePager: (GetMangaPage) -> SourcePager,
     contextWrapper: ContextWrapper,
     private val savedStateHandle: SavedStateHandle,
     initialQuery: String?
@@ -50,7 +51,7 @@ class SourceScreenViewModel(
         getSearchManga: GetSearchManga,
         catalogPreferences: CatalogPreferences,
         libraryPreferences: LibraryPreferences,
-        getSourcePager: (suspend (page: Int) -> MangaPage?) -> SourcePager,
+        getSourcePager: (GetMangaPage) -> SourcePager,
         contextWrapper: ContextWrapper,
         @Assisted savedStateHandle: SavedStateHandle,
         @Assisted params: Params

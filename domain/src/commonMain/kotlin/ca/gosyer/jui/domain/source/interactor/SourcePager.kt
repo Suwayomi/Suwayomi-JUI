@@ -25,13 +25,16 @@ import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
+
+typealias GetMangaPage = @param:Assisted suspend (page: Int) -> MangaPage?
 
 class SourcePager @Inject constructor(
     private val getManga: GetManga,
     private val serverListeners: ServerListeners,
-    private val fetcher: suspend (page: Int) -> MangaPage?
+    private val fetcher: GetMangaPage
 ) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
     private val sourceMutex = Mutex()
 
