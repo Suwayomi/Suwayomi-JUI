@@ -2,11 +2,14 @@ name: Publish to WinGet
 on:
   release:
     types: [released]
+  push:
+    branches:
+      - master
 jobs:
   publish:
     runs-on: windows-latest # action can only be run on windows
     steps:
-      - uses: vedantmgoyal2009/winget-releaser@v1
+      - uses: vedantmgoyal2009/winget-releaser@v2
         with:
           identifier: Suwayomi.Tachidesk-JUI
           token: ${{ secrets.WINGET_PUBLISH_PAT }}
