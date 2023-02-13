@@ -2,9 +2,6 @@ name: Publish to WinGet
 on:
   release:
     types: [released]
-  push:
-    branches:
-      - master
 jobs:
   publish:
     runs-on: windows-latest # action can only be run on windows
