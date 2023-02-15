@@ -2,9 +2,11 @@ package ca.gosyer.jui.ios
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -31,6 +33,7 @@ import kotlinx.cinterop.autoreleasepool
 import kotlinx.cinterop.cstr
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.toCValues
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -43,6 +46,7 @@ import platform.UIKit.UIResponder
 import platform.UIKit.UIResponderMeta
 import platform.UIKit.UIScreen
 import platform.UIKit.UIWindow
+import platform.UIKit.safeAreaInsets
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -82,10 +86,14 @@ class SkikoAppDelegate @OverrideInit constructor() : UIResponder(), UIApplicatio
 
     override fun application(application: UIApplication, didFinishLaunchingWithOptions: Map<Any?, *>?): Boolean {
         window = UIWindow(frame = UIScreen.mainScreen.bounds).apply {
+            val insets = safeAreaInsets.useContents {
+                WindowInsets(left.dp, top.dp, right.dp, bottom.dp)
+            }
+
             rootViewController = Application("Tachidesk-JUI") {
                 CompositionLocalProvider(*uiHooks) {
                     AppTheme {
-                        Box(Modifier.fillMaxSize()) {
+                        Box(Modifier.fillMaxSize().windowInsetsPadding(insets)) {
                             MainMenu()
                             ToastOverlay(
                                 modifier = Modifier
