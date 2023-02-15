@@ -26,10 +26,10 @@ import me.tatarka.inject.annotations.Provides
 interface DataComponent {
 
     @Provides
-    fun ktorfit(http: Http, serverPreferences: ServerPreferences) = Ktorfit
+    fun ktorfit(http: Http, serverPreferences: ServerPreferences, flowIOResponseConverter: FlowIOResponseConverter) = Ktorfit
         .Builder()
         .httpClient(http)
-        .responseConverter(FlowIOResponseConverter())
+        .responseConverter(flowIOResponseConverter)
         .baseUrl(serverPreferences.serverUrl().get().toString().addSuffix('/'))
         .build()
 

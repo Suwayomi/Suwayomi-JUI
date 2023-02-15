@@ -41,8 +41,11 @@ expect val Engine: HttpClientEngineFactory<HttpClientEngineConfig>
 
 expect fun HttpClientConfig<HttpClientEngineConfig>.configurePlatform()
 
-class HttpProvider @Inject constructor() {
-    fun get(serverPreferences: ServerPreferences): Http {
+class HttpProvider @Inject constructor(
+    private val serverPreferences: ServerPreferences,
+    private val json: Json
+) {
+    fun get(): Http {
         return HttpClient(Engine) {
             configurePlatform()
 
@@ -95,14 +98,7 @@ class HttpProvider @Inject constructor() {
                 socketTimeoutMillis = 2.minutes.inWholeMilliseconds
             }
             install(ContentNegotiation) {
-                json(
-                    Json {
-                        isLenient = false
-                        ignoreUnknownKeys = true
-                        allowSpecialFloatingPointValues = true
-                        useArrayPolymorphism = false
-                    }
-                )
+                json(json)
             }
             install(WebSockets)
             install(Logging) {

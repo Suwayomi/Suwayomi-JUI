@@ -22,6 +22,7 @@ import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker
 import ca.gosyer.jui.domain.updates.service.UpdatePreferences
+import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Provides
 
 interface SharedDomainComponent : CoreComponent {
@@ -57,6 +58,8 @@ interface SharedDomainComponent : CoreComponent {
     val updatePreferences: UpdatePreferences
 
     val serverListeners: ServerListeners
+
+    val json: Json
 
     @get:AppScope
     @get:Provides
@@ -103,7 +106,7 @@ interface SharedDomainComponent : CoreComponent {
     @get:AppScope
     @get:Provides
     val httpFactory: Http
-        get() = httpProvider.get(serverPreferences)
+        get() = httpProvider.get()
 
     @get:AppScope
     @get:Provides
@@ -119,4 +122,14 @@ interface SharedDomainComponent : CoreComponent {
     @get:Provides
     val serverListenersFactory: ServerListeners
         get() = ServerListeners()
+
+    @get:AppScope
+    @get:Provides
+    val jsonFactory: Json
+        get() = Json {
+            isLenient = false
+            ignoreUnknownKeys = true
+            allowSpecialFloatingPointValues = true
+            useArrayPolymorphism = false
+        }
 }
