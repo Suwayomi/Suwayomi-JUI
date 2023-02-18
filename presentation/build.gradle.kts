@@ -56,6 +56,7 @@ kotlin {
                 api(libs.dateTime)
                 api(libs.immutableCollections)
                 api(libs.aboutLibraries.core)
+                api(libs.aboutLibraries.ui)
 
                 api(projects.core)
                 api(projects.i18n)
@@ -81,7 +82,7 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 api(kotlin("stdlib-jdk8"))
-                api(libs.aboutLibraries.ui)
+
                 api(compose.desktop.currentOs)
             }
         }
