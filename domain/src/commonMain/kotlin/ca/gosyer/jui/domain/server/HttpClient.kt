@@ -29,7 +29,6 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -41,77 +40,72 @@ expect val Engine: HttpClientEngineFactory<HttpClientEngineConfig>
 
 expect fun HttpClientConfig<HttpClientEngineConfig>.configurePlatform()
 
-class HttpProvider @Inject constructor(
-    private val serverPreferences: ServerPreferences,
-    private val json: Json
-) {
-    fun get(): Http {
-        return HttpClient(Engine) {
-            configurePlatform()
+fun httpClient(serverPreferences: ServerPreferences, json: Json): Http {
+    return HttpClient(Engine) {
+        configurePlatform()
 
-            expectSuccess = true
+        expectSuccess = true
 
-            engine {
-                proxy = when (serverPreferences.proxy().get()) {
-                    Proxy.NO_PROXY -> null
-                    Proxy.HTTP_PROXY -> ProxyBuilder.http(
-                        URLBuilder(
-                            host = serverPreferences.proxyHttpHost().get(),
-                            port = serverPreferences.proxyHttpPort().get()
-                        ).build()
-                    )
-                    Proxy.SOCKS_PROXY -> ProxyBuilder.socks(
-                        serverPreferences.proxySocksHost().get(),
-                        serverPreferences.proxySocksPort().get()
-                    )
-                }
+        engine {
+            proxy = when (serverPreferences.proxy().get()) {
+                Proxy.NO_PROXY -> null
+                Proxy.HTTP_PROXY -> ProxyBuilder.http(
+                    URLBuilder(
+                        host = serverPreferences.proxyHttpHost().get(),
+                        port = serverPreferences.proxyHttpPort().get()
+                    ).build()
+                )
+                Proxy.SOCKS_PROXY -> ProxyBuilder.socks(
+                    serverPreferences.proxySocksHost().get(),
+                    serverPreferences.proxySocksPort().get()
+                )
             }
-            when (serverPreferences.auth().get()) {
-                Auth.NONE -> Unit
-                Auth.BASIC -> AuthPlugin {
-                    basic {
-                        sendWithoutRequest {
-                            it.url.protocol == URLProtocol.WS || it.url.protocol == URLProtocol.WSS
-                        }
-                        credentials {
-                            BasicAuthCredentials(
-                                serverPreferences.authUsername().get(),
-                                serverPreferences.authPassword().get()
-                            )
-                        }
+        }
+        when (serverPreferences.auth().get()) {
+            Auth.NONE -> Unit
+            Auth.BASIC -> AuthPlugin {
+                basic {
+                    sendWithoutRequest {
+                        it.url.protocol == URLProtocol.WS || it.url.protocol == URLProtocol.WSS
                     }
-                }
-                Auth.DIGEST -> AuthPlugin {
-                    digest {
-                        credentials {
-                            DigestAuthCredentials(
-                                serverPreferences.authUsername().get(),
-                                serverPreferences.authPassword().get()
-                            )
-                        }
+                    credentials {
+                        BasicAuthCredentials(
+                            serverPreferences.authUsername().get(),
+                            serverPreferences.authPassword().get()
+                        )
                     }
                 }
             }
-            install(HttpTimeout) {
-                connectTimeoutMillis = 30.seconds.inWholeMilliseconds
-                requestTimeoutMillis = 30.seconds.inWholeMilliseconds
-                socketTimeoutMillis = 2.minutes.inWholeMilliseconds
-            }
-            install(ContentNegotiation) {
-                json(json)
-            }
-            install(WebSockets)
-            install(Logging) {
-                level = if (BuildKonfig.DEBUG) {
-                    LogLevel.HEADERS
-                } else {
-                    LogLevel.INFO
-                }
-                logger = object : Logger {
-                    val log = logging("HttpClient")
-                    override fun log(message: String) {
-                        log.info { message }
+            Auth.DIGEST -> AuthPlugin {
+                digest {
+                    credentials {
+                        DigestAuthCredentials(
+                            serverPreferences.authUsername().get(),
+                            serverPreferences.authPassword().get()
+                        )
                     }
+                }
+            }
+        }
+        install(HttpTimeout) {
+            connectTimeoutMillis = 30.seconds.inWholeMilliseconds
+            requestTimeoutMillis = 30.seconds.inWholeMilliseconds
+            socketTimeoutMillis = 2.minutes.inWholeMilliseconds
+        }
+        install(ContentNegotiation) {
+            json(json)
+        }
+        install(WebSockets)
+        install(Logging) {
+            level = if (BuildKonfig.DEBUG) {
+                LogLevel.HEADERS
+            } else {
+                LogLevel.INFO
+            }
+            logger = object : Logger {
+                val log = logging("HttpClient")
+                override fun log(message: String) {
+                    log.info { message }
                 }
             }
         }

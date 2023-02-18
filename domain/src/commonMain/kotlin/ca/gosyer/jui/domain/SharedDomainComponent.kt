@@ -16,7 +16,7 @@ import ca.gosyer.jui.domain.migration.interactor.RunMigrations
 import ca.gosyer.jui.domain.migration.service.MigrationPreferences
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.domain.server.Http
-import ca.gosyer.jui.domain.server.HttpProvider
+import ca.gosyer.jui.domain.server.httpClient
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.domain.ui.service.UiPreferences
@@ -26,9 +26,6 @@ import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Provides
 
 interface SharedDomainComponent : CoreComponent {
-    // Providers
-    val httpProvider: HttpProvider
-
     // Factories
     val migrations: RunMigrations
 
@@ -60,6 +57,11 @@ interface SharedDomainComponent : CoreComponent {
     val serverListeners: ServerListeners
 
     val json: Json
+
+    @AppScope
+    @Provides
+    fun httpFactory(serverPreferences: ServerPreferences, json: Json) =
+        httpClient(serverPreferences, json)
 
     @get:AppScope
     @get:Provides
@@ -102,11 +104,6 @@ interface SharedDomainComponent : CoreComponent {
     @get:Provides
     val updatePreferencesFactory: UpdatePreferences
         get() = UpdatePreferences(preferenceFactory.create("update"))
-
-    @get:AppScope
-    @get:Provides
-    val httpFactory: Http
-        get() = httpProvider.get()
 
     @get:AppScope
     @get:Provides
