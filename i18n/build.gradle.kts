@@ -59,6 +59,7 @@ multiplatformResources {
 }
 
 android {
+    namespace = "ca.gosyer.jui.i18n"
     lint {
         disable += "MissingTranslation"
     }

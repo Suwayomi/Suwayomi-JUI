@@ -94,6 +94,7 @@ dependencies {
 }
 
 android {
+    namespace = "ca.gosyer.jui.android"
     defaultConfig {
         applicationId = "ca.gosyer.jui.android"
         versionCode = migrationCode

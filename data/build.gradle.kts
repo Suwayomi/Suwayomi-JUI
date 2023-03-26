@@ -118,3 +118,7 @@ dependencies {
 buildkonfig {
     packageName = "ca.gosyer.jui.data.build"
 }
+
+android {
+    namespace = "ca.gosyer.jui.data"
+}

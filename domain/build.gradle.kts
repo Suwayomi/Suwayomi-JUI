@@ -132,3 +132,7 @@ dependencies {
 buildkonfig {
     packageName = "ca.gosyer.jui.domain.build"
 }
+
+android {
+    namespace = "ca.gosyer.jui.domain"
+}

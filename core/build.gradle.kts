@@ -123,3 +123,7 @@ dependencies {
 buildkonfig {
     packageName = "ca.gosyer.jui.core.build"
 }
+
+android {
+    namespace = "ca.gosyer.jui.core"
+}

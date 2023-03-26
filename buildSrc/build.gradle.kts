@@ -12,5 +12,5 @@ dependencies {
     implementation(gradleKotlinDsl())
     implementation(gradleApi())
     implementation(localGroovy())
-    implementation("de.undercouch:gradle-download-task:4.1.2")
+    implementation("de.undercouch:gradle-download-task:5.3.0")
 }

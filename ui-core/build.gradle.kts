@@ -116,3 +116,7 @@ kotlin {
 buildkonfig {
     packageName = "ca.gosyer.jui.uicore.build"
 }
+
+android {
+    namespace = "ca.gosyer.jui.uicore"
+}
