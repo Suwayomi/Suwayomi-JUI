@@ -196,7 +196,7 @@ class ServerService @Inject constructor(
         UNUSED,
         STARTING,
         STARTED,
-        FAILED;
+        FAILED
     }
 
     private companion object {
