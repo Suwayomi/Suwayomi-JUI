@@ -49,6 +49,9 @@ kotlin {
 
 tasks {
     registerLocalizationTask(project)
+
+    getByName("desktopProcessResources")
+        .dependsOn("generateMRcommonMain", "generateMRdesktopMain")
 }
 
 multiplatformResources {

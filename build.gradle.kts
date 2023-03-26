@@ -22,6 +22,7 @@ plugins {
     alias(libs.plugins.ktorfit) apply false
     alias(libs.plugins.aboutLibraries) apply false
     alias(libs.plugins.versions)
+    id("com.louiscad.complete-kotlin") version "1.1.0"
 }
 
 allprojects {
@@ -46,6 +47,9 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 subprojects {
     tasks.withType<KotlinJvmCompile> {
         kotlinOptions {
+            if (name.contains("android", true)) {
+                jvmTarget = Config.androidJvmTarget.toString()
+            }
             if (project.hasProperty("generateComposeCompilerMetrics")) {
                 freeCompilerArgs = freeCompilerArgs + listOf(
                     "-P",
@@ -120,17 +124,6 @@ subprojects {
             }
         }
     }
-    plugins.withType<org.jmailen.gradle.kotlinter.KotlinterPlugin> {
-        configure<org.jmailen.gradle.kotlinter.KotlinterExtension> {
-            experimentalRules = true
-            disabledRules = arrayOf(
-                "filename",
-                "experimental:argument-list-wrapping",
-                "experimental:trailing-comma",
-                "experimental:comment-wrapping"
-            )
-        }
-    }
 
     plugins.withType<com.google.devtools.ksp.gradle.KspGradleSubplugin> {
         configure<com.google.devtools.ksp.gradle.KspExtension> {
@@ -138,6 +131,13 @@ subprojects {
             if (project.hasProperty("debugApp")) {
                 arg("me.tatarka.inject.dumpGraph", "true")
             }
+        }
+    }
+
+    plugins.withType<de.jensklingenberg.ktorfit.gradle.KtorfitGradleSubPlugin> {
+        configure<de.jensklingenberg.ktorfit.gradle.KtorfitGradleConfiguration> {
+            version = libs.versions.ktorfit.get()
+            logging = project.hasProperty("debugApp")
         }
     }
 

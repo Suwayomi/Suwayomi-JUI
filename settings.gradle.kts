@@ -26,5 +26,4 @@ include("android")
 include("desktop")
 include("ios")
 
-enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

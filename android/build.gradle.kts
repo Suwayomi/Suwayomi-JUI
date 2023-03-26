@@ -128,3 +128,9 @@ android {
         ))
     }
 }
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(Config.androidJvmTarget.majorVersion))
+    }
+}

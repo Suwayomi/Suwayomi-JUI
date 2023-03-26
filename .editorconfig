@@ -1,0 +1,44 @@
+# https://editorconfig.org
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{java,kt,kts,scala,rs,xml,kt.spec,kts.spec}]
+indent_size = 4
+
+[*.{kt,kts}]
+ktlint_code_style = ktlint_official
+ktlint_ignore_back_ticked_identifier = true
+
+ktlint_standard = enabled
+
+# Experimental rules run by default run on the ktlint code base itself. Experimental rules should not be released if
+# we are not pleased ourselves with the results on the ktlint code base.
+ktlint_experimental = enabled
+
+# Trailing comma
+ij_kotlin_allow_trailing_comma=true
+ij_kotlin_allow_trailing_comma_on_call_site=true
+
+# Don't allow any wildcard imports
+ij_kotlin_packages_to_use_import_on_demand = unset
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
+
+ktlint_standard_filename = disabled
+ktlint_standard_argument-list-wrapping = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+ktlint_experimental_comment-wrapping = disabled
+ktlint_experimental_function-naming = disabled
+ktlint_experimental_property-naming = disabled
+
+[*.md]
+trim_trailing_whitespace = false

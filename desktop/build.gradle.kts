@@ -121,6 +121,8 @@ tasks {
     }
 
     registerTachideskTasks(project)
+
+    getByName("formatKotlinMain").dependsOn("kspKotlin")
 }
 
 kotlin {
