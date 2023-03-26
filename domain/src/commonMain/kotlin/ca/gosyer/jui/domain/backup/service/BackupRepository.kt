@@ -8,6 +8,7 @@ package ca.gosyer.jui.domain.backup.service
 
 import ca.gosyer.jui.core.io.SYSTEM
 import ca.gosyer.jui.domain.backup.model.BackupValidationResult
+import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Multipart
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Part
@@ -40,7 +41,7 @@ interface BackupRepository {
         @ReqBuilder block: HttpRequestBuilder.() -> Unit = {}
     ): Flow<BackupValidationResult>
 
-    @POST("api/v1/backup/export/file")
+    @GET("api/v1/backup/export/file")
     fun exportBackupFile(
         @ReqBuilder block: HttpRequestBuilder.() -> Unit = {}
     ): Flow<HttpResponse>
