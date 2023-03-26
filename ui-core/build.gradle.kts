@@ -91,7 +91,7 @@ kotlin {
                 api(libs.androidx.appCompat)
             }
         }
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependsOn(jvmTest)
         }
 

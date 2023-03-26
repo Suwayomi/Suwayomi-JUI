@@ -93,7 +93,7 @@ kotlin {
                 api(libs.compose.ui.text)
             }
         }
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependsOn(jvmTest)
         }
 

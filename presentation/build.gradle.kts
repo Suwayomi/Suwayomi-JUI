@@ -113,7 +113,7 @@ kotlin {
                 api(libs.voyager.androidx)
             }
         }
-        val androidTest by getting {
+        val androidUnitTest by getting {
             dependsOn(jvmTest)
         }
 
