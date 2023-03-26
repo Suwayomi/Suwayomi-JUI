@@ -22,7 +22,7 @@ actual object ThemeScrollbarStyle {
             shape = MaterialTheme.shapes.small,
             hoverDurationMillis = 300,
             unhoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.30f),
-            hoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.70f)
+            hoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.70f),
         )
     }
 }

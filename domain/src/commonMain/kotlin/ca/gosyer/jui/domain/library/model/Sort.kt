@@ -24,5 +24,5 @@ enum class Sort(@Transient val res: StringResource) {
     // TOTAL_CHAPTERS,
     // LATEST_CHAPTER,
     // DATE_FETCHED,
-    DATE_ADDED(MR.strings.sort_date_added)
+    DATE_ADDED(MR.strings.sort_date_added),
 }

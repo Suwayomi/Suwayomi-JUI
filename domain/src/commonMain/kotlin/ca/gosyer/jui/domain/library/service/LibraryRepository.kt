@@ -16,11 +16,11 @@ interface LibraryRepository {
 
     @GET("api/v1/manga/{mangaId}/library")
     fun addMangaToLibrary(
-        @Path("mangaId") mangaId: Long
+        @Path("mangaId") mangaId: Long,
     ): Flow<HttpResponse>
 
     @DELETE("api/v1/manga/{mangaId}/library")
     fun removeMangaFromLibrary(
-        @Path("mangaId") mangaId: Long
+        @Path("mangaId") mangaId: Long,
     ): Flow<HttpResponse>
 }

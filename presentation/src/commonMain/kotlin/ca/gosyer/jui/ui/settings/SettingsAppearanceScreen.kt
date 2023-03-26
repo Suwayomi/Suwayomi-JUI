@@ -103,14 +103,14 @@ class SettingsAppearanceScreen : Screen {
             darkTheme = vm.darkTheme,
             windowDecorations = vm.windowDecorations,
             customColors = colors,
-            customExtraColors = extraColors
+            customExtraColors = extraColors,
         )
     }
 }
 
 class ThemesViewModel @Inject constructor(
     private val uiPreferences: UiPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
 
     val themeMode = uiPreferences.themeMode().asStateFlow()
@@ -137,7 +137,7 @@ fun SettingsAppearanceScreenContent(
     darkTheme: PreferenceMutableStateFlow<Int>,
     windowDecorations: PreferenceMutableStateFlow<Boolean>,
     customColors: Colors,
-    customExtraColors: ExtraColors
+    customExtraColors: ExtraColors,
 ) {
     val isLight = MaterialTheme.colors.isLight
     val themesForCurrentMode = remember(isLight) {
@@ -149,12 +149,12 @@ fun SettingsAppearanceScreenContent(
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.settings_appearance_screen))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -163,9 +163,9 @@ fun SettingsAppearanceScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 item {
                     ChoicePreference(
@@ -173,15 +173,15 @@ fun SettingsAppearanceScreenContent(
                         choices = persistentMapOf(
                             ThemeMode.System to stringResource(MR.strings.theme_follow_system),
                             ThemeMode.Light to stringResource(MR.strings.theme_light),
-                            ThemeMode.Dark to stringResource(MR.strings.theme_dark)
+                            ThemeMode.Dark to stringResource(MR.strings.theme_dark),
                         ),
-                        title = stringResource(MR.strings.theme)
+                        title = stringResource(MR.strings.theme),
                     )
                 }
                 item {
                     Text(
                         stringResource(MR.strings.preset_themes),
-                        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
+                        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp),
                     )
                     val lazyListState = rememberLazyListState()
                     Box {
@@ -191,21 +191,21 @@ fun SettingsAppearanceScreenContent(
                                 .animateContentSize()
                                 .padding(vertical = 8.dp),
                             contentPadding = PaddingValues(horizontal = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             items(themesForCurrentMode) { theme ->
                                 Column(
                                     modifier = Modifier
                                         .width(114.dp)
-                                        .padding(top = 8.dp)
+                                        .padding(top = 8.dp),
                                 ) {
                                     val isSelected = (isLight && currentLightTheme == theme.id) ||
                                         (!isLight && currentDarkTheme == theme.id)
                                     MaterialTheme(
-                                        colors = if (isSelected) customColors else theme.colors
+                                        colors = if (isSelected) customColors else theme.colors,
                                     ) {
                                         ExtraColors.WithExtraColors(
-                                            if (isSelected) customExtraColors else theme.extraColors
+                                            if (isSelected) customExtraColors else theme.extraColors,
                                         ) {
                                             AppThemePreviewItem(
                                                 selected = isSelected,
@@ -214,7 +214,7 @@ fun SettingsAppearanceScreenContent(
                                                     activeColors.primaryStateFlow.value = theme.colors.primary
                                                     activeColors.secondaryStateFlow.value = theme.colors.secondary
                                                     activeColors.tertiaryStateFlow.value = theme.extraColors.tertiary
-                                                }
+                                                },
                                             )
                                         }
                                     }
@@ -228,7 +228,7 @@ fun SettingsAppearanceScreenContent(
                                         color = MaterialTheme.colors.onSurface,
                                         textAlign = TextAlign.Center,
                                         maxLines = 2,
-                                        style = MaterialTheme.typography.body2
+                                        style = MaterialTheme.typography.body2,
                                     )
                                 }
                             }
@@ -236,7 +236,7 @@ fun SettingsAppearanceScreenContent(
                         HorizontalScrollbar(
                             adapter = rememberScrollbarAdapter(lazyListState),
                             modifier = Modifier.align(Alignment.BottomCenter)
-                                .fillMaxWidth()
+                                .fillMaxWidth(),
                         )
                     }
                 }
@@ -245,7 +245,7 @@ fun SettingsAppearanceScreenContent(
                         preference = activeColors.primaryStateFlow,
                         title = stringResource(MR.strings.color_primary),
                         subtitle = stringResource(MR.strings.color_primary_sub),
-                        unsetColor = MaterialTheme.colors.primary
+                        unsetColor = MaterialTheme.colors.primary,
                     )
                 }
                 item {
@@ -253,7 +253,7 @@ fun SettingsAppearanceScreenContent(
                         preference = activeColors.secondaryStateFlow,
                         title = stringResource(MR.strings.color_secondary),
                         subtitle = stringResource(MR.strings.color_secondary_sub),
-                        unsetColor = MaterialTheme.colors.secondary
+                        unsetColor = MaterialTheme.colors.secondary,
                     )
                 }
                 item {
@@ -261,7 +261,7 @@ fun SettingsAppearanceScreenContent(
                         preference = activeColors.tertiaryStateFlow,
                         title = stringResource(MR.strings.color_tertiary),
                         subtitle = stringResource(MR.strings.color_secondary_sub),
-                        unsetColor = MaterialTheme.extraColors.tertiary
+                        unsetColor = MaterialTheme.extraColors.tertiary,
                     )
                 }
                 if (showWindowDecorationsOption) {
@@ -269,7 +269,7 @@ fun SettingsAppearanceScreenContent(
                         SwitchPreference(
                             windowDecorations,
                             stringResource(MR.strings.window_decorations),
-                            stringResource(MR.strings.window_decorations_sub)
+                            stringResource(MR.strings.window_decorations_sub),
                         )
                     }
                 }
@@ -282,10 +282,10 @@ fun SettingsAppearanceScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }
@@ -294,7 +294,7 @@ fun SettingsAppearanceScreenContent(
 @Composable
 fun AppThemePreviewItem(
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val dividerColor = MaterialTheme.colors.onSurface.copy(alpha = 0.2F)
     Column(
@@ -308,12 +308,12 @@ fun AppThemePreviewItem(
                 } else {
                     dividerColor
                 },
-                shape = RoundedCornerShape(17.dp)
+                shape = RoundedCornerShape(17.dp),
             )
             .padding(4.dp)
             .clip(RoundedCornerShape(13.dp))
             .background(MaterialTheme.colors.background)
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick),
     ) {
         // App Bar
         Row(
@@ -321,7 +321,7 @@ fun AppThemePreviewItem(
                 .fillMaxWidth()
                 .height(40.dp)
                 .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
                 modifier = Modifier
@@ -330,19 +330,19 @@ fun AppThemePreviewItem(
                     .padding(end = 4.dp)
                     .background(
                         color = MaterialTheme.colors.onSurface,
-                        shape = MaterialTheme.shapes.small
-                    )
+                        shape = MaterialTheme.shapes.small,
+                    ),
             )
 
             Box(
                 modifier = Modifier.weight(0.3f),
-                contentAlignment = Alignment.CenterEnd
+                contentAlignment = Alignment.CenterEnd,
             ) {
                 if (selected) {
                     Icon(
                         imageVector = Icons.Filled.CheckCircle,
                         contentDescription = null,
-                        tint = MaterialTheme.colors.primary
+                        tint = MaterialTheme.colors.primary,
                     )
                 }
             }
@@ -354,28 +354,28 @@ fun AppThemePreviewItem(
                 .padding(start = 8.dp, top = 2.dp)
                 .background(
                     color = dividerColor,
-                    shape = MaterialTheme.shapes.small
+                    shape = MaterialTheme.shapes.small,
                 )
                 .fillMaxWidth(0.5f)
-                .aspectRatio(mangaAspectRatio)
+                .aspectRatio(mangaAspectRatio),
         ) {
             Row(
                 modifier = Modifier
                     .padding(4.dp)
                     .size(width = 24.dp, height = 16.dp)
-                    .clip(RoundedCornerShape(5.dp))
+                    .clip(RoundedCornerShape(5.dp)),
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(12.dp)
-                        .background(MaterialTheme.extraColors.tertiary)
+                        .background(MaterialTheme.extraColors.tertiary),
                 )
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(12.dp)
-                        .background(MaterialTheme.colors.secondary)
+                        .background(MaterialTheme.colors.secondary),
                 )
             }
         }
@@ -385,10 +385,10 @@ fun AppThemePreviewItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            contentAlignment = Alignment.BottomCenter
+            contentAlignment = Alignment.BottomCenter,
         ) {
             Surface(
-                elevation = 3.dp
+                elevation = 3.dp,
             ) {
                 Row(
                     modifier = Modifier
@@ -396,15 +396,15 @@ fun AppThemePreviewItem(
                         .fillMaxWidth()
                         .background(MaterialTheme.colors.primarySurface)
                         .padding(horizontal = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
                         modifier = Modifier
                             .size(17.dp)
                             .background(
                                 color = MaterialTheme.colors.primary,
-                                shape = CircleShape
-                            )
+                                shape = CircleShape,
+                            ),
                     )
                     Box(
                         modifier = Modifier
@@ -414,8 +414,8 @@ fun AppThemePreviewItem(
                             .weight(1f)
                             .background(
                                 color = MaterialTheme.colors.onSurface,
-                                shape = MaterialTheme.shapes.small
-                            )
+                                shape = MaterialTheme.shapes.small,
+                            ),
                     )
                 }
             }

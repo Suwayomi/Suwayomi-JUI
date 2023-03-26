@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 @SerialName("EditTextPreference")
 @Immutable
 data class EditTextPreference(
-    override val props: EditTextProps
+    override val props: EditTextProps,
 ) : SourcePreference() {
     @Serializable
     @Immutable
@@ -27,6 +27,6 @@ data class EditTextPreference(
         override val defaultValueType: String,
         val dialogTitle: String?,
         val dialogMessage: String?,
-        val text: String?
+        val text: String?,
     ) : Props<String?>
 }

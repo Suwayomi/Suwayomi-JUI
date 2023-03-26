@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 fun BadgeGroup(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.small,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     Row(modifier = modifier.clip(shape)) {
         content()
@@ -31,7 +31,7 @@ fun Badge(
     text: String,
     color: Color = MaterialTheme.colors.secondary,
     textColor: Color = MaterialTheme.colors.onSecondary,
-    shape: Shape = RectangleShape
+    shape: Shape = RectangleShape,
 ) {
     Text(
         text = text,
@@ -42,6 +42,6 @@ fun Badge(
         color = textColor,
         fontWeight = FontWeight.Medium,
         maxLines = 1,
-        style = MaterialTheme.typography.caption
+        style = MaterialTheme.typography.caption,
     )
 }

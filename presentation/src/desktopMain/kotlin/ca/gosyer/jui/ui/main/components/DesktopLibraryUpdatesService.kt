@@ -13,7 +13,7 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 internal actual fun startLibraryUpdatesService(
     contextWrapper: ContextWrapper,
     libraryUpdatesService: LibraryUpdateService,
-    actions: WebsocketService.Actions
+    actions: WebsocketService.Actions,
 ) {
     libraryUpdatesService.init()
 }

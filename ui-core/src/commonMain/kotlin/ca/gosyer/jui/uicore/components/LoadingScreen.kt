@@ -27,7 +27,7 @@ fun LoadingScreen(
     progress: Float = 0.0F,
     errorMessage: String? = null,
     retryMessage: String = stringResource(MR.strings.action_retry),
-    retry: (() -> Unit)? = null
+    retry: (() -> Unit)? = null,
 ) {
     Crossfade(isLoading, modifier) {
         BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -35,7 +35,7 @@ fun LoadingScreen(
                 if (progress != 0.0F && !progress.isNaN()) {
                     val animatedProgress by animateFloatAsState(
                         targetValue = progress,
-                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
                     )
                     CircularProgressIndicator(animatedProgress, Modifier.align(Alignment.Center))
                 } else {

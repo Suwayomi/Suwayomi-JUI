@@ -33,7 +33,7 @@ class ExtensionsScreen : Screen {
             installExtensionFile = vm::install,
             installExtension = vm::install,
             updateExtension = vm::update,
-            uninstallExtension = vm::uninstall
+            uninstallExtension = vm::uninstall,
         )
     }
 }

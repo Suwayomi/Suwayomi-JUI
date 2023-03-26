@@ -19,7 +19,7 @@ import org.lighthousegames.logging.logging
 
 class LibraryUpdateService @Inject constructor(
     serverPreferences: ServerPreferences,
-    client: Http
+    client: Http,
 ) : WebsocketService(serverPreferences, client) {
 
     override val _status: MutableStateFlow<Status>

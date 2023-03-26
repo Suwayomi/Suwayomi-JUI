@@ -13,7 +13,7 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 internal actual fun startDownloadService(
     contextWrapper: ContextWrapper,
     downloadService: DownloadService,
-    actions: WebsocketService.Actions
+    actions: WebsocketService.Actions,
 ) {
     downloadService.init()
 }

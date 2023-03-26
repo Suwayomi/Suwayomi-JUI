@@ -29,7 +29,7 @@ import org.lighthousegames.logging.logging
 @OptIn(DelicateCoroutinesApi::class)
 abstract class WebsocketService(
     protected val serverPreferences: ServerPreferences,
-    protected val client: Http
+    protected val client: Http,
 ) {
     protected val json = Json {
         ignoreUnknownKeys = true
@@ -62,7 +62,7 @@ abstract class WebsocketService(
                                 if (serverUrl.protocol == URLProtocol.HTTPS) {
                                     url.protocol = URLProtocol.WSS
                                 }
-                            }
+                            },
                         ) {
                             errorConnectionCount = 0
                             _status.value = Status.RUNNING
@@ -96,13 +96,13 @@ abstract class WebsocketService(
     enum class Status {
         STARTING,
         RUNNING,
-        STOPPED
+        STOPPED,
     }
 
     enum class Actions {
         STOP,
         START,
-        RESTART
+        RESTART,
     }
 
     private companion object {

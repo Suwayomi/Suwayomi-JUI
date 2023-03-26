@@ -49,12 +49,12 @@ fun SettingsDownloadsScreenContent() {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.settings_download_screen))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -63,9 +63,9 @@ fun SettingsDownloadsScreenContent() {
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
             }
             VerticalScrollbar(
@@ -76,10 +76,10 @@ fun SettingsDownloadsScreenContent() {
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }

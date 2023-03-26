@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 @Stable
 class ExtraColors(
     tertiary: Color,
-    onTertiary: Color
+    onTertiary: Color,
 ) {
     var tertiary by mutableStateOf(tertiary, structuralEqualityPolicy())
         internal set
@@ -29,10 +29,10 @@ class ExtraColors(
 
     fun copy(
         tertiary: Color = this.tertiary,
-        onTertiary: Color = this.onTertiary
+        onTertiary: Color = this.onTertiary,
     ): ExtraColors = ExtraColors(
         tertiary,
-        onTertiary
+        onTertiary,
     )
 
     override fun toString(): String {
@@ -47,7 +47,7 @@ class ExtraColors(
         fun WithExtraColors(extraColors: ExtraColors, content: @Composable () -> Unit) {
             CompositionLocalProvider(
                 LocalExtraColors provides extraColors,
-                content = content
+                content = content,
             )
         }
     }

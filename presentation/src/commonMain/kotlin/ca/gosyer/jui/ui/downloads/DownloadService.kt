@@ -13,5 +13,5 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 internal expect fun startDownloadService(
     contextWrapper: ContextWrapper,
     downloadService: DownloadService,
-    actions: WebsocketService.Actions
+    actions: WebsocketService.Actions,
 )

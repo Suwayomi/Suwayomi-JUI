@@ -23,7 +23,7 @@ class ServerUrlPreference(
     private val key: String,
     private val server: Preference<String>,
     private val port: Preference<Int>,
-    private val pathPrefix: Preference<String>
+    private val pathPrefix: Preference<String>,
 ) : Preference<Url> {
     override fun key(): String {
         return key

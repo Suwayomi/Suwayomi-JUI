@@ -15,11 +15,11 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 internal actual fun startDownloadService(
     contextWrapper: ContextWrapper,
     downloadService: DownloadService,
-    actions: WebsocketService.Actions
+    actions: WebsocketService.Actions,
 ) {
     val intent = Intent(
         contextWrapper,
-        Class.forName("ca.gosyer.jui.android.data.download.AndroidDownloadService")
+        Class.forName("ca.gosyer.jui.android.data.download.AndroidDownloadService"),
     ).apply {
         action = actions.name
     }

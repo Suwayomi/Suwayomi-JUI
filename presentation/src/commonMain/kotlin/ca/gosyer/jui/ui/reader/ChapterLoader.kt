@@ -25,7 +25,7 @@ class ChapterLoader(
     private val readerPreferences: ReaderPreferences,
     private val getChapterPage: GetChapterPage,
     private val chapterCache: DiskCache,
-    private val bitmapDecoderFactory: BitmapDecoderFactory
+    private val bitmapDecoderFactory: BitmapDecoderFactory,
 ) {
     fun loadChapter(chapter: ReaderChapter): StateFlow<PagesState> {
         if (chapterIsReady(chapter)) {

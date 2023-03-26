@@ -38,7 +38,7 @@ fun SideMenuItem(selected: Boolean, topLevelMenu: Menu, newRoot: (Screen) -> Uni
         topLevelMenu.selectedIcon,
         topLevelMenu.unselectedIcon,
         topLevelMenu.extraInfo,
-        newRoot
+        newRoot,
     )
 }
 
@@ -50,7 +50,7 @@ private fun SideMenuItem(
     selectedIcon: ImageVector,
     unselectedIcon: ImageVector,
     extraInfo: (@Composable () -> Unit)? = null,
-    onClick: (Screen) -> Unit
+    onClick: (Screen) -> Unit,
 ) {
     Card(
         Modifier.fillMaxWidth(),
@@ -60,7 +60,7 @@ private fun SideMenuItem(
             MaterialTheme.colors.primary.copy(0.30F)
         },
         elevation = 0.dp,
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -70,9 +70,9 @@ private fun SideMenuItem(
                     onClick = {
                         if (selected) return@clickable
                         onClick(createScreen())
-                    }
+                    },
                     // onMiddleClick = { onMiddleClick?.invoke() } todo
-                )
+                ),
         ) {
             Spacer(Modifier.width(16.dp))
             Icon(
@@ -83,7 +83,7 @@ private fun SideMenuItem(
                 },
                 contentDescription = text,
                 modifier = Modifier.size(20.dp),
-                tint = MaterialTheme.colors.onSurface
+                tint = MaterialTheme.colors.onSurface,
             )
             Spacer(Modifier.width(16.dp))
             Column {

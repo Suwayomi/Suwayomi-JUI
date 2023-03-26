@@ -42,7 +42,7 @@ class SourceScreenViewModel(
     private val getSourcePager: (GetMangaPage) -> SourcePager,
     contextWrapper: ContextWrapper,
     private val savedStateHandle: SavedStateHandle,
-    initialQuery: String?
+    initialQuery: String?,
 ) : ViewModel(contextWrapper) {
 
     @Inject constructor(
@@ -54,7 +54,7 @@ class SourceScreenViewModel(
         getSourcePager: (GetMangaPage) -> SourcePager,
         contextWrapper: ContextWrapper,
         @Assisted savedStateHandle: SavedStateHandle,
-        @Assisted params: Params
+        @Assisted params: Params,
     ) : this(
         params.source,
         getLatestManga,
@@ -65,7 +65,7 @@ class SourceScreenViewModel(
         getSourcePager,
         contextWrapper,
         savedStateHandle,
-        params.initialQuery
+        params.initialQuery,
     )
 
     val displayMode = catalogPreferences.displayMode().stateIn(scope)
@@ -115,7 +115,7 @@ class SourceScreenViewModel(
                         sourceId = source.id,
                         searchTerm = _query.value,
                         page = page,
-                        onError = { toast(it.message.orEmpty()) }
+                        onError = { toast(it.message.orEmpty()) },
                     )
                 }
             }
@@ -124,7 +124,7 @@ class SourceScreenViewModel(
                     getLatestManga.await(
                         source,
                         page,
-                        onError = { toast(it.message.orEmpty()) }
+                        onError = { toast(it.message.orEmpty()) },
                     )
                 }
             }
@@ -133,7 +133,7 @@ class SourceScreenViewModel(
                     getPopularManga.await(
                         source.id,
                         page,
-                        onError = { toast(it.message.orEmpty()) }
+                        onError = { toast(it.message.orEmpty()) },
                     )
                 }
             }

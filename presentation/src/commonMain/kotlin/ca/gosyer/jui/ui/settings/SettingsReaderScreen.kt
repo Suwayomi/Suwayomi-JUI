@@ -83,14 +83,14 @@ class SettingsReaderScreen : Screen {
             paddingChoices = vm.getPaddingChoices(),
             getMaxSizeChoices = vm::getMaxSizeChoices,
             imageScaleChoices = vm.getImageScaleChoices(),
-            navigationModeChoices = vm.getNavigationModeChoices()
+            navigationModeChoices = vm.getNavigationModeChoices(),
         )
     }
 }
 
 class SettingsReaderViewModel @Inject constructor(
     readerPreferences: ReaderPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     val modes = readerPreferences.modes().asStateFlow()
         .map {
@@ -101,7 +101,7 @@ class SettingsReaderViewModel @Inject constructor(
     val selectedMode = readerPreferences.mode().asStateIn(scope)
 
     private val _modeSettings = MutableStateFlow<ImmutableList<StableHolder<ReaderModePreference>>>(
-        persistentListOf()
+        persistentListOf(),
     )
     val modeSettings = _modeSettings.asStateFlow()
 
@@ -124,7 +124,7 @@ class SettingsReaderViewModel @Inject constructor(
         0 to MR.strings.page_padding_none.toPlatformString(),
         8 to "8 Dp",
         16 to "16 Dp",
-        32 to "32 Dp"
+        32 to "32 Dp",
     ).toImmutableMap()
 
     fun getMaxSizeChoices(direction: Direction) = if (direction == Direction.Right || direction == Direction.Left) {
@@ -132,14 +132,14 @@ class SettingsReaderViewModel @Inject constructor(
             0 to MR.strings.max_size_unrestricted.toPlatformString(),
             700 to "700 Dp",
             900 to "900 Dp",
-            1100 to "1100 Dp"
+            1100 to "1100 Dp",
         )
     } else {
         mapOf(
             0 to MR.strings.max_size_unrestricted.toPlatformString(),
             500 to "500 Dp",
             700 to "700 Dp",
-            900 to "900 Dp"
+            900 to "900 Dp",
         )
     }.toImmutableMap()
 
@@ -160,7 +160,7 @@ data class ReaderModePreference(
     val imageScale: PreferenceMutableStateFlow<ImageScale>,
     val fitSize: PreferenceMutableStateFlow<Boolean>,
     val maxSize: PreferenceMutableStateFlow<Int>,
-    val navigationMode: PreferenceMutableStateFlow<NavigationMode>
+    val navigationMode: PreferenceMutableStateFlow<NavigationMode>,
 ) {
     constructor(scope: CoroutineScope, mode: String, readerPreferences: ReaderModePreferences) :
         this(
@@ -173,7 +173,7 @@ data class ReaderModePreference(
             readerPreferences.imageScale().asStateIn(scope),
             readerPreferences.fitSize().asStateIn(scope),
             readerPreferences.maxSize().asStateIn(scope),
-            readerPreferences.navigationMode().asStateIn(scope)
+            readerPreferences.navigationMode().asStateIn(scope),
         )
 }
 
@@ -186,17 +186,17 @@ fun SettingsReaderScreenContent(
     paddingChoices: ImmutableMap<Int, String>,
     getMaxSizeChoices: (Direction) -> ImmutableMap<Int, String>,
     imageScaleChoices: ImmutableMap<ImageScale, String>,
-    navigationModeChoices: ImmutableMap<NavigationMode, String>
+    navigationModeChoices: ImmutableMap<NavigationMode, String>,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.settings_reader_screen))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -205,15 +205,15 @@ fun SettingsReaderScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 item {
                     ChoicePreference(
                         selectedMode,
                         modes,
-                        stringResource(MR.strings.reader_mode)
+                        stringResource(MR.strings.reader_mode),
                     )
                 }
                 item {
@@ -226,20 +226,20 @@ fun SettingsReaderScreenContent(
                                 it.direction,
                                 directionChoices,
                                 stringResource(MR.strings.direction),
-                                enabled = !it.defaultMode
+                                enabled = !it.defaultMode,
                             )
                             SwitchPreference(
                                 it.continuous,
                                 stringResource(MR.strings.continuous),
                                 stringResource(MR.strings.continuous_sub),
-                                enabled = !it.defaultMode
+                                enabled = !it.defaultMode,
                             )
                             val continuous by it.continuous.collectAsState()
                             if (continuous) {
                                 ChoicePreference(
                                     it.padding,
                                     paddingChoices,
-                                    stringResource(MR.strings.page_padding)
+                                    stringResource(MR.strings.page_padding),
                                 )
                                 val direction by it.direction.collectAsState()
                                 val (title, subtitle) = if (direction.isVertical) {
@@ -250,37 +250,37 @@ fun SettingsReaderScreenContent(
                                 SwitchPreference(
                                     it.fitSize,
                                     title,
-                                    subtitle
+                                    subtitle,
                                 )
                                 val maxSize by it.maxSize.collectAsState()
                                 val (maxSizeTitle, maxSizeSubtitle) = if (direction.isVertical) {
                                     stringResource(MR.strings.max_width) to stringResource(
                                         MR.strings.max_width_sub,
-                                        maxSize
+                                        maxSize,
                                     )
                                 } else {
                                     stringResource(MR.strings.max_height) to stringResource(
                                         MR.strings.max_height_sub,
-                                        maxSize
+                                        maxSize,
                                     )
                                 }
                                 ChoicePreference(
                                     it.maxSize,
                                     getMaxSizeChoices(direction),
                                     maxSizeTitle,
-                                    maxSizeSubtitle
+                                    maxSizeSubtitle,
                                 )
                             } else {
                                 ChoicePreference(
                                     it.imageScale,
                                     imageScaleChoices,
-                                    stringResource(MR.strings.image_scale)
+                                    stringResource(MR.strings.image_scale),
                                 )
                             }
                             ChoicePreference(
                                 it.navigationMode,
                                 navigationModeChoices,
-                                stringResource(MR.strings.navigation_mode)
+                                stringResource(MR.strings.navigation_mode),
                             )
                         }
                     }
@@ -297,10 +297,10 @@ fun SettingsReaderScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }

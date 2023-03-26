@@ -102,7 +102,7 @@ import kotlinx.coroutines.launch
 expect class ReaderLauncher {
     fun launch(
         chapterIndex: Int,
-        mangaId: Long
+        mangaId: Long,
     )
 
     @Composable
@@ -116,7 +116,7 @@ expect fun rememberReaderLauncher(): ReaderLauncher
 fun ReaderMenu(
     chapterIndex: Int,
     mangaId: Long,
-    onCloseRequest: () -> Unit
+    onCloseRequest: () -> Unit,
 ) {
     val viewModels = LocalViewModels.current
     val vm = remember { viewModels.readerViewModel(ReaderMenuViewModel.Params(chapterIndex, mangaId)) }
@@ -164,7 +164,7 @@ fun ReaderMenu(
                     Key.Spacebar -> vm.navigate(Navigation.NEXT)
                     else -> false
                 }
-            }
+            },
     ) {
         Crossfade(state to chapter) { (state, chapter) ->
             if (state is ReaderChapter.State.Loaded && chapter != null) {
@@ -196,7 +196,7 @@ fun ReaderMenu(
                                 setSideMenuOpen = vm::setReaderSettingsMenuOpen,
                                 setMangaReaderMode = vm::setMangaReaderMode,
                                 movePrevChapter = vm::prevChapter,
-                                moveNextChapter = vm::nextChapter
+                                moveNextChapter = vm::nextChapter,
                             )
                         } else {
                             ThinReaderMenu(
@@ -226,7 +226,7 @@ fun ReaderMenu(
                                 setMangaReaderMode = vm::setMangaReaderMode,
                                 movePrevChapter = vm::prevChapter,
                                 moveNextChapter = vm::nextChapter,
-                                onCloseRequest = onCloseRequest
+                                onCloseRequest = onCloseRequest,
                             )
                         }
                     }
@@ -237,7 +237,7 @@ fun ReaderMenu(
                 LoadingScreen(
                     state is ReaderChapter.State.Wait || state is ReaderChapter.State.Loading,
                     errorMessage = (state as? ReaderChapter.State.Error)?.error?.message,
-                    retry = vm::init
+                    retry = vm::init,
                 )
             }
         }
@@ -276,20 +276,20 @@ fun WideReaderMenu(
     setSideMenuOpen: (Boolean) -> Unit,
     setMangaReaderMode: (String) -> Unit,
     movePrevChapter: () -> Unit,
-    moveNextChapter: () -> Unit
+    moveNextChapter: () -> Unit,
 ) {
     val sideMenuSize by animateDpAsState(
         targetValue = if (sideMenuOpen) {
             260.dp
         } else {
             0.dp
-        }
+        },
     )
 
     AnimatedVisibility(
         sideMenuOpen,
         enter = fadeIn() + slideInHorizontally(),
-        exit = fadeOut() + slideOutHorizontally()
+        exit = fadeOut() + slideOutHorizontally(),
     ) {
         ReaderSideMenu(
             chapter = chapter,
@@ -303,12 +303,12 @@ fun WideReaderMenu(
             },
             onSetReaderMode = setMangaReaderMode,
             onPrevChapterClicked = movePrevChapter,
-            onNextChapterClicked = moveNextChapter
+            onNextChapterClicked = moveNextChapter,
         )
     }
 
     Box(
-        Modifier.padding(start = sideMenuSize).fillMaxSize()
+        Modifier.padding(start = sideMenuSize).fillMaxSize(),
     ) {
         ReaderLayout(
             pages = pages,
@@ -326,7 +326,7 @@ fun WideReaderMenu(
             retry = retry,
             progress = progress,
             updateLastPageReadOffset = updateLastPageReadOffset,
-            requestPreloadChapter = requestPreloadChapter
+            requestPreloadChapter = requestPreloadChapter,
         )
         SideMenuButton(sideMenuOpen, onOpenSideMenuClicked = { setSideMenuOpen(true) })
     }
@@ -360,10 +360,10 @@ fun ThinReaderMenu(
     setMangaReaderMode: (String) -> Unit,
     movePrevChapter: () -> Unit,
     moveNextChapter: () -> Unit,
-    onCloseRequest: () -> Unit
+    onCloseRequest: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(
-        ModalBottomSheetValue.Hidden
+        ModalBottomSheetValue.Hidden,
     )
     val scope = rememberCoroutineScope()
     BackHandler(sheetState.isVisible) {
@@ -377,9 +377,9 @@ fun ThinReaderMenu(
             ReaderSheet(
                 readerModes = readerModes,
                 selectedMode = readerMode,
-                onSetReaderMode = setMangaReaderMode
+                onSetReaderMode = setMangaReaderMode,
             )
-        }
+        },
     ) {
         Box {
             ReaderLayout(
@@ -398,13 +398,13 @@ fun ThinReaderMenu(
                 retry = retry,
                 progress = progress,
                 updateLastPageReadOffset = updateLastPageReadOffset,
-                requestPreloadChapter = requestPreloadChapter
+                requestPreloadChapter = requestPreloadChapter,
             )
             AnimatedVisibility(
                 readerMenuOpen,
                 enter = slideInVertically { -it },
                 exit = slideOutVertically { -it },
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = Modifier.align(Alignment.TopCenter),
             ) {
                 Toolbar(
                     chapter.chapter.name,
@@ -419,9 +419,9 @@ fun ThinReaderMenu(
                                     Icons.Rounded.Public,
                                     doAction = {
                                         uriHandler.openUri(
-                                            chapter.chapter.realUrl ?: return@ActionItem
+                                            chapter.chapter.realUrl ?: return@ActionItem,
                                         )
-                                    }
+                                    },
                                 )
                             } else {
                                 null
@@ -433,10 +433,10 @@ fun ThinReaderMenu(
                                     scope.launch {
                                         sheetState.show()
                                     }
-                                }
-                            )
+                                },
+                            ),
                         ).toImmutableList()
-                    }
+                    },
                 )
             }
             ReaderExpandBottomMenu(
@@ -450,7 +450,7 @@ fun ThinReaderMenu(
                 navigate = navigate,
                 readerMenuOpen = readerMenuOpen,
                 movePrevChapter = movePrevChapter,
-                moveNextChapter = moveNextChapter
+                moveNextChapter = moveNextChapter,
             )
         }
     }
@@ -473,7 +473,7 @@ fun ReaderLayout(
     retry: (ReaderPage) -> Unit,
     progress: (ReaderItem) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit,
-    requestPreloadChapter: (ReaderChapter) -> Unit
+    requestPreloadChapter: (ReaderChapter) -> Unit,
 ) {
     val loadingModifier = Modifier.widthIn(max = 700.dp)
         .fillMaxWidth()
@@ -483,12 +483,12 @@ fun ReaderLayout(
             if (navigationViewer != null) {
                 it.navigationClickable(
                     navigation = navigationViewer,
-                    onClick = navigateTap
+                    onClick = navigateTap,
                 )
             } else {
                 it.clickable(
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = null
+                    indication = null,
                 ) { navigateTap(Navigation.MENU) }
             }
         }
@@ -516,7 +516,7 @@ fun ReaderLayout(
             retry = retry,
             progress = progress,
             updateLastPageReadOffset = updateLastPageReadOffset,
-            requestPreloadChapter = requestPreloadChapter
+            requestPreloadChapter = requestPreloadChapter,
         )
     } else {
         PagerReader(
@@ -529,7 +529,7 @@ fun ReaderLayout(
             pageEmitterHolder = pageEmitterHolder,
             retry = retry,
             progress = progress,
-            requestPreloadChapter = requestPreloadChapter
+            requestPreloadChapter = requestPreloadChapter,
         )
     }
 }
@@ -539,7 +539,7 @@ fun SideMenuButton(sideMenuOpen: Boolean, onOpenSideMenuClicked: () -> Unit) {
     AnimatedVisibility(
         !sideMenuOpen,
         enter = fadeIn() + slideInHorizontally(),
-        exit = fadeOut() + slideOutHorizontally()
+        exit = fadeOut() + slideOutHorizontally(),
     ) {
         IconButton(onOpenSideMenuClicked) {
             Icon(Icons.Rounded.ChevronRight, null)
@@ -558,7 +558,7 @@ fun ReaderImage(
     imageModifier: Modifier = Modifier.fillMaxSize(),
     loadingModifier: Modifier = imageModifier,
     contentScale: ContentScale = ContentScale.Fit,
-    retry: (Int) -> Unit
+    retry: (Int) -> Unit,
 ) {
     Crossfade(drawableHolder to status) { (drawableHolder, status) ->
         val decodeState = produceState<ReaderPage.ImageDecodeState?>(null, drawableHolder) {
@@ -576,7 +576,7 @@ fun ReaderImage(
                 modifier = imageModifier,
                 contentDescription = null,
                 contentScale = contentScale,
-                filterQuality = FilterQuality.High
+                filterQuality = FilterQuality.High,
             )
         } else {
             LoadingScreen(
@@ -594,7 +594,7 @@ fun ReaderImage(
                     ReaderPage.ImageDecodeState.UnknownDecoder -> "Unknown decoder"
                     ReaderPage.ImageDecodeState.FailedToGetSnapShot -> "Failed to get snapshot"
                     else -> null
-                }
+                },
             ) { retry(imageIndex) }
         }
     }
@@ -604,7 +604,7 @@ fun ReaderImage(
 fun ChapterSeparator(
     previousChapter: ReaderChapter?,
     nextChapter: ReaderChapter?,
-    requestPreloadChapter: (ReaderChapter) -> Unit
+    requestPreloadChapter: (ReaderChapter) -> Unit,
 ) {
     Box(Modifier.fillMaxWidth().height(350.dp), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

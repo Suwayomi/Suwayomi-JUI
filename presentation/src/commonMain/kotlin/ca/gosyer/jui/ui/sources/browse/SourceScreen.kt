@@ -68,7 +68,7 @@ class SourceScreen(val source: Source, private val initialQuery: String? = null)
             resetFiltersClicked = {
                 sourceVM.setUsingFilters(false)
                 filterVM.resetFilters()
-            }
+            },
         )
     }
 }

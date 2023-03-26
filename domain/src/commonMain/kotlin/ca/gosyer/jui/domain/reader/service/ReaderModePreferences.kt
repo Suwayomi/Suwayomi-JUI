@@ -54,7 +54,7 @@ class ReaderModePreferences(private val mode: String, private val preferenceStor
                 }
             } else {
                 0
-            }
+            },
         )
     }
 

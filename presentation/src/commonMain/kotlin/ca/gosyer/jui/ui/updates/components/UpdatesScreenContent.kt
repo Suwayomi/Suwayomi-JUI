@@ -93,7 +93,7 @@ fun UpdatesScreenContent(
     clearSelection: () -> Unit,
     onUpdateLibrary: () -> Unit,
     updateWebsocketStatus: WebsocketService.Status,
-    restartLibraryUpdates: () -> Unit
+    restartLibraryUpdates: () -> Unit,
 ) {
     BackHandler(inActionMode) {
         clearSelection()
@@ -111,8 +111,8 @@ fun UpdatesScreenContent(
             }
             .windowInsetsPadding(
                 WindowInsets.statusBars.add(
-                    WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-                )
+                    WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+                ),
             ),
         topBar = {
             val navigator = LocalNavigator.current
@@ -122,13 +122,13 @@ fun UpdatesScreenContent(
                     if (inActionMode) {
                         getActionModeActionItems(
                             selectAll = selectAll,
-                            invertSelection = invertSelection
+                            invertSelection = invertSelection,
                         )
                     } else {
                         getActionItems(
                             onUpdateLibrary,
                             updateWebsocketStatus,
-                            restartLibraryUpdates // todo set null if wide screen
+                            restartLibraryUpdates, // todo set null if wide screen
                         )
                     }
                 },
@@ -139,7 +139,7 @@ fun UpdatesScreenContent(
                         navigator?.pop()
                     }
                 },
-                closeIcon = if (inActionMode) Icons.Rounded.Close else ToolbarDefault
+                closeIcon = if (inActionMode) Icons.Rounded.Close else ToolbarDefault,
             )
         },
         bottomBar = {
@@ -152,10 +152,10 @@ fun UpdatesScreenContent(
                     bookmarkChapter = { bookmarkChapter(null) },
                     unBookmarkChapter = { unBookmarkChapter(null) },
                     deleteChapter = { deleteDownloadedChapter(null) },
-                    downloadChapters = { downloadChapter(null) }
-                )
+                    downloadChapters = { downloadChapter(null) },
+                ),
             )
-        }
+        },
     ) {
         if (isLoading || updates.isEmpty()) {
             LoadingScreen(isLoading)
@@ -167,9 +167,9 @@ fun UpdatesScreenContent(
                     state = state,
                     contentPadding = WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    ).asPaddingValues()
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ).asPaddingValues(),
                 ) {
                     itemsIndexed(updates) { index, item ->
                         LaunchedEffect(Unit) {
@@ -181,7 +181,7 @@ fun UpdatesScreenContent(
                             is UpdatesUI.Header -> Text(
                                 text = item.date,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
                             )
                             is UpdatesUI.Item -> {
                                 val manga = item.chapterDownloadItem.manga!!
@@ -202,7 +202,7 @@ fun UpdatesScreenContent(
                                     onClickCover = { openManga(manga.id) },
                                     onClickDownload = downloadChapter,
                                     onClickDeleteDownload = deleteDownloadedChapter,
-                                    onClickStopDownload = stopDownloadingChapter
+                                    onClickStopDownload = stopDownloadingChapter,
                                 )
                             }
                         }
@@ -216,10 +216,10 @@ fun UpdatesScreenContent(
                         .windowInsetsPadding(
                             WindowInsets.bottomNav.add(
                                 WindowInsets.navigationBars.only(
-                                    WindowInsetsSides.Bottom
-                                )
-                            )
-                        )
+                                    WindowInsetsSides.Bottom,
+                                ),
+                            ),
+                        ),
                 )
             }
         }
@@ -231,23 +231,23 @@ fun UpdatesScreenContent(
 private fun getActionItems(
     onUpdateLibrary: () -> Unit,
     updateWebsocketStatus: WebsocketService.Status? = null,
-    restartLibraryUpdates: (() -> Unit)? = null
+    restartLibraryUpdates: (() -> Unit)? = null,
 ): ImmutableList<ActionItem> {
     return listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_update_library),
             icon = Icons.Rounded.Refresh,
-            doAction = onUpdateLibrary
+            doAction = onUpdateLibrary,
         ),
         if (updateWebsocketStatus == WebsocketService.Status.STOPPED && restartLibraryUpdates != null) {
             ActionItem(
                 name = stringResource(MR.strings.action_restart_library),
                 overflowMode = OverflowMode.ALWAYS_OVERFLOW,
-                doAction = restartLibraryUpdates
+                doAction = restartLibraryUpdates,
             )
         } else {
             null
-        }
+        },
     ).toImmutableList()
 }
 
@@ -255,19 +255,19 @@ private fun getActionItems(
 @Stable
 private fun getActionModeActionItems(
     selectAll: () -> Unit,
-    invertSelection: () -> Unit
+    invertSelection: () -> Unit,
 ): ImmutableList<ActionItem> {
     return listOf(
         ActionItem(
             name = stringResource(MR.strings.action_select_all),
             icon = Icons.Rounded.SelectAll,
-            doAction = selectAll
+            doAction = selectAll,
         ),
         ActionItem(
             name = stringResource(MR.strings.action_select_inverse),
             icon = Icons.Rounded.FlipToBack,
-            doAction = invertSelection
-        )
+            doAction = invertSelection,
+        ),
     ).toImmutableList()
 }
 
@@ -280,38 +280,38 @@ private fun getBottomActionItems(
     bookmarkChapter: () -> Unit,
     unBookmarkChapter: () -> Unit,
     deleteChapter: () -> Unit,
-    downloadChapters: () -> Unit
+    downloadChapters: () -> Unit,
 ): ImmutableList<BottomActionItem> {
     return listOfNotNull(
         BottomActionItem(
             name = stringResource(MR.strings.action_bookmark),
             icon = Icons.Rounded.BookmarkAdd,
-            onClick = bookmarkChapter
+            onClick = bookmarkChapter,
         ).takeIf { selectedItems.fastAny { !it.chapter.bookmarked } },
         BottomActionItem(
             name = stringResource(MR.strings.action_remove_bookmark),
             icon = Icons.Rounded.BookmarkRemove,
-            onClick = unBookmarkChapter
+            onClick = unBookmarkChapter,
         ).takeIf { selectedItems.fastAny { it.chapter.bookmarked } },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_as_read),
             icon = Icons.Rounded.DoneAll,
-            onClick = markRead
+            onClick = markRead,
         ).takeIf { selectedItems.fastAny { !it.chapter.read } },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_as_unread),
             icon = Icons.Rounded.RemoveDone,
-            onClick = markUnread
+            onClick = markUnread,
         ).takeIf { selectedItems.fastAny { it.chapter.read } },
         BottomActionItem(
             name = stringResource(MR.strings.action_download),
             icon = Icons.Rounded.Download,
-            onClick = downloadChapters
+            onClick = downloadChapters,
         ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.NotDownloaded } },
         BottomActionItem(
             name = stringResource(MR.strings.action_delete),
             icon = Icons.Rounded.Delete,
-            onClick = deleteChapter
-        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } }
+            onClick = deleteChapter,
+        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } },
     ).toImmutableList()
 }

@@ -48,7 +48,7 @@ interface UiComponent {
     @Provides
     fun getHooks(viewModelComponent: ViewModelComponent) = arrayOf(
         LocalViewModels provides viewModelComponent,
-        LocalImageLoader provides imageLoader
+        LocalImageLoader provides imageLoader,
     )
 }
 

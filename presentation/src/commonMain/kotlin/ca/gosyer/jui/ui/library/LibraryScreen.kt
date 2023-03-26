@@ -52,7 +52,7 @@ class LibraryScreen : BaseScreen() {
             showLanguage = vm.languageBadges.collectAsState().value,
             showLocal = vm.localBadges.collectAsState().value,
             updateWebsocketStatus = updatesVM.serviceStatus.collectAsState().value,
-            restartLibraryUpdates = updatesVM::restartLibraryUpdates
+            restartLibraryUpdates = updatesVM::restartLibraryUpdates,
         )
     }
 }

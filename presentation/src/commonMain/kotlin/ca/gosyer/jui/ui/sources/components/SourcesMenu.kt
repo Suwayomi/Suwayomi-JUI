@@ -57,7 +57,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 expect fun Modifier.sourceSideMenuItem(
     onSourceTabClick: () -> Unit,
-    onSourceCloseTabClick: () -> Unit
+    onSourceCloseTabClick: () -> Unit,
 ): Modifier
 
 @Composable
@@ -66,7 +66,7 @@ fun SourcesMenu() {
     BoxWithConstraints {
         if (maxWidth > 720.dp) {
             SourcesNavigator(
-                homeScreenHolder
+                homeScreenHolder,
             ) { navigator ->
                 Row {
                     SourcesSideMenu(
@@ -80,7 +80,7 @@ fun SourcesMenu() {
                         },
                         onCloseSourceTabClick = {
                             navigator.remove(it.source)
-                        }
+                        },
                     )
 
                     CurrentSource()
@@ -98,7 +98,7 @@ fun SourcesMenu() {
 fun SourcesSideMenu(
     sourceTabs: ImmutableList<SourceNavigatorScreen>,
     onSourceTabClick: (SourceNavigatorScreen) -> Unit,
-    onCloseSourceTabClick: (SourceNavigatorScreen.SourceScreen) -> Unit
+    onCloseSourceTabClick: (SourceNavigatorScreen.SourceScreen) -> Unit,
 ) {
     Surface(elevation = 1.dp) {
         Box {
@@ -108,9 +108,9 @@ fun SourcesSideMenu(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 items(sourceTabs) { screen ->
                     TooltipArea(
@@ -118,7 +118,7 @@ fun SourcesSideMenu(
                             Surface(
                                 modifier = Modifier.shadow(4.dp),
                                 shape = RoundedCornerShape(4.dp),
-                                elevation = 4.dp
+                                elevation = 4.dp,
                             ) {
                                 Text(
                                     when (screen) {
@@ -126,14 +126,14 @@ fun SourcesSideMenu(
                                         SourceNavigatorScreen.SearchScreen -> stringResource(MR.strings.location_global_search)
                                         is SourceNavigatorScreen.SourceScreen -> screen.source.name
                                     },
-                                    modifier = Modifier.padding(10.dp)
+                                    modifier = Modifier.padding(10.dp),
                                 )
                             }
                         },
                         modifier = Modifier.size(64.dp),
                         tooltipPlacement = CursorPoint(
-                            offset = DpOffset(0.dp, 16.dp)
-                        )
+                            offset = DpOffset(0.dp, 16.dp),
+                        ),
                     ) {
                         Box(Modifier.fillMaxSize()) {
                             val modifier = Modifier
@@ -145,7 +145,7 @@ fun SourcesSideMenu(
                                         if (screen is SourceNavigatorScreen.SourceScreen) {
                                             onCloseSourceTabClick(screen)
                                         }
-                                    }
+                                    },
                                 )
                                 .requiredSize(50.dp)
                                 .align(Alignment.Center)
@@ -153,19 +153,19 @@ fun SourcesSideMenu(
                                 SourceNavigatorScreen.HomeScreen -> Icon(
                                     imageVector = Icons.Rounded.Home,
                                     contentDescription = stringResource(MR.strings.sources_home),
-                                    modifier = modifier
+                                    modifier = modifier,
                                 )
                                 SourceNavigatorScreen.SearchScreen -> Icon(
                                     imageVector = Icons.Rounded.Search,
                                     contentDescription = stringResource(MR.strings.location_global_search),
-                                    modifier = modifier
+                                    modifier = modifier,
                                 )
                                 is SourceNavigatorScreen.SourceScreen -> Box(Modifier.align(Alignment.Center)) {
                                     ImageLoaderImage(
                                         data = screen.source,
                                         contentDescription = screen.source.displayName,
                                         modifier = modifier,
-                                        filterQuality = FilterQuality.Medium
+                                        filterQuality = FilterQuality.Medium,
                                     )
                                 }
                             }
@@ -181,10 +181,10 @@ fun SourcesSideMenu(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }

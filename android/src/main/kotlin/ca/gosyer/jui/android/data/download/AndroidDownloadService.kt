@@ -115,7 +115,8 @@ class AndroidDownloadService : Service() {
             log.info { "using an intent with action $action" }
             when (action) {
                 Actions.START.name,
-                Actions.RESTART.name -> startWebsocket()
+                Actions.RESTART.name,
+                -> startWebsocket()
                 Actions.STOP.name -> stopSelf()
                 else -> log.info { "This should never happen. No action in the received intent" }
             }
@@ -158,7 +159,7 @@ class AndroidDownloadService : Service() {
                                 if (serverUrl.protocol == URLProtocol.HTTPS) {
                                     url.protocol = URLProtocol.WSS
                                 }
-                            }
+                            },
                         ) {
                             errorConnectionCount = 0
                             status.value = Status.RUNNING
@@ -208,14 +209,14 @@ class AndroidDownloadService : Service() {
                     MR.strings.chapter_downloading_progress
                         .format(
                             current,
-                            max
+                            max,
                         )
-                        .toString(this@AndroidDownloadService)
+                        .toString(this@AndroidDownloadService),
                 )
             }.build()
             notificationManager.notify(
                 Notifications.ID_DOWNLOADER_DOWNLOADING,
-                notification
+                notification,
             )
         } else {
             notificationManager.cancel(Notifications.ID_DOWNLOADER_DOWNLOADING)

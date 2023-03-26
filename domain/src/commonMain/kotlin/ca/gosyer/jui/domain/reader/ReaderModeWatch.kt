@@ -21,8 +21,8 @@ class ReaderModeWatch(
     private val scope: CoroutineScope,
     private val mode: StateFlow<String> = readerPreferences.mode().stateIn(scope),
     initialPreferences: ReaderModePreferences = readerPreferences.getMode(
-        mode.value
-    )
+        mode.value,
+    ),
 ) {
     private val preferenceJobs = mutableListOf<Job>()
     val direction = MutableStateFlow(initialPreferences.direction().get())

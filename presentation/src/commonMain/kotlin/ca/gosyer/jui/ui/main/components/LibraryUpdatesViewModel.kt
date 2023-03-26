@@ -21,7 +21,7 @@ import org.lighthousegames.logging.logging
 class LibraryUpdatesViewModel @Inject constructor(
     private val libraryUpdateService: LibraryUpdateService,
     private val contextWrapper: ContextWrapper,
-    @Assisted standalone: Boolean
+    @Assisted standalone: Boolean,
 ) : ViewModel(contextWrapper) {
     private val uiScope = if (standalone) {
         MainScope()

@@ -21,19 +21,19 @@ import kotlinx.coroutines.flow.Flow
 interface CategoryRepository {
     @GET("api/v1/manga/{mangaId}/category/")
     fun getMangaCategories(
-        @Path("mangaId") mangaId: Long
+        @Path("mangaId") mangaId: Long,
     ): Flow<List<Category>>
 
     @GET("api/v1/manga/{mangaId}/category/{categoryId}")
     fun addMangaToCategory(
         @Path("mangaId") mangaId: Long,
-        @Path("categoryId") categoryId: Long
+        @Path("categoryId") categoryId: Long,
     ): Flow<HttpResponse>
 
     @DELETE("api/v1/manga/{mangaId}/category/{categoryId}")
     fun removeMangaFromCategory(
         @Path("mangaId") mangaId: Long,
-        @Path("categoryId") categoryId: Long
+        @Path("categoryId") categoryId: Long,
     ): Flow<HttpResponse>
 
     @GET("api/v1/category/")
@@ -42,31 +42,31 @@ interface CategoryRepository {
     @FormUrlEncoded
     @POST("api/v1/category/")
     fun createCategory(
-        @Field("name") name: String
+        @Field("name") name: String,
     ): Flow<HttpResponse>
 
     @FormUrlEncoded
     @PATCH("api/v1/category/{categoryId}")
     fun modifyCategory(
         @Path("categoryId") categoryId: Long,
-        @Field("name") name: String
+        @Field("name") name: String,
     ): Flow<HttpResponse>
 
     @FormUrlEncoded
     @PATCH("api/v1/category/reorder")
     fun reorderCategory(
         @Field("to") to: Int,
-        @Field("from") from: Int
+        @Field("from") from: Int,
     ): Flow<HttpResponse>
 
     @DELETE("api/v1/category/{categoryId}")
     fun deleteCategory(
-        @Path("categoryId") categoryId: Long
+        @Path("categoryId") categoryId: Long,
     ): Flow<HttpResponse>
 
     @GET("api/v1/category/{categoryId}")
     fun getMangaFromCategory(
-        @Path("categoryId") categoryId: Long
+        @Path("categoryId") categoryId: Long,
     ): Flow<List<Manga>>
 
     @FormUrlEncoded
@@ -74,6 +74,6 @@ interface CategoryRepository {
     fun updateCategoryMeta(
         @Path("categoryId") categoryId: Long,
         @Field("key") key: String,
-        @Field("value") value: String
+        @Field("value") value: String,
     ): Flow<HttpResponse>
 }

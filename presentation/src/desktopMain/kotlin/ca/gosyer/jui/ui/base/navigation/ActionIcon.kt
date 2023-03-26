@@ -21,7 +21,7 @@ actual fun ActionIcon(onClick: () -> Unit, contentDescription: String, icon: Ima
     BoxWithTooltipSurface(
         {
             Text(contentDescription, modifier = Modifier.padding(10.dp))
-        }
+        },
     ) {
         IconButton(onClick = onClick) {
             Icon(icon, contentDescription)

@@ -51,7 +51,7 @@ expect fun Modifier.chapterItemModifier(
     unBookmarkChapter: (() -> Unit)?,
     markPreviousAsRead: () -> Unit,
     onSelectChapter: (() -> Unit)?,
-    onUnselectChapter: (() -> Unit)?
+    onUnselectChapter: (() -> Unit)?,
 ): Modifier
 
 @Composable
@@ -68,7 +68,7 @@ fun ChapterItem(
     onClickStopDownload: (Int) -> Unit,
     onClickDeleteChapter: (Long) -> Unit,
     onSelectChapter: (Long) -> Unit,
-    onUnselectChapter: (Long) -> Unit
+    onUnselectChapter: (Long) -> Unit,
 ) {
     val chapter = chapterDownload.chapter
     val isSelected by chapterDownload.isSelected.collectAsState()
@@ -85,9 +85,9 @@ fun ChapterItem(
                 unBookmarkChapter = { unBookmarkChapter(chapter.id) }.takeIf { chapter.bookmarked },
                 markPreviousAsRead = { markPreviousAsRead(chapter.index) },
                 onSelectChapter = { onSelectChapter(chapter.id) }.takeUnless { isSelected },
-                onUnselectChapter = { onUnselectChapter(chapter.id) }.takeIf { isSelected }
+                onUnselectChapter = { onUnselectChapter(chapter.id) }.takeIf { isSelected },
             )
-            .padding(4.dp)
+            .padding(4.dp),
     ) {
         val textColor = if (chapter.bookmarked && !chapter.read) {
             MaterialTheme.colors.primary
@@ -96,10 +96,10 @@ fun ChapterItem(
         }
 
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(
-                Modifier.padding(4.dp).width(this@BoxWithConstraints.maxWidth - 60.dp)
+                Modifier.padding(4.dp).width(this@BoxWithConstraints.maxWidth - 60.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     var textHeight by remember { mutableStateOf(0) }
@@ -109,7 +109,7 @@ fun ChapterItem(
                             contentDescription = stringResource(MR.strings.action_filter_bookmarked),
                             modifier = Modifier
                                 .sizeIn(maxHeight = with(LocalDensity.current) { textHeight.toDp() - 2.dp }),
-                            tint = MaterialTheme.colors.primary
+                            tint = MaterialTheme.colors.primary,
                         )
                         Spacer(modifier = Modifier.width(2.dp))
                     }
@@ -118,12 +118,12 @@ fun ChapterItem(
                         maxLines = 1,
                         style = MaterialTheme.typography.h6,
                         color = textColor.copy(
-                            alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.high
+                            alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.high,
                         ),
                         overflow = TextOverflow.Ellipsis,
                         onTextLayout = {
                             textHeight = it.size.height
-                        }
+                        },
                     )
                 }
                 val subtitleStr = buildAnnotatedString {
@@ -135,8 +135,8 @@ fun ChapterItem(
                         append(
                             AnnotatedString(
                                 stringResource(MR.strings.page_progress, (chapter.lastPageRead + 1)),
-                                SpanStyle(color = textColor.copy(alpha = ContentAlpha.disabled))
-                            )
+                                SpanStyle(color = textColor.copy(alpha = ContentAlpha.disabled)),
+                            ),
                         )
                     }
                     if (!chapter.scanlator.isNullOrBlank()) {
@@ -148,8 +148,8 @@ fun ChapterItem(
                     subtitleStr,
                     style = MaterialTheme.typography.body2,
                     color = textColor.copy(
-                        alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.medium
-                    )
+                        alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.medium,
+                    ),
                 )
             }
 
@@ -157,7 +157,7 @@ fun ChapterItem(
                 chapterDownload,
                 { onClickDownload(it.index) },
                 { onClickStopDownload(it.index) },
-                { onClickDeleteChapter(it.id) }
+                { onClickDeleteChapter(it.id) },
             )
         }
     }

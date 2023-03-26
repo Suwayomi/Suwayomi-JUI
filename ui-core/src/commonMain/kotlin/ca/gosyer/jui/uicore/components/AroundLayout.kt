@@ -19,7 +19,7 @@ fun AroundLayout(
     modifier: Modifier = Modifier,
     startLayout: @Composable () -> Unit,
     endLayout: @Composable () -> Unit,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     SubcomposeLayout(modifier) { constraints ->
         val layoutWidth = constraints.maxWidth

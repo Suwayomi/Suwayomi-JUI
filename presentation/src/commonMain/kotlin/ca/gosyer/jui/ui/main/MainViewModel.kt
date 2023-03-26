@@ -16,7 +16,7 @@ import me.tatarka.inject.annotations.Inject
 
 class MainViewModel @Inject constructor(
     uiPreferences: UiPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()
 

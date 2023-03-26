@@ -63,7 +63,7 @@ fun MangaItem(manga: Manga) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Cover(
                     manga,
-                    Modifier.heightIn(120.dp, 300.dp)
+                    Modifier.heightIn(120.dp, 300.dp),
                 )
                 Spacer(Modifier.height(16.dp))
                 MangaInfo(manga)
@@ -81,9 +81,9 @@ private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
         errorModifier = modifier then Modifier
             .aspectRatio(
                 ratio = mangaAspectRatio,
-                matchHeightConstraintsFirst = true
+                matchHeightConstraintsFirst = true,
             ),
-        filterQuality = FilterQuality.Medium
+        filterQuality = FilterQuality.Medium,
     )
 }
 
@@ -94,14 +94,14 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
             Text(
                 text = manga.title,
                 fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Spacer(Modifier.height(4.dp))
             if (!manga.author.isNullOrEmpty()) {
                 Text(
                     text = manga.author!!,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 )
                 Spacer(Modifier.height(2.dp))
             }
@@ -109,7 +109,7 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
                 Text(
                     text = manga.artist!!,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 )
                 Spacer(Modifier.height(2.dp))
             }
@@ -117,7 +117,7 @@ private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(manga.status.res) + " • " + sourceText,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
             Spacer(Modifier.height(8.dp))
             if (!manga.description.isNullOrEmpty()) {
@@ -141,19 +141,19 @@ private fun Chip(text: String) {
         shape = RoundedCornerShape(50),
         modifier = Modifier.defaultMinSize(minHeight = 32.dp)
             .height(IntrinsicSize.Min),
-        contentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.10F)
+        contentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.10F),
     ) {
         Box(
             modifier = Modifier.padding(start = 8.dp, end = 6.dp)
                 .fillMaxHeight(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = text,
                 style = MaterialTheme.typography.body2,
                 fontSize = 14.sp,
                 color = MaterialTheme.colors.onSurface.copy(alpha = 0.85F),
-                maxLines = 1
+                maxLines = 1,
             )
         }
     }
@@ -164,7 +164,7 @@ fun CategorySelectDialog(
     state: MaterialDialogState,
     categories: ImmutableList<Category>,
     oldCategories: ImmutableList<Category>,
-    onPositiveClick: (List<Category>, List<Category>) -> Unit
+    onPositiveClick: (List<Category>, List<Category>) -> Unit,
 ) {
     MaterialDialog(
         state,
@@ -172,7 +172,7 @@ fun CategorySelectDialog(
             positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties()
+        properties = getMaterialDialogProperties(),
     ) {
         title(stringResource(MR.strings.select_categories))
 
@@ -186,14 +186,14 @@ fun CategorySelectDialog(
                 }.toSet(),
                 onCheckedChange = { indexes ->
                     onPositiveClick(indexes.map { categories[it] }, oldCategories)
-                }
+                },
             )
             Box(Modifier.matchParentSize().height(IntrinsicSize.Min)) {
                 VerticalScrollbar(
                     rememberScrollbarAdapter(listState),
                     Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .scrollbarPadding()
+                        .scrollbarPadding(),
                 )
             }
         }

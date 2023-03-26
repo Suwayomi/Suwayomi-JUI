@@ -14,7 +14,7 @@ import kotlinx.serialization.modules.SerializersModule
  * providing preference instances to classes that may not use them at all.
  */
 class LazyPreferenceStore(
-    private val lazyStore: Lazy<PreferenceStore>
+    private val lazyStore: Lazy<PreferenceStore>,
 ) : PreferenceStore {
 
     /**
@@ -67,7 +67,7 @@ class LazyPreferenceStore(
         key: String,
         defaultValue: T,
         serializer: (T) -> String,
-        deserializer: (String) -> T
+        deserializer: (String) -> T,
     ): Preference<T> {
         return lazyStore.value.getObject(key, defaultValue, serializer, deserializer)
     }
@@ -76,7 +76,7 @@ class LazyPreferenceStore(
         key: String,
         defaultValue: T,
         serializer: KSerializer<T>,
-        serializersModule: SerializersModule
+        serializersModule: SerializersModule,
     ): Preference<T> {
         return lazyStore.value.getJsonObject(key, defaultValue, serializer)
     }

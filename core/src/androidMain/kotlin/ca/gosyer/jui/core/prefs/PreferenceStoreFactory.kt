@@ -16,9 +16,9 @@ actual class PreferenceStoreFactory @Inject constructor(private val context: Con
             SharedPreferencesSettings(
                 context.getSharedPreferences(
                     names.joinToString(separator = "_"),
-                    Context.MODE_PRIVATE
-                )
-            )
+                    Context.MODE_PRIVATE,
+                ),
+            ),
         )
     }
 }

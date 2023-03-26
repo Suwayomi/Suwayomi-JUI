@@ -26,7 +26,7 @@ class ReaderPreferences(private val preferenceStore: PreferenceStore, private va
         return preferenceStore.getJsonObject(
             "modes",
             DefaultReaderMode.values().map { it.res },
-            ListSerializer(String.serializer())
+            ListSerializer(String.serializer()),
         )
     }
 

@@ -10,5 +10,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DownloadEnqueue(
-    val chapterIds: List<Long>
+    val chapterIds: List<Long>,
 )

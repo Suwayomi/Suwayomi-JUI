@@ -13,7 +13,7 @@ import me.tatarka.inject.annotations.Inject
 
 class RunMigrations @Inject constructor(
     private val migrationPreferences: MigrationPreferences,
-    private val readerPreferences: ReaderPreferences
+    private val readerPreferences: ReaderPreferences,
 ) {
 
     fun runMigrations() {

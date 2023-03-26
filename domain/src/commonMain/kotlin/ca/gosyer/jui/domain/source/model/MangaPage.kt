@@ -14,5 +14,5 @@ import kotlinx.serialization.Serializable
 @Stable
 data class MangaPage(
     val mangaList: List<Manga>,
-    val hasNextPage: Boolean
+    val hasNextPage: Boolean,
 )

@@ -26,7 +26,7 @@ import kotlinx.coroutines.yield
  */
 internal open class ProcessChannel<T>(
     internal val inChannel: Channel<T>,
-    internal val outChannel: Channel<T>
+    internal val outChannel: Channel<T>,
 ) : Channel<T> {
     @ExperimentalCoroutinesApi
     override val isClosedForReceive: Boolean
@@ -46,7 +46,7 @@ internal open class ProcessChannel<T>(
 
     @Deprecated(
         "Since 1.2.0, binary compatibility with versions <= 1.1.x",
-        level = DeprecationLevel.HIDDEN
+        level = DeprecationLevel.HIDDEN,
     )
     override fun cancel(cause: Throwable?): Boolean {
         outChannel.cancel()
@@ -67,14 +67,14 @@ internal open class ProcessChannel<T>(
     @Deprecated(
         "Deprecated in the favour of 'trySend' method",
         replaceWith = ReplaceWith("trySend(element).isSuccess"),
-        level = DeprecationLevel.ERROR
+        level = DeprecationLevel.ERROR,
     )
     override fun offer(element: T): Boolean = inChannel.trySend(element).isSuccess
 
     @Deprecated(
         "Deprecated in the favour of 'tryReceive'. Please note that the provided replacement does not rethrow channel's close cause as 'poll' did, for the precise replacement please refer to the 'poll' documentation",
         replaceWith = ReplaceWith("tryReceive().getOrNull()"),
-        level = DeprecationLevel.ERROR
+        level = DeprecationLevel.ERROR,
     )
     override fun poll(): T? = outChannel.tryReceive().getOrNull()
 
@@ -101,7 +101,7 @@ internal open class ProcessChannel<T>(
 internal class PriorityChannelImpl<T>(
     private val maxCapacity: Int,
     scope: CoroutineScope,
-    comparator: Comparator<T>
+    comparator: Comparator<T>,
 ) : ProcessChannel<T>(
     // why a rendezvous channel should be the input channel?
     // because we buffer and sort the messages in the co-routine
@@ -111,7 +111,7 @@ internal class PriorityChannelImpl<T>(
     // output channel is rendezvous channel because we may still
     // get higher priority input meanwhile and we will send that
     // when output consumer is ready to take it
-    outChannel = Channel(Channel.RENDEZVOUS)
+    outChannel = Channel(Channel.RENDEZVOUS),
 ) {
     private val buffer = PriorityQueue(comparator)
 
@@ -198,5 +198,5 @@ internal class PriorityChannelImpl<T>(
 fun <T> PriorityChannel(
     maxCapacity: Int = 4096,
     scope: CoroutineScope,
-    comparator: Comparator<T>
+    comparator: Comparator<T>,
 ): Channel<T> = PriorityChannelImpl(maxCapacity, scope, comparator)

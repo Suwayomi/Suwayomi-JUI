@@ -13,5 +13,5 @@ import kotlinx.serialization.Serializable
 @Stable
 enum class DownloaderStatus {
     Started,
-    Stopped
+    Stopped,
 }

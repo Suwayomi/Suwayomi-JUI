@@ -76,7 +76,7 @@ class MangaScreenViewModel @Inject constructor(
     private val batchChapterDownload: BatchChapterDownload,
     uiPreferences: UiPreferences,
     contextWrapper: ContextWrapper,
-    @Assisted private val params: Params
+    @Assisted private val params: Params,
 ) : ViewModel(contextWrapper) {
     private val _manga = MutableStateFlow<Manga?>(null)
     val manga = _manga.asStateFlow()
@@ -346,7 +346,7 @@ class MangaScreenViewModel @Inject constructor(
             batchChapterDownload.await(
                 _chapters.value.filter { !it.chapter.read && it.downloadState.value == ChapterDownloadState.NotDownloaded }
                     .map { it.chapter.id }
-                    .takeLast(next)
+                    .takeLast(next),
             )
         }
     }
@@ -355,7 +355,7 @@ class MangaScreenViewModel @Inject constructor(
         scope.launch {
             batchChapterDownload.await(
                 _chapters.value.filter { !it.chapter.read && it.downloadState.value == ChapterDownloadState.NotDownloaded }
-                    .map { it.chapter.id }
+                    .map { it.chapter.id },
             )
         }
     }
@@ -365,7 +365,7 @@ class MangaScreenViewModel @Inject constructor(
             batchChapterDownload.await(
                 _chapters.value
                     .filter { it.downloadState.value == ChapterDownloadState.NotDownloaded }
-                    .map { it.chapter.id }
+                    .map { it.chapter.id },
             )
         }
     }

@@ -21,7 +21,7 @@ class ReaderScreen(val chapterIndex: Int, val mangaId: Long) : Screen {
         ReaderMenu(
             chapterIndex,
             mangaId,
-            navigator::pop
+            navigator::pop,
         )
     }
 }
@@ -30,7 +30,7 @@ actual class ReaderLauncher(private val navigator: Navigator?) {
 
     actual fun launch(
         chapterIndex: Int,
-        mangaId: Long
+        mangaId: Long,
     ) {
         navigator?.push(ReaderScreen(chapterIndex, mangaId))
     }

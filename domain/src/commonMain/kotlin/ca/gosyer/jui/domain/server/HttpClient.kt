@@ -52,12 +52,12 @@ fun httpClient(serverPreferences: ServerPreferences, json: Json): Http {
                 Proxy.HTTP_PROXY -> ProxyBuilder.http(
                     URLBuilder(
                         host = serverPreferences.proxyHttpHost().get(),
-                        port = serverPreferences.proxyHttpPort().get()
-                    ).build()
+                        port = serverPreferences.proxyHttpPort().get(),
+                    ).build(),
                 )
                 Proxy.SOCKS_PROXY -> ProxyBuilder.socks(
                     serverPreferences.proxySocksHost().get(),
-                    serverPreferences.proxySocksPort().get()
+                    serverPreferences.proxySocksPort().get(),
                 )
             }
         }
@@ -71,7 +71,7 @@ fun httpClient(serverPreferences: ServerPreferences, json: Json): Http {
                     credentials {
                         BasicAuthCredentials(
                             serverPreferences.authUsername().get(),
-                            serverPreferences.authPassword().get()
+                            serverPreferences.authPassword().get(),
                         )
                     }
                 }
@@ -81,7 +81,7 @@ fun httpClient(serverPreferences: ServerPreferences, json: Json): Http {
                     credentials {
                         DigestAuthCredentials(
                             serverPreferences.authUsername().get(),
-                            serverPreferences.authPassword().get()
+                            serverPreferences.authPassword().get(),
                         )
                     }
                 }

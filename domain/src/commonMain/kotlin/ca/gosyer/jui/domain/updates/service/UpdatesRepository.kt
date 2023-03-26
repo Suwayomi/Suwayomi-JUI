@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 interface UpdatesRepository {
     @GET("api/v1/update/recentChapters/{pageNum}/")
     fun getRecentUpdates(
-        @Path("pageNum") pageNum: Int
+        @Path("pageNum") pageNum: Int,
     ): Flow<Updates>
 
     @POST("api/v1/update/fetch/")
@@ -27,6 +27,6 @@ interface UpdatesRepository {
     @POST("api/v1/update/fetch/")
     @FormUrlEncoded
     fun updateCategory(
-        @Field("category") categoryId: Long
+        @Field("category") categoryId: Long,
     ): Flow<HttpResponse>
 }

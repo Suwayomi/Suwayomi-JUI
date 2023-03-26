@@ -24,7 +24,7 @@ actual interface ViewModelComponent : SharedViewModelComponent
 @Composable
 actual inline fun <reified VM : ViewModel> Screen.realStateViewModel(
     tag: String?,
-    crossinline factory: @DisallowComposableCalls ViewModelComponent.(SavedStateHandle) -> VM
+    crossinline factory: @DisallowComposableCalls ViewModelComponent.(SavedStateHandle) -> VM,
 ): VM {
     val viewModelFactory = LocalViewModels.current
     val lifecycle = LocalLifecycleOwner.current as AndroidScreenLifecycleOwner

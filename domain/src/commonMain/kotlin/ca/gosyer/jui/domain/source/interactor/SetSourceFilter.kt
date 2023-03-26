@@ -48,22 +48,22 @@ class SetSourceFilter @Inject constructor(private val sourceRepository: SourceRe
 
     fun asFlow(source: Source, filterIndex: Int, filter: Any) = sourceRepository.setFilter(
         source.id,
-        SourceFilterChange(filterIndex, filter)
+        SourceFilterChange(filterIndex, filter),
     )
 
     fun asFlow(sourceId: Long, filterIndex: Int, filter: Any) = sourceRepository.setFilter(
         sourceId,
-        SourceFilterChange(filterIndex, filter)
+        SourceFilterChange(filterIndex, filter),
     )
 
     fun asFlow(source: Source, filterIndex: Int, childFilterIndex: Int, filter: Any) = sourceRepository.setFilter(
         source.id,
-        SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter)))
+        SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter))),
     )
 
     fun asFlow(sourceId: Long, filterIndex: Int, childFilterIndex: Int, filter: Any) = sourceRepository.setFilter(
         sourceId,
-        SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter)))
+        SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter))),
     )
 
     companion object {

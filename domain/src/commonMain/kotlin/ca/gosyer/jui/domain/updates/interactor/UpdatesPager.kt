@@ -41,7 +41,7 @@ class UpdatesPager @Inject constructor(
     private val getRecentUpdates: GetRecentUpdates,
     private val getManga: GetManga,
     private val getChapter: GetChapter,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
     private val updatesMutex = Mutex()
 
@@ -53,8 +53,8 @@ class UpdatesPager @Inject constructor(
                 Updates.Date(
                     Instant.fromEpochSeconds(first.fetchedAt)
                         .toLocalDateTime(TimeZone.currentSystemDefault())
-                        .date
-                )
+                        .date,
+                ),
             )
         } + newUpdates.fold(emptyList()) { list, (manga, chapter) ->
             val date = (list.lastOrNull() as? Updates.Update)?.let {
@@ -136,14 +136,14 @@ class UpdatesPager @Inject constructor(
     val updates = combine(
         foldedUpdates,
         changedManga,
-        changedChapters
+        changedChapters,
     ) { updates, changedManga, changedChapters ->
         updates.map {
             when (it) {
                 is Updates.Date -> it
                 is Updates.Update -> it.copy(
                     manga = changedManga[it.manga.id] ?: it.manga,
-                    chapter = changedChapters[it.chapter.id] ?: it.chapter
+                    chapter = changedChapters[it.chapter.id] ?: it.chapter,
                 )
             }
         }
@@ -165,7 +165,7 @@ class UpdatesPager @Inject constructor(
 
     fun loadNextPage(
         onComplete: (() -> Unit)? = null,
-        onError: suspend (Throwable) -> Unit
+        onError: suspend (Throwable) -> Unit,
     ) {
         launch {
             if (hasNextPage.value && updatesMutex.tryLock()) {

@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.asStateFlow
 @Stable
 data class ChapterDownloadItem(
     val manga: Manga?,
-    val chapter: Chapter
+    val chapter: Chapter,
 ) {
     private val _isSelected = MutableStateFlow(false)
     val isSelected = _isSelected.asStateFlow()
@@ -57,7 +57,7 @@ data class ChapterDownloadItem(
         when (chapter.downloaded) {
             true -> ChapterDownloadState.Downloaded
             false -> ChapterDownloadState.NotDownloaded
-        }
+        },
     )
     val downloadState = _downloadState.asStateFlow()
 
@@ -99,7 +99,7 @@ data class ChapterDownloadItem(
 enum class ChapterDownloadState {
     NotDownloaded,
     Downloading,
-    Downloaded
+    Downloaded,
 }
 
 @Composable
@@ -107,7 +107,7 @@ fun ChapterDownloadIcon(
     chapter: ChapterDownloadItem,
     onClickDownload: (Chapter) -> Unit,
     onClickStop: (Chapter) -> Unit,
-    onClickDelete: (Chapter) -> Unit
+    onClickDelete: (Chapter) -> Unit,
 ) {
     val downloadChapter by chapter.downloadChapterFlow.collectAsState()
     val downloadState by chapter.downloadState.collectAsState()
@@ -116,13 +116,13 @@ fun ChapterDownloadIcon(
         ChapterDownloadState.Downloaded -> {
             DownloadedIconButton(
                 chapter.chapter.mangaId to chapter.chapter.index,
-                onClick = { onClickDelete(chapter.chapter) }
+                onClick = { onClickDelete(chapter.chapter) },
             )
         }
         ChapterDownloadState.Downloading -> {
             DownloadingIconButton(
                 downloadChapter,
-                onClick = { onClickStop(chapter.chapter) }
+                onClick = { onClickStop(chapter.chapter) },
             )
         }
         ChapterDownloadState.NotDownloaded -> {
@@ -135,11 +135,11 @@ fun ChapterDownloadIcon(
 private fun DownloadIconButton(onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.fillMaxHeight()
+        modifier = Modifier.fillMaxHeight(),
     ) {
         Surface(
             shape = CircleShape,
-            border = BorderStroke(2.dp, LocalContentColor.current.copy(alpha = ContentAlpha.disabled))
+            border = BorderStroke(2.dp, LocalContentColor.current.copy(alpha = ContentAlpha.disabled)),
         ) {
             Icon(
                 Icons.Rounded.ArrowDownward,
@@ -147,7 +147,7 @@ private fun DownloadIconButton(onClick: () -> Unit) {
                 Modifier
                     .size(22.dp)
                     .padding(2.dp),
-                LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+                LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
             )
         }
     }
@@ -161,7 +161,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
             DropdownMenuItem(onClick = onClick) {
                 Text(stringResource(MR.strings.action_cancel))
             }
-        }
+        },
     ) {
         when (downloadChapter?.state) {
             null, DownloadState.Queued -> CircularProgressIndicator(
@@ -169,12 +169,12 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                     .size(26.dp)
                     .padding(2.dp),
                 LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-                2.dp
+                2.dp,
             )
             DownloadState.Downloading -> if (downloadChapter.progress != 0.0F) {
                 val animatedProgress by animateFloatAsState(
                     targetValue = downloadChapter.progress,
-                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
                 )
                 CircularProgressIndicator(
                     animatedProgress,
@@ -182,7 +182,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                         .size(26.dp)
                         .padding(2.dp),
                     LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-                    2.dp
+                    2.dp,
                 )
                 Icon(
                     Icons.Rounded.ArrowDownward,
@@ -190,7 +190,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                     Modifier
                         .size(22.dp)
                         .padding(2.dp),
-                    LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+                    LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
                 )
             } else {
                 CircularProgressIndicator(
@@ -198,7 +198,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                         .size(26.dp)
                         .padding(2.dp),
                     LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-                    2.dp
+                    2.dp,
                 )
             }
             DownloadState.Error -> Surface(shape = CircleShape, color = LocalContentColor.current) {
@@ -208,7 +208,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                     Modifier
                         .size(22.dp)
                         .padding(2.dp),
-                    Color.Red
+                    Color.Red,
                 )
             }
             DownloadState.Finished -> Surface(shape = CircleShape, color = LocalContentColor.current) {
@@ -218,7 +218,7 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
                     Modifier
                         .size(22.dp)
                         .padding(2.dp),
-                    MaterialTheme.colors.surface
+                    MaterialTheme.colors.surface,
                 )
             }
         }
@@ -233,7 +233,7 @@ private fun DownloadedIconButton(chapter: Pair<Long, Int?>, onClick: () -> Unit)
             DropdownMenuItem(onClick = onClick) {
                 Text(stringResource(MR.strings.action_delete))
             }
-        }
+        },
     ) {
         Surface(shape = CircleShape, color = LocalContentColor.current) {
             Icon(
@@ -242,7 +242,7 @@ private fun DownloadedIconButton(chapter: Pair<Long, Int?>, onClick: () -> Unit)
                 Modifier
                     .size(22.dp)
                     .padding(2.dp),
-                MaterialTheme.colors.surface
+                MaterialTheme.colors.surface,
             )
         }
     }

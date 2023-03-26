@@ -13,7 +13,7 @@ import me.tatarka.inject.annotations.Inject
 
 class LibrarySettingsViewModel @Inject constructor(
     libraryPreferences: LibraryPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     val filterDownloaded = libraryPreferences.filterDownloaded().asStateFlow()
     val filterUnread = libraryPreferences.filterUnread().asStateFlow()

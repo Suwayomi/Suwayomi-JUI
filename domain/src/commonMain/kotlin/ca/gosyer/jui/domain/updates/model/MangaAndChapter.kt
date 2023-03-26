@@ -15,5 +15,5 @@ import kotlinx.serialization.Serializable
 @Immutable
 data class MangaAndChapter(
     val manga: Manga,
-    val chapter: Chapter
+    val chapter: Chapter,
 )

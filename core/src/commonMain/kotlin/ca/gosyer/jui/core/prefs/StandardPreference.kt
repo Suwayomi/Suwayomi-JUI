@@ -19,7 +19,7 @@ internal class StandardPreference<T>(
     private val preferences: ObservableSettings,
     private val key: String,
     private val defaultValue: T,
-    private val adapter: Adapter<T>
+    private val adapter: Adapter<T>,
 ) : Preference<T> {
 
     /**

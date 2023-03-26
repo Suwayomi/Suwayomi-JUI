@@ -37,13 +37,13 @@ fun Spinner(modifier: Modifier, items: List<String>, selectedItemIndex: Int, onS
     Box(
         modifier then Modifier.border(1.dp, MaterialTheme.colors.primary, shape)
             .clip(shape)
-            .clickable { expanded = true }
+            .clickable { expanded = true },
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(text = items[selectedItemIndex], modifier = Modifier.padding(end = 8.dp), fontSize = 12.sp)
             Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = null)
@@ -51,14 +51,14 @@ fun Spinner(modifier: Modifier, items: List<String>, selectedItemIndex: Int, onS
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.align(Alignment.CenterEnd)
+            modifier = Modifier.align(Alignment.CenterEnd),
         ) {
             items.forEachIndexed { index, item ->
                 DropdownMenuItem(
                     onClick = {
                         expanded = false
                         onSelectItem(index)
-                    }
+                    },
                 ) {
                     Text(text = item)
                 }

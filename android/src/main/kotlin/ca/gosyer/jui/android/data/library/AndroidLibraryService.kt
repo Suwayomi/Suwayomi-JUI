@@ -115,7 +115,8 @@ class AndroidLibraryService : Service() {
             log.info { "using an intent with action $action" }
             when (action) {
                 Actions.START.name,
-                Actions.RESTART.name -> startWebsocket()
+                Actions.RESTART.name,
+                -> startWebsocket()
                 Actions.STOP.name -> stopSelf()
                 else -> log.info { "This should never happen. No action in the received intent" }
             }
@@ -158,7 +159,7 @@ class AndroidLibraryService : Service() {
                                 if (serverUrl.protocol == URLProtocol.HTTPS) {
                                     url.protocol = URLProtocol.WSS
                                 }
-                            }
+                            },
                         ) {
                             errorConnectionCount = 0
                             status.value = Status.RUNNING
@@ -205,14 +206,14 @@ class AndroidLibraryService : Service() {
                 setContentTitle(
                     MR.strings.notification_updating
                         .format(current, total)
-                        .toString(this@AndroidLibraryService)
+                        .toString(this@AndroidLibraryService),
                 )
                 setStyle(NotificationCompat.BigTextStyle().bigText(updatingText))
                 setProgress(total, current, false)
             }.build()
             notificationManager.notify(
                 Notifications.ID_LIBRARY_PROGRESS,
-                notification
+                notification,
             )
         } else {
             notificationManager.cancel(Notifications.ID_LIBRARY_PROGRESS)

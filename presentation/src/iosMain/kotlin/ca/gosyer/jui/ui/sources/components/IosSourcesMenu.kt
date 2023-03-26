@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 
 actual fun Modifier.sourceSideMenuItem(
     onSourceTabClick: () -> Unit,
-    onSourceCloseTabClick: () -> Unit
+    onSourceCloseTabClick: () -> Unit,
 ): Modifier = clickable(
-    onClick = onSourceTabClick
+    onClick = onSourceTabClick,
 )

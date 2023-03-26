@@ -14,5 +14,5 @@ import kotlinx.serialization.Serializable
 @SerialName("SwitchPreferenceCompat")
 @Immutable
 data class SwitchPreference(
-    override val props: TwoStateProps
+    override val props: TwoStateProps,
 ) : SourcePreference()

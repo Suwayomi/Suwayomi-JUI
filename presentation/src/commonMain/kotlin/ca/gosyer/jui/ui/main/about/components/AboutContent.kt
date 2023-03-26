@@ -66,17 +66,17 @@ fun AboutContent(
     about: About?,
     formattedBuildTime: String,
     checkForUpdates: () -> Unit,
-    openSourceLicenses: () -> Unit
+    openSourceLicenses: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.location_about))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -85,9 +85,9 @@ fun AboutContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 item {
                     IconImage()
@@ -124,11 +124,11 @@ fun AboutContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
                     ),
-                adapter = rememberScrollbarAdapter(state)
+                adapter = rememberScrollbarAdapter(state),
             )
         }
     }
@@ -140,7 +140,7 @@ private fun IconImage() {
         Image(
             painter = MR.images.icon.toPainter(),
             contentDescription = "icon",
-            modifier = Modifier.height(140.dp).padding(vertical = 8.dp)
+            modifier = Modifier.height(140.dp).padding(vertical = 8.dp),
         )
     }
 }
@@ -149,7 +149,7 @@ private fun IconImage() {
 private fun CheckForUpdates(checkForUpdates: () -> Unit) {
     PreferenceRow(
         title = stringResource(MR.strings.update_checker),
-        onClick = checkForUpdates
+        onClick = checkForUpdates,
     )
 }
 
@@ -169,9 +169,9 @@ private fun ClientVersionInfo() {
             clipboardManager.setText(
                 buildAnnotatedString {
                     append(getDebugInfo())
-                }
+                },
             )
-        }
+        },
     )
 }
 
@@ -184,7 +184,7 @@ private fun ServerVersionInfo(about: About?, formattedBuildTime: String) {
     } else {
         PreferenceRow(
             title = stringResource(MR.strings.server_version),
-            subtitle = "${about.buildType.name} ${about.version}-${about.revision} ($formattedBuildTime)"
+            subtitle = "${about.buildType.name} ${about.version}-${about.revision} ($formattedBuildTime)",
         )
     }
 }
@@ -196,7 +196,7 @@ private fun WhatsNew() {
         title = stringResource(MR.strings.whats_new),
         onClick = {
             uriHandler.openUri(UpdateChecker.RELEASE_URL)
-        }
+        },
     )
 }
 
@@ -207,7 +207,7 @@ private fun HelpTranslate() {
         title = stringResource(MR.strings.help_translate),
         onClick = {
             uriHandler.openUri("https://hosted.weblate.org/projects/tachideskjui/desktop/")
-        }
+        },
     )
 }
 
@@ -215,7 +215,7 @@ private fun HelpTranslate() {
 private fun OpenSourceLicenses(openSourceLicenses: () -> Unit) {
     PreferenceRow(
         title = stringResource(MR.strings.open_source_licenses),
-        onClick = openSourceLicenses
+        onClick = openSourceLicenses,
     )
 }
 
@@ -227,7 +227,7 @@ sealed class LinkIcon {
 enum class Link(val nameRes: StringResource, val icon: LinkIcon, val uri: String) {
     Github(MR.strings.github, LinkIcon.Resource(MR.images.github), "https://github.com/Suwayomi/Tachidesk-JUI"),
     Discord(MR.strings.discord, LinkIcon.Resource(MR.images.discord), "https://discord.gg/DDZdqZWaHA"),
-    Reddit(MR.strings.reddit, LinkIcon.Resource(MR.images.reddit), "https://reddit.com/r/Tachidesk/")
+    Reddit(MR.strings.reddit, LinkIcon.Resource(MR.images.reddit), "https://reddit.com/r/Tachidesk/"),
 }
 
 @Composable
@@ -243,7 +243,7 @@ private fun LinkDisplay() {
                             .clip(MaterialTheme.shapes.medium)
                             .clickable { uriHandler.openUri(it.uri) }
                             .padding(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         val name = stringResource(it.nameRes)
                         val modifier = Modifier.size(48.dp)
@@ -251,12 +251,12 @@ private fun LinkDisplay() {
                             is LinkIcon.Resource -> Icon(
                                 painter = it.icon.res.toPainter(),
                                 contentDescription = name,
-                                modifier = modifier
+                                modifier = modifier,
                             )
                             is LinkIcon.Icon -> Icon(
                                 imageVector = it.icon.icon,
                                 contentDescription = name,
-                                modifier = modifier
+                                modifier = modifier,
                             )
                         }
                         Text(name)
@@ -267,19 +267,19 @@ private fun LinkDisplay() {
                     Box(
                         modifier = Modifier.clickable { uriHandler.openUri(it.uri) }
                             .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .size(32.dp)
+                            .size(32.dp),
                     ) {
                         val name = stringResource(it.nameRes)
                         when (it.icon) {
                             is LinkIcon.Resource -> Icon(
                                 painter = it.icon.res.toPainter(),
                                 contentDescription = name,
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
                             )
                             is LinkIcon.Icon -> Icon(
                                 imageVector = it.icon.icon,
                                 contentDescription = name,
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
                             )
                         }
                     }

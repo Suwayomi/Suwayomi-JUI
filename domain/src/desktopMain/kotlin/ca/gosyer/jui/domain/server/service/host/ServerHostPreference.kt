@@ -40,7 +40,7 @@ sealed class ServerHostPreference<T : Any> {
         override val preferenceStore: PreferenceStore,
         override val propertyName: String,
         override val defaultValue: String,
-        override val serverValue: String = defaultValue
+        override val serverValue: String = defaultValue,
     ) : ServerHostPreference<String>() {
         override fun preference(): Preference<String> {
             return preferenceStore.getString(propertyName, defaultValue)
@@ -50,7 +50,7 @@ sealed class ServerHostPreference<T : Any> {
         override val preferenceStore: PreferenceStore,
         override val propertyName: String,
         override val defaultValue: Int,
-        override val serverValue: Int = defaultValue
+        override val serverValue: Int = defaultValue,
     ) : ServerHostPreference<Int>() {
         override fun preference(): Preference<Int> {
             return preferenceStore.getInt(propertyName, defaultValue)
@@ -60,7 +60,7 @@ sealed class ServerHostPreference<T : Any> {
         override val preferenceStore: PreferenceStore,
         override val propertyName: String,
         override val defaultValue: Boolean,
-        override val serverValue: Boolean = defaultValue
+        override val serverValue: Boolean = defaultValue,
     ) : ServerHostPreference<Boolean>() {
         override fun preference(): Preference<Boolean> {
             return preferenceStore.getBoolean(propertyName, defaultValue)
@@ -70,55 +70,55 @@ sealed class ServerHostPreference<T : Any> {
     class IP(preferenceStore: PreferenceStore) : StringServerHostPreference(
         preferenceStore,
         "ip",
-        "0.0.0.0"
+        "0.0.0.0",
     )
     class Port(override val preferenceStore: PreferenceStore) : IntServerHostPreference(
         preferenceStore,
         "port",
-        4567
+        4567,
     )
 
     // Proxy
     class SocksProxyEnabled(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
         preferenceStore,
         "socksProxyEnabled",
-        false
+        false,
     )
     class SocksProxyHost(preferenceStore: PreferenceStore) : StringServerHostPreference(
         preferenceStore,
         "socksProxyHost",
-        ""
+        "",
     )
     class SocksProxyPort(override val preferenceStore: PreferenceStore) : IntServerHostPreference(
         preferenceStore,
         "socksProxyPort",
-        0
+        0,
     )
 
     // Misc
     class DebugLogsEnabled(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
         preferenceStore,
         "debugLogsEnabled",
-        false
+        false,
     )
 
     class SystemTrayEnabled(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
         preferenceStore,
         "systemTrayEnabled",
         false,
-        true
+        true,
     )
 
     // Downloader
     class DownloadPath(preferenceStore: PreferenceStore) : StringServerHostPreference(
         preferenceStore,
         "downloadsPath",
-        ""
+        "",
     )
     class DownloadAsCbz(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
         preferenceStore,
         "downloadAsCbz",
-        false
+        false,
     )
 
     // WebUI
@@ -126,30 +126,30 @@ sealed class ServerHostPreference<T : Any> {
         preferenceStore,
         "webUIEnabled",
         false,
-        true
+        true,
     )
 
     class OpenInBrowserEnabled(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
         preferenceStore,
         "initialOpenInBrowserEnabled",
         false,
-        true
+        true,
     )
 
     // Authentication
     class BasicAuthEnabled(preferenceStore: PreferenceStore) : BooleanServerHostPreference(
         preferenceStore,
         "basicAuthEnabled",
-        false
+        false,
     )
     class BasicAuthUsername(preferenceStore: PreferenceStore) : StringServerHostPreference(
         preferenceStore,
         "basicAuthUsername",
-        ""
+        "",
     )
     class BasicAuthPassword(preferenceStore: PreferenceStore) : StringServerHostPreference(
         preferenceStore,
         "basicAuthPassword",
-        ""
+        "",
     )
 }

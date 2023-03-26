@@ -38,7 +38,7 @@ class SourceHomeScreenViewModel @Inject constructor(
     private val getSourceList: GetSourceList,
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper,
-    @Assisted private val savedStateHandle: SavedStateHandle
+    @Assisted private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(contextWrapper) {
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
@@ -78,7 +78,7 @@ class SourceHomeScreenViewModel @Inject constructor(
                         other -> 3
                         else -> 2
                     }
-                }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<String, *>::first)
+                }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<String, *>::first),
             )
             .flatMap { (key, value) ->
                 listOf(SourceUI.Header(key)) + value

@@ -19,7 +19,7 @@ class UpdateCategoryMeta @Inject constructor(private val categoryRepository: Cat
     suspend fun await(
         category: Category,
         example: Int = category.meta.example,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(category, example)
         .catch {
             onError(it)
@@ -29,13 +29,13 @@ class UpdateCategoryMeta @Inject constructor(private val categoryRepository: Cat
 
     fun asFlow(
         category: Category,
-        example: Int = category.meta.example
+        example: Int = category.meta.example,
     ) = flow {
         if (example != category.meta.example) {
             categoryRepository.updateCategoryMeta(
                 category.id,
                 "example",
-                example.toString()
+                example.toString(),
             ).collect()
         }
         emit(Unit)

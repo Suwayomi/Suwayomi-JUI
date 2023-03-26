@@ -81,7 +81,7 @@ class ReaderMenuViewModel @Inject constructor(
     private val updateChapterMeta: UpdateChapterMeta,
     private val chapterCache: ChapterCache,
     contextWrapper: ContextWrapper,
-    @Assisted private val params: Params
+    @Assisted private val params: Params,
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()
     private val _manga = MutableStateFlow<Manga?>(null)
@@ -152,7 +152,7 @@ class ReaderMenuViewModel @Inject constructor(
         readerPreferences = readerPreferences,
         getChapterPage = getChapterPage,
         chapterCache = chapterCache,
-        bitmapDecoderFactory = BitmapDecoderFactory(contextWrapper)
+        bitmapDecoderFactory = BitmapDecoderFactory(contextWrapper),
     )
 
     init {
@@ -304,7 +304,7 @@ class ReaderMenuViewModel @Inject constructor(
     private suspend fun initChapters(
         mangaId: Long,
         chapterIndex: Int,
-        fromMenuButton: Boolean = true
+        fromMenuButton: Boolean = true,
     ) {
         log.debug { "Loading chapter index $chapterIndex" }
         val (chapter, pages) = coroutineScope {
@@ -318,7 +318,7 @@ class ReaderMenuViewModel @Inject constructor(
             val getAdjacentChapters = async {
                 val chapters = getChapters.await(
                     mangaId,
-                    onError = { /* TODO: 2022-07-01 Error toast */ }
+                    onError = { /* TODO: 2022-07-01 Error toast */ },
                 ).orEmpty()
 
                 val nextChapter = async {
@@ -384,7 +384,7 @@ class ReaderMenuViewModel @Inject constructor(
                     _state.value = ReaderChapter.State.Error(it)
                     log.warn(it) { "Error getting chapter $chapterIndex" }
                 }
-                .singleOrNull() ?: return null
+                .singleOrNull() ?: return null,
         )
     }
 
@@ -405,7 +405,7 @@ class ReaderMenuViewModel @Inject constructor(
     @OptIn(DelicateCoroutinesApi::class)
     fun sendProgress(
         chapter: Chapter? = this.chapter.value?.chapter,
-        lastPageRead: Int = (currentPage.value as? ReaderPage)?.index ?: 0
+        lastPageRead: Int = (currentPage.value as? ReaderPage)?.index ?: 0,
     ) {
         chapter ?: return
         if (chapter.read) return
@@ -413,7 +413,7 @@ class ReaderMenuViewModel @Inject constructor(
             updateChapterLastPageRead.await(
                 chapter,
                 lastPageRead = lastPageRead,
-                onError = { toast(it.message.orEmpty()) }
+                onError = { toast(it.message.orEmpty()) },
             )
         }
     }

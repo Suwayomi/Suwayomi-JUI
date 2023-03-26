@@ -16,11 +16,11 @@ data class Category(
     val order: Int,
     val name: String,
     val default: Boolean,
-    val meta: CategoryMeta
+    val meta: CategoryMeta,
 )
 
 @Serializable
 @Immutable
 data class CategoryMeta(
-    val example: Int = 0
+    val example: Int = 0,
 )

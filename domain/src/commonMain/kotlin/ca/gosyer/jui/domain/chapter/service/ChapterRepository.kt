@@ -29,13 +29,13 @@ interface ChapterRepository {
     @GET("api/v1/manga/{mangaId}/chapters")
     fun getChapters(
         @Path("mangaId") mangaId: Long,
-        @Query("onlineFetch") refresh: Boolean = false
+        @Query("onlineFetch") refresh: Boolean = false,
     ): Flow<List<Chapter>>
 
     @GET("api/v1/manga/{mangaId}/chapter/{chapterIndex}")
     fun getChapter(
         @Path("mangaId") mangaId: Long,
-        @Path("chapterIndex") chapterIndex: Int
+        @Path("chapterIndex") chapterIndex: Int,
     ): Flow<Chapter>
 
     @FormUrlEncoded
@@ -46,20 +46,20 @@ interface ChapterRepository {
         @Field("read") read: Boolean? = null,
         @Field("bookmarked") bookmarked: Boolean? = null,
         @Field("lastPageRead") lastPageRead: Int? = null,
-        @Field("markPrevRead") markPreviousRead: Boolean? = null
+        @Field("markPrevRead") markPreviousRead: Boolean? = null,
     ): Flow<HttpResponse>
 
     @POST("api/v1/manga/{mangaId}/chapter/batch")
     @Headers("Content-Type: application/json")
     fun batchUpdateChapter(
         @Path("mangaId") mangaId: Long,
-        @Body input: MangaChapterBatchEditInput
+        @Body input: MangaChapterBatchEditInput,
     ): Flow<HttpResponse>
 
     @POST("api/v1/chapter/batch")
     @Headers("Content-Type: application/json")
     fun batchUpdateChapter(
-        @Body input: ChapterBatchEditInput
+        @Body input: ChapterBatchEditInput,
     ): Flow<HttpResponse>
 
     @GET("api/v1/manga/{mangaId}/chapter/{chapterIndex}/page/{pageNum}")
@@ -67,13 +67,13 @@ interface ChapterRepository {
         @Path("mangaId") mangaId: Long,
         @Path("chapterIndex") chapterIndex: Int,
         @Path("pageNum") pageNum: Int,
-        @ReqBuilder block: HttpRequestBuilder.() -> Unit
+        @ReqBuilder block: HttpRequestBuilder.() -> Unit,
     ): Flow<HttpResponse>
 
     @DELETE("api/v1/manga/{mangaId}/chapter/{chapterIndex}")
     fun deleteChapterDownload(
         @Path("mangaId") mangaId: Long,
-        @Path("chapterIndex") chapterIndex: Int
+        @Path("chapterIndex") chapterIndex: Int,
     ): Flow<HttpResponse>
 
     @FormUrlEncoded
@@ -82,6 +82,6 @@ interface ChapterRepository {
         @Path("mangaId") mangaId: Long,
         @Path("chapterIndex") chapterIndex: Int,
         @Field("key") key: String,
-        @Field("value") value: String
+        @Field("value") value: String,
     ): Flow<HttpResponse>
 }

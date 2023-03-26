@@ -35,20 +35,20 @@ class SourceFiltersViewModel(
     private val getFilterList: GetFilterList,
     private val setSourceFilter: SetSourceFilter,
     contextWrapper: ContextWrapper,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(contextWrapper) {
     @Inject constructor(
         getFilterList: GetFilterList,
         setSourceFilter: SetSourceFilter,
         contextWrapper: ContextWrapper,
         @Assisted savedStateHandle: SavedStateHandle,
-        @Assisted params: Params
+        @Assisted params: Params,
     ) : this(
         params.sourceId,
         getFilterList,
         setSourceFilter,
         contextWrapper,
-        savedStateHandle
+        savedStateHandle,
     )
 
     private val _loading = MutableStateFlow(true)
@@ -81,7 +81,7 @@ class SourceFiltersViewModel(
                                         filterIndex = filter.index,
                                         childFilterIndex = childFilter.index,
                                         filter = it,
-                                        onError = { toast(it.message.orEmpty()) }
+                                        onError = { toast(it.message.orEmpty()) },
                                     )
                                     getFilters()
                                 }
@@ -94,7 +94,7 @@ class SourceFiltersViewModel(
                                     sourceId = sourceId,
                                     filterIndex = filter.index,
                                     filter = it,
-                                    onError = { toast(it.message.orEmpty()) }
+                                    onError = { toast(it.message.orEmpty()) },
                                 )
                                 getFilters()
                             }

@@ -32,13 +32,13 @@ class GetSearchManga @Inject constructor(private val sourceRepository: SourceRep
     fun asFlow(source: Source, searchTerm: String?, page: Int) = sourceRepository.getSearchResults(
         source.id,
         searchTerm?.ifBlank { null },
-        page
+        page,
     )
 
     fun asFlow(sourceId: Long, searchTerm: String?, page: Int) = sourceRepository.getSearchResults(
         sourceId,
         searchTerm?.ifBlank { null },
-        page
+        page,
     )
 
     companion object {

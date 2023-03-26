@@ -12,11 +12,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("CheckBox")
 data class CheckBoxFilter(
-    override val filter: CheckBoxProps
+    override val filter: CheckBoxProps,
 ) : SourceFilter() {
     @Serializable
     data class CheckBoxProps(
         override val name: String,
-        override val state: Boolean
+        override val state: Boolean,
     ) : Props<Boolean>
 }

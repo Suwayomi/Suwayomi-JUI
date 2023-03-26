@@ -32,7 +32,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
     private val getSourceSettings: GetSourceSettings,
     private val setSourceSetting: SetSourceSetting,
     contextWrapper: ContextWrapper,
-    @Assisted private val params: Params
+    @Assisted private val params: Params,
 ) : ViewModel(contextWrapper) {
     private val _loading = MutableStateFlow(true)
     val loading = _loading.asStateFlow()
@@ -52,7 +52,7 @@ class SourceSettingsScreenViewModel @Inject constructor(
                                 sourceId = params.sourceId,
                                 settingIndex = setting.index,
                                 setting = it,
-                                onError = { toast(it.message.orEmpty()) }
+                                onError = { toast(it.message.orEmpty()) },
                             )
                             getSourceSettings()
                         }

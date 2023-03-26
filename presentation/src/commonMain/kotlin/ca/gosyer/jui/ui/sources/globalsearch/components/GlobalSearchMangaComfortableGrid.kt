@@ -32,13 +32,13 @@ import ca.gosyer.jui.uicore.image.ImageLoaderImage
 fun GlobalSearchMangaComfortableGridItem(
     modifier: Modifier,
     manga: Manga,
-    inLibrary: Boolean
+    inLibrary: Boolean,
 ) {
     Box(
         modifier = Modifier
             .padding(4.dp)
             .width((mangaAspectRatio * 200.dp))
-            .clip(MaterialTheme.shapes.medium) then modifier
+            .clip(MaterialTheme.shapes.medium) then modifier,
     ) {
         Column {
             ImageLoaderImage(
@@ -49,7 +49,7 @@ fun GlobalSearchMangaComfortableGridItem(
                     .aspectRatio(mangaAspectRatio, true)
                     .clip(MaterialTheme.shapes.medium),
                 contentScale = ContentScale.Crop,
-                filterQuality = FilterQuality.Medium
+                filterQuality = FilterQuality.Medium,
             )
             Text(
                 text = manga.title,
@@ -58,12 +58,12 @@ fun GlobalSearchMangaComfortableGridItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
-                style = MaterialTheme.typography.subtitle2
+                style = MaterialTheme.typography.subtitle2,
             )
         }
         SourceMangaBadges(
             inLibrary = inLibrary,
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(4.dp),
         )
     }
 }

@@ -68,7 +68,7 @@ class SettingsAdvancedScreen : Screen {
             imageCacheSize = vm.imageCacheSize.collectAsState().value,
             clearImageCache = vm::clearImageCache,
             chapterCacheSize = vm.chapterCacheSize.collectAsState().value,
-            clearChapterCache = vm::clearChapterCache
+            clearChapterCache = vm::clearChapterCache,
         )
     }
 }
@@ -77,7 +77,7 @@ class SettingsAdvancedViewModel @Inject constructor(
     updatePreferences: UpdatePreferences,
     private val imageCache: ImageCache,
     private val chapterCache: ChapterCache,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     val updatesEnabled = updatePreferences.enabled().asStateFlow()
 
@@ -117,17 +117,17 @@ fun SettingsAdvancedScreenContent(
     imageCacheSize: String,
     clearImageCache: () -> Unit,
     chapterCacheSize: String,
-    clearChapterCache: () -> Unit
+    clearChapterCache: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.settings_advanced_screen))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -136,9 +136,9 @@ fun SettingsAdvancedScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 item {
                     SwitchPreference(preference = updatesEnabled, title = stringResource(MR.strings.update_checker))
@@ -150,14 +150,14 @@ fun SettingsAdvancedScreenContent(
                     PreferenceRow(
                         title = stringResource(MR.strings.clear_image_cache),
                         subtitle = stringResource(MR.strings.clear_cache_sub, imageCacheSize),
-                        onClick = clearImageCache
+                        onClick = clearImageCache,
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.clear_chapter_cache),
                         subtitle = stringResource(MR.strings.clear_cache_sub, chapterCacheSize),
-                        onClick = clearChapterCache
+                        onClick = clearChapterCache,
                     )
                 }
             }
@@ -169,10 +169,10 @@ fun SettingsAdvancedScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }

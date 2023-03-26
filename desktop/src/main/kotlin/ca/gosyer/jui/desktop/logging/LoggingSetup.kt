@@ -47,45 +47,45 @@ fun initializeLogger(loggingLocation: Path) {
                 newAppender("Console", "Console")
                     .addAttribute(
                         "target",
-                        ConsoleAppender.Target.SYSTEM_OUT
+                        ConsoleAppender.Target.SYSTEM_OUT,
                     )
                     .add(
                         newLayout("PatternLayout")
                             .addAttribute("disableAnsi", "false")
-                            .addAttribute("pattern", consolePattern)
-                    )
+                            .addAttribute("pattern", consolePattern),
+                    ),
             )
             add(
                 newAppender("Rolling", "RollingFile")
                     .addAttribute(
                         "fileName",
-                        loggingLocation.toString().trimEnd('/', '\\') + "/rolling.log"
+                        loggingLocation.toString().trimEnd('/', '\\') + "/rolling.log",
                     )
                     .addAttribute(
                         "filePattern",
-                        loggingLocation.toString().trimEnd('/', '\\') + "/archive/rolling-%d{yyyy-MM-dd-}.log.gz"
+                        loggingLocation.toString().trimEnd('/', '\\') + "/archive/rolling-%d{yyyy-MM-dd-}.log.gz",
                     )
                     .add(
                         newLayout("PatternLayout")
-                            .addAttribute("pattern", filePattern)
+                            .addAttribute("pattern", filePattern),
                     )
                     .addComponent(
                         newComponent<_>("Policies")
                             .addComponent(
                                 newComponent<_>("CronTriggeringPolicy")
                                     .addAttribute("schedule", "0 0 0 * * ?")
-                                    .addAttribute("evaluateOnStartup", "true")
+                                    .addAttribute("evaluateOnStartup", "true"),
                             )
                             .addComponent(
                                 newComponent<_>("SizeBasedTriggeringPolicy")
-                                    .addAttribute("size", "100M")
-                            )
-                    )
+                                    .addAttribute("size", "100M"),
+                            ),
+                    ),
             )
             add(
                 newRootLogger(Level.DEBUG)
                     .add(newAppenderRef("Console"))
-                    .add(newAppenderRef("Rolling"))
+                    .add(newAppenderRef("Rolling")),
             )
         }
     ctx.configuration = builder.build()
@@ -97,7 +97,7 @@ fun initializeLogger(loggingLocation: Path) {
             java.util.logging.Level.FINE
         } else {
             java.util.logging.Level.WARNING
-        }
+        },
     )
     JLogManager.getLogManager().getLogger("com.github.weisj.darklaf").apply {
         handlers.forEach { removeHandler(it) }

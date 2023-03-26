@@ -18,7 +18,8 @@ enum class DisplayMode(@Transient val res: StringResource) {
     CompactGrid(MR.strings.display_compact),
     ComfortableGrid(MR.strings.display_comfortable),
     CoverOnlyGrid(MR.strings.display_cover_only),
-    List(MR.strings.display_list);
+    List(MR.strings.display_list),
+    ;
 
     companion object {
         val values by lazy {

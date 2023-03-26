@@ -20,7 +20,7 @@ import org.lighthousegames.logging.logging
 
 class TrayViewModel @Inject constructor(
     updateChecker: UpdateChecker,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()
 

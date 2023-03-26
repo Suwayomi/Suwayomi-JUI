@@ -99,7 +99,7 @@ class SkikoAppDelegate @OverrideInit constructor() : UIResponder(), UIApplicatio
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
                                     .padding(bottom = 64.dp),
-                                context = context
+                                context = context,
                             )
                         }
                     }
@@ -128,7 +128,7 @@ fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
                     Length.SHORT -> 2.seconds
                     Length.LONG -> 5.seconds
                     else -> Duration.ZERO
-                }
+                },
             )
             toast = null
         }
@@ -136,13 +136,13 @@ fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
     @Suppress("NAME_SHADOWING")
     Crossfade(
         toast?.first,
-        modifier = modifier
+        modifier = modifier,
     ) { toast ->
         if (toast != null) {
             Card(
                 Modifier.sizeIn(maxWidth = 200.dp),
                 shape = CircleShape,
-                backgroundColor = Color.DarkGray
+                backgroundColor = Color.DarkGray,
             ) {
                 Text(
                     toast,
@@ -151,7 +151,7 @@ fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 12.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         }

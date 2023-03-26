@@ -30,7 +30,7 @@ actual fun stringFormat(string: String, vararg args: Any?): String {
             args[2],
             args[3],
             args[4],
-            args[5]
+            args[5],
         )
         7 -> NSString.stringWithFormat(
             objcFormat,
@@ -40,7 +40,7 @@ actual fun stringFormat(string: String, vararg args: Any?): String {
             args[3],
             args[4],
             args[5],
-            args[6]
+            args[6],
         )
         8 -> NSString.stringWithFormat(
             objcFormat,
@@ -51,7 +51,7 @@ actual fun stringFormat(string: String, vararg args: Any?): String {
             args[4],
             args[5],
             args[6],
-            args[7]
+            args[7],
         )
         9 -> NSString.stringWithFormat(
             objcFormat,
@@ -63,7 +63,7 @@ actual fun stringFormat(string: String, vararg args: Any?): String {
             args[5],
             args[6],
             args[7],
-            args[8]
+            args[8],
         )
         else -> throw IllegalArgumentException("can't handle more then 9 arguments now")
     }

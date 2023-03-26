@@ -30,7 +30,7 @@ actual class ContextWrapper @Inject constructor(context: Context) : ContextWrapp
             when (length) {
                 Length.SHORT -> Toast.LENGTH_SHORT
                 Length.LONG -> Toast.LENGTH_LONG
-            }
+            },
         ).show()
     }
 }

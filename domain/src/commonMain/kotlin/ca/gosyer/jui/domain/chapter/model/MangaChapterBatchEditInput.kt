@@ -12,5 +12,5 @@ import kotlinx.serialization.Serializable
 data class MangaChapterBatchEditInput(
     val chapterIds: List<Long>? = null,
     val chapterIndexes: List<Int>? = null,
-    val change: ChapterChange?
+    val change: ChapterChange?,
 )

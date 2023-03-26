@@ -44,7 +44,7 @@ class ReaderActivity : AppCompatActivity() {
                     ReaderMenu(
                         chapterIndex = chapterIndex,
                         mangaId = mangaId,
-                        onCloseRequest = onBackPressedDispatcher::onBackPressed
+                        onCloseRequest = onBackPressedDispatcher::onBackPressed,
                     )
                 }
             }

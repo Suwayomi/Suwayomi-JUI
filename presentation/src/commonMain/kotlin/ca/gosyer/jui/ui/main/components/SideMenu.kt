@@ -47,27 +47,27 @@ fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navig
     Surface(
         Modifier.fillMaxHeight()
             .windowInsetsPadding(
-                WindowInsets.systemBars.only(WindowInsetsSides.Vertical + WindowInsetsSides.Start)
+                WindowInsets.systemBars.only(WindowInsetsSides.Vertical + WindowInsetsSides.Start),
             ) then modifier,
-        elevation = 2.dp
+        elevation = 2.dp,
     ) {
         Column(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 4.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Column {
                 Row(
                     Modifier.fillMaxWidth().height(60.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         BuildKonfig.NAME,
                         fontSize = 24.sp,
-                        modifier = Modifier
+                        modifier = Modifier,
                     )
                     IconButton(controller::closeSideMenu) {
                         Icon(Icons.Rounded.Close, contentDescription = null)
@@ -77,7 +77,7 @@ fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navig
                 remember { TopLevelMenus.values().asList().dropLast(1) }.fastForEach { topLevelMenu ->
                     SideMenuItem(
                         topLevelMenu.isSelected(navigator),
-                        topLevelMenu
+                        topLevelMenu,
                     ) { navigator replaceAll it }
                 }
             }
@@ -88,7 +88,7 @@ fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navig
                         remember { MoreMenus.values() }.forEach { topLevelMenu ->
                             SideMenuItem(
                                 topLevelMenu.isSelected(navigator),
-                                topLevelMenu
+                                topLevelMenu,
                             ) { navigator replaceAll it }
                         }
                     }

@@ -18,14 +18,14 @@ import org.lighthousegames.logging.logging
 
 class UpdateChapterLastPageRead @Inject constructor(
     private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) {
 
     suspend fun await(
         mangaId: Long,
         index: Int,
         lastPageRead: Int,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(mangaId, index, lastPageRead)
         .catch {
             onError(it)
@@ -37,7 +37,7 @@ class UpdateChapterLastPageRead @Inject constructor(
         manga: Manga,
         index: Int,
         lastPageRead: Int,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(manga, index, lastPageRead)
         .catch {
             onError(it)
@@ -48,7 +48,7 @@ class UpdateChapterLastPageRead @Inject constructor(
     suspend fun await(
         chapter: Chapter,
         lastPageRead: Int,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(chapter, lastPageRead)
         .catch {
             onError(it)
@@ -59,30 +59,30 @@ class UpdateChapterLastPageRead @Inject constructor(
     fun asFlow(
         mangaId: Long,
         index: Int,
-        lastPageRead: Int
+        lastPageRead: Int,
     ) = chapterRepository.updateChapter(
         mangaId = mangaId,
         chapterIndex = index,
-        lastPageRead = lastPageRead
+        lastPageRead = lastPageRead,
     ).onEach { serverListeners.updateChapters(mangaId, index) }
 
     fun asFlow(
         manga: Manga,
         index: Int,
-        lastPageRead: Int
+        lastPageRead: Int,
     ) = chapterRepository.updateChapter(
         mangaId = manga.id,
         chapterIndex = index,
-        lastPageRead = lastPageRead
+        lastPageRead = lastPageRead,
     ).onEach { serverListeners.updateChapters(manga.id, index) }
 
     fun asFlow(
         chapter: Chapter,
-        lastPageRead: Int
+        lastPageRead: Int,
     ) = chapterRepository.updateChapter(
         mangaId = chapter.mangaId,
         chapterIndex = chapter.index,
-        lastPageRead = lastPageRead
+        lastPageRead = lastPageRead,
     ).onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
 
     companion object {

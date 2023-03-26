@@ -13,13 +13,13 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 @SerialName("Select")
 data class SelectFilter(
-    override val filter: SelectProps
+    override val filter: SelectProps,
 ) : SourceFilter() {
     @Serializable
     data class SelectProps(
         override val name: String,
         override val state: Int,
         val values: List<JsonElement>,
-        val displayValues: List<String>? = null
+        val displayValues: List<String>? = null,
     ) : Props<Int>
 }

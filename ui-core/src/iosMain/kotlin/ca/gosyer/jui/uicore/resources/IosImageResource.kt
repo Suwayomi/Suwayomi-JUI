@@ -70,6 +70,6 @@ private fun UIImage.toSkiaImage(): Image? {
     return Image.makeRaster(
         imageInfo = ImageInfo(width = width, height = height, colorType = ColorType.RGBA_8888, alphaType = alphaType),
         bytes = byteArray,
-        rowBytes = bytesPerRow.toInt()
+        rowBytes = bytesPerRow.toInt(),
     )
 }

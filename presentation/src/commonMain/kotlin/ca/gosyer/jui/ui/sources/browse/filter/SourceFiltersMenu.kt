@@ -76,7 +76,7 @@ fun SourceFiltersMenu(
     modifier: Modifier,
     filters: ImmutableList<SourceFiltersView<*, *>>,
     onSearchClicked: () -> Unit,
-    resetFiltersClicked: () -> Unit
+    resetFiltersClicked: () -> Unit,
 ) {
     Surface(elevation = 1.dp, modifier = modifier then Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -84,7 +84,7 @@ fun SourceFiltersMenu(
                 Row(
                     Modifier.height(56.dp).fillMaxWidth().padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     TextButton(resetFiltersClicked) {
                         Text(stringResource(MR.strings.reset_filters))
@@ -112,7 +112,7 @@ fun SourceFiltersMenu(
                     rememberScrollbarAdapter(scrollState),
                     Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .scrollbarPadding()
+                        .scrollbarPadding(),
                 )
             }
         }
@@ -137,14 +137,14 @@ fun SourceFiltersView<*, *>.toView(startExpanded: Boolean = false, onExpandChang
 fun SourceFilterAction(
     name: String,
     onClick: () -> Unit,
-    action: @Composable () -> Unit
+    action: @Composable () -> Unit,
 ) {
     Row(
         Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp)
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp)
             .height(IntrinsicSize.Min),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         action()
         Box(Modifier.padding(horizontal = 16.dp).weight(1f)) {
@@ -152,7 +152,7 @@ fun SourceFilterAction(
                 text = name,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                style = MaterialTheme.typography.subtitle1
+                style = MaterialTheme.typography.subtitle1,
             )
         }
     }
@@ -166,7 +166,7 @@ fun GroupView(group: SourceFiltersView.Group, startExpanded: Boolean, onExpandCh
         startExpanded = startExpanded,
         onExpandedChanged = {
             onExpandChanged?.invoke(it, group.index)
-        }
+        },
     ) {
         state.fastForEach {
             it.toView()
@@ -182,7 +182,7 @@ fun CheckboxView(checkBox: SourceFiltersView.CheckBox) {
         onClick = { checkBox.updateState(!state) },
         action = {
             Checkbox(checked = state, onCheckedChange = null)
-        }
+        },
     )
 }
 
@@ -194,7 +194,7 @@ fun HeaderView(header: SourceFiltersView.Header) {
             fontWeight = FontWeight.Bold,
             color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
             maxLines = 1,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
         )
     }
 }
@@ -205,21 +205,21 @@ fun SelectView(select: SourceFiltersView.Select) {
     Row(
         Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp)
             .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = select.name,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.subtitle1,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
         Spinner(
             modifier = Modifier.weight(1f),
             // TODO: 2022-05-06 Remove it.values when we hit server version 0.7.0
             items = select.filter.let { it.displayValues ?: it.values.map(Any::toString) },
             selectedItemIndex = state,
-            onSelectItem = select::updateState
+            onSelectItem = select::updateState,
         )
     }
 }
@@ -242,15 +242,15 @@ fun SortRow(name: String, selected: Boolean, asc: Boolean, onClick: () -> Unit) 
                 targetValue = if (rotation > 360 - rotation) { -(360 - rotation) } else rotation,
                 animationSpec = tween(
                     durationMillis = 500, // rotation is retrieved with this frequency
-                    easing = LinearEasing
-                )
+                    easing = LinearEasing,
+                ),
             )
 
             Icon(
                 imageVector = Icons.Rounded.ArrowUpward,
                 contentDescription = null,
                 modifier = Modifier.rotate(angle),
-                tint = MaterialTheme.colors.primary
+                tint = MaterialTheme.colors.primary,
             )
         } else {
             Box(Modifier.size(24.dp))
@@ -266,14 +266,14 @@ fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChang
         startExpanded = startExpanded,
         onExpandedChanged = {
             onExpandChanged?.invoke(it, sort.index)
-        }
+        },
     ) {
         Column(Modifier.fillMaxWidth()) {
             sort.filter.values.fastForEachIndexed { index, name ->
                 SortRow(
                     name = name,
                     selected = state?.index == index,
-                    asc = state?.ascending ?: false
+                    asc = state?.ascending ?: false,
                 ) {
                     sort.updateState(
                         value = SortFilter.Selection(
@@ -282,8 +282,8 @@ fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChang
                                 state?.ascending?.not() ?: false
                             } else {
                                 false
-                            }
-                        )
+                            },
+                        ),
                     )
                 }
             }
@@ -301,7 +301,7 @@ fun TextView(text: SourceFiltersView.Text) {
                 ""
             } else {
                 state
-            }
+            },
         )
     }
     val interactionSource = remember { MutableInteractionSource() }
@@ -323,7 +323,7 @@ fun TextView(text: SourceFiltersView.Text) {
             { Text(placeholderText) }
         } else {
             null
-        }
+        },
     )
 }
 
@@ -338,7 +338,7 @@ fun TriStateView(triState: SourceFiltersView.TriState) {
                     0 -> 1
                     1 -> 2
                     else -> 0
-                }
+                },
             )
         },
         action = {
@@ -348,8 +348,8 @@ fun TriStateView(triState: SourceFiltersView.TriState) {
                     2 -> ToggleableState.Indeterminate
                     else -> ToggleableState.Off
                 },
-                onClick = null
+                onClick = null,
             )
-        }
+        },
     )
 }

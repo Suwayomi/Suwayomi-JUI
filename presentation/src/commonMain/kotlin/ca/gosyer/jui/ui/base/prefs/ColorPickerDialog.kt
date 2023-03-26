@@ -80,7 +80,7 @@ fun ColorPickerDialog(
     title: String,
     onCloseRequest: () -> Unit = {},
     onSelected: (Color) -> Unit,
-    initialColor: Color = Color.Unspecified
+    initialColor: Color = Color.Unspecified,
 ) {
     var currentColor by remember(initialColor) { mutableStateOf(initialColor) }
     var showPresets by remember { mutableStateOf(true) }
@@ -93,27 +93,27 @@ fun ColorPickerDialog(
                 if (showPresets) "Custom" else "Presets",
                 onClick = {
                     showPresets = !showPresets
-                }
+                },
             )
         },
         properties = getMaterialDialogProperties(
-            size = DpSize(300.dp, 580.dp)
+            size = DpSize(300.dp, 580.dp),
         ),
         onCloseRequest = {
             it.hide()
             onCloseRequest()
-        }
+        },
     ) {
         title(title)
         if (showPresets) {
             ColorPresets(
                 initialColor = currentColor,
-                onColorChanged = { currentColor = it }
+                onColorChanged = { currentColor = it },
             )
         } else {
             ColorPalette(
                 initialColor = currentColor,
-                onColorChanged = { currentColor = it }
+                onColorChanged = { currentColor = it },
             )
         }
     }
@@ -123,7 +123,7 @@ fun ColorPickerDialog(
 @Composable
 private fun ColorPresets(
     initialColor: Color,
-    onColorChanged: (Color) -> Unit
+    onColorChanged: (Color) -> Unit,
 ) {
     val presets = remember {
         if (initialColor.isSpecified) {
@@ -151,13 +151,13 @@ private fun ColorPresets(
                         selectedShade = null
                         selectedColor = color
                         onColorChanged(color)
-                    }
+                    },
                 )
             }
         }
         Spacer(
             modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth().requiredHeight(1.dp)
-                .background(MaterialTheme.colors.onBackground.copy(alpha = 0.2f))
+                .background(MaterialTheme.colors.onBackground.copy(alpha = 0.2f)),
         )
 
         LazyVerticalGrid(columns = GridCells.Fixed(5)) {
@@ -169,7 +169,7 @@ private fun ColorPresets(
                     onClick = {
                         selectedShade = color
                         onColorChanged(color)
-                    }
+                    },
                 )
             }
         }
@@ -181,7 +181,7 @@ private fun ColorPresetItem(
     color: Color,
     borderColor: Color,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -192,14 +192,14 @@ private fun ColorPresetItem(
             .clip(CircleShape)
             .background(color)
             .border(BorderStroke(1.dp, borderColor), CircleShape)
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick),
     ) {
         if (isSelected) {
             Icon(
                 imageVector = Icons.Rounded.Check,
                 tint = if (color.luminance() > 0.5) Color.Black else Color.White,
                 contentDescription = null,
-                modifier = Modifier.requiredWidth(32.dp).requiredHeight(32.dp)
+                modifier = Modifier.requiredWidth(32.dp).requiredHeight(32.dp),
             )
         }
     }
@@ -211,7 +211,7 @@ private fun getColorShades(color: Color): ImmutableList<Color> {
         shadeColor(f, 0.9), shadeColor(f, 0.7), shadeColor(f, 0.5),
         shadeColor(f, 0.333), shadeColor(f, 0.166), shadeColor(f, -0.125),
         shadeColor(f, -0.25), shadeColor(f, -0.375), shadeColor(f, -0.5),
-        shadeColor(f, -0.675), shadeColor(f, -0.7), shadeColor(f, -0.775)
+        shadeColor(f, -0.675), shadeColor(f, -0.7), shadeColor(f, -0.775),
     ).toImmutableList()
 }
 
@@ -231,7 +231,7 @@ private fun shadeColor(f: Long, percent: Double): Color {
 @Composable
 fun ColorPalette(
     initialColor: Color = Color.White,
-    onColorChanged: (Color) -> Unit = {}
+    onColorChanged: (Color) -> Unit = {},
 ) {
     var selectedColor by remember { mutableStateOf(initialColor) }
     var textFieldHex by remember { mutableStateOf(initialColor.toHexString()) }
@@ -246,14 +246,14 @@ fun ColorPalette(
         Brush.linearGradient(
             colors = listOf(Color.White, hueToColor(hue)),
             start = Offset(0f, 0f),
-            end = Offset(matrixSize.width.toFloat(), 0f)
+            end = Offset(matrixSize.width.toFloat(), 0f),
         )
     }
     val valueGradient = remember(matrixSize) {
         Brush.linearGradient(
             colors = listOf(Color.White, Color.Black),
             start = Offset(0f, 0f),
-            end = Offset(0f, matrixSize.height.toFloat())
+            end = Offset(0f, matrixSize.height.toFloat()),
         )
     }
 
@@ -294,26 +294,26 @@ fun ColorPalette(
                             Color.Black,
                             radius = 8f,
                             center = matrixCursor,
-                            style = cursorStroke
+                            style = cursorStroke,
                         )
                         drawCircle(
                             Color.LightGray,
                             radius = 12f,
                             center = matrixCursor,
-                            style = cursorStroke
+                            style = cursorStroke,
                         )
                     }
                     .pointerInput(Unit) {
                         detectMove { offset ->
                             val safeOffset = offset.copy(
                                 x = offset.x.coerceIn(0f, matrixSize.width.toFloat()),
-                                y = offset.y.coerceIn(0f, matrixSize.height.toFloat())
+                                y = offset.y.coerceIn(0f, matrixSize.height.toFloat()),
                             )
                             matrixCursor = safeOffset
                             val newColor = matrixCoordinatesToColor(hue, safeOffset, matrixSize)
                             setSelectedColor(newColor)
                         }
-                    }
+                    },
             )
             Box(
                 Modifier
@@ -339,7 +339,7 @@ fun ColorPalette(
                                 cursorColor,
                                 topLeft = cursorTopLeft,
                                 size = cursorSize,
-                                style = cursorStroke
+                                style = cursorStroke,
                             )
                         }
                     }
@@ -351,13 +351,13 @@ fun ColorPalette(
                             val newColor = matrixCoordinatesToColor(hue, matrixCursor, matrixSize)
                             setSelectedColor(newColor)
                         }
-                    }
+                    },
             )
         }
         Row(Modifier.padding(top = 8.dp), verticalAlignment = Alignment.Bottom) {
             Box(
                 Modifier.size(72.dp, 48.dp).background(selectedColor)
-                    .border(1.dp, MaterialTheme.colors.onBackground.copy(alpha = 0.54f))
+                    .border(1.dp, MaterialTheme.colors.onBackground.copy(alpha = 0.54f)),
             )
             Spacer(Modifier.requiredWidth(32.dp))
             OutlinedTextField(
@@ -373,7 +373,7 @@ fun ColorPalette(
                 singleLine = true,
                 modifier = Modifier.keyboardHandler(singleLine = true) {
                     it.clearFocus()
-                }
+                },
             )
         }
     }
@@ -446,5 +446,5 @@ private val presetColors = listOf(
     Color(0xFFFF9800), // ORANGE 500
     Color(0xFF795548), // BROWN 500
     Color(0xFF607D8B), // BLUE GREY 500
-    Color(0xFF9E9E9E) // GREY 500
+    Color(0xFF9E9E9E), // GREY 500
 ).toImmutableList()

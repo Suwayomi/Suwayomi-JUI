@@ -91,15 +91,15 @@ fun ExtensionsScreenContent(
     installExtensionFile: (Source) -> Unit,
     installExtension: (Extension) -> Unit,
     updateExtension: (Extension) -> Unit,
-    uninstallExtension: (Extension) -> Unit
+    uninstallExtension: (Extension) -> Unit,
 ) {
     val languageDialogState = rememberMaterialDialogState()
     val chooser = rememberFileChooser(installExtensionFile)
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             ExtensionsToolbar(
@@ -108,9 +108,9 @@ fun ExtensionsScreenContent(
                 openLanguageDialog = languageDialogState::show,
                 openInstallExtensionFile = {
                     chooser.launch("apk")
-                }
+                },
             )
-        }
+        },
     ) { padding ->
         if (isLoading) {
             LoadingScreen()
@@ -123,9 +123,9 @@ fun ExtensionsScreenContent(
                     state = state,
                     contentPadding = WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    ).asPaddingValues()
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ).asPaddingValues(),
                 ) {
                     items(
                         extensions,
@@ -140,14 +140,14 @@ fun ExtensionsScreenContent(
                                 is ExtensionUI.Header -> it.header
                                 is ExtensionUI.ExtensionItem -> it.extension.pkgName
                             }
-                        }
+                        },
                     ) {
                         when (it) {
                             is ExtensionUI.Header -> Text(
                                 it.header,
                                 style = MaterialTheme.typography.h6,
                                 modifier = Modifier.animateItemPlacement()
-                                    .padding(16.dp, 16.dp, 16.dp, 4.dp)
+                                    .padding(16.dp, 16.dp, 16.dp, 4.dp),
                             )
                             is ExtensionUI.ExtensionItem -> Column {
                                 ExtensionItem(
@@ -155,7 +155,7 @@ fun ExtensionsScreenContent(
                                     it,
                                     onInstallClicked = installExtension,
                                     onUpdateClicked = updateExtension,
-                                    onUninstallClicked = uninstallExtension
+                                    onUninstallClicked = uninstallExtension,
                                 )
                                 Spacer(Modifier.height(8.dp))
                             }
@@ -169,11 +169,11 @@ fun ExtensionsScreenContent(
                         .windowInsetsPadding(
                             WindowInsets.bottomNav.add(
                                 WindowInsets.navigationBars.only(
-                                    WindowInsetsSides.Bottom
-                                )
-                            )
+                                    WindowInsetsSides.Bottom,
+                                ),
+                            ),
                         ),
-                    adapter = rememberScrollbarAdapter(state)
+                    adapter = rememberScrollbarAdapter(state),
                 )
             }
         }
@@ -186,7 +186,7 @@ fun ExtensionsToolbar(
     searchText: String?,
     search: (String) -> Unit,
     openLanguageDialog: () -> Unit,
-    openInstallExtensionFile: () -> Unit
+    openInstallExtensionFile: () -> Unit,
 ) {
     Toolbar(
         stringResource(MR.strings.location_extensions),
@@ -195,9 +195,9 @@ fun ExtensionsToolbar(
         actions = {
             getActionItems(
                 openLanguageDialog,
-                openInstallExtensionFile
+                openInstallExtensionFile,
             )
-        }
+        },
     )
 }
 
@@ -207,14 +207,14 @@ fun ExtensionItem(
     extensionItem: ExtensionUI.ExtensionItem,
     onInstallClicked: (Extension) -> Unit,
     onUpdateClicked: (Extension) -> Unit,
-    onUninstallClicked: (Extension) -> Unit
+    onUninstallClicked: (Extension) -> Unit,
 ) {
     val extension = extensionItem.extension
     Box(
         modifier = Modifier.fillMaxWidth()
             .padding(end = 12.dp)
             .height(50.dp)
-            .background(MaterialTheme.colors.background) then modifier
+            .background(MaterialTheme.colors.background) then modifier,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(Modifier.width(4.dp))
@@ -222,7 +222,7 @@ fun ExtensionItem(
                 data = extension,
                 contentDescription = extension.name,
                 modifier = Modifier.size(50.dp),
-                filterQuality = FilterQuality.Medium
+                filterQuality = FilterQuality.Medium,
             )
             Spacer(Modifier.width(8.dp))
             Column {
@@ -255,7 +255,7 @@ fun ExtensionItem(
                 }
             },
             modifier = Modifier.align(Alignment.CenterEnd),
-            enabled = !extensionItem.isWorking
+            enabled = !extensionItem.isWorking,
         ) {
             Text(
                 when {
@@ -263,7 +263,7 @@ fun ExtensionItem(
                     extension.hasUpdate -> stringResource(MR.strings.action_update)
                     extension.installed -> stringResource(MR.strings.action_uninstall)
                     else -> stringResource(MR.strings.action_install)
-                }
+                },
             )
         }
     }
@@ -274,7 +274,7 @@ fun LanguageDialog(
     state: MaterialDialogState,
     enabledLangs: ImmutableSet<String>,
     availableLangs: ImmutableList<String>,
-    setLangs: (Set<String>) -> Unit
+    setLangs: (Set<String>) -> Unit,
 ) {
     MaterialDialog(
         state,
@@ -282,7 +282,7 @@ fun LanguageDialog(
             positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties(size = DpSize(400.dp, 600.dp))
+        properties = getMaterialDialogProperties(size = DpSize(400.dp, 600.dp)),
     ) {
         title(BuildKonfig.NAME)
 
@@ -305,7 +305,7 @@ fun LanguageDialog(
                             "other" -> 3
                             else -> 2
                         }
-                    }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<*, String>::second)
+                    }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<*, String>::second),
                 )
             }
             listItemsMultiChoice(
@@ -316,14 +316,14 @@ fun LanguageDialog(
                 }.toSet(),
                 onCheckedChange = { indexes ->
                     setLangs(indexes.map { list[it].first }.toSet())
-                }
+                },
             )
             Box(Modifier.matchParentSize().height(IntrinsicSize.Min)) {
                 VerticalScrollbar(
                     rememberScrollbarAdapter(listState),
                     Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .scrollbarPadding()
+                        .scrollbarPadding(),
                 )
             }
         }
@@ -334,18 +334,18 @@ fun LanguageDialog(
 @Composable
 private fun getActionItems(
     openLanguageDialog: () -> Unit,
-    openInstallExtensionFile: () -> Unit
+    openInstallExtensionFile: () -> Unit,
 ): ImmutableList<ActionItem> {
     return listOf(
         ActionItem(
             stringResource(MR.strings.enabled_languages),
             Icons.Rounded.Translate,
-            doAction = openLanguageDialog
+            doAction = openLanguageDialog,
         ),
         ActionItem(
             stringResource(MR.strings.action_install),
             Icons.Rounded.Add,
-            doAction = openInstallExtensionFile
-        )
+            doAction = openInstallExtensionFile,
+        ),
     ).toImmutableList()
 }

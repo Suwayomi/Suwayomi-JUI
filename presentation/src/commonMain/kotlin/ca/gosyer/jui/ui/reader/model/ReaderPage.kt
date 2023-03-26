@@ -20,13 +20,13 @@ data class ReaderPage(
     val progress: MutableStateFlow<Float>,
     val status: MutableStateFlow<Status>,
     val error: MutableStateFlow<String?>,
-    val chapter: ReaderChapter
+    val chapter: ReaderChapter,
 ) : ReaderItem() {
     enum class Status {
         QUEUE,
         WORKING,
         READY,
-        ERROR
+        ERROR,
     }
 
     @Immutable

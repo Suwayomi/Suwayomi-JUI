@@ -21,7 +21,7 @@ internal actual fun RealDropdownMenu(
     modifier: Modifier,
     offset: DpOffset,
     properties: PopupProperties,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) = Unit/* TODO androidx.compose.material.DropdownMenu(
     expanded = expanded,
     onDismissRequest = onDismissRequest,
@@ -38,7 +38,7 @@ internal actual fun RealDropdownMenuItem(
     enabled: Boolean,
     contentPadding: PaddingValues,
     interactionSource: MutableInteractionSource,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) = Unit/* TODO androidx.compose.material.DropdownMenuItem(
     onClick = onClick,
     modifier = modifier,

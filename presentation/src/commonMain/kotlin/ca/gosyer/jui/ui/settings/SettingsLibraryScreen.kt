@@ -88,7 +88,7 @@ class SettingsLibraryScreen : Screen {
             gridColumns = vm.gridColumns,
             gridSize = vm.gridSize,
             categoriesSize = vm.categories.collectAsState().value,
-            openCategoriesScreen = categoriesLauncher::open
+            openCategoriesScreen = categoriesLauncher::open,
         )
         categoriesLauncher.CategoriesWindow()
     }
@@ -97,7 +97,7 @@ class SettingsLibraryScreen : Screen {
 class SettingsLibraryViewModel @Inject constructor(
     libraryPreferences: LibraryPreferences,
     private val getCategories: GetCategories,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
 
     val displayMode = libraryPreferences.displayMode().asStateFlow()
@@ -132,17 +132,17 @@ fun SettingsLibraryScreenContent(
     gridSize: PreferenceMutableStateFlow<Int>,
     showAllCategory: PreferenceMutableStateFlow<Boolean>,
     categoriesSize: Int,
-    openCategoriesScreen: () -> Unit
+    openCategoriesScreen: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.settings_library_screen))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -151,15 +151,15 @@ fun SettingsLibraryScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 item {
                     ChoicePreference(
                         preference = displayMode,
                         choices = displayModeChoices,
-                        title = stringResource(MR.strings.display_mode)
+                        title = stringResource(MR.strings.display_mode),
                     )
                 }
                 item {
@@ -168,7 +168,7 @@ fun SettingsLibraryScreenContent(
                         columnPreference = gridColumns,
                         sizePreference = gridSize,
                         title = stringResource(MR.strings.items_per_row),
-                        enabled = displayModePref != DisplayMode.List
+                        enabled = displayModePref != DisplayMode.List,
                     )
                 }
                 /*item {
@@ -184,7 +184,7 @@ fun SettingsLibraryScreenContent(
                     PreferenceRow(
                         stringResource(MR.strings.location_categories),
                         onClick = { openCategoriesScreen() },
-                        subtitle = categoriesSize.toString()
+                        subtitle = categoriesSize.toString(),
                     )
                 }
             }
@@ -196,10 +196,10 @@ fun SettingsLibraryScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }
@@ -210,7 +210,7 @@ private fun GridPreference(
     columnPreference: PreferenceMutableStateFlow<Int>,
     sizePreference: PreferenceMutableStateFlow<Int>,
     title: String,
-    enabled: Boolean
+    enabled: Boolean,
 ) {
     val columnPrefValue by columnPreference.collectAsState()
     val sizePrefValue by sizePreference.collectAsState()
@@ -225,7 +225,7 @@ private fun GridPreference(
         onClick = {
             dialogState.show()
         },
-        enabled = enabled
+        enabled = enabled,
     )
     GridPrefDialog(
         state = dialogState,
@@ -235,7 +235,7 @@ private fun GridPreference(
         onSelected = { columns, size ->
             columnPreference.value = columns
             sizePreference.value = size
-        }
+        },
     )
 }
 
@@ -246,7 +246,7 @@ private fun GridPrefDialog(
     initialSize: Int,
     onCloseRequest: () -> Unit = {},
     onSelected: (columns: Int, size: Int) -> Unit,
-    title: String
+    title: String,
 ) {
     var columns by remember(initialColumns) { mutableStateOf(initialColumns.toFloat()) }
     var size by remember(initialSize) { mutableStateOf(initialSize.toFloat()) }
@@ -264,7 +264,7 @@ private fun GridPrefDialog(
         onCloseRequest = {
             state.hide()
             onCloseRequest()
-        }
+        },
     ) {
         title(title)
         Column(Modifier.padding(horizontal = 8.dp)) {
@@ -276,7 +276,7 @@ private fun GridPrefDialog(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 valueRange = 0F..10F,
-                steps = 10 - 2
+                steps = 10 - 2,
             )
             val columnsInt = columns.roundToInt()
             val adaptive = columnsInt < 1
@@ -287,7 +287,7 @@ private fun GridPrefDialog(
                     columnsInt.toString()
                 },
                 color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-                fontSize = 12.sp
+                fontSize = 12.sp,
             )
 
             AnimatedVisibility(adaptive) {
@@ -301,14 +301,14 @@ private fun GridPrefDialog(
                         },
                         modifier = Modifier.fillMaxWidth(),
                         valueRange = 90F..300F,
-                        steps = 21 - 2
+                        steps = 21 - 2,
                     )
                     val sizeInt = size.roundToInt()
                     val newSize = (10 - sizeInt % 10) + sizeInt
                     Text(
                         newSize.toString(),
                         color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
                     )
                 }
             }

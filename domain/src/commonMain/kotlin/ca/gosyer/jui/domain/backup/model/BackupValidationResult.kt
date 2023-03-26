@@ -11,5 +11,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class BackupValidationResult(
     val missingSources: List<String>,
-    val missingTrackers: List<String>
+    val missingTrackers: List<String>,
 )

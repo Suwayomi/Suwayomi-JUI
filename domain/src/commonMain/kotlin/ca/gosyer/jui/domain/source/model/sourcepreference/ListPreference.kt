@@ -24,6 +24,6 @@ data class ListPreference(override val props: ListProps) : SourcePreference() {
         override val defaultValue: String?,
         override val defaultValueType: String,
         val entries: List<String>,
-        val entryValues: List<String>
+        val entryValues: List<String>,
     ) : Props<String?>
 }

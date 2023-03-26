@@ -84,23 +84,23 @@ fun SourceHomeScreenContent(
     setEnabledLanguages: (Set<String>) -> Unit,
     query: String,
     setQuery: (String) -> Unit,
-    submitSearch: (String) -> Unit
+    submitSearch: (String) -> Unit,
 ) {
     val languageDialogState = rememberMaterialDialogState()
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             SourceHomeScreenToolbar(
                 openEnabledLanguagesClick = languageDialogState::show,
                 query = query,
                 setQuery = setQuery,
-                submitSearch = submitSearch
+                submitSearch = submitSearch,
             )
-        }
+        },
     ) { padding ->
         if (sources.isEmpty()) {
             LoadingScreen(isLoading)
@@ -122,13 +122,13 @@ fun SourceHomeScreenToolbar(
     openEnabledLanguagesClick: () -> Unit,
     query: String,
     setQuery: (String) -> Unit,
-    submitSearch: (String) -> Unit
+    submitSearch: (String) -> Unit,
 ) {
     Toolbar(
         stringResource(MR.strings.location_sources),
         actions = {
             getActionItems(
-                openEnabledLanguagesClick = openEnabledLanguagesClick
+                openEnabledLanguagesClick = openEnabledLanguagesClick,
             )
         },
         searchText = query,
@@ -137,14 +137,14 @@ fun SourceHomeScreenToolbar(
             if (query.isNotBlank()) {
                 submitSearch(query)
             }
-        }
+        },
     )
 }
 
 @Composable
 fun WideSourcesMenu(
     sources: ImmutableList<SourceUI>,
-    onAddSource: (Source) -> Unit
+    onAddSource: (Source) -> Unit,
 ) {
     Box {
         val state = rememberLazyGridState()
@@ -155,9 +155,9 @@ fun WideSourcesMenu(
             modifier = Modifier.fillMaxSize(),
             contentPadding = WindowInsets.bottomNav.add(
                 WindowInsets.navigationBars.only(
-                    WindowInsetsSides.Bottom
-                )
-            ).asPaddingValues()
+                    WindowInsetsSides.Bottom,
+                ),
+            ).asPaddingValues(),
         ) {
             items(
                 sources,
@@ -178,16 +178,16 @@ fun WideSourcesMenu(
                         is SourceUI.Header -> GridItemSpan(maxLineSpan)
                         is SourceUI.SourceItem -> GridItemSpan(1)
                     }
-                }
+                },
             ) { sourceUI ->
                 when (sourceUI) {
                     is SourceUI.Header -> Text(
                         sourceUI.header,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     )
                     is SourceUI.SourceItem -> WideSourceItem(
                         sourceUI,
-                        onSourceClicked = onAddSource
+                        onSourceClicked = onAddSource,
                     )
                 }
             }
@@ -199,11 +199,11 @@ fun WideSourcesMenu(
                 .windowInsetsPadding(
                     WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    )
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ),
                 ),
-            adapter = rememberVerticalScrollbarAdapter(state, cells)
+            adapter = rememberVerticalScrollbarAdapter(state, cells),
         )
     }
 }
@@ -211,7 +211,7 @@ fun WideSourcesMenu(
 @Composable
 fun WideSourceItem(
     sourceItem: SourceUI.SourceItem,
-    onSourceClicked: (Source) -> Unit
+    onSourceClicked: (Source) -> Unit,
 ) {
     val source = sourceItem.source
     TooltipArea(
@@ -219,31 +219,31 @@ fun WideSourceItem(
             Surface(
                 modifier = Modifier.shadow(4.dp),
                 shape = RoundedCornerShape(4.dp),
-                elevation = 4.dp
+                elevation = 4.dp,
             ) {
                 Text(source.name, modifier = Modifier.padding(10.dp))
             }
-        }
+        },
     ) {
         Column(
             Modifier.padding(8.dp)
                 .clickable {
                     onSourceClicked(source)
                 },
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ImageLoaderImage(
                 data = source,
                 contentDescription = source.displayName,
                 modifier = Modifier.size(96.dp),
-                filterQuality = FilterQuality.Medium
+                filterQuality = FilterQuality.Medium,
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 source.name,
                 color = MaterialTheme.colors.onBackground,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
@@ -252,7 +252,7 @@ fun WideSourceItem(
 @Composable
 fun ThinSourcesMenu(
     sources: ImmutableList<SourceUI>,
-    onAddSource: (Source) -> Unit
+    onAddSource: (Source) -> Unit,
 ) {
     Box {
         val state = rememberLazyListState()
@@ -261,9 +261,9 @@ fun ThinSourcesMenu(
             modifier = Modifier.fillMaxSize(),
             contentPadding = WindowInsets.bottomNav.add(
                 WindowInsets.navigationBars.only(
-                    WindowInsetsSides.Bottom
-                )
-            ).asPaddingValues()
+                    WindowInsetsSides.Bottom,
+                ),
+            ).asPaddingValues(),
         ) {
             items(
                 sources,
@@ -278,16 +278,16 @@ fun ThinSourcesMenu(
                         is SourceUI.Header -> it.header
                         is SourceUI.SourceItem -> it.source.id
                     }
-                }
+                },
             ) { sourceUI ->
                 when (sourceUI) {
                     is SourceUI.Header -> Text(
                         sourceUI.header,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     )
                     is SourceUI.SourceItem -> ThinSourceItem(
                         sourceUI,
-                        onSourceClicked = onAddSource
+                        onSourceClicked = onAddSource,
                     )
                 }
             }
@@ -299,11 +299,11 @@ fun ThinSourcesMenu(
                 .windowInsetsPadding(
                     WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    )
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ),
                 ),
-            adapter = rememberScrollbarAdapter(state)
+            adapter = rememberScrollbarAdapter(state),
         )
     }
 }
@@ -311,7 +311,7 @@ fun ThinSourcesMenu(
 @Composable
 fun ThinSourceItem(
     sourceItem: SourceUI.SourceItem,
-    onSourceClicked: (Source) -> Unit
+    onSourceClicked: (Source) -> Unit,
 ) {
     val source = sourceItem.source
     Row(
@@ -319,14 +319,14 @@ fun ThinSourceItem(
             .height(64.dp)
             .clickable(onClick = { onSourceClicked(source) })
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         ImageLoaderImage(
             source,
             source.displayName,
             Modifier.fillMaxHeight()
                 .aspectRatio(1F, true),
-            filterQuality = FilterQuality.Medium
+            filterQuality = FilterQuality.Medium,
         )
         Spacer(Modifier.width(8.dp))
         Column {
@@ -335,14 +335,14 @@ fun ThinSourceItem(
                 color = MaterialTheme.colors.onBackground,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                fontSize = 14.sp
+                fontSize = 14.sp,
             )
             Text(
                 localeToString(source.displayLang),
                 color = MaterialTheme.colors.onBackground,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                fontSize = 12.sp
+                fontSize = 12.sp,
             )
         }
     }
@@ -351,13 +351,13 @@ fun ThinSourceItem(
 @Composable
 @Stable
 private fun getActionItems(
-    openEnabledLanguagesClick: () -> Unit
+    openEnabledLanguagesClick: () -> Unit,
 ): ImmutableList<ActionItem> {
     return persistentListOf(
         ActionItem(
             stringResource(MR.strings.enabled_languages),
             Icons.Rounded.Translate,
-            doAction = openEnabledLanguagesClick
-        )
+            doAction = openEnabledLanguagesClick,
+        ),
     ).toImmutableList()
 }

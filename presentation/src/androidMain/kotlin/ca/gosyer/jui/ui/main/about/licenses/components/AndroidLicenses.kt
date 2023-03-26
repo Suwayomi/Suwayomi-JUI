@@ -19,7 +19,7 @@ actual fun getLicenses(): Libs? {
     val context = LocalContext.current
     val libs by produceState<Libs?>(
         null,
-        context
+        context,
     ) {
         withIOContext {
             value = Libs.Builder().withContext(context).build()

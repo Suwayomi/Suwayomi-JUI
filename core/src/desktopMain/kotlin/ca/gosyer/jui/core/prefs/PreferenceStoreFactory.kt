@@ -17,8 +17,8 @@ actual class PreferenceStoreFactory @Inject constructor() {
     actual fun create(vararg names: String): PreferenceStore {
         return StandardPreferenceStore(
             PreferencesSettings(
-                rootNode.node(names.joinToString(separator = "/"))
-            )
+                rootNode.node(names.joinToString(separator = "/")),
+            ),
         )
     }
 }

@@ -32,12 +32,12 @@ class SetSourceSetting @Inject constructor(private val sourceRepository: SourceR
 
     fun asFlow(source: Source, settingIndex: Int, setting: Any) = sourceRepository.setSourceSetting(
         source.id,
-        SourcePreferenceChange(settingIndex, setting)
+        SourcePreferenceChange(settingIndex, setting),
     )
 
     fun asFlow(sourceId: Long, settingIndex: Int, setting: Any) = sourceRepository.setSourceSetting(
         sourceId,
-        SourcePreferenceChange(settingIndex, setting)
+        SourcePreferenceChange(settingIndex, setting),
     )
 
     companion object {

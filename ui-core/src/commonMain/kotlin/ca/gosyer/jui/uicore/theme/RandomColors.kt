@@ -28,7 +28,7 @@ object RandomColors {
         Color(0xffffd54f),
         Color(0xffffb74d),
         Color(0xffa1887f),
-        Color(0xff90a4ae)
+        Color(0xff90a4ae),
     )
 
     fun get(key: Any): Color {

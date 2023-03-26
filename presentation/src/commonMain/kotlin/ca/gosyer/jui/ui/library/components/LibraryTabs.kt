@@ -34,14 +34,14 @@ fun LibraryTabs(
     pagerState: PagerState,
     categories: ImmutableList<Category>,
     selectedPage: Int,
-    onPageChanged: (Int) -> Unit
+    onPageChanged: (Int) -> Unit,
 ) {
     if (categories.isEmpty()) return
 
     AnimatedVisibility(
         visible = visible,
         enter = expandVertically(),
-        exit = shrinkVertically()
+        exit = shrinkVertically(),
     ) {
         Column {
             ScrollableTabRow(
@@ -54,10 +54,10 @@ fun LibraryTabs(
                             .padding(horizontal = 8.dp)
                             .clip(RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp)),
                         height = 3.dp,
-                        color = MaterialTheme.colors.primary
+                        color = MaterialTheme.colors.primary,
                     )
                 },
-                divider = {}
+                divider = {},
             ) {
                 categories.fastForEachIndexed { i, category ->
                     Tab(
@@ -65,7 +65,7 @@ fun LibraryTabs(
                         onClick = { onPageChanged(i) },
                         text = { Text(category.name) },
                         selectedContentColor = MaterialTheme.colors.primary,
-                        unselectedContentColor = MaterialTheme.colors.onSurface
+                        unselectedContentColor = MaterialTheme.colors.onSurface,
                     )
                 }
             }

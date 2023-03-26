@@ -60,17 +60,17 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun SourceSettingsScreenContent(
-    settings: ImmutableList<SourceSettingsView<*, *>>
+    settings: ImmutableList<SourceSettingsView<*, *>>,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.location_settings))
-        }
+        },
     ) { padding ->
         Box(Modifier.padding(padding)) {
             val state = rememberLazyListState()
@@ -79,9 +79,9 @@ fun SourceSettingsScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 items(settings, { it.props.hashCode() }) {
                     @Suppress("UNCHECKED_CAST")
@@ -109,10 +109,10 @@ fun SourceSettingsScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }
@@ -139,7 +139,7 @@ private fun TwoStatePreference(twoState: TwoState, checkbox: Boolean) {
             } else {
                 Switch(checked = state, onCheckedChange = null)
             }
-        }
+        },
     )
 }
 
@@ -160,14 +160,14 @@ private fun ListPreference(list: List) {
         subtitle = subtitle,
         onClick = {
             dialogState.show()
-        }
+        },
     )
     ChoiceDialog(
         dialogState,
         list.getOptions(),
         state,
         onSelected = list::updateState,
-        title = title
+        title = title,
     )
 }
 
@@ -189,14 +189,14 @@ private fun MultiSelectPreference(multiSelect: MultiSelect) {
         subtitle = subtitle,
         onClick = {
             dialogState.show()
-        }
+        },
     )
     MultiSelectDialog(
         dialogState,
         multiSelect.getOptions(),
         state,
         onFinished = multiSelect::updateState,
-        title = dialogTitle
+        title = dialogTitle,
     )
 }
 
@@ -215,7 +215,7 @@ private fun EditTextPreference(editText: EditText) {
     PreferenceRow(
         title,
         subtitle = subtitle,
-        onClick = dialogState::show
+        onClick = dialogState::show,
     )
     MaterialDialog(
         dialogState,
@@ -223,7 +223,7 @@ private fun EditTextPreference(editText: EditText) {
             positiveButton(stringResource(MR.strings.action_ok))
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties()
+        properties = getMaterialDialogProperties(),
     ) {
         title(editText.dialogTitle ?: BuildKonfig.NAME)
         if (editText.dialogMessage != null) {
@@ -233,7 +233,7 @@ private fun EditTextPreference(editText: EditText) {
             label = "",
             textFieldStyle = TextFieldStyle.Outlined,
             onInput = { editText.updateState(it) },
-            modifier = Modifier.keyboardHandler()
+            modifier = Modifier.keyboardHandler(),
         )
     }
 }

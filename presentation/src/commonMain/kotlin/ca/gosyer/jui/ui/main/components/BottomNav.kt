@@ -58,13 +58,13 @@ fun WithBottomNav(navigator: Navigator, content: @Composable () -> Unit) {
         val isBottomNavVisible = navigator.size <= 1
         CompositionLocalProvider(
             BottomNavHeightLocal provides if (isBottomNavVisible) BottomNavHeight else 0.dp,
-            content = content
+            content = content,
         )
         AnimatedVisibility(
             isBottomNavVisible,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it }),
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
         ) {
             BottomNav(navigator)
         }
@@ -93,17 +93,17 @@ fun BottomNav(navigator: Navigator) {
                     Text(
                         text = stringResource(it.textKey),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
                 },
                 alwaysShowLabel = true,
                 modifier = Modifier
                     .windowInsetsPadding(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-                        )
+                            WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom,
+                        ),
                     )
-                    .height(BottomNavHeight)
+                    .height(BottomNavHeight),
             )
         }
     }
@@ -115,13 +115,13 @@ fun BottomNavigation(
     backgroundColor: Color = MaterialTheme.colors.primarySurface,
     contentColor: Color = contentColorFor(backgroundColor),
     elevation: Dp = BottomNavigationDefaults.Elevation,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     Surface(
         color = backgroundColor,
         contentColor = contentColor,
         elevation = elevation,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Row(
             Modifier
@@ -129,7 +129,7 @@ fun BottomNavigation(
                 .defaultMinSize(minHeight = BottomNavHeight)
                 .selectableGroup(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            content = content
+            content = content,
         )
     }
 }

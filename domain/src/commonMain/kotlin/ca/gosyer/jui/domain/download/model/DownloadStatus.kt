@@ -13,5 +13,5 @@ import kotlinx.serialization.Serializable
 @Immutable
 data class DownloadStatus(
     val status: DownloaderStatus,
-    val queue: List<DownloadChapter>
+    val queue: List<DownloadChapter>,
 )

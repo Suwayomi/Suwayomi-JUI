@@ -9,7 +9,7 @@ package ca.gosyer.jui.ui.reader.model
 data class ViewerChapters(
     val currChapter: ReaderChapter?,
     val prevChapter: ReaderChapter?,
-    val nextChapter: ReaderChapter?
+    val nextChapter: ReaderChapter?,
 ) {
     fun recycle() {
         currChapter?.recycle()
@@ -22,7 +22,7 @@ data class ViewerChapters(
         return ViewerChapters(
             nextChapter = currChapter,
             currChapter = prevChapter,
-            prevChapter = null
+            prevChapter = null,
         )
     }
 
@@ -31,7 +31,7 @@ data class ViewerChapters(
         return ViewerChapters(
             prevChapter = currChapter,
             currChapter = nextChapter,
-            nextChapter = null
+            nextChapter = null,
         )
     }
 }

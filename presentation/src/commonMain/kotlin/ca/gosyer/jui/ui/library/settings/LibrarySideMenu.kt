@@ -33,14 +33,14 @@ import ca.gosyer.jui.uicore.resources.stringResource
 fun LibrarySideMenu(
     libraryFilters: @Composable () -> Unit,
     librarySort: @Composable () -> Unit,
-    libraryDisplay: @Composable () -> Unit
+    libraryDisplay: @Composable () -> Unit,
 ) {
     Surface(Modifier.fillMaxHeight().width(260.dp), elevation = 1.dp) {
         Box {
             val scrollState = rememberScrollState()
             Column(
                 Modifier.fillMaxWidth()
-                    .verticalScroll(scrollState)
+                    .verticalScroll(scrollState),
             ) {
                 TitleText(stringResource(MR.strings.action_filter))
                 libraryFilters()
@@ -56,7 +56,7 @@ fun LibrarySideMenu(
                 rememberScrollbarAdapter(scrollState),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .scrollbarPadding()
+                    .scrollbarPadding(),
             )
         }
     }

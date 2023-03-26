@@ -23,19 +23,19 @@ interface MangaRepository {
     @GET("api/v1/manga/{mangaId}/")
     fun getManga(
         @Path("mangaId") mangaId: Long,
-        @Query("onlineFetch") refresh: Boolean = false
+        @Query("onlineFetch") refresh: Boolean = false,
     ): Flow<Manga>
 
     @GET("api/v1/manga/{mangaId}/full")
     fun getMangaFull(
         @Path("mangaId") mangaId: Long,
-        @Query("onlineFetch") refresh: Boolean = false
+        @Query("onlineFetch") refresh: Boolean = false,
     ): Flow<Manga>
 
     @GET("api/v1/manga/{mangaId}/thumbnail")
     fun getMangaThumbnail(
         @Path("mangaId") mangaId: Long,
-        @ReqBuilder block: HttpRequestBuilder.() -> Unit
+        @ReqBuilder block: HttpRequestBuilder.() -> Unit,
     ): Flow<ByteReadChannel>
 
     @PATCH("api/v1/manga/{mangaId}/meta")
@@ -43,6 +43,6 @@ interface MangaRepository {
     fun updateMangaMeta(
         @Path("mangaId") mangaId: Long,
         @Field("key") key: String,
-        @Field("value") value: String
+        @Field("value") value: String,
     ): Flow<HttpResponse>
 }

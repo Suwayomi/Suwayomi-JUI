@@ -11,5 +11,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ChapterBatchEditInput(
     val chapterIds: List<Long>? = null,
-    val change: ChapterChange?
+    val change: ChapterChange?,
 )

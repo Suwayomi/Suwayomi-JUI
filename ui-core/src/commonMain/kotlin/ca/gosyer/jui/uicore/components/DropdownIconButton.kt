@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 fun DropdownIconButton(
     key: Any? = Unit,
     dropdownItems: @Composable ColumnScope.() -> Unit,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     var showMenu by remember(key) { mutableStateOf(false) }
     var offset by remember(key) { mutableStateOf(DpOffset(0.dp, 0.dp)) }
@@ -38,14 +38,14 @@ fun DropdownIconButton(
         expanded = showMenu,
         onDismissRequest = { showMenu = false },
         offset = offset,
-        content = dropdownItems
+        content = dropdownItems,
     )
     Box(
         modifier = Modifier.size(48.dp)
             .clickable(
                 remember { MutableInteractionSource() },
                 role = Role.Button,
-                indication = rememberRipple(bounded = false, radius = 24.dp)
+                indication = rememberRipple(bounded = false, radius = 24.dp),
             ) {
                 showMenu = true
             }
@@ -53,6 +53,6 @@ fun DropdownIconButton(
                 offset = it.positionInWindow().let { DpOffset(it.x.dp, it.y.dp) }
             },
         contentAlignment = Alignment.Center,
-        content = content
+        content = content,
     )
 }

@@ -19,12 +19,12 @@ data class About(
     val buildType: AboutBuildType,
     val buildTime: Long,
     val github: String,
-    val discord: String
+    val discord: String,
 )
 
 @Serializable
 @Stable
 enum class AboutBuildType {
     Preview,
-    Stable
+    Stable,
 }

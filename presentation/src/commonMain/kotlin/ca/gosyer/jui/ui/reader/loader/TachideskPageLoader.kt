@@ -55,7 +55,7 @@ class TachideskPageLoader(
     readerPreferences: ReaderPreferences,
     private val getChapterPage: GetChapterPage,
     private val chapterCache: DiskCache,
-    private val bitmapDecoderFactory: BitmapDecoderFactory
+    private val bitmapDecoderFactory: BitmapDecoderFactory,
 ) : PageLoader() {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -64,7 +64,7 @@ class TachideskPageLoader(
      */
     private val channel = PriorityChannel<PriorityPage>(
         scope = scope,
-        comparator = { i1, i2 -> i1.compareTo(i2) }
+        comparator = { i1, i2 -> i1.compareTo(i2) },
     )
 
     /**
@@ -153,9 +153,9 @@ class TachideskPageLoader(
                     ImageResult.Source(
                         ImageRequest(Any()),
                         source,
-                        DataSource.Engine
+                        DataSource.Engine,
                     ),
-                    Options()
+                    Options(),
                 )
                 if (decoder != null) {
                     runCatching { decoder.decode() as DecodeResult.Bitmap }
@@ -163,9 +163,9 @@ class TachideskPageLoader(
                             ReaderPage.ImageDecodeState.Success(
                                 it.bitmap.asImageBitmap().also {
                                     page.bitmapInfo.value = ReaderPage.BitmapInfo(
-                                        IntSize(it.width, it.height)
+                                        IntSize(it.width, it.height),
                                     )
-                                }
+                                },
                             )
                         }
                         .getOrElse {
@@ -218,9 +218,9 @@ class TachideskPageLoader(
                             progress = MutableStateFlow(0.0F),
                             status = MutableStateFlow(ReaderPage.Status.QUEUE),
                             error = MutableStateFlow(null),
-                            chapter = chapter
+                            chapter = chapter,
                         )
-                    }
+                    },
                 )
             }
         }
@@ -261,7 +261,7 @@ class TachideskPageLoader(
      */
     private class PriorityPage(
         val page: ReaderPage,
-        val priority: Int
+        val priority: Int,
     ) : Comparable<PriorityPage> {
         companion object {
             private val idGenerator = AtomicInt32(1)

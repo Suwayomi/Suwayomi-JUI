@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 
 class GetChapter @Inject constructor(
     private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) {
 
     suspend fun await(mangaId: Long, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, index)
@@ -50,7 +50,7 @@ class GetChapter @Inject constructor(
         indexPredate = { id, chapterIndexes ->
             id == mangaId && (chapterIndexes == null || index in chapterIndexes)
         },
-        idPredate = { id, _ -> id == mangaId }
+        idPredate = { id, _ -> id == mangaId },
     )
 
     fun asFlow(manga: Manga, index: Int) = serverListeners.combineChapters(
@@ -58,7 +58,7 @@ class GetChapter @Inject constructor(
         indexPredate = { id, chapterIndexes ->
             id == manga.id && (chapterIndexes == null || index in chapterIndexes)
         },
-        idPredate = { id, _ -> id == manga.id }
+        idPredate = { id, _ -> id == manga.id },
     )
 
     fun asFlow(chapter: Chapter) = serverListeners.combineChapters(
@@ -66,7 +66,7 @@ class GetChapter @Inject constructor(
         indexPredate = { id, chapterIndexes ->
             id == chapter.mangaId && (chapterIndexes == null || chapter.index in chapterIndexes)
         },
-        idPredate = { id, _ -> id == chapter.mangaId }
+        idPredate = { id, _ -> id == chapter.mangaId },
     )
 
     companion object {

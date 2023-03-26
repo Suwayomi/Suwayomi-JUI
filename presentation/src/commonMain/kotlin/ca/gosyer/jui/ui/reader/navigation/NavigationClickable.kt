@@ -26,18 +26,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 fun Modifier.navigationClickable(
     navigation: ViewerNavigation,
-    onClick: (Navigation) -> Unit = {}
+    onClick: (Navigation) -> Unit = {},
 ) = composed(
     inspectorInfo = debugInspectorInfo {
         name = "navigationClickable"
         properties["navigation"] = navigation
         properties["onClick"] = onClick
-    }
+    },
 ) {
     navigationClickable(
         navigation = navigation,
         interactionSource = remember { MutableInteractionSource() },
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -47,7 +47,7 @@ fun Modifier.navigationClickable(
     enabled: Boolean = true,
     onClickLabel: String? = null,
     role: Role? = null,
-    onClick: (Navigation) -> Unit
+    onClick: (Navigation) -> Unit,
 ): Modifier = composed(
     inspectorInfo = debugInspectorInfo {
         name = "navigationClickable"
@@ -57,7 +57,7 @@ fun Modifier.navigationClickable(
         properties["role"] = role
         properties["onClick"] = onClick
         properties["interactionSource"] = interactionSource
-    }
+    },
 ) {
     val offsetEvent = remember { MutableStateFlow<Offset?>(null) }
     val layoutSize = remember { MutableStateFlow(Size.Zero) }

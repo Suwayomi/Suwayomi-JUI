@@ -36,10 +36,10 @@ import ca.gosyer.jui.uicore.image.ImageLoaderImage
 fun MangaGridItem(
     title: String,
     data: Any,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     val fontStyle = LocalTextStyle.current.merge(
-        TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
+        TextStyle(letterSpacing = 0.sp, fontFamily = FontFamily.SansSerif, fontSize = 14.sp),
     )
 
     Surface(
@@ -49,7 +49,7 @@ fun MangaGridItem(
             .aspectRatio(mangaAspectRatio)
             .padding(8.dp),
         elevation = 4.dp,
-        shape = RoundedCornerShape(4.dp)
+        shape = RoundedCornerShape(4.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             ImageLoaderImage(data, title, contentScale = ContentScale.Crop, filterQuality = FilterQuality.Medium)
@@ -62,7 +62,7 @@ fun MangaGridItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.wrapContentHeight(Alignment.CenterVertically)
                     .align(Alignment.BottomStart)
-                    .padding(8.dp)
+                    .padding(8.dp),
             )
         }
     }
@@ -75,7 +75,7 @@ private val shadowGradient = Modifier.drawWithCache {
         0.75f to Color.Transparent,
         1.0f to Color(0xAA000000),
         start = Offset(0f, 0f),
-        end = Offset(0f, size.height)
+        end = Offset(0f, size.height),
     )
     onDrawBehind {
         drawRect(gradient)

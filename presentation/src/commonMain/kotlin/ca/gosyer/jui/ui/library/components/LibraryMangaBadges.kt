@@ -32,7 +32,7 @@ fun LibraryMangaBadges(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     val unread = manga.unreadCount?.takeIf { showUnread && it > 0 }
     val downloaded = manga.downloadCount?.takeIf { showDownloaded && it > 0 }
@@ -49,7 +49,7 @@ fun LibraryMangaBadges(
                     Badge(
                         text = unread.toString(),
                         color = MaterialTheme.extraColors.tertiary,
-                        textColor = MaterialTheme.extraColors.onTertiary
+                        textColor = MaterialTheme.extraColors.onTertiary,
                     )
                 }
             }

@@ -33,7 +33,7 @@ actual class SavedStateHandle {
 
     actual fun <T> getStateFlow(
         key: String,
-        initialValue: T
+        initialValue: T,
     ): StateFlow<T> {
         @Suppress("UNCHECKED_CAST")
         // If a flow exists we should just return it, and since it is a StateFlow and a value must

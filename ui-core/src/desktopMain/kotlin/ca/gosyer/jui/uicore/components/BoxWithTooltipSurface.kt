@@ -22,9 +22,9 @@ fun BoxWithTooltipSurface(
     modifier: Modifier = Modifier,
     delayMillis: Int = 500,
     tooltipPlacement: TooltipPlacement = TooltipPlacement.CursorPoint(
-        offset = DpOffset(0.dp, 16.dp)
+        offset = DpOffset(0.dp, 16.dp),
     ),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     TooltipArea(
         {
@@ -32,12 +32,12 @@ fun BoxWithTooltipSurface(
                 modifier = Modifier.shadow(4.dp),
                 shape = RoundedCornerShape(4.dp),
                 elevation = 4.dp,
-                content = tooltip
+                content = tooltip,
             )
         },
         modifier,
         delayMillis,
         tooltipPlacement,
-        content
+        content,
     )
 }

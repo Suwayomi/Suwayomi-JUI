@@ -36,14 +36,14 @@ import kotlinx.coroutines.launch
 enum class LibrarySheetTabs(val res: StringResource) {
     FILTERS(MR.strings.action_filter),
     SORT(MR.strings.library_sort),
-    DISPLAY(MR.strings.library_display)
+    DISPLAY(MR.strings.library_display),
 }
 
 @Composable
 fun LibrarySheet(
     libraryFilters: @Composable () -> Unit,
     librarySort: @Composable () -> Unit,
-    libraryDisplay: @Composable () -> Unit
+    libraryDisplay: @Composable () -> Unit,
 ) {
     val pagerState = rememberPagerState()
     val selectedPage = pagerState.currentPage
@@ -53,9 +53,9 @@ fun LibrarySheet(
             selectedTabIndex = pagerState.currentPage,
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
                 )
-            }
+            },
         ) {
             LibrarySheetTabs.values().asList().fastForEachIndexed { index, tab ->
                 Tab(
@@ -63,20 +63,20 @@ fun LibrarySheet(
                     onClick = {
                         scope.launch { pagerState.animateScrollToPage(index) }
                     },
-                    text = { Text(stringResource(tab.res)) }
+                    text = { Text(stringResource(tab.res)) },
                 )
             }
         }
         HorizontalPager(
             count = LibrarySheetTabs.values().size,
             state = pagerState,
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
         ) {
             val scrollState = rememberScrollState()
             Box {
                 Column(
                     Modifier.fillMaxWidth()
-                        .verticalScroll(scrollState)
+                        .verticalScroll(scrollState),
                 ) {
                     when (it) {
                         LibrarySheetTabs.FILTERS.ordinal -> libraryFilters()
@@ -89,7 +89,7 @@ fun LibrarySheet(
                     rememberScrollbarAdapter(scrollState),
                     Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .scrollbarPadding()
+                        .scrollbarPadding(),
                 )
             }
         }

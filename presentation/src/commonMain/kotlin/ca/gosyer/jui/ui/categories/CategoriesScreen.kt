@@ -28,7 +28,7 @@ expect fun rememberCategoriesLauncher(notifyFinished: () -> Unit): CategoriesLau
 
 class CategoriesScreen(
     @Transient
-    private val notifyFinished: (() -> Unit)? = null
+    private val notifyFinished: (() -> Unit)? = null,
 ) : Screen {
 
     override val key: ScreenKey = uniqueScreenKey
@@ -44,7 +44,7 @@ class CategoriesScreen(
             renameCategory = vm::renameCategory,
             deleteCategory = vm::deleteCategory,
             createCategory = vm::createCategory,
-            notifyFinished = notifyFinished
+            notifyFinished = notifyFinished,
         )
     }
 }

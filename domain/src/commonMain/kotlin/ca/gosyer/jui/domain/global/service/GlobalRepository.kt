@@ -22,6 +22,6 @@ interface GlobalRepository {
     @PATCH("api/v1/meta")
     fun updateGlobalMeta(
         @Field("key") key: String,
-        @Field("value") value: String
+        @Field("value") value: String,
     ): Flow<HttpResponse>
 }

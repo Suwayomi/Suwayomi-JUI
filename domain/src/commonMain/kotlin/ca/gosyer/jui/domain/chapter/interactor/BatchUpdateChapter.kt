@@ -22,7 +22,7 @@ import kotlin.jvm.JvmName
 
 class BatchUpdateChapter @Inject constructor(
     private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) {
 
     @JvmName("awaitChapters")
@@ -33,7 +33,7 @@ class BatchUpdateChapter @Inject constructor(
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
         delete: Boolean? = null,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(mangaId, chapters, isRead, isBookmarked, lastPageRead, delete)
         .catch {
             onError(it)
@@ -48,7 +48,7 @@ class BatchUpdateChapter @Inject constructor(
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
         delete: Boolean? = null,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(mangaId, chapterIds, isRead, isBookmarked, lastPageRead, delete)
         .catch {
             onError(it)
@@ -64,7 +64,7 @@ class BatchUpdateChapter @Inject constructor(
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
         delete: Boolean? = null,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(manga, chapters, isRead, isBookmarked, lastPageRead, delete)
         .catch {
             onError(it)
@@ -79,7 +79,7 @@ class BatchUpdateChapter @Inject constructor(
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
         delete: Boolean? = null,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(manga, chapterIds, isRead, isBookmarked, lastPageRead, delete)
         .catch {
             onError(it)
@@ -94,7 +94,7 @@ class BatchUpdateChapter @Inject constructor(
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
         delete: Boolean? = null,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(chapters, isRead, isBookmarked, lastPageRead, delete)
         .catch {
             onError(it)
@@ -108,7 +108,7 @@ class BatchUpdateChapter @Inject constructor(
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
         delete: Boolean? = null,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(chapterIds, isRead, isBookmarked, lastPageRead, delete)
         .catch {
             onError(it)
@@ -123,14 +123,14 @@ class BatchUpdateChapter @Inject constructor(
         isRead: Boolean? = null,
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
-        delete: Boolean? = null
+        delete: Boolean? = null,
     ) = getFlow(
         mangaId = mangaId,
         chapterIds = chapters.map { it.id },
         isRead = isRead,
         isBookmarked = isBookmarked,
         lastPageRead = lastPageRead,
-        delete = delete
+        delete = delete,
     )
 
     fun asFlow(
@@ -139,14 +139,14 @@ class BatchUpdateChapter @Inject constructor(
         isRead: Boolean? = null,
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
-        delete: Boolean? = null
+        delete: Boolean? = null,
     ) = getFlow(
         mangaId = mangaId,
         chapterIds = chapterIds,
         isRead = isRead,
         isBookmarked = isBookmarked,
         lastPageRead = lastPageRead,
-        delete = delete
+        delete = delete,
     )
 
     @JvmName("asFlowChapters")
@@ -156,14 +156,14 @@ class BatchUpdateChapter @Inject constructor(
         isRead: Boolean? = null,
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
-        delete: Boolean? = null
+        delete: Boolean? = null,
     ) = getFlow(
         mangaId = manga.id,
         chapterIds = chapters.map { it.id },
         isRead = isRead,
         isBookmarked = isBookmarked,
         lastPageRead = lastPageRead,
-        delete = delete
+        delete = delete,
     )
 
     fun asFlow(
@@ -172,14 +172,14 @@ class BatchUpdateChapter @Inject constructor(
         isRead: Boolean? = null,
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
-        delete: Boolean? = null
+        delete: Boolean? = null,
     ) = getFlow(
         mangaId = manga.id,
         chapterIds = chapterIds,
         isRead = isRead,
         isBookmarked = isBookmarked,
         lastPageRead = lastPageRead,
-        delete = delete
+        delete = delete,
     )
 
     @JvmName("asFlowChapters")
@@ -188,14 +188,14 @@ class BatchUpdateChapter @Inject constructor(
         isRead: Boolean? = null,
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
-        delete: Boolean? = null
+        delete: Boolean? = null,
     ) = getFlow(
         mangaId = null,
         chapterIds = chapters.map { it.id },
         isRead = isRead,
         isBookmarked = isBookmarked,
         lastPageRead = lastPageRead,
-        delete = delete
+        delete = delete,
     )
 
     fun asFlow(
@@ -203,14 +203,14 @@ class BatchUpdateChapter @Inject constructor(
         isRead: Boolean? = null,
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
-        delete: Boolean? = null
+        delete: Boolean? = null,
     ) = getFlow(
         mangaId = null,
         chapterIds = chapterIds,
         isRead = isRead,
         isBookmarked = isBookmarked,
         lastPageRead = lastPageRead,
-        delete = delete
+        delete = delete,
     )
 
     private fun getFlow(
@@ -219,7 +219,7 @@ class BatchUpdateChapter @Inject constructor(
         isRead: Boolean? = null,
         isBookmarked: Boolean? = null,
         lastPageRead: Int? = null,
-        delete: Boolean? = null
+        delete: Boolean? = null,
     ) = if (mangaId != null) {
         chapterRepository.batchUpdateChapter(
             mangaId,
@@ -229,9 +229,9 @@ class BatchUpdateChapter @Inject constructor(
                     isRead = isRead,
                     isBookmarked = isBookmarked,
                     lastPageRead = lastPageRead,
-                    delete = delete
-                )
-            )
+                    delete = delete,
+                ),
+            ),
         )
     } else {
         chapterRepository.batchUpdateChapter(
@@ -241,9 +241,9 @@ class BatchUpdateChapter @Inject constructor(
                     isRead = isRead,
                     isBookmarked = isBookmarked,
                     lastPageRead = lastPageRead,
-                    delete = delete
-                )
-            )
+                    delete = delete,
+                ),
+            ),
         )
     }.onEach {
         serverListeners.updateChapters(mangaId, chapterIds)

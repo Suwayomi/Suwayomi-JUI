@@ -15,5 +15,5 @@ enum class TappingInvertMode(val shouldInvertHorizontal: Boolean = false, val sh
     NONE,
     HORIZONTAL(shouldInvertHorizontal = true),
     VERTICAL(shouldInvertVertical = true),
-    BOTH(shouldInvertHorizontal = true, shouldInvertVertical = true)
+    BOTH(shouldInvertHorizontal = true, shouldInvertVertical = true),
 }

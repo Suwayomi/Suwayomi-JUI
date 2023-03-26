@@ -13,7 +13,7 @@ import me.tatarka.inject.annotations.Inject
 
 class AppMigrations @Inject constructor(
     private val migrationPreferences: MigrationPreferences,
-    private val contextWrapper: ContextWrapper
+    private val contextWrapper: ContextWrapper,
 ) {
 
     fun runMigrations(): Boolean {

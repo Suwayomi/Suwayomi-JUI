@@ -13,5 +13,5 @@ data class ChapterChange(
     val isRead: Boolean? = null,
     val isBookmarked: Boolean? = null,
     val lastPageRead: Int? = null,
-    val delete: Boolean? = null
+    val delete: Boolean? = null,
 )

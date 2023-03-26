@@ -28,46 +28,46 @@ interface SourceRepository {
 
     @GET("api/v1/source/{sourceId}")
     fun getSourceInfo(
-        @Path("sourceId") sourceId: Long
+        @Path("sourceId") sourceId: Long,
     ): Flow<Source>
 
     @GET("api/v1/source/{sourceId}/popular/{pageNum}")
     fun getPopularManga(
         @Path("sourceId") sourceId: Long,
-        @Path("pageNum") pageNum: Int
+        @Path("pageNum") pageNum: Int,
     ): Flow<MangaPage>
 
     @GET("api/v1/source/{sourceId}/latest/{pageNum}")
     fun getLatestManga(
         @Path("sourceId") sourceId: Long,
-        @Path("pageNum") pageNum: Int
+        @Path("pageNum") pageNum: Int,
     ): Flow<MangaPage>
 
     @GET("api/v1/source/{sourceId}/search")
     fun getSearchResults(
         @Path("sourceId") sourceId: Long,
         @Query("searchTerm") searchTerm: String?,
-        @Query("pageNum") pageNum: Int
+        @Query("pageNum") pageNum: Int,
     ): Flow<MangaPage>
 
     @GET("api/v1/source/{sourceId}/filters")
     fun getFilterList(
         @Path("sourceId") sourceId: Long,
-        @Query("reset") reset: Boolean = false
+        @Query("reset") reset: Boolean = false,
     ): Flow<List<SourceFilter>>
 
     @POST("api/v1/source/{sourceId}/filters")
     @Headers("Content-Type: application/json")
     fun setFilter(
         @Path("sourceId") sourceId: Long,
-        @Body sourceFilter: SourceFilterChange
+        @Body sourceFilter: SourceFilterChange,
     ): Flow<HttpResponse>
 
     @POST("api/v1/source/{sourceId}/filters")
     @Headers("Content-Type: application/json")
     fun setFilters(
         @Path("sourceId") sourceId: Long,
-        @Body sourceFilters: List<SourceFilterChange>
+        @Body sourceFilters: List<SourceFilterChange>,
     ): Flow<HttpResponse>
 
     @POST("api/v1/source/{sourceId}/quick-search")
@@ -75,18 +75,18 @@ interface SourceRepository {
     fun getQuickSearchResults(
         @Path("sourceId") sourceId: Long,
         @Query("pageNum") pageNum: Int,
-        @Body filterData: SourceFilterData
+        @Body filterData: SourceFilterData,
     ): Flow<MangaPage>
 
     @GET("api/v1/source/{sourceId}/preferences")
     fun getSourceSettings(
-        @Path("sourceId") sourceId: Long
+        @Path("sourceId") sourceId: Long,
     ): Flow<List<SourcePreference>>
 
     @POST("api/v1/source/{sourceId}/preferences")
     @Headers("Content-Type: application/json")
     fun setSourceSetting(
         @Path("sourceId") sourceId: Long,
-        @Body sourcePreference: SourcePreferenceChange
+        @Body sourcePreference: SourcePreferenceChange,
     ): Flow<HttpResponse>
 }

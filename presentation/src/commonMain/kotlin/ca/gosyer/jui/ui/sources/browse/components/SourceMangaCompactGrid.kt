@@ -57,7 +57,7 @@ fun SourceMangaCompactGrid(
     gridSize: Int,
     onClickManga: (Long) -> Unit,
     hasNextPage: Boolean = false,
-    onLoadNextPage: () -> Unit
+    onLoadNextPage: () -> Unit,
 ) {
     Box {
         val state = rememberLazyGridState()
@@ -72,9 +72,9 @@ fun SourceMangaCompactGrid(
             modifier = Modifier.fillMaxSize().padding(4.dp),
             contentPadding = WindowInsets.bottomNav.add(
                 WindowInsets.navigationBars.only(
-                    WindowInsetsSides.Bottom
-                )
-            ).asPaddingValues()
+                    WindowInsetsSides.Bottom,
+                ),
+            ).asPaddingValues(),
         ) {
             itemsIndexed(mangas) { index, manga ->
                 if (hasNextPage && index == mangas.lastIndex) {
@@ -82,10 +82,10 @@ fun SourceMangaCompactGrid(
                 }
                 SourceMangaCompactGridItem(
                     modifier = Modifier.clickable(
-                        onClick = { onClickManga(manga.id) }
+                        onClick = { onClickManga(manga.id) },
                     ),
                     manga = manga,
-                    inLibrary = manga.inLibrary
+                    inLibrary = manga.inLibrary,
                 )
             }
         }
@@ -97,10 +97,10 @@ fun SourceMangaCompactGrid(
                 .windowInsetsPadding(
                     WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    )
-                )
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ),
+                ),
         )
     }
 }
@@ -109,20 +109,20 @@ fun SourceMangaCompactGrid(
 private fun SourceMangaCompactGridItem(
     modifier: Modifier,
     manga: Manga,
-    inLibrary: Boolean
+    inLibrary: Boolean,
 ) {
     Box(
         modifier = Modifier.padding(4.dp)
             .fillMaxWidth()
             .aspectRatio(mangaAspectRatio)
-            .clip(MaterialTheme.shapes.medium) then modifier
+            .clip(MaterialTheme.shapes.medium) then modifier,
     ) {
         ImageLoaderImage(
             manga,
             manga.title,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            filterQuality = FilterQuality.Medium
+            filterQuality = FilterQuality.Medium,
         )
         Box(
             modifier = Modifier
@@ -130,12 +130,12 @@ private fun SourceMangaCompactGridItem(
                 .background(
                     Brush.verticalGradient(
                         0f to Color.Transparent,
-                        1f to Color(0xAA000000)
-                    )
+                        1f to Color(0xAA000000),
+                    ),
                 )
                 .fillMaxHeight(0.33f)
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
         )
         Text(
             modifier = Modifier
@@ -147,17 +147,17 @@ private fun SourceMangaCompactGridItem(
                 color = Color.White,
                 shadow = Shadow(
                     color = Color.Black,
-                    blurRadius = 4f
-                )
+                    blurRadius = 4f,
+                ),
             ),
             fontSize = 12.sp,
             lineHeight = 18.sp,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
         SourceMangaBadges(
             inLibrary = inLibrary,
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(4.dp),
         )
     }
 }

@@ -117,7 +117,7 @@ fun MangaScreenContent(
     clearSelection: () -> Unit,
     downloadChapters: () -> Unit,
     loadChapters: () -> Unit,
-    loadManga: () -> Unit
+    loadManga: () -> Unit,
 ) {
     val categoryDialogState = rememberMaterialDialogState()
     LaunchedEffect(Unit) {
@@ -144,8 +144,8 @@ fun MangaScreenContent(
             }
             .windowInsetsPadding(
                 WindowInsets.statusBars.add(
-                    WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-                )
+                    WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+                ),
             ),
         topBar = {
             val navigator = LocalNavigator.current
@@ -155,7 +155,7 @@ fun MangaScreenContent(
                     if (inActionMode) {
                         getActionModeActionItems(
                             selectAll = selectAll,
-                            invertSelection = invertSelection
+                            invertSelection = invertSelection,
                         )
                     } else {
                         val uriHandler = LocalUriHandler.current
@@ -173,7 +173,7 @@ fun MangaScreenContent(
                             },
                             downloadNext = downloadNext,
                             downloadUnread = downloadUnread,
-                            downloadAll = downloadAll
+                            downloadAll = downloadAll,
                         )
                     }
                 },
@@ -184,7 +184,7 @@ fun MangaScreenContent(
                         navigator?.pop()
                     }
                 },
-                closeIcon = if (inActionMode) Icons.Rounded.Close else ToolbarDefault
+                closeIcon = if (inActionMode) Icons.Rounded.Close else ToolbarDefault,
             )
         },
         bottomBar = {
@@ -198,10 +198,10 @@ fun MangaScreenContent(
                     unBookmarkChapter = { unBookmarkChapter(null) },
                     markPreviousAsRead = markPreviousRead,
                     deleteChapter = { deleteDownload(null) },
-                    downloadChapters = downloadChapters
-                )
+                    downloadChapters = downloadChapters,
+                ),
             )
-        }
+        },
     ) { padding ->
         Box(Modifier.padding(padding)) {
             manga.let { manga ->
@@ -213,9 +213,9 @@ fun MangaScreenContent(
                             state = state,
                             contentPadding = WindowInsets.bottomNav.add(
                                 WindowInsets.navigationBars.only(
-                                    WindowInsetsSides.Bottom
-                                )
-                            ).asPaddingValues()
+                                    WindowInsetsSides.Bottom,
+                                ),
+                            ).asPaddingValues(),
                         ) {
                             item {
                                 MangaItem(manga)
@@ -239,7 +239,7 @@ fun MangaScreenContent(
                                         onClickDeleteChapter = deleteDownload,
                                         onClickStopDownload = stopDownloadingChapter,
                                         onSelectChapter = onSelectChapter,
-                                        onUnselectChapter = onUnselectChapter
+                                        onUnselectChapter = onUnselectChapter,
                                     )
                                 }
                             } else if (!isLoading) {
@@ -247,7 +247,7 @@ fun MangaScreenContent(
                                     ErrorScreen(
                                         stringResource(MR.strings.no_chapters_found),
                                         Modifier.height(400.dp).fillMaxWidth(),
-                                        retry = loadChapters
+                                        retry = loadChapters,
                                     )
                                 }
                             }
@@ -259,11 +259,11 @@ fun MangaScreenContent(
                                 .windowInsetsPadding(
                                     WindowInsets.bottomNav.add(
                                         WindowInsets.navigationBars.only(
-                                            WindowInsetsSides.Bottom
-                                        )
-                                    )
+                                            WindowInsetsSides.Bottom,
+                                        ),
+                                    ),
                                 ),
-                            adapter = rememberScrollbarAdapter(state)
+                            adapter = rememberScrollbarAdapter(state),
                         )
                     }
                 } else if (!isLoading) {
@@ -292,20 +292,20 @@ private fun getActionItems(
     openInBrowser: () -> Unit,
     downloadNext: (Int) -> Unit,
     downloadUnread: () -> Unit,
-    downloadAll: () -> Unit
+    downloadAll: () -> Unit,
 ): ImmutableList<Action> {
     return listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_refresh_manga),
             icon = Icons.Rounded.Refresh,
             doAction = refreshManga,
-            enabled = refreshMangaEnabled
+            enabled = refreshMangaEnabled,
         ),
         if (categoryItemVisible) {
             ActionItem(
                 name = stringResource(MR.strings.edit_categories),
                 icon = Icons.Rounded.Label,
-                doAction = setCategories
+                doAction = setCategories,
             )
         } else {
             null
@@ -318,7 +318,7 @@ private fun getActionItems(
                 Icons.Rounded.FavoriteBorder
             },
             doAction = toggleFavorite,
-            enabled = favoritesButtonEnabled
+            enabled = favoritesButtonEnabled,
         ),
         ActionGroup(
             name = stringResource(MR.strings.action_download),
@@ -326,32 +326,32 @@ private fun getActionItems(
             actions = listOf(
                 ActionItem(
                     name = stringResource(MR.strings.download_1),
-                    doAction = { downloadNext(1) }
+                    doAction = { downloadNext(1) },
                 ),
                 ActionItem(
                     name = stringResource(MR.strings.download_5),
-                    doAction = { downloadNext(5) }
+                    doAction = { downloadNext(5) },
                 ),
                 ActionItem(
                     name = stringResource(MR.strings.download_10),
-                    doAction = { downloadNext(10) }
+                    doAction = { downloadNext(10) },
                 ),
                 ActionItem(
                     name = stringResource(MR.strings.download_unread),
-                    doAction = downloadUnread
+                    doAction = downloadUnread,
                 ),
                 ActionItem(
                     name = stringResource(MR.strings.download_all),
-                    doAction = downloadAll
-                )
-            ).toImmutableList()
+                    doAction = downloadAll,
+                ),
+            ).toImmutableList(),
         ),
         ActionItem(
             name = stringResource(MR.strings.action_open_in_browser),
             icon = Icons.Rounded.Public,
             enabled = openInBrowserEnabled,
-            doAction = openInBrowser
-        )
+            doAction = openInBrowser,
+        ),
     ).toImmutableList()
 }
 
@@ -359,19 +359,19 @@ private fun getActionItems(
 @Stable
 private fun getActionModeActionItems(
     selectAll: () -> Unit,
-    invertSelection: () -> Unit
+    invertSelection: () -> Unit,
 ): ImmutableList<ActionItem> {
     return listOf(
         ActionItem(
             name = stringResource(MR.strings.action_select_all),
             icon = Icons.Rounded.SelectAll,
-            doAction = selectAll
+            doAction = selectAll,
         ),
         ActionItem(
             name = stringResource(MR.strings.action_select_inverse),
             icon = Icons.Rounded.FlipToBack,
-            doAction = invertSelection
-        )
+            doAction = invertSelection,
+        ),
     ).toImmutableList()
 }
 
@@ -385,43 +385,43 @@ private fun getBottomActionItems(
     unBookmarkChapter: () -> Unit,
     markPreviousAsRead: (Int) -> Unit,
     deleteChapter: () -> Unit,
-    downloadChapters: () -> Unit
+    downloadChapters: () -> Unit,
 ): ImmutableList<BottomActionItem> {
     return listOfNotNull(
         BottomActionItem(
             name = stringResource(MR.strings.action_bookmark),
             icon = Icons.Rounded.BookmarkAdd,
-            onClick = bookmarkChapter
+            onClick = bookmarkChapter,
         ).takeIf { selectedItems.fastAny { !it.chapter.bookmarked } },
         BottomActionItem(
             name = stringResource(MR.strings.action_remove_bookmark),
             icon = Icons.Rounded.BookmarkRemove,
-            onClick = unBookmarkChapter
+            onClick = unBookmarkChapter,
         ).takeIf { selectedItems.fastAny { it.chapter.bookmarked } },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_as_read),
             icon = Icons.Rounded.DoneAll,
-            onClick = markRead
+            onClick = markRead,
         ).takeIf { selectedItems.fastAny { !it.chapter.read } },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_as_unread),
             icon = Icons.Rounded.RemoveDone,
-            onClick = markUnread
+            onClick = markUnread,
         ).takeIf { selectedItems.fastAny { it.chapter.read } },
         BottomActionItem(
             name = stringResource(MR.strings.action_mark_previous_read),
             icon = JuiAssets.DonePrev,
-            onClick = { markPreviousAsRead(selectedItems.first().chapter.index) }
+            onClick = { markPreviousAsRead(selectedItems.first().chapter.index) },
         ).takeIf { selectedItems.size == 1 },
         BottomActionItem(
             name = stringResource(MR.strings.action_download),
             icon = Icons.Rounded.Download,
-            onClick = downloadChapters
+            onClick = downloadChapters,
         ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.NotDownloaded } },
         BottomActionItem(
             name = stringResource(MR.strings.action_delete),
             icon = Icons.Rounded.Delete,
-            onClick = deleteChapter
-        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } }
+            onClick = deleteChapter,
+        ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } },
     ).toImmutableList()
 }

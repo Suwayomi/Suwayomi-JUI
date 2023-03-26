@@ -64,7 +64,7 @@ fun ContinuousReader(
     retry: (ReaderPage) -> Unit,
     progress: (ReaderItem) -> Unit,
     updateLastPageReadOffset: (Int) -> Unit,
-    requestPreloadChapter: (ReaderChapter) -> Unit
+    requestPreloadChapter: (ReaderChapter) -> Unit,
 ) {
     BoxWithConstraints(modifier then Modifier.fillMaxSize()) {
         val state = rememberLazyListState(pages.indexOf(currentPage).coerceAtLeast(1), currentPageOffset)
@@ -82,7 +82,7 @@ fun ContinuousReader(
                             state.animateScrollBy(
                                 with(density) {
                                     by.toPx()
-                                }
+                                },
                             )
                             Unit
                         }
@@ -131,7 +131,7 @@ fun ContinuousReader(
                     state = state,
                     reverseLayout = direction == Direction.Up,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     items(
                         modifier = Modifier.fillMaxWidth()
@@ -141,7 +141,7 @@ fun ContinuousReader(
                         loadingModifier = loadingModifier,
                         pageContentScale = pageContentScale,
                         retry = ::retry,
-                        requestPreloadChapter = requestPreloadChapter
+                        requestPreloadChapter = requestPreloadChapter,
                     )
                 }
                 VerticalScrollbar(
@@ -149,7 +149,7 @@ fun ContinuousReader(
                         .fillMaxHeight()
                         .scrollbarPadding(),
                     adapter = rememberScrollbarAdapter(state),
-                    reverseLayout = direction == Direction.Up
+                    reverseLayout = direction == Direction.Up,
                 )
             }
             false -> {
@@ -157,7 +157,7 @@ fun ContinuousReader(
                     state = state,
                     reverseLayout = direction == Direction.Left,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier.fillMaxHeight(),
                 ) {
                     items(
                         modifier = Modifier.fillMaxHeight()
@@ -167,14 +167,14 @@ fun ContinuousReader(
                         loadingModifier = loadingModifier,
                         pageContentScale = pageContentScale,
                         retry = ::retry,
-                        requestPreloadChapter = requestPreloadChapter
+                        requestPreloadChapter = requestPreloadChapter,
                     )
                 }
                 HorizontalScrollbar(
                     modifier = Modifier.align(Alignment.BottomCenter)
                         .fillMaxWidth(),
                     adapter = rememberScrollbarAdapter(state),
-                    reverseLayout = direction == Direction.Left
+                    reverseLayout = direction == Direction.Left,
                 )
             }
         }
@@ -188,7 +188,7 @@ private fun LazyListScope.items(
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
     retry: (Int) -> Unit,
-    requestPreloadChapter: (ReaderChapter) -> Unit
+    requestPreloadChapter: (ReaderChapter) -> Unit,
 ) {
     items(
         pages,
@@ -197,7 +197,7 @@ private fun LazyListScope.items(
                 is ReaderPage -> it.chapter.chapter.index to it.index
                 is ReaderPageSeparator -> it.previousChapter?.chapter?.index to it.nextChapter?.chapter?.index
             }
-        }
+        },
     ) { image ->
         when (image) {
             is ReaderPage -> Box(modifier, contentAlignment = Alignment.Center) {
@@ -211,13 +211,13 @@ private fun LazyListScope.items(
                     imageModifier = imageModifier,
                     loadingModifier = loadingModifier,
                     contentScale = pageContentScale,
-                    retry = retry
+                    retry = retry,
                 )
             }
             is ReaderPageSeparator -> ChapterSeparator(
                 previousChapter = image.previousChapter,
                 nextChapter = image.nextChapter,
-                requestPreloadChapter = requestPreloadChapter
+                requestPreloadChapter = requestPreloadChapter,
             )
         }
     }

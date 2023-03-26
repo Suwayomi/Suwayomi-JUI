@@ -18,13 +18,13 @@ actual interface TooltipPlacement
 actual class CursorPointImpl actual constructor(
     offset: DpOffset,
     alignment: Alignment,
-    windowMargin: Dp
+    windowMargin: Dp,
 ) : TooltipPlacement
 
 actual class ComponentRectImpl actual constructor(
     anchor: Alignment,
     alignment: Alignment,
-    offset: DpOffset
+    offset: DpOffset,
 ) : TooltipPlacement
 
 @Composable
@@ -33,7 +33,7 @@ internal actual fun RealTooltipArea(
     modifier: Modifier,
     delayMillis: Int,
     tooltipPlacement: TooltipPlacement,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Box(Modifier) {
         content()

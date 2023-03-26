@@ -19,5 +19,5 @@ enum class NavigationMode(@Transient val res: StringResource) {
     LNavigation(MR.strings.nav_l_shaped),
     KindlishNavigation(MR.strings.nav_kindle_ish),
     EdgeNavigation(MR.strings.nav_edge),
-    RightAndLeftNavigation(MR.strings.nav_left_right)
+    RightAndLeftNavigation(MR.strings.nav_left_right),
 }

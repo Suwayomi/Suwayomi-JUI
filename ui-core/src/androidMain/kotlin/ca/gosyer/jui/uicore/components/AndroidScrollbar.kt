@@ -68,7 +68,7 @@ internal actual fun RealVerticalScrollbar(
     modifier: Modifier,
     reverseLayout: Boolean,
     style: ScrollbarStyle,
-    interactionSource: MutableInteractionSource
+    interactionSource: MutableInteractionSource,
 ) {
     val scrollbarModifier = when (adapter) {
         is ScrollStateScrollbarAdapter -> {
@@ -91,7 +91,7 @@ internal actual fun RealHorizontalScrollbar(
     modifier: Modifier,
     reverseLayout: Boolean,
     style: ScrollbarStyle,
-    interactionSource: MutableInteractionSource
+    interactionSource: MutableInteractionSource,
 ) {
     val scrollbarModifier = when (adapter) {
         is ScrollStateScrollbarAdapter -> {
@@ -107,7 +107,7 @@ internal actual fun RealHorizontalScrollbar(
 
 @Composable
 actual fun rememberScrollbarAdapter(
-    scrollState: ScrollState
+    scrollState: ScrollState,
 ): ScrollbarAdapter {
     return remember(scrollState) {
         ScrollStateScrollbarAdapter(scrollState)
@@ -116,7 +116,7 @@ actual fun rememberScrollbarAdapter(
 
 @Composable
 actual fun rememberScrollbarAdapter(
-    scrollState: LazyListState
+    scrollState: LazyListState,
 ): ScrollbarAdapter {
     return remember(scrollState) {
         LazyListStateScrollbarAdapter(scrollState)
@@ -127,7 +127,7 @@ actual fun rememberScrollbarAdapter(
 internal actual fun realRememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
-    arrangement: Arrangement.Vertical?
+    arrangement: Arrangement.Vertical?,
 ): ScrollbarAdapter {
     return remember(scrollState, gridCells) {
         LazyGridStateScrollbarAdapter(scrollState, gridCells, arrangement?.spacing ?: Dp.Hairline)
@@ -138,7 +138,7 @@ internal actual fun realRememberVerticalScrollbarAdapter(
 internal actual fun realRememberHorizontalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
-    arrangement: Arrangement.Horizontal?
+    arrangement: Arrangement.Horizontal?,
 ): ScrollbarAdapter {
     return remember(scrollState, gridCells) {
         LazyGridStateScrollbarAdapter(scrollState, gridCells, arrangement?.spacing ?: Dp.Hairline)
@@ -152,11 +152,11 @@ actual fun Modifier.scrollbarPadding() = this
 private fun Modifier.drawScrollbar(
     state: ScrollState,
     orientation: Orientation,
-    reverseScrolling: Boolean
+    reverseScrolling: Boolean,
 ): Modifier = drawScrollbar(
     orientation = orientation,
     reverseScrolling = reverseScrolling,
-    scrollFlow = snapshotFlow { state.isScrollInProgress }
+    scrollFlow = snapshotFlow { state.isScrollInProgress },
 ) { reverseDirection, atEnd, thickness, color, alpha ->
     val showScrollbar = state.maxValue > 0
     val canvasSize = if (orientation == Orientation.Horizontal) size.width else size.height
@@ -172,7 +172,7 @@ private fun Modifier.drawScrollbar(
         color = color,
         alpha = alpha,
         thumbSize = thumbSize,
-        startOffset = startOffset
+        startOffset = startOffset,
     )
     onDrawWithContent {
         drawContent()
@@ -183,11 +183,11 @@ private fun Modifier.drawScrollbar(
 private fun Modifier.drawScrollbar(
     state: LazyListState,
     orientation: Orientation,
-    reverseScrolling: Boolean
+    reverseScrolling: Boolean,
 ): Modifier = drawScrollbar(
     orientation,
     reverseScrolling,
-    snapshotFlow { state.isScrollInProgress }
+    snapshotFlow { state.isScrollInProgress },
 ) { reverseDirection, atEnd, thickness, color, alpha ->
     val layoutInfo = state.layoutInfo
     val viewportSize = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
@@ -216,7 +216,7 @@ private fun Modifier.drawScrollbar(
         color = color,
         alpha = alpha,
         thumbSize = thumbSize,
-        startOffset = startOffset
+        startOffset = startOffset,
     )
     onDrawWithContent {
         drawContent()
@@ -229,11 +229,11 @@ private fun Modifier.drawScrollbar(
     gridCells: GridCells,
     spacing: Dp,
     orientation: Orientation,
-    reverseScrolling: Boolean
+    reverseScrolling: Boolean,
 ): Modifier = drawScrollbar(
     orientation,
     reverseScrolling,
-    snapshotFlow { state.isScrollInProgress }
+    snapshotFlow { state.isScrollInProgress },
 ) { reverseDirection, atEnd, thickness, color, alpha ->
     val layoutInfo = state.layoutInfo
     val viewportSize = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
@@ -242,7 +242,7 @@ private fun Modifier.drawScrollbar(
     val itemsSize = items.chunked(
         with(gridCells) {
             calculateCrossAxisCellSizes(viewportSize, spacing.roundToPx()).size
-        }
+        },
     ).sumOf { it.fastMaxBy { it.size.height }?.size?.height ?: 0 }
     val showScrollbar = items.size < layoutInfo.totalItemsCount || itemsSize > viewportSize
     val estimatedItemSize = if (items.isEmpty()) 0f else itemsSize.toFloat() / items.size
@@ -267,7 +267,7 @@ private fun Modifier.drawScrollbar(
         color = color,
         alpha = alpha,
         thumbSize = thumbSize,
-        startOffset = startOffset
+        startOffset = startOffset,
     )
     onDrawWithContent {
         drawContent()
@@ -284,17 +284,17 @@ private fun CacheDrawScope.onDrawScrollbar(
     color: Color,
     alpha: Float,
     thumbSize: Float,
-    startOffset: Float
+    startOffset: Float,
 ): DrawScope.() -> Unit {
     val topLeft = if (orientation == Orientation.Horizontal) {
         Offset(
             if (reverseDirection) size.width - startOffset - thumbSize else startOffset,
-            if (atEnd) size.height - thickness else 0f
+            if (atEnd) size.height - thickness else 0f,
         )
     } else {
         Offset(
             if (atEnd) size.width - thickness else 0f,
-            if (reverseDirection) size.height - startOffset - thumbSize else startOffset
+            if (reverseDirection) size.height - startOffset - thumbSize else startOffset,
         )
     }
     val size = if (orientation == Orientation.Horizontal) {
@@ -309,7 +309,7 @@ private fun CacheDrawScope.onDrawScrollbar(
                 color = color,
                 topLeft = topLeft,
                 size = size,
-                alpha = alpha
+                alpha = alpha,
             )
         }
     }
@@ -324,8 +324,8 @@ private fun Modifier.drawScrollbar(
         atEnd: Boolean,
         thickness: Float,
         color: Color,
-        alpha: Float
-    ) -> DrawResult
+        alpha: Float,
+    ) -> DrawResult,
 ): Modifier = composed {
     val isScrollInProgress by scrollFlow.collectAsState(initial = false)
     val alpha = remember { Animatable(0f) }
@@ -357,5 +357,5 @@ private fun Modifier.drawScrollbar(
 private val Thickness = 4.dp
 private val FadeOutAnimationSpec =
     tween<Float>(
-        durationMillis = ViewConfiguration.getScrollBarFadeDuration()
+        durationMillis = ViewConfiguration.getScrollBarFadeDuration(),
     )

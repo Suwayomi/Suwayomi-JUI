@@ -41,7 +41,7 @@ enum class SecureFlagPolicy {
      * No [WindowManager.LayoutParams.FLAG_SECURE] will be set on the window that is using this
      * policy.
      */
-    SecureOff
+    SecureOff,
 }
 
 @Immutable
@@ -53,7 +53,7 @@ data class PopupProperties @ExperimentalComposeUiApi constructor(
     val excludeFromSystemGesture: Boolean = true,
     val clippingEnabled: Boolean = true,
     @property:ExperimentalComposeUiApi
-    val usePlatformDefaultWidth: Boolean = false
+    val usePlatformDefaultWidth: Boolean = false,
 )
 
 @Composable
@@ -63,7 +63,7 @@ internal expect fun RealDropdownMenu(
     modifier: Modifier,
     offset: DpOffset,
     properties: PopupProperties,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 )
 
 @Composable
@@ -73,7 +73,7 @@ fun DropdownMenu(
     modifier: Modifier = Modifier,
     offset: DpOffset = DpOffset(0.dp, 0.dp),
     properties: PopupProperties = PopupProperties(focusable = true),
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) = RealDropdownMenu(expanded, onDismissRequest, modifier, offset, properties, content)
 
 @Composable
@@ -83,7 +83,7 @@ internal expect fun RealDropdownMenuItem(
     enabled: Boolean,
     contentPadding: PaddingValues,
     interactionSource: MutableInteractionSource,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 )
 
 @Composable
@@ -93,5 +93,5 @@ fun DropdownMenuItem(
     enabled: Boolean = true,
     contentPadding: PaddingValues = MenuDefaults.DropdownMenuItemContentPadding,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) = RealDropdownMenuItem(onClick, modifier, enabled, contentPadding, interactionSource, content)

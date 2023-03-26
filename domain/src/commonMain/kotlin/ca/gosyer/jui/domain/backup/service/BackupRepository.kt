@@ -31,19 +31,19 @@ interface BackupRepository {
     @POST("api/v1/backup/import/file")
     fun importBackupFile(
         @Part("") formData: List<PartData>,
-        @ReqBuilder block: HttpRequestBuilder.() -> Unit = {}
+        @ReqBuilder block: HttpRequestBuilder.() -> Unit = {},
     ): Flow<HttpResponse>
 
     @Multipart
     @POST("api/v1/backup/validate/file")
     fun validateBackupFile(
         @Part("") formData: List<PartData>,
-        @ReqBuilder block: HttpRequestBuilder.() -> Unit = {}
+        @ReqBuilder block: HttpRequestBuilder.() -> Unit = {},
     ): Flow<BackupValidationResult>
 
     @GET("api/v1/backup/export/file")
     fun exportBackupFile(
-        @ReqBuilder block: HttpRequestBuilder.() -> Unit = {}
+        @ReqBuilder block: HttpRequestBuilder.() -> Unit = {},
     ): Flow<HttpResponse>
 
     companion object {
@@ -54,7 +54,7 @@ interface BackupRepository {
                 Headers.build {
                     append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
                     append(HttpHeaders.ContentDisposition, "filename=backup.proto.gz")
-                }
+                },
             )
         }
     }

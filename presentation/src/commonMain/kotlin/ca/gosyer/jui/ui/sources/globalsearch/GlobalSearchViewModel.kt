@@ -49,7 +49,7 @@ class GlobalSearchViewModel @Inject constructor(
     catalogPreferences: CatalogPreferences,
     contextWrapper: ContextWrapper,
     @Assisted private val savedStateHandle: SavedStateHandle,
-    @Assisted params: Params
+    @Assisted params: Params,
 ) : ViewModel(contextWrapper) {
     private val _query by savedStateHandle.getStateFlow { params.initialQuery }
     val query = _query.asStateFlow()
@@ -84,7 +84,7 @@ class GlobalSearchViewModel @Inject constructor(
                     compareBy<Source, String>(String.CASE_INSENSITIVE_ORDER) { it.lang }
                         .thenBy(String.CASE_INSENSITIVE_ORDER) {
                             it.name
-                        }
+                        },
                 )
                 _isLoading.value = false
             }

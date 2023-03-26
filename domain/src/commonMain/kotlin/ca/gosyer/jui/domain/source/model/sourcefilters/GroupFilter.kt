@@ -12,11 +12,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("Group")
 data class GroupFilter(
-    override val filter: GroupProps
+    override val filter: GroupProps,
 ) : SourceFilter() {
     @Serializable
     data class GroupProps(
         override val name: String,
-        override val state: List<SourceFilter>
+        override val state: List<SourceFilter>,
     ) : Props<List<SourceFilter>>
 }

@@ -42,7 +42,7 @@ fun PagerReader(
     pageEmitterHolder: StableHolder<SharedFlow<PageMove>>,
     retry: (ReaderPage) -> Unit,
     progress: (ReaderItem) -> Unit,
-    requestPreloadChapter: (ReaderChapter) -> Unit
+    requestPreloadChapter: (ReaderChapter) -> Unit,
 ) {
     val state = rememberPagerState(initialPage = pages.indexOf(currentPage).coerceAtLeast(1))
     val currentPageState = rememberUpdatedState(currentPage)
@@ -95,7 +95,7 @@ fun PagerReader(
                     is ReaderPageSeparator -> page.previousChapter?.chapter?.index to page.nextChapter?.chapter?.index
                     else -> it
                 }
-            }
+            },
         ) {
             HandlePager(
                 pages = pages,
@@ -103,7 +103,7 @@ fun PagerReader(
                 loadingModifier = loadingModifier,
                 pageContentScale = pageContentScale,
                 retry = ::retry,
-                requestPreloadChapter = requestPreloadChapter
+                requestPreloadChapter = requestPreloadChapter,
             )
         }
     } else {
@@ -118,7 +118,7 @@ fun PagerReader(
                     is ReaderPageSeparator -> page.previousChapter?.chapter?.index to page.nextChapter?.chapter?.index
                     else -> it
                 }
-            }
+            },
         ) {
             HandlePager(
                 pages = pages,
@@ -126,7 +126,7 @@ fun PagerReader(
                 loadingModifier = loadingModifier,
                 pageContentScale = pageContentScale,
                 retry = ::retry,
-                requestPreloadChapter = requestPreloadChapter
+                requestPreloadChapter = requestPreloadChapter,
             )
         }
     }
@@ -139,7 +139,7 @@ fun HandlePager(
     loadingModifier: Modifier,
     pageContentScale: ContentScale,
     retry: (Int) -> Unit,
-    requestPreloadChapter: (ReaderChapter) -> Unit
+    requestPreloadChapter: (ReaderChapter) -> Unit,
 ) {
     when (val image = pages[page]) {
         is ReaderPage -> {
@@ -152,13 +152,13 @@ fun HandlePager(
                 error = image.error.collectAsState().value,
                 loadingModifier = loadingModifier,
                 retry = retry,
-                contentScale = pageContentScale
+                contentScale = pageContentScale,
             )
         }
         is ReaderPageSeparator -> ChapterSeparator(
             previousChapter = image.previousChapter,
             nextChapter = image.nextChapter,
-            requestPreloadChapter = requestPreloadChapter
+            requestPreloadChapter = requestPreloadChapter,
         )
     }
 }

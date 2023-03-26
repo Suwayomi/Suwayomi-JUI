@@ -14,5 +14,5 @@ import kotlinx.serialization.Serializable
 enum class Proxy {
     NO_PROXY,
     HTTP_PROXY,
-    SOCKS_PROXY
+    SOCKS_PROXY,
 }

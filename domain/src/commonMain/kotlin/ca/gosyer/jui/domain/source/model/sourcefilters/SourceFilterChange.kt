@@ -18,6 +18,6 @@ data class SourceFilterChange(val position: Int, val state: String) {
             Json.encodeToString(state)
         } else {
             state.toString()
-        }
+        },
     )
 }

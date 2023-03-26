@@ -55,15 +55,15 @@ object Notifications {
                 },
                 buildNotificationChannelGroup(GROUP_APK_UPDATES) {
                     setName(MR.strings.group_updates.desc().toString(context))
-                }
-            )
+                },
+            ),
         )
 
         notificationService.createNotificationChannelsCompat(
             listOf(
                 buildNotificationChannel(
                     CHANNEL_DOWNLOADER_RUNNING,
-                    NotificationManagerCompat.IMPORTANCE_LOW
+                    NotificationManagerCompat.IMPORTANCE_LOW,
                 ) {
                     setName(MR.strings.channel_active.desc().toString(context))
                     setGroup(GROUP_DOWNLOADER)
@@ -71,7 +71,7 @@ object Notifications {
                 },
                 buildNotificationChannel(
                     CHANNEL_DOWNLOADER_DOWNLOADING,
-                    NotificationManagerCompat.IMPORTANCE_LOW
+                    NotificationManagerCompat.IMPORTANCE_LOW,
                 ) {
                     setName(MR.strings.channel_progress.desc().toString(context))
                     setGroup(GROUP_DOWNLOADER)
@@ -79,7 +79,7 @@ object Notifications {
                 },
                 buildNotificationChannel(
                     CHANNEL_LIBRARY_UPDATES,
-                    NotificationManagerCompat.IMPORTANCE_LOW
+                    NotificationManagerCompat.IMPORTANCE_LOW,
                 ) {
                     setName(MR.strings.channel_active.desc().toString(context))
                     setGroup(GROUP_LIBRARY)
@@ -87,7 +87,7 @@ object Notifications {
                 },
                 buildNotificationChannel(
                     CHANNEL_LIBRARY_PROGRESS,
-                    NotificationManagerCompat.IMPORTANCE_LOW
+                    NotificationManagerCompat.IMPORTANCE_LOW,
                 ) {
                     setName(MR.strings.channel_progress.desc().toString(context))
                     setGroup(GROUP_LIBRARY)
@@ -95,19 +95,19 @@ object Notifications {
                 },
                 buildNotificationChannel(
                     CHANNEL_APP_UPDATE,
-                    NotificationManagerCompat.IMPORTANCE_DEFAULT
+                    NotificationManagerCompat.IMPORTANCE_DEFAULT,
                 ) {
                     setGroup(GROUP_APK_UPDATES)
                     setName(MR.strings.group_updates_channel_app.desc().toString(context))
                 },
                 buildNotificationChannel(
                     CHANNEL_EXTENSIONS_UPDATE,
-                    NotificationManagerCompat.IMPORTANCE_DEFAULT
+                    NotificationManagerCompat.IMPORTANCE_DEFAULT,
                 ) {
                     setGroup(GROUP_APK_UPDATES)
                     setName(MR.strings.group_updates_channel_ext.desc().toString(context))
-                }
-            )
+                },
+            ),
         )
     }
 }

@@ -32,7 +32,7 @@ fun ApplicationScope.Tray(icon: StableHolder<Painter>) {
         tooltip = BuildKonfig.NAME,
         menu = {
             Item(MR.strings.action_close.localized(), onClick = ::exitApplication)
-        }
+        },
     )
 
     LaunchedEffect(Unit) {
@@ -42,8 +42,8 @@ fun ApplicationScope.Tray(icon: StableHolder<Painter>) {
                     Notification(
                         MR.strings.new_update_title.localized(),
                         MR.strings.new_update_message.localized(Locale.getDefault(), it.release.version),
-                        Notification.Type.Info
-                    )
+                        Notification.Type.Info,
+                    ),
                 )
             }
         }

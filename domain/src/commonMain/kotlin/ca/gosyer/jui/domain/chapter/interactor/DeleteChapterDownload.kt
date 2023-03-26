@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 
 class DeleteChapterDownload @Inject constructor(
     private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) {
 
     suspend fun await(mangaId: Long, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, index)

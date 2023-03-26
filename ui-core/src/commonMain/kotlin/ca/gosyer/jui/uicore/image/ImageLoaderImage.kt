@@ -45,7 +45,7 @@ private val log = logging()
 private enum class ImageLoaderImageState {
     Loading,
     Success,
-    Failure
+    Failure,
 }
 
 @Composable
@@ -69,25 +69,25 @@ fun ImageLoaderImage(
         Box(
             modifier = errorModifier then Modifier.fillMaxSize()
                 .background(Color(0x1F888888)),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 Icons.Rounded.BrokenImage,
                 contentDescription = null,
                 tint = Color(0x1F888888),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
         }
     },
     contentAlignment: Alignment = Alignment.Center,
-    animationSpec: FiniteAnimationSpec<Float>? = tween()
+    animationSpec: FiniteAnimationSpec<Float>? = tween(),
 ) {
     key(data) {
         val request = remember { ImageRequest(data) }
         val painter = rememberAsyncImagePainter(
             request,
             contentScale = contentScale,
-            filterQuality = filterQuality
+            filterQuality = filterQuality,
         )
 
         val progress = remember { mutableStateOf(-1F) }
@@ -123,7 +123,7 @@ fun ImageLoaderImage(
                             alignment = alignment,
                             contentScale = contentScale,
                             alpha = alpha,
-                            colorFilter = colorFilter
+                            colorFilter = colorFilter,
                         )
                         ImageLoaderImageState.Failure -> {
                             if (onFailure != null) {
@@ -142,7 +142,7 @@ fun ImageLoaderImage(
                     alignment = alignment,
                     contentScale = contentScale,
                     alpha = alpha,
-                    colorFilter = colorFilter
+                    colorFilter = colorFilter,
                 )
             }
         }

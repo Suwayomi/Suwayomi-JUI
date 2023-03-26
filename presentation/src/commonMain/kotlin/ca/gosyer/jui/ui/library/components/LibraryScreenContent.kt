@@ -84,7 +84,7 @@ fun LibraryScreenContent(
     showLanguage: Boolean,
     showLocal: Boolean,
     updateWebsocketStatus: WebsocketService.Status,
-    restartLibraryUpdates: () -> Unit
+    restartLibraryUpdates: () -> Unit,
 ) {
     BackHandler(showingMenu) {
         setShowingMenu(false)
@@ -127,7 +127,7 @@ fun LibraryScreenContent(
                 showUnread = showUnread,
                 showDownloaded = showDownloaded,
                 showLanguage = showLanguage,
-                showLocal = showLocal
+                showLocal = showLocal,
             )
         } else {
             ThinLibraryScreenContent(
@@ -156,7 +156,7 @@ fun LibraryScreenContent(
                 showLanguage = showLanguage,
                 showLocal = showLocal,
                 updateWebsocketStatus = updateWebsocketStatus,
-                restartLibraryUpdates = restartLibraryUpdates
+                restartLibraryUpdates = restartLibraryUpdates,
             )
         }
     }
@@ -187,13 +187,13 @@ fun WideLibraryScreenContent(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Column {
@@ -204,19 +204,19 @@ fun WideLibraryScreenContent(
                     actions = {
                         getActionItems(
                             onToggleFiltersClick = { setShowingMenu(true) },
-                            onUpdateLibrary = onUpdateLibrary
+                            onUpdateLibrary = onUpdateLibrary,
                         )
-                    }
+                    },
                 )
                 LibraryTabs(
                     visible = true, // vm.showCategoryTabs,
                     pagerState = pagerState,
                     categories = categories,
                     selectedPage = selectedCategoryIndex,
-                    onPageChanged = onPageChanged
+                    onPageChanged = onPageChanged,
                 )
             }
-        }
+        },
     ) { padding ->
         Box(Modifier.padding(padding)) {
             if (categories.isEmpty()) {
@@ -234,7 +234,7 @@ fun WideLibraryScreenContent(
                     showUnread = showUnread,
                     showDownloaded = showDownloaded,
                     showLanguage = showLanguage,
-                    showLocal = showLocal
+                    showLocal = showLocal,
                 )
 
                 if (showingMenu) {
@@ -245,19 +245,19 @@ fun WideLibraryScreenContent(
                                     setShowingMenu(false)
                                 }
                             }
-                        }
+                        },
                     )
                 }
                 AnimatedVisibility(
                     showingMenu,
                     enter = fadeIn() + slideInHorizontally(initialOffsetX = { it * 2 }),
                     exit = fadeOut() + slideOutHorizontally(targetOffsetX = { it * 2 }),
-                    modifier = Modifier.align(Alignment.TopEnd)
+                    modifier = Modifier.align(Alignment.TopEnd),
                 ) {
                     LibrarySideMenu(
                         libraryFilters = libraryFilters,
                         librarySort = librarySort,
-                        libraryDisplay = libraryDisplay
+                        libraryDisplay = libraryDisplay,
                     )
                 }
             }
@@ -292,7 +292,7 @@ fun ThinLibraryScreenContent(
     showLanguage: Boolean,
     showLocal: Boolean,
     updateWebsocketStatus: WebsocketService.Status,
-    restartLibraryUpdates: () -> Unit
+    restartLibraryUpdates: () -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(
         ModalBottomSheetValue.Hidden,
@@ -300,10 +300,11 @@ fun ThinLibraryScreenContent(
             when (it) {
                 ModalBottomSheetValue.Hidden -> setShowingSheet(false)
                 ModalBottomSheetValue.Expanded,
-                ModalBottomSheetValue.HalfExpanded -> setShowingSheet(true)
+                ModalBottomSheetValue.HalfExpanded,
+                -> setShowingSheet(true)
             }
             true
-        }
+        },
     )
     LaunchedEffect(showingSheet) {
         if (showingSheet) {
@@ -315,8 +316,8 @@ fun ThinLibraryScreenContent(
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Column {
@@ -329,19 +330,19 @@ fun ThinLibraryScreenContent(
                             onToggleFiltersClick = { setShowingSheet(true) },
                             onUpdateLibrary = onUpdateLibrary,
                             updateWebsocketStatus = updateWebsocketStatus,
-                            restartLibraryUpdates = restartLibraryUpdates
+                            restartLibraryUpdates = restartLibraryUpdates,
                         )
-                    }
+                    },
                 )
                 LibraryTabs(
                     visible = true, // vm.showCategoryTabs,
                     pagerState = pagerState,
                     categories = categories,
                     selectedPage = selectedCategoryIndex,
-                    onPageChanged = onPageChanged
+                    onPageChanged = onPageChanged,
                 )
             }
-        }
+        },
     ) { padding ->
         ModalBottomSheetLayout(
             sheetState = bottomSheetState,
@@ -350,9 +351,9 @@ fun ThinLibraryScreenContent(
                 LibrarySheet(
                     libraryFilters = libraryFilters,
                     librarySort = librarySort,
-                    libraryDisplay = libraryDisplay
+                    libraryDisplay = libraryDisplay,
                 )
-            }
+            },
         ) {
             if (categories.isEmpty()) {
                 LoadingScreen(isLoading, errorMessage = error)
@@ -369,7 +370,7 @@ fun ThinLibraryScreenContent(
                     showUnread = showUnread,
                     showDownloaded = showDownloaded,
                     showLanguage = showLanguage,
-                    showLocal = showLocal
+                    showLocal = showLocal,
                 )
             }
         }
@@ -382,27 +383,27 @@ private fun getActionItems(
     onToggleFiltersClick: () -> Unit,
     onUpdateLibrary: () -> Unit,
     updateWebsocketStatus: WebsocketService.Status? = null,
-    restartLibraryUpdates: (() -> Unit)? = null
+    restartLibraryUpdates: (() -> Unit)? = null,
 ): ImmutableList<ActionItem> {
     return listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_filter),
             icon = Icons.Rounded.FilterList,
-            doAction = onToggleFiltersClick
+            doAction = onToggleFiltersClick,
         ),
         ActionItem(
             name = stringResource(MR.strings.action_update_library),
             icon = Icons.Rounded.Refresh,
-            doAction = onUpdateLibrary
+            doAction = onUpdateLibrary,
         ),
         if (updateWebsocketStatus == WebsocketService.Status.STOPPED && restartLibraryUpdates != null) {
             ActionItem(
                 name = stringResource(MR.strings.action_restart_library),
                 overflowMode = OverflowMode.ALWAYS_OVERFLOW,
-                doAction = restartLibraryUpdates
+                doAction = restartLibraryUpdates,
             )
         } else {
             null
-        }
+        },
     ).toImmutableList()
 }

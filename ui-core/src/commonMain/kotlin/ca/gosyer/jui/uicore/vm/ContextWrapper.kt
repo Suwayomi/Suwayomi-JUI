@@ -15,5 +15,5 @@ expect class ContextWrapper {
 }
 enum class Length {
     SHORT,
-    LONG
+    LONG,
 }

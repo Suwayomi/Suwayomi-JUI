@@ -36,8 +36,8 @@ class GetQuickSearchManga @Inject constructor(private val sourceRepository: Sour
         page,
         SourceFilterData(
             searchTerm?.ifBlank { null },
-            filters?.ifEmpty { null }
-        )
+            filters?.ifEmpty { null },
+        ),
     )
 
     fun asFlow(sourceId: Long, searchTerm: String?, page: Int, filters: List<SourceFilterChange>?) = sourceRepository.getQuickSearchResults(
@@ -45,8 +45,8 @@ class GetQuickSearchManga @Inject constructor(private val sourceRepository: Sour
         page,
         SourceFilterData(
             searchTerm?.ifBlank { null },
-            filters?.ifEmpty { null }
-        )
+            filters?.ifEmpty { null },
+        ),
     )
 
     companion object {

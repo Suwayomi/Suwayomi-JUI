@@ -50,7 +50,7 @@ fun LibraryMangaCoverOnlyGrid(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     Box {
         val state = rememberLazyGridState()
@@ -65,21 +65,21 @@ fun LibraryMangaCoverOnlyGrid(
             modifier = Modifier.fillMaxSize().padding(4.dp),
             contentPadding = WindowInsets.bottomNav.add(
                 WindowInsets.navigationBars.only(
-                    WindowInsetsSides.Bottom
-                )
-            ).asPaddingValues()
+                    WindowInsetsSides.Bottom,
+                ),
+            ).asPaddingValues(),
         ) {
             items(library) { manga ->
                 LibraryMangaCoverOnlyGridItem(
                     modifier = Modifier.libraryMangaModifier(
                         { onClickManga(manga.id) },
-                        { onRemoveMangaClicked(manga.id) }
+                        { onRemoveMangaClicked(manga.id) },
                     ),
                     manga = manga,
                     showUnread = showUnread,
                     showDownloaded = showDownloaded,
                     showLanguage = showLanguage,
-                    showLocal = showLocal
+                    showLocal = showLocal,
                 )
             }
         }
@@ -91,10 +91,10 @@ fun LibraryMangaCoverOnlyGrid(
                 .windowInsetsPadding(
                     WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    )
-                )
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ),
+                ),
         )
     }
 }
@@ -106,20 +106,20 @@ private fun LibraryMangaCoverOnlyGridItem(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     Box(
         modifier = Modifier.padding(4.dp)
             .fillMaxWidth()
             .aspectRatio(mangaAspectRatio)
-            .clip(MaterialTheme.shapes.medium) then modifier
+            .clip(MaterialTheme.shapes.medium) then modifier,
     ) {
         ImageLoaderImage(
             manga,
             contentDescription = manga.title,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            filterQuality = FilterQuality.Medium
+            filterQuality = FilterQuality.Medium,
         )
         LibraryMangaBadges(
             modifier = Modifier.padding(4.dp),
@@ -127,7 +127,7 @@ private fun LibraryMangaCoverOnlyGridItem(
             showUnread = showUnread,
             showDownloaded = showDownloaded,
             showLanguage = showLanguage,
-            showLocal = showLocal
+            showLocal = showLocal,
         )
     }
 }

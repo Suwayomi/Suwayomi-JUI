@@ -62,12 +62,12 @@ fun SettingsScreenContent(navigator: Navigator) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.location_settings))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -76,43 +76,43 @@ fun SettingsScreenContent(navigator: Navigator) {
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_general),
                         icon = Icons.Rounded.Tune,
-                        onClick = { navigator push SettingsGeneralScreen() }
+                        onClick = { navigator push SettingsGeneralScreen() },
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_appearance),
                         icon = Icons.Rounded.Palette,
-                        onClick = { navigator push SettingsAppearanceScreen() }
+                        onClick = { navigator push SettingsAppearanceScreen() },
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_server),
                         icon = Icons.Rounded.Computer,
-                        onClick = { navigator push SettingsServerScreen() }
+                        onClick = { navigator push SettingsServerScreen() },
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_library),
                         icon = Icons.Rounded.CollectionsBookmark,
-                        onClick = { navigator push SettingsLibraryScreen() }
+                        onClick = { navigator push SettingsLibraryScreen() },
                     )
                 }
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_reader),
                         icon = Icons.Rounded.ChromeReaderMode,
-                        onClick = { navigator push SettingsReaderScreen() }
+                        onClick = { navigator push SettingsReaderScreen() },
                     )
                 }
                 /*item {
@@ -140,7 +140,7 @@ fun SettingsScreenContent(navigator: Navigator) {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_backup),
                         icon = Icons.Rounded.Backup,
-                        onClick = { navigator push SettingsBackupScreen() }
+                        onClick = { navigator push SettingsBackupScreen() },
                     )
                 }
                 /*item {
@@ -161,7 +161,7 @@ fun SettingsScreenContent(navigator: Navigator) {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_advanced),
                         icon = Icons.Rounded.Code,
-                        onClick = { navigator push SettingsAdvancedScreen() }
+                        onClick = { navigator push SettingsAdvancedScreen() },
                     )
                 }
             }
@@ -173,10 +173,10 @@ fun SettingsScreenContent(navigator: Navigator) {
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }

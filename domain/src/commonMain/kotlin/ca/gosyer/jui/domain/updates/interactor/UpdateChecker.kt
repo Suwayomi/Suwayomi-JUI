@@ -23,7 +23,7 @@ import org.lighthousegames.logging.logging
 
 class UpdateChecker @Inject constructor(
     private val updatePreferences: UpdatePreferences,
-    private val client: Http
+    private val client: Http,
 ) {
     suspend fun await(manualFetch: Boolean, onError: suspend (Throwable) -> Unit = {}) = asFlow(manualFetch)
         .catch {
@@ -35,7 +35,7 @@ class UpdateChecker @Inject constructor(
     fun asFlow(manualFetch: Boolean) = flow {
         if (!manualFetch && !updatePreferences.enabled().get()) return@flow
         val latestRelease = client.get(
-            "https://api.github.com/repos/$GITHUB_REPO/releases/latest"
+            "https://api.github.com/repos/$GITHUB_REPO/releases/latest",
         ).body<GithubRelease>()
 
         if (isNewVersion(latestRelease.version)) {

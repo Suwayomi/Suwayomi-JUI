@@ -17,16 +17,16 @@ expect class FileSaver {
 fun rememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit = {},
-    onError: () -> Unit = {}
+    onError: () -> Unit = {},
 ): FileSaver = realRememberFileSaver(
     onFileSelected = onFileSelected,
     onCancel = onCancel,
-    onError = onError
+    onError = onError,
 )
 
 @Composable
 internal expect fun realRememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit,
-    onError: () -> Unit
+    onError: () -> Unit,
 ): FileSaver

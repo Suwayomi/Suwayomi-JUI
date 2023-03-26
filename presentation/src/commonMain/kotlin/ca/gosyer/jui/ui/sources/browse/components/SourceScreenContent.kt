@@ -93,7 +93,7 @@ fun SourceScreenContent(
     showingFilters: Boolean,
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
-    resetFiltersClicked: () -> Unit
+    resetFiltersClicked: () -> Unit,
 ) {
     BackHandler {
         onCloseSourceTabClick(source)
@@ -129,7 +129,7 @@ fun SourceScreenContent(
                 showFilterButton = showFilterButton,
                 setShowingFilters = setShowingFilters,
                 onSelectDisplayMode = onSelectDisplayMode,
-                resetFiltersClicked = resetFiltersClicked
+                resetFiltersClicked = resetFiltersClicked,
             )
         } else {
             SourceThinScreenContent(
@@ -156,7 +156,7 @@ fun SourceScreenContent(
                 showFilterButton = showFilterButton,
                 setShowingFilters = setShowingFilters,
                 onSelectDisplayMode = onSelectDisplayMode,
-                resetFiltersClicked = resetFiltersClicked
+                resetFiltersClicked = resetFiltersClicked,
             )
         }
     }
@@ -188,13 +188,13 @@ private fun SourceWideScreenContent(
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
     onSelectDisplayMode: (DisplayMode) -> Unit,
-    resetFiltersClicked: () -> Unit
+    resetFiltersClicked: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             SourceToolbar(
@@ -210,9 +210,9 @@ private fun SourceWideScreenContent(
                 showingFilters = showingFilters,
                 onClickMode = setMode,
                 onToggleFiltersClick = setShowingFilters,
-                onSelectDisplayMode = onSelectDisplayMode
+                onSelectDisplayMode = onSelectDisplayMode,
             )
-        }
+        },
     ) { padding ->
         Box(Modifier.padding(padding)) {
             MangaTable(
@@ -223,7 +223,7 @@ private fun SourceWideScreenContent(
                 isLoading = loading,
                 hasNextPage = hasNextPage,
                 onLoadNextPage = loadNextPage,
-                onMangaClick = onMangaClick
+                onMangaClick = onMangaClick,
             )
             if (showingFilters && !isLatest) {
                 Box(
@@ -233,14 +233,14 @@ private fun SourceWideScreenContent(
                                 setShowingFilters(false)
                             }
                         }
-                    }
+                    },
                 )
             }
             AnimatedVisibility(
                 showingFilters && !isLatest,
                 enter = fadeIn() + slideInHorizontally(initialOffsetX = { it * 2 }),
                 exit = fadeOut() + slideOutHorizontally(targetOffsetX = { it * 2 }),
-                modifier = Modifier.align(Alignment.TopEnd)
+                modifier = Modifier.align(Alignment.TopEnd),
             ) {
                 SourceFiltersMenu(
                     modifier = Modifier.width(360.dp),
@@ -250,7 +250,7 @@ private fun SourceWideScreenContent(
                         setShowingFilters(false)
                         submitSearch()
                     },
-                    resetFiltersClicked = resetFiltersClicked
+                    resetFiltersClicked = resetFiltersClicked,
                 )
             }
         }
@@ -283,7 +283,7 @@ private fun SourceThinScreenContent(
     showFilterButton: Boolean,
     setShowingFilters: (Boolean) -> Unit,
     onSelectDisplayMode: (DisplayMode) -> Unit,
-    resetFiltersClicked: () -> Unit
+    resetFiltersClicked: () -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(
         ModalBottomSheetValue.Hidden,
@@ -291,10 +291,11 @@ private fun SourceThinScreenContent(
             when (it) {
                 ModalBottomSheetValue.Hidden -> setShowingFilters(false)
                 ModalBottomSheetValue.Expanded,
-                ModalBottomSheetValue.HalfExpanded -> setShowingFilters(true)
+                ModalBottomSheetValue.HalfExpanded,
+                -> setShowingFilters(true)
             }
             true
-        }
+        },
     )
     LaunchedEffect(showingFilters) {
         if (showingFilters) {
@@ -306,8 +307,8 @@ private fun SourceThinScreenContent(
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             SourceToolbar(
@@ -323,9 +324,9 @@ private fun SourceThinScreenContent(
                 showingFilters = showingFilters,
                 onClickMode = setMode,
                 onToggleFiltersClick = setShowingFilters,
-                onSelectDisplayMode = onSelectDisplayMode
+                onSelectDisplayMode = onSelectDisplayMode,
             )
-        }
+        },
     ) { padding ->
         ModalBottomSheetLayout(
             sheetState = bottomSheetState,
@@ -335,9 +336,9 @@ private fun SourceThinScreenContent(
                     modifier = Modifier.windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
                     ),
                     filters = filters,
                     onSearchClicked = {
@@ -345,9 +346,9 @@ private fun SourceThinScreenContent(
                         setShowingFilters(false)
                         submitSearch()
                     },
-                    resetFiltersClicked = resetFiltersClicked
+                    resetFiltersClicked = resetFiltersClicked,
                 )
-            }
+            },
         ) {
             Box {
                 MangaTable(
@@ -358,7 +359,7 @@ private fun SourceThinScreenContent(
                     isLoading = loading,
                     hasNextPage = hasNextPage,
                     onLoadNextPage = loadNextPage,
-                    onMangaClick = onMangaClick
+                    onMangaClick = onMangaClick,
                 )
                 if (showingFilters && !isLatest) {
                     Box(
@@ -368,7 +369,7 @@ private fun SourceThinScreenContent(
                                     setShowingFilters(false)
                                 }
                             }
-                        }
+                        },
                     )
                 }
                 if (showFilterButton && !isLatest) {
@@ -382,7 +383,7 @@ private fun SourceThinScreenContent(
                         icon = {
                             Icon(
                                 Icons.Rounded.FilterList,
-                                stringResource(MR.strings.action_filter)
+                                stringResource(MR.strings.action_filter),
                             )
                         },
                         modifier = Modifier.align(Alignment.BottomEnd)
@@ -390,10 +391,10 @@ private fun SourceThinScreenContent(
                             .windowInsetsPadding(
                                 WindowInsets.bottomNav.add(
                                     WindowInsets.navigationBars.only(
-                                        WindowInsetsSides.Bottom
-                                    )
-                                )
-                            )
+                                        WindowInsetsSides.Bottom,
+                                    ),
+                                ),
+                            ),
                     )
                 }
             }
@@ -415,7 +416,7 @@ fun SourceToolbar(
     showingFilters: Boolean,
     onClickMode: (Boolean) -> Unit,
     onToggleFiltersClick: (Boolean) -> Unit,
-    onSelectDisplayMode: (DisplayMode) -> Unit
+    onSelectDisplayMode: (DisplayMode) -> Unit,
 ) {
     Toolbar(
         source.name,
@@ -431,7 +432,7 @@ fun SourceToolbar(
             DisplayModeSelect(
                 isVisible = displayModeSelectOpen,
                 onSelectDisplayMode = onSelectDisplayMode,
-                onDismissRequest = { displayModeSelectOpen = false }
+                onDismissRequest = { displayModeSelectOpen = false },
             )
             getActionItems(
                 isConfigurable = source.isConfigurable,
@@ -447,9 +448,9 @@ fun SourceToolbar(
                 onClickMode = {
                     onClickMode(!isLatest)
                 },
-                openDisplayModeSelect = { displayModeSelectOpen = true }
+                openDisplayModeSelect = { displayModeSelectOpen = true },
             )
-        }
+        },
     )
 }
 
@@ -457,11 +458,11 @@ fun SourceToolbar(
 fun DisplayModeSelect(
     isVisible: Boolean,
     onSelectDisplayMode: (DisplayMode) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     DropdownMenu(
         isVisible,
-        onDismissRequest
+        onDismissRequest,
     ) {
         val list = DisplayMode.values().toList() - DisplayMode.CoverOnlyGrid
         list.fastForEach {
@@ -469,7 +470,7 @@ fun DisplayModeSelect(
                 onClick = {
                     onSelectDisplayMode(it)
                     onDismissRequest()
-                }
+                },
             ) {
                 Text(stringResource(it.res))
             }
@@ -486,7 +487,7 @@ private fun MangaTable(
     isLoading: Boolean = false,
     hasNextPage: Boolean = false,
     onLoadNextPage: () -> Unit,
-    onMangaClick: (Long) -> Unit
+    onMangaClick: (Long) -> Unit,
 ) {
     if (isLoading || mangas.isEmpty()) {
         LoadingScreen(isLoading)
@@ -498,7 +499,7 @@ private fun MangaTable(
                 gridSize = gridSize,
                 onClickManga = onMangaClick,
                 hasNextPage = hasNextPage,
-                onLoadNextPage = onLoadNextPage
+                onLoadNextPage = onLoadNextPage,
             )
             DisplayMode.ComfortableGrid -> SourceMangaComfortableGrid(
                 mangas = mangas,
@@ -506,13 +507,13 @@ private fun MangaTable(
                 gridSize = gridSize,
                 onClickManga = onMangaClick,
                 hasNextPage = hasNextPage,
-                onLoadNextPage = onLoadNextPage
+                onLoadNextPage = onLoadNextPage,
             )
             DisplayMode.List -> SourceMangaList(
                 mangas = mangas,
                 onClickManga = onMangaClick,
                 hasNextPage = hasNextPage,
-                onLoadNextPage = onLoadNextPage
+                onLoadNextPage = onLoadNextPage,
             )
             else -> Box {}
         }
@@ -529,7 +530,7 @@ private fun getActionItems(
     showFilterButton: Boolean,
     onToggleFiltersClick: () -> Unit,
     onClickMode: () -> Unit,
-    openDisplayModeSelect: () -> Unit
+    openDisplayModeSelect: () -> Unit,
 ): ImmutableList<ActionItem> {
     return listOfNotNull(
         if (showFilterButton) {
@@ -537,7 +538,7 @@ private fun getActionItems(
                 name = stringResource(MR.strings.action_filter),
                 icon = Icons.Rounded.FilterList,
                 doAction = onToggleFiltersClick,
-                enabled = !isLatest
+                enabled = !isLatest,
             )
         } else {
             null
@@ -549,14 +550,14 @@ private fun getActionItems(
                         MR.strings.move_to_browse
                     } else {
                         MR.strings.move_to_latest
-                    }
+                    },
                 ),
                 icon = if (isLatest) {
                     Icons.Rounded.Explore
                 } else {
                     Icons.Rounded.NewReleases
                 },
-                doAction = onClickMode
+                doAction = onClickMode,
             )
         } else {
             null
@@ -564,16 +565,16 @@ private fun getActionItems(
         ActionItem(
             name = stringResource(MR.strings.display_mode),
             icon = Icons.Rounded.ViewModule,
-            doAction = openDisplayModeSelect
+            doAction = openDisplayModeSelect,
         ),
         if (isConfigurable) {
             ActionItem(
                 name = stringResource(MR.strings.location_settings),
                 icon = Icons.Rounded.Settings,
-                doAction = onSourceSettingsClick
+                doAction = onSourceSettingsClick,
             )
         } else {
             null
-        }
+        },
     ).toImmutableList()
 }

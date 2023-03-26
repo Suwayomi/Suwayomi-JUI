@@ -43,7 +43,7 @@ class GlobalSearchScreen(private val initialQuery: String) : BaseScreen() {
             },
             onMangaClick = {
                 navigator push MangaScreen(it.id)
-            }
+            },
         )
     }
 }

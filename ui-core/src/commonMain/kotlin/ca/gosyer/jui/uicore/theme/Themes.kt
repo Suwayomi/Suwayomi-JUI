@@ -17,7 +17,7 @@ data class Theme(
     val id: Int,
     val titleRes: StringResource,
     val colors: Colors,
-    val extraColors: ExtraColors
+    val extraColors: ExtraColors,
 )
 
 fun tachiyomiLightColors(
@@ -32,7 +32,7 @@ fun tachiyomiLightColors(
     onSecondary: Color = Color.White,
     onBackground: Color = Color(0xFF1B1B1E),
     onSurface: Color = Color(0xFF1B1B1E),
-    onError: Color = Color.White
+    onError: Color = Color.White,
 ) = lightColors(
     primary = primary,
     primaryVariant = primaryVariant,
@@ -45,7 +45,7 @@ fun tachiyomiLightColors(
     onSecondary = onSecondary,
     onBackground = onBackground,
     onSurface = onSurface,
-    onError = onError
+    onError = onError,
 )
 
 fun tachiyomiDarkColors(
@@ -60,7 +60,7 @@ fun tachiyomiDarkColors(
     onSecondary: Color = Color(0xFF002C71),
     onBackground: Color = Color(0xFFE4E2E6),
     onSurface: Color = Color(0xFFE4E2E6),
-    onError: Color = Color.White
+    onError: Color = Color.White,
 ) = darkColors(
     primary = primary,
     primaryVariant = primaryVariant,
@@ -73,15 +73,15 @@ fun tachiyomiDarkColors(
     onSecondary = onSecondary,
     onBackground = onBackground,
     onSurface = onSurface,
-    onError = onError
+    onError = onError,
 )
 
 fun extraColors(
     tertiary: Color = Color(0xFF006E17),
-    onTertiary: Color = Color.White
+    onTertiary: Color = Color.White,
 ) = ExtraColors(
     tertiary = tertiary,
-    onTertiary = onTertiary
+    onTertiary = onTertiary,
 )
 
 /* Theme Template
@@ -115,7 +115,7 @@ val themes = listOf(
         1,
         MR.strings.theme_default,
         tachiyomiLightColors(),
-        extraColors()
+        extraColors(),
     ),
     // Tachiyomi 0.x legacy blue theme
     Theme(
@@ -127,9 +127,9 @@ val themes = listOf(
             onPrimary = Color.White,
             secondary = Color(0xFF2979FF),
             secondaryVariant = Color(0xFF2979FF),
-            onSecondary = Color.White
+            onSecondary = Color.White,
         ),
-        extraColors()
+        extraColors(),
     ),
     // Tachiyomi 0.x dark theme
     Theme(
@@ -138,8 +138,8 @@ val themes = listOf(
         tachiyomiDarkColors(),
         extraColors(
             tertiary = Color(0xFF7ADC77),
-            onTertiary = Color(0xFF003907)
-        )
+            onTertiary = Color(0xFF003907),
+        ),
     ),
     // AMOLED theme
     Theme(
@@ -149,9 +149,9 @@ val themes = listOf(
             primary = Color.Black,
             onPrimary = Color.White,
             background = Color.Black,
-            surface = Color.Black
+            surface = Color.Black,
         ),
-        extraColors()
+        extraColors(),
     ),
     /**
      * Green Apple theme
@@ -168,11 +168,11 @@ val themes = listOf(
             background = Color(0xFFFBFDF7),
             surface = Color(0xFFFBFDF7),
             onBackground = Color(0xFF1A1C19),
-            onSurface = Color(0xFF1A1C19)
+            onSurface = Color(0xFF1A1C19),
         ),
         extraColors(
-            tertiary = Color(0xFFB91D22)
-        )
+            tertiary = Color(0xFFB91D22),
+        ),
     ),
     Theme(
         6,
@@ -187,12 +187,12 @@ val themes = listOf(
             onPrimary = Color(0xFF003915),
             onSecondary = Color(0xFF003915),
             onBackground = Color(0xFFE1E3DD),
-            onSurface = Color(0xFFE1E3DD)
+            onSurface = Color(0xFFE1E3DD),
         ),
         extraColors(
             tertiary = Color(0xFFFFB3AA),
-            onTertiary = Color(0xFF680006)
-        )
+            onTertiary = Color(0xFF680006),
+        ),
     ),
     /**
      * Lavender theme
@@ -211,12 +211,12 @@ val themes = listOf(
             onPrimary = Color(0xFFEDE2FF),
             onSecondary = Color(0xFFEDE2FF),
             onBackground = Color(0xFF1B1B22),
-            onSurface = Color(0xFF1B1B22)
+            onSurface = Color(0xFF1B1B22),
         ),
         extraColors(
             tertiary = Color(0xFFEDE2FF),
-            onTertiary = Color(0xFF7B46AF)
-        )
+            onTertiary = Color(0xFF7B46AF),
+        ),
     ),
     Theme(
         8,
@@ -231,12 +231,12 @@ val themes = listOf(
             onPrimary = Color(0xFF111129),
             onSecondary = Color(0xFF111129),
             onBackground = Color(0xFFDEE8FF),
-            onSurface = Color(0xFFDEE8FF)
+            onSurface = Color(0xFFDEE8FF),
         ),
         extraColors(
             tertiary = Color(0xFF5E25E1),
-            onTertiary = Color(0xFFE8E8E8)
-        )
+            onTertiary = Color(0xFFE8E8E8),
+        ),
     ),
     /**
      * Midnight Dusk theme
@@ -253,11 +253,11 @@ val themes = listOf(
             background = Color(0xFFFFFBFF),
             surface = Color(0xFFFFFBFF),
             onBackground = Color(0xFF1C1B1F),
-            onSurface = Color(0xFF1C1B1F)
+            onSurface = Color(0xFF1C1B1F),
         ),
         extraColors(
-            tertiary = Color(0xFF006638)
-        )
+            tertiary = Color(0xFF006638),
+        ),
     ),
     Theme(
         10,
@@ -272,11 +272,11 @@ val themes = listOf(
             onPrimary = Color(0xFFFFFFFF),
             onSecondary = Color(0xFFFFFFFF),
             onBackground = Color(0xFFE5E1E5),
-            onSurface = Color(0xFFE5E1E5)
+            onSurface = Color(0xFFE5E1E5),
         ),
         extraColors(
-            tertiary = Color(0xFF55971C)
-        )
+            tertiary = Color(0xFF55971C),
+        ),
     ),
     /**
      * Strawberry Daiquiri theme
@@ -293,11 +293,11 @@ val themes = listOf(
             background = Color(0xFFFCFCFC),
             surface = Color(0xFFFCFCFC),
             onBackground = Color(0xFF201A1A),
-            onSurface = Color(0xFF201A1A)
+            onSurface = Color(0xFF201A1A),
         ),
         extraColors(
-            tertiary = Color(0xFF775930)
-        )
+            tertiary = Color(0xFF775930),
+        ),
     ),
     Theme(
         12,
@@ -312,12 +312,12 @@ val themes = listOf(
             onPrimary = Color(0xFF67001B),
             onSecondary = Color(0xFF67001B),
             onBackground = Color(0xFFECDFDF),
-            onSurface = Color(0xFFECDFDF)
+            onSurface = Color(0xFFECDFDF),
         ),
         extraColors(
             tertiary = Color(0xFFE8C08E),
-            onTertiary = Color(0xFF432C06)
-        )
+            onTertiary = Color(0xFF432C06),
+        ),
     ),
     /**
      * Strawberry Tako theme
@@ -336,12 +336,12 @@ val themes = listOf(
             onPrimary = Color(0xFFF3B375),
             onSecondary = Color(0xFFF3B375),
             onBackground = Color(0xFF1B1B22),
-            onSurface = Color(0xFF1B1B22)
+            onSurface = Color(0xFF1B1B22),
         ),
         extraColors(
             tertiary = Color(0xFFF3B375),
-            onTertiary = Color(0xFF574360)
-        )
+            onTertiary = Color(0xFF574360),
+        ),
     ),
     Theme(
         14,
@@ -356,12 +356,12 @@ val themes = listOf(
             onPrimary = Color(0xFF38294E),
             onSecondary = Color(0xFF38294E),
             onBackground = Color(0xFFE3E0F2),
-            onSurface = Color(0xFFE3E0F2)
+            onSurface = Color(0xFFE3E0F2),
         ),
         extraColors(
             tertiary = Color(0xFF66577E),
-            onTertiary = Color(0xFFF3B375)
-        )
+            onTertiary = Color(0xFFF3B375),
+        ),
     ),
     /**
      * Teal & Turquoise theme
@@ -377,12 +377,12 @@ val themes = listOf(
             background = Color(0xFFFAFAFA),
             surface = Color(0xFFFAFAFA),
             onBackground = Color(0xFF050505),
-            onSurface = Color(0xFF050505)
+            onSurface = Color(0xFF050505),
         ),
         extraColors(
             tertiary = Color(0xFFFF7F7F),
-            onTertiary = Color.Black
-        )
+            onTertiary = Color.Black,
+        ),
     ),
     Theme(
         16,
@@ -397,11 +397,11 @@ val themes = listOf(
             onPrimary = Color.Black,
             onSecondary = Color.Black,
             onBackground = Color(0xFFDFDEDA),
-            onSurface = Color(0xFFDFDEDA)
+            onSurface = Color(0xFFDFDEDA),
         ),
         extraColors(
-            tertiary = Color(0xFFBF1F2F)
-        )
+            tertiary = Color(0xFFBF1F2F),
+        ),
     ),
     /**
      * Tidal Wave theme
@@ -418,12 +418,12 @@ val themes = listOf(
             background = Color(0xFFFDFBFF),
             surface = Color(0xFFFDFBFF),
             onBackground = Color(0xFF001C3b),
-            onSurface = Color(0xFF001C3b)
+            onSurface = Color(0xFF001C3b),
         ),
         extraColors(
             tertiary = Color(0xFF92F7BC),
-            onTertiary = Color(0xFF001C3B)
-        )
+            onTertiary = Color(0xFF001C3B),
+        ),
     ),
     Theme(
         18,
@@ -438,12 +438,12 @@ val themes = listOf(
             onPrimary = Color(0xFF003544),
             onSecondary = Color(0xFF003544),
             onBackground = Color(0xFFD5E3FF),
-            onSurface = Color(0xFFD5E3FF)
+            onSurface = Color(0xFFD5E3FF),
         ),
         extraColors(
             tertiary = Color(0xFF004D61),
-            onTertiary = Color(0xFF001C3B)
-        )
+            onTertiary = Color(0xFF001C3B),
+        ),
     ),
     /**
      * Yin & Yang theme
@@ -462,12 +462,12 @@ val themes = listOf(
             onPrimary = Color.White,
             onSecondary = Color.White,
             onBackground = Color(0xFF222222),
-            onSurface = Color(0xFF222222)
+            onSurface = Color(0xFF222222),
         ),
         extraColors(
             tertiary = Color.White,
-            onTertiary = Color.Black
-        )
+            onTertiary = Color.Black,
+        ),
     ),
     Theme(
         20,
@@ -482,12 +482,12 @@ val themes = listOf(
             onPrimary = Color(0xFF5A5A5A),
             onSecondary = Color(0xFF5A5A5A),
             onBackground = Color(0xFFE6E6E6),
-            onSurface = Color(0xFFE6E6E6)
+            onSurface = Color(0xFFE6E6E6),
         ),
         extraColors(
             tertiary = Color.Black,
-            onTertiary = Color.White
-        )
+            onTertiary = Color.White,
+        ),
     ),
     /**
      * Yotsuba theme
@@ -504,11 +504,11 @@ val themes = listOf(
             background = Color(0xFFFCFCFC),
             surface = Color(0xFFFCFCFC),
             onBackground = Color(0xFF211A18),
-            onSurface = Color(0xFF211A18)
+            onSurface = Color(0xFF211A18),
         ),
         extraColors(
-            tertiary = Color(0xFF6B5E2F)
-        )
+            tertiary = Color(0xFF6B5E2F),
+        ),
     ),
     Theme(
         22,
@@ -523,11 +523,11 @@ val themes = listOf(
             onPrimary = Color(0xFF5F1600),
             onSecondary = Color(0xFF5F1600),
             onBackground = Color(0xFFEDE0DD),
-            onSurface = Color(0xFFEDE0DD)
+            onSurface = Color(0xFFEDE0DD),
         ),
         extraColors(
             tertiary = Color(0xFFD7C68D),
-            onTertiary = Color(0xFF3A2F05)
-        )
-    )
+            onTertiary = Color(0xFF3A2F05),
+        ),
+    ),
 )

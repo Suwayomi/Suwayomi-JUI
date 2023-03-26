@@ -17,7 +17,7 @@ val LocalDisplayController =
     compositionLocalOf<DisplayController?> { null }
 
 class DisplayController(
-    private val _sideMenuVisible: MutableState<Boolean> = mutableStateOf(true)
+    private val _sideMenuVisible: MutableState<Boolean> = mutableStateOf(true),
 ) {
     val sideMenuVisible by _sideMenuVisible
 
@@ -33,6 +33,6 @@ class DisplayController(
 fun withDisplayController(controller: DisplayController, content: @Composable () -> Unit) {
     CompositionLocalProvider(
         LocalDisplayController provides controller,
-        content = content
+        content = content,
     )
 }

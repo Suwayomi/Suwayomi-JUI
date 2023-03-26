@@ -40,7 +40,7 @@ import kotlin.io.path.isExecutable
 
 @OptIn(DelicateCoroutinesApi::class)
 class ServerService @Inject constructor(
-    private val serverHostPreferences: ServerHostPreferences
+    private val serverHostPreferences: ServerHostPreferences,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -50,7 +50,7 @@ class ServerService @Inject constructor(
             ServerResult.STARTING
         } else {
             ServerResult.UNUSED
-        }
+        },
     )
     val initialized = _initialized.asStateFlow()
     private var process: Process? = null
@@ -188,7 +188,7 @@ class ServerService @Inject constructor(
             thread(start = false) {
                 process?.destroy()
                 process = null
-            }
+            },
         )
     }
 
@@ -196,7 +196,7 @@ class ServerService @Inject constructor(
         UNUSED,
         STARTING,
         STARTED,
-        FAILED
+        FAILED,
     }
 
     private companion object {

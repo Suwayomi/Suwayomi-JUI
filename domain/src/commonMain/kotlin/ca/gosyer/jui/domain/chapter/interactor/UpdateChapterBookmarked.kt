@@ -18,14 +18,14 @@ import org.lighthousegames.logging.logging
 
 class UpdateChapterBookmarked @Inject constructor(
     private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) {
 
     suspend fun await(
         mangaId: Long,
         index: Int,
         bookmarked: Boolean,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(mangaId, index, bookmarked)
         .catch {
             onError(it)
@@ -37,7 +37,7 @@ class UpdateChapterBookmarked @Inject constructor(
         manga: Manga,
         index: Int,
         bookmarked: Boolean,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(manga, index, bookmarked)
         .catch {
             onError(it)
@@ -48,7 +48,7 @@ class UpdateChapterBookmarked @Inject constructor(
     suspend fun await(
         chapter: Chapter,
         bookmarked: Boolean,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(chapter, bookmarked)
         .catch {
             onError(it)
@@ -59,30 +59,30 @@ class UpdateChapterBookmarked @Inject constructor(
     fun asFlow(
         mangaId: Long,
         index: Int,
-        bookmarked: Boolean
+        bookmarked: Boolean,
     ) = chapterRepository.updateChapter(
         mangaId = mangaId,
         chapterIndex = index,
-        bookmarked = bookmarked
+        bookmarked = bookmarked,
     ).onEach { serverListeners.updateChapters(mangaId, index) }
 
     fun asFlow(
         manga: Manga,
         index: Int,
-        bookmarked: Boolean
+        bookmarked: Boolean,
     ) = chapterRepository.updateChapter(
         mangaId = manga.id,
         chapterIndex = index,
-        bookmarked = bookmarked
+        bookmarked = bookmarked,
     ).onEach { serverListeners.updateChapters(manga.id, index) }
 
     fun asFlow(
         chapter: Chapter,
-        bookmarked: Boolean
+        bookmarked: Boolean,
     ) = chapterRepository.updateChapter(
         mangaId = chapter.mangaId,
         chapterIndex = chapter.index,
-        bookmarked = bookmarked
+        bookmarked = bookmarked,
     ).onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
 
     companion object {

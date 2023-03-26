@@ -18,13 +18,13 @@ import org.lighthousegames.logging.logging
 
 class UpdateChapterMarkPreviousRead @Inject constructor(
     private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) {
 
     suspend fun await(
         mangaId: Long,
         index: Int,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(mangaId, index)
         .catch {
             onError(it)
@@ -35,7 +35,7 @@ class UpdateChapterMarkPreviousRead @Inject constructor(
     suspend fun await(
         manga: Manga,
         index: Int,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(manga, index)
         .catch {
             onError(it)
@@ -45,7 +45,7 @@ class UpdateChapterMarkPreviousRead @Inject constructor(
 
     suspend fun await(
         chapter: Chapter,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(chapter)
         .catch {
             onError(it)
@@ -55,28 +55,28 @@ class UpdateChapterMarkPreviousRead @Inject constructor(
 
     fun asFlow(
         mangaId: Long,
-        index: Int
+        index: Int,
     ) = chapterRepository.updateChapter(
         mangaId = mangaId,
         chapterIndex = index,
-        markPreviousRead = true
+        markPreviousRead = true,
     ).onEach { serverListeners.updateChapters(mangaId, index) }
 
     fun asFlow(
         manga: Manga,
-        index: Int
+        index: Int,
     ) = chapterRepository.updateChapter(
         mangaId = manga.id,
         chapterIndex = index,
-        markPreviousRead = true
+        markPreviousRead = true,
     ).onEach { serverListeners.updateChapters(manga.id, index) }
 
     fun asFlow(
-        chapter: Chapter
+        chapter: Chapter,
     ) = chapterRepository.updateChapter(
         mangaId = chapter.mangaId,
         chapterIndex = chapter.index,
-        markPreviousRead = true
+        markPreviousRead = true,
     ).onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
 
     companion object {

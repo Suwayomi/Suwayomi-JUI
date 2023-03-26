@@ -26,7 +26,7 @@ fun ErrorScreen(
     errorMessage: String? = null,
     modifier: Modifier = Modifier,
     retryMessage: String = stringResource(MR.strings.action_retry),
-    retry: (() -> Unit)? = null
+    retry: (() -> Unit)? = null,
 ) {
     Box(modifier then Modifier.fillMaxSize()) {
         Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -35,7 +35,7 @@ fun ErrorScreen(
                 text = errorFace,
                 fontSize = 36.sp,
                 color = MaterialTheme.colors.onBackground,
-                maxLines = 1
+                maxLines = 1,
             )
             if (errorMessage != null) {
                 Text(errorMessage, color = MaterialTheme.colors.onBackground)
@@ -55,7 +55,7 @@ private val ERROR_FACES = arrayOf(
     "ಥ_ಥ",
     "(˘･_･˘)",
     "(；￣Д￣)",
-    "(･Д･。"
+    "(･Д･。",
 )
 
 fun getRandomErrorFace(): String {

@@ -45,7 +45,7 @@ fun SourceMangaList(
     mangas: ImmutableList<Manga>,
     onClickManga: (Long) -> Unit,
     hasNextPage: Boolean = false,
-    onLoadNextPage: () -> Unit
+    onLoadNextPage: () -> Unit,
 ) {
     Box {
         val state = rememberLazyListState()
@@ -54,9 +54,9 @@ fun SourceMangaList(
             modifier = Modifier.fillMaxSize(),
             contentPadding = WindowInsets.bottomNav.add(
                 WindowInsets.navigationBars.only(
-                    WindowInsetsSides.Bottom
-                )
-            ).asPaddingValues()
+                    WindowInsetsSides.Bottom,
+                ),
+            ).asPaddingValues(),
         ) {
             itemsIndexed(mangas) { index, manga ->
                 if (hasNextPage && index == mangas.lastIndex) {
@@ -64,10 +64,10 @@ fun SourceMangaList(
                 }
                 MangaListItem(
                     modifier = Modifier.clickable(
-                        onClick = { onClickManga(manga.id) }
+                        onClick = { onClickManga(manga.id) },
                     ),
                     manga = manga,
-                    inLibrary = manga.inLibrary
+                    inLibrary = manga.inLibrary,
                 )
             }
         }
@@ -79,10 +79,10 @@ fun SourceMangaList(
                 .windowInsetsPadding(
                     WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    )
-                )
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ),
+                ),
         )
     }
 }
@@ -91,25 +91,25 @@ fun SourceMangaList(
 private fun MangaListItem(
     modifier: Modifier,
     manga: Manga,
-    inLibrary: Boolean
+    inLibrary: Boolean,
 ) {
     MangaListItem(
         modifier = modifier then Modifier
             .requiredHeight(56.dp)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
         MangaListItemImage(
             modifier = Modifier
                 .size(40.dp)
                 .clip(MaterialTheme.shapes.medium),
             data = manga,
-            contentDescription = manga.title
+            contentDescription = manga.title,
         )
         MangaListItemTitle(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 16.dp),
-            text = manga.title
+            text = manga.title,
         )
         SourceMangaBadges(inLibrary)
     }

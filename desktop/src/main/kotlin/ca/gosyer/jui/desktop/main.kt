@@ -143,7 +143,7 @@ suspend fun main() {
     val (
         position,
         size,
-        placement
+        placement,
     ) = WindowGet.from(windowSettings.get())
 
     val confirmExit = uiPreferences.confirmExit().asStateIn(GlobalScope)
@@ -161,7 +161,7 @@ suspend fun main() {
             val windowState = rememberWindowState(
                 size = size,
                 position = position,
-                placement = placement
+                placement = placement,
             )
 
             val icon = remember { StableHolder(MR.images.icon.image.toPainter()) }
@@ -197,7 +197,7 @@ suspend fun main() {
                     } else {
                         false
                     }
-                }
+                },
             ) {
                 LaunchedEffect(Unit) {
                     serverService.startServer()
@@ -216,7 +216,7 @@ suspend fun main() {
                                         modifier = Modifier
                                             .align(Alignment.BottomCenter)
                                             .padding(bottom = 64.dp),
-                                        context = context
+                                        context = context,
                                     )
                                 }
                             }
@@ -226,7 +226,7 @@ suspend fun main() {
                                         initialized == ServerResult.STARTING,
                                         errorMessage = stringResource(MR.strings.unable_to_start_server),
                                         retryMessage = stringResource(MR.strings.action_start_anyway),
-                                        retry = serverService::startAnyway
+                                        retry = serverService::startAnyway,
                                     )
                                 }
                             }
@@ -240,8 +240,8 @@ suspend fun main() {
                             negativeButton(stringResource(MR.strings.action_cancel))
                         },
                         properties = getMaterialDialogProperties(
-                            size = DpSize(400.dp, 200.dp)
-                        )
+                            size = DpSize(400.dp, 200.dp),
+                        ),
                     ) {
                         title(stringResource(MR.strings.confirm_exit))
                         message(stringResource(MR.strings.confirm_exit_message))
@@ -269,7 +269,7 @@ fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
                     Length.SHORT -> 2.seconds
                     Length.LONG -> 5.seconds
                     else -> ZERO
-                }
+                },
             )
             toast = null
         }
@@ -277,13 +277,13 @@ fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
     @Suppress("NAME_SHADOWING")
     Crossfade(
         toast?.first,
-        modifier = modifier
+        modifier = modifier,
     ) { toast ->
         if (toast != null) {
             Card(
                 Modifier.sizeIn(maxWidth = 200.dp),
                 shape = CircleShape,
-                backgroundColor = Color.DarkGray
+                backgroundColor = Color.DarkGray,
             ) {
                 Text(
                     toast,
@@ -292,7 +292,7 @@ fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 12.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         }

@@ -48,7 +48,7 @@ fun LibraryMangaList(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     Box {
         val state = rememberLazyListState()
@@ -57,21 +57,21 @@ fun LibraryMangaList(
             modifier = Modifier.fillMaxSize(),
             contentPadding = WindowInsets.bottomNav.add(
                 WindowInsets.navigationBars.only(
-                    WindowInsetsSides.Bottom
-                )
-            ).asPaddingValues()
+                    WindowInsetsSides.Bottom,
+                ),
+            ).asPaddingValues(),
         ) {
             items(library) { manga ->
                 LibraryMangaListItem(
                     modifier = Modifier.libraryMangaModifier(
                         { onClickManga(manga.id) },
-                        { onRemoveMangaClicked(manga.id) }
+                        { onRemoveMangaClicked(manga.id) },
                     ),
                     manga = manga,
                     showUnread = showUnread,
                     showDownloaded = showDownloaded,
                     showLanguage = showLanguage,
-                    showLocal = showLocal
+                    showLocal = showLocal,
                 )
             }
         }
@@ -83,10 +83,10 @@ fun LibraryMangaList(
                 .windowInsetsPadding(
                     WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    )
-                )
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ),
+                ),
         )
     }
 }
@@ -98,25 +98,25 @@ private fun LibraryMangaListItem(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     MangaListItem(
         modifier = modifier then Modifier
             .requiredHeight(56.dp)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
         MangaListItemImage(
             modifier = Modifier
                 .size(40.dp)
                 .clip(MaterialTheme.shapes.medium),
             data = manga,
-            contentDescription = manga.title
+            contentDescription = manga.title,
         )
         MangaListItemTitle(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 16.dp),
-            text = manga.title
+            text = manga.title,
         )
         Box(Modifier.width(IntrinsicSize.Min)) {
             LibraryMangaBadges(
@@ -124,7 +124,7 @@ private fun LibraryMangaListItem(
                 showUnread = showUnread,
                 showDownloaded = showDownloaded,
                 showLanguage = showLanguage,
-                showLocal = showLocal
+                showLocal = showLocal,
             )
         }
     }

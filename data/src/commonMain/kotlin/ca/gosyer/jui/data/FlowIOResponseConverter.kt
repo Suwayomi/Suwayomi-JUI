@@ -27,7 +27,7 @@ class FlowIOResponseConverter @Inject constructor(private val json: Json) : Resp
     override fun <RequestType : Any?> wrapResponse(
         typeData: TypeData,
         requestFunction: suspend () -> Pair<TypeInfo, HttpResponse?>,
-        ktorfit: Ktorfit
+        ktorfit: Ktorfit,
     ): Any {
         return flow {
             try {

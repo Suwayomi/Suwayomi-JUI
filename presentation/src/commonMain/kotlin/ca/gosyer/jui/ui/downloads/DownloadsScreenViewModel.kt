@@ -40,7 +40,7 @@ class DownloadsScreenViewModel @Inject constructor(
     private val stopChapterDownload: StopChapterDownload,
     private val reorderChapterDownload: ReorderChapterDownload,
     private val contextWrapper: ContextWrapper,
-    @Assisted standalone: Boolean
+    @Assisted standalone: Boolean,
 ) : ViewModel(contextWrapper) {
     private val uiScope = if (standalone) {
         MainScope()

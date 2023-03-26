@@ -28,7 +28,7 @@ import me.tatarka.inject.annotations.Inject
 class ImageLoaderProvider @Inject constructor(
     private val http: Http,
     serverPreferences: ServerPreferences,
-    private val context: ContextWrapper
+    private val context: ContextWrapper,
 ) {
     @OptIn(DelicateCoroutinesApi::class)
     val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)

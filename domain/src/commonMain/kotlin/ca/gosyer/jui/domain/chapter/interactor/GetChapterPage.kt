@@ -22,7 +22,7 @@ class GetChapterPage @Inject constructor(private val chapterRepository: ChapterR
         index: Int,
         pageNum: Int,
         block: HttpRequestBuilder.() -> Unit,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(mangaId, index, pageNum, block)
         .catch {
             onError(it)
@@ -35,7 +35,7 @@ class GetChapterPage @Inject constructor(private val chapterRepository: ChapterR
         index: Int,
         pageNum: Int,
         block: HttpRequestBuilder.() -> Unit,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(manga, index, pageNum, block)
         .catch {
             onError(it)
@@ -47,7 +47,7 @@ class GetChapterPage @Inject constructor(private val chapterRepository: ChapterR
         chapter: Chapter,
         pageNum: Int,
         block: HttpRequestBuilder.() -> Unit,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(chapter, pageNum, block)
         .catch {
             onError(it)
@@ -59,20 +59,20 @@ class GetChapterPage @Inject constructor(private val chapterRepository: ChapterR
         mangaId: Long,
         index: Int,
         pageNum: Int,
-        block: HttpRequestBuilder.() -> Unit
+        block: HttpRequestBuilder.() -> Unit,
     ) = chapterRepository.getPage(mangaId, index, pageNum, block)
 
     fun asFlow(
         manga: Manga,
         index: Int,
         pageNum: Int,
-        block: HttpRequestBuilder.() -> Unit
+        block: HttpRequestBuilder.() -> Unit,
     ) = chapterRepository.getPage(manga.id, index, pageNum, block)
 
     fun asFlow(
         chapter: Chapter,
         pageNum: Int,
-        block: HttpRequestBuilder.() -> Unit
+        block: HttpRequestBuilder.() -> Unit,
     ) = chapterRepository.getPage(chapter.mangaId, chapter.index, pageNum, block)
 
     companion object {

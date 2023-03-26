@@ -114,7 +114,7 @@ class SettingsBackupScreen : Screen {
             restoreBackup = vm::restoreBackup,
             stopRestore = vm::stopRestore,
             exportBackup = vm::exportBackup,
-            exportBackupFileFound = vm::exportBackupFileFound
+            exportBackupFileFound = vm::exportBackupFileFound,
         )
     }
 }
@@ -123,7 +123,7 @@ class SettingsBackupViewModel @Inject constructor(
     private val validateBackupFile: ValidateBackupFile,
     private val importBackupFile: ImportBackupFile,
     private val exportBackupFile: ExportBackupFile,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     private val _restoreStatus = MutableStateFlow<Status>(Status.Nothing)
     val restoreStatus = _restoreStatus.asStateFlow()
@@ -173,7 +173,7 @@ class SettingsBackupViewModel @Inject constructor(
                 onUpload { bytesSentTotal, contentLength ->
                     _restoreStatus.value = Status.InProgress(
                         (bytesSentTotal.toFloat() / contentLength)
-                            .coerceAtMost(1.0F)
+                            .coerceAtMost(1.0F),
                     )
                 }
             }
@@ -204,7 +204,7 @@ class SettingsBackupViewModel @Inject constructor(
                 onDownload { bytesSentTotal, contentLength ->
                     _creatingStatus.value = Status.InProgress(
                         (bytesSentTotal.toFloat() / contentLength)
-                            .coerceAtMost(0.99F)
+                            .coerceAtMost(0.99F),
                     )
                 }
             }
@@ -281,7 +281,7 @@ private fun SettingsBackupScreenContent(
     restoreBackup: (Path) -> Unit,
     stopRestore: () -> Unit,
     exportBackup: () -> Unit,
-    exportBackupFileFound: (Sink) -> Unit
+    exportBackupFileFound: (Sink) -> Unit,
 ) {
     var backupFile by remember { mutableStateOf<Path?>(null) }
     var missingSources: ImmutableList<String> by remember { mutableStateOf(persistentListOf()) }
@@ -306,12 +306,12 @@ private fun SettingsBackupScreenContent(
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.settings_backup_screen))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -320,15 +320,15 @@ private fun SettingsBackupScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 item {
                     PreferenceFile(
                         stringResource(MR.strings.backup_restore),
                         stringResource(MR.strings.backup_restore_sub),
-                        restoreStatus
+                        restoreStatus,
                     ) {
                         fileChooser.launch("gz")
                     }
@@ -336,7 +336,7 @@ private fun SettingsBackupScreenContent(
                         stringResource(MR.strings.backup_create),
                         stringResource(MR.strings.backup_create_sub),
                         creatingStatus,
-                        exportBackup
+                        exportBackup,
                     )
                 }
             }
@@ -348,10 +348,10 @@ private fun SettingsBackupScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }
@@ -361,7 +361,7 @@ private fun SettingsBackupScreenContent(
         onPositiveClick = {
             restoreBackup(backupFile ?: return@MissingSourcesDialog)
         },
-        onNegativeClick = stopRestore
+        onNegativeClick = stopRestore,
     )
 }
 
@@ -370,7 +370,7 @@ private fun MissingSourcesDialog(
     state: MaterialDialogState,
     missingSources: ImmutableList<String>,
     onPositiveClick: () -> Unit,
-    onNegativeClick: () -> Unit
+    onNegativeClick: () -> Unit,
 ) {
     MaterialDialog(
         state,
@@ -378,7 +378,7 @@ private fun MissingSourcesDialog(
             positiveButton(stringResource(MR.strings.action_ok), onClick = onPositiveClick)
             negativeButton(stringResource(MR.strings.action_cancel), onClick = onNegativeClick)
         },
-        properties = getMaterialDialogProperties()
+        properties = getMaterialDialogProperties(),
     ) {
         title(stringResource(MR.strings.missing_sources))
         Box {
@@ -388,7 +388,7 @@ private fun MissingSourcesDialog(
                 rememberScrollbarAdapter(listState),
                 Modifier.align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .scrollbarPadding()
+                    .scrollbarPadding(),
             )
         }
     }
@@ -399,13 +399,13 @@ private fun PreferenceFile(
     title: String,
     subtitle: String,
     status: Status,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     PreferenceRow(
         title = title,
         onClick = onClick,
         enabled = status !is Status.InProgress,
-        subtitle = subtitle
+        subtitle = subtitle,
     ) {
         val modifier = Modifier.align(Alignment.Center)
             .size(24.dp)
@@ -413,7 +413,7 @@ private fun PreferenceFile(
             if (status.progress != null && !status.progress.isNaN()) {
                 CircularProgressIndicator(
                     progress = status.progress,
-                    modifier = modifier
+                    modifier = modifier,
                 )
             } else {
                 CircularProgressIndicator(modifier)
@@ -424,12 +424,12 @@ private fun PreferenceFile(
                     Icons.Rounded.Warning,
                     contentDescription = null,
                     modifier = modifier,
-                    tint = Color.Red
+                    tint = Color.Red,
                 )
                 Status.Success -> Icon(
                     Icons.Rounded.Check,
                     contentDescription = null,
-                    modifier = modifier
+                    modifier = modifier,
                 )
                 else -> Unit
             }

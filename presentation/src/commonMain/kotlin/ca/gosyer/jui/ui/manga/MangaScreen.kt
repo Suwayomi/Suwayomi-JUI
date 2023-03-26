@@ -57,7 +57,7 @@ class MangaScreen(private val mangaId: Long) : Screen {
             clearSelection = vm::clearSelection,
             downloadChapters = vm::downloadChapters,
             loadChapters = vm::loadChapters,
-            loadManga = vm::loadManga
+            loadManga = vm::loadManga,
         )
     }
 }

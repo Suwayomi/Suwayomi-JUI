@@ -74,7 +74,7 @@ fun MainMenu() {
                 confirmExit &&
                     navigator.size == 1 &&
                     navigator.lastItem::class == vm.startScreen.toScreenClazz() &&
-                    !exitConfirmed
+                    !exitConfirmed,
             ) {
                 exitConfirmed = true
                 vm.confirmExitToast()
@@ -85,7 +85,7 @@ fun MainMenu() {
 
 @Composable
 fun SkinnyMainMenu(
-    navigator: Navigator
+    navigator: Navigator,
 ) {
     WithBottomNav(navigator) {
         MainWindow(navigator, Modifier)
@@ -96,7 +96,7 @@ fun SkinnyMainMenu(
 @Composable
 fun WideMainMenu(
     navigator: Navigator,
-    controller: DisplayController
+    controller: DisplayController,
 ) {
     Box {
         val startPadding by animateDpAsState(
@@ -105,7 +105,7 @@ fun WideMainMenu(
             } else {
                 0.dp
             },
-            animationSpec = tween(SIDE_MENU_EXPAND_DURATION)
+            animationSpec = tween(SIDE_MENU_EXPAND_DURATION),
         )
         if (startPadding != 0.dp) {
             SideMenu(Modifier.width(200.dp), controller, navigator)

@@ -54,7 +54,7 @@ interface PreferenceStore {
         key: String,
         defaultValue: T,
         serializer: (T) -> String,
-        deserializer: (String) -> T
+        deserializer: (String) -> T,
     ): Preference<T>
 
     /**
@@ -64,7 +64,7 @@ interface PreferenceStore {
         key: String,
         defaultValue: T,
         serializer: KSerializer<T>,
-        serializersModule: SerializersModule = EmptySerializersModule()
+        serializersModule: SerializersModule = EmptySerializersModule(),
     ): Preference<T>
 }
 
@@ -73,7 +73,7 @@ interface PreferenceStore {
  */
 inline fun <reified T : Enum<T>> PreferenceStore.getEnum(
     key: String,
-    defaultValue: T
+    defaultValue: T,
 ): Preference<T> {
     return getObject(
         key,
@@ -85,6 +85,6 @@ inline fun <reified T : Enum<T>> PreferenceStore.getEnum(
             } catch (e: IllegalArgumentException) {
                 defaultValue
             }
-        }
+        },
     )
 }

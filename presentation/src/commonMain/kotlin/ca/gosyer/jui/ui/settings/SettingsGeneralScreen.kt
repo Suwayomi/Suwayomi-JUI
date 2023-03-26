@@ -74,7 +74,7 @@ class SettingsGeneralScreen : Screen {
             language = vm.language,
             languageChoices = vm.getLanguageChoices(),
             dateFormat = vm.dateFormat,
-            dateFormatChoices = vm.getDateChoices()
+            dateFormatChoices = vm.getDateChoices(),
         )
     }
 }
@@ -82,7 +82,7 @@ class SettingsGeneralScreen : Screen {
 class SettingsGeneralViewModel @Inject constructor(
     private val dateHandler: DateHandler,
     uiPreferences: UiPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
 
     val startScreen = uiPreferences.startScreen().asStateFlow()
@@ -98,7 +98,7 @@ class SettingsGeneralViewModel @Inject constructor(
         StartScreen.Library to stringResource(MR.strings.location_library),
         StartScreen.Updates to stringResource(MR.strings.location_updates),
         StartScreen.Sources to stringResource(MR.strings.location_sources),
-        StartScreen.Extensions to stringResource(MR.strings.location_extensions)
+        StartScreen.Extensions to stringResource(MR.strings.location_extensions),
     )
 
     @Composable
@@ -145,17 +145,17 @@ fun SettingsGeneralScreenContent(
     language: PreferenceMutableStateFlow<String>,
     languageChoices: ImmutableMap<String, String>,
     dateFormat: PreferenceMutableStateFlow<String>,
-    dateFormatChoices: ImmutableMap<String, String>
+    dateFormatChoices: ImmutableMap<String, String>,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.settings_general_screen))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -164,21 +164,21 @@ fun SettingsGeneralScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 item {
                     ChoicePreference(
                         preference = startScreen,
                         title = stringResource(MR.strings.start_screen),
-                        choices = startScreenChoices
+                        choices = startScreenChoices,
                     )
                 }
                 item {
                     SwitchPreference(
                         preference = confirmExit,
-                        title = stringResource(MR.strings.confirm_exit)
+                        title = stringResource(MR.strings.confirm_exit),
                     )
                 }
                 item {
@@ -188,14 +188,14 @@ fun SettingsGeneralScreenContent(
                     ChoicePreference(
                         preference = language,
                         title = stringResource(MR.strings.language),
-                        choices = languageChoices
+                        choices = languageChoices,
                     )
                 }
                 item {
                     ChoicePreference(
                         preference = dateFormat,
                         title = stringResource(MR.strings.date_format),
-                        choices = dateFormatChoices
+                        choices = dateFormatChoices,
                     )
                 }
             }
@@ -207,10 +207,10 @@ fun SettingsGeneralScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }

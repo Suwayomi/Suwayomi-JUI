@@ -15,11 +15,11 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 internal actual fun startLibraryUpdatesService(
     contextWrapper: ContextWrapper,
     libraryUpdatesService: LibraryUpdateService,
-    actions: WebsocketService.Actions
+    actions: WebsocketService.Actions,
 ) {
     val intent = Intent(
         contextWrapper,
-        Class.forName("ca.gosyer.jui.android.data.library.AndroidLibraryService")
+        Class.forName("ca.gosyer.jui.android.data.library.AndroidLibraryService"),
     ).apply {
         action = actions.name
     }

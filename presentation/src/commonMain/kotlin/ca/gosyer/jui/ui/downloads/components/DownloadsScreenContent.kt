@@ -81,13 +81,13 @@ fun DownloadsScreenContent(
     moveDownloadUp: (Chapter) -> Unit,
     moveDownloadDown: (Chapter) -> Unit,
     moveDownloadToTop: (Chapter) -> Unit,
-    moveDownloadToBottom: (Chapter) -> Unit
+    moveDownloadToBottom: (Chapter) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(
@@ -97,11 +97,11 @@ fun DownloadsScreenContent(
                         downloadStatus = downloadStatus,
                         startDownloading = startDownloading,
                         pauseDownloading = pauseDownloading,
-                        clearQueue = clearQueue
+                        clearQueue = clearQueue,
                     )
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         Box(Modifier.padding(paddingValues)) {
             val state = rememberLazyListState()
@@ -110,9 +110,9 @@ fun DownloadsScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 items(downloadQueue, key = { "${it.mangaId}-${it.chapterIndex}" }) {
                     DownloadsItem(
@@ -123,7 +123,7 @@ fun DownloadsScreenContent(
                         onClickMoveUp = moveDownloadUp,
                         onClickMoveDown = moveDownloadDown,
                         onClickMoveToTop = moveDownloadToTop,
-                        onClickMoveToBottom = moveDownloadToBottom
+                        onClickMoveToBottom = moveDownloadToBottom,
                     )
                 }
             }
@@ -135,10 +135,10 @@ fun DownloadsScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }
@@ -153,13 +153,13 @@ fun DownloadsItem(
     onClickMoveUp: (Chapter) -> Unit,
     onClickMoveDown: (Chapter) -> Unit,
     onClickMoveToTop: (Chapter) -> Unit,
-    onClickMoveToBottom: (Chapter) -> Unit
+    onClickMoveToBottom: (Chapter) -> Unit,
 ) {
     MangaListItem(
         modifier = modifier
             .height(96.dp)
             .fillMaxWidth()
-            .padding(end = 4.dp)
+            .padding(end = 4.dp),
     ) {
         MangaListItemImage(
             modifier = Modifier
@@ -169,16 +169,16 @@ fun DownloadsItem(
                 .clip(MaterialTheme.shapes.medium)
                 .clickable { onClickCover() },
             data = item.manga,
-            contentDescription = item.manga.title
+            contentDescription = item.manga.title,
         )
         MangaListItemColumn(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 16.dp)
+                .padding(start = 16.dp),
         ) {
             MangaListItemTitle(
                 text = item.manga.title,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
             val progress = if (item.chapter.pageCount != null && item.chapter.pageCount != -1) {
                 " - " + "${(item.chapter.pageCount!! * item.progress).toInt()}/${item.chapter.pageCount}"
@@ -186,17 +186,17 @@ fun DownloadsItem(
                 ""
             }
             MangaListItemSubtitle(
-                text = item.chapter.name + progress
+                text = item.chapter.name + progress,
             )
             Spacer(Modifier.height(4.dp))
             val animatedProgress by animateFloatAsState(
                 targetValue = item.progress,
-                animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
             )
             LinearProgressIndicator(
                 animatedProgress,
                 Modifier.fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                    .padding(bottom = 8.dp),
             )
         }
         DropdownIconButton(
@@ -217,11 +217,11 @@ fun DownloadsItem(
                 DropdownMenuItem(onClick = { onClickMoveToBottom(item.chapter) }) {
                     Text(stringResource(MR.strings.action_move_to_bottom))
                 }
-            }
+            },
         ) {
             Icon(
                 Icons.Rounded.MoreVert,
-                null
+                null,
             )
         }
         Spacer(Modifier.width(16.dp))
@@ -234,22 +234,22 @@ private fun getActionItems(
     downloadStatus: DownloaderStatus,
     startDownloading: () -> Unit,
     pauseDownloading: () -> Unit,
-    clearQueue: () -> Unit
+    clearQueue: () -> Unit,
 ): ImmutableList<ActionItem> {
     return listOf(
         if (downloadStatus == DownloaderStatus.Started) {
             ActionItem(
                 stringResource(MR.strings.action_pause),
                 Icons.Rounded.Pause,
-                doAction = pauseDownloading
+                doAction = pauseDownloading,
             )
         } else {
             ActionItem(
                 stringResource(MR.strings.action_continue),
                 Icons.Rounded.PlayArrow,
-                doAction = startDownloading
+                doAction = startDownloading,
             )
         },
-        ActionItem(stringResource(MR.strings.action_clear_queue), Icons.Rounded.ClearAll, doAction = clearQueue)
+        ActionItem(stringResource(MR.strings.action_clear_queue), Icons.Rounded.ClearAll, doAction = clearQueue),
     ).toImmutableList()
 }

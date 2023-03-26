@@ -28,7 +28,7 @@ fun getMaterialDialogProperties(
     size: DpSize = DpSize(400.dp, 300.dp),
     title: String = BuildKonfig.NAME,
     icon: Painter = MR.images.icon.toPainter(),
-    resizable: Boolean = true
+    resizable: Boolean = true,
 ): MaterialDialogProperties {
     return MaterialDialogProperties(
         dismissOnBackPress = dismissOnBackPress,
@@ -39,6 +39,6 @@ fun getMaterialDialogProperties(
         size = size,
         title = title,
         icon = icon,
-        resizable = resizable
+        resizable = resizable,
     )
 }

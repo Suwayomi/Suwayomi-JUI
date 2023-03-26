@@ -33,7 +33,7 @@ fun LibraryPager(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     if (categories.isEmpty()) return
 
@@ -51,7 +51,7 @@ fun LibraryPager(
                 showUnread = showUnread,
                 showDownloaded = showDownloaded,
                 showLanguage = showLanguage,
-                showLocal = showLocal
+                showLocal = showLocal,
             )
         }
     }
@@ -68,7 +68,7 @@ private fun LibraryLoadedPage(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     val items by library.items.collectAsState()
     when (displayMode) {
@@ -81,7 +81,7 @@ private fun LibraryLoadedPage(
             showUnread = showUnread,
             showDownloaded = showDownloaded,
             showLanguage = showLanguage,
-            showLocal = showLocal
+            showLocal = showLocal,
         )
         DisplayMode.ComfortableGrid -> LibraryMangaComfortableGrid(
             library = items,
@@ -92,7 +92,7 @@ private fun LibraryLoadedPage(
             showUnread = showUnread,
             showDownloaded = showDownloaded,
             showLanguage = showLanguage,
-            showLocal = showLocal
+            showLocal = showLocal,
         )
         DisplayMode.CoverOnlyGrid -> LibraryMangaCoverOnlyGrid(
             library = items,
@@ -103,7 +103,7 @@ private fun LibraryLoadedPage(
             showUnread = showUnread,
             showDownloaded = showDownloaded,
             showLanguage = showLanguage,
-            showLocal = showLocal
+            showLocal = showLocal,
         )
         DisplayMode.List -> LibraryMangaList(
             library = items,
@@ -112,7 +112,7 @@ private fun LibraryLoadedPage(
             showUnread = showUnread,
             showDownloaded = showDownloaded,
             showLanguage = showLanguage,
-            showLocal = showLocal
+            showLocal = showLocal,
         )
         else -> Box {}
     }

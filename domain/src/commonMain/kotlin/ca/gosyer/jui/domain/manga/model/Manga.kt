@@ -44,13 +44,13 @@ data class Manga(
     val chapterCount: Int?,
     val lastChapterRead: Chapter? = null,
     val age: Long?,
-    val chaptersAge: Long?
+    val chaptersAge: Long?,
 )
 
 @Serializable
 @Immutable
 data class MangaMeta(
-    val juiReaderMode: String = DEFAULT_READER_MODE
+    val juiReaderMode: String = DEFAULT_READER_MODE,
 ) {
     companion object {
         const val DEFAULT_READER_MODE = "default"
@@ -66,12 +66,12 @@ enum class MangaStatus(@Transient val res: StringResource) {
     LICENSED(MR.strings.status_licensed),
     PUBLISHING_FINISHED(MR.strings.status_publishing_finished),
     CANCELLED(MR.strings.status_cancelled),
-    ON_HIATUS(MR.strings.status_on_hiatus)
+    ON_HIATUS(MR.strings.status_on_hiatus),
 }
 
 @Serializable
 @Stable
 enum class UpdateStrategy {
     ALWAYS_UPDATE,
-    ONLY_FETCH_ONCE
+    ONLY_FETCH_ONCE,
 }

@@ -25,19 +25,19 @@ open class LNavigation : ViewerNavigation() {
     override var regions: List<Region> = listOf(
         Region(
             rect = Rect(0, 33, 33, 66),
-            type = Navigation.PREV
+            type = Navigation.PREV,
         ),
         Region(
             rect = Rect(0, 0, 100, 33),
-            type = Navigation.PREV
+            type = Navigation.PREV,
         ),
         Region(
             rect = Rect(66, 33, 100, 66),
-            type = Navigation.NEXT
+            type = Navigation.NEXT,
         ),
         Region(
             rect = Rect(0, 66, 100, 100),
-            type = Navigation.NEXT
-        )
+            type = Navigation.NEXT,
+        ),
     )
 }

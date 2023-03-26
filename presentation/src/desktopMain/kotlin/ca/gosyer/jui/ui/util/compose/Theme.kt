@@ -31,7 +31,7 @@ fun ThemedWindow(
     alwaysOnTop: Boolean = false,
     onPreviewKeyEvent: (KeyEvent) -> Boolean = { false },
     onKeyEvent: (KeyEvent) -> Boolean = { false },
-    content: @Composable FrameWindowScope.() -> Unit = { }
+    content: @Composable FrameWindowScope.() -> Unit = { },
 ) {
     Window(
         onCloseRequest = onCloseRequest,
@@ -46,7 +46,7 @@ fun ThemedWindow(
         focusable = focusable,
         alwaysOnTop = alwaysOnTop,
         onPreviewKeyEvent = onPreviewKeyEvent,
-        onKeyEvent = onKeyEvent
+        onKeyEvent = onKeyEvent,
     ) {
         AppTheme {
             content()

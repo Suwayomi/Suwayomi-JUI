@@ -21,7 +21,7 @@ actual class DateHandler @Inject constructor() {
             "",
             "MM/dd/yy",
             "dd/MM/yy",
-            "yyyy-MM-dd"
+            "yyyy-MM-dd",
         )
     }
 

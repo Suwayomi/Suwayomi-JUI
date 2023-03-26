@@ -14,5 +14,5 @@ import kotlinx.serialization.Serializable
 enum class FilterState {
     IGNORED,
     INCLUDED,
-    EXCLUDED
+    EXCLUDED,
 }

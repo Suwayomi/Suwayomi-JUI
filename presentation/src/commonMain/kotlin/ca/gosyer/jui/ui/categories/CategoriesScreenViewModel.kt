@@ -33,7 +33,7 @@ class CategoriesScreenViewModel @Inject constructor(
     private val deleteCategory: DeleteCategory,
     private val modifyCategory: ModifyCategory,
     private val reorderCategory: ReorderCategory,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     private var originalCategories = emptyList<Category>()
     private val _categories = MutableStateFlow<ImmutableList<MenuCategory>>(persistentListOf())

@@ -40,7 +40,7 @@ expect fun Modifier.updatesItemModifier(
     bookmarkChapter: (() -> Unit)?,
     unBookmarkChapter: (() -> Unit)?,
     onSelectChapter: (() -> Unit)?,
-    onUnselectChapter: (() -> Unit)?
+    onUnselectChapter: (() -> Unit)?,
 ): Modifier
 
 @Composable
@@ -56,7 +56,7 @@ fun UpdatesItem(
     onClickCover: () -> Unit,
     onClickDownload: (Chapter) -> Unit,
     onClickDeleteDownload: (Chapter) -> Unit,
-    onClickStopDownload: (Chapter) -> Unit
+    onClickStopDownload: (Chapter) -> Unit,
 ) {
     val manga = chapterDownloadItem.manga!!
     val chapter = chapterDownloadItem.chapter
@@ -73,11 +73,11 @@ fun UpdatesItem(
                 bookmarkChapter = { bookmarkChapter(chapter.id) }.takeUnless { chapter.bookmarked },
                 unBookmarkChapter = { unBookmarkChapter(chapter.id) }.takeIf { chapter.bookmarked },
                 onSelectChapter = { onSelectChapter(chapter.id) }.takeUnless { isSelected },
-                onUnselectChapter = { onUnselectChapter(chapter.id) }.takeIf { isSelected }
+                onUnselectChapter = { onUnselectChapter(chapter.id) }.takeIf { isSelected },
             )
             .height(96.dp)
             .fillMaxWidth()
-            .padding(end = 4.dp)
+            .padding(end = 4.dp),
     ) {
         MangaListItemImage(
             modifier = Modifier
@@ -87,30 +87,30 @@ fun UpdatesItem(
                 .clip(MaterialTheme.shapes.medium)
                 .clickable { onClickCover() },
             data = manga,
-            contentDescription = manga.title
+            contentDescription = manga.title,
         )
         val textColor = if (chapter.bookmarked && !chapter.read) {
             MaterialTheme.colors.primary
         } else {
             MaterialTheme.colors.onSurface.copy(
-                alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.medium
+                alpha = if (chapter.read) ContentAlpha.disabled else ContentAlpha.medium,
             )
         }
         MangaListItemColumn(
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 16.dp)
-                .alpha(alpha)
+                .alpha(alpha),
         ) {
             MangaListItemTitle(
                 text = manga.title,
                 bookmarked = chapter.bookmarked,
                 fontWeight = FontWeight.SemiBold,
-                textColor = textColor
+                textColor = textColor,
             )
             MangaListItemSubtitle(
                 text = chapter.name,
-                textColor = textColor
+                textColor = textColor,
             )
         }
 
@@ -118,7 +118,7 @@ fun UpdatesItem(
             chapterDownloadItem,
             onClickDownload,
             onClickStopDownload,
-            onClickDeleteDownload
+            onClickDeleteDownload,
         )
     }
 }

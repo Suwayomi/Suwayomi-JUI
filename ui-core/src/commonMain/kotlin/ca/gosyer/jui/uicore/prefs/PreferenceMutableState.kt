@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.onEach
 class PreferenceMutableStateFlow<T>(
     private val preference: Preference<T>,
     scope: CoroutineScope,
-    private val state: MutableStateFlow<T> = MutableStateFlow(preference.get())
+    private val state: MutableStateFlow<T> = MutableStateFlow(preference.get()),
 ) : MutableStateFlow<T> by state {
 
     init {

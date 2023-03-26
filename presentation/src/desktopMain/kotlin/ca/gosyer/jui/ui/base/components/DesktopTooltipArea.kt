@@ -23,13 +23,13 @@ internal actual fun RealTooltipArea(
     modifier: Modifier,
     delayMillis: Int,
     tooltipPlacement: TooltipPlacement,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     androidx.compose.foundation.TooltipArea(
         tooltip,
         modifier,
         delayMillis,
         tooltipPlacement,
-        content
+        content,
     )
 }

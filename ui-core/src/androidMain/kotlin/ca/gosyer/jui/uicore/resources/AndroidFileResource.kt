@@ -26,7 +26,7 @@ actual fun FileResource.readTextAsync(): State<String?> {
     return produceState<String?>(
         null,
         this.rawResId,
-        context
+        context,
     ) {
         withIOContext {
             value = readText(context)

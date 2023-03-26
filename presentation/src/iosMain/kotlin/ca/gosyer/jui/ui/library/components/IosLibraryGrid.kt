@@ -21,21 +21,21 @@ import ca.gosyer.jui.uicore.resources.stringResource
 
 actual fun Modifier.libraryMangaModifier(
     onClickManga: () -> Unit,
-    onClickRemoveManga: () -> Unit
+    onClickRemoveManga: () -> Unit,
 ): Modifier = composed {
     var expanded by remember { mutableStateOf(false) }
     DropdownMenu(
         expanded,
-        onDismissRequest = { expanded = false }
+        onDismissRequest = { expanded = false },
     ) {
         listOf(
-            stringResource(MR.strings.action_remove_favorite) to onClickRemoveManga
+            stringResource(MR.strings.action_remove_favorite) to onClickRemoveManga,
         ).forEach { (label, onClick) ->
             DropdownMenuItem(
                 onClick = {
                     expanded = false
                     onClick()
-                }
+                },
             ) {
                 Text(text = label)
             }
@@ -46,6 +46,6 @@ actual fun Modifier.libraryMangaModifier(
         onClick = { onClickManga() },
         onLongClick = {
             expanded = true
-        }
+        },
     )
 }

@@ -19,13 +19,13 @@ import org.lighthousegames.logging.logging
 
 class UpdateMangaMeta @Inject constructor(
     private val mangaRepository: MangaRepository,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) {
 
     suspend fun await(
         manga: Manga,
         readerMode: String = manga.meta.juiReaderMode,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(manga, readerMode)
         .catch {
             onError(it)
@@ -35,13 +35,13 @@ class UpdateMangaMeta @Inject constructor(
 
     fun asFlow(
         manga: Manga,
-        readerMode: String = manga.meta.juiReaderMode.decodeURLQueryComponent()
+        readerMode: String = manga.meta.juiReaderMode.decodeURLQueryComponent(),
     ) = flow {
         if (readerMode.encodeURLQueryComponent() != manga.meta.juiReaderMode) {
             mangaRepository.updateMangaMeta(
                 manga.id,
                 "juiReaderMode",
-                readerMode
+                readerMode,
             ).collect()
             serverListeners.updateManga(manga.id)
         }

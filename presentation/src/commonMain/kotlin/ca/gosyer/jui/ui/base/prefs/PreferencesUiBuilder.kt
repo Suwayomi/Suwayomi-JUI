@@ -96,7 +96,7 @@ fun PreferenceRow(
     onLongClick: () -> Unit = {},
     subtitle: String? = null,
     enabled: Boolean = true,
-    action: @Composable (BoxScope.() -> Unit)? = null
+    action: @Composable (BoxScope.() -> Unit)? = null,
 ) {
     val height = if (subtitle != null) 72.dp else 56.dp
 
@@ -104,19 +104,19 @@ fun PreferenceRow(
     if (enabled) {
         modifier = modifier.combinedClickable(
             onLongClick = onLongClick,
-            onClick = onClick
+            onClick = onClick,
         )
     }
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         if (icon != null) {
             Icon(
                 imageVector = icon,
                 modifier = Modifier.padding(start = 16.dp).size(24.dp),
                 tint = MaterialTheme.colors.primary,
-                contentDescription = null
+                contentDescription = null,
             )
         }
         Column(Modifier.padding(horizontal = 16.dp).weight(1f)) {
@@ -129,7 +129,7 @@ fun PreferenceRow(
                     LocalContentColor.current
                 } else {
                     LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
-                }
+                },
             )
             if (subtitle != null) {
                 Text(
@@ -139,7 +139,7 @@ fun PreferenceRow(
                     } else {
                         LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
                     },
-                    style = MaterialTheme.typography.subtitle1
+                    style = MaterialTheme.typography.subtitle1,
                 )
             }
         }
@@ -158,7 +158,7 @@ fun SwitchPreference(
     subtitle: String? = null,
     icon: ImageVector? = null,
     changeListener: () -> Unit = {},
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     PreferenceRow(
         title = title,
@@ -172,7 +172,7 @@ fun SwitchPreference(
             preference.value = !preference.value
             changeListener()
         },
-        enabled = enabled
+        enabled = enabled,
     )
 }
 
@@ -186,7 +186,7 @@ fun EditTextPreference(
     enabled: Boolean = true,
     maxLines: Int = 1,
     singleLine: Boolean = true,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     val dialogState = rememberMaterialDialogState()
     PreferenceRow(
@@ -194,7 +194,7 @@ fun EditTextPreference(
         subtitle = subtitle,
         icon = icon,
         onClick = dialogState::show,
-        enabled = enabled
+        enabled = enabled,
     )
     val value by preference.collectAsState()
     MaterialDialog(
@@ -205,7 +205,7 @@ fun EditTextPreference(
             }
             negativeButton(stringResource(MR.strings.action_cancel))
         },
-        properties = getMaterialDialogProperties()
+        properties = getMaterialDialogProperties(),
     ) {
         title(title)
         input(
@@ -216,7 +216,7 @@ fun EditTextPreference(
             onInput = { preference.value = it },
             maxLines = maxLines,
             singleLine = singleLine,
-            modifier = Modifier.keyboardHandler(singleLine, enterAction = { it.moveFocus(FocusDirection.Next) })
+            modifier = Modifier.keyboardHandler(singleLine, enterAction = { it.moveFocus(FocusDirection.Next) }),
         )
     }
 }
@@ -228,7 +228,7 @@ fun <Key> ChoicePreference(
     title: String,
     subtitle: String? = null,
     changeListener: () -> Unit = {},
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     val prefValue by preference.collectAsState()
     val dialogState = rememberMaterialDialogState()
@@ -238,7 +238,7 @@ fun <Key> ChoicePreference(
         onClick = {
             dialogState.show()
         },
-        enabled = enabled
+        enabled = enabled,
     )
     ChoiceDialog(
         state = dialogState,
@@ -248,7 +248,7 @@ fun <Key> ChoicePreference(
         onSelected = { selected ->
             preference.value = selected
             changeListener()
-        }
+        },
     )
 }
 
@@ -260,7 +260,7 @@ fun <T> ChoiceDialog(
     onCloseRequest: () -> Unit = {},
     onSelected: (T) -> Unit,
     title: String,
-    buttons: @Composable MaterialDialogButtons.() -> Unit = { }
+    buttons: @Composable MaterialDialogButtons.() -> Unit = { },
 ) {
     MaterialDialog(
         state,
@@ -269,7 +269,7 @@ fun <T> ChoiceDialog(
         onCloseRequest = {
             state.hide()
             onCloseRequest()
-        }
+        },
     ) {
         title(title)
         Box {
@@ -282,14 +282,14 @@ fun <T> ChoiceDialog(
                 onChoiceChange = {
                     onSelected(items[it].first)
                     submit()
-                }
+                },
             )
             Box(Modifier.matchParentSize().height(IntrinsicSize.Min)) {
                 VerticalScrollbar(
                     rememberScrollbarAdapter(listState),
                     Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .scrollbarPadding()
+                        .scrollbarPadding(),
                 )
             }
         }
@@ -303,7 +303,7 @@ fun <T> MultiSelectDialog(
     selected: ImmutableList<T>?,
     onCloseRequest: () -> Unit = {},
     onFinished: (ImmutableList<T>) -> Unit,
-    title: String
+    title: String,
 ) {
     MaterialDialog(
         state,
@@ -315,7 +315,7 @@ fun <T> MultiSelectDialog(
         onCloseRequest = {
             state.hide()
             onCloseRequest()
-        }
+        },
     ) {
         title(title)
         Box {
@@ -330,14 +330,14 @@ fun <T> MultiSelectDialog(
                     .orEmpty(),
                 onCheckedChange = { indexes ->
                     onFinished(indexes.map { items[it].first }.toImmutableList())
-                }
+                },
             )
             Box(Modifier.matchParentSize().height(IntrinsicSize.Min)) {
                 VerticalScrollbar(
                     rememberScrollbarAdapter(listState),
                     Modifier.align(Alignment.CenterEnd)
                         .fillMaxHeight()
-                        .scrollbarPadding()
+                        .scrollbarPadding(),
                 )
             }
         }
@@ -350,7 +350,7 @@ fun ColorPreference(
     title: String,
     subtitle: String? = null,
     enabled: Boolean = true,
-    unsetColor: Color = Color.Unspecified
+    unsetColor: Color = Color.Unspecified,
 ) {
     val initialColor = preference.value.takeOrElse { unsetColor }
     val dialogState = rememberMaterialDialogState()
@@ -371,11 +371,11 @@ fun ColorPreference(
                         .size(32.dp)
                         .clip(CircleShape)
                         .background(color = initialColor)
-                        .border(BorderStroke(1.dp, borderColor), CircleShape)
+                        .border(BorderStroke(1.dp, borderColor), CircleShape),
                 )
             }
         },
-        enabled = enabled
+        enabled = enabled,
     )
     ColorPickerDialog(
         state = dialogState,
@@ -383,7 +383,7 @@ fun ColorPreference(
         onSelected = {
             preference.value = it
         },
-        initialColor = initialColor
+        initialColor = initialColor,
     )
 }
 
@@ -397,7 +397,7 @@ fun ExpandablePreference(
     title: String,
     startExpanded: Boolean = false,
     onExpandedChanged: ((Boolean) -> Unit)? = null,
-    expandedContent: @Composable ColumnScope.() -> Unit
+    expandedContent: @Composable ColumnScope.() -> Unit,
 ) {
     var expanded by remember { mutableStateOf(startExpanded) }
     LaunchedEffect(expanded) {
@@ -425,7 +425,7 @@ fun ExpandablePreference(
     Surface(
         elevation = elevation,
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
     ) {
         Column {
             Box(Modifier.clickable { expanded = !expanded }) {
@@ -433,20 +433,20 @@ fun ExpandablePreference(
                     imageVector = Icons.Rounded.ArrowDropUp,
                     contentDescription = "Expandable Arrow",
                     modifier = Modifier.rotate(arrowRotationDegree)
-                        .align(Alignment.CenterStart)
+                        .align(Alignment.CenterStart),
                 )
                 Text(
                     text = title,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
             ExpandableContent(
                 visible = expanded,
                 initiallyVisible = expanded,
-                expandedContent = expandedContent
+                expandedContent = expandedContent,
             )
         }
     }
@@ -456,14 +456,14 @@ fun ExpandablePreference(
 private fun ExpandableContent(
     visible: Boolean = true,
     initiallyVisible: Boolean = false,
-    expandedContent: @Composable ColumnScope.() -> Unit
+    expandedContent: @Composable ColumnScope.() -> Unit,
 ) {
     val enterFadeIn = remember {
         fadeIn(
             animationSpec = TweenSpec(
                 durationMillis = FADE_IN_ANIMATION_DURATION,
-                easing = FastOutLinearInEasing
-            )
+                easing = FastOutLinearInEasing,
+            ),
         )
     }
     val enterExpand = remember {
@@ -473,8 +473,8 @@ private fun ExpandableContent(
         fadeOut(
             animationSpec = TweenSpec(
                 durationMillis = FADE_OUT_ANIMATION_DURATION,
-                easing = LinearOutSlowInEasing
-            )
+                easing = LinearOutSlowInEasing,
+            ),
         )
     }
     val exitCollapse = remember {
@@ -485,11 +485,11 @@ private fun ExpandableContent(
             .apply { targetState = visible },
         modifier = Modifier,
         enter = enterExpand + enterFadeIn,
-        exit = exitCollapse + exitFadeOut
+        exit = exitCollapse + exitFadeOut,
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
-            content = expandedContent
+            content = expandedContent,
         )
     }
 }

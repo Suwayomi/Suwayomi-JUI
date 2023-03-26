@@ -15,7 +15,7 @@ import ca.gosyer.jui.domain.ui.model.WindowSettings
 data class WindowGet(
     val offset: WindowPosition,
     val size: DpSize,
-    val placement: WindowPlacement
+    val placement: WindowPlacement,
 ) {
     companion object {
         fun from(windowSettings: WindowSettings): WindowGet {
@@ -25,13 +25,13 @@ data class WindowGet(
                     return WindowGet(
                         WindowPosition.PlatformDefault,
                         DpSize(800.dp, 600.dp),
-                        WindowPlacement.Maximized
+                        WindowPlacement.Maximized,
                     )
                 } else if (fullscreen == true) {
                     return WindowGet(
                         WindowPosition.PlatformDefault,
                         DpSize(800.dp, 600.dp),
-                        WindowPlacement.Fullscreen
+                        WindowPlacement.Fullscreen,
                     )
                 }
 
@@ -44,7 +44,7 @@ data class WindowGet(
                 WindowGet(
                     offset,
                     size,
-                    WindowPlacement.Floating
+                    WindowPlacement.Floating,
                 )
             }
         }

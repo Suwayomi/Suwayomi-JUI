@@ -29,26 +29,26 @@ class ServerListeners @Inject constructor() {
     private fun <T> Flow<T>.startWith(value: T) = onStart { emit(value) }
 
     private val _mangaListener = MutableSharedFlow<List<Long>>(
-        extraBufferCapacity = Channel.UNLIMITED
+        extraBufferCapacity = Channel.UNLIMITED,
     )
     val mangaListener = _mangaListener.asSharedFlow()
 
     private val _chapterIndexesListener = MutableSharedFlow<Pair<Long, List<Int>?>>(
-        extraBufferCapacity = Channel.UNLIMITED
+        extraBufferCapacity = Channel.UNLIMITED,
     )
     val chapterIndexesListener = _chapterIndexesListener.asSharedFlow()
 
     private val _chapterIdsListener = MutableSharedFlow<Pair<Long?, List<Long>>>(
-        extraBufferCapacity = Channel.UNLIMITED
+        extraBufferCapacity = Channel.UNLIMITED,
     )
     val chapterIdsListener = _chapterIdsListener.asSharedFlow()
 
     private val categoryMangaListener = MutableSharedFlow<Long>(
-        extraBufferCapacity = Channel.UNLIMITED
+        extraBufferCapacity = Channel.UNLIMITED,
     )
 
     private val extensionListener = MutableSharedFlow<List<String>>(
-        extraBufferCapacity = Channel.UNLIMITED
+        extraBufferCapacity = Channel.UNLIMITED,
     )
 
     fun <T> combineMangaUpdates(flow: Flow<T>, predate: (suspend (List<Long>) -> Boolean)? = null) =
@@ -86,7 +86,7 @@ class ServerListeners @Inject constructor() {
     fun <T> combineChapters(
         flow: Flow<T>,
         indexPredate: (suspend (Long, List<Int>?) -> Boolean)? = null,
-        idPredate: (suspend (Long?, List<Long>) -> Boolean)? = null
+        idPredate: (suspend (Long?, List<Long>) -> Boolean)? = null,
     ): Flow<T> {
         val indexListener = if (indexPredate != null) {
             _chapterIndexesListener.filter { indexPredate(it.first, it.second) }.startWith(Unit)

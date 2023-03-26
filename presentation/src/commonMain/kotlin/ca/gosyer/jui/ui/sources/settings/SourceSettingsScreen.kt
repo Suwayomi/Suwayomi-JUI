@@ -24,7 +24,7 @@ class SourceSettingsScreen(private val sourceId: Long) : Screen {
             sourceSettingsViewModel(SourceSettingsScreenViewModel.Params(sourceId))
         }
         SourceSettingsScreenContent(
-            settings = vm.sourceSettings.collectAsState().value
+            settings = vm.sourceSettings.collectAsState().value,
         )
     }
 }

@@ -17,21 +17,21 @@ import ca.gosyer.jui.uicore.resources.stringResource
 
 actual fun Modifier.libraryMangaModifier(
     onClickManga: () -> Unit,
-    onClickRemoveManga: () -> Unit
+    onClickRemoveManga: () -> Unit,
 ): Modifier = this
     .onClick(onClick = onClickManga)
     .onRightClickContextMenu(
         items = {
             getContextItems(onClickRemoveManga)
-        }
+        },
     )
 
 @Composable
 @Stable
 private fun getContextItems(
-    onClickRemoveManga: () -> Unit
+    onClickRemoveManga: () -> Unit,
 ): List<ContextMenuItem> {
     return listOf(
-        ContextMenuItem(stringResource(MR.strings.action_remove_favorite), onClickRemoveManga)
+        ContextMenuItem(stringResource(MR.strings.action_remove_favorite), onClickRemoveManga),
     )
 }

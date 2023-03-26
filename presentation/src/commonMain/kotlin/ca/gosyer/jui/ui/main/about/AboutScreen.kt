@@ -42,7 +42,7 @@ class AboutScreen : Screen {
             checkForUpdates = vm::checkForUpdates,
             openSourceLicenses = {
                 navigator push LicensesScreen()
-            }
+            },
         )
     }
 }

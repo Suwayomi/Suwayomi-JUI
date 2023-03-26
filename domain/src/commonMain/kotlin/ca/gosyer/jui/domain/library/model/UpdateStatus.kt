@@ -14,5 +14,5 @@ import kotlinx.serialization.Serializable
 @Immutable
 data class UpdateStatus(
     val statusMap: Map<JobStatus, List<Manga>>,
-    val running: Boolean
+    val running: Boolean,
 )

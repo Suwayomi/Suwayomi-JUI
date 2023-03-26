@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 actual class ReaderLauncher(private val context: Context) {
     actual fun launch(
         chapterIndex: Int,
-        mangaId: Long
+        mangaId: Long,
     ) {
         Intent(context, Class.forName("ca.gosyer.jui.android.ReaderActivity")).apply {
             putExtra("manga", mangaId)

@@ -49,7 +49,7 @@ class UpdatesScreenViewModel @Inject constructor(
     private val batchChapterDownload: BatchChapterDownload,
     private val updateLibrary: UpdateLibrary,
     private val updatesPager: UpdatesPager,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
 
     private val _isLoading = MutableStateFlow(true)
@@ -83,7 +83,7 @@ class UpdatesScreenViewModel @Inject constructor(
             },
             onError = {
                 toast(it.message.orEmpty())
-            }
+            },
         )
         updates
             .map { updates ->
@@ -109,7 +109,7 @@ class UpdatesScreenViewModel @Inject constructor(
         updatesPager.loadNextPage(
             onError = {
                 toast(it.message.orEmpty())
-            }
+            },
         )
     }
 

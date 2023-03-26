@@ -30,7 +30,7 @@ class AboutViewModel @Inject constructor(
     private val dateHandler: DateHandler,
     private val aboutServer: AboutServer,
     private val updateChecker: UpdateChecker,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
 
     private val _aboutHolder = MutableStateFlow<About?>(null)

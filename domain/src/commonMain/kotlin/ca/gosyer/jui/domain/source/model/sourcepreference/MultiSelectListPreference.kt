@@ -26,6 +26,6 @@ data class MultiSelectListPreference(override val props: MultiSelectListProps) :
         val dialogTitle: String?,
         val dialogMessage: String?,
         val entries: List<String>,
-        val entryValues: List<String>
+        val entryValues: List<String>,
     ) : Props<List<String>?>
 }

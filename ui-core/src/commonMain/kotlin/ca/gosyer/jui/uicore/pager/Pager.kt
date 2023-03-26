@@ -49,7 +49,7 @@ fun VerticalPager(
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     userScrollEnabled: Boolean = true,
     reverseLayout: Boolean = false,
-    content: @Composable BoxScope.(page: Int) -> Unit
+    content: @Composable BoxScope.(page: Int) -> Unit,
 ) {
     Pager(
         count = count,
@@ -61,7 +61,7 @@ fun VerticalPager(
         horizontalAlignment = horizontalAlignment,
         userScrollEnabled = userScrollEnabled,
         reverseLayout = reverseLayout,
-        content = content
+        content = content,
     )
 }
 
@@ -75,7 +75,7 @@ fun HorizontalPager(
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     userScrollEnabled: Boolean = true,
     reverseLayout: Boolean = false,
-    content: @Composable BoxScope.(page: Int) -> Unit
+    content: @Composable BoxScope.(page: Int) -> Unit,
 ) {
     Pager(
         count = count,
@@ -87,7 +87,7 @@ fun HorizontalPager(
         verticalAlignment = verticalAlignment,
         userScrollEnabled = userScrollEnabled,
         reverseLayout = reverseLayout,
-        content = content
+        content = content,
     )
 }
 
@@ -103,7 +103,7 @@ private fun Pager(
     reverseLayout: Boolean,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-    content: @Composable BoxScope.(page: Int) -> Unit
+    content: @Composable BoxScope.(page: Int) -> Unit,
 ) {
     LaunchedEffect(count) {
         state.updateCurrentPageBasedOnLazyListState()
@@ -124,16 +124,16 @@ private fun Pager(
             verticalArrangement = Arrangement.aligned(verticalAlignment),
             userScrollEnabled = userScrollEnabled,
             reverseLayout = reverseLayout,
-            flingBehavior = rememberLazyListSnapFlingBehavior(lazyListState = state.lazyListState)
+            flingBehavior = rememberLazyListSnapFlingBehavior(lazyListState = state.lazyListState),
         ) {
             items(
                 count = count,
-                key = key
+                key = key,
             ) { page ->
                 Box(
                     modifier = Modifier
                         .fillParentMaxHeight()
-                        .wrapContentSize()
+                        .wrapContentSize(),
                 ) {
                     content(this, page)
                 }
@@ -148,16 +148,16 @@ private fun Pager(
             horizontalArrangement = Arrangement.aligned(horizontalAlignment),
             userScrollEnabled = userScrollEnabled,
             reverseLayout = reverseLayout,
-            flingBehavior = rememberLazyListSnapFlingBehavior(lazyListState = state.lazyListState)
+            flingBehavior = rememberLazyListSnapFlingBehavior(lazyListState = state.lazyListState),
         ) {
             items(
                 count = count,
-                key = key
+                key = key,
             ) { page ->
                 Box(
                     modifier = Modifier
                         .fillParentMaxWidth()
-                        .wrapContentSize()
+                        .wrapContentSize(),
                 ) {
                     content(this, page)
                 }
@@ -168,14 +168,14 @@ private fun Pager(
 
 @Composable
 fun rememberPagerState(
-    initialPage: Int = 0
+    initialPage: Int = 0,
 ) = rememberSaveable(saver = PagerState.Saver) {
     PagerState(currentPage = initialPage)
 }
 
 @Stable
 class PagerState(
-    currentPage: Int = 0
+    currentPage: Int = 0,
 ) {
     init { check(currentPage >= 0) { "currentPage cannot be less than zero" } }
 
@@ -198,7 +198,7 @@ class PagerState(
                 val start = maxOf(it.offset, 0)
                 val end = minOf(
                     it.offset + it.size,
-                    layoutInfo.viewportEndOffset - layoutInfo.afterContentPadding
+                    layoutInfo.viewportEndOffset - layoutInfo.afterContentPadding,
                 )
                 end - start
             }
@@ -222,7 +222,7 @@ class PagerState(
     companion object {
         val Saver: Saver<PagerState, *> = listSaver(
             save = { listOf(it.currentPage) },
-            restore = { PagerState(it[0]) }
+            restore = { PagerState(it[0]) },
         )
     }
 }
@@ -232,7 +232,7 @@ private fun lazyListSnapLayoutInfoProvider(
     lazyListState: LazyListState,
     positionInLayout: (layoutSize: Float, itemSize: Float) -> Float = { layoutSize, itemSize ->
         layoutSize / 2f - itemSize / 2f
-    }
+    },
 ) = object : SnapLayoutInfoProvider {
 
     private val layoutInfo: LazyListLayoutInfo
@@ -281,7 +281,7 @@ private fun rememberLazyListSnapFlingBehavior(lazyListState: LazyListState): Fli
 private fun calculateDistanceToDesiredSnapPosition(
     layoutInfo: LazyListLayoutInfo,
     item: LazyListItemInfo,
-    positionInLayout: (layoutSize: Float, itemSize: Float) -> Float
+    positionInLayout: (layoutSize: Float, itemSize: Float) -> Float,
 ): Float {
     val containerSize =
         with(layoutInfo) { singleAxisViewportSize - beforeContentPadding - afterContentPadding }

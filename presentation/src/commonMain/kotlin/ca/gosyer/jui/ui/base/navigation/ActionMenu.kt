@@ -48,7 +48,7 @@ sealed class Action {
 data class ActionGroup(
     override val name: String,
     override val icon: ImageVector? = null,
-    val actions: ImmutableList<Action>
+    val actions: ImmutableList<Action>,
 ) : Action()
 
 @Stable
@@ -57,7 +57,7 @@ data class ActionItem(
     override val icon: ImageVector? = null,
     override val overflowMode: OverflowMode = OverflowMode.IF_NECESSARY,
     override val enabled: Boolean = true,
-    val doAction: () -> Unit
+    val doAction: () -> Unit,
 ) : Action() {
     // allow 'calling' the action like a function
     operator fun invoke() = doAction()
@@ -74,7 +74,7 @@ fun ActionMenu(
     items: ImmutableList<Action>,
     numIcons: Int = 3, // includes overflow menu icon; may be overridden by NEVER_OVERFLOW
     menuVisible: MutableState<Boolean> = remember { mutableStateOf(false) },
-    iconItem: @Composable (onClick: () -> Unit, name: String, icon: ImageVector, enabled: Boolean) -> Unit
+    iconItem: @Composable (onClick: () -> Unit, name: String, icon: ImageVector, enabled: Boolean) -> Unit,
 ) {
     if (items.isEmpty()) {
         return
@@ -99,11 +99,11 @@ fun ActionMenu(
                         is ActionGroup -> { { openGroup = item } }
                         is ActionItem -> item.doAction
                     },
-                    enabled = item.enabled
+                    enabled = item.enabled,
                 ) {
                     Text(
                         text = item.name,
-                        color = MaterialTheme.colors.onPrimary.copy(alpha = LocalContentAlpha.current)
+                        color = MaterialTheme.colors.onPrimary.copy(alpha = LocalContentAlpha.current),
                     )
                 }
             }
@@ -115,12 +115,12 @@ fun ActionMenu(
             { menuVisible.value = true },
             stringResource(MR.strings.action_more_actions),
             Icons.Default.MoreVert,
-            true
+            true,
         )
         DropdownMenu(
             expanded = menuVisible.value,
             onDismissRequest = { menuVisible.value = false },
-            offset = DpOffset(8.dp, (-56).dp)
+            offset = DpOffset(8.dp, (-56).dp),
         ) {
             overflowActions.fastForEach { item ->
                 key(item.hashCode()) {
@@ -132,7 +132,7 @@ fun ActionMenu(
                                 is ActionItem -> item()
                             }
                         },
-                        enabled = item.enabled
+                        enabled = item.enabled,
                     ) {
                         // Icon(item.icon, item.name) just have text in the overflow menu
                         Text(item.name)
@@ -144,7 +144,7 @@ fun ActionMenu(
     DropdownMenu(
         openGroup != null,
         onDismissRequest = { openGroup = null },
-        offset = DpOffset(8.dp, (-56).dp)
+        offset = DpOffset(8.dp, (-56).dp),
     ) {
         openGroup?.actions?.fastForEach { item ->
             key(item.hashCode()) {
@@ -158,7 +158,7 @@ fun ActionMenu(
                             }
                         }
                     },
-                    enabled = item.enabled
+                    enabled = item.enabled,
                 ) {
                     // Icon(item.icon, item.name) just have text in the overflow menu
                     Text(item.name)
@@ -170,7 +170,7 @@ fun ActionMenu(
 
 private fun separateIntoIconAndOverflow(
     items: ImmutableList<Action>,
-    numIcons: Int
+    numIcons: Int,
 ): Pair<List<Action>, List<Action>> {
     var (iconCount, overflowCount, preferIconCount) = Triple(0, 0, 0)
     for (item in items) {

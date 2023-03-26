@@ -38,20 +38,20 @@ import ca.gosyer.jui.uicore.image.ImageLoaderImage
 fun GlobalSearchMangaCompactGridItem(
     modifier: Modifier,
     manga: Manga,
-    inLibrary: Boolean
+    inLibrary: Boolean,
 ) {
     Box(
         modifier = Modifier.padding(4.dp)
             .height(200.dp)
             .aspectRatio(mangaAspectRatio, true)
-            .clip(MaterialTheme.shapes.medium) then modifier
+            .clip(MaterialTheme.shapes.medium) then modifier,
     ) {
         ImageLoaderImage(
             manga,
             manga.title,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            filterQuality = FilterQuality.Medium
+            filterQuality = FilterQuality.Medium,
         )
         Box(
             modifier = Modifier
@@ -59,12 +59,12 @@ fun GlobalSearchMangaCompactGridItem(
                 .background(
                     Brush.verticalGradient(
                         0f to Color.Transparent,
-                        1f to Color(0xAA000000)
-                    )
+                        1f to Color(0xAA000000),
+                    ),
                 )
                 .fillMaxHeight(0.33f)
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
         )
         Text(
             modifier = Modifier
@@ -76,17 +76,17 @@ fun GlobalSearchMangaCompactGridItem(
                 color = Color.White,
                 shadow = Shadow(
                     color = Color.Black,
-                    blurRadius = 4f
-                )
+                    blurRadius = 4f,
+                ),
             ),
             fontSize = 12.sp,
             lineHeight = 18.sp,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
         SourceMangaBadges(
             inLibrary = inLibrary,
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(4.dp),
         )
     }
 }

@@ -53,7 +53,7 @@ fun AppTheme(content: @Composable () -> Unit) {
         ExtraColors.WithExtraColors(extraColors) {
             CompositionLocalProvider(
                 LocalScrollbarStyle provides getScrollbarStyle(),
-                content = content
+                content = content,
             )
         }
     }
@@ -61,7 +61,7 @@ fun AppTheme(content: @Composable () -> Unit) {
 
 class AppThemeViewModel @Inject constructor(
     private val uiPreferences: UiPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()
 
@@ -100,7 +100,7 @@ class AppThemeViewModel @Inject constructor(
     private fun getBaseTheme(
         themeMode: ThemeMode,
         lightTheme: Int,
-        darkTheme: Int
+        darkTheme: Int,
     ): Theme {
         fun getTheme(id: Int, isLight: Boolean): Theme {
             return themes.find { it.id == id && it.colors.isLight == isLight }
@@ -121,7 +121,7 @@ class AppThemeViewModel @Inject constructor(
     private fun getMaterialColors(
         baseColors: Colors,
         colorPrimary: Color,
-        colorSecondary: Color
+        colorSecondary: Color,
     ): Colors {
         val primary = colorPrimary.takeOrElse { baseColors.primary }
         val secondary = colorSecondary.takeOrElse { baseColors.secondary }
@@ -131,17 +131,17 @@ class AppThemeViewModel @Inject constructor(
             secondary = secondary,
             secondaryVariant = secondary,
             onPrimary = if (primary.luminance() > 0.5) Color.Black else Color.White,
-            onSecondary = if (secondary.luminance() > 0.5) Color.Black else Color.White
+            onSecondary = if (secondary.luminance() > 0.5) Color.Black else Color.White,
         )
     }
 
     private fun getExtraColors(
         baseExtraColors: ExtraColors,
-        colorTertiary: Color
+        colorTertiary: Color,
     ): ExtraColors {
         val tertiary = colorTertiary.takeOrElse { baseExtraColors.tertiary }
         return baseExtraColors.copy(
-            tertiary = tertiary
+            tertiary = tertiary,
         )
     }
 

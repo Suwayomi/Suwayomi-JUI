@@ -8,5 +8,5 @@ package ca.gosyer.jui.ui.reader.model
 
 enum class MoveTo {
     Previous,
-    Next
+    Next,
 }

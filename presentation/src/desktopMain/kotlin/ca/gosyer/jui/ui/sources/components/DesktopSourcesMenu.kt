@@ -13,13 +13,13 @@ import androidx.compose.ui.input.pointer.PointerButton
 
 actual fun Modifier.sourceSideMenuItem(
     onSourceTabClick: () -> Unit,
-    onSourceCloseTabClick: () -> Unit
+    onSourceCloseTabClick: () -> Unit,
 ): Modifier = this
     .onClick(
         matcher = PointerMatcher.mouse(PointerButton.Primary),
-        onClick = onSourceTabClick
+        onClick = onSourceTabClick,
     )
     .onClick(
         matcher = PointerMatcher.mouse(PointerButton.Tertiary),
-        onClick = onSourceCloseTabClick
+        onClick = onSourceCloseTabClick,
     )

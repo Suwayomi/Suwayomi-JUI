@@ -29,7 +29,7 @@ actual class ReaderLauncher {
 
     actual fun launch(
         chapterIndex: Int,
-        mangaId: Long
+        mangaId: Long,
     ) {
         isOpen = chapterIndex to mangaId
     }
@@ -42,7 +42,7 @@ actual class ReaderLauncher {
             isOpen?.let { (chapterIndex, mangaId) ->
                 launchApplication {
                     val windowState = rememberWindowState(
-                        position = WindowPosition.Aligned(Alignment.Center)
+                        position = WindowPosition.Aligned(Alignment.Center),
                     )
                     val icon = painterResource("icon.png")
                     CompositionLocalProvider(localParams) {
@@ -50,12 +50,12 @@ actual class ReaderLauncher {
                             onCloseRequest = ::exitApplication,
                             title = "${BuildKonfig.NAME} - Reader",
                             icon = icon,
-                            state = windowState
+                            state = windowState,
                         ) {
                             ReaderMenu(
                                 chapterIndex = chapterIndex,
                                 mangaId = mangaId,
-                                onCloseRequest = ::exitApplication
+                                onCloseRequest = ::exitApplication,
                             )
                         }
                     }

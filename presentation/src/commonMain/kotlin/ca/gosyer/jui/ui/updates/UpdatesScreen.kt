@@ -50,7 +50,7 @@ class UpdatesScreen : Screen {
             clearSelection = vm::clearSelection,
             onUpdateLibrary = vm::updateLibrary,
             updateWebsocketStatus = updatesVM.serviceStatus.collectAsState().value,
-            restartLibraryUpdates = updatesVM::restartLibraryUpdates
+            restartLibraryUpdates = updatesVM::restartLibraryUpdates,
         )
         readerLauncher.Reader()
     }

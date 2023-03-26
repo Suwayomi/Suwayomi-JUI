@@ -22,5 +22,5 @@ data class Extension(
     val installed: Boolean,
     val hasUpdate: Boolean,
     val obsolete: Boolean,
-    val isNsfw: Boolean
+    val isNsfw: Boolean,
 )

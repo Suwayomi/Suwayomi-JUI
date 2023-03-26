@@ -19,6 +19,6 @@ data class SourcePreferenceChange(val position: Int, val value: String) {
             Json.encodeToString(value as List<String>)
         } else {
             value.toString()
-        }
+        },
     )
 }

@@ -18,7 +18,7 @@ fun filePicker(
     vararg extensions: String,
     onCancel: () -> Unit = {},
     onError: () -> Unit = {},
-    onApprove: (Path) -> Unit
+    onApprove: (Path) -> Unit,
 ) = fileChooser(
     saving = false,
     selectFolders = false,
@@ -27,20 +27,20 @@ fun filePicker(
     onError = onError,
     onApprove = onApprove,
     defaultFileName = "",
-    extensions = extensions
+    extensions = extensions,
 )
 
 fun folderPicker(
     onCancel: () -> Unit = {},
     onError: () -> Unit = {},
-    onApprove: (Path) -> Unit
+    onApprove: (Path) -> Unit,
 ) = fileChooser(
     saving = false,
     selectFolders = true,
     selectFiles = false,
     onCancel = onCancel,
     onError = onError,
-    onApprove = onApprove
+    onApprove = onApprove,
 )
 
 fun fileSaver(
@@ -48,7 +48,7 @@ fun fileSaver(
     extension: String,
     onCancel: () -> Unit = {},
     onError: () -> Unit = {},
-    onApprove: (Path) -> Unit
+    onApprove: (Path) -> Unit,
 ) = fileChooser(
     saving = true,
     selectFolders = false,
@@ -57,7 +57,7 @@ fun fileSaver(
     onError = onError,
     onApprove = onApprove,
     defaultFileName = defaultFileName,
-    extension
+    extension,
 )
 
 /**
@@ -77,7 +77,7 @@ private fun fileChooser(
     onError: () -> Unit = {},
     onApprove: (Path) -> Unit,
     defaultFileName: String = "",
-    vararg extensions: String
+    vararg extensions: String,
 ) = launchUI {
     val fileChooser = JFileChooser()
         .apply {

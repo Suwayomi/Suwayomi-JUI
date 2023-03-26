@@ -17,13 +17,13 @@ import org.lighthousegames.logging.logging
 
 class UpdateChapterMeta @Inject constructor(
     private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) {
 
     suspend fun await(
         chapter: Chapter,
         pageOffset: Int = chapter.meta.juiPageOffset,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(chapter, pageOffset)
         .catch {
             onError(it)
@@ -33,14 +33,14 @@ class UpdateChapterMeta @Inject constructor(
 
     fun asFlow(
         chapter: Chapter,
-        pageOffset: Int = chapter.meta.juiPageOffset
+        pageOffset: Int = chapter.meta.juiPageOffset,
     ) = flow {
         if (pageOffset != chapter.meta.juiPageOffset) {
             chapterRepository.updateChapterMeta(
                 chapter.mangaId,
                 chapter.index,
                 "juiPageOffset",
-                pageOffset.toString()
+                pageOffset.toString(),
             ).collect()
             serverListeners.updateChapters(chapter.mangaId, chapter.index)
         }

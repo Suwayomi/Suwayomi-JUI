@@ -16,8 +16,8 @@ actual fun Modifier.updatesItemModifier(
     bookmarkChapter: (() -> Unit)?,
     unBookmarkChapter: (() -> Unit)?,
     onSelectChapter: (() -> Unit)?,
-    onUnselectChapter: (() -> Unit)?
+    onUnselectChapter: (() -> Unit)?,
 ): Modifier = combinedClickable(
     onClick = onUnselectChapter ?: onClick,
-    onLongClick = onSelectChapter
+    onLongClick = onSelectChapter,
 )

@@ -20,7 +20,7 @@ data class Source(
     val supportsLatest: Boolean,
     val isConfigurable: Boolean,
     val isNsfw: Boolean,
-    val displayName: String
+    val displayName: String,
 ) : JvmSerializable {
     val displayLang: String
         get() = if (id == LOCAL_SOURCE_ID) {

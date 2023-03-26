@@ -63,7 +63,7 @@ sealed class CategoryState {
     @Stable
     data class Loaded(
         val items: StateFlow<ImmutableList<Manga>>,
-        val unfilteredItems: MutableStateFlow<ImmutableList<Manga>>
+        val unfilteredItems: MutableStateFlow<ImmutableList<Manga>>,
     ) : CategoryState()
 }
 
@@ -96,7 +96,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val updateCategory: UpdateCategory,
     libraryPreferences: LibraryPreferences,
     contextWrapper: ContextWrapper,
-    @Assisted private val savedStateHandle: SavedStateHandle
+    @Assisted private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(contextWrapper) {
     private val library = Library(MutableStateFlow(persistentListOf()), mutableMapOf())
     val categories = library.categories.asStateFlow()
@@ -121,7 +121,7 @@ class LibraryScreenViewModel @Inject constructor(
     private val filter: Flow<(Manga) -> Boolean> = combine(
         libraryPreferences.filterDownloaded().getAsFlow(),
         libraryPreferences.filterUnread().getAsFlow(),
-        libraryPreferences.filterCompleted().getAsFlow()
+        libraryPreferences.filterCompleted().getAsFlow(),
     ) { downloaded, unread, completed ->
         { manga ->
             when (downloaded) {
@@ -172,7 +172,7 @@ class LibraryScreenViewModel @Inject constructor(
                             library.mangaMap.setManga(
                                 id = category.id,
                                 manga = it.toImmutableList(),
-                                getItemsFlow = ::getMangaItemsFlow
+                                getItemsFlow = ::getMangaItemsFlow,
                             )
                         }
                         .catch {

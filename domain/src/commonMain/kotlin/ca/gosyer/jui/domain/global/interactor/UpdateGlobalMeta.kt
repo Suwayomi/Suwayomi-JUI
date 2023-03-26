@@ -19,7 +19,7 @@ class UpdateGlobalMeta @Inject constructor(private val globalRepository: GlobalR
     suspend fun await(
         globalMeta: GlobalMeta,
         example: Int = globalMeta.example,
-        onError: suspend (Throwable) -> Unit = {}
+        onError: suspend (Throwable) -> Unit = {},
     ) = asFlow(globalMeta, example)
         .catch {
             onError(it)
@@ -29,12 +29,12 @@ class UpdateGlobalMeta @Inject constructor(private val globalRepository: GlobalR
 
     fun asFlow(
         globalMeta: GlobalMeta,
-        example: Int = globalMeta.example
+        example: Int = globalMeta.example,
     ) = flow {
         if (example != globalMeta.example) {
             globalRepository.updateGlobalMeta(
                 "example",
-                example.toString()
+                example.toString(),
             ).collect()
         }
         emit(Unit)

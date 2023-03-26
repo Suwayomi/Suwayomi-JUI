@@ -79,7 +79,7 @@ class SettingsServerScreen : Screen {
             auth = connectionVM.auth,
             authChoices = connectionVM.getAuthChoices(),
             authUsername = connectionVM.authUsername,
-            authPassword = connectionVM.authPassword
+            authPassword = connectionVM.authPassword,
         )
     }
 }
@@ -90,7 +90,7 @@ expect fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
 
 class SettingsServerViewModel @Inject constructor(
     serverPreferences: ServerPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     val serverUrl = serverPreferences.server().asStateIn(scope)
     val serverPort = serverPreferences.port().asStringStateIn(scope)
@@ -102,7 +102,7 @@ class SettingsServerViewModel @Inject constructor(
     fun getProxyChoices(): ImmutableMap<Proxy, String> = persistentMapOf(
         Proxy.NO_PROXY to stringResource(MR.strings.no_proxy),
         Proxy.HTTP_PROXY to stringResource(MR.strings.http_proxy),
-        Proxy.SOCKS_PROXY to stringResource(MR.strings.socks_proxy)
+        Proxy.SOCKS_PROXY to stringResource(MR.strings.socks_proxy),
     )
 
     val httpHost = serverPreferences.proxyHttpHost().asStateIn(scope)
@@ -116,7 +116,7 @@ class SettingsServerViewModel @Inject constructor(
     fun getAuthChoices(): ImmutableMap<Auth, String> = persistentMapOf(
         Auth.NONE to stringResource(MR.strings.no_auth),
         Auth.BASIC to stringResource(MR.strings.basic_auth),
-        Auth.DIGEST to stringResource(MR.strings.digest_auth)
+        Auth.DIGEST to stringResource(MR.strings.digest_auth),
     )
     val authUsername = serverPreferences.authUsername().asStateIn(scope)
     val authPassword = serverPreferences.authPassword().asStateIn(scope)
@@ -145,17 +145,17 @@ fun SettingsServerScreenContent(
     auth: PreferenceMutableStateFlow<Auth>,
     authChoices: ImmutableMap<Auth, String>,
     authUsername: PreferenceMutableStateFlow<String>,
-    authPassword: PreferenceMutableStateFlow<String>
+    authPassword: PreferenceMutableStateFlow<String>,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.settings_server_screen))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -164,30 +164,30 @@ fun SettingsServerScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 serverHostItems()
                 item {
                     EditTextPreference(
                         serverUrl,
                         stringResource(MR.strings.server_url),
-                        subtitle = serverUrl.collectAsState().value
+                        subtitle = serverUrl.collectAsState().value,
                     )
                 }
                 item {
                     EditTextPreference(
                         serverPort,
                         stringResource(MR.strings.server_port),
-                        subtitle = serverPort.collectAsState().value
+                        subtitle = serverPort.collectAsState().value,
                     )
                 }
                 item {
                     EditTextPreference(
                         serverPathPrefix,
                         stringResource(MR.strings.server_path_prefix),
-                        subtitle = stringResource(MR.strings.server_path_prefix_sub)
+                        subtitle = stringResource(MR.strings.server_path_prefix_sub),
                     )
                 }
 
@@ -195,7 +195,7 @@ fun SettingsServerScreenContent(
                     PreferenceRow(
                         stringResource(MR.strings.server_preference_warning),
                         Icons.Rounded.Warning,
-                        subtitle = stringResource(MR.strings.server_preference_warning_sub)
+                        subtitle = stringResource(MR.strings.server_preference_warning_sub),
                     )
                 }
                 item {
@@ -208,14 +208,14 @@ fun SettingsServerScreenContent(
                             EditTextPreference(
                                 httpHost,
                                 stringResource(MR.strings.http_proxy),
-                                httpHost.collectAsState().value
+                                httpHost.collectAsState().value,
                             )
                         }
                         item {
                             EditTextPreference(
                                 httpPort,
                                 stringResource(MR.strings.http_port),
-                                httpPort.collectAsState().value
+                                httpPort.collectAsState().value,
                             )
                         }
                     }
@@ -224,14 +224,14 @@ fun SettingsServerScreenContent(
                             EditTextPreference(
                                 socksHost,
                                 stringResource(MR.strings.socks_proxy),
-                                socksHost.collectAsState().value
+                                socksHost.collectAsState().value,
                             )
                         }
                         item {
                             EditTextPreference(
                                 socksPort,
                                 stringResource(MR.strings.socks_port),
-                                socksPort.collectAsState().value
+                                socksPort.collectAsState().value,
                             )
                         }
                     }
@@ -247,7 +247,7 @@ fun SettingsServerScreenContent(
                         EditTextPreference(
                             authPassword,
                             stringResource(MR.strings.auth_password),
-                            visualTransformation = PasswordVisualTransformation()
+                            visualTransformation = PasswordVisualTransformation(),
                         )
                     }
                 }
@@ -260,10 +260,10 @@ fun SettingsServerScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }

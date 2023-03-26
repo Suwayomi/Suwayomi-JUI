@@ -64,18 +64,18 @@ fun LibraryUpdatesExtraInfo() {
         Text(
             text,
             style = MaterialTheme.typography.body2,
-            color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+            color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
         )
     } else if (serviceStatus == WebsocketService.Status.STOPPED) {
         Box(
             Modifier.fillMaxWidth()
                 .clip(MaterialTheme.shapes.medium)
-                .clickable(onClick = vm::restartLibraryUpdates)
+                .clickable(onClick = vm::restartLibraryUpdates),
         ) {
             Text(
                 stringResource(MR.strings.downloads_stopped),
                 style = MaterialTheme.typography.body2,
-                color = Color.Red.copy(alpha = ContentAlpha.disabled)
+                color = Color.Red.copy(alpha = ContentAlpha.disabled),
             )
         }
     }

@@ -12,18 +12,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("Sort")
 data class SortFilter(
-    override val filter: SortProps
+    override val filter: SortProps,
 ) : SourceFilter() {
     @Serializable
     data class SortProps(
         override val name: String,
         override val state: Selection?,
-        val values: List<String>
+        val values: List<String>,
     ) : Props<Selection?>
 
     @Serializable
     data class Selection(
         val index: Int,
-        val ascending: Boolean
+        val ascending: Boolean,
     )
 }

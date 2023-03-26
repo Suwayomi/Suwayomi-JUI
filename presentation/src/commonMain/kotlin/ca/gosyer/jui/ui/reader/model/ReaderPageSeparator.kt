@@ -8,5 +8,5 @@ package ca.gosyer.jui.ui.reader.model
 
 data class ReaderPageSeparator(
     val previousChapter: ReaderChapter?,
-    val nextChapter: ReaderChapter?
+    val nextChapter: ReaderChapter?,
 ) : ReaderItem()

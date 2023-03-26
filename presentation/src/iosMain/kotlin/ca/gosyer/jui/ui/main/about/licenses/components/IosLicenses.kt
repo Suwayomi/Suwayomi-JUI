@@ -16,7 +16,7 @@ import com.mikepenz.aboutlibraries.Libs
 @Composable
 actual fun getLicenses(): Libs? {
     val libs by produceState<Libs?>(
-        null
+        null,
     ) {
         withIOContext {
             val json = MR.files.aboutlibraries.readText()

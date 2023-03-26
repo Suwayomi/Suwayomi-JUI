@@ -17,5 +17,5 @@ data class TwoStateProps(
     override val summary: String?,
     override val currentValue: Boolean?,
     override val defaultValue: Boolean?,
-    override val defaultValueType: String
+    override val defaultValueType: String,
 ) : Props<Boolean?>

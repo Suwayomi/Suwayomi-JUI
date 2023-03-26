@@ -33,28 +33,28 @@ interface ExtensionRepository {
     @Multipart
     @POST("api/v1/extension/install")
     fun installExtension(
-        @Part("") formData: List<PartData>
+        @Part("") formData: List<PartData>,
     ): Flow<HttpResponse>
 
     @GET("api/v1/extension/install/{pkgName}")
     fun installExtension(
-        @Path("pkgName") pkgName: String
+        @Path("pkgName") pkgName: String,
     ): Flow<HttpResponse>
 
     @GET("api/v1/extension/update/{pkgName}")
     fun updateExtension(
-        @Path("pkgName") pkgName: String
+        @Path("pkgName") pkgName: String,
     ): Flow<HttpResponse>
 
     @GET("api/v1/extension/uninstall/{pkgName}")
     fun uninstallExtension(
-        @Path("pkgName") pkgName: String
+        @Path("pkgName") pkgName: String,
     ): Flow<HttpResponse>
 
     @GET("api/v1/extension/icon/{apkName}")
     fun getApkIcon(
         @Path("apkName") apkName: String,
-        @ReqBuilder block: HttpRequestBuilder.() -> Unit
+        @ReqBuilder block: HttpRequestBuilder.() -> Unit,
     ): Flow<ByteReadChannel>
 
     companion object {
@@ -65,7 +65,7 @@ interface ExtensionRepository {
                 Headers.build {
                     append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
                     append(HttpHeaders.ContentDisposition, "filename=file")
-                }
+                },
             )
         }
     }

@@ -62,7 +62,7 @@ class StandardPreferenceStore(private val preferences: ObservableSettings) : Pre
         key: String,
         defaultValue: T,
         serializer: (T) -> String,
-        deserializer: (String) -> T
+        deserializer: (String) -> T,
     ): Preference<T> {
         val adapter = ObjectAdapter(serializer, deserializer)
         return StandardPreference(preferences, key, defaultValue, adapter)
@@ -75,7 +75,7 @@ class StandardPreferenceStore(private val preferences: ObservableSettings) : Pre
         key: String,
         defaultValue: T,
         serializer: KSerializer<T>,
-        serializersModule: SerializersModule
+        serializersModule: SerializersModule,
     ): Preference<T> {
         val adapter = JsonObjectAdapter(defaultValue, serializer, serializersModule)
         return StandardPreference(preferences, key, defaultValue, adapter)

@@ -14,5 +14,5 @@ import kotlinx.serialization.Serializable
 @SerialName("CheckBoxPreference")
 @Immutable
 data class CheckBoxPreference(
-    override val props: TwoStateProps
+    override val props: TwoStateProps,
 ) : SourcePreference()

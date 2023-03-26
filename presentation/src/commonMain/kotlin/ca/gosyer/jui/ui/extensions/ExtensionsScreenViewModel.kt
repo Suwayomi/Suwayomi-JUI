@@ -48,7 +48,7 @@ class ExtensionsScreenViewModel @Inject constructor(
     private val updateExtension: UpdateExtension,
     private val uninstallExtension: UninstallExtension,
     extensionPreferences: ExtensionPreferences,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     private val extensionList = MutableStateFlow<List<Extension>?>(null)
 
@@ -65,7 +65,7 @@ class ExtensionsScreenViewModel @Inject constructor(
         searchQuery,
         extensionList,
         enabledLangs,
-        workingExtensions
+        workingExtensions,
     ) { searchQuery, extensions, enabledLangs, workingExtensions ->
         search(searchQuery, extensions, enabledLangs, workingExtensions)
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
@@ -148,7 +148,7 @@ class ExtensionsScreenViewModel @Inject constructor(
         searchQuery: String?,
         extensionList: List<Extension>?,
         enabledLangs: Set<String>,
-        workingExtensions: List<String>
+        workingExtensions: List<String>,
     ): ImmutableList<ExtensionUI> {
         val extensions = extensionList?.filter { it.lang in enabledLangs }
             .orEmpty()
@@ -177,7 +177,7 @@ class ExtensionsScreenViewModel @Inject constructor(
                     }
                 }
                     .thenBy(Extension::lang)
-                    .thenBy(String.CASE_INSENSITIVE_ORDER, Extension::name)
+                    .thenBy(String.CASE_INSENSITIVE_ORDER, Extension::name),
             )
             .map { ExtensionUI.ExtensionItem(it, it.apkName in workingExtensions) }
             .let {
@@ -207,11 +207,11 @@ class ExtensionsScreenViewModel @Inject constructor(
                                 all -> 1
                                 else -> 2
                             }
-                        }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<String, *>::first)
+                        }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<String, *>::first),
                     )
                     .flatMap { (key, value) ->
                         listOf(ExtensionUI.Header(key)) + value
-                    }
+                    },
             )
             .toImmutableList()
     }

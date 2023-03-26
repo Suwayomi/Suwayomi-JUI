@@ -69,22 +69,22 @@ fun GlobalSearchScreenContent(
     setQuery: (String) -> Unit,
     submitSearch: (String) -> Unit,
     onSourceClick: (Source) -> Unit,
-    onMangaClick: (Manga) -> Unit
+    onMangaClick: (Manga) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(
                 name = stringResource(MR.strings.location_global_search),
                 searchText = query,
                 search = setQuery,
-                searchSubmit = { submitSearch(query) }
+                searchSubmit = { submitSearch(query) },
             )
-        }
+        },
     ) { padding ->
         Box(Modifier.padding(padding)) {
             val state = rememberLazyListState()
@@ -108,9 +108,9 @@ fun GlobalSearchScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 items(sourcesSuccess) {
                     GlobalSearchItem(
@@ -118,7 +118,7 @@ fun GlobalSearchScreenContent(
                         search = results[it.id] ?: Search.Searching,
                         displayMode = displayMode,
                         onSourceClick = onSourceClick,
-                        onMangaClick = onMangaClick
+                        onMangaClick = onMangaClick,
                     )
                 }
                 items(loadingSources) {
@@ -127,7 +127,7 @@ fun GlobalSearchScreenContent(
                         search = results[it.id] ?: Search.Searching,
                         displayMode = displayMode,
                         onSourceClick = onSourceClick,
-                        onMangaClick = onMangaClick
+                        onMangaClick = onMangaClick,
                     )
                 }
                 items(failedSources) {
@@ -136,7 +136,7 @@ fun GlobalSearchScreenContent(
                         search = results[it.id] ?: Search.Searching,
                         displayMode = displayMode,
                         onSourceClick = onSourceClick,
-                        onMangaClick = onMangaClick
+                        onMangaClick = onMangaClick,
                     )
                 }
             }
@@ -147,11 +147,11 @@ fun GlobalSearchScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
                     ),
-                adapter = rememberScrollbarAdapter(state)
+                adapter = rememberScrollbarAdapter(state),
             )
         }
     }
@@ -163,7 +163,7 @@ fun GlobalSearchItem(
     search: Search,
     displayMode: DisplayMode,
     onSourceClick: (Source) -> Unit,
-    onMangaClick: (Manga) -> Unit
+    onMangaClick: (Manga) -> Unit,
 ) {
     Column {
         Row(
@@ -171,18 +171,18 @@ fun GlobalSearchItem(
                 .clickable { onSourceClick(source) }
                 .padding(vertical = 8.dp, horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column {
                 Text(
                     source.name,
                     maxLines = 1,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
                 )
                 Text(
                     localeToString(source.displayLang),
                     maxLines = 1,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
                 )
             }
             Icon(Icons.Rounded.ArrowForward, stringResource(MR.strings.action_search))
@@ -200,7 +200,7 @@ fun GlobalSearchItem(
                 Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 val state = rememberLazyListState()
                 LazyRow(Modifier.fillMaxSize(), state) {
@@ -209,13 +209,13 @@ fun GlobalSearchItem(
                             GlobalSearchMangaComfortableGridItem(
                                 Modifier.clickable { onMangaClick(it) },
                                 it,
-                                it.inLibrary
+                                it.inLibrary,
                             )
                         } else {
                             GlobalSearchMangaCompactGridItem(
                                 Modifier.clickable { onMangaClick(it) },
                                 it,
-                                it.inLibrary
+                                it.inLibrary,
                             )
                         }
                     }
@@ -223,7 +223,7 @@ fun GlobalSearchItem(
                 HorizontalScrollbar(
                     rememberScrollbarAdapter(state),
                     Modifier.align(Alignment.BottomCenter)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
                 )
             }
         }

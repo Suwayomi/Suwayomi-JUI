@@ -77,7 +77,7 @@ fun CategoriesScreenContent(
     renameCategory: (MenuCategory, String) -> Unit,
     deleteCategory: (MenuCategory) -> Unit,
     createCategory: (String) -> Unit,
-    notifyFinished: (() -> Unit)? = null
+    notifyFinished: (() -> Unit)? = null,
 ) {
     DisposableEffect(Unit) {
         onDispose {
@@ -96,14 +96,14 @@ fun CategoriesScreenContent(
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(
-                stringResource(MR.strings.location_categories)
+                stringResource(MR.strings.location_categories),
             )
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -112,9 +112,9 @@ fun CategoriesScreenContent(
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 itemsIndexed(categories) { i, category ->
                     val renameDialogState = rememberMaterialDialogState()
@@ -130,7 +130,7 @@ fun CategoriesScreenContent(
                         },
                         onDelete = {
                             deleteDialogState.show()
-                        }
+                        },
                     )
                     RenameDialog(renameDialogState, category) {
                         renameCategory(category, it)
@@ -149,7 +149,7 @@ fun CategoriesScreenContent(
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 onClick = {
                     createDialogState.show()
-                }
+                },
             )
             VerticalScrollbar(
                 rememberScrollbarAdapter(state),
@@ -159,10 +159,10 @@ fun CategoriesScreenContent(
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
-                    )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
+                    ),
             )
         }
     }
@@ -177,7 +177,7 @@ private fun CategoryRow(
     onMoveUp: () -> Unit = {},
     onMoveDown: () -> Unit = {},
     onRename: () -> Unit = {},
-    onDelete: () -> Unit = {}
+    onDelete: () -> Unit = {},
 ) {
     Card(Modifier.padding(8.dp)) {
         Column {
@@ -186,11 +186,11 @@ private fun CategoryRow(
                     imageVector = Icons.Outlined.List,
                     modifier = Modifier.padding(16.dp),
                     tint = MaterialTheme.colors.primary,
-                    contentDescription = null
+                    contentDescription = null,
                 )
                 Text(
                     text = category.name,
-                    modifier = Modifier.weight(1f).padding(end = 16.dp)
+                    modifier = Modifier.weight(1f).padding(end = 16.dp),
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -199,35 +199,35 @@ private fun CategoryRow(
                     val disabledColor = enabledColor.copy(ContentAlpha.disabled)
                     IconButton(
                         onClick = onMoveUp,
-                        enabled = moveUpEnabled
+                        enabled = moveUpEnabled,
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.KeyboardArrowUp,
                             tint = if (moveUpEnabled) enabledColor else disabledColor,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                     IconButton(
                         onClick = onMoveDown,
-                        enabled = moveDownEnabled
+                        enabled = moveDownEnabled,
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.KeyboardArrowDown,
                             tint = if (moveDownEnabled) enabledColor else disabledColor,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     IconButton(onClick = onRename) {
                         Icon(
                             imageVector = Icons.Rounded.Edit,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                     IconButton(onClick = onDelete) {
                         Icon(
                             imageVector = Icons.Rounded.Delete,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 }

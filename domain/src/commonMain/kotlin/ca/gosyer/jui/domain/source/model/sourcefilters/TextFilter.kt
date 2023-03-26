@@ -12,11 +12,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("Text")
 data class TextFilter(
-    override val filter: TextProps
+    override val filter: TextProps,
 ) : SourceFilter() {
     @Serializable
     data class TextProps(
         override val name: String,
-        override val state: String
+        override val state: String,
     ) : Props<String>
 }

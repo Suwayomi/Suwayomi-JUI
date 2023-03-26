@@ -40,8 +40,8 @@ sealed class SourceSettingsView<T, R : Any?> {
         private val _state: MutableStateFlow<Boolean> = MutableStateFlow(
             props.currentValue
                 ?: props.defaultValue
-                ?: false
-        )
+                ?: false,
+        ),
     ) : SourceSettingsView<TwoStateProps, Boolean>() {
         override val state: StateFlow<Boolean> = _state.asStateFlow()
         override fun updateState(value: Boolean) {
@@ -53,13 +53,13 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val index: Int,
         override val title: String?,
         override val subtitle: String?,
-        override val props: TwoStateProps
+        override val props: TwoStateProps,
     ) : TwoState(props) {
         internal constructor(index: Int, preference: CheckBoxPreference) : this(
             index,
             preference.props.title,
             preference.props.summary,
-            preference.props
+            preference.props,
         )
     }
 
@@ -67,13 +67,13 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val index: Int,
         override val title: String?,
         override val subtitle: String?,
-        override val props: TwoStateProps
+        override val props: TwoStateProps,
     ) : TwoState(props) {
         internal constructor(index: Int, preference: SwitchPreference) : this(
             index,
             preference.props.title,
             preference.props.summary,
-            preference.props
+            preference.props,
         )
     }
 
@@ -81,10 +81,10 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val index: Int,
         override val title: String?,
         override val subtitle: String?,
-        override val props: ListPreference.ListProps
+        override val props: ListPreference.ListProps,
     ) : SourceSettingsView<ListPreference.ListProps, String>() {
         private val _state = MutableStateFlow(
-            props.currentValue ?: props.defaultValue ?: "0"
+            props.currentValue ?: props.defaultValue ?: "0",
         )
         override val state: StateFlow<String> = _state.asStateFlow()
         override fun updateState(value: String) {
@@ -94,7 +94,7 @@ sealed class SourceSettingsView<T, R : Any?> {
             index,
             preference.props.title,
             preference.props.summary,
-            preference.props
+            preference.props,
         )
 
         override val summary: String?
@@ -109,10 +109,10 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val index: Int,
         override val title: String?,
         override val subtitle: String?,
-        override val props: MultiSelectListPreference.MultiSelectListProps
+        override val props: MultiSelectListPreference.MultiSelectListProps,
     ) : SourceSettingsView<MultiSelectListPreference.MultiSelectListProps, ImmutableList<String>?>() {
         private val _state = MutableStateFlow(
-            props.currentValue?.toImmutableList() ?: props.defaultValue?.toImmutableList()
+            props.currentValue?.toImmutableList() ?: props.defaultValue?.toImmutableList(),
         )
         override val state: StateFlow<ImmutableList<String>?> = _state.asStateFlow()
         override fun updateState(value: ImmutableList<String>?) {
@@ -122,7 +122,7 @@ sealed class SourceSettingsView<T, R : Any?> {
             index,
             preference.props.title,
             preference.props.summary,
-            preference.props
+            preference.props,
         )
 
         fun getOptions() = props.entryValues.mapIndexed { index, s ->
@@ -144,7 +144,7 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val subtitle: String?,
         val dialogTitle: String?,
         val dialogMessage: String?,
-        override val props: EditTextPreference.EditTextProps
+        override val props: EditTextPreference.EditTextProps,
     ) : SourceSettingsView<EditTextPreference.EditTextProps, String>() {
         private val _state = MutableStateFlow(props.currentValue ?: props.defaultValue.orEmpty())
         override val state: StateFlow<String> = _state.asStateFlow()
@@ -157,7 +157,7 @@ sealed class SourceSettingsView<T, R : Any?> {
             preference.props.summary,
             preference.props.dialogTitle,
             preference.props.dialogMessage,
-            preference.props
+            preference.props,
         )
     }
 }

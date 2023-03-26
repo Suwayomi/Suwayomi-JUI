@@ -78,7 +78,7 @@ fun ReaderSideMenu(
     onCloseSideMenuClicked: () -> Unit,
     onSetReaderMode: (String) -> Unit,
     onPrevChapterClicked: () -> Unit,
-    onNextChapterClicked: () -> Unit
+    onNextChapterClicked: () -> Unit,
 ) {
     Surface(Modifier.fillMaxHeight().width(260.dp)) {
         Column(Modifier.fillMaxSize()) {
@@ -88,7 +88,7 @@ fun ReaderSideMenu(
             ReaderModeSetting(
                 readerModes = readerModes,
                 selectedMode = selectedMode,
-                onSetReaderMode = onSetReaderMode
+                onSetReaderMode = onSetReaderMode,
             )
             Spacer(Modifier.height(4.dp))
             ReaderProgressSlider(
@@ -96,21 +96,21 @@ fun ReaderSideMenu(
                 currentPage = currentPage,
                 pageCount = pageCount,
                 onNewPageClicked = onNewPageClicked,
-                isRtL = false
+                isRtL = false,
             )
             Spacer(Modifier.height(4.dp))
             val uriHandler = LocalUriHandler.current
             TextButton(
                 onClick = { uriHandler.openUri(chapter.chapter.realUrl ?: return@TextButton) },
                 enabled = chapter.chapter.realUrl != null,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
             ) {
                 Text(stringResource(MR.strings.action_open_in_browser))
             }
             Spacer(Modifier.height(4.dp))
             NavigateChapters(
                 loadPrevChapter = onPrevChapterClicked,
-                loadNextChapter = onNextChapterClicked
+                loadNextChapter = onNextChapterClicked,
             )
         }
     }
@@ -128,13 +128,13 @@ fun ReaderExpandBottomMenu(
     navigate: (Int) -> Unit,
     readerMenuOpen: Boolean,
     movePrevChapter: () -> Unit,
-    moveNextChapter: () -> Unit
+    moveNextChapter: () -> Unit,
 ) {
     AnimatedVisibility(
         readerMenuOpen,
         enter = slideInVertically { it },
         exit = slideOutVertically { it },
-        modifier = modifier
+        modifier = modifier,
     ) {
         val isRtL = direction == Direction.Left
         AroundLayout(
@@ -151,7 +151,7 @@ fun ReaderExpandBottomMenu(
                         .aspectRatio(1F, true),
                     shape = CircleShape,
                     backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.5F),
-                    enabled = enabled
+                    enabled = enabled,
                 ) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Icon(Icons.Rounded.SkipPrevious, text)
@@ -170,18 +170,18 @@ fun ReaderExpandBottomMenu(
                         .aspectRatio(1F, true),
                     shape = CircleShape,
                     backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.5F),
-                    enabled = enabled
+                    enabled = enabled,
                 ) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Icon(Icons.Rounded.SkipNext, text)
                     }
                 }
-            }
+            },
         ) {
             Card(
                 modifier = Modifier.fillMaxSize().padding(it).padding(horizontal = 8.dp),
                 shape = CircleShape,
-                backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.5F)
+                backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.5F),
             ) {
                 AroundLayout(
                     Modifier.padding(horizontal = 8.dp),
@@ -204,7 +204,7 @@ fun ReaderExpandBottomMenu(
                             }.toString()
                             Text(text, fontSize = 15.sp)
                         }
-                    }
+                    },
                 ) { paddingValues ->
                     ReaderProgressSlider(
                         modifier = Modifier.fillMaxWidth()
@@ -214,7 +214,7 @@ fun ReaderExpandBottomMenu(
                         currentPage = currentPage,
                         pageCount = chapter.chapter.pageCount!!,
                         onNewPageClicked = navigate,
-                        isRtL = isRtL
+                        isRtL = isRtL,
                     )
                 }
             }
@@ -226,7 +226,7 @@ fun ReaderExpandBottomMenu(
 fun ReaderSheet(
     readerModes: ImmutableList<String>,
     selectedMode: String,
-    onSetReaderMode: (String) -> Unit
+    onSetReaderMode: (String) -> Unit,
 ) {
     Column(Modifier.fillMaxSize()) {
         ReaderModeSetting(readerModes, selectedMode, onSetReaderMode)
@@ -244,14 +244,14 @@ fun ReaderModeSetting(readerModes: ImmutableList<String>, selectedMode: String, 
             .defaultMinSize(minHeight = 56.dp)
             .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(stringResource(MR.strings.reader_mode), Modifier.weight(0.25f), maxLines = 2, fontSize = 14.sp)
         Spacer(Modifier.width(8.dp))
         Spinner(
             modifier = Modifier.weight(0.75f),
             items = displayModes,
-            selectedItemIndex = selectedModeIndex
+            selectedItemIndex = selectedModeIndex,
         ) {
             onSetReaderMode(modes[it])
         }
@@ -276,11 +276,11 @@ private fun ReaderProgressSlider(
     currentPage: ReaderItem?,
     pageCount: Int,
     onNewPageClicked: (Int) -> Unit,
-    isRtL: Boolean
+    isRtL: Boolean,
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = pages.indexOf(currentPage).toFloat(),
-        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
     )
     var isValueChanging by remember { mutableStateOf(false) }
     Slider(
@@ -300,7 +300,7 @@ private fun ReaderProgressSlider(
             } else {
                 it
             }
-        }
+        },
     )
 }
 

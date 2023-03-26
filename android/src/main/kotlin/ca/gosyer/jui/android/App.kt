@@ -42,7 +42,7 @@ class App : Application(), DefaultLifecycleObserver {
                         ThemeMode.System -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                         ThemeMode.Light -> AppCompatDelegate.MODE_NIGHT_NO
                         ThemeMode.Dark -> AppCompatDelegate.MODE_NIGHT_YES
-                    }
+                    },
                 )
             }
             .launchIn(ProcessLifecycleOwner.get().lifecycleScope)
@@ -65,8 +65,8 @@ class App : Application(), DefaultLifecycleObserver {
                     AppCompatDelegate.setApplicationLocales(
                         LocaleListCompat.create(
                             Locale.forLanguageTag(it),
-                            Locale.forLanguageTag("en")
-                        )
+                            Locale.forLanguageTag("en"),
+                        ),
                     )
                 } else if (
                     AppCompatDelegate.getApplicationLocales().isEmpty.not() &&

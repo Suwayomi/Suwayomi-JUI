@@ -13,7 +13,7 @@ import okio.Sink
 actual class FileSaver(
     private val onFileSelected: (Sink) -> Unit,
     private val onCancel: () -> Unit,
-    private val onError: () -> Unit
+    private val onError: () -> Unit,
 ) {
     actual fun save(name: String) {
         TODO()
@@ -24,7 +24,7 @@ actual class FileSaver(
 internal actual fun realRememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit,
-    onError: () -> Unit
+    onError: () -> Unit,
 ): FileSaver {
     return remember { FileSaver(onFileSelected, onCancel, onError) }
 }

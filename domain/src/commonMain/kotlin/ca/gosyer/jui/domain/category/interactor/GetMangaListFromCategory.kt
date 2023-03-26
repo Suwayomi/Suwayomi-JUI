@@ -17,7 +17,7 @@ import org.lighthousegames.logging.logging
 
 class GetMangaListFromCategory @Inject constructor(
     private val categoryRepository: CategoryRepository,
-    private val serverListeners: ServerListeners
+    private val serverListeners: ServerListeners,
 ) {
 
     suspend fun await(categoryId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(categoryId)
@@ -37,11 +37,11 @@ class GetMangaListFromCategory @Inject constructor(
         .singleOrNull()
 
     fun asFlow(categoryId: Long) = serverListeners.combineCategoryManga(
-        categoryRepository.getMangaFromCategory(categoryId)
+        categoryRepository.getMangaFromCategory(categoryId),
     ) { categoryId == it }
 
     fun asFlow(category: Category) = serverListeners.combineCategoryManga(
-        categoryRepository.getMangaFromCategory(category.id)
+        categoryRepository.getMangaFromCategory(category.id),
     ) { category.id == it }
 
     companion object {

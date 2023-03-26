@@ -67,7 +67,7 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
             openInBrowserEnabled = serverVm.openInBrowserEnabled,
             basicAuthEnabled = serverVm.basicAuthEnabled,
             basicAuthUsername = serverVm.basicAuthUsername,
-            basicAuthPassword = serverVm.basicAuthPassword
+            basicAuthPassword = serverVm.basicAuthPassword,
         )
     }
 }
@@ -76,7 +76,7 @@ actual class SettingsServerHostViewModel @Inject constructor(
     serverPreferences: ServerPreferences,
     serverHostPreferences: ServerHostPreferences,
     private val serverService: ServerService,
-    contextWrapper: ContextWrapper
+    contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     val host = serverHostPreferences.host().asStateIn(scope)
     val ip = serverHostPreferences.ip().asStateIn(scope)
@@ -154,7 +154,7 @@ fun LazyListScope.ServerHostItems(
     openInBrowserEnabled: PreferenceMutableStateFlow<Boolean>,
     basicAuthEnabled: PreferenceMutableStateFlow<Boolean>,
     basicAuthUsername: PreferenceMutableStateFlow<String>,
-    basicAuthPassword: PreferenceMutableStateFlow<String>
+    basicAuthPassword: PreferenceMutableStateFlow<String>,
 ) {
     item {
         SwitchPreference(preference = host, title = stringResource(MR.strings.host_server))
@@ -164,7 +164,7 @@ fun LazyListScope.ServerHostItems(
             PreferenceRow(
                 stringResource(MR.strings.host_settings),
                 Icons.Rounded.Info,
-                subtitle = stringResource(MR.strings.host_settings_sub)
+                subtitle = stringResource(MR.strings.host_settings_sub),
             )
         }
         item {
@@ -173,7 +173,7 @@ fun LazyListScope.ServerHostItems(
                 preference = ip,
                 title = stringResource(MR.strings.host_ip),
                 subtitle = stringResource(MR.strings.host_ip_sub, ipValue),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
@@ -182,14 +182,14 @@ fun LazyListScope.ServerHostItems(
                 preference = port,
                 title = stringResource(MR.strings.host_port),
                 subtitle = stringResource(MR.strings.host_port_sub, portValue),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
             SwitchPreference(
                 preference = socksProxyEnabled,
                 title = stringResource(MR.strings.host_socks_enabled),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
@@ -198,7 +198,7 @@ fun LazyListScope.ServerHostItems(
                 preference = socksProxyHost,
                 title = stringResource(MR.strings.host_socks_host),
                 subtitle = stringResource(MR.strings.host_socks_host_sub, proxyHost),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
@@ -207,7 +207,7 @@ fun LazyListScope.ServerHostItems(
                 preference = socksProxyPort,
                 title = stringResource(MR.strings.host_socks_port),
                 subtitle = stringResource(MR.strings.host_socks_port_sub, proxyPort),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
@@ -215,7 +215,7 @@ fun LazyListScope.ServerHostItems(
                 preference = debugLogsEnabled,
                 title = stringResource(MR.strings.host_debug_logging),
                 subtitle = stringResource(MR.strings.host_debug_logging_sub),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
@@ -223,7 +223,7 @@ fun LazyListScope.ServerHostItems(
                 preference = systemTrayEnabled,
                 title = stringResource(MR.strings.host_system_tray),
                 subtitle = stringResource(MR.strings.host_system_tray_sub),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
@@ -244,7 +244,7 @@ fun LazyListScope.ServerHostItems(
                 onLongClick = {
                     downloadPath.value = ""
                     serverSettingChanged()
-                }
+                },
             )
         }
         item {
@@ -252,7 +252,7 @@ fun LazyListScope.ServerHostItems(
                 preference = downloadAsCbz,
                 title = stringResource(MR.strings.host_download_as_cbz),
                 subtitle = stringResource(MR.strings.host_download_as_cbz_sub),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
@@ -260,7 +260,7 @@ fun LazyListScope.ServerHostItems(
                 preference = webUIEnabled,
                 title = stringResource(MR.strings.host_webui),
                 subtitle = stringResource(MR.strings.host_webui_sub),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
@@ -270,7 +270,7 @@ fun LazyListScope.ServerHostItems(
                 title = stringResource(MR.strings.host_open_in_browser),
                 subtitle = stringResource(MR.strings.host_open_in_browser_sub),
                 changeListener = serverSettingChanged,
-                enabled = webUIEnabledValue
+                enabled = webUIEnabledValue,
             )
         }
         item {
@@ -278,7 +278,7 @@ fun LazyListScope.ServerHostItems(
                 preference = basicAuthEnabled,
                 title = stringResource(MR.strings.basic_auth),
                 subtitle = stringResource(MR.strings.host_basic_auth_sub),
-                changeListener = serverSettingChanged
+                changeListener = serverSettingChanged,
             )
         }
         item {
@@ -286,7 +286,7 @@ fun LazyListScope.ServerHostItems(
                 preference = basicAuthUsername,
                 title = stringResource(MR.strings.host_basic_auth_username),
                 changeListener = serverSettingChanged,
-                enabled = basicAuthEnabledValue
+                enabled = basicAuthEnabledValue,
             )
         }
         item {
@@ -295,7 +295,7 @@ fun LazyListScope.ServerHostItems(
                 title = stringResource(MR.strings.host_basic_auth_password),
                 changeListener = serverSettingChanged,
                 visualTransformation = PasswordVisualTransformation(),
-                enabled = basicAuthEnabledValue
+                enabled = basicAuthEnabledValue,
             )
         }
     }

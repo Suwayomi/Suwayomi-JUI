@@ -13,12 +13,12 @@ import kotlinx.serialization.Transient
 @Serializable
 @SerialName("Header")
 data class HeaderFilter(
-    override val filter: HeaderProps
+    override val filter: HeaderProps,
 ) : SourceFilter() {
     @Serializable
     data class HeaderProps(
         override val name: String,
         @Transient
-        override val state: Int = 0
+        override val state: Int = 0,
     ) : Props<Int>
 }

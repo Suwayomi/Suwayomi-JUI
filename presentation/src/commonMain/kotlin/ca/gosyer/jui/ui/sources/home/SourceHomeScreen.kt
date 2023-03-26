@@ -41,7 +41,7 @@ class SourceHomeScreen : BaseScreen() {
                 { sourcesNavigator.search(it) }
             } else {
                 { navigator push GlobalSearchScreen(it) }
-            }
+            },
         )
     }
 }

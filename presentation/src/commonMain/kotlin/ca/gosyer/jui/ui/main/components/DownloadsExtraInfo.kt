@@ -57,18 +57,18 @@ fun DownloadsExtraInfo() {
         Text(
             text,
             style = MaterialTheme.typography.body2,
-            color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+            color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
         )
     } else if (serviceStatus == WebsocketService.Status.STOPPED) {
         Box(
             Modifier.fillMaxWidth()
                 .clip(MaterialTheme.shapes.medium)
-                .clickable(onClick = vm::restartDownloader)
+                .clickable(onClick = vm::restartDownloader),
         ) {
             Text(
                 stringResource(MR.strings.downloads_stopped),
                 style = MaterialTheme.typography.body2,
-                color = Color.Red.copy(alpha = ContentAlpha.disabled)
+                color = Color.Red.copy(alpha = ContentAlpha.disabled),
             )
         }
     }

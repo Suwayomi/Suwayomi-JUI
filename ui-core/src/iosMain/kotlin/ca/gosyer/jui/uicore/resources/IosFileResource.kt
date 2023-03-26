@@ -21,7 +21,7 @@ actual fun FileResource.rememberReadText(): String = remember {
 @Composable
 actual fun FileResource.readTextAsync(): State<String?> = produceState<String?>(
     null,
-    this.path
+    this.path,
 ) {
     withIOContext {
         value = readText()

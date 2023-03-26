@@ -37,15 +37,15 @@ val LocalSourcesNavigator: ProvidableCompositionLocal<SourcesNavigator?> =
 @Composable
 fun SourcesNavigator(
     homeScreenHolder: StableHolder<SourceHomeScreen>,
-    content: SourcesNavigatorContent = { CurrentSource() }
+    content: SourcesNavigatorContent = { CurrentSource() },
 ) {
     Navigator(
         homeScreenHolder.item,
         onBackPressed = null,
         disposeBehavior = NavigatorDisposeBehavior(
             disposeSteps = false,
-            disposeNestedNavigators = false
-        )
+            disposeNestedNavigators = false,
+        ),
     ) { navigator ->
         val sourcesNavigator = rememberNavigator(navigator, homeScreenHolder.item)
 
@@ -67,7 +67,7 @@ private val disposableEvents: Set<StackEvent> =
 @Composable
 private fun rememberNavigator(
     parent: Navigator,
-    homeScreen: SourceHomeScreen
+    homeScreen: SourceHomeScreen,
 ): SourcesNavigator {
     return rememberSaveable(saver = navigatorSaver(parent, homeScreen)) {
         SourcesNavigator(parent, homeScreen)
@@ -76,7 +76,7 @@ private fun rememberNavigator(
 
 private fun navigatorSaver(
     parent: Navigator,
-    homeScreen: SourceHomeScreen
+    homeScreen: SourceHomeScreen,
 ): Saver<SourcesNavigator, Any> =
     mapSaver(
         save = { navigator -> navigator.screens.mapKeys { it.toString() } },
@@ -86,14 +86,14 @@ private fun navigatorSaver(
                 homeScreen,
                 SnapshotStateMap<Long, Screen>().also { map ->
                     map.putAll(items.map { it.key.toLong() to (it.value as Screen) })
-                }
+                },
             )
-        }
+        },
     )
 
 @Composable
 private fun SourceNavigatorDisposableEffect(
-    navigator: SourcesNavigator
+    navigator: SourcesNavigator,
 ) {
     val currentScreen = navigator.current
 
@@ -122,7 +122,7 @@ class SourcesNavigator internal constructor(
     private val navigator: Navigator,
     homeScreen: SourceHomeScreen,
     val screens: SnapshotStateMap<Long, Screen> = SnapshotStateMap<Long, Screen>()
-        .also { it[-1] = homeScreen }
+        .also { it[-1] = homeScreen },
 ) {
 
     fun remove(source: Source) {
@@ -148,7 +148,7 @@ class SourcesNavigator internal constructor(
     fun saveableState(
         key: String,
         screen: Screen,
-        content: @Composable () -> Unit
+        content: @Composable () -> Unit,
     ) {
         navigator.saveableState(key, screen, content)
     }

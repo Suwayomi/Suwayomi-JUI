@@ -28,7 +28,7 @@ fun getLibraryFilters(vm: LibrarySettingsViewModel): @Composable () -> Unit = re
             completed = vm.filterCompleted.collectAsState().value,
             setDownloadedFilter = { vm.filterDownloaded.value = it },
             setUnreadFilter = { vm.filterUnread.value = it },
-            setCompletedFilter = { vm.filterCompleted.value = it }
+            setCompletedFilter = { vm.filterCompleted.value = it },
         )
     }
 }
@@ -40,23 +40,23 @@ fun LibraryFilters(
     completed: FilterState,
     setDownloadedFilter: (FilterState) -> Unit,
     setUnreadFilter: (FilterState) -> Unit,
-    setCompletedFilter: (FilterState) -> Unit
+    setCompletedFilter: (FilterState) -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
         Filter(
             stringResource(MR.strings.filter_downloaded),
             downloaded,
-            onClick = { setDownloadedFilter(toggleState(downloaded)) }
+            onClick = { setDownloadedFilter(toggleState(downloaded)) },
         )
         Filter(
             stringResource(MR.strings.filter_unread),
             unread,
-            onClick = { setUnreadFilter(toggleState(unread)) }
+            onClick = { setUnreadFilter(toggleState(unread)) },
         )
         Filter(
             stringResource(MR.strings.filter_completed),
             completed,
-            onClick = { setCompletedFilter(toggleState(completed)) }
+            onClick = { setCompletedFilter(toggleState(completed)) },
         )
     }
 }
@@ -79,8 +79,8 @@ private fun Filter(text: String, state: FilterState, onClick: () -> Unit) {
                     FilterState.EXCLUDED -> ToggleableState.Indeterminate
                     FilterState.IGNORED -> ToggleableState.Off
                 },
-                onClick = null
+                onClick = null,
             )
-        }
+        },
     )
 }

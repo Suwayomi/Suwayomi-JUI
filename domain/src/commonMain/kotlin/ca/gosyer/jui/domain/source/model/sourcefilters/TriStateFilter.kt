@@ -12,11 +12,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("TriState")
 data class TriStateFilter(
-    override val filter: TriStateProps
+    override val filter: TriStateProps,
 ) : SourceFilter() {
     @Serializable
     data class TriStateProps(
         override val name: String,
-        override val state: Int
+        override val state: Int,
     ) : Props<Int>
 }

@@ -13,5 +13,5 @@ import kotlinx.serialization.Serializable
 @Immutable
 data class Updates(
     val page: List<MangaAndChapter>,
-    val hasNextPage: Boolean
+    val hasNextPage: Boolean,
 )

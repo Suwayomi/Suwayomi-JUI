@@ -12,5 +12,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Immutable
 data class GlobalMeta(
-    val example: Int = 0
+    val example: Int = 0,
 )

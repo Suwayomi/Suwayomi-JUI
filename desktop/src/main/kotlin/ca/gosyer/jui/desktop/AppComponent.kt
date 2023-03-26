@@ -19,7 +19,7 @@ import me.tatarka.inject.annotations.Provides
 @Component
 abstract class AppComponent(
     @get:Provides
-    val context: ContextWrapper
+    val context: ContextWrapper,
 ) : ViewModelComponent, DataComponent, DomainComponent, UiComponent {
 
     abstract val appMigrations: AppMigrations

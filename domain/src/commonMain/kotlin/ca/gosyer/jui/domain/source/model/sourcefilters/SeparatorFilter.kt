@@ -13,12 +13,12 @@ import kotlinx.serialization.Transient
 @Serializable
 @SerialName("Separator")
 data class SeparatorFilter(
-    override val filter: SeparatorProps
+    override val filter: SeparatorProps,
 ) : SourceFilter() {
     @Serializable
     data class SeparatorProps(
         override val name: String,
         @Transient
-        override val state: Int = 0
+        override val state: Int = 0,
     ) : Props<Int>
 }

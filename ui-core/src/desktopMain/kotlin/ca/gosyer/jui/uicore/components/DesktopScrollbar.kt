@@ -39,13 +39,13 @@ internal actual fun RealVerticalScrollbar(
     modifier: Modifier,
     reverseLayout: Boolean,
     style: ScrollbarStyle,
-    interactionSource: MutableInteractionSource
+    interactionSource: MutableInteractionSource,
 ) = androidx.compose.foundation.VerticalScrollbar(
     adapter,
     modifier,
     reverseLayout,
     style,
-    interactionSource
+    interactionSource,
 )
 
 @Composable
@@ -54,25 +54,25 @@ internal actual fun RealHorizontalScrollbar(
     modifier: Modifier,
     reverseLayout: Boolean,
     style: ScrollbarStyle,
-    interactionSource: MutableInteractionSource
+    interactionSource: MutableInteractionSource,
 ) = androidx.compose.foundation.HorizontalScrollbar(
     adapter,
     modifier,
     reverseLayout,
     style,
-    interactionSource
+    interactionSource,
 )
 
 @Composable
 actual fun rememberScrollbarAdapter(
-    scrollState: ScrollState
+    scrollState: ScrollState,
 ): ScrollbarAdapter {
     return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 }
 
 @Composable
 actual fun rememberScrollbarAdapter(
-    scrollState: LazyListState
+    scrollState: LazyListState,
 ): ScrollbarAdapter {
     return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 }
@@ -81,7 +81,7 @@ actual fun rememberScrollbarAdapter(
 internal actual fun realRememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
-    arrangement: Arrangement.Vertical?
+    arrangement: Arrangement.Vertical?,
 ): ScrollbarAdapter {
     val density = LocalDensity.current
     return remember(scrollState, gridCells, density, arrangement) {
@@ -93,7 +93,7 @@ internal actual fun realRememberVerticalScrollbarAdapter(
 internal actual fun realRememberHorizontalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
-    arrangement: Arrangement.Horizontal?
+    arrangement: Arrangement.Horizontal?,
 ): ScrollbarAdapter {
     val density = LocalDensity.current
     return remember(scrollState, gridCells, density, arrangement) {
@@ -106,7 +106,7 @@ class GridScrollbarAdapter(
     private val scrollState: LazyGridState,
     private val gridCells: GridCells,
     private val density: Density,
-    private val spacing: Dp
+    private val spacing: Dp,
 ) : ScrollbarAdapter {
     override val scrollOffset: Float
         get() = (scrollState.firstVisibleItemIndex / itemsPerRow).coerceAtLeast(0) * averageItemSize + scrollState.firstVisibleItemScrollOffset
@@ -155,7 +155,7 @@ class GridScrollbarAdapter(
                     with(density) {
                         calculateCrossAxisCellSizes(containerSize, spacing.roundToPx()).size
                     }
-                }
+                },
             )
             .coerceAtLeast(0)
             .coerceAtMost(itemCount - 1)
@@ -184,7 +184,7 @@ class GridScrollbarAdapter(
             with(density) {
                 calculateCrossAxisCellSizes(
                     (scrollState.layoutInfo.viewportEndOffset - scrollState.layoutInfo.viewportStartOffset),
-                    spacing.roundToPx()
+                    spacing.roundToPx(),
                 ).size
             }
         }

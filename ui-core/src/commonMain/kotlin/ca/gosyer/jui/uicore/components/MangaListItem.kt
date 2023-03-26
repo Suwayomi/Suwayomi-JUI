@@ -39,11 +39,11 @@ import ca.gosyer.jui.uicore.resources.stringResource
 @Composable
 fun MangaListItem(
     modifier: Modifier = Modifier,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         content()
     }
@@ -53,24 +53,24 @@ fun MangaListItem(
 fun MangaListItemImage(
     modifier: Modifier = Modifier,
     data: Any,
-    contentDescription: String
+    contentDescription: String,
 ) {
     ImageLoaderImage(
         data,
         contentDescription = contentDescription,
         modifier = modifier,
         contentScale = ContentScale.Crop,
-        filterQuality = FilterQuality.Medium
+        filterQuality = FilterQuality.Medium,
     )
 }
 
 @Composable
 fun MangaListItemColumn(
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
     ) {
         content()
     }
@@ -83,7 +83,7 @@ fun MangaListItemTitle(
     bookmarked: Boolean = false,
     maxLines: Int = 1,
     fontWeight: FontWeight = FontWeight.Normal,
-    textColor: Color = Color.Unspecified
+    textColor: Color = Color.Unspecified,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         var textHeight by remember { mutableStateOf(0) }
@@ -93,7 +93,7 @@ fun MangaListItemTitle(
                 contentDescription = stringResource(MR.strings.action_filter_bookmarked),
                 modifier = Modifier
                     .sizeIn(maxHeight = with(LocalDensity.current) { textHeight.toDp() - 2.dp }),
-                tint = MaterialTheme.colors.primary
+                tint = MaterialTheme.colors.primary,
             )
             Spacer(modifier = Modifier.width(2.dp))
         }
@@ -107,7 +107,7 @@ fun MangaListItemTitle(
             color = textColor,
             onTextLayout = {
                 textHeight = it.size.height
-            }
+            },
         )
     }
 }
@@ -116,7 +116,7 @@ fun MangaListItemTitle(
 fun MangaListItemSubtitle(
     modifier: Modifier = Modifier,
     text: String,
-    textColor: Color = Color.Unspecified
+    textColor: Color = Color.Unspecified,
 ) {
     Text(
         modifier = modifier,
@@ -124,6 +124,6 @@ fun MangaListItemSubtitle(
         color = textColor,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        style = MaterialTheme.typography.body1
+        style = MaterialTheme.typography.body1,
     )
 }

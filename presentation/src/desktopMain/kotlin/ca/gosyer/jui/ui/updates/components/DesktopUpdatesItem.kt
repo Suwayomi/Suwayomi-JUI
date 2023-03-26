@@ -23,15 +23,15 @@ actual fun Modifier.updatesItemModifier(
     bookmarkChapter: (() -> Unit)?,
     unBookmarkChapter: (() -> Unit)?,
     onSelectChapter: (() -> Unit)?,
-    onUnselectChapter: (() -> Unit)?
+    onUnselectChapter: (() -> Unit)?,
 ): Modifier = this
     .onClick(
         onClick = onClick,
-        onLongClick = onSelectChapter
+        onLongClick = onSelectChapter,
     )
     .onClick(
         onClick = onSelectChapter ?: onUnselectChapter ?: {},
-        keyboardModifiers = { isCtrlPressed }
+        keyboardModifiers = { isCtrlPressed },
     )
     .onRightClickContextMenu(
         items = {
@@ -39,9 +39,9 @@ actual fun Modifier.updatesItemModifier(
                 markRead = markRead,
                 markUnread = markUnread,
                 bookmarkChapter = bookmarkChapter,
-                unBookmarkChapter = unBookmarkChapter
+                unBookmarkChapter = unBookmarkChapter,
             )
-        }
+        },
     )
 
 @Composable
@@ -50,12 +50,12 @@ private fun getContextItems(
     markRead: (() -> Unit)?,
     markUnread: (() -> Unit)?,
     bookmarkChapter: (() -> Unit)?,
-    unBookmarkChapter: (() -> Unit)?
+    unBookmarkChapter: (() -> Unit)?,
 ): List<ContextMenuItem> {
     return listOfNotNull(
         if (bookmarkChapter != null) ContextMenuItem(stringResource(MR.strings.action_bookmark), bookmarkChapter) else null,
         if (unBookmarkChapter != null) ContextMenuItem(stringResource(MR.strings.action_remove_bookmark), unBookmarkChapter) else null,
         if (markRead != null) ContextMenuItem(stringResource(MR.strings.action_mark_as_read), markRead) else null,
-        if (markUnread != null) ContextMenuItem(stringResource(MR.strings.action_mark_as_unread), markUnread) else null
+        if (markUnread != null) ContextMenuItem(stringResource(MR.strings.action_mark_as_unread), markUnread) else null,
     )
 }

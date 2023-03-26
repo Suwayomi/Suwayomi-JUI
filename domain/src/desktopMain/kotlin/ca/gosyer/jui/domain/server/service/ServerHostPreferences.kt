@@ -98,7 +98,7 @@ class ServerHostPreferences(private val preferenceStore: PreferenceStore) {
             openInBrowserEnabled,
             basicAuthEnabled,
             basicAuthUsername,
-            basicAuthPassword
+            basicAuthPassword,
         ).mapNotNull {
             it.getProperty()
         }.toTypedArray()

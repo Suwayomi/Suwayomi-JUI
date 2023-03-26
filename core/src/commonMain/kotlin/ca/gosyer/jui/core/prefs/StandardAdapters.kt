@@ -125,7 +125,7 @@ internal object StringSetAdapter : Adapter<Set<String>> {
 
 internal class ObjectAdapter<T>(
     private val serializer: (T) -> String,
-    private val deserializer: (String) -> T
+    private val deserializer: (String) -> T,
 ) : Adapter<T> {
 
     override fun get(key: String, preferences: ObservableSettings): T {
@@ -144,7 +144,7 @@ internal class ObjectAdapter<T>(
 internal class JsonObjectAdapter<T>(
     private val defaultValue: T,
     private val serializer: KSerializer<T>,
-    private val serializersModule: SerializersModule = EmptySerializersModule()
+    private val serializersModule: SerializersModule = EmptySerializersModule(),
 ) : Adapter<T> {
 
     override fun get(key: String, preferences: ObservableSettings): T {

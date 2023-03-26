@@ -58,13 +58,13 @@ enum class TopLevelMenus(
     override val selectedIcon: ImageVector,
     override val screen: KClass<*>,
     override val createScreen: () -> Screen,
-    override val extraInfo: (@Composable () -> Unit)? = null
+    override val extraInfo: (@Composable () -> Unit)? = null,
 ) : Menu {
     Library(MR.strings.location_library, Icons.Outlined.Book, Icons.Rounded.Book, LibraryScreen::class, { LibraryScreen() }, extraInfo = { LibraryUpdatesExtraInfo() }),
     Updates(MR.strings.location_updates, Icons.Outlined.NewReleases, Icons.Rounded.NewReleases, UpdatesScreen::class, { UpdatesScreen() }),
     Sources(MR.strings.location_sources, Icons.Outlined.Explore, Icons.Rounded.Explore, SourcesScreen::class, { SourcesScreen() }),
     Extensions(MR.strings.location_extensions, Icons.Outlined.Store, Icons.Rounded.Store, ExtensionsScreen::class, { ExtensionsScreen() }),
-    More(MR.strings.location_more, Icons.Outlined.MoreHoriz, Icons.Rounded.MoreHoriz, MoreScreen::class, { MoreScreen() })
+    More(MR.strings.location_more, Icons.Outlined.MoreHoriz, Icons.Rounded.MoreHoriz, MoreScreen::class, { MoreScreen() }),
 }
 
 enum class MoreMenus(
@@ -73,9 +73,9 @@ enum class MoreMenus(
     override val selectedIcon: ImageVector,
     override val screen: KClass<*>,
     override val createScreen: () -> Screen,
-    override val extraInfo: (@Composable () -> Unit)? = null
+    override val extraInfo: (@Composable () -> Unit)? = null,
 ) : Menu {
     Downloads(MR.strings.location_downloads, Icons.Outlined.Download, Icons.Rounded.Download, DownloadsScreen::class, { DownloadsScreen() }, extraInfo = { DownloadsExtraInfo() }),
     Settings(MR.strings.location_settings, Icons.Outlined.Settings, Icons.Rounded.Settings, SettingsScreen::class, { SettingsScreen() }),
-    About(MR.strings.location_about, Icons.Outlined.Info, Icons.Rounded.Info, AboutScreen::class, { AboutScreen() })
+    About(MR.strings.location_about, Icons.Outlined.Info, Icons.Rounded.Info, AboutScreen::class, { AboutScreen() }),
 }

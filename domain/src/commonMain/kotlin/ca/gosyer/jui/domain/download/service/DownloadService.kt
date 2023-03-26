@@ -21,7 +21,7 @@ import me.tatarka.inject.annotations.Inject
 
 class DownloadService @Inject constructor(
     serverPreferences: ServerPreferences,
-    client: Http
+    client: Http,
 ) : WebsocketService(serverPreferences, client) {
     override val _status: MutableStateFlow<Status>
         get() = status

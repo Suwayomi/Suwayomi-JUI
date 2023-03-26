@@ -35,7 +35,7 @@ class DownloadsScreen : Screen {
             moveDownloadUp = vm::moveUp,
             moveDownloadDown = vm::moveDown,
             moveDownloadToTop = vm::moveToTop,
-            moveDownloadToBottom = vm::moveToBottom
+            moveDownloadToBottom = vm::moveToBottom,
         )
     }
 }

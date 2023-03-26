@@ -45,12 +45,12 @@ fun LicensesContent() {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.open_source_licenses))
-        }
+        },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
             val libs = getLicenses()
@@ -65,9 +65,9 @@ fun LicensesContent() {
                     },
                     contentPadding = WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    ).asPaddingValues()
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ).asPaddingValues(),
                 )
                 VerticalScrollbar(
                     modifier = Modifier.align(Alignment.CenterEnd)
@@ -76,11 +76,11 @@ fun LicensesContent() {
                         .windowInsetsPadding(
                             WindowInsets.bottomNav.add(
                                 WindowInsets.navigationBars.only(
-                                    WindowInsetsSides.Bottom
-                                )
-                            )
+                                    WindowInsetsSides.Bottom,
+                                ),
+                            ),
                         ),
-                    adapter = rememberScrollbarAdapter(state)
+                    adapter = rememberScrollbarAdapter(state),
                 )
             } else {
                 LoadingScreen()

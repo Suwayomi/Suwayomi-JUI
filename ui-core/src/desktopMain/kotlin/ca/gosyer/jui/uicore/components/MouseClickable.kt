@@ -23,19 +23,19 @@ import androidx.compose.ui.input.pointer.PointerButton
 
 fun Modifier.onRightClickContextMenu(
     items: @Composable () -> List<ContextMenuItem>,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) = composed {
     var expanded by remember { mutableStateOf(false) }
     CursorDropdownMenu(
         expanded,
-        onDismissRequest = { expanded = false }
+        onDismissRequest = { expanded = false },
     ) {
         items().forEach { item ->
             DropdownMenuItem(
                 onClick = {
                     expanded = false
                     item.onClick()
-                }
+                },
             ) {
                 Text(text = item.label)
             }
@@ -44,6 +44,6 @@ fun Modifier.onRightClickContextMenu(
     Modifier.onClick(
         enabled = enabled,
         matcher = PointerMatcher.mouse(PointerButton.Secondary),
-        onClick = { expanded = true }
+        onClick = { expanded = true },
     )
 }

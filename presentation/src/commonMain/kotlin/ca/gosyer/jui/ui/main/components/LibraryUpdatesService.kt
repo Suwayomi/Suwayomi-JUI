@@ -13,5 +13,5 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 internal expect fun startLibraryUpdatesService(
     contextWrapper: ContextWrapper,
     libraryUpdatesService: LibraryUpdateService,
-    actions: WebsocketService.Actions
+    actions: WebsocketService.Actions,
 )

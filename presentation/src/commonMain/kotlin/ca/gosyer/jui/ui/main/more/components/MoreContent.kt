@@ -55,12 +55,12 @@ fun MoreContent() {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
-                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
-            )
+                WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal),
+            ),
         ),
         topBar = {
             Toolbar(stringResource(MR.strings.location_more))
-        }
+        },
     ) {
         Box(Modifier.padding(it)) {
             val state = rememberLazyListState()
@@ -69,16 +69,16 @@ fun MoreContent() {
                 state = state,
                 contentPadding = WindowInsets.bottomNav.add(
                     WindowInsets.navigationBars.only(
-                        WindowInsetsSides.Bottom
-                    )
-                ).asPaddingValues()
+                        WindowInsetsSides.Bottom,
+                    ),
+                ).asPaddingValues(),
             ) {
                 item {
                     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                         Image(
                             painter = MR.images.icon.toPainter(),
                             contentDescription = "icon",
-                            modifier = Modifier.height(140.dp).padding(vertical = 8.dp)
+                            modifier = Modifier.height(140.dp).padding(vertical = 8.dp),
                         )
                     }
                 }
@@ -97,13 +97,13 @@ fun MoreContent() {
                                     navigator push it.createScreen()
                                 }
                                 .padding(horizontal = 16.dp, vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Icon(
                                 imageVector = it.unselectedIcon,
                                 contentDescription = stringResource(it.textKey),
                                 modifier = Modifier.size(26.dp),
-                                tint = MaterialTheme.colors.onSurface
+                                tint = MaterialTheme.colors.onSurface,
                             )
                             Spacer(Modifier.width(24.dp))
                             Column {
@@ -123,11 +123,11 @@ fun MoreContent() {
                     .windowInsetsPadding(
                         WindowInsets.bottomNav.add(
                             WindowInsets.navigationBars.only(
-                                WindowInsetsSides.Bottom
-                            )
-                        )
+                                WindowInsetsSides.Bottom,
+                            ),
+                        ),
                     ),
-                adapter = rememberScrollbarAdapter(state)
+                adapter = rememberScrollbarAdapter(state),
             )
         }
     }

@@ -14,8 +14,8 @@ actual class PreferenceStoreFactory @Inject constructor() {
     actual fun create(vararg names: String): PreferenceStore {
         return StandardPreferenceStore(
             NSUserDefaultsSettings(
-                NSUserDefaults.standardUserDefaults
-            )
+                NSUserDefaults.standardUserDefaults,
+            ),
         )
     }
 }

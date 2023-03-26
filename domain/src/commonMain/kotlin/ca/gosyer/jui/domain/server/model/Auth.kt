@@ -14,5 +14,5 @@ import kotlinx.serialization.Serializable
 enum class Auth {
     NONE,
     BASIC,
-    DIGEST
+    DIGEST,
 }

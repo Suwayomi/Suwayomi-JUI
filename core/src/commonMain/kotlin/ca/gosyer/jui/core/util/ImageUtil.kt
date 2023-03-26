@@ -40,6 +40,6 @@ object ImageUtil {
         JPG("image/jpeg", "jpg"),
         PNG("image/png", "png"),
         GIF("image/gif", "gif"),
-        WEBP("image/webp", "webp")
+        WEBP("image/webp", "webp"),
     }
 }

@@ -17,5 +17,5 @@ data class WindowSettings(
     val width: Int? = null,
     val height: Int? = null,
     val maximized: Boolean? = null,
-    val fullscreen: Boolean? = null
+    val fullscreen: Boolean? = null,
 )

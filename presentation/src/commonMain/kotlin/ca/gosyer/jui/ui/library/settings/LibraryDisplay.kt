@@ -37,7 +37,7 @@ fun getLibraryDisplay(vm: LibrarySettingsViewModel): @Composable () -> Unit = re
             setUnreadBadges = { vm.unreadBadges.value = it },
             setDownloadBadges = { vm.downloadBadges.value = it },
             setLanguageBadges = { vm.languageBadges.value = it },
-            setLocalBadges = { vm.localBadges.value = it }
+            setLocalBadges = { vm.localBadges.value = it },
         )
     }
 }
@@ -53,7 +53,7 @@ fun LibraryDisplay(
     setUnreadBadges: (Boolean) -> Unit,
     setDownloadBadges: (Boolean) -> Unit,
     setLanguageBadges: (Boolean) -> Unit,
-    setLocalBadges: (Boolean) -> Unit
+    setLocalBadges: (Boolean) -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
         TitleText(stringResource(MR.strings.display_mode))
@@ -61,24 +61,24 @@ fun LibraryDisplay(
             RadioSelectionItem(
                 text = stringResource(it.res),
                 selected = it == displayMode,
-                onClick = { setDisplayMode(it) }
+                onClick = { setDisplayMode(it) },
             )
         }
         TitleText(stringResource(MR.strings.display_badges))
         CheckboxItem(
             text = stringResource(MR.strings.display_badge_downloaded),
             checked = downloadBadges,
-            onClick = { setDownloadBadges(!downloadBadges) }
+            onClick = { setDownloadBadges(!downloadBadges) },
         )
         CheckboxItem(
             text = stringResource(MR.strings.display_badge_unread),
             checked = unreadBadges,
-            onClick = { setUnreadBadges(!unreadBadges) }
+            onClick = { setUnreadBadges(!unreadBadges) },
         )
         CheckboxItem(
             text = stringResource(MR.strings.display_badge_local),
             checked = localBadges,
-            onClick = { setLocalBadges(!localBadges) }
+            onClick = { setLocalBadges(!localBadges) },
         )
         // TODO: 2022-04-06 Enable when library contains manga source in manga object
         /*CheckboxItem(
@@ -94,7 +94,7 @@ private fun TitleText(text: String) {
     Text(
         text = text,
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
     )
 }
 
@@ -106,9 +106,9 @@ private fun RadioSelectionItem(text: String, selected: Boolean, onClick: () -> U
         action = {
             RadioButton(
                 selected = selected,
-                onClick = null
+                onClick = null,
             )
-        }
+        },
     )
 }
 
@@ -120,8 +120,8 @@ private fun CheckboxItem(text: String, checked: Boolean, onClick: () -> Unit) {
         action = {
             Checkbox(
                 checked = checked,
-                onCheckedChange = null
+                onCheckedChange = null,
             )
-        }
+        },
     )
 }

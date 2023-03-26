@@ -35,7 +35,7 @@ fun getLibrarySort(vm: LibrarySettingsViewModel): @Composable () -> Unit = remem
                 vm.sortMode.value = it
                 vm.sortAscending.value = true
             },
-            setAscending = { vm.sortAscending.value = it }
+            setAscending = { vm.sortAscending.value = it },
         )
     }
 }
@@ -45,7 +45,7 @@ fun LibrarySort(
     mode: Sort,
     ascending: Boolean,
     setMode: (Sort) -> Unit,
-    setAscending: (Boolean) -> Unit
+    setAscending: (Boolean) -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
         Sort.values().asList().fastForEach { sort ->
@@ -66,12 +66,12 @@ fun LibrarySort(
                                 false -> Icons.Rounded.ArrowDownward
                             },
                             contentDescription = stringResource(sort.res),
-                            modifier = Modifier.fillMaxHeight()
+                            modifier = Modifier.fillMaxHeight(),
                         )
                     } else {
                         Box(Modifier.size(24.dp))
                     }
-                }
+                },
             )
         }
     }

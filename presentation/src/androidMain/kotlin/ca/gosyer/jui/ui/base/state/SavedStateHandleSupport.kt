@@ -35,7 +35,7 @@ private fun createSavedStateHandle(
     savedStateRegistryOwner: SavedStateRegistryOwner,
     viewModelStoreOwner: ViewModelStoreOwner,
     key: String,
-    defaultArgs: Bundle?
+    defaultArgs: Bundle?,
 ): SavedStateHandle {
     val provider = savedStateRegistryOwner.savedStateHandlesProvider
     // If we already have a reference to a previously created SavedStateHandle
@@ -51,7 +51,7 @@ private fun createSavedStateHandle(
 
     return handles[key] ?: SavedStateHandle.createHandle(
         provider.consumeRestoredStateForKey(key),
-        defaultArgs
+        defaultArgs,
     ).also { handles[key] = it }
 }
 
@@ -72,21 +72,21 @@ private fun createSavedStateHandle(
 fun CreationExtras.createSavedStateHandle(): SavedStateHandle {
     val savedStateRegistryOwner = this[SAVED_STATE_REGISTRY_OWNER_KEY]
         ?: throw IllegalArgumentException(
-            "CreationExtras must have a value by `SAVED_STATE_REGISTRY_OWNER_KEY`"
+            "CreationExtras must have a value by `SAVED_STATE_REGISTRY_OWNER_KEY`",
         )
     val viewModelStateRegistryOwner = this[VIEW_MODEL_STORE_OWNER_KEY]
         ?: throw IllegalArgumentException(
-            "CreationExtras must have a value by `VIEW_MODEL_STORE_OWNER_KEY`"
+            "CreationExtras must have a value by `VIEW_MODEL_STORE_OWNER_KEY`",
         )
     val defaultArgs = this[DEFAULT_ARGS_KEY]
     val key = this[VIEW_MODEL_KEY] ?: throw IllegalArgumentException(
-        "CreationExtras must have a value by `VIEW_MODEL_KEY`"
+        "CreationExtras must have a value by `VIEW_MODEL_KEY`",
     )
     return createSavedStateHandle(
         savedStateRegistryOwner,
         viewModelStateRegistryOwner,
         key,
-        defaultArgs
+        defaultArgs,
     )
 }
 
@@ -94,7 +94,7 @@ internal val SavedStateRegistryOwner.savedStateHandlesProvider: SavedStateHandle
     get() = savedStateRegistry.getSavedStateProvider(SAVED_STATE_KEY)?.let(::SavedStateHandlesProvider)
         ?: throw IllegalStateException(
             "enableSavedStateHandles() wasn't called " +
-                "prior to createSavedStateHandle() call"
+                "prior to createSavedStateHandle() call",
         )
 
 /**
@@ -102,7 +102,7 @@ internal val SavedStateRegistryOwner.savedStateHandlesProvider: SavedStateHandle
  * SavedStateHandle associated with the SavedState/ViewModel pair.
  */
 internal class SavedStateHandlesProvider(
-    private val savedStateRegistry: SavedStateRegistry.SavedStateProvider
+    private val savedStateRegistry: SavedStateRegistry.SavedStateProvider,
 ) {
     /**
      * Restore the state associated with a particular SavedStateHandle, identified by its [key]
@@ -119,7 +119,7 @@ inline fun <reified T : ScreenModel> CreationExtras.addScreenModelKey(screen: Sc
     return MutableCreationExtras(this).apply {
         set(
             VIEW_MODEL_KEY,
-            "${screen.key}:${T::class.qualifiedName}:${tag ?: "default"}"
+            "${screen.key}:${T::class.qualifiedName}:${tag ?: "default"}",
         )
     }
 }

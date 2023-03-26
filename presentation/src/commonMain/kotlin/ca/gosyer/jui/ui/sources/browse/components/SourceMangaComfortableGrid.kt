@@ -53,7 +53,7 @@ fun SourceMangaComfortableGrid(
     gridSize: Int,
     onClickManga: (Long) -> Unit,
     hasNextPage: Boolean = false,
-    onLoadNextPage: () -> Unit
+    onLoadNextPage: () -> Unit,
 ) {
     Box {
         val state = rememberLazyGridState()
@@ -68,9 +68,9 @@ fun SourceMangaComfortableGrid(
             modifier = Modifier.fillMaxSize().padding(4.dp),
             contentPadding = WindowInsets.bottomNav.add(
                 WindowInsets.navigationBars.only(
-                    WindowInsetsSides.Bottom
-                )
-            ).asPaddingValues()
+                    WindowInsetsSides.Bottom,
+                ),
+            ).asPaddingValues(),
         ) {
             itemsIndexed(mangas) { index, manga ->
                 if (hasNextPage && index == mangas.lastIndex) {
@@ -78,10 +78,10 @@ fun SourceMangaComfortableGrid(
                 }
                 SourceMangaComfortableGridItem(
                     modifier = Modifier.clickable(
-                        onClick = { onClickManga(manga.id) }
+                        onClick = { onClickManga(manga.id) },
                     ),
                     manga = manga,
-                    inLibrary = manga.inLibrary
+                    inLibrary = manga.inLibrary,
                 )
             }
         }
@@ -93,10 +93,10 @@ fun SourceMangaComfortableGrid(
                 .windowInsetsPadding(
                     WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    )
-                )
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ),
+                ),
         )
     }
 }
@@ -105,13 +105,13 @@ fun SourceMangaComfortableGrid(
 private fun SourceMangaComfortableGridItem(
     modifier: Modifier,
     manga: Manga,
-    inLibrary: Boolean
+    inLibrary: Boolean,
 ) {
     Box(
         modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium) then modifier
+            .clip(MaterialTheme.shapes.medium) then modifier,
     ) {
         Column {
             ImageLoaderImage(
@@ -122,7 +122,7 @@ private fun SourceMangaComfortableGridItem(
                     .aspectRatio(mangaAspectRatio)
                     .clip(MaterialTheme.shapes.medium),
                 contentScale = ContentScale.Crop,
-                filterQuality = FilterQuality.Medium
+                filterQuality = FilterQuality.Medium,
             )
             Text(
                 text = manga.title,
@@ -131,12 +131,12 @@ private fun SourceMangaComfortableGridItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
-                style = MaterialTheme.typography.subtitle2
+                style = MaterialTheme.typography.subtitle2,
             )
         }
         SourceMangaBadges(
             inLibrary = inLibrary,
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(4.dp),
         )
     }
 }

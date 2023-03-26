@@ -29,11 +29,11 @@ data class Chapter(
     val pageCount: Int?,
     val lastReadAt: Int?,
     val downloaded: Boolean,
-    val meta: ChapterMeta
+    val meta: ChapterMeta,
 )
 
 @Serializable
 @Immutable
 data class ChapterMeta(
-    val juiPageOffset: Int = 0
+    val juiPageOffset: Int = 0,
 )

@@ -54,7 +54,7 @@ fun LibraryMangaComfortableGrid(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     Box {
         val state = rememberLazyGridState()
@@ -69,21 +69,21 @@ fun LibraryMangaComfortableGrid(
             modifier = Modifier.fillMaxSize().padding(4.dp),
             contentPadding = WindowInsets.bottomNav.add(
                 WindowInsets.navigationBars.only(
-                    WindowInsetsSides.Bottom
-                )
-            ).asPaddingValues()
+                    WindowInsetsSides.Bottom,
+                ),
+            ).asPaddingValues(),
         ) {
             items(library) { manga ->
                 LibraryMangaComfortableGridItem(
                     modifier = Modifier.libraryMangaModifier(
                         { onClickManga(manga.id) },
-                        { onRemoveMangaClicked(manga.id) }
+                        { onRemoveMangaClicked(manga.id) },
                     ),
                     manga = manga,
                     showUnread = showUnread,
                     showDownloaded = showDownloaded,
                     showLanguage = showLanguage,
-                    showLocal = showLocal
+                    showLocal = showLocal,
                 )
             }
         }
@@ -95,10 +95,10 @@ fun LibraryMangaComfortableGrid(
                 .windowInsetsPadding(
                     WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(
-                            WindowInsetsSides.Bottom
-                        )
-                    )
-                )
+                            WindowInsetsSides.Bottom,
+                        ),
+                    ),
+                ),
         )
     }
 }
@@ -110,13 +110,13 @@ private fun LibraryMangaComfortableGridItem(
     showUnread: Boolean,
     showDownloaded: Boolean,
     showLanguage: Boolean,
-    showLocal: Boolean
+    showLocal: Boolean,
 ) {
     Box(
         modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium) then modifier
+            .clip(MaterialTheme.shapes.medium) then modifier,
     ) {
         Column {
             ImageLoaderImage(
@@ -127,7 +127,7 @@ private fun LibraryMangaComfortableGridItem(
                     .aspectRatio(mangaAspectRatio)
                     .clip(MaterialTheme.shapes.medium),
                 contentScale = ContentScale.Crop,
-                filterQuality = FilterQuality.Medium
+                filterQuality = FilterQuality.Medium,
             )
             Text(
                 text = manga.title,
@@ -136,7 +136,7 @@ private fun LibraryMangaComfortableGridItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp),
-                style = MaterialTheme.typography.subtitle2
+                style = MaterialTheme.typography.subtitle2,
             )
         }
         LibraryMangaBadges(
@@ -145,7 +145,7 @@ private fun LibraryMangaComfortableGridItem(
             showUnread = showUnread,
             showDownloaded = showDownloaded,
             showLanguage = showLanguage,
-            showLocal = showLocal
+            showLocal = showLocal,
         )
     }
 }

@@ -17,7 +17,7 @@ class ModifyCategory @Inject constructor(private val categoryRepository: Categor
 
     suspend fun await(categoryId: Long, name: String, onError: suspend (Throwable) -> Unit = {}) = asFlow(
         categoryId = categoryId,
-        name = name
+        name = name,
     ).catch {
         onError(it)
         log.warn(it) { "Failed to modify category $categoryId with options: name=$name" }
@@ -25,7 +25,7 @@ class ModifyCategory @Inject constructor(private val categoryRepository: Categor
 
     suspend fun await(category: Category, name: String? = null, onError: suspend (Throwable) -> Unit = {}) = asFlow(
         category = category,
-        name = name
+        name = name,
     ).catch {
         onError(it)
         log.warn(it) { "Failed to modify category ${category.name} with options: name=$name" }
@@ -33,12 +33,12 @@ class ModifyCategory @Inject constructor(private val categoryRepository: Categor
 
     fun asFlow(categoryId: Long, name: String) = categoryRepository.modifyCategory(
         categoryId = categoryId,
-        name = name
+        name = name,
     )
 
     fun asFlow(category: Category, name: String? = null) = categoryRepository.modifyCategory(
         categoryId = category.id,
-        name = name ?: category.name
+        name = name ?: category.name,
     )
 
     companion object {

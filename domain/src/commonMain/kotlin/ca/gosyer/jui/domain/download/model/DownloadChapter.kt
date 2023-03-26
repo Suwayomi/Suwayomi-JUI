@@ -20,5 +20,5 @@ data class DownloadChapter(
     val manga: Manga,
     val state: DownloadState = DownloadState.Queued,
     val progress: Float = 0f,
-    val tries: Int = 0
+    val tries: Int = 0,
 )
