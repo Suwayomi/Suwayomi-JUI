@@ -99,7 +99,7 @@ fun ImageLoaderImage(
                     error.value = state.error
                     ImageLoaderImageState.Failure
                 }
-                ImageRequestState.Loading -> {
+                is ImageRequestState.Loading -> {
                     progress.value = 0.0F
                     ImageLoaderImageState.Loading
                 }

@@ -263,7 +263,7 @@ private fun lazyListSnapLayoutInfoProvider(
         return lowerBoundOffset.rangeTo(upperBoundOffset)
     }
 
-    override fun Density.snapStepSize(): Float = with(layoutInfo) {
+    override fun Density.calculateSnapStepSize(): Float = with(layoutInfo) {
         if (visibleItemsInfo.isNotEmpty()) {
             visibleItemsInfo.fastSumBy { it.size } / visibleItemsInfo.size.toFloat()
         } else {

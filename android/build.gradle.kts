@@ -114,7 +114,11 @@ android {
         }
     }
 
-    packagingOptions {
+    buildFeatures {
+        buildConfig = true
+    }
+
+    packaging {
         resources.excludes.addAll(listOf(
             "META-INF/DEPENDENCIES",
             "LICENSE.txt",

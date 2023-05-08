@@ -9,6 +9,7 @@ package ca.gosyer.jui.core.lang
 import com.soywiz.kds.PriorityQueue
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
@@ -28,11 +29,12 @@ internal open class ProcessChannel<T>(
     internal val inChannel: Channel<T>,
     internal val outChannel: Channel<T>,
 ) : Channel<T> {
-    @ExperimentalCoroutinesApi
+
+    @DelicateCoroutinesApi
     override val isClosedForReceive: Boolean
         get() = outChannel.isClosedForReceive
 
-    @ExperimentalCoroutinesApi
+    @DelicateCoroutinesApi
     override val isClosedForSend: Boolean
         get() = inChannel.isClosedForSend
 
@@ -97,6 +99,7 @@ internal open class ProcessChannel<T>(
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 @ExperimentalCoroutinesApi
 internal class PriorityChannelImpl<T>(
     private val maxCapacity: Int,

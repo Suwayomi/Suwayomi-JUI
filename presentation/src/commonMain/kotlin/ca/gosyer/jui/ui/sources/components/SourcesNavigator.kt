@@ -21,6 +21,7 @@ import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.sources.browse.SourceScreen
 import ca.gosyer.jui.ui.sources.globalsearch.GlobalSearchScreen
 import ca.gosyer.jui.ui.sources.home.SourceHomeScreen
+import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.lifecycle.DisposableEffectIgnoringConfiguration
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.stack.StackEvent
@@ -153,6 +154,7 @@ class SourcesNavigator internal constructor(
         navigator.saveableState(key, screen, content)
     }
 
+    @OptIn(InternalVoyagerApi::class)
     fun dispose(screen: Screen) {
         navigator.dispose(screen)
     }

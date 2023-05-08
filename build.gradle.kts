@@ -135,7 +135,7 @@ subprojects {
 
     plugins.withType<JacocoPlugin> {
         configure<JacocoPluginExtension> {
-            toolVersion = "0.8.7"
+            toolVersion = "0.8.10"
         }
     }
     plugins.withType<ComposePlugin> {
