@@ -37,6 +37,7 @@ ktlint_standard_argument-list-wrapping = disabled
 ktlint_standard_function-naming = disabled
 ktlint_standard_property-naming = disabled
 ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_string-template-indent = disabled
 ktlint_experimental_comment-wrapping = disabled
 
 [*.md]
