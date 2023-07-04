@@ -14,7 +14,6 @@ import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.desc.desc
 
 object Notifications {
-
     /**
      * Notification channel and ids used by the downloader.
      */

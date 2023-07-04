@@ -18,5 +18,5 @@ actual fun getDebugInfo(): String {
         Device model: ${device.model}
         System name: ${device.systemName}
         System version: ${device.systemVersion}
-    """.trimIndent()
+        """.trimIndent()
 }

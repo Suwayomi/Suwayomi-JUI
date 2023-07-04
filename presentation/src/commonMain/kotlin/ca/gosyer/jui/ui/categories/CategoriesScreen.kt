@@ -16,7 +16,6 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import kotlin.jvm.Transient
 
 expect class CategoriesLauncher {
-
     fun open()
 
     @Composable
@@ -30,7 +29,6 @@ class CategoriesScreen(
     @Transient
     private val notifyFinished: (() -> Unit)? = null,
 ) : Screen {
-
     override val key: ScreenKey = uniqueScreenKey
 
     @Composable

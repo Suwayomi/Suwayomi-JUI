@@ -44,7 +44,7 @@ fun AppTheme(content: @Composable () -> Unit) {
     val viewModels = LocalViewModels.current
     val vm = remember { viewModels.appThemeViewModel() }
     val (colors, extraColors) = vm.getColors()
-    /*val systemUiController = rememberSystemUiController()*/
+    // val systemUiController = rememberSystemUiController()
     DisposableEffect(vm) {
         onDispose(vm::onDispose)
     }
@@ -59,94 +59,99 @@ fun AppTheme(content: @Composable () -> Unit) {
     }
 }
 
-class AppThemeViewModel @Inject constructor(
-    private val uiPreferences: UiPreferences,
-    contextWrapper: ContextWrapper,
-) : ViewModel(contextWrapper) {
-    override val scope = MainScope()
+class AppThemeViewModel
+    @Inject
+    constructor(
+        private val uiPreferences: UiPreferences,
+        contextWrapper: ContextWrapper,
+    ) : ViewModel(contextWrapper) {
+        override val scope = MainScope()
 
-    private val themeMode = uiPreferences.themeMode().asStateFlow()
-    private val lightTheme = uiPreferences.lightTheme().asStateFlow()
-    private val darkTheme = uiPreferences.darkTheme().asStateFlow()
+        private val themeMode = uiPreferences.themeMode().asStateFlow()
+        private val lightTheme = uiPreferences.lightTheme().asStateFlow()
+        private val darkTheme = uiPreferences.darkTheme().asStateFlow()
 
-    private val baseThemeJob = SupervisorJob()
-    private val baseThemeScope = CoroutineScope(baseThemeJob)
+        private val baseThemeJob = SupervisorJob()
+        private val baseThemeScope = CoroutineScope(baseThemeJob)
 
-    @Composable
-    fun getColors(): Pair<Colors, ExtraColors> {
-        val themeMode by themeMode.collectAsState()
-        val lightTheme by lightTheme.collectAsState()
-        val darkTheme by darkTheme.collectAsState()
+        @Composable
+        fun getColors(): Pair<Colors, ExtraColors> {
+            val themeMode by themeMode.collectAsState()
+            val lightTheme by lightTheme.collectAsState()
+            val darkTheme by darkTheme.collectAsState()
 
-        val baseTheme = getBaseTheme(themeMode, lightTheme, darkTheme)
-        val colors = remember(baseTheme.colors.isLight) {
-            baseThemeJob.cancelChildren()
+            val baseTheme = getBaseTheme(themeMode, lightTheme, darkTheme)
+            val colors = remember(baseTheme.colors.isLight) {
+                baseThemeJob.cancelChildren()
 
-            if (baseTheme.colors.isLight) {
-                uiPreferences.getLightColors().asStateFlow(baseThemeScope)
-            } else {
-                uiPreferences.getDarkColors().asStateFlow(baseThemeScope)
+                if (baseTheme.colors.isLight) {
+                    uiPreferences.getLightColors().asStateFlow(baseThemeScope)
+                } else {
+                    uiPreferences.getDarkColors().asStateFlow(baseThemeScope)
+                }
+            }
+
+            val primary by colors.primaryStateFlow.collectAsState()
+            val secondary by colors.secondaryStateFlow.collectAsState()
+            val tertiary by colors.tertiaryStateFlow.collectAsState()
+
+            return getMaterialColors(baseTheme.colors, primary, secondary) to getExtraColors(baseTheme.extraColors, tertiary)
+        }
+
+        @Composable
+        private fun getBaseTheme(
+            themeMode: ThemeMode,
+            lightTheme: Int,
+            darkTheme: Int,
+        ): Theme {
+            fun getTheme(
+                id: Int,
+                isLight: Boolean,
+            ): Theme {
+                return themes.find { it.id == id && it.colors.isLight == isLight }
+                    ?: themes.first { it.colors.isLight == isLight }
+            }
+
+            return when (themeMode) {
+                ThemeMode.System -> if (!isSystemInDarkTheme()) {
+                    getTheme(lightTheme, true)
+                } else {
+                    getTheme(darkTheme, false)
+                }
+                ThemeMode.Light -> getTheme(lightTheme, true)
+                ThemeMode.Dark -> getTheme(darkTheme, false)
             }
         }
 
-        val primary by colors.primaryStateFlow.collectAsState()
-        val secondary by colors.secondaryStateFlow.collectAsState()
-        val tertiary by colors.tertiaryStateFlow.collectAsState()
-
-        return getMaterialColors(baseTheme.colors, primary, secondary) to getExtraColors(baseTheme.extraColors, tertiary)
-    }
-
-    @Composable
-    private fun getBaseTheme(
-        themeMode: ThemeMode,
-        lightTheme: Int,
-        darkTheme: Int,
-    ): Theme {
-        fun getTheme(id: Int, isLight: Boolean): Theme {
-            return themes.find { it.id == id && it.colors.isLight == isLight }
-                ?: themes.first { it.colors.isLight == isLight }
+        private fun getMaterialColors(
+            baseColors: Colors,
+            colorPrimary: Color,
+            colorSecondary: Color,
+        ): Colors {
+            val primary = colorPrimary.takeOrElse { baseColors.primary }
+            val secondary = colorSecondary.takeOrElse { baseColors.secondary }
+            return baseColors.copy(
+                primary = primary,
+                primaryVariant = primary,
+                secondary = secondary,
+                secondaryVariant = secondary,
+                onPrimary = if (primary.luminance() > 0.5) Color.Black else Color.White,
+                onSecondary = if (secondary.luminance() > 0.5) Color.Black else Color.White,
+            )
         }
 
-        return when (themeMode) {
-            ThemeMode.System -> if (!isSystemInDarkTheme()) {
-                getTheme(lightTheme, true)
-            } else {
-                getTheme(darkTheme, false)
-            }
-            ThemeMode.Light -> getTheme(lightTheme, true)
-            ThemeMode.Dark -> getTheme(darkTheme, false)
+        private fun getExtraColors(
+            baseExtraColors: ExtraColors,
+            colorTertiary: Color,
+        ): ExtraColors {
+            val tertiary = colorTertiary.takeOrElse { baseExtraColors.tertiary }
+            return baseExtraColors.copy(
+                tertiary = tertiary,
+            )
+        }
+
+        override fun onDispose() {
+            baseThemeScope.cancel()
+            scope.cancel()
         }
     }
-
-    private fun getMaterialColors(
-        baseColors: Colors,
-        colorPrimary: Color,
-        colorSecondary: Color,
-    ): Colors {
-        val primary = colorPrimary.takeOrElse { baseColors.primary }
-        val secondary = colorSecondary.takeOrElse { baseColors.secondary }
-        return baseColors.copy(
-            primary = primary,
-            primaryVariant = primary,
-            secondary = secondary,
-            secondaryVariant = secondary,
-            onPrimary = if (primary.luminance() > 0.5) Color.Black else Color.White,
-            onSecondary = if (secondary.luminance() > 0.5) Color.Black else Color.White,
-        )
-    }
-
-    private fun getExtraColors(
-        baseExtraColors: ExtraColors,
-        colorTertiary: Color,
-    ): ExtraColors {
-        val tertiary = colorTertiary.takeOrElse { baseExtraColors.tertiary }
-        return baseExtraColors.copy(
-            tertiary = tertiary,
-        )
-    }
-
-    override fun onDispose() {
-        baseThemeScope.cancel()
-        scope.cancel()
-    }
-}

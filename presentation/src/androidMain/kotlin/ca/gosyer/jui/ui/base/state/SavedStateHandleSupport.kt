@@ -115,7 +115,10 @@ internal class SavedStateHandlesProvider(
     }
 }
 
-inline fun <reified T : ScreenModel> CreationExtras.addScreenModelKey(screen: Screen, tag: String?): CreationExtras {
+inline fun <reified T : ScreenModel> CreationExtras.addScreenModelKey(
+    screen: Screen,
+    tag: String?,
+): CreationExtras {
     return MutableCreationExtras(this).apply {
         set(
             VIEW_MODEL_KEY,

@@ -43,7 +43,11 @@ import ca.gosyer.jui.uicore.insets.systemBars
 import cafe.adriel.voyager.navigator.Navigator
 
 @Composable
-fun SideMenu(modifier: Modifier, controller: DisplayController, navigator: Navigator) {
+fun SideMenu(
+    modifier: Modifier,
+    controller: DisplayController,
+    navigator: Navigator,
+) {
     Surface(
         Modifier.fillMaxHeight()
             .windowInsetsPadding(

@@ -26,19 +26,20 @@ import ca.gosyer.jui.ui.sources.browse.filter.SourceFilterAction
 import ca.gosyer.jui.uicore.resources.stringResource
 
 @Composable
-fun getLibrarySort(vm: LibrarySettingsViewModel): @Composable () -> Unit = remember(vm) {
-    @Composable {
-        LibrarySort(
-            mode = vm.sortMode.collectAsState().value,
-            ascending = vm.sortAscending.collectAsState().value,
-            setMode = {
-                vm.sortMode.value = it
-                vm.sortAscending.value = true
-            },
-            setAscending = { vm.sortAscending.value = it },
-        )
+fun getLibrarySort(vm: LibrarySettingsViewModel): @Composable () -> Unit =
+    remember(vm) {
+        @Composable {
+            LibrarySort(
+                mode = vm.sortMode.collectAsState().value,
+                ascending = vm.sortAscending.collectAsState().value,
+                setMode = {
+                    vm.sortMode.value = it
+                    vm.sortAscending.value = true
+                },
+                setAscending = { vm.sortAscending.value = it },
+            )
+        }
     }
-}
 
 @Composable
 fun LibrarySort(

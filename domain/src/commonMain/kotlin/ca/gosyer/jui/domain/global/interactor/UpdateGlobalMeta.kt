@@ -14,33 +14,34 @@ import kotlinx.coroutines.flow.flow
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateGlobalMeta @Inject constructor(private val globalRepository: GlobalRepository) {
+class UpdateGlobalMeta
+    @Inject
+    constructor(private val globalRepository: GlobalRepository) {
+        suspend fun await(
+            globalMeta: GlobalMeta,
+            example: Int = globalMeta.example,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(globalMeta, example)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to update global meta" }
+            }
+            .collect()
 
-    suspend fun await(
-        globalMeta: GlobalMeta,
-        example: Int = globalMeta.example,
-        onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(globalMeta, example)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update global meta" }
+        fun asFlow(
+            globalMeta: GlobalMeta,
+            example: Int = globalMeta.example,
+        ) = flow {
+            if (example != globalMeta.example) {
+                globalRepository.updateGlobalMeta(
+                    "example",
+                    example.toString(),
+                ).collect()
+            }
+            emit(Unit)
         }
-        .collect()
 
-    fun asFlow(
-        globalMeta: GlobalMeta,
-        example: Int = globalMeta.example,
-    ) = flow {
-        if (example != globalMeta.example) {
-            globalRepository.updateGlobalMeta(
-                "example",
-                example.toString(),
-            ).collect()
+        companion object {
+            private val log = logging()
         }
-        emit(Unit)
     }
-
-    companion object {
-        private val log = logging()
-    }
-}

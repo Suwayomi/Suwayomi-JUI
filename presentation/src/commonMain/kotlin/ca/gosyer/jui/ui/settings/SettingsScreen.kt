@@ -48,7 +48,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
 class SettingsScreen : Screen {
-
     override val key: ScreenKey = uniqueScreenKey
 
     @Composable

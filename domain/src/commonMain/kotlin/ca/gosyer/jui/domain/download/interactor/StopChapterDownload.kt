@@ -14,36 +14,54 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class StopChapterDownload @Inject constructor(private val downloadRepository: DownloadRepository) {
+class StopChapterDownload
+    @Inject
+    constructor(private val downloadRepository: DownloadRepository) {
+        suspend fun await(
+            mangaId: Long,
+            index: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(mangaId, index)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to stop chapter download for $index of $mangaId" }
+            }
+            .collect()
 
-    suspend fun await(mangaId: Long, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, index)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to stop chapter download for $index of $mangaId" }
+        suspend fun await(
+            manga: Manga,
+            index: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(manga, index)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to stop chapter download for $index of ${manga.title}(${manga.id})" }
+            }
+            .collect()
+
+        suspend fun await(
+            chapter: Chapter,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(chapter)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to stop chapter download for ${chapter.index} of ${chapter.mangaId}" }
+            }
+            .collect()
+
+        fun asFlow(
+            mangaId: Long,
+            index: Int,
+        ) = downloadRepository.stopChapterDownload(mangaId, index)
+
+        fun asFlow(
+            manga: Manga,
+            index: Int,
+        ) = downloadRepository.stopChapterDownload(manga.id, index)
+
+        fun asFlow(chapter: Chapter) = downloadRepository.stopChapterDownload(chapter.mangaId, chapter.index)
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    suspend fun await(manga: Manga, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga, index)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to stop chapter download for $index of ${manga.title}(${manga.id})" }
-        }
-        .collect()
-
-    suspend fun await(chapter: Chapter, onError: suspend (Throwable) -> Unit = {}) = asFlow(chapter)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to stop chapter download for ${chapter.index} of ${chapter.mangaId}" }
-        }
-        .collect()
-
-    fun asFlow(mangaId: Long, index: Int) = downloadRepository.stopChapterDownload(mangaId, index)
-
-    fun asFlow(manga: Manga, index: Int) = downloadRepository.stopChapterDownload(manga.id, index)
-
-    fun asFlow(chapter: Chapter) = downloadRepository.stopChapterDownload(chapter.mangaId, chapter.index)
-
-    companion object {
-        private val log = logging()
     }
-}

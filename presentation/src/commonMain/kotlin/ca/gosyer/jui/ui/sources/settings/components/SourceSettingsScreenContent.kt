@@ -59,9 +59,7 @@ import com.vanpra.composematerialdialogs.title
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun SourceSettingsScreenContent(
-    settings: ImmutableList<SourceSettingsView<*, *>>,
-) {
+fun SourceSettingsScreenContent(settings: ImmutableList<SourceSettingsView<*, *>>) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.statusBars.add(
@@ -119,7 +117,10 @@ fun SourceSettingsScreenContent(
 }
 
 @Composable
-private fun TwoStatePreference(twoState: TwoState, checkbox: Boolean) {
+private fun TwoStatePreference(
+    twoState: TwoState,
+    checkbox: Boolean,
+) {
     val state by twoState.state.collectAsState()
     val title = remember(state) { twoState.title ?: twoState.summary ?: "No title" }
     val subtitle = remember(state) {

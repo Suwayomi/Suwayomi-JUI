@@ -21,7 +21,6 @@ import ca.gosyer.jui.ui.reader.model.Navigation
 */
 @Immutable
 class EdgeNavigation : ViewerNavigation() {
-
     override var regions: List<Region> = listOf(
         Region(
             rect = Rect(0, 0, 33, 100),

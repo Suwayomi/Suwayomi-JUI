@@ -84,9 +84,7 @@ fun MainMenu() {
 }
 
 @Composable
-fun SkinnyMainMenu(
-    navigator: Navigator,
-) {
+fun SkinnyMainMenu(navigator: Navigator) {
     WithBottomNav(navigator) {
         MainWindow(navigator, Modifier)
     }
@@ -118,7 +116,10 @@ fun WideMainMenu(
 }
 
 @Composable
-fun MainWindow(navigator: Navigator, modifier: Modifier) {
+fun MainWindow(
+    navigator: Navigator,
+    modifier: Modifier,
+) {
     Surface(Modifier.fillMaxSize() then modifier) {
         FadeTransition(navigator)
     }

@@ -23,19 +23,29 @@ actual fun stringResource(resource: StringResource): String {
 }
 
 @Composable
-actual fun stringResource(resource: StringResource, vararg args: Any): String {
+actual fun stringResource(
+    resource: StringResource,
+    vararg args: Any,
+): String {
     val context = LocalContext.current
     return StringDesc.ResourceFormatted(resource, *args).toString(context)
 }
 
 @Composable
-actual fun stringResource(resource: PluralsResource, quantity: Int): String {
+actual fun stringResource(
+    resource: PluralsResource,
+    quantity: Int,
+): String {
     val context = LocalContext.current
     return StringDesc.Plural(resource, quantity).toString(context)
 }
 
 @Composable
-actual fun stringResource(resource: PluralsResource, quantity: Int, vararg args: Any): String {
+actual fun stringResource(
+    resource: PluralsResource,
+    quantity: Int,
+    vararg args: Any,
+): String {
     val context = LocalContext.current
     return StringDesc.PluralFormatted(resource, quantity, *args).toString(context)
 }

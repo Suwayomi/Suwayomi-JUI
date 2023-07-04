@@ -18,7 +18,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
 class GlobalSearchScreen(private val initialQuery: String) : BaseScreen() {
-
     @Composable
     override fun Content() {
         val vm = stateViewModel {

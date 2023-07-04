@@ -13,6 +13,4 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 
 @DelicateCoroutinesApi
-fun launchApplication(
-    content: @Composable (ApplicationScope.() -> Unit),
-) = GlobalScope.launchApplication(content)
+fun launchApplication(content: @Composable (ApplicationScope.() -> Unit)) = GlobalScope.launchApplication(content)

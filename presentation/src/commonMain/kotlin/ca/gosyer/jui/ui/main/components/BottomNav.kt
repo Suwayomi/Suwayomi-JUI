@@ -53,7 +53,10 @@ val WindowInsets.Companion.bottomNav
     @Composable get() = WindowInsets(bottom = BottomNavHeightLocal.current)
 
 @Composable
-fun WithBottomNav(navigator: Navigator, content: @Composable () -> Unit) {
+fun WithBottomNav(
+    navigator: Navigator,
+    content: @Composable () -> Unit,
+) {
     Box {
         val isBottomNavVisible = navigator.size <= 1
         CompositionLocalProvider(

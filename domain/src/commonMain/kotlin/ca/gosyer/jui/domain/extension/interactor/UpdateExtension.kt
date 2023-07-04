@@ -13,18 +13,22 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateExtension @Inject constructor(private val extensionRepository: ExtensionRepository) {
+class UpdateExtension
+    @Inject
+    constructor(private val extensionRepository: ExtensionRepository) {
+        suspend fun await(
+            extension: Extension,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(extension)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to update extension ${extension.apkName}" }
+            }
+            .collect()
 
-    suspend fun await(extension: Extension, onError: suspend (Throwable) -> Unit = {}) = asFlow(extension)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update extension ${extension.apkName}" }
+        fun asFlow(extension: Extension) = extensionRepository.updateExtension(extension.pkgName)
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    fun asFlow(extension: Extension) = extensionRepository.updateExtension(extension.pkgName)
-
-    companion object {
-        private val log = logging()
     }
-}

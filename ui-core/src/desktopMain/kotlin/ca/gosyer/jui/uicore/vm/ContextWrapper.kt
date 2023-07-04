@@ -22,10 +22,16 @@ actual class ContextWrapper {
     actual fun toPlatformString(stringResource: StringResource): String {
         return stringResource.localized()
     }
-    actual fun toPlatformString(stringResource: StringResource, vararg args: Any): String {
+    actual fun toPlatformString(
+        stringResource: StringResource,
+        vararg args: Any,
+    ): String {
         return stringResource.format(*args).localized()
     }
-    actual fun toast(string: String, length: Length) {
+    actual fun toast(
+        string: String,
+        length: Length,
+    ) {
         GlobalScope.launchDefault {
             _toasts.emit(string to length)
         }

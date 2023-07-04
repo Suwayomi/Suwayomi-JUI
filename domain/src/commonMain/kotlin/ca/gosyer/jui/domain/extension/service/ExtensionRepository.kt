@@ -58,15 +58,16 @@ interface ExtensionRepository {
     ): Flow<ByteReadChannel>
 
     companion object {
-        fun buildExtensionFormData(file: okio.Path) = formData {
-            append(
-                "file",
-                FileSystem.SYSTEM.source(file).buffer().readByteArray(),
-                Headers.build {
-                    append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
-                    append(HttpHeaders.ContentDisposition, "filename=file")
-                },
-            )
-        }
+        fun buildExtensionFormData(file: okio.Path) =
+            formData {
+                append(
+                    "file",
+                    FileSystem.SYSTEM.source(file).buffer().readByteArray(),
+                    Headers.build {
+                        append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
+                        append(HttpHeaders.ContentDisposition, "filename=file")
+                    },
+                )
+            }
     }
 }

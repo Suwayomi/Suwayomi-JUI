@@ -12,18 +12,20 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateLibrary @Inject constructor(private val updatesRepository: UpdatesRepository) {
+class UpdateLibrary
+    @Inject
+    constructor(private val updatesRepository: UpdatesRepository) {
+        suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
+            asFlow()
+                .catch {
+                    onError(it)
+                    log.warn(it) { "Failed to update library" }
+                }
+                .collect()
 
-    suspend fun await(onError: suspend (Throwable) -> Unit = {}) = asFlow()
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update library" }
+        fun asFlow() = updatesRepository.updateLibrary()
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    fun asFlow() = updatesRepository.updateLibrary()
-
-    companion object {
-        private val log = logging()
     }
-}

@@ -16,42 +16,61 @@ import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class DeleteChapterDownload @Inject constructor(
-    private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners,
-) {
+class DeleteChapterDownload
+    @Inject
+    constructor(
+        private val chapterRepository: ChapterRepository,
+        private val serverListeners: ServerListeners,
+    ) {
+        suspend fun await(
+            mangaId: Long,
+            index: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(mangaId, index)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to delete chapter download for $index of $mangaId" }
+            }
+            .collect()
 
-    suspend fun await(mangaId: Long, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, index)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to delete chapter download for $index of $mangaId" }
+        suspend fun await(
+            manga: Manga,
+            index: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(manga, index)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to delete chapter download for $index of ${manga.title}(${manga.id})" }
+            }
+            .collect()
+
+        suspend fun await(
+            chapter: Chapter,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(chapter)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to delete chapter download for ${chapter.index} of ${chapter.mangaId}" }
+            }
+            .collect()
+
+        fun asFlow(
+            mangaId: Long,
+            index: Int,
+        ) = chapterRepository.deleteChapterDownload(mangaId, index)
+            .onEach { serverListeners.updateChapters(mangaId, index) }
+
+        fun asFlow(
+            manga: Manga,
+            index: Int,
+        ) = chapterRepository.deleteChapterDownload(manga.id, index)
+            .onEach { serverListeners.updateChapters(manga.id, index) }
+
+        fun asFlow(chapter: Chapter) =
+            chapterRepository.deleteChapterDownload(chapter.mangaId, chapter.index)
+                .onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    suspend fun await(manga: Manga, index: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga, index)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to delete chapter download for $index of ${manga.title}(${manga.id})" }
-        }
-        .collect()
-
-    suspend fun await(chapter: Chapter, onError: suspend (Throwable) -> Unit = {}) = asFlow(chapter)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to delete chapter download for ${chapter.index} of ${chapter.mangaId}" }
-        }
-        .collect()
-
-    fun asFlow(mangaId: Long, index: Int) = chapterRepository.deleteChapterDownload(mangaId, index)
-        .onEach { serverListeners.updateChapters(mangaId, index) }
-
-    fun asFlow(manga: Manga, index: Int) = chapterRepository.deleteChapterDownload(manga.id, index)
-        .onEach { serverListeners.updateChapters(manga.id, index) }
-
-    fun asFlow(chapter: Chapter) = chapterRepository.deleteChapterDownload(chapter.mangaId, chapter.index)
-        .onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
-
-    companion object {
-        private val log = logging()
     }
-}

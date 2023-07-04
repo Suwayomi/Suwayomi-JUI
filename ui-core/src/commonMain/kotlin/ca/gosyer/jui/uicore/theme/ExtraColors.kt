@@ -30,10 +30,11 @@ class ExtraColors(
     fun copy(
         tertiary: Color = this.tertiary,
         onTertiary: Color = this.onTertiary,
-    ): ExtraColors = ExtraColors(
-        tertiary,
-        onTertiary,
-    )
+    ): ExtraColors =
+        ExtraColors(
+            tertiary,
+            onTertiary,
+        )
 
     override fun toString(): String {
         return "ExtraColors(" +
@@ -44,7 +45,10 @@ class ExtraColors(
 
     companion object {
         @Composable
-        fun WithExtraColors(extraColors: ExtraColors, content: @Composable () -> Unit) {
+        fun WithExtraColors(
+            extraColors: ExtraColors,
+            content: @Composable () -> Unit,
+        ) {
             CompositionLocalProvider(
                 LocalExtraColors provides extraColors,
                 content = content,

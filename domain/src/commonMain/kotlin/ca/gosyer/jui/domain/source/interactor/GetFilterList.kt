@@ -13,27 +13,42 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetFilterList @Inject constructor(private val sourceRepository: SourceRepository) {
+class GetFilterList
+    @Inject
+    constructor(private val sourceRepository: SourceRepository) {
+        suspend fun await(
+            source: Source,
+            reset: Boolean,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(source.id, reset)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get filter list for ${source.displayName} with reset = $reset" }
+            }
+            .singleOrNull()
 
-    suspend fun await(source: Source, reset: Boolean, onError: suspend (Throwable) -> Unit = {}) = asFlow(source.id, reset)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get filter list for ${source.displayName} with reset = $reset" }
+        suspend fun await(
+            sourceId: Long,
+            reset: Boolean,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(sourceId, reset)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get filter list for $sourceId with reset = $reset" }
+            }
+            .singleOrNull()
+
+        fun asFlow(
+            source: Source,
+            reset: Boolean,
+        ) = sourceRepository.getFilterList(source.id, reset)
+
+        fun asFlow(
+            sourceId: Long,
+            reset: Boolean,
+        ) = sourceRepository.getFilterList(sourceId, reset)
+
+        companion object {
+            private val log = logging()
         }
-        .singleOrNull()
-
-    suspend fun await(sourceId: Long, reset: Boolean, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, reset)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get filter list for $sourceId with reset = $reset" }
-        }
-        .singleOrNull()
-
-    fun asFlow(source: Source, reset: Boolean) = sourceRepository.getFilterList(source.id, reset)
-
-    fun asFlow(sourceId: Long, reset: Boolean) = sourceRepository.getFilterList(sourceId, reset)
-
-    companion object {
-        private val log = logging()
     }
-}

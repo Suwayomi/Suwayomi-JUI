@@ -535,7 +535,10 @@ fun ReaderLayout(
 }
 
 @Composable
-fun SideMenuButton(sideMenuOpen: Boolean, onOpenSideMenuClicked: () -> Unit) {
+fun SideMenuButton(
+    sideMenuOpen: Boolean,
+    onOpenSideMenuClicked: () -> Unit,
+) {
     AnimatedVisibility(
         !sideMenuOpen,
         enter = fadeIn() + slideInHorizontally(),
@@ -645,19 +648,21 @@ fun ChapterSeparator(
     }
 }
 
-fun NavigationMode.toNavigation() = when (this) {
-    NavigationMode.Disabled -> null
-    NavigationMode.RightAndLeftNavigation -> RightAndLeftNavigation()
-    NavigationMode.KindlishNavigation -> KindlishNavigation()
-    NavigationMode.LNavigation -> LNavigation()
-    NavigationMode.EdgeNavigation -> EdgeNavigation()
-}
+fun NavigationMode.toNavigation() =
+    when (this) {
+        NavigationMode.Disabled -> null
+        NavigationMode.RightAndLeftNavigation -> RightAndLeftNavigation()
+        NavigationMode.KindlishNavigation -> KindlishNavigation()
+        NavigationMode.LNavigation -> LNavigation()
+        NavigationMode.EdgeNavigation -> EdgeNavigation()
+    }
 
-fun ImageScale.toContentScale() = when (this) {
-    ImageScale.FitScreen -> ContentScale.Inside
-    ImageScale.FitHeight -> ContentScale.FillHeight
-    ImageScale.FitWidth -> ContentScale.FillWidth
-    ImageScale.OriginalSize -> ContentScale.None
-    ImageScale.SmartFit -> ContentScale.Fit
-    ImageScale.Stretch -> ContentScale.FillBounds
-}
+fun ImageScale.toContentScale() =
+    when (this) {
+        ImageScale.FitScreen -> ContentScale.Inside
+        ImageScale.FitHeight -> ContentScale.FillHeight
+        ImageScale.FitWidth -> ContentScale.FillWidth
+        ImageScale.OriginalSize -> ContentScale.None
+        ImageScale.SmartFit -> ContentScale.Fit
+        ImageScale.Stretch -> ContentScale.FillBounds
+    }

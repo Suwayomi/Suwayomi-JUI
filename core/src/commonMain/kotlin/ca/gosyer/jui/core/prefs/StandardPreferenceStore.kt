@@ -11,46 +11,63 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
 class StandardPreferenceStore(private val preferences: ObservableSettings) : PreferenceStore {
-
     /**
      * Returns an [String] preference for this [key].
      */
-    override fun getString(key: String, defaultValue: String): Preference<String> {
+    override fun getString(
+        key: String,
+        defaultValue: String,
+    ): Preference<String> {
         return StandardPreference(preferences, key, defaultValue, StringAdapter)
     }
 
     /**
      * Returns a [Long] preference for this [key].
      */
-    override fun getLong(key: String, defaultValue: Long): Preference<Long> {
+    override fun getLong(
+        key: String,
+        defaultValue: Long,
+    ): Preference<Long> {
         return StandardPreference(preferences, key, defaultValue, LongAdapter)
     }
 
     /**
      * Returns an [Int] preference for this [key].
      */
-    override fun getInt(key: String, defaultValue: Int): Preference<Int> {
+    override fun getInt(
+        key: String,
+        defaultValue: Int,
+    ): Preference<Int> {
         return StandardPreference(preferences, key, defaultValue, IntAdapter)
     }
 
     /**
      * Returns a [Float] preference for this [key].
      */
-    override fun getFloat(key: String, defaultValue: Float): Preference<Float> {
+    override fun getFloat(
+        key: String,
+        defaultValue: Float,
+    ): Preference<Float> {
         return StandardPreference(preferences, key, defaultValue, FloatAdapter)
     }
 
     /**
      * Returns a [Boolean] preference for this [key].
      */
-    override fun getBoolean(key: String, defaultValue: Boolean): Preference<Boolean> {
+    override fun getBoolean(
+        key: String,
+        defaultValue: Boolean,
+    ): Preference<Boolean> {
         return StandardPreference(preferences, key, defaultValue, BooleanAdapter)
     }
 
     /**
      * Returns a [Set<String>] preference for this [key].
      */
-    override fun getStringSet(key: String, defaultValue: Set<String>): Preference<Set<String>> {
+    override fun getStringSet(
+        key: String,
+        defaultValue: Set<String>,
+    ): Preference<Set<String>> {
         return StandardPreference(preferences, key, defaultValue, StringSetAdapter)
     }
 

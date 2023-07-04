@@ -59,7 +59,9 @@ data class MangaMeta(
 
 @Serializable
 @Stable
-enum class MangaStatus(@Transient val res: StringResource) {
+enum class MangaStatus(
+    @Transient val res: StringResource,
+) {
     UNKNOWN(MR.strings.status_unknown),
     ONGOING(MR.strings.status_ongoing),
     COMPLETED(MR.strings.status_completed),

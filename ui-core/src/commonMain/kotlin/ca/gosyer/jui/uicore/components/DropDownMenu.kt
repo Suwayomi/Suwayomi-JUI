@@ -45,16 +45,18 @@ enum class SecureFlagPolicy {
 }
 
 @Immutable
-data class PopupProperties @ExperimentalComposeUiApi constructor(
-    val focusable: Boolean = false,
-    val dismissOnBackPress: Boolean = true,
-    val dismissOnClickOutside: Boolean = true,
-    val securePolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit,
-    val excludeFromSystemGesture: Boolean = true,
-    val clippingEnabled: Boolean = true,
-    @property:ExperimentalComposeUiApi
-    val usePlatformDefaultWidth: Boolean = false,
-)
+data class PopupProperties
+    @ExperimentalComposeUiApi
+    constructor(
+        val focusable: Boolean = false,
+        val dismissOnBackPress: Boolean = true,
+        val dismissOnClickOutside: Boolean = true,
+        val securePolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit,
+        val excludeFromSystemGesture: Boolean = true,
+        val clippingEnabled: Boolean = true,
+        @property:ExperimentalComposeUiApi
+        val usePlatformDefaultWidth: Boolean = false,
+    )
 
 @Composable
 internal expect fun RealDropdownMenu(

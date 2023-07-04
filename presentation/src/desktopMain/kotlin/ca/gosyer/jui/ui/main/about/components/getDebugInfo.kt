@@ -21,5 +21,5 @@ actual fun getDebugInfo(): String {
         Runtime name: ${runtime.vmName}
         Runtime vendor: ${runtime.vmVendor}
         Runtime version: ${runtime.vmVersion}
-    """.trimIndent()
+        """.trimIndent()
 }

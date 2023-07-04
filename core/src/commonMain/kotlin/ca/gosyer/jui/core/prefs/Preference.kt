@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.onStart
  * this interface must be provided through a [PreferenceStore].
  */
 interface Preference<T> {
-
     /**
      * Returns the key of this preference.
      */

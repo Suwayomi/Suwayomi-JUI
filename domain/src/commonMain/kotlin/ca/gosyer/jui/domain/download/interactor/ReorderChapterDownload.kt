@@ -14,36 +14,62 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class ReorderChapterDownload @Inject constructor(private val downloadRepository: DownloadRepository) {
+class ReorderChapterDownload
+    @Inject
+    constructor(private val downloadRepository: DownloadRepository) {
+        suspend fun await(
+            mangaId: Long,
+            index: Int,
+            to: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(mangaId, index, to)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to reorder chapter download for $index of $mangaId to $to" }
+            }
+            .collect()
 
-    suspend fun await(mangaId: Long, index: Int, to: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, index, to)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to reorder chapter download for $index of $mangaId to $to" }
+        suspend fun await(
+            manga: Manga,
+            index: Int,
+            to: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(manga, index, to)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to reorder chapter download for $index of ${manga.title}(${manga.id}) to $to" }
+            }
+            .collect()
+
+        suspend fun await(
+            chapter: Chapter,
+            to: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(chapter, to)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to reorder chapter download for ${chapter.index} of ${chapter.mangaId} to $to" }
+            }
+            .collect()
+
+        fun asFlow(
+            mangaId: Long,
+            index: Int,
+            to: Int,
+        ) = downloadRepository.reorderChapterDownload(mangaId, index, to)
+
+        fun asFlow(
+            manga: Manga,
+            index: Int,
+            to: Int,
+        ) = downloadRepository.reorderChapterDownload(manga.id, index, to)
+
+        fun asFlow(
+            chapter: Chapter,
+            to: Int,
+        ) = downloadRepository.reorderChapterDownload(chapter.mangaId, chapter.index, to)
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    suspend fun await(manga: Manga, index: Int, to: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga, index, to)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to reorder chapter download for $index of ${manga.title}(${manga.id}) to $to" }
-        }
-        .collect()
-
-    suspend fun await(chapter: Chapter, to: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(chapter, to)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to reorder chapter download for ${chapter.index} of ${chapter.mangaId} to $to" }
-        }
-        .collect()
-
-    fun asFlow(mangaId: Long, index: Int, to: Int) = downloadRepository.reorderChapterDownload(mangaId, index, to)
-
-    fun asFlow(manga: Manga, index: Int, to: Int) = downloadRepository.reorderChapterDownload(manga.id, index, to)
-
-    fun asFlow(chapter: Chapter, to: Int) = downloadRepository.reorderChapterDownload(chapter.mangaId, chapter.index, to)
-
-    companion object {
-        private val log = logging()
     }
-}

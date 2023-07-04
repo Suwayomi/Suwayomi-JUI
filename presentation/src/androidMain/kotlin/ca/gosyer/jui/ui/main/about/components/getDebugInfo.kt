@@ -20,5 +20,5 @@ actual fun getDebugInfo(): String {
         Device name: ${Build.DEVICE}
         Device model: ${Build.MODEL}
         Device product name: ${Build.PRODUCT}
-    """.trimIndent()
+        """.trimIndent()
 }

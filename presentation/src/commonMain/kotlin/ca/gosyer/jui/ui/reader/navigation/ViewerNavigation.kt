@@ -57,7 +57,10 @@ abstract class ViewerNavigation {
 
     var invertMode: TappingInvertMode = TappingInvertMode.NONE
 
-    fun getAction(pos: Offset, layoutSize: Size): Navigation {
+    fun getAction(
+        pos: Offset,
+        layoutSize: Size,
+    ): Navigation {
         val realX = pos.x / (layoutSize.width * 0.01F)
         val realY = pos.y / (layoutSize.height * 0.01F)
         val realPos = IntOffset(realX.toInt(), realY.toInt())

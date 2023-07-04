@@ -21,7 +21,6 @@ import ca.gosyer.jui.ui.reader.model.Navigation
 */
 @Immutable
 class KindlishNavigation : ViewerNavigation() {
-
     override var regions: List<Region> = listOf(
         Region(
             rect = Rect(33, 33, 100, 100),

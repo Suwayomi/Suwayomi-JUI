@@ -20,18 +20,19 @@ import ca.gosyer.jui.ui.sources.browse.filter.SourceFilterAction
 import ca.gosyer.jui.uicore.resources.stringResource
 
 @Composable
-fun getLibraryFilters(vm: LibrarySettingsViewModel): @Composable () -> Unit = remember(vm) {
-    @Composable {
-        LibraryFilters(
-            downloaded = vm.filterDownloaded.collectAsState().value,
-            unread = vm.filterUnread.collectAsState().value,
-            completed = vm.filterCompleted.collectAsState().value,
-            setDownloadedFilter = { vm.filterDownloaded.value = it },
-            setUnreadFilter = { vm.filterUnread.value = it },
-            setCompletedFilter = { vm.filterCompleted.value = it },
-        )
+fun getLibraryFilters(vm: LibrarySettingsViewModel): @Composable () -> Unit =
+    remember(vm) {
+        @Composable {
+            LibraryFilters(
+                downloaded = vm.filterDownloaded.collectAsState().value,
+                unread = vm.filterUnread.collectAsState().value,
+                completed = vm.filterCompleted.collectAsState().value,
+                setDownloadedFilter = { vm.filterDownloaded.value = it },
+                setUnreadFilter = { vm.filterUnread.value = it },
+                setCompletedFilter = { vm.filterCompleted.value = it },
+            )
+        }
     }
-}
 
 @Composable
 fun LibraryFilters(
@@ -61,14 +62,19 @@ fun LibraryFilters(
     }
 }
 
-fun toggleState(filterState: FilterState) = when (filterState) {
-    FilterState.IGNORED -> FilterState.INCLUDED
-    FilterState.INCLUDED -> FilterState.EXCLUDED
-    FilterState.EXCLUDED -> FilterState.IGNORED
-}
+fun toggleState(filterState: FilterState) =
+    when (filterState) {
+        FilterState.IGNORED -> FilterState.INCLUDED
+        FilterState.INCLUDED -> FilterState.EXCLUDED
+        FilterState.EXCLUDED -> FilterState.IGNORED
+    }
 
 @Composable
-private fun Filter(text: String, state: FilterState, onClick: () -> Unit) {
+private fun Filter(
+    text: String,
+    state: FilterState,
+    onClick: () -> Unit,
+) {
     SourceFilterAction(
         text,
         onClick = onClick,

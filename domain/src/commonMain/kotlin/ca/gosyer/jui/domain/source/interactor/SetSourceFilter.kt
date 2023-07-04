@@ -16,57 +16,104 @@ import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class SetSourceFilter @Inject constructor(private val sourceRepository: SourceRepository) {
+class SetSourceFilter
+    @Inject
+    constructor(private val sourceRepository: SourceRepository) {
+        suspend fun await(
+            source: Source,
+            filterIndex: Int,
+            filter: Any,
+            onError: suspend (Throwable) -> Unit = {
+            },
+        ) = asFlow(source, filterIndex, filter)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to set filter for ${source.displayName} with index = $filterIndex and value = $filter" }
+            }
+            .collect()
 
-    suspend fun await(source: Source, filterIndex: Int, filter: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(source, filterIndex, filter)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to set filter for ${source.displayName} with index = $filterIndex and value = $filter" }
+        suspend fun await(
+            sourceId: Long,
+            filterIndex: Int,
+            filter: Any,
+            onError: suspend (Throwable) -> Unit = {
+            },
+        ) = asFlow(sourceId, filterIndex, filter)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to set filter for $sourceId with index = $filterIndex and value = $filter" }
+            }
+            .collect()
+
+        suspend fun await(
+            source: Source,
+            filterIndex: Int,
+            childFilterIndex: Int,
+            filter: Any,
+            onError: suspend (Throwable) -> Unit = {
+            },
+        ) = asFlow(source, filterIndex, childFilterIndex, filter)
+            .catch {
+                onError(it)
+                log.warn(it) {
+                    "Failed to set filter for ${source.displayName} with index = $filterIndex and childIndex = $childFilterIndex and value = $filter"
+                }
+            }
+            .collect()
+
+        suspend fun await(
+            sourceId: Long,
+            filterIndex: Int,
+            childFilterIndex: Int,
+            filter: Any,
+            onError: suspend (Throwable) -> Unit = {
+            },
+        ) = asFlow(sourceId, filterIndex, childFilterIndex, filter)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to set filter for $sourceId with index = $filterIndex and childIndex = $childFilterIndex and value = $filter" }
+            }
+            .collect()
+
+        fun asFlow(
+            source: Source,
+            filterIndex: Int,
+            filter: Any,
+        ) = sourceRepository.setFilter(
+            source.id,
+            SourceFilterChange(filterIndex, filter),
+        )
+
+        fun asFlow(
+            sourceId: Long,
+            filterIndex: Int,
+            filter: Any,
+        ) = sourceRepository.setFilter(
+            sourceId,
+            SourceFilterChange(filterIndex, filter),
+        )
+
+        fun asFlow(
+            source: Source,
+            filterIndex: Int,
+            childFilterIndex: Int,
+            filter: Any,
+        ) = sourceRepository.setFilter(
+            source.id,
+            SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter))),
+        )
+
+        fun asFlow(
+            sourceId: Long,
+            filterIndex: Int,
+            childFilterIndex: Int,
+            filter: Any,
+        ) = sourceRepository.setFilter(
+            sourceId,
+            SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter))),
+        )
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    suspend fun await(sourceId: Long, filterIndex: Int, filter: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, filterIndex, filter)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to set filter for $sourceId with index = $filterIndex and value = $filter" }
-        }
-        .collect()
-
-    suspend fun await(source: Source, filterIndex: Int, childFilterIndex: Int, filter: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(source, filterIndex, childFilterIndex, filter)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to set filter for ${source.displayName} with index = $filterIndex and childIndex = $childFilterIndex and value = $filter" }
-        }
-        .collect()
-
-    suspend fun await(sourceId: Long, filterIndex: Int, childFilterIndex: Int, filter: Any, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, filterIndex, childFilterIndex, filter)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to set filter for $sourceId with index = $filterIndex and childIndex = $childFilterIndex and value = $filter" }
-        }
-        .collect()
-
-    fun asFlow(source: Source, filterIndex: Int, filter: Any) = sourceRepository.setFilter(
-        source.id,
-        SourceFilterChange(filterIndex, filter),
-    )
-
-    fun asFlow(sourceId: Long, filterIndex: Int, filter: Any) = sourceRepository.setFilter(
-        sourceId,
-        SourceFilterChange(filterIndex, filter),
-    )
-
-    fun asFlow(source: Source, filterIndex: Int, childFilterIndex: Int, filter: Any) = sourceRepository.setFilter(
-        source.id,
-        SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter))),
-    )
-
-    fun asFlow(sourceId: Long, filterIndex: Int, childFilterIndex: Int, filter: Any) = sourceRepository.setFilter(
-        sourceId,
-        SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter))),
-    )
-
-    companion object {
-        private val log = logging()
     }
-}

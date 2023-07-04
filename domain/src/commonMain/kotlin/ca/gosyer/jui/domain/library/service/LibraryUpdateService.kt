@@ -17,25 +17,26 @@ import kotlinx.serialization.decodeFromString
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class LibraryUpdateService @Inject constructor(
-    serverPreferences: ServerPreferences,
-    client: Http,
-) : WebsocketService(serverPreferences, client) {
+class LibraryUpdateService
+    @Inject
+    constructor(
+        serverPreferences: ServerPreferences,
+        client: Http,
+    ) : WebsocketService(serverPreferences, client) {
+        override val _status: MutableStateFlow<Status>
+            get() = status
 
-    override val _status: MutableStateFlow<Status>
-        get() = status
+        override val query: String
+            get() = "/api/v1/update"
 
-    override val query: String
-        get() = "/api/v1/update"
+        override suspend fun onReceived(frame: Frame.Text) {
+            updateStatus.value = json.decodeFromString<UpdateStatus>(frame.readText())
+        }
 
-    override suspend fun onReceived(frame: Frame.Text) {
-        updateStatus.value = json.decodeFromString<UpdateStatus>(frame.readText())
+        companion object {
+            private val log = logging()
+
+            val status = MutableStateFlow(Status.STARTING)
+            val updateStatus = MutableStateFlow(UpdateStatus(emptyMap(), false))
+        }
     }
-
-    companion object {
-        private val log = logging()
-
-        val status = MutableStateFlow(Status.STARTING)
-        val updateStatus = MutableStateFlow(UpdateStatus(emptyMap(), false))
-    }
-}

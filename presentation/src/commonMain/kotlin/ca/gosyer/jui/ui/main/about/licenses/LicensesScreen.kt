@@ -13,7 +13,6 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 
 class LicensesScreen : Screen {
-
     override val key: ScreenKey = uniqueScreenKey
 
     @Composable

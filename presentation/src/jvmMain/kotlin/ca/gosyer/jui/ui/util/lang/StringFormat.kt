@@ -8,7 +8,10 @@ package ca.gosyer.jui.ui.util.lang
 
 import java.util.Formatter
 
-actual fun stringFormat(string: String, vararg args: Any?): String {
+actual fun stringFormat(
+    string: String,
+    vararg args: Any?,
+): String {
     return Formatter().use {
         it.format(string, *args).toString()
     }

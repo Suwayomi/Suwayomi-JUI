@@ -10,8 +10,14 @@ import dev.icerock.moko.resources.StringResource
 
 expect class ContextWrapper {
     fun toPlatformString(stringResource: StringResource): String
-    fun toPlatformString(stringResource: StringResource, vararg args: Any): String
-    fun toast(string: String, length: Length)
+    fun toPlatformString(
+        stringResource: StringResource,
+        vararg args: Any,
+    ): String
+    fun toast(
+        string: String,
+        length: Length,
+    )
 }
 enum class Length {
     SHORT,

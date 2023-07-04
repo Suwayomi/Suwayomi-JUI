@@ -21,17 +21,23 @@ expect fun PluralStringDesc.localized(): String
 expect fun PluralFormattedStringDesc.localized(): String
 
 @Composable
-actual fun stringResource(resource: StringResource): String =
-    StringDesc.Resource(resource).localized()
+actual fun stringResource(resource: StringResource): String = StringDesc.Resource(resource).localized()
 
 @Composable
-actual fun stringResource(resource: StringResource, vararg args: Any): String =
-    StringDesc.ResourceFormatted(resource, *args).localized()
+actual fun stringResource(
+    resource: StringResource,
+    vararg args: Any,
+): String = StringDesc.ResourceFormatted(resource, *args).localized()
 
 @Composable
-actual fun stringResource(resource: PluralsResource, quantity: Int): String =
-    StringDesc.Plural(resource, quantity).localized()
+actual fun stringResource(
+    resource: PluralsResource,
+    quantity: Int,
+): String = StringDesc.Plural(resource, quantity).localized()
 
 @Composable
-actual fun stringResource(resource: PluralsResource, quantity: Int, vararg args: Any): String =
-    StringDesc.PluralFormatted(resource, quantity, *args).localized()
+actual fun stringResource(
+    resource: PluralsResource,
+    quantity: Int,
+    vararg args: Any,
+): String = StringDesc.PluralFormatted(resource, quantity, *args).localized()

@@ -21,7 +21,6 @@ import ca.gosyer.jui.ui.reader.model.Navigation
  */
 @Immutable
 class RightAndLeftNavigation : ViewerNavigation() {
-
     override var regions: List<Region> = listOf(
         Region(
             rect = Rect(0, 0, 33, 100),

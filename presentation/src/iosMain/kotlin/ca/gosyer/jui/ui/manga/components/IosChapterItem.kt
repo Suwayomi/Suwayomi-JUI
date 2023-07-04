@@ -18,7 +18,8 @@ actual fun Modifier.chapterItemModifier(
     markPreviousAsRead: () -> Unit,
     onSelectChapter: (() -> Unit)?,
     onUnselectChapter: (() -> Unit)?,
-): Modifier = combinedClickable(
-    onClick = onUnselectChapter ?: onClick,
-    onLongClick = onSelectChapter,
-)
+): Modifier =
+    combinedClickable(
+        onClick = onUnselectChapter ?: onClick,
+        onLongClick = onSelectChapter,
+    )

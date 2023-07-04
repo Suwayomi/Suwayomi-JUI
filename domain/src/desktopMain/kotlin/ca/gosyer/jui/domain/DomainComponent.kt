@@ -12,7 +12,6 @@ import ca.gosyer.jui.domain.server.service.ServerService
 import me.tatarka.inject.annotations.Provides
 
 actual interface DomainComponent : SharedDomainComponent {
-
     // Singletons
 
     val serverService: ServerService

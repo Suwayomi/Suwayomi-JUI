@@ -10,7 +10,10 @@ import platform.Foundation.NSString
 import platform.Foundation.stringWithFormat
 
 // Taken from https://github.com/icerockdev/moko-resources/blob/master/resources/src/appleMain/kotlin/dev/icerock/moko/resources/desc/Utils.kt
-actual fun stringFormat(string: String, vararg args: Any?): String {
+actual fun stringFormat(
+    string: String,
+    vararg args: Any?,
+): String {
     // NSString format works with NSObjects via %@, we should change standard format to %@
     val objcFormat = string.replace(Regex("%((?:\\.|\\d|\\$)*)[abcdefs]"), "%$1@")
     // bad but objc interop limited :(

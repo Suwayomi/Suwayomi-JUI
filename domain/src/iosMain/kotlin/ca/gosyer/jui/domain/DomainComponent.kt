@@ -7,6 +7,5 @@
 package ca.gosyer.jui.domain
 
 actual interface DomainComponent : SharedDomainComponent {
-
     companion object
 }

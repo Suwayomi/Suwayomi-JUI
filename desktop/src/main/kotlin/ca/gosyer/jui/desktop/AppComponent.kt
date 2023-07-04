@@ -21,7 +21,6 @@ abstract class AppComponent(
     @get:Provides
     val context: ContextWrapper,
 ) : ViewModelComponent, DataComponent, DomainComponent, UiComponent {
-
     abstract val appMigrations: AppMigrations
 
     @get:AppScope
@@ -35,7 +34,8 @@ abstract class AppComponent(
     companion object {
         private var appComponentInstance: AppComponent? = null
 
-        fun getInstance(context: ContextWrapper) = appComponentInstance ?: create(context)
-            .also { appComponentInstance = it }
+        fun getInstance(context: ContextWrapper) =
+            appComponentInstance ?: create(context)
+                .also { appComponentInstance = it }
     }
 }

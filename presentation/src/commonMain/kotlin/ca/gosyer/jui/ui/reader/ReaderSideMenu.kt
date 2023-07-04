@@ -234,7 +234,11 @@ fun ReaderSheet(
 }
 
 @Composable
-fun ReaderModeSetting(readerModes: ImmutableList<String>, selectedMode: String, onSetReaderMode: (String) -> Unit) {
+fun ReaderModeSetting(
+    readerModes: ImmutableList<String>,
+    selectedMode: String,
+    onSetReaderMode: (String) -> Unit,
+) {
     val modes = remember { persistentListOf(MangaMeta.DEFAULT_READER_MODE) + readerModes }
     val defaultModeString = stringResource(MR.strings.default_reader_mode)
     val displayModes = remember { modes.replace(0, defaultModeString).toPersistentList() }
@@ -305,7 +309,10 @@ private fun ReaderProgressSlider(
 }
 
 @Composable
-private fun NavigateChapters(loadPrevChapter: () -> Unit, loadNextChapter: () -> Unit) {
+private fun NavigateChapters(
+    loadPrevChapter: () -> Unit,
+    loadNextChapter: () -> Unit,
+) {
     Divider(Modifier.padding(horizontal = 4.dp, vertical = 8.dp))
     Row(horizontalArrangement = Arrangement.SpaceBetween) {
         OutlinedButton(loadPrevChapter, Modifier.weight(0.5F)) {

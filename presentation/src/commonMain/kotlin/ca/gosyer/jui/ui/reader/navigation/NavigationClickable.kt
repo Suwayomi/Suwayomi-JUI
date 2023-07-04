@@ -48,35 +48,36 @@ fun Modifier.navigationClickable(
     onClickLabel: String? = null,
     role: Role? = null,
     onClick: (Navigation) -> Unit,
-): Modifier = composed(
-    inspectorInfo = debugInspectorInfo {
-        name = "navigationClickable"
-        properties["navigation"] = navigation
-        properties["enabled"] = enabled
-        properties["onClickLabel"] = onClickLabel
-        properties["role"] = role
-        properties["onClick"] = onClick
-        properties["interactionSource"] = interactionSource
-    },
-) {
-    val offsetEvent = remember { MutableStateFlow<Offset?>(null) }
-    val layoutSize = remember { MutableStateFlow(Size.Zero) }
-    this
-        .clickable(interactionSource, null, enabled, onClickLabel, role) {
-            val offset = offsetEvent.value ?: return@clickable
-            val size = layoutSize.value
-            if (offset in size) {
-                onClick(navigation.getAction(offset, size))
-            }
-        }
-        .pointerInput(interactionSource) {
-            forEachGesture {
-                awaitPointerEventScope {
-                    offsetEvent.value = awaitFirstDown().position
+): Modifier =
+    composed(
+        inspectorInfo = debugInspectorInfo {
+            name = "navigationClickable"
+            properties["navigation"] = navigation
+            properties["enabled"] = enabled
+            properties["onClickLabel"] = onClickLabel
+            properties["role"] = role
+            properties["onClick"] = onClick
+            properties["interactionSource"] = interactionSource
+        },
+    ) {
+        val offsetEvent = remember { MutableStateFlow<Offset?>(null) }
+        val layoutSize = remember { MutableStateFlow(Size.Zero) }
+        this
+            .clickable(interactionSource, null, enabled, onClickLabel, role) {
+                val offset = offsetEvent.value ?: return@clickable
+                val size = layoutSize.value
+                if (offset in size) {
+                    onClick(navigation.getAction(offset, size))
                 }
             }
-        }
-        .onGloballyPositioned {
-            layoutSize.value = it.size.toSize()
-        }
-}
+            .pointerInput(interactionSource) {
+                forEachGesture {
+                    awaitPointerEventScope {
+                        offsetEvent.value = awaitFirstDown().position
+                    }
+                }
+            }
+            .onGloballyPositioned {
+                layoutSize.value = it.size.toSize()
+            }
+    }

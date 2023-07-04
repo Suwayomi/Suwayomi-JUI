@@ -14,9 +14,7 @@ import kotlinx.coroutines.internal.synchronized
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-fun <T> SavedStateHandle.getStateFlow(
-    initialValue: () -> T,
-): SavedStateHandleDelegate<T> {
+fun <T> SavedStateHandle.getStateFlow(initialValue: () -> T): SavedStateHandleDelegate<T> {
     return SavedStateHandleDelegate(this, initialValue)
 }
 
@@ -29,7 +27,10 @@ class SavedStateHandleDelegate<T>(
 
     private var item: SavedStateHandleStateFlow<T>? = null
 
-    override fun getValue(thisRef: ViewModel, property: KProperty<*>): SavedStateHandleStateFlow<T> {
+    override fun getValue(
+        thisRef: ViewModel,
+        property: KProperty<*>,
+    ): SavedStateHandleStateFlow<T> {
         return item ?: synchronized(synchronizedObject) {
             if (item == null) {
                 savedStateHandle.getSavedStateFlow(property.name, initialValue)
@@ -46,7 +47,6 @@ class SavedStateHandleStateFlow<T>(
     private val savedStateHandle: SavedStateHandle,
     private val stateFlow: StateFlow<T>,
 ) : StateFlow<T> by stateFlow {
-
     override var value: T
         get() = stateFlow.value
 

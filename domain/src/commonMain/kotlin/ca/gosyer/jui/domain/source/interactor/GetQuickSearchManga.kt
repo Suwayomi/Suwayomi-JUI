@@ -15,41 +15,64 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetQuickSearchManga @Inject constructor(private val sourceRepository: SourceRepository) {
+class GetQuickSearchManga
+    @Inject
+    constructor(private val sourceRepository: SourceRepository) {
+        suspend fun await(
+            source: Source,
+            searchTerm: String?,
+            page: Int,
+            filters: List<SourceFilterChange>?,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(source.id, searchTerm, page, filters)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get quick search results from ${source.displayName} on page $page with query '$searchTerm'" }
+            }
+            .singleOrNull()
 
-    suspend fun await(source: Source, searchTerm: String?, page: Int, filters: List<SourceFilterChange>?, onError: suspend (Throwable) -> Unit = {}) = asFlow(source.id, searchTerm, page, filters)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get quick search results from ${source.displayName} on page $page with query '$searchTerm'" }
+        suspend fun await(
+            sourceId: Long,
+            searchTerm: String?,
+            page: Int,
+            filters: List<SourceFilterChange>?,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(sourceId, searchTerm, page, filters)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get quick search results from $sourceId on page $page with query '$searchTerm'" }
+            }
+            .singleOrNull()
+
+        fun asFlow(
+            source: Source,
+            searchTerm: String?,
+            page: Int,
+            filters: List<SourceFilterChange>?,
+        ) = sourceRepository.getQuickSearchResults(
+            source.id,
+            page,
+            SourceFilterData(
+                searchTerm?.ifBlank { null },
+                filters?.ifEmpty { null },
+            ),
+        )
+
+        fun asFlow(
+            sourceId: Long,
+            searchTerm: String?,
+            page: Int,
+            filters: List<SourceFilterChange>?,
+        ) = sourceRepository.getQuickSearchResults(
+            sourceId,
+            page,
+            SourceFilterData(
+                searchTerm?.ifBlank { null },
+                filters?.ifEmpty { null },
+            ),
+        )
+
+        companion object {
+            private val log = logging()
         }
-        .singleOrNull()
-
-    suspend fun await(sourceId: Long, searchTerm: String?, page: Int, filters: List<SourceFilterChange>?, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, searchTerm, page, filters)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get quick search results from $sourceId on page $page with query '$searchTerm'" }
-        }
-        .singleOrNull()
-
-    fun asFlow(source: Source, searchTerm: String?, page: Int, filters: List<SourceFilterChange>?) = sourceRepository.getQuickSearchResults(
-        source.id,
-        page,
-        SourceFilterData(
-            searchTerm?.ifBlank { null },
-            filters?.ifEmpty { null },
-        ),
-    )
-
-    fun asFlow(sourceId: Long, searchTerm: String?, page: Int, filters: List<SourceFilterChange>?) = sourceRepository.getQuickSearchResults(
-        sourceId,
-        page,
-        SourceFilterData(
-            searchTerm?.ifBlank { null },
-            filters?.ifEmpty { null },
-        ),
-    )
-
-    companion object {
-        private val log = logging()
     }
-}

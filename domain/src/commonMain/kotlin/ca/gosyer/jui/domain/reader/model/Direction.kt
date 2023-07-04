@@ -14,7 +14,9 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @Stable
-enum class Direction(@Transient val res: StringResource) {
+enum class Direction(
+    @Transient val res: StringResource,
+) {
     Down(MR.strings.dir_down),
     Left(MR.strings.dir_rtl),
     Right(MR.strings.dir_ltr),

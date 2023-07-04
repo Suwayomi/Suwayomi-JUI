@@ -15,39 +15,40 @@ import kotlinx.coroutines.flow.flow
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateChapterMeta @Inject constructor(
-    private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners,
-) {
+class UpdateChapterMeta
+    @Inject
+    constructor(
+        private val chapterRepository: ChapterRepository,
+        private val serverListeners: ServerListeners,
+    ) {
+        suspend fun await(
+            chapter: Chapter,
+            pageOffset: Int = chapter.meta.juiPageOffset,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(chapter, pageOffset)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to update ${chapter.name}(${chapter.index}) meta" }
+            }
+            .collect()
 
-    suspend fun await(
-        chapter: Chapter,
-        pageOffset: Int = chapter.meta.juiPageOffset,
-        onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(chapter, pageOffset)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update ${chapter.name}(${chapter.index}) meta" }
+        fun asFlow(
+            chapter: Chapter,
+            pageOffset: Int = chapter.meta.juiPageOffset,
+        ) = flow {
+            if (pageOffset != chapter.meta.juiPageOffset) {
+                chapterRepository.updateChapterMeta(
+                    chapter.mangaId,
+                    chapter.index,
+                    "juiPageOffset",
+                    pageOffset.toString(),
+                ).collect()
+                serverListeners.updateChapters(chapter.mangaId, chapter.index)
+            }
+            emit(Unit)
         }
-        .collect()
 
-    fun asFlow(
-        chapter: Chapter,
-        pageOffset: Int = chapter.meta.juiPageOffset,
-    ) = flow {
-        if (pageOffset != chapter.meta.juiPageOffset) {
-            chapterRepository.updateChapterMeta(
-                chapter.mangaId,
-                chapter.index,
-                "juiPageOffset",
-                pageOffset.toString(),
-            ).collect()
-            serverListeners.updateChapters(chapter.mangaId, chapter.index)
+        companion object {
+            private val log = logging()
         }
-        emit(Unit)
     }
-
-    companion object {
-        private val log = logging()
-    }
-}

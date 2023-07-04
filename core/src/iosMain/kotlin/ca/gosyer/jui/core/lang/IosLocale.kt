@@ -17,14 +17,16 @@ fun Locale.toPlatform(): PlatformLocale = PlatformLocale(toLanguageTag())
  * First Locale: en_IN
  * Language: English
  */
-actual fun Locale.getDisplayLanguage(displayLocale: Locale): String = toPlatform()
-    .localizedStringForLanguageCode(displayLocale.toLanguageTag())!!
+actual fun Locale.getDisplayLanguage(displayLocale: Locale): String =
+    toPlatform()
+        .localizedStringForLanguageCode(displayLocale.toLanguageTag())!!
 
 /**
  * First Locale: en_US
  * Language: English (United States)
  */
-actual fun Locale.getDisplayName(displayLocale: Locale): String = toPlatform()
-    .localizedStringForLocaleIdentifier(displayLocale.toLanguageTag())
+actual fun Locale.getDisplayName(displayLocale: Locale): String =
+    toPlatform()
+        .localizedStringForLocaleIdentifier(displayLocale.toLanguageTag())
 
 actual val Locale.displayName: String get() = getDisplayLanguage(this)

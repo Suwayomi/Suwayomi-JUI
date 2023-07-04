@@ -60,8 +60,10 @@ interface SharedDomainComponent : CoreComponent {
 
     @AppScope
     @Provides
-    fun httpFactory(serverPreferences: ServerPreferences, json: Json) =
-        httpClient(serverPreferences, json)
+    fun httpFactory(
+        serverPreferences: ServerPreferences,
+        json: Json,
+    ) = httpClient(serverPreferences, json)
 
     @get:AppScope
     @get:Provides

@@ -14,7 +14,9 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @Stable
-enum class Sort(@Transient val res: StringResource) {
+enum class Sort(
+    @Transient val res: StringResource,
+) {
     ALPHABETICAL(MR.strings.sort_alphabetical),
 
     // LAST_READ,

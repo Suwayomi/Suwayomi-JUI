@@ -12,18 +12,20 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetGlobalMeta @Inject constructor(private val globalRepository: GlobalRepository) {
+class GetGlobalMeta
+    @Inject
+    constructor(private val globalRepository: GlobalRepository) {
+        suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
+            asFlow()
+                .catch {
+                    onError(it)
+                    log.warn(it) { "Failed to get global meta" }
+                }
+                .singleOrNull()
 
-    suspend fun await(onError: suspend (Throwable) -> Unit = {}) = asFlow()
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get global meta" }
+        fun asFlow() = globalRepository.getGlobalMeta()
+
+        companion object {
+            private val log = logging()
         }
-        .singleOrNull()
-
-    fun asFlow() = globalRepository.getGlobalMeta()
-
-    companion object {
-        private val log = logging()
     }
-}

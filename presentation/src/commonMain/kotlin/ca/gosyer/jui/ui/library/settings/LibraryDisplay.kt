@@ -25,22 +25,23 @@ import ca.gosyer.jui.ui.sources.browse.filter.SourceFilterAction
 import ca.gosyer.jui.uicore.resources.stringResource
 
 @Composable
-fun getLibraryDisplay(vm: LibrarySettingsViewModel): @Composable () -> Unit = remember(vm) {
-    @Composable {
-        LibraryDisplay(
-            displayMode = vm.displayMode.collectAsState().value,
-            unreadBadges = vm.unreadBadges.collectAsState().value,
-            downloadBadges = vm.downloadBadges.collectAsState().value,
-            languageBadges = vm.languageBadges.collectAsState().value,
-            localBadges = vm.localBadges.collectAsState().value,
-            setDisplayMode = { vm.displayMode.value = it },
-            setUnreadBadges = { vm.unreadBadges.value = it },
-            setDownloadBadges = { vm.downloadBadges.value = it },
-            setLanguageBadges = { vm.languageBadges.value = it },
-            setLocalBadges = { vm.localBadges.value = it },
-        )
+fun getLibraryDisplay(vm: LibrarySettingsViewModel): @Composable () -> Unit =
+    remember(vm) {
+        @Composable {
+            LibraryDisplay(
+                displayMode = vm.displayMode.collectAsState().value,
+                unreadBadges = vm.unreadBadges.collectAsState().value,
+                downloadBadges = vm.downloadBadges.collectAsState().value,
+                languageBadges = vm.languageBadges.collectAsState().value,
+                localBadges = vm.localBadges.collectAsState().value,
+                setDisplayMode = { vm.displayMode.value = it },
+                setUnreadBadges = { vm.unreadBadges.value = it },
+                setDownloadBadges = { vm.downloadBadges.value = it },
+                setLanguageBadges = { vm.languageBadges.value = it },
+                setLocalBadges = { vm.localBadges.value = it },
+            )
+        }
     }
-}
 
 @Composable
 fun LibraryDisplay(
@@ -99,7 +100,11 @@ private fun TitleText(text: String) {
 }
 
 @Composable
-private fun RadioSelectionItem(text: String, selected: Boolean, onClick: () -> Unit) {
+private fun RadioSelectionItem(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
     SourceFilterAction(
         name = text,
         onClick = onClick,
@@ -113,7 +118,11 @@ private fun RadioSelectionItem(text: String, selected: Boolean, onClick: () -> U
 }
 
 @Composable
-private fun CheckboxItem(text: String, checked: Boolean, onClick: () -> Unit) {
+private fun CheckboxItem(
+    text: String,
+    checked: Boolean,
+    onClick: () -> Unit,
+) {
     SourceFilterAction(
         name = text,
         onClick = onClick,

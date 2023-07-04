@@ -17,46 +17,61 @@ import kotlinx.coroutines.flow.map
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class RemoveMangaFromCategory @Inject constructor(
-    private val categoryRepository: CategoryRepository,
-    private val serverListeners: ServerListeners,
-) {
+class RemoveMangaFromCategory
+    @Inject
+    constructor(
+        private val categoryRepository: CategoryRepository,
+        private val serverListeners: ServerListeners,
+    ) {
+        suspend fun await(
+            mangaId: Long,
+            categoryId: Long,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(mangaId, categoryId)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to remove $mangaId from category $categoryId" }
+            }
+            .collect()
 
-    suspend fun await(mangaId: Long, categoryId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId, categoryId)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to remove $mangaId from category $categoryId" }
+        suspend fun await(
+            manga: Manga,
+            category: Category,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(manga, category)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to remove ${manga.title}(${manga.id}) from category ${category.name}" }
+            }
+            .collect()
+
+        fun asFlow(
+            mangaId: Long,
+            categoryId: Long,
+        ) = if (categoryId != 0L) {
+            categoryRepository.removeMangaFromCategory(mangaId, categoryId)
+                .map { serverListeners.updateCategoryManga(categoryId) }
+        } else {
+            flow {
+                serverListeners.updateCategoryManga(categoryId)
+                emit(Unit)
+            }
         }
-        .collect()
 
-    suspend fun await(manga: Manga, category: Category, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga, category)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to remove ${manga.title}(${manga.id}) from category ${category.name}" }
+        fun asFlow(
+            manga: Manga,
+            category: Category,
+        ) = if (category.id != 0L) {
+            categoryRepository.removeMangaFromCategory(manga.id, category.id)
+                .map { serverListeners.updateCategoryManga(category.id) }
+        } else {
+            flow {
+                serverListeners.updateCategoryManga(category.id)
+                emit(Unit)
+            }
         }
-        .collect()
 
-    fun asFlow(mangaId: Long, categoryId: Long) = if (categoryId != 0L) {
-        categoryRepository.removeMangaFromCategory(mangaId, categoryId)
-            .map { serverListeners.updateCategoryManga(categoryId) }
-    } else {
-        flow {
-            serverListeners.updateCategoryManga(categoryId)
-            emit(Unit)
+        companion object {
+            private val log = logging()
         }
     }
-
-    fun asFlow(manga: Manga, category: Category) = if (category.id != 0L) {
-        categoryRepository.removeMangaFromCategory(manga.id, category.id)
-            .map { serverListeners.updateCategoryManga(category.id) }
-    } else {
-        flow {
-            serverListeners.updateCategoryManga(category.id)
-            emit(Unit)
-        }
-    }
-
-    companion object {
-        private val log = logging()
-    }
-}

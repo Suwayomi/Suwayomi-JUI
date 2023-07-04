@@ -40,7 +40,10 @@ expect val Engine: HttpClientEngineFactory<HttpClientEngineConfig>
 
 expect fun HttpClientConfig<HttpClientEngineConfig>.configurePlatform()
 
-fun httpClient(serverPreferences: ServerPreferences, json: Json): Http {
+fun httpClient(
+    serverPreferences: ServerPreferences,
+    json: Json,
+): Http {
     return HttpClient(Engine) {
         configurePlatform()
 

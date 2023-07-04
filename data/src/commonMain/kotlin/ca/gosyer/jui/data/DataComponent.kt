@@ -24,9 +24,11 @@ import de.jensklingenberg.ktorfit.Ktorfit
 import me.tatarka.inject.annotations.Provides
 
 interface DataComponent {
-
     @Provides
-    fun ktorfit(http: Http, serverPreferences: ServerPreferences) = Ktorfit
+    fun ktorfit(
+        http: Http,
+        serverPreferences: ServerPreferences,
+    ) = Ktorfit
         .Builder()
         .httpClient(http)
         .converterFactories(FlowConverterFactory())

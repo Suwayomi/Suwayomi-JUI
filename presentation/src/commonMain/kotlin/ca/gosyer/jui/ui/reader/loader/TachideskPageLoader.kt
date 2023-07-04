@@ -130,7 +130,10 @@ class TachideskPageLoader(
             .collect()
     }
 
-    private suspend fun putImageInCache(response: HttpResponse, page: ReaderPage) {
+    private suspend fun putImageInCache(
+        response: HttpResponse,
+        page: ReaderPage,
+    ) {
         val editor = chapterCache.edit(page.cacheKey)
             ?: throw Exception("Couldn't open cache")
         try {
@@ -182,7 +185,10 @@ class TachideskPageLoader(
      * Preloads the given [amount] of pages after the [currentPage] with a lower priority.
      * @return a list of [PriorityPage] that were added to the [channel]
      */
-    private fun preloadNextPages(currentPage: ReaderPage, amount: Int): List<PriorityPage> {
+    private fun preloadNextPages(
+        currentPage: ReaderPage,
+        amount: Int,
+    ): List<PriorityPage> {
         val pageIndex = currentPage.index
         val pages = (currentPage.chapter.pages.value as? PagesState.Success)?.pages ?: return emptyList()
         if (pageIndex >= pages.lastIndex) return emptyList()
@@ -295,6 +301,7 @@ class TachideskPageLoader(
     private fun DiskCache.Editor.abortQuietly() {
         try {
             abort()
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
     }
 }

@@ -189,7 +189,9 @@ fun UpdatesScreenContent(
                                 UpdatesItem(
                                     chapterDownloadItem = item.chapterDownloadItem,
                                     onClickItem = if (inActionMode) {
-                                        { if (item.chapterDownloadItem.isSelected.value) onUnselectChapter(item.chapterDownloadItem.chapter.id) else onSelectChapter(item.chapterDownloadItem.chapter.id) }
+                                        {
+                                            if (item.chapterDownloadItem.isSelected.value) onUnselectChapter(item.chapterDownloadItem.chapter.id) else onSelectChapter(item.chapterDownloadItem.chapter.id)
+                                        }
                                     } else {
                                         { openChapter(chapter.index, manga.id) }
                                     },

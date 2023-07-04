@@ -16,9 +16,12 @@ import ca.gosyer.jui.ui.base.theme.AppTheme
 import ca.gosyer.jui.ui.reader.ReaderMenu
 
 class ReaderActivity : AppCompatActivity() {
-
     companion object {
-        fun newIntent(context: Context, mangaId: Long, chapterIndex: Int): Intent {
+        fun newIntent(
+            context: Context,
+            mangaId: Long,
+            chapterIndex: Int,
+        ): Intent {
             return Intent(context, ReaderActivity::class.java).apply {
                 putExtra("manga", mangaId)
                 putExtra("chapter", chapterIndex)

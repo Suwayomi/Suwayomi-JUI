@@ -22,11 +22,17 @@ import platform.Foundation.NSUserDomainMask
 actual fun OptionsBuilder.configure(contextWrapper: ContextWrapper) {
 }
 
-actual fun ComponentRegistryBuilder.register(contextWrapper: ContextWrapper, http: Http) {
+actual fun ComponentRegistryBuilder.register(
+    contextWrapper: ContextWrapper,
+    http: Http,
+) {
     setupDefaultComponents(httpClient = { http })
 }
 
-actual fun DiskCacheBuilder.configure(contextWrapper: ContextWrapper, cacheDir: String) {
+actual fun DiskCacheBuilder.configure(
+    contextWrapper: ContextWrapper,
+    cacheDir: String,
+) {
     directory(getCacheDir().toPath() / cacheDir)
     maxSizeBytes(1024 * 1024 * 150) // 150 MB
 }

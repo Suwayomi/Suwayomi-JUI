@@ -39,26 +39,29 @@ interface UiComponent {
     @Provides
     fun imageLoaderFactory(
         imageLoaderProvider: ImageLoaderProvider,
-        imageCache: ImageCache
+        imageCache: ImageCache,
     ): ImageLoader = imageLoaderProvider.get(imageCache)
 
     @AppScope
     @Provides
-    fun imageCacheFactory(): ImageCache = DiskCache(FileSystem.SYSTEM) {
-        configure(contextWrapper, "image_cache")
-    }
+    fun imageCacheFactory(): ImageCache =
+        DiskCache(FileSystem.SYSTEM) {
+            configure(contextWrapper, "image_cache")
+        }
 
     @AppScope
     @Provides
-    fun chapterCacheFactory(): ChapterCache = DiskCache(FileSystem.SYSTEM) {
-        configure(contextWrapper, "chapter_cache")
-    }
+    fun chapterCacheFactory(): ChapterCache =
+        DiskCache(FileSystem.SYSTEM) {
+            configure(contextWrapper, "chapter_cache")
+        }
 
     @Provides
-    fun getHooks(viewModelComponent: ViewModelComponent) = arrayOf(
-        LocalViewModels provides viewModelComponent,
-        LocalImageLoader provides imageLoader,
-    )
+    fun getHooks(viewModelComponent: ViewModelComponent) =
+        arrayOf(
+            LocalViewModels provides viewModelComponent,
+            LocalImageLoader provides imageLoader,
+        )
 }
 
 val LocalViewModels =

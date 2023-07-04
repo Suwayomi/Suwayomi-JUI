@@ -14,16 +14,18 @@ import ca.gosyer.jui.core.lang.withIOContext
 import dev.icerock.moko.resources.FileResource
 
 @Composable
-actual fun FileResource.rememberReadText(): String = remember {
-    readText()
-}
+actual fun FileResource.rememberReadText(): String =
+    remember {
+        readText()
+    }
 
 @Composable
-actual fun FileResource.readTextAsync(): State<String?> = produceState<String?>(
-    null,
-    this.path,
-) {
-    withIOContext {
-        value = readText()
+actual fun FileResource.readTextAsync(): State<String?> =
+    produceState<String?>(
+        null,
+        this.path,
+    ) {
+        withIOContext {
+            value = readText()
+        }
     }
-}

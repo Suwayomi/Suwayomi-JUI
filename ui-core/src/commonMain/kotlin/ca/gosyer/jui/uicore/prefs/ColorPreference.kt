@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.stateIn
 class ColorPreference(
     private val preference: Preference<Int>,
 ) : Preference<Color> {
-
     override fun key(): String {
         return preference.key()
     }

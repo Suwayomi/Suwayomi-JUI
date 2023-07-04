@@ -18,7 +18,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
 class SourceHomeScreen : BaseScreen() {
-
     @Composable
     override fun Content() {
         val vm = stateViewModel { sourceHomeViewModel(it) }

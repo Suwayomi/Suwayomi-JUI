@@ -13,7 +13,6 @@ import ca.gosyer.jui.domain.ui.model.ThemeMode
 import ca.gosyer.jui.domain.ui.model.WindowSettings
 
 class UiPreferences(private val preferenceStore: PreferenceStore) {
-
     fun themeMode(): Preference<ThemeMode> {
         return preferenceStore.getJsonObject("theme_mode", ThemeMode.System, ThemeMode.serializer())
     }

@@ -12,7 +12,6 @@ import ca.gosyer.jui.domain.library.model.FilterState
 import ca.gosyer.jui.domain.library.model.Sort
 
 class LibraryPreferences(private val preferenceStore: PreferenceStore) {
-
     fun showAllCategory(): Preference<Boolean> {
         return preferenceStore.getBoolean("show_all_category", false)
     }

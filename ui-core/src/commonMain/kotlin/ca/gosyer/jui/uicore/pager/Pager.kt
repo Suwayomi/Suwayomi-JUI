@@ -167,11 +167,10 @@ private fun Pager(
 }
 
 @Composable
-fun rememberPagerState(
-    initialPage: Int = 0,
-) = rememberSaveable(saver = PagerState.Saver) {
-    PagerState(currentPage = initialPage)
-}
+fun rememberPagerState(initialPage: Int = 0) =
+    rememberSaveable(saver = PagerState.Saver) {
+        PagerState(currentPage = initialPage)
+    }
 
 @Stable
 class PagerState(
@@ -234,7 +233,6 @@ private fun lazyListSnapLayoutInfoProvider(
         layoutSize / 2f - itemSize / 2f
     },
 ) = object : SnapLayoutInfoProvider {
-
     private val layoutInfo: LazyListLayoutInfo
         get() = lazyListState.layoutInfo
 
@@ -263,13 +261,14 @@ private fun lazyListSnapLayoutInfoProvider(
         return lowerBoundOffset.rangeTo(upperBoundOffset)
     }
 
-    override fun Density.calculateSnapStepSize(): Float = with(layoutInfo) {
-        if (visibleItemsInfo.isNotEmpty()) {
-            visibleItemsInfo.fastSumBy { it.size } / visibleItemsInfo.size.toFloat()
-        } else {
-            0f
+    override fun Density.calculateSnapStepSize(): Float =
+        with(layoutInfo) {
+            if (visibleItemsInfo.isNotEmpty()) {
+                visibleItemsInfo.fastSumBy { it.size } / visibleItemsInfo.size.toFloat()
+            } else {
+                0f
+            }
         }
-    }
 }
 
 @Composable

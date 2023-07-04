@@ -11,9 +11,15 @@ import kotlinx.coroutines.flow.StateFlow
 expect class SavedStateHandle {
     operator fun <T> get(key: String): T?
 
-    operator fun <T> set(key: String, value: T?)
+    operator fun <T> set(
+        key: String,
+        value: T?,
+    )
 
     fun <T> remove(key: String): T?
 
-    fun <T> getStateFlow(key: String, initialValue: T): StateFlow<T>
+    fun <T> getStateFlow(
+        key: String,
+        initialValue: T,
+    ): StateFlow<T>
 }

@@ -21,7 +21,6 @@ internal class StandardPreference<T>(
     private val defaultValue: T,
     private val adapter: Adapter<T>,
 ) : Preference<T> {
-
     /**
      * Returns the key of this preference.
      */

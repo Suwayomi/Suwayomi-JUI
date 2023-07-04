@@ -21,7 +21,6 @@ import ca.gosyer.jui.ui.reader.model.Navigation
  */
 @Immutable
 open class LNavigation : ViewerNavigation() {
-
     override var regions: List<Region> = listOf(
         Region(
             rect = Rect(0, 33, 33, 66),

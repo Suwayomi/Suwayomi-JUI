@@ -19,7 +19,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
 class UpdatesScreen : Screen {
-
     override val key: ScreenKey = uniqueScreenKey
 
     @Composable

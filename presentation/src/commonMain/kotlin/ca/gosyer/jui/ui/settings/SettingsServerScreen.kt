@@ -88,45 +88,49 @@ expect class SettingsServerHostViewModel : ViewModel
 
 expect fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostViewModel): LazyListScope.() -> Unit
 
-class SettingsServerViewModel @Inject constructor(
-    serverPreferences: ServerPreferences,
-    contextWrapper: ContextWrapper,
-) : ViewModel(contextWrapper) {
-    val serverUrl = serverPreferences.server().asStateIn(scope)
-    val serverPort = serverPreferences.port().asStringStateIn(scope)
-    val serverPathPrefix = serverPreferences.pathPrefix().asStateIn(scope)
+class SettingsServerViewModel
+    @Inject
+    constructor(
+        serverPreferences: ServerPreferences,
+        contextWrapper: ContextWrapper,
+    ) : ViewModel(contextWrapper) {
+        val serverUrl = serverPreferences.server().asStateIn(scope)
+        val serverPort = serverPreferences.port().asStringStateIn(scope)
+        val serverPathPrefix = serverPreferences.pathPrefix().asStateIn(scope)
 
-    val proxy = serverPreferences.proxy().asStateIn(scope)
+        val proxy = serverPreferences.proxy().asStateIn(scope)
 
-    @Composable
-    fun getProxyChoices(): ImmutableMap<Proxy, String> = persistentMapOf(
-        Proxy.NO_PROXY to stringResource(MR.strings.no_proxy),
-        Proxy.HTTP_PROXY to stringResource(MR.strings.http_proxy),
-        Proxy.SOCKS_PROXY to stringResource(MR.strings.socks_proxy),
-    )
+        @Composable
+        fun getProxyChoices(): ImmutableMap<Proxy, String> =
+            persistentMapOf(
+                Proxy.NO_PROXY to stringResource(MR.strings.no_proxy),
+                Proxy.HTTP_PROXY to stringResource(MR.strings.http_proxy),
+                Proxy.SOCKS_PROXY to stringResource(MR.strings.socks_proxy),
+            )
 
-    val httpHost = serverPreferences.proxyHttpHost().asStateIn(scope)
-    val httpPort = serverPreferences.proxyHttpPort().asStringStateIn(scope)
-    val socksHost = serverPreferences.proxySocksHost().asStateIn(scope)
-    val socksPort = serverPreferences.proxySocksPort().asStringStateIn(scope)
+        val httpHost = serverPreferences.proxyHttpHost().asStateIn(scope)
+        val httpPort = serverPreferences.proxyHttpPort().asStringStateIn(scope)
+        val socksHost = serverPreferences.proxySocksHost().asStateIn(scope)
+        val socksPort = serverPreferences.proxySocksPort().asStringStateIn(scope)
 
-    val auth = serverPreferences.auth().asStateIn(scope)
+        val auth = serverPreferences.auth().asStateIn(scope)
 
-    @Composable
-    fun getAuthChoices(): ImmutableMap<Auth, String> = persistentMapOf(
-        Auth.NONE to stringResource(MR.strings.no_auth),
-        Auth.BASIC to stringResource(MR.strings.basic_auth),
-        Auth.DIGEST to stringResource(MR.strings.digest_auth),
-    )
-    val authUsername = serverPreferences.authUsername().asStateIn(scope)
-    val authPassword = serverPreferences.authPassword().asStateIn(scope)
+        @Composable
+        fun getAuthChoices(): ImmutableMap<Auth, String> =
+            persistentMapOf(
+                Auth.NONE to stringResource(MR.strings.no_auth),
+                Auth.BASIC to stringResource(MR.strings.basic_auth),
+                Auth.DIGEST to stringResource(MR.strings.digest_auth),
+            )
+        val authUsername = serverPreferences.authUsername().asStateIn(scope)
+        val authPassword = serverPreferences.authPassword().asStateIn(scope)
 
-    private val _serverSettingChanged = MutableStateFlow(false)
-    val serverSettingChanged = _serverSettingChanged.asStateFlow()
-    fun serverSettingChanged() {
-        _serverSettingChanged.value = true
+        private val _serverSettingChanged = MutableStateFlow(false)
+        val serverSettingChanged = _serverSettingChanged.asStateFlow()
+        fun serverSettingChanged() {
+            _serverSettingChanged.value = true
+        }
     }
-}
 
 @Composable
 fun SettingsServerScreenContent(

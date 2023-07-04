@@ -73,7 +73,10 @@ fun MangaItem(manga: Manga) {
 }
 
 @Composable
-private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
+private fun Cover(
+    manga: Manga,
+    modifier: Modifier = Modifier,
+) {
     ImageLoaderImage(
         data = manga,
         contentDescription = manga.title,
@@ -88,7 +91,10 @@ private fun Cover(manga: Manga, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun MangaInfo(manga: Manga, modifier: Modifier = Modifier) {
+private fun MangaInfo(
+    manga: Manga,
+    modifier: Modifier = Modifier,
+) {
     SelectionContainer {
         Column(modifier) {
             Text(

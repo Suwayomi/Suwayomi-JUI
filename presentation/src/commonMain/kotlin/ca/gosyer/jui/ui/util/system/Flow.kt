@@ -14,7 +14,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
-fun <T> Flow<T>.asStateFlow(defaultValue: T, scope: CoroutineScope, dropFirst: Boolean = false): StateFlow<T> {
+fun <T> Flow<T>.asStateFlow(
+    defaultValue: T,
+    scope: CoroutineScope,
+    dropFirst: Boolean = false,
+): StateFlow<T> {
     val flow = MutableStateFlow(defaultValue)
     scope.launch {
         if (dropFirst) {

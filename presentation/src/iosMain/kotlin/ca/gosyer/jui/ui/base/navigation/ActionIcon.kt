@@ -13,7 +13,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 // todo
 @Composable
-actual fun ActionIcon(onClick: () -> Unit, contentDescription: String, icon: ImageVector) {
+actual fun ActionIcon(
+    onClick: () -> Unit,
+    contentDescription: String,
+    icon: ImageVector,
+) {
     IconButton(onClick = onClick) {
         Icon(icon, contentDescription)
     }

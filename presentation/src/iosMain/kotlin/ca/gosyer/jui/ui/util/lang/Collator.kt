@@ -11,10 +11,12 @@ import platform.Foundation.NSString
 import platform.Foundation.localizedCaseInsensitiveCompare
 
 actual class CollatorComparator() : Comparator<String> {
-
     actual constructor(locale: Locale) : this()
 
-    actual override fun compare(source: String, target: String): Int {
+    actual override fun compare(
+        source: String,
+        target: String,
+    ): Int {
         @Suppress("CAST_NEVER_SUCCEEDS")
         return (source as NSString).localizedCaseInsensitiveCompare(target).toInt()
     }

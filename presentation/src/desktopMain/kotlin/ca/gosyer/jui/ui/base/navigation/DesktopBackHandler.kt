@@ -9,4 +9,7 @@ package ca.gosyer.jui.ui.base.navigation
 import androidx.compose.runtime.Composable
 
 @Composable
-internal actual fun RealBackHandler(enabled: Boolean, onBack: () -> Unit) {}
+internal actual fun RealBackHandler(
+    enabled: Boolean,
+    onBack: () -> Unit,
+) {}

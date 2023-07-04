@@ -6,4 +6,7 @@
 
 package ca.gosyer.jui.ui.util.lang
 
-expect fun stringFormat(string: String, vararg args: Any?): String
+expect fun stringFormat(
+    string: String,
+    vararg args: Any?,
+): String

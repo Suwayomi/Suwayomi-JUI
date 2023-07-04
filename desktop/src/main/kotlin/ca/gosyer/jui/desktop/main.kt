@@ -253,7 +253,10 @@ suspend fun main() {
 }
 
 @Composable
-fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
+fun ToastOverlay(
+    modifier: Modifier,
+    context: ContextWrapper,
+) {
     var toast by remember { mutableStateOf<Pair<String, Length>?>(null) }
     LaunchedEffect(Unit) {
         context.toasts

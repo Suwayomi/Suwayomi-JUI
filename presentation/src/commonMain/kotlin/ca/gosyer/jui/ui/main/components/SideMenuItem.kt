@@ -30,7 +30,11 @@ import ca.gosyer.jui.uicore.resources.stringResource
 import cafe.adriel.voyager.core.screen.Screen
 
 @Composable
-fun SideMenuItem(selected: Boolean, topLevelMenu: Menu, newRoot: (Screen) -> Unit) {
+fun SideMenuItem(
+    selected: Boolean,
+    topLevelMenu: Menu,
+    newRoot: (Screen) -> Unit,
+) {
     SideMenuItem(
         selected,
         stringResource(topLevelMenu.textKey),

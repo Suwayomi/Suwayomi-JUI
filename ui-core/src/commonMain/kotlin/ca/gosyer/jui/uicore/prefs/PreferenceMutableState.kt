@@ -17,7 +17,6 @@ class PreferenceMutableStateFlow<T>(
     scope: CoroutineScope,
     private val state: MutableStateFlow<T> = MutableStateFlow(preference.get()),
 ) : MutableStateFlow<T> by state {
-
     init {
         preference.changes()
             .onEach { state.value = it }

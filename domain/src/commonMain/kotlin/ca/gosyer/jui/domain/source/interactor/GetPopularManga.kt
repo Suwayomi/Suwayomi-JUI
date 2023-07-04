@@ -13,27 +13,42 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetPopularManga @Inject constructor(private val sourceRepository: SourceRepository) {
+class GetPopularManga
+    @Inject
+    constructor(private val sourceRepository: SourceRepository) {
+        suspend fun await(
+            source: Source,
+            page: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(source.id, page)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get popular manga from ${source.displayName} on page $page" }
+            }
+            .singleOrNull()
 
-    suspend fun await(source: Source, page: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(source.id, page)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get popular manga from ${source.displayName} on page $page" }
+        suspend fun await(
+            sourceId: Long,
+            page: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(sourceId, page)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get popular manga from $sourceId on page $page" }
+            }
+            .singleOrNull()
+
+        fun asFlow(
+            source: Source,
+            page: Int,
+        ) = sourceRepository.getPopularManga(source.id, page)
+
+        fun asFlow(
+            sourceId: Long,
+            page: Int,
+        ) = sourceRepository.getPopularManga(sourceId, page)
+
+        companion object {
+            private val log = logging()
         }
-        .singleOrNull()
-
-    suspend fun await(sourceId: Long, page: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, page)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get popular manga from $sourceId on page $page" }
-        }
-        .singleOrNull()
-
-    fun asFlow(source: Source, page: Int) = sourceRepository.getPopularManga(source.id, page)
-
-    fun asFlow(sourceId: Long, page: Int) = sourceRepository.getPopularManga(sourceId, page)
-
-    companion object {
-        private val log = logging()
     }
-}

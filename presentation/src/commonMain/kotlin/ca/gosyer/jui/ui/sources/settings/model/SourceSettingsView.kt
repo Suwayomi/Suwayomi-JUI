@@ -100,9 +100,10 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val summary: String?
             get() = subtitle?.let { withFormat(it, props.entries[props.entryValues.indexOf(state.value)]) }
 
-        fun getOptions() = props.entryValues.mapIndexed { index, s ->
-            s to props.entries[index]
-        }.toImmutableList()
+        fun getOptions() =
+            props.entryValues.mapIndexed { index, s ->
+                s to props.entries[index]
+            }.toImmutableList()
     }
 
     data class MultiSelect internal constructor(
@@ -125,9 +126,10 @@ sealed class SourceSettingsView<T, R : Any?> {
             preference.props,
         )
 
-        fun getOptions() = props.entryValues.mapIndexed { index, s ->
-            s to props.entries[index]
-        }.toImmutableList()
+        fun getOptions() =
+            props.entryValues.mapIndexed { index, s ->
+                s to props.entries[index]
+            }.toImmutableList()
 
         fun toggleOption(key: String) {
             if (key in state.value.orEmpty()) {
@@ -162,11 +164,17 @@ sealed class SourceSettingsView<T, R : Any?> {
     }
 }
 
-private fun withFormat(text: String, value: Any?): String {
+private fun withFormat(
+    text: String,
+    value: Any?,
+): String {
     return stringFormat(text, value)
 }
 
-fun SourceSettingsView(index: Int, preference: SourcePreference): SourceSettingsView<*, *> {
+fun SourceSettingsView(
+    index: Int,
+    preference: SourcePreference,
+): SourceSettingsView<*, *> {
     return when (preference) {
         is CheckBoxPreference -> SourceSettingsView.CheckBox(index, preference)
         is SwitchPreference -> SourceSettingsView.Switch(index, preference)

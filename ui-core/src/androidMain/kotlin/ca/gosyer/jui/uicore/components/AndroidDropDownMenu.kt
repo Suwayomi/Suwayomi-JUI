@@ -52,19 +52,21 @@ internal actual fun RealDropdownMenuItem(
 )
 
 @Stable
-fun PopupProperties.toAndroidProperties() = AndroidPopupProperties(
-    focusable = focusable,
-    dismissOnBackPress = dismissOnBackPress,
-    dismissOnClickOutside = dismissOnClickOutside,
-    securePolicy = securePolicy.toAndroidSecureFlagPolicy(),
-    excludeFromSystemGesture = excludeFromSystemGesture,
-    clippingEnabled = clippingEnabled,
-    usePlatformDefaultWidth = usePlatformDefaultWidth,
-)
+fun PopupProperties.toAndroidProperties() =
+    AndroidPopupProperties(
+        focusable = focusable,
+        dismissOnBackPress = dismissOnBackPress,
+        dismissOnClickOutside = dismissOnClickOutside,
+        securePolicy = securePolicy.toAndroidSecureFlagPolicy(),
+        excludeFromSystemGesture = excludeFromSystemGesture,
+        clippingEnabled = clippingEnabled,
+        usePlatformDefaultWidth = usePlatformDefaultWidth,
+    )
 
 @Stable
-fun SecureFlagPolicy.toAndroidSecureFlagPolicy() = when (this) {
-    SecureFlagPolicy.Inherit -> AndroidSecureFlagPolicy.Inherit
-    SecureFlagPolicy.SecureOn -> AndroidSecureFlagPolicy.SecureOn
-    SecureFlagPolicy.SecureOff -> AndroidSecureFlagPolicy.SecureOff
-}
+fun SecureFlagPolicy.toAndroidSecureFlagPolicy() =
+    when (this) {
+        SecureFlagPolicy.Inherit -> AndroidSecureFlagPolicy.Inherit
+        SecureFlagPolicy.SecureOn -> AndroidSecureFlagPolicy.SecureOn
+        SecureFlagPolicy.SecureOff -> AndroidSecureFlagPolicy.SecureOff
+    }

@@ -15,32 +15,41 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class AddMangaToLibrary @Inject constructor(
-    private val libraryRepository: LibraryRepository,
-    private val serverListeners: ServerListeners,
-) {
+class AddMangaToLibrary
+    @Inject
+    constructor(
+        private val libraryRepository: LibraryRepository,
+        private val serverListeners: ServerListeners,
+    ) {
+        suspend fun await(
+            mangaId: Long,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(mangaId)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to add $mangaId to library" }
+            }
+            .singleOrNull()
 
-    suspend fun await(mangaId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to add $mangaId to library" }
+        suspend fun await(
+            manga: Manga,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(manga)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to add ${manga.title}(${manga.id}) to library" }
+            }
+            .singleOrNull()
+
+        fun asFlow(mangaId: Long) =
+            libraryRepository.addMangaToLibrary(mangaId)
+                .onEach { serverListeners.updateManga(mangaId) }
+
+        fun asFlow(manga: Manga) =
+            libraryRepository.addMangaToLibrary(manga.id)
+                .onEach { serverListeners.updateManga(manga.id) }
+
+        companion object {
+            private val log = logging()
         }
-        .singleOrNull()
-
-    suspend fun await(manga: Manga, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to add ${manga.title}(${manga.id}) to library" }
-        }
-        .singleOrNull()
-
-    fun asFlow(mangaId: Long) = libraryRepository.addMangaToLibrary(mangaId)
-        .onEach { serverListeners.updateManga(mangaId) }
-
-    fun asFlow(manga: Manga) = libraryRepository.addMangaToLibrary(manga.id)
-        .onEach { serverListeners.updateManga(manga.id) }
-
-    companion object {
-        private val log = logging()
     }
-}

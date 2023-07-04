@@ -10,15 +10,17 @@ import com.russhwolf.settings.PreferencesSettings
 import me.tatarka.inject.annotations.Inject
 import java.util.prefs.Preferences
 
-actual class PreferenceStoreFactory @Inject constructor() {
-    private val rootNode: Preferences = Preferences.userRoot()
-        .node("ca/gosyer/tachideskjui")
+actual class PreferenceStoreFactory
+    @Inject
+    constructor() {
+        private val rootNode: Preferences = Preferences.userRoot()
+            .node("ca/gosyer/tachideskjui")
 
-    actual fun create(vararg names: String): PreferenceStore {
-        return StandardPreferenceStore(
-            PreferencesSettings(
-                rootNode.node(names.joinToString(separator = "/")),
-            ),
-        )
+        actual fun create(vararg names: String): PreferenceStore {
+            return StandardPreferenceStore(
+                PreferencesSettings(
+                    rootNode.node(names.joinToString(separator = "/")),
+                ),
+            )
+        }
     }
-}

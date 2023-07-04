@@ -23,7 +23,7 @@ import ca.gosyer.jui.uicore.resources.stringResource
 fun LoadingScreen(
     isLoading: Boolean = true,
     modifier: Modifier = Modifier.fillMaxSize(),
-    /*@FloatRange(from = 0.0, to = 1.0)*/
+    // @FloatRange(from = 0.0, to = 1.0)
     progress: Float = 0.0F,
     errorMessage: String? = null,
     retryMessage: String = stringResource(MR.strings.action_retry),

@@ -12,18 +12,22 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class CreateCategory @Inject constructor(private val categoryRepository: CategoryRepository) {
+class CreateCategory
+    @Inject
+    constructor(private val categoryRepository: CategoryRepository) {
+        suspend fun await(
+            name: String,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(name)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to create category $name" }
+            }
+            .collect()
 
-    suspend fun await(name: String, onError: suspend (Throwable) -> Unit = {}) = asFlow(name)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to create category $name" }
+        fun asFlow(name: String) = categoryRepository.createCategory(name)
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    fun asFlow(name: String) = categoryRepository.createCategory(name)
-
-    companion object {
-        private val log = logging()
     }
-}

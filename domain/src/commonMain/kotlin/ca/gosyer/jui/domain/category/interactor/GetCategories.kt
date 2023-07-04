@@ -13,25 +13,30 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetCategories @Inject constructor(private val categoryRepository: CategoryRepository) {
-
-    suspend fun await(dropDefault: Boolean = false, onError: suspend (Throwable) -> Unit = {}) = asFlow(dropDefault)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get categories" }
-        }
-        .singleOrNull()
-
-    fun asFlow(dropDefault: Boolean = false) = categoryRepository.getCategories()
-        .map { categories ->
-            if (dropDefault) {
-                categories.filterNot { it.name.equals("default", true) }
-            } else {
-                categories
+class GetCategories
+    @Inject
+    constructor(private val categoryRepository: CategoryRepository) {
+        suspend fun await(
+            dropDefault: Boolean = false,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(dropDefault)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get categories" }
             }
-        }
+            .singleOrNull()
 
-    companion object {
-        private val log = logging()
+        fun asFlow(dropDefault: Boolean = false) =
+            categoryRepository.getCategories()
+                .map { categories ->
+                    if (dropDefault) {
+                        categories.filterNot { it.name.equals("default", true) }
+                    } else {
+                        categories
+                    }
+                }
+
+        companion object {
+            private val log = logging()
+        }
     }
-}

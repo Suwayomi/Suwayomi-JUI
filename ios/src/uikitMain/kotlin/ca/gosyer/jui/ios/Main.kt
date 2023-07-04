@@ -61,58 +61,66 @@ fun main() {
     }
 }
 
-class SkikoAppDelegate @OverrideInit constructor() : UIResponder(), UIApplicationDelegateProtocol {
-    companion object : UIResponderMeta(), UIApplicationDelegateProtocolMeta
+class SkikoAppDelegate
+    @OverrideInit
+    constructor() : UIResponder(), UIApplicationDelegateProtocol {
+        companion object : UIResponderMeta(), UIApplicationDelegateProtocolMeta
 
-    private var _window: UIWindow? = null
-    override fun window() = _window
-    override fun setWindow(window: UIWindow?) {
-        _window = window
-    }
+        private var _window: UIWindow? = null
+        override fun window() = _window
+        override fun setWindow(window: UIWindow?) {
+            _window = window
+        }
 
-    private val context = ContextWrapper()
+        private val context = ContextWrapper()
 
-    private val appComponent = AppComponent.getInstance(context)
+        private val appComponent = AppComponent.getInstance(context)
 
-    init {
-        appComponent.migrations.runMigrations()
-        appComponent.appMigrations.runMigrations()
+        init {
+            appComponent.migrations.runMigrations()
+            appComponent.appMigrations.runMigrations()
 
-        appComponent.downloadService.init()
-        appComponent.libraryUpdateService.init()
-    }
+            appComponent.downloadService.init()
+            appComponent.libraryUpdateService.init()
+        }
 
-    val uiHooks = appComponent.hooks
+        val uiHooks = appComponent.hooks
 
-    override fun application(application: UIApplication, didFinishLaunchingWithOptions: Map<Any?, *>?): Boolean {
-        window = UIWindow(frame = UIScreen.mainScreen.bounds).apply {
-            val insets = safeAreaInsets.useContents {
-                WindowInsets(left.dp, top.dp, right.dp, bottom.dp)
-            }
+        override fun application(
+            application: UIApplication,
+            didFinishLaunchingWithOptions: Map<Any?, *>?,
+        ): Boolean {
+            window = UIWindow(frame = UIScreen.mainScreen.bounds).apply {
+                val insets = safeAreaInsets.useContents {
+                    WindowInsets(left.dp, top.dp, right.dp, bottom.dp)
+                }
 
-            rootViewController = Application("Tachidesk-JUI") {
-                CompositionLocalProvider(*uiHooks) {
-                    AppTheme {
-                        Box(Modifier.fillMaxSize().windowInsetsPadding(insets)) {
-                            MainMenu()
-                            ToastOverlay(
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .padding(bottom = 64.dp),
-                                context = context,
-                            )
+                rootViewController = Application("Tachidesk-JUI") {
+                    CompositionLocalProvider(*uiHooks) {
+                        AppTheme {
+                            Box(Modifier.fillMaxSize().windowInsetsPadding(insets)) {
+                                MainMenu()
+                                ToastOverlay(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .padding(bottom = 64.dp),
+                                    context = context,
+                                )
+                            }
                         }
                     }
                 }
+                makeKeyAndVisible()
             }
-            makeKeyAndVisible()
+            return true
         }
-        return true
     }
-}
 
 @Composable
-fun ToastOverlay(modifier: Modifier, context: ContextWrapper) {
+fun ToastOverlay(
+    modifier: Modifier,
+    context: ContextWrapper,
+) {
     var toast by remember { mutableStateOf<Pair<String, Length>?>(null) }
     LaunchedEffect(Unit) {
         context.toasts

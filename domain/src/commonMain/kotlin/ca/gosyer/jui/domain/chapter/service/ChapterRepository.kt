@@ -25,7 +25,6 @@ import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 
 interface ChapterRepository {
-
     @GET("api/v1/manga/{mangaId}/chapters")
     fun getChapters(
         @Path("mangaId") mangaId: Long,

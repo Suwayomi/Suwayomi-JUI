@@ -17,4 +17,6 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
     return {}
 }
 
-actual class SettingsServerHostViewModel @Inject constructor(contextWrapper: ContextWrapper) : ViewModel(contextWrapper)
+actual class SettingsServerHostViewModel
+    @Inject
+    constructor(contextWrapper: ContextWrapper) : ViewModel(contextWrapper)

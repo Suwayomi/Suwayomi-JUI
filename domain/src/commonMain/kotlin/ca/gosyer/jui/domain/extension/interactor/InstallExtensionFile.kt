@@ -13,18 +13,22 @@ import me.tatarka.inject.annotations.Inject
 import okio.Path
 import org.lighthousegames.logging.logging
 
-class InstallExtensionFile @Inject constructor(private val extensionRepository: ExtensionRepository) {
+class InstallExtensionFile
+    @Inject
+    constructor(private val extensionRepository: ExtensionRepository) {
+        suspend fun await(
+            path: Path,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(path)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to install extension from $path" }
+            }
+            .collect()
 
-    suspend fun await(path: Path, onError: suspend (Throwable) -> Unit = {}) = asFlow(path)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to install extension from $path" }
+        fun asFlow(path: Path) = extensionRepository.installExtension(ExtensionRepository.buildExtensionFormData(path))
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    fun asFlow(path: Path) = extensionRepository.installExtension(ExtensionRepository.buildExtensionFormData(path))
-
-    companion object {
-        private val log = logging()
     }
-}

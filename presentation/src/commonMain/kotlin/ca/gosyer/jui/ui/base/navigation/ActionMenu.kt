@@ -65,7 +65,10 @@ data class ActionItem(
 
 // Whether action items are allowed to overflow into a dropdown menu - or NOT SHOWN to hide
 enum class OverflowMode {
-    NEVER_OVERFLOW, IF_NECESSARY, ALWAYS_OVERFLOW, NOT_SHOWN
+    NEVER_OVERFLOW,
+    IF_NECESSARY,
+    ALWAYS_OVERFLOW,
+    NOT_SHOWN,
 }
 
 // Note: should be used in a RowScope

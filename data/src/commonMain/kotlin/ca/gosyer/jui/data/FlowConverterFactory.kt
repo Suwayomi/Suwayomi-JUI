@@ -18,19 +18,17 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class FlowConverterFactory : Converter.Factory {
-
     private class FlowResponseConverter(
         val typeData: TypeData,
-        val ktorfit: Ktorfit
+        val ktorfit: Ktorfit,
     ) : Converter.ResponseConverter<HttpResponse, Flow<Any?>> {
-
         override fun convert(getResponse: suspend () -> HttpResponse): Flow<Any?> {
             return flow {
                 val response = getResponse()
 
                 val convertedBody = ktorfit.nextSuspendResponseConverter(
                     null,
-                    typeData.typeArgs.first()
+                    typeData.typeArgs.first(),
                 )?.convert(response)
                     ?: response.body(typeData.typeArgs.first().typeInfo)
                 emit(convertedBody)
@@ -40,7 +38,7 @@ class FlowConverterFactory : Converter.Factory {
 
     override fun responseConverter(
         typeData: TypeData,
-        ktorfit: Ktorfit
+        ktorfit: Ktorfit,
     ): Converter.ResponseConverter<HttpResponse, *>? {
         if (typeData.typeInfo.type == Flow::class) {
             return FlowResponseConverter(typeData, ktorfit)
@@ -50,9 +48,8 @@ class FlowConverterFactory : Converter.Factory {
 
     override fun suspendResponseConverter(
         typeData: TypeData,
-        ktorfit: Ktorfit
+        ktorfit: Ktorfit,
     ): Converter.SuspendResponseConverter<HttpResponse, *>? {
         return null
     }
 }
-

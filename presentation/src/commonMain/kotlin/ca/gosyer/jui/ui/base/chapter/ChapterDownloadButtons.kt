@@ -154,7 +154,10 @@ private fun DownloadIconButton(onClick: () -> Unit) {
 }
 
 @Composable
-private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: () -> Unit) {
+private fun DownloadingIconButton(
+    downloadChapter: DownloadChapter?,
+    onClick: () -> Unit,
+) {
     DropdownIconButton(
         downloadChapter?.mangaId to downloadChapter?.chapterIndex,
         {
@@ -226,7 +229,10 @@ private fun DownloadingIconButton(downloadChapter: DownloadChapter?, onClick: ()
 }
 
 @Composable
-private fun DownloadedIconButton(chapter: Pair<Long, Int?>, onClick: () -> Unit) {
+private fun DownloadedIconButton(
+    chapter: Pair<Long, Int?>,
+    onClick: () -> Unit,
+) {
     DropdownIconButton(
         chapter,
         {

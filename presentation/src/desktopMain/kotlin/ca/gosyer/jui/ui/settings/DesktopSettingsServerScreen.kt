@@ -72,69 +72,71 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
     }
 }
 
-actual class SettingsServerHostViewModel @Inject constructor(
-    serverPreferences: ServerPreferences,
-    serverHostPreferences: ServerHostPreferences,
-    private val serverService: ServerService,
-    contextWrapper: ContextWrapper,
-) : ViewModel(contextWrapper) {
-    val host = serverHostPreferences.host().asStateIn(scope)
-    val ip = serverHostPreferences.ip().asStateIn(scope)
-    val port = serverHostPreferences.port().asStringStateIn(scope)
+actual class SettingsServerHostViewModel
+    @Inject
+    constructor(
+        serverPreferences: ServerPreferences,
+        serverHostPreferences: ServerHostPreferences,
+        private val serverService: ServerService,
+        contextWrapper: ContextWrapper,
+    ) : ViewModel(contextWrapper) {
+        val host = serverHostPreferences.host().asStateIn(scope)
+        val ip = serverHostPreferences.ip().asStateIn(scope)
+        val port = serverHostPreferences.port().asStringStateIn(scope)
 
-    // Proxy
-    val socksProxyEnabled = serverHostPreferences.socksProxyEnabled().asStateIn(scope)
-    val socksProxyHost = serverHostPreferences.socksProxyHost().asStateIn(scope)
-    val socksProxyPort = serverHostPreferences.socksProxyPort().asStringStateIn(scope)
+        // Proxy
+        val socksProxyEnabled = serverHostPreferences.socksProxyEnabled().asStateIn(scope)
+        val socksProxyHost = serverHostPreferences.socksProxyHost().asStateIn(scope)
+        val socksProxyPort = serverHostPreferences.socksProxyPort().asStringStateIn(scope)
 
-    // Misc
-    val debugLogsEnabled = serverHostPreferences.debugLogsEnabled().asStateIn(scope)
-    val systemTrayEnabled = serverHostPreferences.systemTrayEnabled().asStateIn(scope)
+        // Misc
+        val debugLogsEnabled = serverHostPreferences.debugLogsEnabled().asStateIn(scope)
+        val systemTrayEnabled = serverHostPreferences.systemTrayEnabled().asStateIn(scope)
 
-    // Downloader
-    val downloadPath = serverHostPreferences.downloadPath().asStateIn(scope)
-    val downloadAsCbz = serverHostPreferences.downloadAsCbz().asStateIn(scope)
+        // Downloader
+        val downloadPath = serverHostPreferences.downloadPath().asStateIn(scope)
+        val downloadAsCbz = serverHostPreferences.downloadAsCbz().asStateIn(scope)
 
-    // WebUI
-    val webUIEnabled = serverHostPreferences.webUIEnabled().asStateIn(scope)
-    val openInBrowserEnabled = serverHostPreferences.openInBrowserEnabled().asStateIn(scope)
+        // WebUI
+        val webUIEnabled = serverHostPreferences.webUIEnabled().asStateIn(scope)
+        val openInBrowserEnabled = serverHostPreferences.openInBrowserEnabled().asStateIn(scope)
 
-    // Authentication
-    val basicAuthEnabled = serverHostPreferences.basicAuthEnabled().asStateIn(scope)
-    val basicAuthUsername = serverHostPreferences.basicAuthUsername().asStateIn(scope)
-    val basicAuthPassword = serverHostPreferences.basicAuthPassword().asStateIn(scope)
+        // Authentication
+        val basicAuthEnabled = serverHostPreferences.basicAuthEnabled().asStateIn(scope)
+        val basicAuthUsername = serverHostPreferences.basicAuthUsername().asStateIn(scope)
+        val basicAuthPassword = serverHostPreferences.basicAuthPassword().asStateIn(scope)
 
-    private val _serverSettingChanged = MutableStateFlow(false)
-    val serverSettingChanged = _serverSettingChanged.asStateFlow()
-    fun serverSettingChanged() {
-        _serverSettingChanged.value = true
-    }
+        private val _serverSettingChanged = MutableStateFlow(false)
+        val serverSettingChanged = _serverSettingChanged.asStateFlow()
+        fun serverSettingChanged() {
+            _serverSettingChanged.value = true
+        }
 
-    fun restartServer() {
-        if (serverSettingChanged.value) {
-            serverService.startServer()
+        fun restartServer() {
+            if (serverSettingChanged.value) {
+                serverService.startServer()
+            }
+        }
+
+        // Handle password connection to hosted server
+        val auth = serverPreferences.auth().asStateIn(scope)
+        val authUsername = serverPreferences.authUsername().asStateIn(scope)
+        val authPassword = serverPreferences.authPassword().asStateIn(scope)
+
+        init {
+            combine(basicAuthEnabled, basicAuthUsername, basicAuthPassword) { enabled, username, password ->
+                if (enabled) {
+                    auth.value = Auth.BASIC
+                    authUsername.value = username
+                    authPassword.value = password
+                } else {
+                    auth.value = Auth.NONE
+                    authUsername.value = ""
+                    authPassword.value = ""
+                }
+            }.launchIn(scope)
         }
     }
-
-    // Handle password connection to hosted server
-    val auth = serverPreferences.auth().asStateIn(scope)
-    val authUsername = serverPreferences.authUsername().asStateIn(scope)
-    val authPassword = serverPreferences.authPassword().asStateIn(scope)
-
-    init {
-        combine(basicAuthEnabled, basicAuthUsername, basicAuthPassword) { enabled, username, password ->
-            if (enabled) {
-                auth.value = Auth.BASIC
-                authUsername.value = username
-                authPassword.value = password
-            } else {
-                auth.value = Auth.NONE
-                authUsername.value = ""
-                authPassword.value = ""
-            }
-        }.launchIn(scope)
-    }
-}
 
 fun LazyListScope.ServerHostItems(
     hostValue: Boolean,

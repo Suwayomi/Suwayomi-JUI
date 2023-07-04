@@ -12,18 +12,20 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetSourceList @Inject constructor(private val sourceRepository: SourceRepository) {
+class GetSourceList
+    @Inject
+    constructor(private val sourceRepository: SourceRepository) {
+        suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
+            asFlow()
+                .catch {
+                    onError(it)
+                    log.warn(it) { "Failed to get source list" }
+                }
+                .singleOrNull()
 
-    suspend fun await(onError: suspend (Throwable) -> Unit = {}) = asFlow()
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get source list" }
+        fun asFlow() = sourceRepository.getSourceList()
+
+        companion object {
+            private val log = logging()
         }
-        .singleOrNull()
-
-    fun asFlow() = sourceRepository.getSourceList()
-
-    companion object {
-        private val log = logging()
     }
-}

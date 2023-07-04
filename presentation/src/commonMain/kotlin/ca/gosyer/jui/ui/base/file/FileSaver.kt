@@ -18,11 +18,12 @@ fun rememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit = {},
     onError: () -> Unit = {},
-): FileSaver = realRememberFileSaver(
-    onFileSelected = onFileSelected,
-    onCancel = onCancel,
-    onError = onError,
-)
+): FileSaver =
+    realRememberFileSaver(
+        onFileSelected = onFileSelected,
+        onCancel = onCancel,
+        onError = onError,
+    )
 
 @Composable
 internal expect fun realRememberFileSaver(

@@ -14,7 +14,9 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @Stable
-enum class ImageScale(@Transient val res: StringResource) {
+enum class ImageScale(
+    @Transient val res: StringResource,
+) {
     FitScreen(MR.strings.scale_fit_screen),
     Stretch(MR.strings.scale_stretch),
     FitWidth(MR.strings.scale_fit_width),

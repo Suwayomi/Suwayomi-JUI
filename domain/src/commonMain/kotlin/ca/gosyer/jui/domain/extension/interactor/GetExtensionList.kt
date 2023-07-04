@@ -12,18 +12,20 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetExtensionList @Inject constructor(private val extensionRepository: ExtensionRepository) {
+class GetExtensionList
+    @Inject
+    constructor(private val extensionRepository: ExtensionRepository) {
+        suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
+            asFlow()
+                .catch {
+                    onError(it)
+                    log.warn(it) { "Failed to get extension list" }
+                }
+                .singleOrNull()
 
-    suspend fun await(onError: suspend (Throwable) -> Unit = {}) = asFlow()
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get extension list" }
+        fun asFlow() = extensionRepository.getExtensionList()
+
+        companion object {
+            private val log = logging()
         }
-        .singleOrNull()
-
-    fun asFlow() = extensionRepository.getExtensionList()
-
-    companion object {
-        private val log = logging()
     }
-}

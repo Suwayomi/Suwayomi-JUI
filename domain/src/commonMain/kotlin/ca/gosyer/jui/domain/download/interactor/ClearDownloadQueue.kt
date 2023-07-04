@@ -12,18 +12,20 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class ClearDownloadQueue @Inject constructor(private val downloadRepository: DownloadRepository) {
+class ClearDownloadQueue
+    @Inject
+    constructor(private val downloadRepository: DownloadRepository) {
+        suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
+            asFlow()
+                .catch {
+                    onError(it)
+                    log.warn(it) { "Failed to clear download queue" }
+                }
+                .collect()
 
-    suspend fun await(onError: suspend (Throwable) -> Unit = {}) = asFlow()
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to clear download queue" }
+        fun asFlow() = downloadRepository.clearDownloadQueue()
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    fun asFlow() = downloadRepository.clearDownloadQueue()
-
-    companion object {
-        private val log = logging()
     }
-}

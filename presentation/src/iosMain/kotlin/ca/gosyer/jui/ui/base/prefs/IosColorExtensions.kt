@@ -16,16 +16,17 @@ import platform.UIKit.UIColor
 
 fun Color.toUIColor() = UIColor(red = red.toDouble(), green = green.toDouble(), blue = blue.toDouble(), alpha = 1.0)
 
-internal actual fun Color.toHsv(): FloatArray = memScoped {
-    val uiColor = toUIColor()
-    val hue = alloc<CGFloatVar>()
-    val saturation = alloc<CGFloatVar>()
-    val brightness = alloc<CGFloatVar>()
-    val alpha = alloc<CGFloatVar>()
-    uiColor.getHue(hue.ptr, saturation.ptr, brightness.ptr, alpha.ptr)
+internal actual fun Color.toHsv(): FloatArray =
+    memScoped {
+        val uiColor = toUIColor()
+        val hue = alloc<CGFloatVar>()
+        val saturation = alloc<CGFloatVar>()
+        val brightness = alloc<CGFloatVar>()
+        val alpha = alloc<CGFloatVar>()
+        uiColor.getHue(hue.ptr, saturation.ptr, brightness.ptr, alpha.ptr)
 
-    floatArrayOf(hue.value.toFloat(), saturation.value.toFloat(), brightness.value.toFloat())
-}
+        floatArrayOf(hue.value.toFloat(), saturation.value.toFloat(), brightness.value.toFloat())
+    }
 
 internal actual fun hexStringToColor(hex: String): Color? {
     return try {

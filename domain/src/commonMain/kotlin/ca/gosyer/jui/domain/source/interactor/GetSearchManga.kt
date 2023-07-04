@@ -13,35 +13,56 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetSearchManga @Inject constructor(private val sourceRepository: SourceRepository) {
+class GetSearchManga
+    @Inject
+    constructor(private val sourceRepository: SourceRepository) {
+        suspend fun await(
+            source: Source,
+            searchTerm: String?,
+            page: Int,
+            onError: suspend (Throwable) -> Unit = {
+            },
+        ) = asFlow(source.id, searchTerm, page)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get search results from ${source.displayName} on page $page with query '$searchTerm'" }
+            }
+            .singleOrNull()
 
-    suspend fun await(source: Source, searchTerm: String?, page: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(source.id, searchTerm, page)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get search results from ${source.displayName} on page $page with query '$searchTerm'" }
+        suspend fun await(
+            sourceId: Long,
+            searchTerm: String?,
+            page: Int,
+            onError: suspend (Throwable) -> Unit = {
+            },
+        ) = asFlow(sourceId, searchTerm, page)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get search results from $sourceId on page $page with query '$searchTerm'" }
+            }
+            .singleOrNull()
+
+        fun asFlow(
+            source: Source,
+            searchTerm: String?,
+            page: Int,
+        ) = sourceRepository.getSearchResults(
+            source.id,
+            searchTerm?.ifBlank { null },
+            page,
+        )
+
+        fun asFlow(
+            sourceId: Long,
+            searchTerm: String?,
+            page: Int,
+        ) = sourceRepository.getSearchResults(
+            sourceId,
+            searchTerm?.ifBlank { null },
+            page,
+        )
+
+        companion object {
+            private val log = logging()
         }
-        .singleOrNull()
-
-    suspend fun await(sourceId: Long, searchTerm: String?, page: Int, onError: suspend (Throwable) -> Unit = {}) = asFlow(sourceId, searchTerm, page)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get search results from $sourceId on page $page with query '$searchTerm'" }
-        }
-        .singleOrNull()
-
-    fun asFlow(source: Source, searchTerm: String?, page: Int) = sourceRepository.getSearchResults(
-        source.id,
-        searchTerm?.ifBlank { null },
-        page,
-    )
-
-    fun asFlow(sourceId: Long, searchTerm: String?, page: Int) = sourceRepository.getSearchResults(
-        sourceId,
-        searchTerm?.ifBlank { null },
-        page,
-    )
-
-    companion object {
-        private val log = logging()
     }
-}

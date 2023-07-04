@@ -48,17 +48,11 @@ fun CoroutineScope.launchIO(
     block: suspend CoroutineScope.() -> Unit,
 ) = launch(Dispatchers.IO, start, block)
 
-suspend fun <T> withDefaultContext(
-    block: suspend CoroutineScope.() -> T,
-): T = withContext(Dispatchers.Default, block)
+suspend fun <T> withDefaultContext(block: suspend CoroutineScope.() -> T): T = withContext(Dispatchers.Default, block)
 
-suspend fun <T> withUIContext(
-    block: suspend CoroutineScope.() -> T,
-): T = withContext(Dispatchers.Main, block)
+suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T): T = withContext(Dispatchers.Main, block)
 
-suspend fun <T> withIOContext(
-    block: suspend CoroutineScope.() -> T,
-): T = withContext(Dispatchers.IO, block)
+suspend fun <T> withIOContext(block: suspend CoroutineScope.() -> T): T = withContext(Dispatchers.IO, block)
 
 fun Throwable.throwIfCancellation() { if (this is CancellationException) throw this }
 

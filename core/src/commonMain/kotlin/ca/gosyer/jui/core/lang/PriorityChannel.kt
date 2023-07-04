@@ -29,7 +29,6 @@ internal open class ProcessChannel<T>(
     internal val inChannel: Channel<T>,
     internal val outChannel: Channel<T>,
 ) : Channel<T> {
-
     @DelicateCoroutinesApi
     override val isClosedForReceive: Boolean
         get() = outChannel.isClosedForReceive

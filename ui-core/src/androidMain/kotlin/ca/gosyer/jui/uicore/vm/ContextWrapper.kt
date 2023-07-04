@@ -14,23 +14,31 @@ import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
 import me.tatarka.inject.annotations.Inject
 
-actual class ContextWrapper @Inject constructor(context: Context) : ContextWrapper(context) {
-    actual fun toPlatformString(stringResource: StringResource): String {
-        return stringResource.desc().toString(this)
-    }
+actual class ContextWrapper
+    @Inject
+    constructor(context: Context) : ContextWrapper(context) {
+        actual fun toPlatformString(stringResource: StringResource): String {
+            return stringResource.desc().toString(this)
+        }
 
-    actual fun toPlatformString(stringResource: StringResource, vararg args: Any): String {
-        return stringResource.format(*args).toString(this)
-    }
+        actual fun toPlatformString(
+            stringResource: StringResource,
+            vararg args: Any,
+        ): String {
+            return stringResource.format(*args).toString(this)
+        }
 
-    actual fun toast(string: String, length: Length) {
-        Toast.makeText(
-            this,
-            string,
-            when (length) {
-                Length.SHORT -> Toast.LENGTH_SHORT
-                Length.LONG -> Toast.LENGTH_LONG
-            },
-        ).show()
+        actual fun toast(
+            string: String,
+            length: Length,
+        ) {
+            Toast.makeText(
+                this,
+                string,
+                when (length) {
+                    Length.SHORT -> Toast.LENGTH_SHORT
+                    Length.LONG -> Toast.LENGTH_LONG
+                },
+            ).show()
+        }
     }
-}

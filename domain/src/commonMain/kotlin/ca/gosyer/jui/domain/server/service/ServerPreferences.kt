@@ -14,7 +14,6 @@ import ca.gosyer.jui.domain.server.model.ServerUrlPreference
 import io.ktor.http.Url
 
 class ServerPreferences(private val preferenceStore: PreferenceStore) {
-
     fun server(): Preference<String> {
         return preferenceStore.getString("server_url", "http://localhost")
     }

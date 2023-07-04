@@ -11,7 +11,6 @@ import ca.gosyer.jui.core.prefs.PreferenceStore
 import ca.gosyer.jui.domain.server.service.host.ServerHostPreference
 
 class ServerHostPreferences(private val preferenceStore: PreferenceStore) {
-
     fun host(): Preference<Boolean> {
         return preferenceStore.getBoolean("host", true)
     }

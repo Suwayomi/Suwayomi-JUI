@@ -16,32 +16,34 @@ import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
-actual class DebugOverlayViewModel @Inject constructor(contextWrapper: ContextWrapper) : ViewModel(contextWrapper) {
-    override val scope = MainScope()
+actual class DebugOverlayViewModel
+    @Inject
+    constructor(contextWrapper: ContextWrapper) : ViewModel(contextWrapper) {
+        override val scope = MainScope()
 
-    val runtime: Runtime = Runtime.getRuntime()
-    actual val maxMemory = runtime.maxMemory().formatSize()
-    actual val usedMemoryFlow = MutableStateFlow(runtime.usedMemory().formatSize())
+        val runtime: Runtime = Runtime.getRuntime()
+        actual val maxMemory = runtime.maxMemory().formatSize()
+        actual val usedMemoryFlow = MutableStateFlow(runtime.usedMemory().formatSize())
 
-    init {
-        scope.launch {
-            while (true) {
-                usedMemoryFlow.value = runtime.usedMemory().formatSize()
-                delay(100.milliseconds)
+        init {
+            scope.launch {
+                while (true) {
+                    usedMemoryFlow.value = runtime.usedMemory().formatSize()
+                    delay(100.milliseconds)
+                }
             }
         }
-    }
 
-    private fun Long.formatSize(): String {
-        if (this < 1024) return "$this B"
-        val z = (63 - java.lang.Long.numberOfLeadingZeros(this)) / 10
-        return String.format("%.1f %sB", toDouble() / (1L shl z * 10), " KMGTPE"[z])
-    }
+        private fun Long.formatSize(): String {
+            if (this < 1024) return "$this B"
+            val z = (63 - java.lang.Long.numberOfLeadingZeros(this)) / 10
+            return String.format("%.1f %sB", toDouble() / (1L shl z * 10), " KMGTPE"[z])
+        }
 
-    private fun Runtime.usedMemory(): Long = totalMemory() - freeMemory()
+        private fun Runtime.usedMemory(): Long = totalMemory() - freeMemory()
 
-    override fun onDispose() {
-        super.onDispose()
-        scope.cancel()
+        override fun onDispose() {
+            super.onDispose()
+            scope.cancel()
+        }
     }
-}

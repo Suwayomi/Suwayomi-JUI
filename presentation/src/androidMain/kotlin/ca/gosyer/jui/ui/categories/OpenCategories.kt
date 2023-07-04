@@ -12,7 +12,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 
 actual class CategoriesLauncher(private val navigator: Navigator?) {
-
     actual fun open() {
         navigator?.push(CategoriesScreen())
     }

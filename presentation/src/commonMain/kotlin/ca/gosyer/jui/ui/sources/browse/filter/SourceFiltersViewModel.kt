@@ -37,7 +37,8 @@ class SourceFiltersViewModel(
     contextWrapper: ContextWrapper,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(contextWrapper) {
-    @Inject constructor(
+    @Inject
+    constructor(
         getFilterList: GetFilterList,
         setSourceFilter: SetSourceFilter,
         contextWrapper: ContextWrapper,
@@ -133,9 +134,10 @@ class SourceFiltersViewModel(
 
     data class Params(val sourceId: Long)
 
-    private fun List<SourceFilter>.toView() = mapIndexed { index, sourcePreference ->
-        SourceFiltersView(index, sourcePreference)
-    }.toImmutableList()
+    private fun List<SourceFilter>.toView() =
+        mapIndexed { index, sourcePreference ->
+            SourceFiltersView(index, sourcePreference)
+        }.toImmutableList()
 
     private companion object {
         private val log = logging()

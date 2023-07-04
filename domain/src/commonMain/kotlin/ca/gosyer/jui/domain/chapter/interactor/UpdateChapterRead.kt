@@ -16,76 +16,77 @@ import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateChapterRead @Inject constructor(
-    private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners,
-) {
+class UpdateChapterRead
+    @Inject
+    constructor(
+        private val chapterRepository: ChapterRepository,
+        private val serverListeners: ServerListeners,
+    ) {
+        suspend fun await(
+            mangaId: Long,
+            index: Int,
+            read: Boolean,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(mangaId, index, read)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to update chapter read status for chapter $index of $mangaId" }
+            }
+            .collect()
 
-    suspend fun await(
-        mangaId: Long,
-        index: Int,
-        read: Boolean,
-        onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(mangaId, index, read)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update chapter read status for chapter $index of $mangaId" }
+        suspend fun await(
+            manga: Manga,
+            index: Int,
+            read: Boolean,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(manga, index, read)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to update chapter read status for chapter $index of ${manga.title}(${manga.id})" }
+            }
+            .collect()
+
+        suspend fun await(
+            chapter: Chapter,
+            read: Boolean,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(chapter, read)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to update chapter read status for chapter ${chapter.index} of ${chapter.mangaId}" }
+            }
+            .collect()
+
+        fun asFlow(
+            mangaId: Long,
+            index: Int,
+            read: Boolean,
+        ) = chapterRepository.updateChapter(
+            mangaId = mangaId,
+            chapterIndex = index,
+            read = read,
+        ).onEach { serverListeners.updateChapters(mangaId, index) }
+
+        fun asFlow(
+            manga: Manga,
+            index: Int,
+            read: Boolean,
+        ) = chapterRepository.updateChapter(
+            mangaId = manga.id,
+            chapterIndex = index,
+            read = read,
+        ).onEach { serverListeners.updateChapters(manga.id, index) }
+
+        fun asFlow(
+            chapter: Chapter,
+            read: Boolean,
+        ) = chapterRepository.updateChapter(
+            mangaId = chapter.mangaId,
+            chapterIndex = chapter.index,
+            read = read,
+        ).onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    suspend fun await(
-        manga: Manga,
-        index: Int,
-        read: Boolean,
-        onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(manga, index, read)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update chapter read status for chapter $index of ${manga.title}(${manga.id})" }
-        }
-        .collect()
-
-    suspend fun await(
-        chapter: Chapter,
-        read: Boolean,
-        onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(chapter, read)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update chapter read status for chapter ${chapter.index} of ${chapter.mangaId}" }
-        }
-        .collect()
-
-    fun asFlow(
-        mangaId: Long,
-        index: Int,
-        read: Boolean,
-    ) = chapterRepository.updateChapter(
-        mangaId = mangaId,
-        chapterIndex = index,
-        read = read,
-    ).onEach { serverListeners.updateChapters(mangaId, index) }
-
-    fun asFlow(
-        manga: Manga,
-        index: Int,
-        read: Boolean,
-    ) = chapterRepository.updateChapter(
-        mangaId = manga.id,
-        chapterIndex = index,
-        read = read,
-    ).onEach { serverListeners.updateChapters(manga.id, index) }
-
-    fun asFlow(
-        chapter: Chapter,
-        read: Boolean,
-    ) = chapterRepository.updateChapter(
-        mangaId = chapter.mangaId,
-        chapterIndex = chapter.index,
-        read = read,
-    ).onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
-
-    companion object {
-        private val log = logging()
     }
-}

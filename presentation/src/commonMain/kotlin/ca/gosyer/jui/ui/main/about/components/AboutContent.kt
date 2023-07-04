@@ -176,7 +176,10 @@ private fun ClientVersionInfo() {
 }
 
 @Composable
-private fun ServerVersionInfo(about: About?, formattedBuildTime: String) {
+private fun ServerVersionInfo(
+    about: About?,
+    formattedBuildTime: String,
+) {
     if (about == null) {
         Box(Modifier.fillMaxWidth().height(48.dp), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()

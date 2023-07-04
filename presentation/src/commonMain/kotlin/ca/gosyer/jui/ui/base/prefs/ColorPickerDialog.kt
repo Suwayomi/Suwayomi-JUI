@@ -215,7 +215,10 @@ private fun getColorShades(color: Color): ImmutableList<Color> {
     ).toImmutableList()
 }
 
-private fun shadeColor(f: Long, percent: Double): Color {
+private fun shadeColor(
+    f: Long,
+    percent: Double,
+): Color {
     val t = if (percent < 0) 0.0 else 255.0
     val p = if (percent < 0) percent * -1 else percent
     val r = f shr 16
@@ -261,7 +264,10 @@ fun ColorPalette(
     val cursorStroke = Stroke(4f)
     val borderStroke = Stroke(1f)
 
-    fun setSelectedColor(color: Color, invalidate: Boolean = false) {
+    fun setSelectedColor(
+        color: Color,
+        invalidate: Boolean = false,
+    ) {
         selectedColor = color
         textFieldHex = color.toHexString()
         if (invalidate) {
@@ -393,29 +399,47 @@ private suspend fun PointerInputScope.detectMove(onMove: (Offset) -> Unit) {
 
 // Coordinates <-> Color
 
-private fun matrixCoordinatesToColor(hue: Float, position: Offset, size: IntSize): Color {
+private fun matrixCoordinatesToColor(
+    hue: Float,
+    position: Offset,
+    size: IntSize,
+): Color {
     val saturation = 1f / size.width * position.x
     val value = 1f - (1f / size.height * position.y)
     return hsvToColor(hue, saturation, value)
 }
 
-private fun hueCoordinatesToHue(y: Float, size: IntSize): Float {
+private fun hueCoordinatesToHue(
+    y: Float,
+    size: IntSize,
+): Float {
     val hue = 360f - y * 360f / size.height
     return hsvToColor(hue, 1f, 1f).toHsv()[0]
 }
 
-private fun satValToCoordinates(saturation: Float, value: Float, size: IntSize): Offset {
+private fun satValToCoordinates(
+    saturation: Float,
+    value: Float,
+    size: IntSize,
+): Offset {
     return Offset(saturation * size.width, ((1f - value) * size.height))
 }
 
-private fun hueToCoordinate(hue: Float, size: IntSize): Float {
+private fun hueToCoordinate(
+    hue: Float,
+    size: IntSize,
+): Float {
     return size.height - (hue * size.height / 360f)
 }
 
 // Color space conversions
 
 @OptIn(ExperimentalGraphicsApi::class)
-fun hsvToColor(hue: Float, saturation: Float, value: Float): Color {
+fun hsvToColor(
+    hue: Float,
+    saturation: Float,
+    value: Float,
+): Color {
     return Color.hsv(hue, saturation.coerceIn(0F, 1F), value.coerceIn(0F, 1F))
 }
 

@@ -21,7 +21,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.launch
 
 class AboutScreen : Screen {
-
     override val key: ScreenKey = uniqueScreenKey
 
     @Composable

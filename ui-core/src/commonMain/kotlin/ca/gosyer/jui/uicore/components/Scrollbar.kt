@@ -60,36 +60,34 @@ fun HorizontalScrollbar(
 ) = RealHorizontalScrollbar(adapter, modifier, reverseLayout, style, interactionSource)
 
 @Composable
-expect fun rememberScrollbarAdapter(
-    scrollState: ScrollState,
-): ScrollbarAdapter
+expect fun rememberScrollbarAdapter(scrollState: ScrollState): ScrollbarAdapter
 
 @Composable
-expect fun rememberScrollbarAdapter(
-    scrollState: LazyListState,
-): ScrollbarAdapter
+expect fun rememberScrollbarAdapter(scrollState: LazyListState): ScrollbarAdapter
 
 @Composable
 fun rememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Vertical? = null,
-): ScrollbarAdapter = realRememberVerticalScrollbarAdapter(
-    scrollState,
-    gridCells,
-    arrangement,
-)
+): ScrollbarAdapter =
+    realRememberVerticalScrollbarAdapter(
+        scrollState,
+        gridCells,
+        arrangement,
+    )
 
 @Composable
 fun rememberHorizontalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Horizontal? = null,
-): ScrollbarAdapter = realRememberHorizontalScrollbarAdapter(
-    scrollState,
-    gridCells,
-    arrangement,
-)
+): ScrollbarAdapter =
+    realRememberHorizontalScrollbarAdapter(
+        scrollState,
+        gridCells,
+        arrangement,
+    )
 
 @Composable
 internal expect fun realRememberVerticalScrollbarAdapter(

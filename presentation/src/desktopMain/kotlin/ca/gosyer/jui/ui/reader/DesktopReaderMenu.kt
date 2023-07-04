@@ -24,7 +24,6 @@ import ca.gosyer.jui.ui.util.lang.launchApplication
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 actual class ReaderLauncher {
-
     private var isOpen by mutableStateOf<Pair<Int, Long>?>(null)
 
     actual fun launch(

@@ -23,7 +23,6 @@ abstract class AppComponent(
     @get:Provides
     val context: Context,
 ) : ViewModelComponent, DataComponent, DomainComponent, UiComponent {
-
     abstract val appMigrations: AppMigrations
 
     @get:AppScope
@@ -39,7 +38,8 @@ abstract class AppComponent(
         private var appComponentInstance: AppComponent? = null
 
         @Suppress("UNRESOLVED_REFERENCE", "EXPRESSION_EXPECTED_PACKAGE_FOUND")
-        fun getInstance(context: Context) = appComponentInstance ?: create(context)
-            .also { appComponentInstance = it }
+        fun getInstance(context: Context) =
+            appComponentInstance ?: create(context)
+                .also { appComponentInstance = it }
     }
 }

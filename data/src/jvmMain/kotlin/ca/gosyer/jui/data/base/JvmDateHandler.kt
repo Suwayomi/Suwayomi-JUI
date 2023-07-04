@@ -15,37 +15,40 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-actual class DateHandler @Inject constructor() {
-    actual val formatOptions by lazy {
-        listOf(
-            "",
-            "MM/dd/yy",
-            "dd/MM/yy",
-            "yyyy-MM-dd",
-        )
-    }
-
-    actual fun getDateFormat(format: String): (Instant) -> String = when (format) {
-        "" -> DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-            .withLocale(Locale.current.toPlatform())
-            .withZone(ZoneId.systemDefault())
-        else -> DateTimeFormatter.ofPattern(format)
-            .withZone(ZoneId.systemDefault())
-    }.let { formatter ->
-        {
-            formatter.format(it.toJavaInstant())
+actual class DateHandler
+    @Inject
+    constructor() {
+        actual val formatOptions by lazy {
+            listOf(
+                "",
+                "MM/dd/yy",
+                "dd/MM/yy",
+                "yyyy-MM-dd",
+            )
         }
-    }
 
-    actual val dateTimeFormat: (Instant) -> String by lazy {
-        DateTimeFormatter
-            .ofLocalizedDateTime(FormatStyle.SHORT)
-            .withLocale(Locale.current.toPlatform())
-            .withZone(ZoneId.systemDefault())
-            .let { formatter ->
+        actual fun getDateFormat(format: String): (Instant) -> String =
+            when (format) {
+                "" -> DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+                    .withLocale(Locale.current.toPlatform())
+                    .withZone(ZoneId.systemDefault())
+                else -> DateTimeFormatter.ofPattern(format)
+                    .withZone(ZoneId.systemDefault())
+            }.let { formatter ->
                 {
                     formatter.format(it.toJavaInstant())
                 }
             }
+
+        actual val dateTimeFormat: (Instant) -> String by lazy {
+            DateTimeFormatter
+                .ofLocalizedDateTime(FormatStyle.SHORT)
+                .withLocale(Locale.current.toPlatform())
+                .withZone(ZoneId.systemDefault())
+                .let { formatter ->
+                    {
+                        formatter.format(it.toJavaInstant())
+                    }
+                }
+        }
     }
-}

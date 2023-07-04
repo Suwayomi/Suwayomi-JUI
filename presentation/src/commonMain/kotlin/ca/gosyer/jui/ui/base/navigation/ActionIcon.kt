@@ -10,4 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
-expect fun ActionIcon(onClick: () -> Unit, contentDescription: String, icon: ImageVector)
+expect fun ActionIcon(
+    onClick: () -> Unit,
+    contentDescription: String,
+    icon: ImageVector,
+)

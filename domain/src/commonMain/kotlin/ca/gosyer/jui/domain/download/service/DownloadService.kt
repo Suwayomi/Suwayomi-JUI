@@ -19,36 +19,38 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.decodeFromString
 import me.tatarka.inject.annotations.Inject
 
-class DownloadService @Inject constructor(
-    serverPreferences: ServerPreferences,
-    client: Http,
-) : WebsocketService(serverPreferences, client) {
-    override val _status: MutableStateFlow<Status>
-        get() = status
+class DownloadService
+    @Inject
+    constructor(
+        serverPreferences: ServerPreferences,
+        client: Http,
+    ) : WebsocketService(serverPreferences, client) {
+        override val _status: MutableStateFlow<Status>
+            get() = status
 
-    override val query: String
-        get() = "/api/v1/downloads"
+        override val query: String
+            get() = "/api/v1/downloads"
 
-    override suspend fun onReceived(frame: Frame.Text) {
-        val status = json.decodeFromString<DownloadStatus>(frame.readText())
-        downloaderStatus.value = status.status
-        downloadQueue.value = status.queue
+        override suspend fun onReceived(frame: Frame.Text) {
+            val status = json.decodeFromString<DownloadStatus>(frame.readText())
+            downloaderStatus.value = status.status
+            downloadQueue.value = status.queue
+        }
+
+        companion object {
+            val status = MutableStateFlow(Status.STARTING)
+            val downloadQueue = MutableStateFlow(emptyList<DownloadChapter>())
+            val downloaderStatus = MutableStateFlow(DownloaderStatus.Stopped)
+
+            fun registerWatch(mangaId: Long) =
+                downloadQueue
+                    .map {
+                        it.filter { it.mangaId == mangaId }
+                    }
+            fun registerWatches(mangaIds: Set<Long>) =
+                downloadQueue
+                    .map {
+                        it.filter { it.mangaId in mangaIds }
+                    }
+        }
     }
-
-    companion object {
-        val status = MutableStateFlow(Status.STARTING)
-        val downloadQueue = MutableStateFlow(emptyList<DownloadChapter>())
-        val downloaderStatus = MutableStateFlow(DownloaderStatus.Stopped)
-
-        fun registerWatch(mangaId: Long) =
-            downloadQueue
-                .map {
-                    it.filter { it.mangaId == mangaId }
-                }
-        fun registerWatches(mangaIds: Set<Long>) =
-            downloadQueue
-                .map {
-                    it.filter { it.mangaId in mangaIds }
-                }
-    }
-}

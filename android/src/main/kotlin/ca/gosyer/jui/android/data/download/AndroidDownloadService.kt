@@ -55,11 +55,13 @@ import org.lighthousegames.logging.logging
 import java.util.regex.Pattern
 
 class AndroidDownloadService : Service() {
-
     companion object {
         private var instance: AndroidDownloadService? = null
 
-        fun start(context: Context, actions: Actions) {
+        fun start(
+            context: Context,
+            actions: Actions,
+        ) {
             if (!isRunning() && actions != Actions.STOP) {
                 val intent = Intent(context, AndroidDownloadService::class.java).apply {
                     action = actions.name
@@ -106,7 +108,11 @@ class AndroidDownloadService : Service() {
         super.onDestroy()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         instance = this
         ioScope.coroutineContext.job.cancelChildren()
 

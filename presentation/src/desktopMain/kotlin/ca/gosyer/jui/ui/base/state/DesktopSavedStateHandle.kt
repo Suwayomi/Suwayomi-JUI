@@ -19,7 +19,10 @@ actual class SavedStateHandle {
         return regular[key] as T?
     }
 
-    actual operator fun <T> set(key: String, value: T?) {
+    actual operator fun <T> set(
+        key: String,
+        value: T?,
+    ) {
         regular[key] = value
         flows[key]?.value = value
     }

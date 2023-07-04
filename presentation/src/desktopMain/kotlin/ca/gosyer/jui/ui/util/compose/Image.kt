@@ -24,7 +24,11 @@ fun imageFromFile(file: Path): ImageBitmap {
         .toComposeImageBitmap()
 }
 
-suspend fun imageFromUrl(client: Http, url: String, block: HttpRequestBuilder.() -> Unit): ImageBitmap {
+suspend fun imageFromUrl(
+    client: Http,
+    url: String,
+    block: HttpRequestBuilder.() -> Unit,
+): ImageBitmap {
     return client.get(url) {
         expectSuccess = true
         block()

@@ -56,16 +56,12 @@ internal actual fun RealHorizontalScrollbar(
 )
 
 @Composable
-actual fun rememberScrollbarAdapter(
-    scrollState: ScrollState,
-): ScrollbarAdapter {
+actual fun rememberScrollbarAdapter(scrollState: ScrollState): ScrollbarAdapter {
     return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 }
 
 @Composable
-actual fun rememberScrollbarAdapter(
-    scrollState: LazyListState,
-): ScrollbarAdapter {
+actual fun rememberScrollbarAdapter(scrollState: LazyListState): ScrollbarAdapter {
     return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 }
 

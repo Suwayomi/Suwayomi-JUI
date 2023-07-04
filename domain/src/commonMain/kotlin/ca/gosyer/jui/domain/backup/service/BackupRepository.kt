@@ -26,7 +26,6 @@ import okio.Path
 import okio.buffer
 
 interface BackupRepository {
-
     @Multipart
     @POST("api/v1/backup/import/file")
     fun importBackupFile(
@@ -47,15 +46,16 @@ interface BackupRepository {
     ): Flow<HttpResponse>
 
     companion object {
-        fun buildBackupFormData(file: Path) = formData {
-            append(
-                "backup.proto.gz",
-                FileSystem.SYSTEM.source(file).buffer().readByteArray(),
-                Headers.build {
-                    append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
-                    append(HttpHeaders.ContentDisposition, "filename=backup.proto.gz")
-                },
-            )
-        }
+        fun buildBackupFormData(file: Path) =
+            formData {
+                append(
+                    "backup.proto.gz",
+                    FileSystem.SYSTEM.source(file).buffer().readByteArray(),
+                    Headers.build {
+                        append(HttpHeaders.ContentType, ContentType.MultiPart.FormData.toString())
+                        append(HttpHeaders.ContentDisposition, "filename=backup.proto.gz")
+                    },
+                )
+            }
     }
 }

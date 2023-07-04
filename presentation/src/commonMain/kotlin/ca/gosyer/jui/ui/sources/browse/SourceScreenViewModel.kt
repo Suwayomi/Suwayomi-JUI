@@ -44,8 +44,8 @@ class SourceScreenViewModel(
     private val savedStateHandle: SavedStateHandle,
     initialQuery: String?,
 ) : ViewModel(contextWrapper) {
-
-    @Inject constructor(
+    @Inject
+    constructor(
         getLatestManga: GetLatestManga,
         getPopularManga: GetPopularManga,
         getSearchManga: GetSearchManga,

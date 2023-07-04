@@ -55,11 +55,13 @@ import kotlinx.serialization.json.Json
 import org.lighthousegames.logging.logging
 
 class AndroidLibraryService : Service() {
-
     companion object {
         private var instance: AndroidLibraryService? = null
 
-        fun start(context: Context, actions: Actions) {
+        fun start(
+            context: Context,
+            actions: Actions,
+        ) {
             if (!isRunning() && actions != Actions.STOP) {
                 val intent = Intent(context, AndroidLibraryService::class.java).apply {
                     action = actions.name
@@ -106,7 +108,11 @@ class AndroidLibraryService : Service() {
         super.onDestroy()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         instance = this
         ioScope.coroutineContext.job.cancelChildren()
 

@@ -15,44 +15,47 @@ import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSDateFormatterNoStyle
 import platform.Foundation.NSDateFormatterShortStyle
 
-actual class DateHandler @Inject constructor() {
-    actual val formatOptions by lazy {
-        listOf(
-            "",
-            "MM/dd/yy",
-            "dd/MM/yy",
-            "yyyy-MM-dd",
-        )
-    }
-
-    actual fun getDateFormat(format: String): (Instant) -> String = when (format) {
-        "" -> NSDateFormatter()
-            .apply {
-                setDateStyle(NSDateFormatterShortStyle)
-                setTimeStyle(NSDateFormatterNoStyle)
-                setLocale(Locale.current.toPlatform())
-            }
-        else -> NSDateFormatter()
-            .apply {
-                setDateFormat(format)
-            }
-    }.let { formatter ->
-        {
-            formatter.stringFromDate(it.toNSDate())
+actual class DateHandler
+    @Inject
+    constructor() {
+        actual val formatOptions by lazy {
+            listOf(
+                "",
+                "MM/dd/yy",
+                "dd/MM/yy",
+                "yyyy-MM-dd",
+            )
         }
-    }
 
-    actual val dateTimeFormat: (Instant) -> String by lazy {
-        NSDateFormatter()
-            .apply {
-                setDateStyle(NSDateFormatterShortStyle)
-                setTimeStyle(NSDateFormatterShortStyle)
-                setLocale(Locale.current.toPlatform())
-            }
-            .let { formatter ->
+        actual fun getDateFormat(format: String): (Instant) -> String =
+            when (format) {
+                "" -> NSDateFormatter()
+                    .apply {
+                        setDateStyle(NSDateFormatterShortStyle)
+                        setTimeStyle(NSDateFormatterNoStyle)
+                        setLocale(Locale.current.toPlatform())
+                    }
+                else -> NSDateFormatter()
+                    .apply {
+                        setDateFormat(format)
+                    }
+            }.let { formatter ->
                 {
                     formatter.stringFromDate(it.toNSDate())
                 }
             }
+
+        actual val dateTimeFormat: (Instant) -> String by lazy {
+            NSDateFormatter()
+                .apply {
+                    setDateStyle(NSDateFormatterShortStyle)
+                    setTimeStyle(NSDateFormatterShortStyle)
+                    setLocale(Locale.current.toPlatform())
+                }
+                .let { formatter ->
+                    {
+                        formatter.stringFromDate(it.toNSDate())
+                    }
+                }
+        }
     }
-}

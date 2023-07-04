@@ -12,16 +12,18 @@ import ca.gosyer.jui.ui.library.LibraryScreen
 import ca.gosyer.jui.ui.sources.SourcesScreen
 import ca.gosyer.jui.ui.updates.UpdatesScreen
 
-fun StartScreen.toScreen() = when (this) {
-    StartScreen.Library -> LibraryScreen()
-    StartScreen.Updates -> UpdatesScreen()
-    StartScreen.Sources -> SourcesScreen()
-    StartScreen.Extensions -> ExtensionsScreen()
-}
+fun StartScreen.toScreen() =
+    when (this) {
+        StartScreen.Library -> LibraryScreen()
+        StartScreen.Updates -> UpdatesScreen()
+        StartScreen.Sources -> SourcesScreen()
+        StartScreen.Extensions -> ExtensionsScreen()
+    }
 
-fun StartScreen.toScreenClazz() = when (this) {
-    StartScreen.Library -> LibraryScreen::class
-    StartScreen.Updates -> UpdatesScreen::class
-    StartScreen.Sources -> SourcesScreen::class
-    StartScreen.Extensions -> ExtensionsScreen::class
-}
+fun StartScreen.toScreenClazz() =
+    when (this) {
+        StartScreen.Library -> LibraryScreen::class
+        StartScreen.Updates -> UpdatesScreen::class
+        StartScreen.Sources -> SourcesScreen::class
+        StartScreen.Extensions -> ExtensionsScreen::class
+    }

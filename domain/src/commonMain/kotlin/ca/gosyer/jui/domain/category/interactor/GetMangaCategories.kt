@@ -13,27 +13,34 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetMangaCategories @Inject constructor(private val categoryRepository: CategoryRepository) {
+class GetMangaCategories
+    @Inject
+    constructor(private val categoryRepository: CategoryRepository) {
+        suspend fun await(
+            mangaId: Long,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(mangaId)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get categories for $mangaId" }
+            }
+            .singleOrNull()
 
-    suspend fun await(mangaId: Long, onError: suspend (Throwable) -> Unit = {}) = asFlow(mangaId)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get categories for $mangaId" }
+        suspend fun await(
+            manga: Manga,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(manga)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to get categories for ${manga.title}(${manga.id})" }
+            }
+            .singleOrNull()
+
+        fun asFlow(mangaId: Long) = categoryRepository.getMangaCategories(mangaId)
+
+        fun asFlow(manga: Manga) = categoryRepository.getMangaCategories(manga.id)
+
+        companion object {
+            private val log = logging()
         }
-        .singleOrNull()
-
-    suspend fun await(manga: Manga, onError: suspend (Throwable) -> Unit = {}) = asFlow(manga)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to get categories for ${manga.title}(${manga.id})" }
-        }
-        .singleOrNull()
-
-    fun asFlow(mangaId: Long) = categoryRepository.getMangaCategories(mangaId)
-
-    fun asFlow(manga: Manga) = categoryRepository.getMangaCategories(manga.id)
-
-    companion object {
-        private val log = logging()
     }
-}

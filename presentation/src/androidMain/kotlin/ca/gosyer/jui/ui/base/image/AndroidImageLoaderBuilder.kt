@@ -27,11 +27,17 @@ actual fun OptionsBuilder.configure(contextWrapper: ContextWrapper) {
     androidContext(contextWrapper)
 }
 
-actual fun ComponentRegistryBuilder.register(contextWrapper: ContextWrapper, http: Http) {
+actual fun ComponentRegistryBuilder.register(
+    contextWrapper: ContextWrapper,
+    http: Http,
+) {
     setupDefaultComponents(contextWrapper, httpClient = { http })
 }
 
-actual fun DiskCacheBuilder.configure(contextWrapper: ContextWrapper, cacheDir: String) {
+actual fun DiskCacheBuilder.configure(
+    contextWrapper: ContextWrapper,
+    cacheDir: String,
+) {
     directory(contextWrapper.cacheDir.toOkioPath() / cacheDir)
     maxSizeBytes(1024 * 1024 * 150) // 150 MB
 }

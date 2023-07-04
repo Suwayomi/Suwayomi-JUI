@@ -16,76 +16,77 @@ import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateChapterLastPageRead @Inject constructor(
-    private val chapterRepository: ChapterRepository,
-    private val serverListeners: ServerListeners,
-) {
+class UpdateChapterLastPageRead
+    @Inject
+    constructor(
+        private val chapterRepository: ChapterRepository,
+        private val serverListeners: ServerListeners,
+    ) {
+        suspend fun await(
+            mangaId: Long,
+            index: Int,
+            lastPageRead: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(mangaId, index, lastPageRead)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to update chapter last page read for chapter $index of $mangaId" }
+            }
+            .collect()
 
-    suspend fun await(
-        mangaId: Long,
-        index: Int,
-        lastPageRead: Int,
-        onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(mangaId, index, lastPageRead)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update chapter last page read for chapter $index of $mangaId" }
+        suspend fun await(
+            manga: Manga,
+            index: Int,
+            lastPageRead: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(manga, index, lastPageRead)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to update chapter last page read for chapter $index of ${manga.title}(${manga.id})" }
+            }
+            .collect()
+
+        suspend fun await(
+            chapter: Chapter,
+            lastPageRead: Int,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(chapter, lastPageRead)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to update chapter last page read for chapter ${chapter.index} of ${chapter.mangaId}" }
+            }
+            .collect()
+
+        fun asFlow(
+            mangaId: Long,
+            index: Int,
+            lastPageRead: Int,
+        ) = chapterRepository.updateChapter(
+            mangaId = mangaId,
+            chapterIndex = index,
+            lastPageRead = lastPageRead,
+        ).onEach { serverListeners.updateChapters(mangaId, index) }
+
+        fun asFlow(
+            manga: Manga,
+            index: Int,
+            lastPageRead: Int,
+        ) = chapterRepository.updateChapter(
+            mangaId = manga.id,
+            chapterIndex = index,
+            lastPageRead = lastPageRead,
+        ).onEach { serverListeners.updateChapters(manga.id, index) }
+
+        fun asFlow(
+            chapter: Chapter,
+            lastPageRead: Int,
+        ) = chapterRepository.updateChapter(
+            mangaId = chapter.mangaId,
+            chapterIndex = chapter.index,
+            lastPageRead = lastPageRead,
+        ).onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
+
+        companion object {
+            private val log = logging()
         }
-        .collect()
-
-    suspend fun await(
-        manga: Manga,
-        index: Int,
-        lastPageRead: Int,
-        onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(manga, index, lastPageRead)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update chapter last page read for chapter $index of ${manga.title}(${manga.id})" }
-        }
-        .collect()
-
-    suspend fun await(
-        chapter: Chapter,
-        lastPageRead: Int,
-        onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(chapter, lastPageRead)
-        .catch {
-            onError(it)
-            log.warn(it) { "Failed to update chapter last page read for chapter ${chapter.index} of ${chapter.mangaId}" }
-        }
-        .collect()
-
-    fun asFlow(
-        mangaId: Long,
-        index: Int,
-        lastPageRead: Int,
-    ) = chapterRepository.updateChapter(
-        mangaId = mangaId,
-        chapterIndex = index,
-        lastPageRead = lastPageRead,
-    ).onEach { serverListeners.updateChapters(mangaId, index) }
-
-    fun asFlow(
-        manga: Manga,
-        index: Int,
-        lastPageRead: Int,
-    ) = chapterRepository.updateChapter(
-        mangaId = manga.id,
-        chapterIndex = index,
-        lastPageRead = lastPageRead,
-    ).onEach { serverListeners.updateChapters(manga.id, index) }
-
-    fun asFlow(
-        chapter: Chapter,
-        lastPageRead: Int,
-    ) = chapterRepository.updateChapter(
-        mangaId = chapter.mangaId,
-        chapterIndex = chapter.index,
-        lastPageRead = lastPageRead,
-    ).onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
-
-    companion object {
-        private val log = logging()
     }
-}

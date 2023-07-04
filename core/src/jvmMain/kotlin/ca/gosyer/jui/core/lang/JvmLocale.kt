@@ -11,10 +11,12 @@ import java.util.Locale as PlatformLocale
 
 fun Locale.toPlatform(): PlatformLocale = PlatformLocale.forLanguageTag(toLanguageTag())
 
-actual fun Locale.getDisplayLanguage(displayLocale: Locale): String = toPlatform()
-    .getDisplayLanguage(displayLocale.toPlatform())
+actual fun Locale.getDisplayLanguage(displayLocale: Locale): String =
+    toPlatform()
+        .getDisplayLanguage(displayLocale.toPlatform())
 
-actual fun Locale.getDisplayName(displayLocale: Locale): String = toPlatform()
-    .getDisplayName(displayLocale.toPlatform())
+actual fun Locale.getDisplayName(displayLocale: Locale): String =
+    toPlatform()
+        .getDisplayName(displayLocale.toPlatform())
 
 actual val Locale.displayName: String get() = toPlatform().displayName

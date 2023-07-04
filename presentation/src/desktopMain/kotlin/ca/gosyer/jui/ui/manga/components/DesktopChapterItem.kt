@@ -25,26 +25,27 @@ actual fun Modifier.chapterItemModifier(
     markPreviousAsRead: () -> Unit,
     onSelectChapter: (() -> Unit)?,
     onUnselectChapter: (() -> Unit)?,
-): Modifier = this
-    .onClick(
-        onClick = onClick,
-        onLongClick = onSelectChapter,
-    )
-    .onClick(
-        onClick = onSelectChapter ?: onUnselectChapter ?: {},
-        keyboardModifiers = { isCtrlPressed },
-    )
-    .onRightClickContextMenu(
-        items = {
-            getContextItems(
-                markRead = markRead,
-                markUnread = markUnread,
-                bookmarkChapter = bookmarkChapter,
-                unBookmarkChapter = unBookmarkChapter,
-                markPreviousAsRead = markPreviousAsRead,
-            )
-        },
-    )
+): Modifier =
+    this
+        .onClick(
+            onClick = onClick,
+            onLongClick = onSelectChapter,
+        )
+        .onClick(
+            onClick = onSelectChapter ?: onUnselectChapter ?: {},
+            keyboardModifiers = { isCtrlPressed },
+        )
+        .onRightClickContextMenu(
+            items = {
+                getContextItems(
+                    markRead = markRead,
+                    markUnread = markUnread,
+                    bookmarkChapter = bookmarkChapter,
+                    unBookmarkChapter = unBookmarkChapter,
+                    markPreviousAsRead = markPreviousAsRead,
+                )
+            },
+        )
 
 @Composable
 @Stable

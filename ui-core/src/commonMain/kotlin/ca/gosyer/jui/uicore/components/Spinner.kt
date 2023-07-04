@@ -31,7 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Spinner(modifier: Modifier, items: List<String>, selectedItemIndex: Int, onSelectItem: (Int) -> Unit) {
+fun Spinner(
+    modifier: Modifier,
+    items: List<String>,
+    selectedItemIndex: Int,
+    onSelectItem: (Int) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     val shape = RoundedCornerShape(4.dp)
     Box(

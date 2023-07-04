@@ -31,83 +31,85 @@ import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class DownloadsScreenViewModel @Inject constructor(
-    private val downloadService: DownloadService,
-    private val startDownloading: StartDownloading,
-    private val stopDownloading: StopDownloading,
-    private val clearDownloadQueue: ClearDownloadQueue,
-    private val queueChapterDownload: QueueChapterDownload,
-    private val stopChapterDownload: StopChapterDownload,
-    private val reorderChapterDownload: ReorderChapterDownload,
-    private val contextWrapper: ContextWrapper,
-    @Assisted standalone: Boolean,
-) : ViewModel(contextWrapper) {
-    private val uiScope = if (standalone) {
-        MainScope()
-    } else {
-        null
-    }
+class DownloadsScreenViewModel
+    @Inject
+    constructor(
+        private val downloadService: DownloadService,
+        private val startDownloading: StartDownloading,
+        private val stopDownloading: StopDownloading,
+        private val clearDownloadQueue: ClearDownloadQueue,
+        private val queueChapterDownload: QueueChapterDownload,
+        private val stopChapterDownload: StopChapterDownload,
+        private val reorderChapterDownload: ReorderChapterDownload,
+        private val contextWrapper: ContextWrapper,
+        @Assisted standalone: Boolean,
+    ) : ViewModel(contextWrapper) {
+        private val uiScope = if (standalone) {
+            MainScope()
+        } else {
+            null
+        }
 
-    override val scope: CoroutineScope
-        get() = uiScope ?: super.scope
+        override val scope: CoroutineScope
+            get() = uiScope ?: super.scope
 
-    val serviceStatus = DownloadService.status.asStateFlow()
-    val downloaderStatus = DownloadService.downloaderStatus.asStateFlow()
-    val downloadQueue = DownloadService.downloadQueue.map { it.toImmutableList() }
-        .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
+        val serviceStatus = DownloadService.status.asStateFlow()
+        val downloaderStatus = DownloadService.downloaderStatus.asStateFlow()
+        val downloadQueue = DownloadService.downloadQueue.map { it.toImmutableList() }
+            .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    fun start() {
-        scope.launch { startDownloading.await(onError = { toast(it.message.orEmpty()) }) }
-    }
+        fun start() {
+            scope.launch { startDownloading.await(onError = { toast(it.message.orEmpty()) }) }
+        }
 
-    fun pause() {
-        scope.launch { stopDownloading.await(onError = { toast(it.message.orEmpty()) }) }
-    }
+        fun pause() {
+            scope.launch { stopDownloading.await(onError = { toast(it.message.orEmpty()) }) }
+        }
 
-    fun clear() {
-        scope.launch { clearDownloadQueue.await(onError = { toast(it.message.orEmpty()) }) }
-    }
+        fun clear() {
+            scope.launch { clearDownloadQueue.await(onError = { toast(it.message.orEmpty()) }) }
+        }
 
-    fun stopDownload(chapter: Chapter) {
-        scope.launch { stopChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) }) }
-    }
+        fun stopDownload(chapter: Chapter) {
+            scope.launch { stopChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) }) }
+        }
 
-    fun moveUp(chapter: Chapter) {
-        scope.launch {
-            val index = downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
-            if (index == -1 || index <= 0) return@launch
-            reorderChapterDownload.await(chapter, index - 1, onError = { toast(it.message.orEmpty()) })
+        fun moveUp(chapter: Chapter) {
+            scope.launch {
+                val index = downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
+                if (index == -1 || index <= 0) return@launch
+                reorderChapterDownload.await(chapter, index - 1, onError = { toast(it.message.orEmpty()) })
+            }
+        }
+
+        fun moveDown(chapter: Chapter) {
+            scope.launch {
+                val index = downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
+                if (index == -1 || index >= downloadQueue.value.lastIndex) return@launch
+                reorderChapterDownload.await(chapter, index + 1, onError = { toast(it.message.orEmpty()) })
+            }
+        }
+
+        fun moveToTop(chapter: Chapter) {
+            scope.launch {
+                reorderChapterDownload.await(chapter, 0, onError = { toast(it.message.orEmpty()) })
+            }
+        }
+
+        fun moveToBottom(chapter: Chapter) {
+            scope.launch {
+                reorderChapterDownload.await(chapter, downloadQueue.value.lastIndex, onError = { toast(it.message.orEmpty()) })
+            }
+        }
+
+        fun restartDownloader() = startDownloadService(contextWrapper, downloadService, Actions.RESTART)
+
+        override fun onDispose() {
+            super.onDispose()
+            uiScope?.cancel()
+        }
+
+        private companion object {
+            private val log = logging()
         }
     }
-
-    fun moveDown(chapter: Chapter) {
-        scope.launch {
-            val index = downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
-            if (index == -1 || index >= downloadQueue.value.lastIndex) return@launch
-            reorderChapterDownload.await(chapter, index + 1, onError = { toast(it.message.orEmpty()) })
-        }
-    }
-
-    fun moveToTop(chapter: Chapter) {
-        scope.launch {
-            reorderChapterDownload.await(chapter, 0, onError = { toast(it.message.orEmpty()) })
-        }
-    }
-
-    fun moveToBottom(chapter: Chapter) {
-        scope.launch {
-            reorderChapterDownload.await(chapter, downloadQueue.value.lastIndex, onError = { toast(it.message.orEmpty()) })
-        }
-    }
-
-    fun restartDownloader() = startDownloadService(contextWrapper, downloadService, Actions.RESTART)
-
-    override fun onDispose() {
-        super.onDispose()
-        uiScope?.cancel()
-    }
-
-    private companion object {
-        private val log = logging()
-    }
-}

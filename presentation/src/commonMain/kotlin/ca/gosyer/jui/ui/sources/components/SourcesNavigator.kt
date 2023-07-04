@@ -93,9 +93,7 @@ private fun navigatorSaver(
     )
 
 @Composable
-private fun SourceNavigatorDisposableEffect(
-    navigator: SourcesNavigator,
-) {
+private fun SourceNavigatorDisposableEffect(navigator: SourcesNavigator) {
     val currentScreen = navigator.current
 
     DisposableEffectIgnoringConfiguration(currentScreen.key) {
@@ -125,7 +123,6 @@ class SourcesNavigator internal constructor(
     val screens: SnapshotStateMap<Long, Screen> = SnapshotStateMap<Long, Screen>()
         .also { it[-1] = homeScreen },
 ) {
-
     fun remove(source: Source) {
         navigator replaceAll screens[-1]!!
         screens.remove(source.id)?.let(this::dispose)
@@ -135,7 +132,10 @@ class SourcesNavigator internal constructor(
         navigator replaceAll screens.getOrPut(source.id) { SourceScreen(source) }
     }
 
-    fun open(source: Source, query: String? = null) {
+    fun open(
+        source: Source,
+        query: String? = null,
+    ) {
         screens.remove(source.id)?.let(this::dispose)
         navigator replaceAll SourceScreen(source, query).also { screens[source.id] = it }
     }

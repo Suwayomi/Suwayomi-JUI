@@ -16,11 +16,12 @@ import androidx.compose.ui.composed
 actual fun Modifier.buttonModifier(
     onClick: () -> Unit,
     onHintClick: () -> Unit,
-): Modifier = composed {
-    combinedClickable(
-        interactionSource = remember { MutableInteractionSource() },
-        indication = rememberRipple(bounded = false),
-        onLongClick = onHintClick,
-        onClick = onClick,
-    )
-}
+): Modifier =
+    composed {
+        combinedClickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = rememberRipple(bounded = false),
+            onLongClick = onHintClick,
+            onClick = onClick,
+        )
+    }

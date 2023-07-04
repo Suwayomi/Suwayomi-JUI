@@ -120,7 +120,10 @@ fun SourceFiltersMenu(
 }
 
 @Composable
-fun SourceFiltersView<*, *>.toView(startExpanded: Boolean = false, onExpandChanged: ((Boolean, Int) -> Unit)? = null) {
+fun SourceFiltersView<*, *>.toView(
+    startExpanded: Boolean = false,
+    onExpandChanged: ((Boolean, Int) -> Unit)? = null,
+) {
     when (this) {
         is SourceFiltersView.CheckBox -> CheckboxView(this)
         is SourceFiltersView.Group -> GroupView(this, startExpanded, onExpandChanged)
@@ -159,7 +162,11 @@ fun SourceFilterAction(
 }
 
 @Composable
-fun GroupView(group: SourceFiltersView.Group, startExpanded: Boolean, onExpandChanged: ((Boolean, Int) -> Unit)? = null) {
+fun GroupView(
+    group: SourceFiltersView.Group,
+    startExpanded: Boolean,
+    onExpandChanged: ((Boolean, Int) -> Unit)? = null,
+) {
     val state by key(group.hashCode()) { group.state.collectAsState() }
     ExpandablePreference(
         title = group.name,
@@ -230,7 +237,12 @@ fun SeparatorView() {
 }
 
 @Composable
-fun SortRow(name: String, selected: Boolean, asc: Boolean, onClick: () -> Unit) {
+fun SortRow(
+    name: String,
+    selected: Boolean,
+    asc: Boolean,
+    onClick: () -> Unit,
+) {
     SourceFilterAction(name, onClick) {
         if (selected) {
             val rotation = if (asc) {
@@ -239,7 +251,10 @@ fun SortRow(name: String, selected: Boolean, asc: Boolean, onClick: () -> Unit) 
                 180F
             }
             val angle: Float by animateFloatAsState(
-                targetValue = if (rotation > 360 - rotation) { -(360 - rotation) } else rotation,
+                targetValue = if (rotation > 360 - rotation) {
+                    -(360 - rotation) } else {
+                    rotation
+                },
                 animationSpec = tween(
                     durationMillis = 500, // rotation is retrieved with this frequency
                     easing = LinearEasing,
@@ -259,7 +274,11 @@ fun SortRow(name: String, selected: Boolean, asc: Boolean, onClick: () -> Unit) 
 }
 
 @Composable
-fun SortView(sort: SourceFiltersView.Sort, startExpanded: Boolean, onExpandChanged: ((Boolean, Int) -> Unit)?) {
+fun SortView(
+    sort: SourceFiltersView.Sort,
+    startExpanded: Boolean,
+    onExpandChanged: ((Boolean, Int) -> Unit)?,
+) {
     val state by key(sort.hashCode()) { sort.state.collectAsState() }
     ExpandablePreference(
         sort.name,

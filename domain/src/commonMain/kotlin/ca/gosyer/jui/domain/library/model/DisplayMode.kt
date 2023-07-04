@@ -14,7 +14,9 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @Stable
-enum class DisplayMode(@Transient val res: StringResource) {
+enum class DisplayMode(
+    @Transient val res: StringResource,
+) {
     CompactGrid(MR.strings.display_compact),
     ComfortableGrid(MR.strings.display_comfortable),
     CoverOnlyGrid(MR.strings.display_cover_only),

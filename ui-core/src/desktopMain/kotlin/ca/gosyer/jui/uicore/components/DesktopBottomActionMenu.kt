@@ -23,20 +23,21 @@ import kotlin.time.Duration.Companion.seconds
 actual fun Modifier.buttonModifier(
     onClick: () -> Unit,
     onHintClick: () -> Unit,
-): Modifier = composed {
-    val interactionSource = remember { MutableInteractionSource() }
-    LaunchedEffect(interactionSource) {
-        launch {
-            interactionSource.interactions
-                .mapLatest {
-                    if (it !is HoverInteraction.Enter) return@mapLatest
-                    delay(2.seconds)
-                    onHintClick()
-                }
-                .collect()
+): Modifier =
+    composed {
+        val interactionSource = remember { MutableInteractionSource() }
+        LaunchedEffect(interactionSource) {
+            launch {
+                interactionSource.interactions
+                    .mapLatest {
+                        if (it !is HoverInteraction.Enter) return@mapLatest
+                        delay(2.seconds)
+                        onHintClick()
+                    }
+                    .collect()
+            }
         }
+        interactionSource.interactions
+        onClick(onClick = onClick)
+            .hoverable(interactionSource)
     }
-    interactionSource.interactions
-    onClick(onClick = onClick)
-        .hoverable(interactionSource)
-}
