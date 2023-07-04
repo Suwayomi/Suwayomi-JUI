@@ -53,6 +53,20 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 @Stable
+sealed class LibraryState {
+    @Stable
+    object Loading : LibraryState()
+
+    @Stable
+    data class Failed(val e: Throwable) : LibraryState()
+
+    @Stable
+    data class Loaded(
+        val categories: ImmutableList<Category>
+    ) : LibraryState()
+}
+
+@Stable
 sealed class CategoryState {
     @Stable
     object Loading : CategoryState()
@@ -68,7 +82,7 @@ sealed class CategoryState {
 }
 
 private typealias LibraryMap = MutableMap<Long, MutableStateFlow<CategoryState>>
-private data class Library(val categories: MutableStateFlow<ImmutableList<Category>>, val mangaMap: LibraryMap)
+private data class Library(val categories: MutableStateFlow<LibraryState>, val mangaMap: LibraryMap)
 
 private fun LibraryMap.getManga(id: Long) =
     getOrPut(id) {
@@ -98,7 +112,7 @@ class LibraryScreenViewModel @Inject constructor(
     contextWrapper: ContextWrapper,
     @Assisted private val savedStateHandle: SavedStateHandle,
 ) : ViewModel(contextWrapper) {
-    private val library = Library(MutableStateFlow(persistentListOf()), mutableMapOf())
+    private val library = Library(MutableStateFlow(LibraryState.Loading), mutableMapOf())
     val categories = library.categories.asStateFlow()
 
     private val _selectedCategoryIndex by savedStateHandle.getStateFlow { 0 }
@@ -140,12 +154,6 @@ class LibraryScreenViewModel @Inject constructor(
         }
     }
 
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading = _isLoading.asStateFlow()
-
-    private val _error = MutableStateFlow<String?>(null)
-    val error = _error.asStateFlow()
-
     private val _query by savedStateHandle.getStateFlow { "" }
     val query = _query.asStateFlow()
 
@@ -158,14 +166,16 @@ class LibraryScreenViewModel @Inject constructor(
     }
 
     private fun getLibrary() {
-        _isLoading.value = true
+        library.categories.value = LibraryState.Loading
         getCategories.asFlow()
             .onEach { categories ->
                 if (categories.isEmpty()) {
                     throw Exception(MR.strings.library_empty.toPlatformString())
                 }
-                library.categories.value = categories.sortedBy { it.order }
-                    .toImmutableList()
+                library.categories.value = LibraryState.Loaded(
+                    categories.sortedBy { it.order }
+                        .toImmutableList()
+                )
                 categories.forEach { category ->
                     getMangaListFromCategory.asFlow(category)
                         .onEach {
@@ -181,12 +191,10 @@ class LibraryScreenViewModel @Inject constructor(
                         }
                         .launchIn(coroutineScope)
                 }
-                _isLoading.value = false
             }
             .catch {
-                _error.value = it.message
+                library.categories.value = LibraryState.Failed(it)
                 log.warn(it) { "Failed to get categories" }
-                _isLoading.value = false
             }
             .launchIn(scope)
     }
@@ -273,7 +281,7 @@ class LibraryScreenViewModel @Inject constructor(
             .filter { mangaMapEntry ->
                 (mangaMapEntry.value.value as? CategoryState.Loaded)?.items?.value?.firstOrNull { it.id == mangaId } != null
             }
-            .map { (id) -> library.categories.value.first { it.id == id } }
+            .mapNotNull { (id) -> (library.categories.value as? LibraryState.Loaded)?.categories?.first { it.id == id } }
     }
 
     fun removeManga(mangaId: Long) {

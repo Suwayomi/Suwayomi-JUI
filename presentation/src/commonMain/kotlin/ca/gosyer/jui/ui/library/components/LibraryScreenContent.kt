@@ -41,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.base.WebsocketService
-import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.ActionItem
@@ -49,8 +48,10 @@ import ca.gosyer.jui.ui.base.navigation.BackHandler
 import ca.gosyer.jui.ui.base.navigation.OverflowMode
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.library.CategoryState
+import ca.gosyer.jui.ui.library.LibraryState
 import ca.gosyer.jui.ui.library.settings.LibrarySheet
 import ca.gosyer.jui.ui.library.settings.LibrarySideMenu
+import ca.gosyer.jui.uicore.components.ErrorScreen
 import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.insets.navigationBars
 import ca.gosyer.jui.uicore.insets.statusBars
@@ -60,13 +61,11 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun LibraryScreenContent(
-    categories: ImmutableList<Category>,
+    categories: LibraryState,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    isLoading: Boolean,
-    error: String?,
     query: String,
     updateQuery: (String) -> Unit,
     getLibraryForPage: @Composable (Long) -> State<CategoryState>,
@@ -110,8 +109,6 @@ fun LibraryScreenContent(
                 displayMode = displayMode,
                 gridColumns = gridColumns,
                 gridSize = gridSize,
-                isLoading = isLoading,
-                error = error,
                 query = query,
                 updateQuery = updateQuery,
                 getLibraryForPage = getLibraryForPage,
@@ -137,8 +134,6 @@ fun LibraryScreenContent(
                 displayMode = displayMode,
                 gridColumns = gridColumns,
                 gridSize = gridSize,
-                isLoading = isLoading,
-                error = error,
                 query = query,
                 updateQuery = updateQuery,
                 getLibraryForPage = getLibraryForPage,
@@ -165,13 +160,11 @@ fun LibraryScreenContent(
 @Composable
 fun WideLibraryScreenContent(
     pagerState: PagerState,
-    categories: ImmutableList<Category>,
+    categories: LibraryState,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    isLoading: Boolean,
-    error: String?,
     query: String,
     updateQuery: (String) -> Unit,
     getLibraryForPage: @Composable (Long) -> State<CategoryState>,
@@ -208,57 +201,65 @@ fun WideLibraryScreenContent(
                         )
                     },
                 )
-                LibraryTabs(
-                    visible = true, // vm.showCategoryTabs,
-                    pagerState = pagerState,
-                    categories = categories,
-                    selectedPage = selectedCategoryIndex,
-                    onPageChanged = onPageChanged,
-                )
+                if (categories is LibraryState.Loaded) {
+                    LibraryTabs(
+                        visible = true, // vm.showCategoryTabs,
+                        pagerState = pagerState,
+                        categories = categories.categories,
+                        selectedPage = selectedCategoryIndex,
+                        onPageChanged = onPageChanged,
+                    )
+                }
             }
         },
     ) { padding ->
         Box(Modifier.padding(padding)) {
-            if (categories.isEmpty()) {
-                LoadingScreen(isLoading, errorMessage = error)
-            } else {
-                LibraryPager(
-                    pagerState = pagerState,
-                    categories = categories,
-                    displayMode = displayMode,
-                    gridColumns = gridColumns,
-                    gridSize = gridSize,
-                    getLibraryForPage = getLibraryForPage,
-                    onClickManga = onClickManga,
-                    onRemoveMangaClicked = onRemoveMangaClicked,
-                    showUnread = showUnread,
-                    showDownloaded = showDownloaded,
-                    showLanguage = showLanguage,
-                    showLocal = showLocal,
-                )
-
-                if (showingMenu) {
-                    Box(
-                        Modifier.fillMaxSize().pointerInput(isLoading) {
-                            forEachGesture {
-                                detectTapGestures {
-                                    setShowingMenu(false)
-                                }
-                            }
-                        },
-                    )
+            when (categories) {
+                is LibraryState.Failed -> {
+                    ErrorScreen(categories.e.message)
                 }
-                AnimatedVisibility(
-                    showingMenu,
-                    enter = fadeIn() + slideInHorizontally(initialOffsetX = { it * 2 }),
-                    exit = fadeOut() + slideOutHorizontally(targetOffsetX = { it * 2 }),
-                    modifier = Modifier.align(Alignment.TopEnd),
-                ) {
-                    LibrarySideMenu(
-                        libraryFilters = libraryFilters,
-                        librarySort = librarySort,
-                        libraryDisplay = libraryDisplay,
+                LibraryState.Loading -> {
+                    LoadingScreen(true)
+                }
+                is LibraryState.Loaded -> {
+                    LibraryPager(
+                        pagerState = pagerState,
+                        categories = categories.categories,
+                        displayMode = displayMode,
+                        gridColumns = gridColumns,
+                        gridSize = gridSize,
+                        getLibraryForPage = getLibraryForPage,
+                        onClickManga = onClickManga,
+                        onRemoveMangaClicked = onRemoveMangaClicked,
+                        showUnread = showUnread,
+                        showDownloaded = showDownloaded,
+                        showLanguage = showLanguage,
+                        showLocal = showLocal,
                     )
+
+                    if (showingMenu) {
+                        Box(
+                            Modifier.fillMaxSize().pointerInput(Unit) {
+                                forEachGesture {
+                                    detectTapGestures {
+                                        setShowingMenu(false)
+                                    }
+                                }
+                            },
+                        )
+                    }
+                    AnimatedVisibility(
+                        showingMenu,
+                        enter = fadeIn() + slideInHorizontally(initialOffsetX = { it * 2 }),
+                        exit = fadeOut() + slideOutHorizontally(targetOffsetX = { it * 2 }),
+                        modifier = Modifier.align(Alignment.TopEnd),
+                    ) {
+                        LibrarySideMenu(
+                            libraryFilters = libraryFilters,
+                            librarySort = librarySort,
+                            libraryDisplay = libraryDisplay,
+                        )
+                    }
                 }
             }
         }
@@ -268,13 +269,11 @@ fun WideLibraryScreenContent(
 @Composable
 fun ThinLibraryScreenContent(
     pagerState: PagerState,
-    categories: ImmutableList<Category>,
+    categories: LibraryState,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
     gridSize: Int,
-    isLoading: Boolean,
-    error: String?,
     query: String,
     updateQuery: (String) -> Unit,
     getLibraryForPage: @Composable (Long) -> State<CategoryState>,
@@ -334,13 +333,15 @@ fun ThinLibraryScreenContent(
                         )
                     },
                 )
-                LibraryTabs(
-                    visible = true, // vm.showCategoryTabs,
-                    pagerState = pagerState,
-                    categories = categories,
-                    selectedPage = selectedCategoryIndex,
-                    onPageChanged = onPageChanged,
-                )
+                if (categories is LibraryState.Loaded) {
+                    LibraryTabs(
+                        visible = true, // vm.showCategoryTabs,
+                        pagerState = pagerState,
+                        categories = categories.categories,
+                        selectedPage = selectedCategoryIndex,
+                        onPageChanged = onPageChanged,
+                    )
+                }
             }
         },
     ) { padding ->
@@ -355,23 +356,29 @@ fun ThinLibraryScreenContent(
                 )
             },
         ) {
-            if (categories.isEmpty()) {
-                LoadingScreen(isLoading, errorMessage = error)
-            } else {
-                LibraryPager(
-                    pagerState = pagerState,
-                    categories = categories,
-                    displayMode = displayMode,
-                    gridColumns = gridColumns,
-                    gridSize = gridSize,
-                    getLibraryForPage = getLibraryForPage,
-                    onClickManga = onClickManga,
-                    onRemoveMangaClicked = onRemoveMangaClicked,
-                    showUnread = showUnread,
-                    showDownloaded = showDownloaded,
-                    showLanguage = showLanguage,
-                    showLocal = showLocal,
-                )
+            when (categories) {
+                LibraryState.Loading -> {
+                    LoadingScreen(true)
+                }
+                is LibraryState.Failed -> {
+                    ErrorScreen(categories.e.message)
+                }
+                is LibraryState.Loaded -> {
+                    LibraryPager(
+                        pagerState = pagerState,
+                        categories = categories.categories,
+                        displayMode = displayMode,
+                        gridColumns = gridColumns,
+                        gridSize = gridSize,
+                        getLibraryForPage = getLibraryForPage,
+                        onClickManga = onClickManga,
+                        onRemoveMangaClicked = onRemoveMangaClicked,
+                        showUnread = showUnread,
+                        showDownloaded = showDownloaded,
+                        showLanguage = showLanguage,
+                        showLocal = showLocal,
+                    )
+                }
             }
         }
     }
