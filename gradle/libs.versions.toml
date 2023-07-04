@@ -1,14 +1,14 @@
 [versions]
 # Kotlin
-kotlin = "1.8.20"
-coroutines = "1.7.0"
+kotlin = "1.8.22"
+coroutines = "1.7.2"
 
 # Serialization
-json = "1.5.0"
+json = "1.5.1"
 
 # Compose
-composeGradle = "1.4.0"
-composeCompiler = "1.4.5"
+composeGradle = "1.4.1"
+composeCompiler = "1.4.8"
 composeAndroidRuntime = "1.4.3"
 composeAndroidFoundation = "1.4.3"
 composeAndroidUI = "1.4.3"
@@ -19,14 +19,14 @@ composeAndroidMaterial = "1.4.3"
 voyager = "1.0.0-rc06"
 accompanist = "0.30.1"
 googleAccompanist = "0.30.1"
-imageloader = "1.4.0"
+imageloader = "1.5.3"
 materialDialogs = "0.9.3"
 
 # Android
-androidGradle = "8.0.1"
+androidGradle = "8.0.2"
 core = "1.9.0"
 appCompat = "1.7.0-alpha02"
-activityCompose = "1.7.1"
+activityCompose = "1.7.2"
 work = "2.8.1"
 
 # Android Lifecycle
@@ -36,14 +36,14 @@ lifecycle = "2.6.1"
 darklaf = "3.0.2"
 
 # Ksp
-ksp = "1.8.20-1.0.11"
+ksp = "1.8.22-1.0.11"
 
 # Dependency Injection
 kotlinInject = "0.6.1"
 
 # Network
-ktor = "2.3.0"
-ktorfit = "1.2.0"
+ktor = "2.3.2"
+ktorfit = "1.4.2"
 ktorfitCompiler = "1.0.0"
 
 # Logging
@@ -60,23 +60,23 @@ multiplatformSettings = "1.0.0-alpha01"
 
 # Utility
 desugarJdkLibs = "2.0.3"
-aboutLibraries = "10.6.3"
+aboutLibraries = "10.8.0"
 dateTime = "0.4.0"
 immutableCollections = "0.3.5"
-kds = "3.4.0"
+kds = "4.0.7"
 
 # Localization
-moko = "0.22.0"
+moko = "0.23.0"
 
 # BuildConfigs
-buildconfig = "4.0.4"
+buildconfig = "4.1.1"
 buildkonfig = "0.13.3"
 
 # Linter
-kotlinter = "3.14.0"
+kotlinter = "3.15.0"
 
 # Version updates
-versions = "0.46.0"
+versions = "0.47.0"
 
 # Optimizer
 proguard = "7.2.2"
@@ -111,7 +111,8 @@ accompanist-pager = { module = "ca.gosyer:accompanist-pager", version.ref = "acc
 accompanist-pagerIndicators = { module = "ca.gosyer:accompanist-pager-indicators", version.ref = "accompanist" }
 accompanist-flowLayout = { module = "ca.gosyer:accompanist-flowlayout", version.ref = "accompanist" }
 accompanist-systemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "googleAccompanist" }
-imageloader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "imageloader" }
+imageloader-core = { module = "io.github.qdsfdhvh:image-loader", version.ref = "imageloader" }
+imageloader-moko = { module = "io.github.qdsfdhvh:image-loader-extension-moko-resources", version.ref = "imageloader" }
 materialDialogs-core = { module = "ca.gosyer:compose-material-dialogs-core", version.ref = "materialDialogs" }
 
 # Android

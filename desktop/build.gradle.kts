@@ -35,7 +35,8 @@ dependencies {
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pagerIndicators)
     implementation(libs.accompanist.flowLayout)
-    implementation(libs.imageloader)
+    implementation(libs.imageloader.core)
+    implementation(libs.imageloader.moko)
     implementation(libs.materialDialogs.core)
 
     // UI (Swing)

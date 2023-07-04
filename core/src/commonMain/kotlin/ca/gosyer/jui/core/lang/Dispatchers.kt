@@ -8,6 +8,7 @@ package ca.gosyer.jui.core.lang
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-expect val Dispatchers.IO: CoroutineDispatcher
+val Dispatchers.IO: CoroutineDispatcher
+    get() = IO

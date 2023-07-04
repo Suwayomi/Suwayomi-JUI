@@ -13,13 +13,14 @@ import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
 import com.seiko.imageloader.cache.memory.maxSizePercent
 import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.setupDefaultComponents
-import com.seiko.imageloader.option.Options
+import com.seiko.imageloader.option.OptionsBuilder
 import okio.Path.Companion.toPath
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
-actual val imageConfig: Options.ImageConfig = Options.ImageConfig.ARGB_8888
+actual fun OptionsBuilder.configure(contextWrapper: ContextWrapper) {
+}
 
 actual fun ComponentRegistryBuilder.register(contextWrapper: ContextWrapper, http: Http) {
     setupDefaultComponents(httpClient = { http })

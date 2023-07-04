@@ -34,7 +34,6 @@ kotlin {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
-                optIn("com.google.accompanist.pager.ExperimentalPagerApi")
                 optIn("androidx.compose.animation.ExperimentalAnimationApi")
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")
                 optIn("androidx.compose.material.ExperimentalMaterialApi")
@@ -45,7 +44,8 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib-common"))
                 api(libs.coroutines.core)
-                api(libs.imageloader)
+                api(libs.imageloader.core)
+                api(libs.imageloader.moko)
                 api(libs.voyager.core)
                 api(libs.voyager.navigation)
                 api(libs.voyager.transitions)

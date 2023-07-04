@@ -17,9 +17,11 @@ import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.cache.disk.DiskCacheBuilder
 import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
 import com.seiko.imageloader.component.ComponentRegistryBuilder
+import com.seiko.imageloader.component.fetcher.MokoResourceFetcher
 import com.seiko.imageloader.component.keyer.Keyer
 import com.seiko.imageloader.component.mapper.Mapper
 import com.seiko.imageloader.option.Options
+import com.seiko.imageloader.option.OptionsBuilder
 import io.ktor.http.Url
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -37,6 +39,7 @@ class ImageLoaderProvider @Inject constructor(
         return ImageLoader {
             components {
                 register(context, http)
+                add(MokoResourceFetcher.Factory())
                 add(MangaCoverMapper())
                 add(MangaCoverKeyer())
                 add(ExtensionIconMapper())
@@ -44,7 +47,9 @@ class ImageLoaderProvider @Inject constructor(
                 add(SourceIconMapper())
                 add(SourceIconKeyer())
             }
-            options.config = imageConfig
+            options {
+                configure(context)
+            }
             interceptor {
                 diskCache { imageCache }
                 memoryCacheConfig { configure(context) }
@@ -61,7 +66,7 @@ class ImageLoaderProvider @Inject constructor(
     }
 
     class MangaCoverKeyer : Keyer {
-        override fun key(data: Any, options: Options): String? {
+        override fun key(data: Any, options: Options, type: Keyer.Type): String? {
             if (data !is Manga) return null
             return "${data.sourceId}-${data.thumbnailUrl}-${data.thumbnailUrlLastFetched}"
         }
@@ -76,7 +81,7 @@ class ImageLoaderProvider @Inject constructor(
     }
 
     class ExtensionIconKeyer : Keyer {
-        override fun key(data: Any, options: Options): String? {
+        override fun key(data: Any, options: Options, type: Keyer.Type): String? {
             if (data !is Extension) return null
             return data.iconUrl
         }
@@ -91,14 +96,14 @@ class ImageLoaderProvider @Inject constructor(
     }
 
     class SourceIconKeyer : Keyer {
-        override fun key(data: Any, options: Options): String? {
+        override fun key(data: Any, options: Options, type: Keyer.Type): String? {
             if (data !is Source) return null
             return data.iconUrl
         }
     }
 }
 
-expect val imageConfig: Options.ImageConfig
+expect fun OptionsBuilder.configure(contextWrapper: ContextWrapper)
 
 expect fun ComponentRegistryBuilder.register(contextWrapper: ContextWrapper, http: Http)
 

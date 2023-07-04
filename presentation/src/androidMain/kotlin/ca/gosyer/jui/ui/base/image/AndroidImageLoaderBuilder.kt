@@ -14,12 +14,17 @@ import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
 import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.setupDefaultComponents
 import com.seiko.imageloader.option.Options
+import com.seiko.imageloader.option.OptionsBuilder
+import com.seiko.imageloader.option.androidContext
 import okio.Path.Companion.toOkioPath
 
-actual val imageConfig: Options.ImageConfig = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-    Options.ImageConfig.ARGB_8888
-} else {
-    Options.ImageConfig.HARDWARE
+actual fun OptionsBuilder.configure(contextWrapper: ContextWrapper) {
+    imageConfig = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        Options.ImageConfig.ARGB_8888
+    } else {
+        Options.ImageConfig.HARDWARE
+    }
+    androidContext(contextWrapper)
 }
 
 actual fun ComponentRegistryBuilder.register(contextWrapper: ContextWrapper, http: Http) {

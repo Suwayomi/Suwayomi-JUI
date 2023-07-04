@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.core.lang
 
-import com.soywiz.kds.PriorityQueue
+import korlibs.datastructure.PriorityQueue
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi

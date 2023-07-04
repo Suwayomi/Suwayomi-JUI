@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("DEPRECATION")
+
 package ca.gosyer.jui.ui.library.components
 
 import androidx.compose.animation.AnimatedVisibility
@@ -11,6 +13,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -24,10 +27,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import ca.gosyer.jui.domain.category.model.Category
-import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import kotlinx.collections.immutable.ImmutableList
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun LibraryTabs(
     visible: Boolean,

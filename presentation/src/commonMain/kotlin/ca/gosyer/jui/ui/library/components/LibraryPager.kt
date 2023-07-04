@@ -7,6 +7,8 @@
 package ca.gosyer.jui.ui.library.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -16,8 +18,6 @@ import ca.gosyer.jui.domain.library.model.DisplayMode
 import ca.gosyer.jui.ui.library.CategoryState
 import ca.gosyer.jui.uicore.components.ErrorScreen
 import ca.gosyer.jui.uicore.components.LoadingScreen
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable

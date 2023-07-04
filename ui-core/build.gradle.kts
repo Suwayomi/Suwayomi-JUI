@@ -41,7 +41,8 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib-common"))
                 api(libs.coroutines.core)
-                api(libs.imageloader)
+                api(libs.imageloader.core)
+                api(libs.imageloader.moko)
                 api(libs.voyager.core)
                 api(libs.dateTime)
                 api(libs.immutableCollections)

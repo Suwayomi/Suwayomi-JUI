@@ -4,6 +4,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+@file:Suppress("DEPRECATION")
+
 package ca.gosyer.jui.ui.library.settings
 
 import androidx.compose.foundation.layout.Box
@@ -11,6 +13,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Tab
@@ -27,9 +31,8 @@ import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
-import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
 import dev.icerock.moko.resources.StringResource
 import kotlinx.coroutines.launch
 
@@ -39,6 +42,7 @@ enum class LibrarySheetTabs(val res: StringResource) {
     DISPLAY(MR.strings.library_display),
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun LibrarySheet(
     libraryFilters: @Composable () -> Unit,
@@ -68,7 +72,7 @@ fun LibrarySheet(
             }
         }
         HorizontalPager(
-            count = LibrarySheetTabs.values().size,
+            pageCount = LibrarySheetTabs.values().size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
         ) {

@@ -9,6 +9,7 @@ package ca.gosyer.jui.ui.base
 import androidx.compose.runtime.ProvidedValue
 import androidx.compose.runtime.compositionLocalOf
 import ca.gosyer.jui.core.di.AppScope
+import ca.gosyer.jui.core.io.SYSTEM
 import ca.gosyer.jui.ui.ViewModelComponent
 import ca.gosyer.jui.ui.base.image.ImageLoaderProvider
 import ca.gosyer.jui.ui.base.image.configure
@@ -17,6 +18,7 @@ import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.cache.disk.DiskCache
 import me.tatarka.inject.annotations.Provides
+import okio.FileSystem
 
 typealias ImageCache = DiskCache
 
@@ -35,15 +37,22 @@ interface UiComponent {
 
     @AppScope
     @Provides
-    fun imageLoaderFactory(imageLoaderProvider: ImageLoaderProvider, imageCache: ImageCache): ImageLoader = imageLoaderProvider.get(imageCache)
+    fun imageLoaderFactory(
+        imageLoaderProvider: ImageLoaderProvider,
+        imageCache: ImageCache
+    ): ImageLoader = imageLoaderProvider.get(imageCache)
 
     @AppScope
     @Provides
-    fun imageCacheFactory(): ImageCache = DiskCache { configure(contextWrapper, "image_cache") }
+    fun imageCacheFactory(): ImageCache = DiskCache(FileSystem.SYSTEM) {
+        configure(contextWrapper, "image_cache")
+    }
 
     @AppScope
     @Provides
-    fun chapterCacheFactory(): ChapterCache = DiskCache { configure(contextWrapper, "chapter_cache") }
+    fun chapterCacheFactory(): ChapterCache = DiskCache(FileSystem.SYSTEM) {
+        configure(contextWrapper, "chapter_cache")
+    }
 
     @Provides
     fun getHooks(viewModelComponent: ViewModelComponent) = arrayOf(

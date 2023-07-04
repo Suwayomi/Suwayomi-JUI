@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
@@ -53,8 +55,6 @@ import ca.gosyer.jui.uicore.components.LoadingScreen
 import ca.gosyer.jui.uicore.insets.navigationBars
 import ca.gosyer.jui.uicore.insets.statusBars
 import ca.gosyer.jui.uicore.resources.stringResource
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
