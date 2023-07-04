@@ -42,6 +42,7 @@
 -dontwarn com.kitfox.svg.app.ant.SVGToImageAntTask
 -dontwarn nl.adaptivity.xmlutil.StAXWriter
 -keep class com.sun.jna.** { *; }
+-dontwarn org.slf4j.impl.StaticLoggerBinder
 
 # Kotlin Serialization
 -keepattributes *Annotation*, InnerClasses
