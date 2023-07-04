@@ -177,7 +177,6 @@
     <string name="display_badge_downloaded">已下载章节</string>
     <string name="location_about">关于</string>
     <string name="display_badge_language">语言</string>
-    <string name="action_browser">浏览器</string>
     <string name="filter_unread">未读</string>
     <string name="sort_alphabetical">按字母顺序</string>
     <string name="filter_completed">已完结</string>
@@ -235,7 +234,7 @@
     <string name="clear_cache_sub">已使用：%1$s</string>
     <string name="group_updates">更新</string>
     <string name="downloader_running">下载器正在运行</string>
-    <string name="chapter_downloading_progress">下载中(%1$d/%2$d)</string>
+    <string name="chapter_downloading_progress">下载中……(%1$d/%2$d)</string>
     <string name="group_updates_channel_ext">扩展更新</string>
     <string name="display_badges">标记</string>
     <string name="items_per_row_sub_adaptive">列：自适应，大小：%1$d</string>
@@ -261,4 +260,12 @@
     <string name="theme_green_apple">绿苹果</string>
     <string name="theme_lavender">薰衣草</string>
     <string name="action_download">下载</string>
+    <string name="action_mark_as_read">标记为已读</string>
+    <string name="action_mark_as_unread">标记为未读</string>
+    <string name="library_updater_running">正在更新书架</string>
+    <string name="host_download_as_cbz">保存为 CBZ 压缩包</string>
+    <string name="host_download_as_cbz_sub">将章节下载保存为 CBZ 压缩包</string>
+    <string name="group_library">书架</string>
+    <string name="theme_legacy_blue">经典蓝</string>
+    <string name="disabled">禁用</string>
 </resources>

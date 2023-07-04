@@ -40,7 +40,6 @@
     <string name="clear_chapter_cache">清除章節快取</string>
     <string name="backup_create_sub">從 Tachidesk 建立備份</string>
     <string name="host_basic_auth_username">基本認證使用者名稱</string>
-    <string name="action_browser">瀏覽器</string>
     <string name="action_filter_bookmarked">已加入書籤</string>
     <string name="color_primary_sub">在您的應用程式中最常顯示</string>
     <string name="filter_downloaded">已下載</string>
@@ -53,7 +52,7 @@
     <string name="other">其他</string>
     <string name="action_cancel">取消</string>
     <string name="server_proxy">代理訪問伺服器</string>
-    <string name="items_per_row_sub">列： %1$d</string>
+    <string name="items_per_row_sub">列: %1$d</string>
     <string name="display_comfortable">鬆散網格</string>
     <string name="display_cover_only">封面網格</string>
     <string name="categories_create">新增類別</string>
@@ -69,15 +68,15 @@
     <string name="action_restart_library">重新啟動書櫃服務</string>
     <string name="update_check_look_for_updates">正在檢查更新…</string>
     <string name="location_settings">設定</string>
-    <string name="items_per_row_sub_adaptive">列：自適應，大小：%1$d</string>
+    <string name="items_per_row_sub_adaptive">列: 自適應，大小: %1$d</string>
     <string name="display_compact">緊湊網格</string>
     <string name="action_create">建立</string>
     <string name="continuous">連續</string>
-    <string name="host_socks_port_sub">目前代理端口： %1$s</string>
-    <string name="host_socks_host_sub">目前代理主機： %1$s</string>
-    <string name="host_download_path_sub">目前下載位置：%1$s</string>
-    <string name="host_ip_sub">目前伺服器IP： %1$s</string>
-    <string name="host_port_sub">目前伺服器端口： %1$s</string>
+    <string name="host_socks_port_sub">目前代理端口: %1$s</string>
+    <string name="host_socks_host_sub">目前代理主機: %1$s</string>
+    <string name="host_download_path_sub">目前下載位置: %1$s</string>
+    <string name="host_ip_sub">目前伺服器IP: %1$s</string>
+    <string name="host_port_sub">目前伺服器端口: %1$s</string>
     <string name="sort_date_added">新增日期</string>
     <string name="direction">方向</string>
     <string name="theme_dark">深色模式</string>
@@ -161,11 +160,11 @@
     <string name="action_move_up">上移</string>
     <string name="page_padding_none">無</string>
     <string name="max_width_sub">圖片的最大寬度，目前為 %1$ddp。上述設定放大圖片，並在達到一定寬度時對其進行限制</string>
-    <string name="missing_sources">缺少來源：</string>
+    <string name="missing_sources">缺少來源:</string>
     <string name="action_move_to_bottom">移到底部</string>
     <string name="action_more_actions">更多操作</string>
     <string name="navigation_mode">導覽模式</string>
-    <string name="next_chapter">下一步：
+    <string name="next_chapter">下一步:
 \n %1$s</string>
     <string name="download_1">後 1 章</string>
     <string name="download_10">後 10 章</string>
@@ -187,7 +186,7 @@
     <string name="action_update_library">更新書櫃</string>
     <string name="host_basic_auth_sub">使用基本認證来保護您的書櫃，需要使用者名稱和密碼</string>
     <string name="version">版本</string>
-    <string name="clear_cache_sub">已使用：%1$s</string>
+    <string name="clear_cache_sub">已使用: %1$s</string>
     <string name="server_preference_warning">警告</string>
     <string name="host_system_tray_sub">使用系統匣圖示查看伺服器是否正在運行</string>
     <string name="whats_new">更新日誌</string>
@@ -204,7 +203,7 @@
     <string name="preset_themes">預設主題</string>
     <string name="channel_downloading">進度</string>
     <string name="reader_mode">閱讀模式</string>
-    <string name="previous_chapter">之前：
+    <string name="previous_chapter">之前:
 \n %1$s</string>
     <string name="nav_prev_chapter">上一章</string>
     <string name="color_primary">主要顏色</string>
@@ -288,4 +287,7 @@
     <string name="location_updates">更新</string>
     <string name="group_updates">更新</string>
     <string name="sort_unread">未讀</string>
+    <string name="action_open_in_browser">在瀏覽器中打開</string>
+    <string name="host_download_as_cbz_sub">將章節下載為 CBZ 封存檔</string>
+    <string name="host_download_as_cbz">儲存為 CBZ 封存檔</string>
 </resources>

@@ -48,7 +48,6 @@
     <string name="auth_password">Mot de passe</string>
     <string name="filter_completed">Terminé</string>
     <string name="location_about">À propos</string>
-    <string name="action_browser">Navigateur</string>
     <string name="action_close">Fermer</string>
     <string name="group_updates_channel_app">Mises à jour de l\'appli</string>
     <string name="confirm_exit">Appuyer à nouveau pour quitter</string>
@@ -276,4 +275,19 @@
     <string name="host_basic_auth_password">Mot de passe d\'authentification basique</string>
     <string name="update_check_no_new_updates">Pas de nouvelle mise à jour disponible</string>
     <string name="server_proxy">Accès proxy au serveur</string>
+    <string name="confirm_exit_toast">Pressez encore pour quitter</string>
+    <string name="action_remove_bookmark">Supprimer des favoris</string>
+    <string name="action_move_to_top">Partir vers le haut</string>
+    <string name="action_select_all">Selectionner tout</string>
+    <string name="download_1">Chapitre suivant</string>
+    <string name="download_10">10 chapitres suivants</string>
+    <string name="download_5">5 chapitres suivants</string>
+    <string name="host_download_as_cbz">Enregistrer sous forme CBZ</string>
+    <string name="host_download_as_cbz_sub">Enregistrer chapitres sous forme archives CBZ</string>
+    <string name="action_open_in_browser">Ouvrir dans navigateur</string>
+    <string name="channel_active">Actif</string>
+    <string name="channel_progress">Progrès</string>
+    <string name="channel_downloading">Progrès</string>
+    <string name="disabled">Désactivée</string>
+    <string name="action_move_down">Descendre</string>
 </resources>
