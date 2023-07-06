@@ -13,6 +13,7 @@
 
 # Log4J
 -dontwarn org.apache.logging.log4j.**
+-dontwarn org.apache.commons.logging.**
 -keep,includedescriptorclasses class org.apache.logging.log4j.** { *; }
 
 # SLF4J
@@ -36,6 +37,13 @@
 
 # Coroutines
 -keep,includedescriptorclasses class kotlinx.coroutines.swing.** { *; }
+
+# XML
+-dontwarn org.apache.batik.**
+-dontwarn javax.xml.**
+-dontwarn jdk.xml.**
+-dontwarn org.w3c.dom.**
+-dontwarn org.xml.**
 
 # Other
 -dontwarn org.pbjar.jxlayer.plaf.ext.TransformUI
