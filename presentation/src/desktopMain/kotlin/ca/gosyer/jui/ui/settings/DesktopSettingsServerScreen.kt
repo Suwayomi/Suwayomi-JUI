@@ -124,15 +124,17 @@ actual class SettingsServerHostViewModel
         val authPassword = serverPreferences.authPassword().asStateIn(scope)
 
         init {
-            combine(basicAuthEnabled, basicAuthUsername, basicAuthPassword) { enabled, username, password ->
-                if (enabled) {
-                    auth.value = Auth.BASIC
-                    authUsername.value = username
-                    authPassword.value = password
-                } else {
-                    auth.value = Auth.NONE
-                    authUsername.value = ""
-                    authPassword.value = ""
+            combine(host, basicAuthEnabled, basicAuthUsername, basicAuthPassword) { host, enabled, username, password ->
+                if (host) {
+                    if (enabled) {
+                        auth.value = Auth.BASIC
+                        authUsername.value = username
+                        authPassword.value = password
+                    } else {
+                        auth.value = Auth.NONE
+                        authUsername.value = ""
+                        authPassword.value = ""
+                    }
                 }
             }.launchIn(scope)
         }
