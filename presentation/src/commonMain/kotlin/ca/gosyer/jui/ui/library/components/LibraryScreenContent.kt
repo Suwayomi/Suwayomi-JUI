@@ -61,7 +61,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun LibraryScreenContent(
-    categories: LibraryState,
+    libraryState: LibraryState,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
@@ -104,7 +104,7 @@ fun LibraryScreenContent(
         if (maxWidth > 720.dp) {
             WideLibraryScreenContent(
                 pagerState = pagerState,
-                categories = categories,
+                libraryState = libraryState,
                 selectedCategoryIndex = selectedCategoryIndex,
                 displayMode = displayMode,
                 gridColumns = gridColumns,
@@ -129,7 +129,7 @@ fun LibraryScreenContent(
         } else {
             ThinLibraryScreenContent(
                 pagerState = pagerState,
-                categories = categories,
+                libraryState = libraryState,
                 selectedCategoryIndex = selectedCategoryIndex,
                 displayMode = displayMode,
                 gridColumns = gridColumns,
@@ -160,7 +160,7 @@ fun LibraryScreenContent(
 @Composable
 fun WideLibraryScreenContent(
     pagerState: PagerState,
-    categories: LibraryState,
+    libraryState: LibraryState,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
@@ -201,11 +201,11 @@ fun WideLibraryScreenContent(
                         )
                     },
                 )
-                if (categories is LibraryState.Loaded) {
+                if (libraryState is LibraryState.Loaded) {
                     LibraryTabs(
                         visible = true, // vm.showCategoryTabs,
                         pagerState = pagerState,
-                        categories = categories.categories,
+                        categories = libraryState.categories,
                         selectedPage = selectedCategoryIndex,
                         onPageChanged = onPageChanged,
                     )
@@ -214,9 +214,9 @@ fun WideLibraryScreenContent(
         },
     ) { padding ->
         Box(Modifier.padding(padding)) {
-            when (categories) {
+            when (libraryState) {
                 is LibraryState.Failed -> {
-                    ErrorScreen(categories.e.message)
+                    ErrorScreen(libraryState.e.message)
                 }
                 LibraryState.Loading -> {
                     LoadingScreen(true)
@@ -224,7 +224,7 @@ fun WideLibraryScreenContent(
                 is LibraryState.Loaded -> {
                     LibraryPager(
                         pagerState = pagerState,
-                        categories = categories.categories,
+                        categories = libraryState.categories,
                         displayMode = displayMode,
                         gridColumns = gridColumns,
                         gridSize = gridSize,
@@ -269,7 +269,7 @@ fun WideLibraryScreenContent(
 @Composable
 fun ThinLibraryScreenContent(
     pagerState: PagerState,
-    categories: LibraryState,
+    libraryState: LibraryState,
     selectedCategoryIndex: Int,
     displayMode: DisplayMode,
     gridColumns: Int,
@@ -333,11 +333,11 @@ fun ThinLibraryScreenContent(
                         )
                     },
                 )
-                if (categories is LibraryState.Loaded) {
+                if (libraryState is LibraryState.Loaded) {
                     LibraryTabs(
                         visible = true, // vm.showCategoryTabs,
                         pagerState = pagerState,
-                        categories = categories.categories,
+                        categories = libraryState.categories,
                         selectedPage = selectedCategoryIndex,
                         onPageChanged = onPageChanged,
                     )
@@ -356,17 +356,17 @@ fun ThinLibraryScreenContent(
                 )
             },
         ) {
-            when (categories) {
+            when (libraryState) {
                 LibraryState.Loading -> {
                     LoadingScreen(true)
                 }
                 is LibraryState.Failed -> {
-                    ErrorScreen(categories.e.message)
+                    ErrorScreen(libraryState.e.message)
                 }
                 is LibraryState.Loaded -> {
                     LibraryPager(
                         pagerState = pagerState,
-                        categories = categories.categories,
+                        categories = libraryState.categories,
                         displayMode = displayMode,
                         gridColumns = gridColumns,
                         gridSize = gridSize,

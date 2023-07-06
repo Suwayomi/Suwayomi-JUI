@@ -27,7 +27,7 @@ class LibraryScreen : BaseScreen() {
         val updatesVM = viewModel { libraryUpdatesViewModel(false) }
         val navigator = LocalNavigator.currentOrThrow
         LibraryScreenContent(
-            categories = vm.categories.collectAsState().value,
+            libraryState = vm.categories.collectAsState().value,
             selectedCategoryIndex = vm.selectedCategoryIndex.collectAsState().value,
             displayMode = vm.displayMode.collectAsState().value,
             gridColumns = vm.gridColumns.collectAsState().value,
