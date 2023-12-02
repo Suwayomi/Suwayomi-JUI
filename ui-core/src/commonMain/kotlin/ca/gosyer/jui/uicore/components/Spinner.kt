@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -29,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastForEachIndexed
 
 @Composable
 fun Spinner(
@@ -58,7 +61,7 @@ fun Spinner(
             onDismissRequest = { expanded = false },
             modifier = Modifier.align(Alignment.CenterEnd),
         ) {
-            items.forEachIndexed { index, item ->
+            items.fastForEachIndexed { index, item ->
                 DropdownMenuItem(
                     onClick = {
                         expanded = false
