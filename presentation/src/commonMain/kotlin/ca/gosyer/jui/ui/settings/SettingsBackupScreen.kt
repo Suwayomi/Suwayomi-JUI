@@ -268,15 +268,15 @@ class SettingsBackupViewModel
     }
 
 sealed class Status {
-    object Nothing : Status()
+    data object Nothing : Status()
 
     data class InProgress(
         val progress: Float?,
     ) : Status()
 
-    object Success : Status()
+    data object Success : Status()
 
-    object Error : Status()
+    data object Error : Status()
 }
 
 @Composable

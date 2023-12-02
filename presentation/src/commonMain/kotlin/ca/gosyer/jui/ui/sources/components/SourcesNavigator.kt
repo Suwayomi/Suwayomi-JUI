@@ -111,9 +111,9 @@ private fun SourceNavigatorDisposableEffect(navigator: SourcesNavigator) {
 }
 
 sealed class SourceNavigatorScreen {
-    object HomeScreen : SourceNavigatorScreen()
+    data object HomeScreen : SourceNavigatorScreen()
 
-    object SearchScreen : SourceNavigatorScreen()
+    data object SearchScreen : SourceNavigatorScreen()
 
     data class SourceScreen(
         val source: Source,

@@ -152,7 +152,7 @@ class GlobalSearchViewModel
         )
 
         sealed class Search {
-            object Searching : Search()
+            data object Searching : Search()
 
             data class Success(
                 val mangaList: ImmutableList<Manga>,

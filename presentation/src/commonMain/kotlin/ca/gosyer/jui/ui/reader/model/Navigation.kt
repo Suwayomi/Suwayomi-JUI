@@ -9,17 +9,17 @@ package ca.gosyer.jui.ui.reader.model
 sealed class Navigation(
     val name: String,
 ) {
-    object MENU : Navigation("Menu")
+    data object MENU : Navigation("Menu")
 
-    object PREV : Navigation("Prev")
+    data object PREV : Navigation("Prev")
 
-    object NEXT : Navigation("Next")
+    data object NEXT : Navigation("Next")
 
-    object LEFT : Navigation("Left")
+    data object LEFT : Navigation("Left")
 
-    object RIGHT : Navigation("Right")
+    data object RIGHT : Navigation("Right")
 
-    object UP : Navigation("Up")
+    data object UP : Navigation("Up")
 
-    object DOWN : Navigation("Down")
+    data object DOWN : Navigation("Down")
 }

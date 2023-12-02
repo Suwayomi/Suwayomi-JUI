@@ -54,7 +54,7 @@ import org.lighthousegames.logging.logging
 @Stable
 sealed class LibraryState {
     @Stable
-    object Loading : LibraryState()
+    data object Loading : LibraryState()
 
     @Stable
     data class Failed(
@@ -70,7 +70,7 @@ sealed class LibraryState {
 @Stable
 sealed class CategoryState {
     @Stable
-    object Loading : CategoryState()
+    data object Loading : CategoryState()
 
     @Stable
     data class Failed(

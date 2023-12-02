@@ -42,10 +42,10 @@ data class ReaderPage(
         ) : ImageDecodeState()
 
         @Immutable
-        object UnknownDecoder : ImageDecodeState()
+        data object UnknownDecoder : ImageDecodeState()
 
         @Immutable
-        object FailedToGetSnapShot : ImageDecodeState()
+        data object FailedToGetSnapShot : ImageDecodeState()
 
         @Immutable
         data class FailedToDecode(

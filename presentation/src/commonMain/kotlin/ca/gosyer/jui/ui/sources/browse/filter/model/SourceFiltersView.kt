@@ -174,7 +174,6 @@ sealed class SourceFiltersView<T, R : Any?> {
     }
 }
 
-@Suppress("FunctionName")
 fun SourceFiltersView(
     index: Int,
     sourceFilter: SourceFilter,

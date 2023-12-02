@@ -58,9 +58,9 @@ data class ReaderChapter(
     }
 
     sealed class State {
-        object Wait : State()
+        data object Wait : State()
 
-        object Loading : State()
+        data object Loading : State()
 
         class Error(
             val error: Throwable,

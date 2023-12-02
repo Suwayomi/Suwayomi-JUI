@@ -56,7 +56,7 @@ class UpdateChecker
                 val release: GithubRelease,
             ) : Update()
 
-            object NoUpdatesFound : Update()
+            data object NoUpdatesFound : Update()
         }
 
         // Thanks to Tachiyomi for inspiration
