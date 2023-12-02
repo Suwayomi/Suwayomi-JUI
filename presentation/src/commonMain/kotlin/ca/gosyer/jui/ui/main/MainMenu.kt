@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -36,7 +37,6 @@ import ca.gosyer.jui.ui.base.navigation.DisplayController
 import ca.gosyer.jui.ui.base.navigation.withDisplayController
 import ca.gosyer.jui.ui.main.components.SideMenu
 import ca.gosyer.jui.ui.main.components.WithBottomNav
-import ca.gosyer.jui.uicore.insets.navigationBars
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.FadeTransition
 import kotlinx.coroutines.delay

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -39,7 +40,6 @@ import ca.gosyer.jui.presentation.build.BuildKonfig
 import ca.gosyer.jui.ui.base.navigation.DisplayController
 import ca.gosyer.jui.ui.main.MoreMenus
 import ca.gosyer.jui.ui.main.TopLevelMenus
-import ca.gosyer.jui.uicore.insets.systemBars
 import cafe.adriel.voyager.navigator.Navigator
 
 @Composable
