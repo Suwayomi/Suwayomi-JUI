@@ -97,10 +97,10 @@ jobs:
           arguments: >
             ${{ matrix.build }}
             -Pcompose.desktop.mac.sign=true
-            -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY_SHORT }}
+            -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }}
             -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }}
             -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
-            -Pidentity="${{ secrets.APPLE_IDENTITY }}"
+            -Pcompose.desktop.mac.notarization.teamID=${{ secrets.APPLE_TEAM_ID }}
             -Ppreview="${{ env.COMMIT_COUNT }}"
             --stacktrace
 
@@ -195,7 +195,7 @@ jobs:
           body: |
             ### Commits
             https://github.com/Suwayomi/Tachidesk-JUI/compare/${{ env.PREV_RELEASE_SHA }}...${{ env.CURRENT_SHA }}
-            
+
             ${{ env.COMMIT_LOGS }}
 
       - name: Prune old releases

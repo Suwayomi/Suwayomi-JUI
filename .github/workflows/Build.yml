@@ -91,10 +91,10 @@ jobs:
           arguments: >
             ${{ matrix.build }}
             -Pcompose.desktop.mac.sign=true
-            -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY_SHORT }}
+            -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }}
             -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }}
             -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
-            -Pidentity="${{ secrets.APPLE_IDENTITY }}"
+            -Pcompose.desktop.mac.notarization.teamID=${{ secrets.APPLE_TEAM_ID }}
 
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
