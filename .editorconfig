@@ -33,11 +33,11 @@ ij_kotlin_name_count_to_use_star_import = 2147483647
 ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
 
 ktlint_standard_filename = disabled
-ktlint_standard_argument-list-wrapping = disabled
 ktlint_standard_function-naming = disabled
 ktlint_standard_property-naming = disabled
 ktlint_standard_multiline-expression-wrapping = disabled
 ktlint_standard_string-template-indent = disabled
+ktlint_standard_chain-method-continuation = disabled
 ktlint_experimental_comment-wrapping = disabled
 
 [*.md]
