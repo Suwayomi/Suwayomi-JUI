@@ -35,10 +35,10 @@ fun getMaterialDialogProperties(
         dismissOnClickOutside = dismissOnClickOutside,
         securePolicy = securePolicy,
         usePlatformDefaultWidth = usePlatformDefaultWidth,
-        position = position,
-        size = size,
-        title = title,
-        icon = icon,
-        resizable = resizable,
+        windowPosition = position,
+        windowSize = size,
+        windowTitle = title,
+        windowIcon = icon,
+        windowIsResizable = resizable,
     )
 }

@@ -35,9 +35,11 @@ import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQ
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.uicore.components.LoadingScreen
-import com.seiko.imageloader.ImageRequestState
+import com.seiko.imageloader.model.ImageAction
 import com.seiko.imageloader.model.ImageRequest
-import com.seiko.imageloader.rememberAsyncImagePainter
+import com.seiko.imageloader.rememberImageAction
+import com.seiko.imageloader.rememberImageActionPainter
+import com.seiko.imageloader.rememberImagePainter
 import org.lighthousegames.logging.logging
 
 private val log = logging()
@@ -84,32 +86,31 @@ fun ImageLoaderImage(
 ) {
     key(data) {
         val request = remember { ImageRequest(data) }
-        val painter = rememberAsyncImagePainter(
-            request,
-            contentScale = contentScale,
-            filterQuality = filterQuality,
-        )
+        if (animationSpec != null) {
+            val imageAction by rememberImageAction(request)
 
-        val progress = remember { mutableStateOf(-1F) }
-        val error = remember { mutableStateOf<Throwable?>(null) }
-        val state by derivedStateOf {
-            when (val state = painter.requestState) {
-                is ImageRequestState.Failure -> {
-                    progress.value = 0.0F
-                    error.value = state.error
-                    ImageLoaderImageState.Failure
-                }
-                is ImageRequestState.Loading -> {
-                    progress.value = 0.0F
-                    ImageLoaderImageState.Loading
-                }
-                ImageRequestState.Success -> {
-                    progress.value = 1.0F
-                    ImageLoaderImageState.Success
+            val progress = remember { mutableStateOf(-1F) }
+            val error = remember { mutableStateOf<Throwable?>(null) }
+            val state by derivedStateOf {
+                when (val action = imageAction) {
+                    is ImageAction.Failure -> {
+                        progress.value = 0.0F
+                        error.value = action.error
+                        ImageLoaderImageState.Failure
+                    }
+                    is ImageAction.Loading -> {
+                        progress.value = 0.0F
+                        ImageLoaderImageState.Loading
+                    }
+                    is ImageAction.Success -> {
+                        progress.value = 1.0F
+                        ImageLoaderImageState.Success
+                    }
+                    else -> {
+                        ImageLoaderImageState.Loading
+                    }
                 }
             }
-        }
-        if (animationSpec != null) {
             Crossfade(state, animationSpec = animationSpec, modifier = modifier) {
                 Box(Modifier.fillMaxSize(), contentAlignment) {
                     when (it) {
@@ -117,7 +118,10 @@ fun ImageLoaderImage(
                             onLoading(progress.value)
                         }
                         ImageLoaderImageState.Success -> Image(
-                            painter = painter,
+                            painter = rememberImageActionPainter(
+                                imageAction,
+                                filterQuality = filterQuality
+                            ),
                             contentDescription = contentDescription,
                             modifier = Modifier.fillMaxSize(),
                             alignment = alignment,
@@ -136,7 +140,7 @@ fun ImageLoaderImage(
         } else {
             Box(modifier, contentAlignment) {
                 Image(
-                    painter = painter,
+                    painter = rememberImagePainter(request, filterQuality = filterQuality),
                     contentDescription = contentDescription,
                     modifier = Modifier.fillMaxSize(),
                     alignment = alignment,

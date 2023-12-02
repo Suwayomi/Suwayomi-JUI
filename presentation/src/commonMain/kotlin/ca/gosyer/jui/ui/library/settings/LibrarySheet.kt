@@ -49,7 +49,7 @@ fun LibrarySheet(
     librarySort: @Composable () -> Unit,
     libraryDisplay: @Composable () -> Unit,
 ) {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { LibrarySheetTabs.values().size }
     val selectedPage = pagerState.currentPage
     val scope = rememberCoroutineScope()
     Column(Modifier.fillMaxSize()) {
@@ -72,7 +72,6 @@ fun LibrarySheet(
             }
         }
         HorizontalPager(
-            pageCount = LibrarySheetTabs.values().size,
             state = pagerState,
             verticalAlignment = Alignment.Top,
         ) {

@@ -35,6 +35,7 @@ import ca.gosyer.jui.uicore.insets.statusBars
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.ui.compose.Libraries
+import com.mikepenz.aboutlibraries.ui.compose.util.StableLibrary
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -58,10 +59,10 @@ fun LicensesContent() {
                 val state = rememberLazyListState()
                 val uriHandler = LocalUriHandler.current
                 Libraries(
-                    libraries = remember(libs) { libs.libraries.toImmutableList() },
+                    libraries = remember(libs) { libs.libraries.map { StableLibrary(it) }.toImmutableList() },
                     lazyListState = state,
                     onLibraryClick = {
-                        it.website?.let(uriHandler::openUri)
+                        it.library.website?.let(uriHandler::openUri)
                     },
                     contentPadding = WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(

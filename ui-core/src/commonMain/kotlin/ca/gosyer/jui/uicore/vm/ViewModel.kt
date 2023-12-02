@@ -10,7 +10,7 @@ import ca.gosyer.jui.core.lang.launchUI
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import dev.icerock.moko.resources.StringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 abstract class ViewModel(private val contextWrapper: ContextWrapper) : ScreenModel {
     protected open val scope: CoroutineScope
-        get() = coroutineScope
+        get() = screenModelScope
 
     fun <T> Preference<T>.asStateFlow() = PreferenceMutableStateFlow(this, scope)
 

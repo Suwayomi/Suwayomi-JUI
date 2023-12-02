@@ -6,8 +6,8 @@
 
 package ca.gosyer.jui.ui.reader
 
-import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
+import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
 import ca.gosyer.jui.ui.reader.loader.PagesState
 import ca.gosyer.jui.ui.reader.loader.TachideskPageLoader
@@ -23,7 +23,7 @@ import org.lighthousegames.logging.logging
 
 class ChapterLoader(
     private val readerPreferences: ReaderPreferences,
-    private val getChapterPage: GetChapterPage,
+    private val http: Http,
     private val chapterCache: DiskCache,
     private val bitmapDecoderFactory: BitmapDecoderFactory,
 ) {
@@ -34,7 +34,7 @@ class ChapterLoader(
             chapter.state = ReaderChapter.State.Loading
             log.debug { "Loading pages for ${chapter.chapter.name}" }
 
-            val loader = TachideskPageLoader(chapter, readerPreferences, getChapterPage, chapterCache, bitmapDecoderFactory)
+            val loader = TachideskPageLoader(chapter, readerPreferences, http, chapterCache, bitmapDecoderFactory)
 
             val pages = loader.getPages()
 

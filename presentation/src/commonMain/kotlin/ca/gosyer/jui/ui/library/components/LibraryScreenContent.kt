@@ -12,7 +12,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -90,7 +89,9 @@ fun LibraryScreenContent(
     }
 
     BoxWithConstraints {
-        val pagerState = rememberPagerState(selectedCategoryIndex)
+        val pagerState = rememberPagerState(selectedCategoryIndex) {
+            (libraryState as? LibraryState.Loaded)?.categories?.size ?: 1
+        }
         LaunchedEffect(pagerState.isScrollInProgress to pagerState.currentPage) {
             if (!pagerState.isScrollInProgress && pagerState.currentPage != selectedCategoryIndex) {
                 onPageChanged(pagerState.currentPage)
@@ -240,11 +241,7 @@ fun WideLibraryScreenContent(
                     if (showingMenu) {
                         Box(
                             Modifier.fillMaxSize().pointerInput(Unit) {
-                                forEachGesture {
-                                    detectTapGestures {
-                                        setShowingMenu(false)
-                                    }
-                                }
+                                detectTapGestures(onTap = { setShowingMenu(false) })
                             },
                         )
                     }
@@ -295,7 +292,7 @@ fun ThinLibraryScreenContent(
 ) {
     val bottomSheetState = rememberModalBottomSheetState(
         ModalBottomSheetValue.Hidden,
-        confirmStateChange = {
+        confirmValueChange = {
             when (it) {
                 ModalBottomSheetValue.Hidden -> setShowingSheet(false)
                 ModalBottomSheetValue.Expanded,

@@ -82,7 +82,7 @@ dependencies {
     // Utility
     implementation(libs.dateTime)
     implementation(libs.immutableCollections)
-    implementation(libs.kds)
+    implementation(libs.korge.foundation)
 
     // Localization
     implementation(libs.moko.core)
@@ -90,7 +90,7 @@ dependencies {
 
     // Testing
     testImplementation(kotlin("test-junit"))
-    testImplementation(libs.compose.ui.test.junit4)
+    //testImplementation(libs.compose.ui.test.junit4)
     testImplementation(libs.coroutines.test)
 }
 

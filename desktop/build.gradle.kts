@@ -87,7 +87,7 @@ dependencies {
     // Utility
     implementation(libs.dateTime)
     implementation(libs.immutableCollections)
-    implementation(libs.kds)
+    implementation(libs.korge.foundation)
 
     // Localization
     implementation(libs.moko.core)

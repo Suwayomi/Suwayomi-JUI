@@ -13,6 +13,7 @@ import ca.gosyer.jui.core.lang.PriorityChannel
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
+import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
@@ -23,10 +24,10 @@ import com.seiko.imageloader.asImageBitmap
 import com.seiko.imageloader.cache.disk.DiskCache
 import com.seiko.imageloader.component.decoder.DecodeResult
 import com.seiko.imageloader.model.DataSource
-import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.model.ImageResult
 import com.seiko.imageloader.option.Options
 import io.ktor.client.plugins.onDownload
+import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
@@ -53,7 +55,7 @@ import org.lighthousegames.logging.logging
 class TachideskPageLoader(
     val chapter: ReaderChapter,
     readerPreferences: ReaderPreferences,
-    private val getChapterPage: GetChapterPage,
+    private val http: Http,
     private val chapterCache: DiskCache,
     private val bitmapDecoderFactory: BitmapDecoderFactory,
 ) : PageLoader() {
@@ -109,10 +111,14 @@ class TachideskPageLoader(
 
     private suspend fun fetchImage(page: ReaderPage) {
         log.debug { "Loading page ${page.index}" }
-        getChapterPage.asFlow(chapter.chapter, page.index) {
-            onDownload { bytesSentTotal, contentLength ->
-                page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
+        flow {
+            val response = http.get("api/v1/manga/${chapter.chapter.mangaId}/chapter/${chapter.chapter.index}/page/${page.index}") {
+                onDownload { bytesSentTotal, contentLength ->
+                    page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
+                }
             }
+
+            emit(response)
         }
             .onEach {
                 putImageInCache(it, page)
@@ -134,7 +140,7 @@ class TachideskPageLoader(
         response: HttpResponse,
         page: ReaderPage,
     ) {
-        val editor = chapterCache.edit(page.cacheKey)
+        val editor = chapterCache.openEditor(page.cacheKey)
             ?: throw Exception("Couldn't open cache")
         try {
             FileSystem.SYSTEM.write(editor.data) {
@@ -150,18 +156,17 @@ class TachideskPageLoader(
     }
 
     private suspend fun getImageFromCache(page: ReaderPage): ReaderPage.ImageDecodeState {
-        return chapterCache[page.cacheKey]?.use {
+        return chapterCache.openSnapshot(page.cacheKey)?.use {
             it.source().use { source ->
                 val decoder = bitmapDecoderFactory.create(
-                    ImageResult.Source(
-                        ImageRequest(Any()),
+                    ImageResult.OfSource(
                         source,
                         DataSource.Engine,
                     ),
                     Options(),
                 )
                 if (decoder != null) {
-                    runCatching { decoder.decode() as DecodeResult.Bitmap }
+                    runCatching { decoder.decode() as DecodeResult.OfBitmap }
                         .mapCatching {
                             ReaderPage.ImageDecodeState.Success(
                                 it.bitmap.asImageBitmap().also {

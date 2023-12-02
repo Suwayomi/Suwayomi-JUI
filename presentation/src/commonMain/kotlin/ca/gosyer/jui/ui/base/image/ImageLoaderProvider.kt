@@ -13,9 +13,11 @@ import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.ui.base.ImageCache
 import ca.gosyer.jui.uicore.vm.ContextWrapper
+import com.seiko.imageloader.Bitmap
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.cache.disk.DiskCacheBuilder
 import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
+import com.seiko.imageloader.cache.memory.MemoryKey
 import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.fetcher.MokoResourceFetcher
 import com.seiko.imageloader.component.keyer.Keyer
@@ -138,4 +140,4 @@ expect fun DiskCacheBuilder.configure(
     cacheDir: String,
 )
 
-expect fun MemoryCacheBuilder.configure(contextWrapper: ContextWrapper)
+expect fun MemoryCacheBuilder<MemoryKey, Bitmap>.configure(contextWrapper: ContextWrapper)

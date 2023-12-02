@@ -12,7 +12,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.WindowInsets
@@ -228,11 +227,7 @@ private fun SourceWideScreenContent(
             if (showingFilters && !isLatest) {
                 Box(
                     Modifier.fillMaxSize().pointerInput(loading) {
-                        forEachGesture {
-                            detectTapGestures {
-                                setShowingFilters(false)
-                            }
-                        }
+                        detectTapGestures(onTap = { setShowingFilters(false) })
                     },
                 )
             }
@@ -287,7 +282,7 @@ private fun SourceThinScreenContent(
 ) {
     val bottomSheetState = rememberModalBottomSheetState(
         ModalBottomSheetValue.Hidden,
-        confirmStateChange = {
+        confirmValueChange = {
             when (it) {
                 ModalBottomSheetValue.Hidden -> setShowingFilters(false)
                 ModalBottomSheetValue.Expanded,
@@ -364,11 +359,7 @@ private fun SourceThinScreenContent(
                 if (showingFilters && !isLatest) {
                     Box(
                         Modifier.fillMaxSize().pointerInput(loading) {
-                            forEachGesture {
-                                detectTapGestures {
-                                    setShowingFilters(false)
-                                }
-                            }
+                            detectTapGestures(onTap = { setShowingFilters(false) })
                         },
                     )
                 }

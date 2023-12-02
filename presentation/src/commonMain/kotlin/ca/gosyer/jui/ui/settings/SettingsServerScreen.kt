@@ -86,6 +86,7 @@ class SettingsServerScreen : Screen {
 
 expect class SettingsServerHostViewModel : ViewModel
 
+@Composable
 expect fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostViewModel): LazyListScope.() -> Unit
 
 class SettingsServerViewModel

@@ -27,7 +27,6 @@ import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.ui.util.lang.CollatorComparator
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import cafe.adriel.voyager.core.model.coroutineScope
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -198,7 +197,7 @@ class LibraryScreenViewModel
                                 log.warn(it) { "Failed to get manga list from category ${category.name}" }
                                 library.mangaMap.setError(category.id, it)
                             }
-                            .launchIn(coroutineScope)
+                            .launchIn(scope)
                     }
                 }
                 .catch {

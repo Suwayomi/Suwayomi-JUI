@@ -10,7 +10,7 @@ plugins {
 }
 
 kotlin {
-    android {
+    androidTarget {
         compilations {
             all {
                 kotlinOptions.jvmTarget = Config.androidJvmTarget.toString()
@@ -27,6 +27,21 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
+    applyHierarchyTemplate {
+        common {
+            group("jvm") {
+                withAndroidTarget()
+                withJvm()
+            }
+            group("ios") {
+                withIosX64()
+                withIosArm64()
+                withIosSimulatorArm64()
+            }
+        }
+    }
 
     sourceSets {
         all {
@@ -53,7 +68,7 @@ kotlin {
                 api(libs.multiplatformSettings.coroutines)
                 api(libs.multiplatformSettings.serialization)
                 api(libs.dateTime)
-                api(libs.kds)
+                api(libs.korge.foundation)
                 api(compose("org.jetbrains.compose.ui:ui-text"))
             }
         }
@@ -64,53 +79,28 @@ kotlin {
             }
         }
 
-        val jvmMain by creating {
-            dependsOn(commonMain)
+        val jvmMain by getting {
             dependencies {
                 api(kotlin("stdlib-jdk8"))
             }
         }
-        val jvmTest by creating {
-            dependsOn(commonTest)
+        val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
 
         val desktopMain by getting {
-            dependsOn(jvmMain)
             dependencies {
                 api(libs.appDirs)
             }
         }
         val desktopTest by getting {
-            dependsOn(jvmTest)
         }
 
         val androidMain by getting {
-            dependsOn(jvmMain)
-            dependencies {
-                api(libs.compose.ui.text)
-            }
         }
         val androidUnitTest by getting {
-            dependsOn(jvmTest)
-        }
-
-        val iosMain by creating {
-            dependsOn(commonMain)
-        }
-        val iosTest by creating {
-            dependsOn(commonTest)
-        }
-
-        listOf(
-            "iosX64",
-            "iosArm64",
-            "iosSimulatorArm64",
-        ).forEach {
-            getByName(it + "Main").dependsOn(iosMain)
-            getByName(it + "Test").dependsOn(iosTest)
         }
     }
 }

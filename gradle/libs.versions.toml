@@ -1,82 +1,76 @@
 [versions]
 # Kotlin
-kotlin = "1.8.22"
-coroutines = "1.7.2"
+kotlin = "1.9.21"
+coroutines = "1.7.3"
 
 # Serialization
-json = "1.5.1"
+json = "1.6.2"
 
 # Compose
-composeGradle = "1.4.1"
-composeCompiler = "1.4.8"
-composeAndroidRuntime = "1.4.3"
-composeAndroidFoundation = "1.4.3"
-composeAndroidUI = "1.4.3"
-composeAndroidAnimation = "1.4.3"
-composeAndroidMaterial = "1.4.3"
+composeGradle = "1.5.11"
 
 # Compose Libraries
-voyager = "1.0.0-rc06"
+voyager = "1.0.0-rc10"
 accompanist = "0.30.1"
 googleAccompanist = "0.30.1"
-imageloader = "1.5.3"
-materialDialogs = "0.9.3"
+imageloader = "1.7.1"
+materialDialogs = "0.9.4"
 
 # Android
-androidGradle = "8.0.2"
-core = "1.9.0"
-appCompat = "1.7.0-alpha02"
-activityCompose = "1.7.2"
-work = "2.8.1"
+androidGradle = "8.1.4"
+core = "1.12.0"
+appCompat = "1.7.0-alpha03"
+activityCompose = "1.8.1"
+work = "2.9.0"
 
 # Android Lifecycle
-lifecycle = "2.6.1"
+lifecycle = "2.6.2"
 
 # Swing
 darklaf = "3.0.2"
 
 # Ksp
-ksp = "1.8.22-1.0.11"
+ksp = "1.9.21-1.0.15"
 
 # Dependency Injection
-kotlinInject = "0.6.1"
+kotlinInject = "0.6.3"
 
 # Network
-ktor = "2.3.2"
-ktorfit = "1.4.2"
-ktorfitCompiler = "1.0.0"
+ktor = "2.3.6"
+ktorfit = "1.10.2"
 
 # Logging
-slf4j = "2.0.7"
-log4j = "2.20.0"
+slf4j = "2.0.9"
+log4j = "2.22.0"
 kmlogging = "1.3.0"
 
 # Storage
-okio = "3.3.0"
+okio = "3.6.0"
 appDirs = "1.2.1"
 
 # Preferences
 multiplatformSettings = "1.0.0-alpha01"
 
 # Utility
-desugarJdkLibs = "2.0.3"
-aboutLibraries = "10.8.0"
-dateTime = "0.4.0"
-immutableCollections = "0.3.5"
-kds = "4.0.7"
+desugarJdkLibs = "2.0.4"
+aboutLibraries = "10.9.2"
+dateTime = "0.5.0"
+immutableCollections = "0.3.6"
+korge = "5.1.0"
+gradleDownloadTask = "5.4.0"
 
 # Localization
 moko = "0.23.0"
 
 # BuildConfigs
-buildconfig = "4.1.1"
-buildkonfig = "0.13.3"
+buildconfig = "4.2.0"
+buildkonfig = "0.15.1"
 
 # Linter
-kotlinter = "3.15.0"
+kotlinter = "4.1.0"
 
 # Version updates
-versions = "0.47.0"
+versions = "0.50.0"
 
 # Optimizer
 proguard = "7.3.2"
@@ -92,16 +86,6 @@ coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", ve
 serialization-json-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "json" }
 serialization-json-okio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version.ref = "json" }
 
-# Compose
-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "composeAndroidAnimation" }
-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "composeAndroidFoundation" }
-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "composeAndroidRuntime" }
-compose-ui-core = { module = "androidx.compose.ui:ui", version.ref = "composeAndroidUI" }
-compose-ui-util = { module = "androidx.compose.ui:ui-util", version.ref = "composeAndroidUI" }
-compose-ui-text = { module = "androidx.compose.ui:ui-text", version.ref = "composeAndroidUI" }
-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "composeAndroidUI" }
-compose-material-core = { module = "androidx.compose.material:material", version.ref = "composeAndroidMaterial" }
-compose-material-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "composeAndroidMaterial" }
 # Compose UI
 voyager-core = { module = "cafe.adriel.voyager:voyager-core", version.ref = "voyager" }
 voyager-navigation = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
@@ -168,7 +152,7 @@ aboutLibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref
 aboutLibraries-ui = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutLibraries" }
 dateTime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "dateTime" }
 immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutableCollections" }
-kds = { module = "com.soywiz.korlibs.kds:kds", version.ref = "kds" }
+korge-foundation = { module = "com.soywiz.korge:korge-foundation", version.ref = "korge" }
 
 # Localization
 moko-core = { module = "dev.icerock.moko:resources", version.ref = "moko" }
@@ -176,6 +160,9 @@ moko-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "m
 
 # Optimizer
 proguard = { module = "com.guardsquare:proguard-gradle", version.ref = "proguard" }
+
+# Gradle
+gradle-download-task = { module = "de.undercouch:gradle-download-task", version.ref = "gradleDownloadTask" }
 
 [plugins]
 # Kotlin
@@ -195,7 +182,7 @@ compose = { id = "org.jetbrains.compose", version.ref = "composeGradle" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Network
-ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfitCompiler" }
+ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 
 # Localization
 moko-gradle = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko" }
@@ -215,11 +202,4 @@ aboutLibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "abo
 
 [bundles]
 compose-android = [
-    "compose-animation",
-    "compose-foundation",
-    "compose-runtime",
-    "compose-ui-core",
-    "compose-ui-util",
-    "compose-material-core",
-    "compose-material-icons"
 ]

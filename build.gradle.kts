@@ -50,14 +50,16 @@ subprojects {
             if (name.contains("android", true)) {
                 jvmTarget = Config.androidJvmTarget.toString()
             }
+            freeCompilerArgs += listOf("-Xexpect-actual-classes")
+
             if (project.hasProperty("generateComposeCompilerMetrics")) {
                 freeCompilerArgs = freeCompilerArgs + listOf(
                     "-P",
                     "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
-                            project.buildDir.absolutePath + "/compose_metrics",
+                        project.layout.buildDirectory.dir("compose_metrics").get().asFile.absolutePath,
                     "-P",
                     "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
-                            project.buildDir.absolutePath + "/compose_metrics"
+                        project.layout.buildDirectory.dir("compose_metrics").get().asFile.absolutePath
                 )
             }
         }
@@ -72,7 +74,7 @@ subprojects {
     }
     plugins.withType<com.android.build.gradle.BasePlugin> {
         configure<com.android.build.gradle.BaseExtension> {
-            compileSdkVersion(33)
+            compileSdkVersion(34)
             defaultConfig {
                 minSdk = 21
                 targetSdk = 31
@@ -126,9 +128,8 @@ subprojects {
         }
     }
 
-    plugins.withType<de.jensklingenberg.ktorfit.gradle.KtorfitGradleSubPlugin> {
+    plugins.withType<de.jensklingenberg.ktorfit.gradle.KtorfitGradlePlugin> {
         configure<de.jensklingenberg.ktorfit.gradle.KtorfitGradleConfiguration> {
-            version = libs.versions.ktorfit.get()
             logging = project.hasProperty("debugApp")
         }
     }
@@ -140,7 +141,7 @@ subprojects {
     }
     plugins.withType<ComposePlugin> {
         configure<ComposeExtension> {
-            kotlinCompilerPlugin.set(libs.versions.composeCompiler.get())
+            // kotlinCompilerPlugin.set(libs.versions.composeCompiler.get())
         }
     }
     afterEvaluate {

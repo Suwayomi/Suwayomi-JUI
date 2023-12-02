@@ -21,6 +21,7 @@ import io.ktor.client.plugins.auth.providers.DigestAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.auth.providers.digest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
@@ -48,6 +49,10 @@ fun httpClient(
         configurePlatform()
 
         expectSuccess = true
+
+        defaultRequest {
+            url(serverPreferences.serverUrl().get().toString())
+        }
 
         engine {
             proxy = when (serverPreferences.proxy().get()) {

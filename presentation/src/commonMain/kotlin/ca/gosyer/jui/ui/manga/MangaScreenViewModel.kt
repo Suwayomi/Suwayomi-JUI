@@ -33,7 +33,6 @@ import ca.gosyer.jui.ui.base.chapter.ChapterDownloadState
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
-import cafe.adriel.voyager.core.model.coroutineScope
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -94,7 +93,7 @@ class MangaScreenViewModel
         private val loadingManga = MutableStateFlow(true)
         private val loadingChapters = MutableStateFlow(true)
         val isLoading = combine(loadingManga, loadingChapters) { a, b -> a || b }
-            .stateIn(coroutineScope, SharingStarted.Eagerly, true)
+            .stateIn(scope, SharingStarted.Eagerly, true)
 
         val categories = getCategories.asFlow(true)
             .map { it.toImmutableList() }

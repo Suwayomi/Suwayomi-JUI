@@ -6,7 +6,7 @@ plugins {
 }
 
 kotlin {
-    android {
+    androidTarget {
         compilations {
             all {
                 kotlinOptions.jvmTarget = Config.androidJvmTarget.toString()
@@ -31,6 +31,8 @@ kotlin {
     iosArm64(configure = configuration)
     iosSimulatorArm64(configure = configuration)
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -43,6 +45,14 @@ kotlin {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
             }
+        }
+
+        getByName("desktopMain") {
+            dependsOn(commonMain)
+        }
+
+        getByName("androidMain") {
+            dependsOn(commonMain)
         }
     }
 }
@@ -65,7 +75,7 @@ android {
     }
 
     sourceSets.getByName("main") {
-        assets.srcDir(File(buildDir, "generated/moko/androidMain/assets"))
-        res.srcDir(File(buildDir, "generated/moko/androidMain/res"))
+        assets.srcDir(File(layout.buildDirectory.asFile.get(), "generated/moko/androidMain/assets"))
+        res.srcDir(File(layout.buildDirectory.asFile.get(), "generated/moko/androidMain/res"))
     }
 }

@@ -8,13 +8,35 @@ package ca.gosyer.jui.ui.base.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 
+@OptIn(ExperimentalFoundationApi::class)
 actual typealias TooltipPlacement = androidx.compose.foundation.TooltipPlacement
 
-actual typealias CursorPointImpl = androidx.compose.foundation.TooltipPlacement.CursorPoint
+@OptIn(ExperimentalFoundationApi::class)
+actual class CursorPointImpl actual constructor(
+    offset: DpOffset,
+    alignment: Alignment,
+    windowMargin: Dp,
+) : TooltipPlacement by androidx.compose.foundation.TooltipPlacement.CursorPoint(
+    offset = offset,
+    alignment = alignment,
+    windowMargin = windowMargin
+)
 
-actual typealias ComponentRectImpl = androidx.compose.foundation.TooltipPlacement.ComponentRect
+@OptIn(ExperimentalFoundationApi::class)
+actual class ComponentRectImpl actual constructor(
+    anchor: Alignment,
+    alignment: Alignment,
+    offset: DpOffset,
+) : TooltipPlacement by androidx.compose.foundation.TooltipPlacement.ComponentRect(
+    anchor = anchor,
+    alignment = alignment,
+    offset = offset
+)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

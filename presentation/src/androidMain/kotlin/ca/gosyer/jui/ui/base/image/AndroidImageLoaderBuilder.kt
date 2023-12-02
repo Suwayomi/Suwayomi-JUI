@@ -9,20 +9,22 @@ package ca.gosyer.jui.ui.base.image
 import android.os.Build
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.uicore.vm.ContextWrapper
+import com.seiko.imageloader.Bitmap
+import com.seiko.imageloader.BitmapConfig
 import com.seiko.imageloader.cache.disk.DiskCacheBuilder
 import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
+import com.seiko.imageloader.cache.memory.MemoryKey
 import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.setupDefaultComponents
-import com.seiko.imageloader.option.Options
 import com.seiko.imageloader.option.OptionsBuilder
 import com.seiko.imageloader.option.androidContext
 import okio.Path.Companion.toOkioPath
 
 actual fun OptionsBuilder.configure(contextWrapper: ContextWrapper) {
-    imageConfig = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-        Options.ImageConfig.ARGB_8888
+    bitmapConfig = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        BitmapConfig.ARGB_8888
     } else {
-        Options.ImageConfig.HARDWARE
+        BitmapConfig.HARDWARE
     }
     androidContext(contextWrapper)
 }
@@ -42,5 +44,5 @@ actual fun DiskCacheBuilder.configure(
     maxSizeBytes(1024 * 1024 * 150) // 150 MB
 }
 
-actual fun MemoryCacheBuilder.configure(contextWrapper: ContextWrapper) {
+actual fun MemoryCacheBuilder<MemoryKey, Bitmap>.configure(contextWrapper: ContextWrapper) {
 }

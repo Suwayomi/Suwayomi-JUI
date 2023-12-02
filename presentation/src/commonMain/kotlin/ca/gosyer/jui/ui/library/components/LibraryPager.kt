@@ -37,7 +37,7 @@ fun LibraryPager(
 ) {
     if (categories.isEmpty()) return
 
-    HorizontalPager(categories.size, state = pagerState) {
+    HorizontalPager(state = pagerState) {
         when (val library = getLibraryForPage(categories[it].id).value) {
             CategoryState.Loading -> LoadingScreen()
             is CategoryState.Failed -> ErrorScreen(library.e.message)
