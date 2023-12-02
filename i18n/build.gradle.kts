@@ -24,6 +24,7 @@ kotlin {
         binaries {
             framework {
                 baseName = "i18n"
+                isStatic = true
             }
         }
     }

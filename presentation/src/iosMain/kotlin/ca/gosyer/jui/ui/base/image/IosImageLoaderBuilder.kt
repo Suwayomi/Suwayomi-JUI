@@ -16,6 +16,7 @@ import com.seiko.imageloader.cache.memory.maxSizePercent
 import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.setupDefaultComponents
 import com.seiko.imageloader.option.OptionsBuilder
+import kotlinx.cinterop.ExperimentalForeignApi
 import okio.Path.Companion.toPath
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSFileManager
@@ -39,6 +40,7 @@ actual fun DiskCacheBuilder.configure(
     maxSizeBytes(1024 * 1024 * 150) // 150 MB
 }
 
+@OptIn(ExperimentalForeignApi::class)
 private fun getCacheDir(): String {
     return NSFileManager.defaultManager.URLForDirectory(
         NSCachesDirectory,
