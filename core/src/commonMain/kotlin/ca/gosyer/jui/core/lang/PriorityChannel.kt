@@ -146,6 +146,7 @@ internal class PriorityChannelImpl<T>(
         when {
             buffer.isEmpty() -> {
                 yield()
+                buffer.add(inChannel.receive())
             }
             buffer.isFull() -> {
                 outChannel.send(buffer.removeHead())
