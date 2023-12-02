@@ -6,14 +6,14 @@
 
 package ca.gosyer.jui.core.io
 
+import ca.gosyer.appdirs.AppDirs
 import ca.gosyer.jui.core.build.BuildKonfig
-import net.harawata.appdirs.AppDirsFactory
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 
 val userDataDir: Path by lazy {
-    AppDirsFactory.getInstance().getUserDataDir(BuildKonfig.NAME, null, null).toPath().also {
+    AppDirs(BuildKonfig.NAME).getUserDataDir().toPath().also {
         if (!FileSystem.SYSTEM.exists(it)) {
             FileSystem.SYSTEM.createDirectories(it)
         }
