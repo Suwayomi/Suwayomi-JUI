@@ -123,19 +123,16 @@ class SettingsGeneralViewModel
         }
 
         @Composable
-        fun getDateChoices(): ImmutableMap<String, String> {
-            return dateHandler.formatOptions
+        fun getDateChoices(): ImmutableMap<String, String> =
+            dateHandler.formatOptions
                 .associateWith {
                     it.ifEmpty { stringResource(MR.strings.date_system_default) } +
                         " (${getFormattedDate(it)})"
                 }
                 .toImmutableMap()
-        }
 
         @Composable
-        private fun getFormattedDate(prefValue: String): String {
-            return dateHandler.getDateFormat(prefValue).invoke(now)
-        }
+        private fun getFormattedDate(prefValue: String): String = dateHandler.getDateFormat(prefValue).invoke(now)
     }
 
 @Composable

@@ -66,9 +66,7 @@ class AboutViewModel
             }
         }
 
-        private fun getFormattedDate(time: Instant): String {
-            return dateHandler.dateTimeFormat(time)
-        }
+        private fun getFormattedDate(time: Instant): String = dateHandler.dateTimeFormat(time)
 
         companion object {
             private val log = logging()

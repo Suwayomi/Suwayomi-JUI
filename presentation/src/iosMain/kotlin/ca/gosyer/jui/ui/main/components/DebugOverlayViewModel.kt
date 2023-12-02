@@ -13,7 +13,9 @@ import me.tatarka.inject.annotations.Inject
 
 actual class DebugOverlayViewModel
     @Inject
-    constructor(contextWrapper: ContextWrapper) : ViewModel(contextWrapper) {
+    constructor(
+        contextWrapper: ContextWrapper,
+    ) : ViewModel(contextWrapper) {
         actual val maxMemory: String
             get() = ""
         actual val usedMemoryFlow: MutableStateFlow<String> = MutableStateFlow("")

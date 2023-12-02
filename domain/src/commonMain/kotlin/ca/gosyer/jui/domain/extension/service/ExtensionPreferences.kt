@@ -10,8 +10,12 @@ import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.PreferenceStore
 
-class ExtensionPreferences(private val preferenceStore: PreferenceStore) {
-    fun languages(): Preference<Set<String>> {
-        return preferenceStore.getStringSet("enabled_langs", setOfNotNull("all", "en", Locale.current.language))
-    }
+class ExtensionPreferences(
+    private val preferenceStore: PreferenceStore,
+) {
+    fun languages(): Preference<Set<String>> =
+        preferenceStore.getStringSet(
+            "enabled_langs",
+            setOfNotNull("all", "en", Locale.current.language),
+        )
 }

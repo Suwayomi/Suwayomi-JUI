@@ -14,7 +14,9 @@ import org.lighthousegames.logging.logging
 
 class ClearDownloadQueue
     @Inject
-    constructor(private val downloadRepository: DownloadRepository) {
+    constructor(
+        private val downloadRepository: DownloadRepository,
+    ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
                 .catch {

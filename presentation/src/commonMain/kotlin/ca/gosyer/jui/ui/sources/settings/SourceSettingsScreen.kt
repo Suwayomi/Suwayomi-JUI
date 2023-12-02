@@ -14,7 +14,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 
-class SourceSettingsScreen(private val sourceId: Long) : Screen {
+class SourceSettingsScreen(
+    private val sourceId: Long,
+) : Screen {
     override val key: ScreenKey = uniqueScreenKey
 
     @Composable

@@ -24,7 +24,9 @@ import kotlinx.coroutines.flow.stateIn
 import org.lighthousegames.logging.logging
 
 @Immutable
-data class ReaderChapter(val chapter: Chapter) {
+data class ReaderChapter(
+    val chapter: Chapter,
+) {
     val scope = CoroutineScope(Dispatchers.Default + Job())
 
     private val _state = MutableStateFlow<State>(State.Wait)
@@ -57,9 +59,16 @@ data class ReaderChapter(val chapter: Chapter) {
 
     sealed class State {
         object Wait : State()
+
         object Loading : State()
-        class Error(val error: Throwable) : State()
-        class Loaded(val pages: StateFlow<PagesState>) : State()
+
+        class Error(
+            val error: Throwable,
+        ) : State()
+
+        class Loaded(
+            val pages: StateFlow<PagesState>,
+        ) : State()
     }
 
     private companion object {

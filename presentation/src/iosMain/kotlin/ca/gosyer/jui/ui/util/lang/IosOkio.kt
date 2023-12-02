@@ -11,6 +11,4 @@ import io.ktor.util.toByteArray
 import io.ktor.utils.io.ByteReadChannel
 import okio.Source
 
-actual suspend fun ByteReadChannel.toSource(): Source {
-    return this.toByteArray().source()
-}
+actual suspend fun ByteReadChannel.toSource(): Source = this.toByteArray().source()

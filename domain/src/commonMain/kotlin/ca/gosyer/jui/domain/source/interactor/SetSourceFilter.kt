@@ -18,7 +18,9 @@ import org.lighthousegames.logging.logging
 
 class SetSourceFilter
     @Inject
-    constructor(private val sourceRepository: SourceRepository) {
+    constructor(
+        private val sourceRepository: SourceRepository,
+    ) {
         suspend fun await(
             source: Source,
             filterIndex: Int,
@@ -56,7 +58,8 @@ class SetSourceFilter
             .catch {
                 onError(it)
                 log.warn(it) {
-                    "Failed to set filter for ${source.displayName} with index = $filterIndex and childIndex = $childFilterIndex and value = $filter"
+                    "Failed to set filter for ${source.displayName} with index = $filterIndex " +
+                        "and childIndex = $childFilterIndex and value = $filter"
                 }
             }
             .collect()
@@ -71,7 +74,10 @@ class SetSourceFilter
         ) = asFlow(sourceId, filterIndex, childFilterIndex, filter)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to set filter for $sourceId with index = $filterIndex and childIndex = $childFilterIndex and value = $filter" }
+                log.warn(it) {
+                    "Failed to set filter for $sourceId with index = $filterIndex " +
+                        "and childIndex = $childFilterIndex and value = $filter"
+                }
             }
             .collect()
 

@@ -9,8 +9,8 @@ package ca.gosyer.jui.domain.updates.service
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.PreferenceStore
 
-class UpdatePreferences(private val preferenceStore: PreferenceStore) {
-    fun enabled(): Preference<Boolean> {
-        return preferenceStore.getBoolean("enabled", true)
-    }
+class UpdatePreferences(
+    private val preferenceStore: PreferenceStore,
+) {
+    fun enabled(): Preference<Boolean> = preferenceStore.getBoolean("enabled", true)
 }

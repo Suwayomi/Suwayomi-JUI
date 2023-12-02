@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class GetCategories
     @Inject
-    constructor(private val categoryRepository: CategoryRepository) {
+    constructor(
+        private val categoryRepository: CategoryRepository,
+    ) {
         suspend fun await(
             dropDefault: Boolean = false,
             onError: suspend (Throwable) -> Unit = {},

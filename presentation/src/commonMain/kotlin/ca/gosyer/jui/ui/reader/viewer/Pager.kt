@@ -81,7 +81,10 @@ fun PagerReader(
         }
     }
     val modifier = parentModifier then Modifier.fillMaxSize()
-    fun retry(index: Int) { pages.find { it is ReaderPage && it.index == index }?.let { retry(it as ReaderPage) } }
+
+    fun retry(index: Int) {
+        pages.find { it is ReaderPage && it.index == index }?.let { retry(it as ReaderPage) }
+    }
 
     if (direction.isVertical) {
         VerticalPager(

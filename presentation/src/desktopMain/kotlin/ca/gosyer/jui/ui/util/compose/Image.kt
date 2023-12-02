@@ -19,22 +19,18 @@ import okio.Path
 import okio.buffer
 import org.jetbrains.skia.Image
 
-fun imageFromFile(file: Path): ImageBitmap {
-    return Image.makeFromEncoded(FileSystem.SYSTEM.source(file).buffer().readByteArray())
+fun imageFromFile(file: Path): ImageBitmap =
+    Image.makeFromEncoded(FileSystem.SYSTEM.source(file).buffer().readByteArray())
         .toComposeImageBitmap()
-}
 
 suspend fun imageFromUrl(
     client: Http,
     url: String,
     block: HttpRequestBuilder.() -> Unit,
-): ImageBitmap {
-    return client.get(url) {
+): ImageBitmap =
+    client.get(url) {
         expectSuccess = true
         block()
     }.toImageBitmap()
-}
 
-actual suspend fun HttpResponse.toImageBitmap(): ImageBitmap {
-    return Image.makeFromEncoded(body<ByteArray>()).toComposeImageBitmap()
-}
+actual suspend fun HttpResponse.toImageBitmap(): ImageBitmap = Image.makeFromEncoded(body<ByteArray>()).toComposeImageBitmap()

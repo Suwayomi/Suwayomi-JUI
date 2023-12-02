@@ -11,7 +11,10 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class SourcePreferenceChange(val position: Int, val value: String) {
+data class SourcePreferenceChange(
+    val position: Int,
+    val value: String,
+) {
     constructor(position: Int, value: Any) : this(
         position,
         if (value is List<*>) {

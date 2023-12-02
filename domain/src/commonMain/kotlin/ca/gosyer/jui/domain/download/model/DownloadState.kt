@@ -11,7 +11,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Stable
-enum class DownloadState(val state: Int) {
+enum class DownloadState(
+    val state: Int,
+) {
     Queued(0),
     Downloading(1),
     Finished(2),

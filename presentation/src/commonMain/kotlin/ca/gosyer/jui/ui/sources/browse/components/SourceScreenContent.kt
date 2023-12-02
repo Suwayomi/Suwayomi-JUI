@@ -522,8 +522,8 @@ private fun getActionItems(
     onToggleFiltersClick: () -> Unit,
     onClickMode: () -> Unit,
     openDisplayModeSelect: () -> Unit,
-): ImmutableList<ActionItem> {
-    return listOfNotNull(
+): ImmutableList<ActionItem> =
+    listOfNotNull(
         if (showFilterButton) {
             ActionItem(
                 name = stringResource(MR.strings.action_filter),
@@ -568,4 +568,3 @@ private fun getActionItems(
             null
         },
     ).toImmutableList()
-}

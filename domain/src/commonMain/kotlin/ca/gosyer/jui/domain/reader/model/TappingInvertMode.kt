@@ -11,7 +11,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Stable
-enum class TappingInvertMode(val shouldInvertHorizontal: Boolean = false, val shouldInvertVertical: Boolean = false) {
+enum class TappingInvertMode(
+    val shouldInvertHorizontal: Boolean = false,
+    val shouldInvertVertical: Boolean = false,
+) {
     NONE,
     HORIZONTAL(shouldInvertHorizontal = true),
     VERTICAL(shouldInvertVertical = true),

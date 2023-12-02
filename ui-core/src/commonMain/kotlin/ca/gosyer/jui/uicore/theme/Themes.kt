@@ -153,10 +153,8 @@ val themes = listOf(
         ),
         extraColors(),
     ),
-    /**
-     * Green Apple theme
-     * Original color scheme by CarlosEsco, Jays2Kings and CrepeTF
-     */
+    // Green Apple theme
+    // Original color scheme by CarlosEsco, Jays2Kings and CrepeTF
     Theme(
         5,
         MR.strings.theme_green_apple,
@@ -194,10 +192,8 @@ val themes = listOf(
             onTertiary = Color(0xFF680006),
         ),
     ),
-    /**
-     * Lavender theme
-     * Original color scheme by CrepeTF
-     */
+    // Lavender theme
+    // Original color scheme by CrepeTF
     Theme(
         7,
         MR.strings.theme_lavender,
@@ -238,10 +234,8 @@ val themes = listOf(
             onTertiary = Color(0xFFE8E8E8),
         ),
     ),
-    /**
-     * Midnight Dusk theme
-     * Original color scheme by CrepeTF
-     */
+    // Midnight Dusk theme
+    // Original color scheme by CrepeTF
     Theme(
         9,
         MR.strings.theme_midnight_dusk,
@@ -278,10 +272,8 @@ val themes = listOf(
             tertiary = Color(0xFF55971C),
         ),
     ),
-    /**
-     * Strawberry Daiquiri theme
-     * Original color scheme by Soitora
-     */
+    // Strawberry Daiquiri theme
+    // Original color scheme by Soitora
     Theme(
         11,
         MR.strings.theme_strawberry_daiquiri,
@@ -319,10 +311,8 @@ val themes = listOf(
             onTertiary = Color(0xFF432C06),
         ),
     ),
-    /**
-     * Strawberry Tako theme
-     * Original color scheme by ghostbear
-     */
+    // Strawberry Tako theme
+    // Original color scheme by ghostbear
     Theme(
         13,
         MR.strings.theme_tako,
@@ -363,9 +353,7 @@ val themes = listOf(
             onTertiary = Color(0xFFF3B375),
         ),
     ),
-    /**
-     * Teal & Turquoise theme
-     */
+    // Teal & Turquoise theme
     Theme(
         15,
         MR.strings.theme_tealturquoise,
@@ -403,10 +391,8 @@ val themes = listOf(
             tertiary = Color(0xFFBF1F2F),
         ),
     ),
-    /**
-     * Tidal Wave theme
-     * Original color scheme by NahutabDevelop
-     */
+    // Tidal Wave theme
+    // Original color scheme by NahutabDevelop
     Theme(
         17,
         MR.strings.theme_tidal_wave,
@@ -445,10 +431,8 @@ val themes = listOf(
             onTertiary = Color(0xFF001C3B),
         ),
     ),
-    /**
-     * Yin & Yang theme
-     * Original color scheme by Riztard
-     */
+    // Yin & Yang theme
+    // Original color scheme by Riztard
     Theme(
         19,
         MR.strings.theme_yinyang,
@@ -489,10 +473,8 @@ val themes = listOf(
             onTertiary = Color.White,
         ),
     ),
-    /**
-     * Yotsuba theme
-     * Original color scheme by ztimms73
-     */
+    // Yotsuba theme
+    // Original color scheme by ztimms73
     Theme(
         21,
         MR.strings.theme_yotsuba,

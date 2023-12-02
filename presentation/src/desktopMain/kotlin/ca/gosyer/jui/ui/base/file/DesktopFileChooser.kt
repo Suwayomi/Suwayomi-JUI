@@ -16,7 +16,10 @@ import okio.source
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
-actual class FileChooser(private val onFileFound: (Source) -> Unit, private val scope: CoroutineScope) {
+actual class FileChooser(
+    private val onFileFound: (Source) -> Unit,
+    private val scope: CoroutineScope,
+) {
     private val fileChooser = JFileChooser()
         .apply {
             val details = actionMap.get("viewTypeDetails")

@@ -181,7 +181,9 @@ fun rememberPagerState(initialPage: Int = 0) =
 class PagerState(
     currentPage: Int = 0,
 ) {
-    init { check(currentPage >= 0) { "currentPage cannot be less than zero" } }
+    init {
+        check(currentPage >= 0) { "currentPage cannot be less than zero" }
+    }
 
     val lazyListState = LazyListState(firstVisibleItemIndex = currentPage)
 
@@ -234,7 +236,7 @@ class PagerState(
 // https://android.googlesource.com/platform/frameworks/support/+/refs/changes/78/2160778/35/compose/foundation/foundation/src/commonMain/kotlin/androidx/compose/foundation/gestures/snapping/LazyListSnapLayoutInfoProvider.kt
 private fun lazyListSnapLayoutInfoProvider(
     lazyListState: LazyListState,
-    positionInLayout: SnapPositionInLayout = CenterToCenter
+    positionInLayout: SnapPositionInLayout = CenterToCenter,
 ) = object : SnapLayoutInfoProvider {
     private val layoutInfo: LazyListLayoutInfo
         get() = lazyListState.layoutInfo
@@ -255,7 +257,7 @@ private fun lazyListSnapLayoutInfoProvider(
                     itemSize = item.size,
                     itemOffset = item.offset,
                     itemIndex = item.index,
-                    snapPositionInLayout = positionInLayout
+                    snapPositionInLayout = positionInLayout,
                 )
 
             // Find item that is closest to the center
@@ -272,7 +274,7 @@ private fun lazyListSnapLayoutInfoProvider(
         return calculateFinalOffset(
             currentVelocity,
             lowerBoundOffset,
-            upperBoundOffset
+            upperBoundOffset,
         )
     }
 
@@ -284,7 +286,7 @@ private fun lazyListSnapLayoutInfoProvider(
         itemSize: Int,
         itemOffset: Int,
         itemIndex: Int,
-        snapPositionInLayout: SnapPositionInLayout
+        snapPositionInLayout: SnapPositionInLayout,
     ): Float {
         val containerSize = mainAxisViewPortSize - beforeContentPadding - afterContentPadding
 
@@ -295,9 +297,11 @@ private fun lazyListSnapLayoutInfoProvider(
         return itemOffset - desiredDistance
     }
 
-
-    private fun calculateFinalOffset(velocity: Float, lowerBound: Float, upperBound: Float): Float {
-
+    private fun calculateFinalOffset(
+        velocity: Float,
+        lowerBound: Float,
+        upperBound: Float,
+    ): Float {
         fun Float.isValidDistance(): Boolean {
             return this != Float.POSITIVE_INFINITY && this != Float.NEGATIVE_INFINITY
         }

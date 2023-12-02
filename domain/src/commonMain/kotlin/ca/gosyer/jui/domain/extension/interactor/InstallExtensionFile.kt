@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class InstallExtensionFile
     @Inject
-    constructor(private val extensionRepository: ExtensionRepository) {
+    constructor(
+        private val extensionRepository: ExtensionRepository,
+    ) {
         suspend fun await(
             path: Path,
             onError: suspend (Throwable) -> Unit = {},

@@ -49,7 +49,5 @@ class FlowConverterFactory : Converter.Factory {
     override fun suspendResponseConverter(
         typeData: TypeData,
         ktorfit: Ktorfit,
-    ): Converter.SuspendResponseConverter<HttpResponse, *>? {
-        return null
-    }
+    ): Converter.SuspendResponseConverter<HttpResponse, *>? = null
 }

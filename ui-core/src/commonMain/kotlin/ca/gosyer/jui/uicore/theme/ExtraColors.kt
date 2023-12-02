@@ -36,12 +36,11 @@ class ExtraColors(
             onTertiary,
         )
 
-    override fun toString(): String {
-        return "ExtraColors(" +
+    override fun toString(): String =
+        "ExtraColors(" +
             "tertiary=$tertiary, " +
             "onTertiary=$onTertiary, " +
             ")"
-    }
 
     companion object {
         @Composable

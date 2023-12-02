@@ -13,11 +13,10 @@ import platform.Foundation.NSUserDefaults
 actual class PreferenceStoreFactory
     @Inject
     constructor() {
-        actual fun create(vararg names: String): PreferenceStore {
-            return StandardPreferenceStore(
+        actual fun create(vararg names: String): PreferenceStore =
+            StandardPreferenceStore(
                 NSUserDefaultsSettings(
                     NSUserDefaults.standardUserDefaults,
                 ),
             )
-        }
     }

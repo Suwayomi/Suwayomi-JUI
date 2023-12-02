@@ -17,7 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 import okio.Source
 import okio.source
 
-actual class FileChooser(private val resultLauncher: ManagedActivityResultLauncher<String, Uri?>) {
+actual class FileChooser(
+    private val resultLauncher: ManagedActivityResultLauncher<String, Uri?>,
+) {
     actual fun launch(extension: String) {
         resultLauncher.launch(MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension))
     }

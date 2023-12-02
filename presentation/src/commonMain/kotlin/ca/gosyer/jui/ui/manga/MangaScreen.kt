@@ -14,7 +14,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 
-class MangaScreen(private val mangaId: Long) : Screen {
+class MangaScreen(
+    private val mangaId: Long,
+) : Screen {
     override val key: ScreenKey = uniqueScreenKey
 
     @Composable

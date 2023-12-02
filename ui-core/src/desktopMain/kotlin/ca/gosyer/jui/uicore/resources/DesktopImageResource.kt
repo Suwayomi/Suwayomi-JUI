@@ -13,6 +13,4 @@ import androidx.compose.ui.graphics.toPainter
 import dev.icerock.moko.resources.ImageResource
 
 @Composable
-actual fun ImageResource.toPainter(): Painter {
-    return remember { image.toPainter() }
-}
+actual fun ImageResource.toPainter(): Painter = remember { image.toPainter() }

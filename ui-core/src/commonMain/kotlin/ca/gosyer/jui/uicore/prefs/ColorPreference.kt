@@ -19,17 +19,14 @@ import kotlinx.coroutines.flow.stateIn
 class ColorPreference(
     private val preference: Preference<Int>,
 ) : Preference<Color> {
-    override fun key(): String {
-        return preference.key()
-    }
+    override fun key(): String = preference.key()
 
-    override fun get(): Color {
-        return if (isSet()) {
+    override fun get(): Color =
+        if (isSet()) {
             Color(preference.get())
         } else {
             Color.Unspecified
         }
-    }
 
     override fun set(value: Color) {
         if (value != Color.Unspecified) {
@@ -39,28 +36,22 @@ class ColorPreference(
         }
     }
 
-    override fun isSet(): Boolean {
-        return preference.isSet()
-    }
+    override fun isSet(): Boolean = preference.isSet()
 
     override fun delete() {
         preference.delete()
     }
 
-    override fun defaultValue(): Color {
-        return Color.Unspecified
-    }
+    override fun defaultValue(): Color = Color.Unspecified
 
-    override fun changes(): Flow<Color> {
-        return preference.changes()
+    override fun changes(): Flow<Color> =
+        preference.changes()
             .map { get() }
-    }
 
-    override fun stateIn(scope: CoroutineScope): StateFlow<Color> {
-        return preference.changes().map { get() }.stateIn(scope, SharingStarted.Eagerly, get())
-    }
+    override fun stateIn(scope: CoroutineScope): StateFlow<Color> =
+        preference.changes().map {
+            get()
+        }.stateIn(scope, SharingStarted.Eagerly, get())
 }
 
-fun Preference<Int>.asColor(): ColorPreference {
-    return ColorPreference(this)
-}
+fun Preference<Int>.asColor(): ColorPreference = ColorPreference(this)

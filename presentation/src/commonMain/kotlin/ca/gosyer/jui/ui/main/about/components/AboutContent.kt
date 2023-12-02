@@ -223,11 +223,20 @@ private fun OpenSourceLicenses(openSourceLicenses: () -> Unit) {
 }
 
 sealed class LinkIcon {
-    data class Resource(val res: ImageResource) : LinkIcon()
-    data class Icon(val icon: ImageVector) : LinkIcon()
+    data class Resource(
+        val res: ImageResource,
+    ) : LinkIcon()
+
+    data class Icon(
+        val icon: ImageVector,
+    ) : LinkIcon()
 }
 
-enum class Link(val nameRes: StringResource, val icon: LinkIcon, val uri: String) {
+enum class Link(
+    val nameRes: StringResource,
+    val icon: LinkIcon,
+    val uri: String,
+) {
     Github(MR.strings.github, LinkIcon.Resource(MR.images.github), "https://github.com/Suwayomi/Tachidesk-JUI"),
     Discord(MR.strings.discord, LinkIcon.Resource(MR.images.discord), "https://discord.gg/DDZdqZWaHA"),
     Reddit(MR.strings.reddit, LinkIcon.Resource(MR.images.reddit), "https://reddit.com/r/Tachidesk/"),

@@ -30,11 +30,10 @@ internal actual fun Color.toHsv(): FloatArray =
         floatArrayOf(hue.value.toFloat(), saturation.value.toFloat(), brightness.value.toFloat())
     }
 
-internal actual fun hexStringToColor(hex: String): Color? {
-    return try {
+internal actual fun hexStringToColor(hex: String): Color? =
+    try {
         val i = hex.removePrefix("#").toInt(16)
         Color(i shr 16 and 0xFF, i shr 8 and 0xFF, i and 0xFF)
     } catch (e: Exception) {
         null
     }
-}

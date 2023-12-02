@@ -28,6 +28,7 @@ sealed class SourceSettingsView<T, R : Any?> {
     abstract val title: String?
     abstract val subtitle: String?
     abstract val state: StateFlow<R>
+
     abstract fun updateState(value: R)
 
     abstract val props: T
@@ -44,6 +45,7 @@ sealed class SourceSettingsView<T, R : Any?> {
         ),
     ) : SourceSettingsView<TwoStateProps, Boolean>() {
         override val state: StateFlow<Boolean> = _state.asStateFlow()
+
         override fun updateState(value: Boolean) {
             _state.value = value
         }
@@ -87,6 +89,7 @@ sealed class SourceSettingsView<T, R : Any?> {
             props.currentValue ?: props.defaultValue ?: "0",
         )
         override val state: StateFlow<String> = _state.asStateFlow()
+
         override fun updateState(value: String) {
             _state.value = value
         }
@@ -116,6 +119,7 @@ sealed class SourceSettingsView<T, R : Any?> {
             props.currentValue?.toImmutableList() ?: props.defaultValue?.toImmutableList(),
         )
         override val state: StateFlow<ImmutableList<String>?> = _state.asStateFlow()
+
         override fun updateState(value: ImmutableList<String>?) {
             _state.value = value
         }
@@ -150,6 +154,7 @@ sealed class SourceSettingsView<T, R : Any?> {
     ) : SourceSettingsView<EditTextPreference.EditTextProps, String>() {
         private val _state = MutableStateFlow(props.currentValue ?: props.defaultValue.orEmpty())
         override val state: StateFlow<String> = _state.asStateFlow()
+
         override fun updateState(value: String) {
             _state.value = value
         }
@@ -167,19 +172,16 @@ sealed class SourceSettingsView<T, R : Any?> {
 private fun withFormat(
     text: String,
     value: Any?,
-): String {
-    return stringFormat(text, value)
-}
+): String = stringFormat(text, value)
 
 fun SourceSettingsView(
     index: Int,
     preference: SourcePreference,
-): SourceSettingsView<*, *> {
-    return when (preference) {
+): SourceSettingsView<*, *> =
+    when (preference) {
         is CheckBoxPreference -> SourceSettingsView.CheckBox(index, preference)
         is SwitchPreference -> SourceSettingsView.Switch(index, preference)
         is ListPreference -> SourceSettingsView.List(index, preference)
         is MultiSelectListPreference -> SourceSettingsView.MultiSelect(index, preference)
         is EditTextPreference -> SourceSettingsView.EditText(index, preference)
     }
-}

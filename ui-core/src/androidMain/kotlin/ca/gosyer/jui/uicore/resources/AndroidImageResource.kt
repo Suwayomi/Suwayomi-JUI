@@ -12,6 +12,4 @@ import androidx.compose.ui.res.painterResource
 import dev.icerock.moko.resources.ImageResource
 
 @Composable
-actual fun ImageResource.toPainter(): Painter {
-    return painterResource(drawableResId)
-}
+actual fun ImageResource.toPainter(): Painter = painterResource(drawableResId)

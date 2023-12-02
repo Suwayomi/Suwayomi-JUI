@@ -58,6 +58,4 @@ private val ERROR_FACES = arrayOf(
     "(･Д･。",
 )
 
-fun getRandomErrorFace(): String {
-    return ERROR_FACES[Random.nextInt(ERROR_FACES.size)]
-}
+fun getRandomErrorFace(): String = ERROR_FACES[Random.nextInt(ERROR_FACES.size)]

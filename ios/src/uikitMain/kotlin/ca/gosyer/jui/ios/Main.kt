@@ -4,11 +4,9 @@ package ca.gosyer.jui.ios
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -33,34 +31,10 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.Length
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.autoreleasepool
-import kotlinx.cinterop.cstr
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.toCValues
-import kotlinx.cinterop.useContents
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.lighthousegames.logging.FixedLogLevel
-import org.lighthousegames.logging.KmLog
-import org.lighthousegames.logging.KmLogging
-import org.lighthousegames.logging.LogFactory
-import org.lighthousegames.logging.LogLevel
-import org.lighthousegames.logging.LogLevelController
-import org.lighthousegames.logging.Logger
-import org.lighthousegames.logging.TagProvider
-import platform.Foundation.NSStringFromClass
-import platform.Foundation.NSThread
-import platform.UIKit.UIApplication
-import platform.UIKit.UIApplicationDelegateProtocol
-import platform.UIKit.UIApplicationDelegateProtocolMeta
-import platform.UIKit.UIApplicationMain
-import platform.UIKit.UIResponder
-import platform.UIKit.UIResponderMeta
-import platform.UIKit.UIScreen
 import platform.UIKit.UIViewController
-import platform.UIKit.UIWindow
-import platform.UIKit.safeAreaInsets
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 

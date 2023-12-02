@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class ModifyCategory
     @Inject
-    constructor(private val categoryRepository: CategoryRepository) {
+    constructor(
+        private val categoryRepository: CategoryRepository,
+    ) {
         suspend fun await(
             categoryId: Long,
             name: String,

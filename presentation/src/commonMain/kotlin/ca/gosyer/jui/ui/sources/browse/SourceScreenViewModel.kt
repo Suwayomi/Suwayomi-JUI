@@ -160,6 +160,7 @@ class SourceScreenViewModel(
     fun search(query: String) {
         _sourceSearchQuery.value = query
     }
+
     fun submitSearch() {
         startSearch(sourceSearchQuery.value)
     }
@@ -168,7 +169,10 @@ class SourceScreenViewModel(
         catalogPreferences.displayMode().set(displayMode)
     }
 
-    data class Params(val source: Source, val initialQuery: String?)
+    data class Params(
+        val source: Source,
+        val initialQuery: String?,
+    )
 
     override fun onDispose() {
         super.onDispose()

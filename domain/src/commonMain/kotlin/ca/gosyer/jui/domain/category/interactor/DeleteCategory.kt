@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class DeleteCategory
     @Inject
-    constructor(private val categoryRepository: CategoryRepository) {
+    constructor(
+        private val categoryRepository: CategoryRepository,
+    ) {
         suspend fun await(
             categoryId: Long,
             onError: suspend (Throwable) -> Unit = {},

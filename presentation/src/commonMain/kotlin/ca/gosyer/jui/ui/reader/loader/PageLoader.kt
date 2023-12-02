@@ -48,6 +48,10 @@ abstract class PageLoader {
 
 sealed class PagesState {
     object Loading : PagesState()
-    data class Success(val pages: List<ReaderPage>) : PagesState()
+
+    data class Success(
+        val pages: List<ReaderPage>,
+    ) : PagesState()
+
     object Empty : PagesState()
 }

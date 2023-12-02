@@ -15,11 +15,10 @@ internal actual fun Color.toHsv(): FloatArray {
     return result
 }
 
-internal actual fun hexStringToColor(hex: String): Color? {
-    return try {
+internal actual fun hexStringToColor(hex: String): Color? =
+    try {
         val color = android.graphics.Color.parseColor(hex)
         Color(color)
     } catch (e: Exception) {
         null
     }
-}

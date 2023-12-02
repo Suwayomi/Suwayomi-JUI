@@ -16,7 +16,9 @@ import org.lighthousegames.logging.logging
 
 class ValidateBackupFile
     @Inject
-    constructor(private val backupRepository: BackupRepository) {
+    constructor(
+        private val backupRepository: BackupRepository,
+    ) {
         suspend fun await(
             file: Path,
             block: HttpRequestBuilder.() -> Unit = {},

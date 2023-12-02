@@ -12,9 +12,11 @@ import me.tatarka.inject.annotations.Inject
 
 actual class PreferenceStoreFactory
     @Inject
-    constructor(private val context: Context) {
-        actual fun create(vararg names: String): PreferenceStore {
-            return StandardPreferenceStore(
+    constructor(
+        private val context: Context,
+    ) {
+        actual fun create(vararg names: String): PreferenceStore =
+            StandardPreferenceStore(
                 SharedPreferencesSettings(
                     context.getSharedPreferences(
                         names.joinToString(separator = "_"),
@@ -22,5 +24,4 @@ actual class PreferenceStoreFactory
                     ),
                 ),
             )
-        }
     }

@@ -44,8 +44,8 @@ expect fun HttpClientConfig<HttpClientEngineConfig>.configurePlatform()
 fun httpClient(
     serverPreferences: ServerPreferences,
     json: Json,
-): Http {
-    return HttpClient(Engine) {
+): Http =
+    HttpClient(Engine) {
         configurePlatform()
 
         expectSuccess = true
@@ -112,10 +112,10 @@ fun httpClient(
             }
             logger = object : Logger {
                 val log = logging("HttpClient")
+
                 override fun log(message: String) {
                     log.info { message }
                 }
             }
         }
     }
-}

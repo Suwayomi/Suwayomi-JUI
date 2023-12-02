@@ -9,8 +9,8 @@ package ca.gosyer.jui.ui.main.about.components
 import android.os.Build
 import ca.gosyer.jui.presentation.build.BuildKonfig
 
-actual fun getDebugInfo(): String {
-    return """
+actual fun getDebugInfo(): String =
+    """
         App version: ${BuildKonfig.VERSION} (${ if (BuildKonfig.DEBUG) "Debug" else "Standard"}, ${BuildKonfig.MIGRATION_CODE})
         Preview build: r${BuildKonfig.PREVIEW_BUILD}
         Android version: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})
@@ -20,5 +20,4 @@ actual fun getDebugInfo(): String {
         Device name: ${Build.DEVICE}
         Device model: ${Build.MODEL}
         Device product name: ${Build.PRODUCT}
-        """.trimIndent()
-}
+    """.trimIndent()

@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class ExportBackupFile
     @Inject
-    constructor(private val backupRepository: BackupRepository) {
+    constructor(
+        private val backupRepository: BackupRepository,
+    ) {
         suspend fun await(
             block: HttpRequestBuilder.() -> Unit = {},
             onError: suspend (Throwable) -> Unit = {},

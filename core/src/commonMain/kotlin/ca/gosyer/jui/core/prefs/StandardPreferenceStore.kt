@@ -10,7 +10,9 @@ import com.russhwolf.settings.ObservableSettings
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
-class StandardPreferenceStore(private val preferences: ObservableSettings) : PreferenceStore {
+class StandardPreferenceStore(
+    private val preferences: ObservableSettings,
+) : PreferenceStore {
     /**
      * Returns an [String] preference for this [key].
      */

@@ -13,10 +13,10 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import me.tatarka.inject.annotations.Inject
 
 @Composable
-actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostViewModel): LazyListScope.() -> Unit {
-    return {}
-}
+actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostViewModel): LazyListScope.() -> Unit = {}
 
 actual class SettingsServerHostViewModel
     @Inject
-    constructor(contextWrapper: ContextWrapper) : ViewModel(contextWrapper)
+    constructor(
+        contextWrapper: ContextWrapper,
+    ) : ViewModel(contextWrapper)

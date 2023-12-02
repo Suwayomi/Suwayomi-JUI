@@ -14,7 +14,9 @@ import org.lighthousegames.logging.logging
 
 class GetExtensionList
     @Inject
-    constructor(private val extensionRepository: ExtensionRepository) {
+    constructor(
+        private val extensionRepository: ExtensionRepository,
+    ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
                 .catch {

@@ -12,7 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 
-actual class ReaderLauncher(private val context: Context) {
+actual class ReaderLauncher(
+    private val context: Context,
+) {
     actual fun launch(
         chapterIndex: Int,
         mangaId: Long,

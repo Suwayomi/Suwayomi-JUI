@@ -9,4 +9,6 @@ package ca.gosyer.jui.ui.base.image
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import com.seiko.imageloader.component.decoder.Decoder
 
-expect class BitmapDecoderFactory constructor(contextWrapper: ContextWrapper) : Decoder.Factory
+expect class BitmapDecoderFactory constructor(
+    contextWrapper: ContextWrapper,
+) : Decoder.Factory

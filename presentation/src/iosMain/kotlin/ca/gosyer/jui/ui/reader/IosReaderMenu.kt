@@ -13,7 +13,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
-class ReaderScreen(val chapterIndex: Int, val mangaId: Long) : Screen {
+class ReaderScreen(
+    val chapterIndex: Int,
+    val mangaId: Long,
+) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -25,7 +28,9 @@ class ReaderScreen(val chapterIndex: Int, val mangaId: Long) : Screen {
     }
 }
 
-actual class ReaderLauncher(private val navigator: Navigator?) {
+actual class ReaderLauncher(
+    private val navigator: Navigator?,
+) {
     actual fun launch(
         chapterIndex: Int,
         mangaId: Long,

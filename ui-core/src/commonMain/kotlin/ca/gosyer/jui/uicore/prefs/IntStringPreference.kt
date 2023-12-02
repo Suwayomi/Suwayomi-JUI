@@ -14,40 +14,32 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-fun Preference<Int>.asStringStateIn(scope: CoroutineScope): PreferenceMutableStateFlow<String> {
-    return PreferenceMutableStateFlow(IntStringPreference(this), scope)
-}
+fun Preference<Int>.asStringStateIn(scope: CoroutineScope): PreferenceMutableStateFlow<String> =
+    PreferenceMutableStateFlow(
+        IntStringPreference(this),
+        scope,
+    )
 
-class IntStringPreference(private val int: Preference<Int>) : Preference<String> {
-    override fun key(): String {
-        return int.key()
-    }
+class IntStringPreference(
+    private val int: Preference<Int>,
+) : Preference<String> {
+    override fun key(): String = int.key()
 
-    override fun get(): String {
-        return int.get().toString()
-    }
+    override fun get(): String = int.get().toString()
 
     override fun set(value: String) {
         value.toIntOrNull()?.let { int.set(it) }
     }
 
-    override fun isSet(): Boolean {
-        return int.isSet()
-    }
+    override fun isSet(): Boolean = int.isSet()
 
     override fun delete() {
         int.delete()
     }
 
-    override fun defaultValue(): String {
-        return int.defaultValue().toString()
-    }
+    override fun defaultValue(): String = int.defaultValue().toString()
 
-    override fun changes(): Flow<String> {
-        return int.changes().map { it.toString() }
-    }
+    override fun changes(): Flow<String> = int.changes().map { it.toString() }
 
-    override fun stateIn(scope: CoroutineScope): StateFlow<String> {
-        return changes().stateIn(scope, SharingStarted.Eagerly, get())
-    }
+    override fun stateIn(scope: CoroutineScope): StateFlow<String> = changes().stateIn(scope, SharingStarted.Eagerly, get())
 }

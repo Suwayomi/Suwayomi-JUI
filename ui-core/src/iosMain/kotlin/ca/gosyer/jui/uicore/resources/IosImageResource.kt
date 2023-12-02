@@ -57,9 +57,16 @@ private fun UIImage.toSkiaImage(): Image? {
     val alphaInfo = CGImageGetAlphaInfo(imageRef)
 
     val alphaType = when (alphaInfo) {
-        CGImageAlphaInfo.kCGImageAlphaPremultipliedFirst, CGImageAlphaInfo.kCGImageAlphaPremultipliedLast -> ColorAlphaType.PREMUL
-        CGImageAlphaInfo.kCGImageAlphaFirst, CGImageAlphaInfo.kCGImageAlphaLast -> ColorAlphaType.UNPREMUL
-        CGImageAlphaInfo.kCGImageAlphaNone, CGImageAlphaInfo.kCGImageAlphaNoneSkipFirst, CGImageAlphaInfo.kCGImageAlphaNoneSkipLast -> ColorAlphaType.OPAQUE
+        CGImageAlphaInfo.kCGImageAlphaPremultipliedFirst,
+        CGImageAlphaInfo.kCGImageAlphaPremultipliedLast,
+        -> ColorAlphaType.PREMUL
+        CGImageAlphaInfo.kCGImageAlphaFirst,
+        CGImageAlphaInfo.kCGImageAlphaLast,
+        -> ColorAlphaType.UNPREMUL
+        CGImageAlphaInfo.kCGImageAlphaNone,
+        CGImageAlphaInfo.kCGImageAlphaNoneSkipFirst,
+        CGImageAlphaInfo.kCGImageAlphaNoneSkipLast,
+        -> ColorAlphaType.OPAQUE
         else -> ColorAlphaType.UNKNOWN
     }
 
@@ -70,7 +77,12 @@ private fun UIImage.toSkiaImage(): Image? {
     CFRelease(imageRef)
 
     return Image.makeRaster(
-        imageInfo = ImageInfo(width = width, height = height, colorType = ColorType.RGBA_8888, alphaType = alphaType),
+        imageInfo = ImageInfo(
+            width = width,
+            height = height,
+            colorType = ColorType.RGBA_8888,
+            alphaType = alphaType,
+        ),
         bytes = byteArray,
         rowBytes = bytesPerRow.toInt(),
     )

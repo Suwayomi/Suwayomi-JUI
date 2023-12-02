@@ -11,7 +11,6 @@ import ca.gosyer.jui.core.io.SYSTEM
 import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.core.lang.PriorityChannel
 import ca.gosyer.jui.core.lang.throwIfCancellation
-import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
@@ -299,9 +298,7 @@ class TachideskPageLoader(
     private val ReaderPage.cacheKey
         get() = "${chapter.chapter.mangaId}-${chapter.chapter.index}-$index"
 
-    private fun DiskCache.Snapshot.source(): BufferedSource {
-        return FileSystem.SYSTEM.source(data).buffer()
-    }
+    private fun DiskCache.Snapshot.source(): BufferedSource = FileSystem.SYSTEM.source(data).buffer()
 
     private fun DiskCache.Editor.abortQuietly() {
         try {

@@ -11,10 +11,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 
-operator fun IntSize.contains(offset: IntOffset): Boolean {
-    return offset.x <= width && offset.y <= height
-}
+operator fun IntSize.contains(offset: IntOffset): Boolean = offset.x <= width && offset.y <= height
 
-operator fun Size.contains(offset: Offset): Boolean {
-    return offset.x <= width && offset.y <= height
-}
+operator fun Size.contains(offset: Offset): Boolean = offset.x <= width && offset.y <= height

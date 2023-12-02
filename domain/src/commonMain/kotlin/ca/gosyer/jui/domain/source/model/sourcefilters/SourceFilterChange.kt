@@ -11,7 +11,10 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class SourceFilterChange(val position: Int, val state: String) {
+data class SourceFilterChange(
+    val position: Int,
+    val state: String,
+) {
     constructor(position: Int, state: Any) : this(
         position,
         if (state is SortFilter.Selection) {

@@ -13,38 +13,39 @@ import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.domain.reader.model.ImageScale
 import ca.gosyer.jui.domain.reader.model.NavigationMode
 
-class ReaderModePreferences(private val mode: String, private val preferenceStore: PreferenceStore) {
+class ReaderModePreferences(
+    private val mode: String,
+    private val preferenceStore: PreferenceStore,
+) {
     constructor(mode: String, factory: (String) -> PreferenceStore) :
         this(mode, factory(mode))
 
     private val defaultMode by lazy { DefaultReaderMode.values().find { it.res == mode } }
 
-    fun default(): Preference<Boolean> {
-        return preferenceStore.getBoolean("default", defaultMode != null)
-    }
+    fun default(): Preference<Boolean> = preferenceStore.getBoolean("default", defaultMode != null)
 
-    fun continuous(): Preference<Boolean> {
-        return preferenceStore.getBoolean("continuous", defaultMode?.continuous ?: false)
-    }
+    fun continuous(): Preference<Boolean> = preferenceStore.getBoolean("continuous", defaultMode?.continuous ?: false)
 
-    fun direction(): Preference<Direction> {
-        return preferenceStore.getJsonObject("direction", defaultMode?.direction ?: Direction.Down, Direction.serializer())
-    }
+    fun direction(): Preference<Direction> =
+        preferenceStore.getJsonObject(
+            "direction",
+            defaultMode?.direction ?: Direction.Down,
+            Direction.serializer(),
+        )
 
-    fun padding(): Preference<Int> {
-        return preferenceStore.getInt("padding", defaultMode?.padding ?: 0)
-    }
+    fun padding(): Preference<Int> = preferenceStore.getInt("padding", defaultMode?.padding ?: 0)
 
-    fun imageScale(): Preference<ImageScale> {
-        return preferenceStore.getJsonObject("image_scale", defaultMode?.imageScale ?: ImageScale.FitScreen, ImageScale.serializer())
-    }
+    fun imageScale(): Preference<ImageScale> =
+        preferenceStore.getJsonObject(
+            "image_scale",
+            defaultMode?.imageScale ?: ImageScale.FitScreen,
+            ImageScale.serializer(),
+        )
 
-    fun fitSize(): Preference<Boolean> {
-        return preferenceStore.getBoolean("fit_size", false)
-    }
+    fun fitSize(): Preference<Boolean> = preferenceStore.getBoolean("fit_size", false)
 
-    fun maxSize(): Preference<Int> {
-        return preferenceStore.getInt(
+    fun maxSize(): Preference<Int> =
+        preferenceStore.getInt(
             "max_size",
             if (defaultMode?.continuous == true) {
                 if (defaultMode?.direction == Direction.Left || defaultMode?.direction == Direction.Right) {
@@ -56,9 +57,11 @@ class ReaderModePreferences(private val mode: String, private val preferenceStor
                 0
             },
         )
-    }
 
-    fun navigationMode(): Preference<NavigationMode> {
-        return preferenceStore.getJsonObject("navigation", defaultMode?.navigationMode ?: NavigationMode.LNavigation, NavigationMode.serializer())
-    }
+    fun navigationMode(): Preference<NavigationMode> =
+        preferenceStore.getJsonObject(
+            "navigation",
+            defaultMode?.navigationMode ?: NavigationMode.LNavigation,
+            NavigationMode.serializer(),
+        )
 }

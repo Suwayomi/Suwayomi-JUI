@@ -204,7 +204,8 @@ fun WideLibraryScreenContent(
                 )
                 if (libraryState is LibraryState.Loaded) {
                     LibraryTabs(
-                        visible = true, // vm.showCategoryTabs,
+                        // visible = vm.showCategoryTabs,
+                        visible = true,
                         pagerState = pagerState,
                         categories = libraryState.categories,
                         selectedPage = selectedCategoryIndex,
@@ -332,7 +333,8 @@ fun ThinLibraryScreenContent(
                 )
                 if (libraryState is LibraryState.Loaded) {
                     LibraryTabs(
-                        visible = true, // vm.showCategoryTabs,
+                        // visible = vm.showCategoryTabs,
+                        visible = true,
                         pagerState = pagerState,
                         categories = libraryState.categories,
                         selectedPage = selectedCategoryIndex,
@@ -388,8 +390,8 @@ private fun getActionItems(
     onUpdateLibrary: () -> Unit,
     updateWebsocketStatus: WebsocketService.Status? = null,
     restartLibraryUpdates: (() -> Unit)? = null,
-): ImmutableList<ActionItem> {
-    return listOfNotNull(
+): ImmutableList<ActionItem> =
+    listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_filter),
             icon = Icons.Rounded.FilterList,
@@ -410,4 +412,3 @@ private fun getActionItems(
             null
         },
     ).toImmutableList()
-}

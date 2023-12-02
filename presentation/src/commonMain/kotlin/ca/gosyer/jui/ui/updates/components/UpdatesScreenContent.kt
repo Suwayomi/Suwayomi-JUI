@@ -128,7 +128,8 @@ fun UpdatesScreenContent(
                         getActionItems(
                             onUpdateLibrary,
                             updateWebsocketStatus,
-                            restartLibraryUpdates, // todo set null if wide screen
+                            // todo set null if wide screen
+                            restartLibraryUpdates,
                         )
                     }
                 },
@@ -190,7 +191,13 @@ fun UpdatesScreenContent(
                                     chapterDownloadItem = item.chapterDownloadItem,
                                     onClickItem = if (inActionMode) {
                                         {
-                                            if (item.chapterDownloadItem.isSelected.value) onUnselectChapter(item.chapterDownloadItem.chapter.id) else onSelectChapter(item.chapterDownloadItem.chapter.id)
+                                            if (item.chapterDownloadItem.isSelected.value) {
+                                                onUnselectChapter(
+                                                    item.chapterDownloadItem.chapter.id,
+                                                )
+                                            } else {
+                                                onSelectChapter(item.chapterDownloadItem.chapter.id)
+                                            }
                                         }
                                     } else {
                                         { openChapter(chapter.index, manga.id) }
@@ -234,8 +241,8 @@ private fun getActionItems(
     onUpdateLibrary: () -> Unit,
     updateWebsocketStatus: WebsocketService.Status? = null,
     restartLibraryUpdates: (() -> Unit)? = null,
-): ImmutableList<ActionItem> {
-    return listOfNotNull(
+): ImmutableList<ActionItem> =
+    listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_update_library),
             icon = Icons.Rounded.Refresh,
@@ -251,15 +258,14 @@ private fun getActionItems(
             null
         },
     ).toImmutableList()
-}
 
 @Composable
 @Stable
 private fun getActionModeActionItems(
     selectAll: () -> Unit,
     invertSelection: () -> Unit,
-): ImmutableList<ActionItem> {
-    return listOf(
+): ImmutableList<ActionItem> =
+    listOf(
         ActionItem(
             name = stringResource(MR.strings.action_select_all),
             icon = Icons.Rounded.SelectAll,
@@ -271,7 +277,6 @@ private fun getActionModeActionItems(
             doAction = invertSelection,
         ),
     ).toImmutableList()
-}
 
 @Composable
 @Stable
@@ -283,8 +288,8 @@ private fun getBottomActionItems(
     unBookmarkChapter: () -> Unit,
     deleteChapter: () -> Unit,
     downloadChapters: () -> Unit,
-): ImmutableList<BottomActionItem> {
-    return listOfNotNull(
+): ImmutableList<BottomActionItem> =
+    listOfNotNull(
         BottomActionItem(
             name = stringResource(MR.strings.action_bookmark),
             icon = Icons.Rounded.BookmarkAdd,
@@ -316,4 +321,3 @@ private fun getBottomActionItems(
             onClick = deleteChapter,
         ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } },
     ).toImmutableList()
-}

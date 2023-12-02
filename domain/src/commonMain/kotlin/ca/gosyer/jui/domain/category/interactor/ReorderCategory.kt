@@ -14,7 +14,9 @@ import org.lighthousegames.logging.logging
 
 class ReorderCategory
     @Inject
-    constructor(private val categoryRepository: CategoryRepository) {
+    constructor(
+        private val categoryRepository: CategoryRepository,
+    ) {
         suspend fun await(
             to: Int,
             from: Int,

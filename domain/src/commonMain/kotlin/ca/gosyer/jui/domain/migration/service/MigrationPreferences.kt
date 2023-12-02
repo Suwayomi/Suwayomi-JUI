@@ -9,11 +9,10 @@ package ca.gosyer.jui.domain.migration.service
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.PreferenceStore
 
-class MigrationPreferences(private val preferenceStore: PreferenceStore) {
-    fun version(): Preference<Int> {
-        return preferenceStore.getInt("version", 0)
-    }
-    fun appVersion(): Preference<Int> {
-        return preferenceStore.getInt("app_version", 0)
-    }
+class MigrationPreferences(
+    private val preferenceStore: PreferenceStore,
+) {
+    fun version(): Preference<Int> = preferenceStore.getInt("version", 0)
+
+    fun appVersion(): Preference<Int> = preferenceStore.getInt("app_version", 0)
 }

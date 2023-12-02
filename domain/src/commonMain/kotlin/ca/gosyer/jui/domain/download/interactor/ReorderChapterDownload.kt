@@ -16,7 +16,9 @@ import org.lighthousegames.logging.logging
 
 class ReorderChapterDownload
     @Inject
-    constructor(private val downloadRepository: DownloadRepository) {
+    constructor(
+        private val downloadRepository: DownloadRepository,
+    ) {
         suspend fun await(
             mangaId: Long,
             index: Int,

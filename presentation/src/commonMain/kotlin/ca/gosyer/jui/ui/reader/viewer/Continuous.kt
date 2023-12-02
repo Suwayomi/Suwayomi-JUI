@@ -123,7 +123,10 @@ fun ContinuousReader(
             Direction.Up -> PaddingValues(top = padding.dp)
             Direction.Down -> PaddingValues(bottom = padding.dp)
         }
-        fun retry(index: Int) { pages.find { it is ReaderPage && it.index == index }?.let { retry(it as ReaderPage) } }
+
+        fun retry(index: Int) {
+            pages.find { it is ReaderPage && it.index == index }?.let { retry(it as ReaderPage) }
+        }
 
         when (direction.isVertical) {
             true -> {

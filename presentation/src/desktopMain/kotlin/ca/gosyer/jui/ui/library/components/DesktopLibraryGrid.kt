@@ -29,8 +29,7 @@ actual fun Modifier.libraryMangaModifier(
 
 @Composable
 @Stable
-private fun getContextItems(onClickRemoveManga: () -> Unit): List<ContextMenuItem> {
-    return listOf(
+private fun getContextItems(onClickRemoveManga: () -> Unit): List<ContextMenuItem> =
+    listOf(
         ContextMenuItem(stringResource(MR.strings.action_remove_favorite), onClickRemoveManga),
     )
-}

@@ -235,8 +235,8 @@ private fun getActionItems(
     startDownloading: () -> Unit,
     pauseDownloading: () -> Unit,
     clearQueue: () -> Unit,
-): ImmutableList<ActionItem> {
-    return listOf(
+): ImmutableList<ActionItem> =
+    listOf(
         if (downloadStatus == DownloaderStatus.Started) {
             ActionItem(
                 stringResource(MR.strings.action_pause),
@@ -252,4 +252,3 @@ private fun getActionItems(
         },
         ActionItem(stringResource(MR.strings.action_clear_queue), Icons.Rounded.ClearAll, doAction = clearQueue),
     ).toImmutableList()
-}

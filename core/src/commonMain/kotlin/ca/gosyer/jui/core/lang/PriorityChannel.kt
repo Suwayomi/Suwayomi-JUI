@@ -73,7 +73,10 @@ internal open class ProcessChannel<T>(
     override fun offer(element: T): Boolean = inChannel.trySend(element).isSuccess
 
     @Deprecated(
-        "Deprecated in the favour of 'tryReceive'. Please note that the provided replacement does not rethrow channel's close cause as 'poll' did, for the precise replacement please refer to the 'poll' documentation",
+        "Deprecated in the favour of 'tryReceive'. " +
+            "Please note that the provided replacement does not rethrow " +
+            "channel's close cause as 'poll' did, for the precise replacement " +
+            "please refer to the 'poll' documentation",
         replaceWith = ReplaceWith("tryReceive().getOrNull()"),
         level = DeprecationLevel.ERROR,
     )
@@ -82,6 +85,7 @@ internal open class ProcessChannel<T>(
     override suspend fun receive(): T = outChannel.receive()
 
     override suspend fun send(element: T) = inChannel.send(element)
+
     override val onReceiveCatching: SelectClause1<ChannelResult<T>>
         get() = TODO("not implemented")
 
@@ -105,16 +109,16 @@ internal class PriorityChannelImpl<T>(
     scope: CoroutineScope,
     comparator: Comparator<T>,
 ) : ProcessChannel<T>(
-    // why a rendezvous channel should be the input channel?
-    // because we buffer and sort the messages in the co-routine
-    // that is where the capacity constraint is enforced
-    // and the buffer we keep sorted, the input channel we can't
-    inChannel = Channel(Channel.RENDEZVOUS),
-    // output channel is rendezvous channel because we may still
-    // get higher priority input meanwhile and we will send that
-    // when output consumer is ready to take it
-    outChannel = Channel(Channel.RENDEZVOUS),
-) {
+        // why a rendezvous channel should be the input channel?
+        // because we buffer and sort the messages in the co-routine
+        // that is where the capacity constraint is enforced
+        // and the buffer we keep sorted, the input channel we can't
+        inChannel = Channel(Channel.RENDEZVOUS),
+        // output channel is rendezvous channel because we may still
+        // get higher priority input meanwhile and we will send that
+        // when output consumer is ready to take it
+        outChannel = Channel(Channel.RENDEZVOUS),
+    ) {
     private val buffer = PriorityQueue(comparator)
 
     private fun PriorityQueue<T>.isNotFull() = this.size < maxCapacity

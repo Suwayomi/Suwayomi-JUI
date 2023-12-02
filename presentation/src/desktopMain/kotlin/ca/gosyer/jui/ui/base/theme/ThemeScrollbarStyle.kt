@@ -15,8 +15,8 @@ import ca.gosyer.jui.uicore.components.ScrollbarStyle
 actual object ThemeScrollbarStyle {
     @Stable
     @Composable
-    actual fun getScrollbarStyle(): ScrollbarStyle {
-        return androidx.compose.foundation.ScrollbarStyle(
+    actual fun getScrollbarStyle(): ScrollbarStyle =
+        androidx.compose.foundation.ScrollbarStyle(
             minimalHeight = 16.dp,
             thickness = 8.dp,
             shape = MaterialTheme.shapes.small,
@@ -24,5 +24,4 @@ actual object ThemeScrollbarStyle {
             unhoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.30f),
             hoverColor = MaterialTheme.colors.onSurface.copy(alpha = 0.70f),
         )
-    }
 }

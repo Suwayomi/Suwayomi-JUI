@@ -10,4 +10,5 @@ import dev.icerock.moko.resources.desc.PluralFormattedStringDesc
 import dev.icerock.moko.resources.desc.PluralStringDesc
 
 actual fun PluralStringDesc.localized(): String = localized()
+
 actual fun PluralFormattedStringDesc.localized() = localized()

@@ -56,31 +56,25 @@ internal actual fun RealHorizontalScrollbar(
 )
 
 @Composable
-actual fun rememberScrollbarAdapter(scrollState: ScrollState): ScrollbarAdapter {
-    return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
-}
+actual fun rememberScrollbarAdapter(scrollState: ScrollState): ScrollbarAdapter =
+    androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 
 @Composable
-actual fun rememberScrollbarAdapter(scrollState: LazyListState): ScrollbarAdapter {
-    return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
-}
+actual fun rememberScrollbarAdapter(scrollState: LazyListState): ScrollbarAdapter =
+    androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 
 @Composable
 internal actual fun realRememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Vertical?,
-): ScrollbarAdapter {
-    return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
-}
+): ScrollbarAdapter = androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 
 @Composable
 internal actual fun realRememberHorizontalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Horizontal?,
-): ScrollbarAdapter {
-    return androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
-}
+): ScrollbarAdapter = androidx.compose.foundation.rememberScrollbarAdapter(scrollState)
 
 actual fun Modifier.scrollbarPadding() = padding(horizontal = 4.dp, vertical = 8.dp)

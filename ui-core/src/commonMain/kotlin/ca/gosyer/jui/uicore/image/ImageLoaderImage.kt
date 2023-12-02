@@ -120,7 +120,7 @@ fun ImageLoaderImage(
                         ImageLoaderImageState.Success -> Image(
                             painter = rememberImageActionPainter(
                                 imageAction,
-                                filterQuality = filterQuality
+                                filterQuality = filterQuality,
                             ),
                             contentDescription = contentDescription,
                             modifier = Modifier.fillMaxSize(),

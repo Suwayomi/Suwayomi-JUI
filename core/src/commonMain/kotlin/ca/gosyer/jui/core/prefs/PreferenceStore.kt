@@ -91,8 +91,8 @@ interface PreferenceStore {
 inline fun <reified T : Enum<T>> PreferenceStore.getEnum(
     key: String,
     defaultValue: T,
-): Preference<T> {
-    return getObject(
+): Preference<T> =
+    getObject(
         key,
         defaultValue,
         { it.name },
@@ -104,4 +104,3 @@ inline fun <reified T : Enum<T>> PreferenceStore.getEnum(
             }
         },
     )
-}

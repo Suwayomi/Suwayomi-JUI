@@ -14,7 +14,9 @@ import org.lighthousegames.logging.logging
 
 class GetGlobalMeta
     @Inject
-    constructor(private val globalRepository: GlobalRepository) {
+    constructor(
+        private val globalRepository: GlobalRepository,
+    ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
                 .catch {

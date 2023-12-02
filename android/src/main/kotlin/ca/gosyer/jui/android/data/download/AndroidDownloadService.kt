@@ -208,7 +208,10 @@ class AndroidDownloadService : Service() {
 
                 val title = downloadingChapter.manga.title.chop(15)
                 val quotedTitle = Pattern.quote(title)
-                val chapter = downloadingChapter.chapter.name.replaceFirst("$quotedTitle[\\s]*[-]*[\\s]*".toRegex(RegexOption.IGNORE_CASE), "")
+                val chapter = downloadingChapter.chapter.name.replaceFirst(
+                    "$quotedTitle[\\s]*[-]*[\\s]*".toRegex(RegexOption.IGNORE_CASE),
+                    "",
+                )
                 setContentTitle("$title - $chapter".chop(30))
 
                 setContentText(

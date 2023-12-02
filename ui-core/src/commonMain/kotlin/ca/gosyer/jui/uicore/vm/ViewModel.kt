@@ -18,7 +18,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-abstract class ViewModel(private val contextWrapper: ContextWrapper) : ScreenModel {
+abstract class ViewModel(
+    private val contextWrapper: ContextWrapper,
+) : ScreenModel {
     protected open val scope: CoroutineScope
         get() = screenModelScope
 
@@ -32,12 +34,10 @@ abstract class ViewModel(private val contextWrapper: ContextWrapper) : ScreenMod
         return state
     }
 
-    fun StringResource.toPlatformString(): String {
-        return contextWrapper.toPlatformString(this)
-    }
-    fun StringResource.toPlatformString(vararg args: Any): String {
-        return contextWrapper.toPlatformString(this, *args)
-    }
+    fun StringResource.toPlatformString(): String = contextWrapper.toPlatformString(this)
+
+    fun StringResource.toPlatformString(vararg args: Any): String = contextWrapper.toPlatformString(this, *args)
+
     fun toast(
         string: String,
         length: Length = Length.SHORT,

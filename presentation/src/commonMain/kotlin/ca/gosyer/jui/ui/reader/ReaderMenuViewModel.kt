@@ -117,7 +117,7 @@ class ReaderMenuViewModel
                         cur.orEmpty() +
                         ReaderPageSeparator(viewerChapters.currChapter, viewerChapters.nextChapter) +
                         next.orEmpty()
-                    ).toImmutableList()
+                ).toImmutableList()
             }
         }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
@@ -441,7 +441,10 @@ class ReaderMenuViewModel
             scope.cancel()
         }
 
-        data class Params(val chapterIndex: Int, val mangaId: Long)
+        data class Params(
+            val chapterIndex: Int,
+            val mangaId: Long,
+        )
 
         private companion object {
             private val log = logging()

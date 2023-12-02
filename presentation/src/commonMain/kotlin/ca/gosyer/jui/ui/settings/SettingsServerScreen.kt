@@ -123,11 +123,13 @@ class SettingsServerViewModel
                 Auth.BASIC to stringResource(MR.strings.basic_auth),
                 Auth.DIGEST to stringResource(MR.strings.digest_auth),
             )
+
         val authUsername = serverPreferences.authUsername().asStateIn(scope)
         val authPassword = serverPreferences.authPassword().asStateIn(scope)
 
         private val _serverSettingChanged = MutableStateFlow(false)
         val serverSettingChanged = _serverSettingChanged.asStateFlow()
+
         fun serverSettingChanged() {
             _serverSettingChanged.value = true
         }

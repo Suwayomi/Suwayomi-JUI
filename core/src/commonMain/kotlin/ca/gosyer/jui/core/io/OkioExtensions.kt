@@ -35,6 +35,4 @@ suspend fun Source.copyTo(sink: BufferedSink) {
     }
 }
 
-fun ByteArray.source(): BufferedSource {
-    return Buffer().write(this)
-}
+fun ByteArray.source(): BufferedSource = Buffer().write(this)

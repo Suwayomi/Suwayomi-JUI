@@ -147,12 +147,20 @@ class GlobalSearchViewModel
             search.value = query
         }
 
-        data class Params(val initialQuery: String)
+        data class Params(
+            val initialQuery: String,
+        )
 
         sealed class Search {
             object Searching : Search()
-            data class Success(val mangaList: ImmutableList<Manga>) : Search()
-            data class Failure(val e: String?) : Search() {
+
+            data class Success(
+                val mangaList: ImmutableList<Manga>,
+            ) : Search()
+
+            data class Failure(
+                val e: String?,
+            ) : Search() {
                 constructor(e: Throwable) : this(e.message)
             }
         }

@@ -259,7 +259,9 @@ class MangaScreenViewModel
                 }
             }
         }
+
         fun markRead(id: Long?) = setRead(listOfNotNull(id).ifEmpty { _selectedIds.value }, true)
+
         fun markUnread(id: Long?) = setRead(listOfNotNull(id).ifEmpty { _selectedIds.value }, false)
 
         private fun setBookmarked(
@@ -273,7 +275,9 @@ class MangaScreenViewModel
                 }
             }
         }
+
         fun bookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { _selectedIds.value }, true)
+
         fun unBookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { _selectedIds.value }, false)
 
         fun markPreviousRead(index: Int) {
@@ -332,6 +336,7 @@ class MangaScreenViewModel
                 _selectedIds.value = _selectedIds.value.plus(id).toImmutableList()
             }
         }
+
         fun unselectChapter(id: Long) {
             scope.launch {
                 _selectedIds.value = _selectedIds.value.minus(id).toImmutableList()
@@ -385,7 +390,9 @@ class MangaScreenViewModel
                 ChapterDownloadItem(null, it)
             }.toImmutableList()
 
-        data class Params(val mangaId: Long)
+        data class Params(
+            val mangaId: Long,
+        )
 
         private companion object {
             private val log = logging()

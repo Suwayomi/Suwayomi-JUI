@@ -36,7 +36,9 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import dev.icerock.moko.resources.StringResource
 import kotlinx.coroutines.launch
 
-enum class LibrarySheetTabs(val res: StringResource) {
+enum class LibrarySheetTabs(
+    val res: StringResource,
+) {
     FILTERS(MR.strings.action_filter),
     SORT(MR.strings.library_sort),
     DISPLAY(MR.strings.library_display),

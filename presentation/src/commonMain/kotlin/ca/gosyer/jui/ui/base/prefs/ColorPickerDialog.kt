@@ -421,16 +421,12 @@ private fun satValToCoordinates(
     saturation: Float,
     value: Float,
     size: IntSize,
-): Offset {
-    return Offset(saturation * size.width, ((1f - value) * size.height))
-}
+): Offset = Offset(saturation * size.width, ((1f - value) * size.height))
 
 private fun hueToCoordinate(
     hue: Float,
     size: IntSize,
-): Float {
-    return size.height - (hue * size.height / 360f)
-}
+): Float = size.height - (hue * size.height / 360f)
 
 // Color space conversions
 
@@ -439,36 +435,51 @@ fun hsvToColor(
     hue: Float,
     saturation: Float,
     value: Float,
-): Color {
-    return Color.hsv(hue, saturation.coerceIn(0F, 1F), value.coerceIn(0F, 1F))
-}
+): Color = Color.hsv(hue, saturation.coerceIn(0F, 1F), value.coerceIn(0F, 1F))
 
 internal expect fun Color.toHsv(): FloatArray
 
-private fun hueToColor(hue: Float): Color {
-    return hsvToColor(hue, 1f, 1f)
-}
+private fun hueToColor(hue: Float): Color = hsvToColor(hue, 1f, 1f)
 
 internal expect fun hexStringToColor(hex: String): Color?
 
 private val presetColors = listOf(
-    Color(0xFFF44336), // RED 500
-    Color(0xFFE91E63), // PINK 500
-    Color(0xFFFF2C93), // LIGHT PINK 500
-    Color(0xFF9C27B0), // PURPLE 500
-    Color(0xFF673AB7), // DEEP PURPLE 500
-    Color(0xFF3F51B5), // INDIGO 500
-    Color(0xFF2196F3), // BLUE 500
-    Color(0xFF03A9F4), // LIGHT BLUE 500
-    Color(0xFF00BCD4), // CYAN 500
-    Color(0xFF009688), // TEAL 500
-    Color(0xFF4CAF50), // GREEN 500
-    Color(0xFF8BC34A), // LIGHT GREEN 500
-    Color(0xFFCDDC39), // LIME 500
-    Color(0xFFFFEB3B), // YELLOW 500
-    Color(0xFFFFC107), // AMBER 500
-    Color(0xFFFF9800), // ORANGE 500
-    Color(0xFF795548), // BROWN 500
-    Color(0xFF607D8B), // BLUE GREY 500
-    Color(0xFF9E9E9E), // GREY 500
+    // RED 500
+    Color(0xFFF44336),
+    // PINK 500
+    Color(0xFFE91E63),
+    // LIGHT PINK 500
+    Color(0xFFFF2C93),
+    // PURPLE 500
+    Color(0xFF9C27B0),
+    // DEEP PURPLE 500
+    Color(0xFF673AB7),
+    // INDIGO 500
+    Color(0xFF3F51B5),
+    // BLUE 500
+    Color(0xFF2196F3),
+    // LIGHT BLUE 500
+    Color(0xFF03A9F4),
+    // CYAN 500
+    Color(0xFF00BCD4),
+    // TEAL 500
+    Color(0xFF009688),
+    // GREEN 500
+    Color(0xFF4CAF50),
+    // LIGHT GREEN 500
+    Color(0xFF8BC34A),
+    // LIME 500
+    Color(0xFFCDDC39),
+    // YELLOW 500
+    Color(0xFFFFEB3B),
+    // AMBER 500
+    Color(0xFFFFC107),
+    // ORANGE 500
+    Color(0xFFFF9800),
+    // BROWN 500
+    Color(0xFF795548),
+    // BLUE GREY 500
+    Color(0xFF607D8B),
+    // GREY 500
+    Color(0xFF9E9E9E),
 ).toImmutableList()

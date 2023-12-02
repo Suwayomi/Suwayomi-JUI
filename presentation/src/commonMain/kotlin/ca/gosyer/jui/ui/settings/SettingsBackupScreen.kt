@@ -137,6 +137,7 @@ class SettingsBackupViewModel
         val creatingStatus = _creatingStatus.asStateFlow()
         private val _createFlow = MutableSharedFlow<String>()
         val createFlowHolder = StableHolder(_createFlow.asSharedFlow())
+
         fun restoreFile(source: Source) {
             scope.launch {
                 val file = try {
@@ -268,8 +269,13 @@ class SettingsBackupViewModel
 
 sealed class Status {
     object Nothing : Status()
-    data class InProgress(val progress: Float?) : Status()
+
+    data class InProgress(
+        val progress: Float?,
+    ) : Status()
+
     object Success : Status()
+
     object Error : Status()
 }
 

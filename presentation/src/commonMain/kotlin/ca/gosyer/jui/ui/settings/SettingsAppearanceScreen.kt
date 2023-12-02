@@ -123,9 +123,7 @@ class ThemesViewModel
         val windowDecorations = uiPreferences.windowDecorations().asStateFlow()
 
         @Composable
-        fun getActiveColors(): AppColorsPreferenceState {
-            return if (MaterialTheme.colors.isLight) lightColors else darkColors
-        }
+        fun getActiveColors(): AppColorsPreferenceState = if (MaterialTheme.colors.isLight) lightColors else darkColors
     }
 
 expect val showWindowDecorationsOption: Boolean

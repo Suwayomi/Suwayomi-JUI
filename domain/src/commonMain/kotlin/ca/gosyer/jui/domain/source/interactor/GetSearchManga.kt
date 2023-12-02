@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class GetSearchManga
     @Inject
-    constructor(private val sourceRepository: SourceRepository) {
+    constructor(
+        private val sourceRepository: SourceRepository,
+    ) {
         suspend fun await(
             source: Source,
             searchTerm: String?,

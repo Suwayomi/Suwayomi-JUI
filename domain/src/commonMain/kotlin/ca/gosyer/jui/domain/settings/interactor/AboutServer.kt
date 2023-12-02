@@ -14,7 +14,9 @@ import org.lighthousegames.logging.logging
 
 class AboutServer
     @Inject
-    constructor(private val settingsRepository: SettingsRepository) {
+    constructor(
+        private val settingsRepository: SettingsRepository,
+    ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
                 .catch {

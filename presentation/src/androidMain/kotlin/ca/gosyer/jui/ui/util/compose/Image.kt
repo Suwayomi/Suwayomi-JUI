@@ -13,6 +13,4 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.utils.io.jvm.javaio.toInputStream
 
-actual suspend fun HttpResponse.toImageBitmap(): ImageBitmap {
-    return BitmapFactory.decodeStream(bodyAsChannel().toInputStream()).asImageBitmap()
-}
+actual suspend fun HttpResponse.toImageBitmap(): ImageBitmap = BitmapFactory.decodeStream(bodyAsChannel().toInputStream()).asImageBitmap()

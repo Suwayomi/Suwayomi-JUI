@@ -16,7 +16,9 @@ import androidx.compose.ui.window.Window
 import ca.gosyer.jui.presentation.build.BuildKonfig
 import cafe.adriel.voyager.navigator.Navigator
 
-actual class CategoriesLauncher(private val notifyFinished: () -> Unit) {
+actual class CategoriesLauncher(
+    private val notifyFinished: () -> Unit,
+) {
     private var isOpen by mutableStateOf(false)
 
     actual fun open() {
@@ -38,6 +40,5 @@ actual class CategoriesLauncher(private val notifyFinished: () -> Unit) {
 }
 
 @Composable
-actual fun rememberCategoriesLauncher(notifyFinished: () -> Unit): CategoriesLauncher {
-    return remember(notifyFinished) { CategoriesLauncher(notifyFinished) }
-}
+actual fun rememberCategoriesLauncher(notifyFinished: () -> Unit): CategoriesLauncher =
+    remember(notifyFinished) { CategoriesLauncher(notifyFinished) }

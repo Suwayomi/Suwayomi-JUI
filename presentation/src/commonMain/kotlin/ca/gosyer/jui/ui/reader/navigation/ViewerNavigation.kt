@@ -15,7 +15,10 @@ import ca.gosyer.jui.ui.reader.model.Navigation
 
 @Immutable
 abstract class ViewerNavigation {
-    data class Rect(val xRange: IntRange, val yRange: IntRange) {
+    data class Rect(
+        val xRange: IntRange,
+        val yRange: IntRange,
+    ) {
         private val right get() = xRange.last
         private val left get() = xRange.first
         private val bottom get() = yRange.last

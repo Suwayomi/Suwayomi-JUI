@@ -88,8 +88,10 @@ fun Toolbar(
     closeIcon: ImageVector = ToolbarDefault,
     modifier: Modifier = Modifier,
     actions: @Composable () -> ImmutableList<Action> = { remember { persistentListOf() } },
-    backgroundColor: Color = MaterialTheme.colors.surface, // CustomColors.current.bars,
-    contentColor: Color = contentColorFor(backgroundColor), // CustomColors.current.onBars,
+    // CustomColors.current.bars,
+    backgroundColor: Color = MaterialTheme.colors.surface,
+    // CustomColors.current.onBars,
+    contentColor: Color = contentColorFor(backgroundColor),
     elevation: Dp = Dp.Hairline,
     searchText: String? = null,
     search: ((String) -> Unit)? = null,
@@ -216,6 +218,7 @@ private fun ThinToolbar(
     searchSubmit: (() -> Unit)?,
 ) {
     var searchMode by remember { mutableStateOf(!searchText.isNullOrEmpty()) }
+
     fun closeSearch() {
         search?.invoke("")
         searchSubmit?.invoke()

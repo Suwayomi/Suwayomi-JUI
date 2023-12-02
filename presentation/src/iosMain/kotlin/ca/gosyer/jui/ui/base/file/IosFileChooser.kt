@@ -10,13 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import okio.Source
 
-actual class FileChooser(private val onFileFound: (Source) -> Unit) {
+actual class FileChooser(
+    private val onFileFound: (Source) -> Unit,
+) {
     actual fun launch(extension: String) {
         TODO()
     }
 }
 
 @Composable
-actual fun rememberFileChooser(onFileFound: (Source) -> Unit): FileChooser {
-    return remember { FileChooser(onFileFound) }
-}
+actual fun rememberFileChooser(onFileFound: (Source) -> Unit): FileChooser = remember { FileChooser(onFileFound) }

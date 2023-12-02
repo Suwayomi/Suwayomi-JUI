@@ -16,17 +16,15 @@ import me.tatarka.inject.annotations.Inject
 
 actual class ContextWrapper
     @Inject
-    constructor(context: Context) : ContextWrapper(context) {
-        actual fun toPlatformString(stringResource: StringResource): String {
-            return stringResource.desc().toString(this)
-        }
+    constructor(
+        context: Context,
+    ) : ContextWrapper(context) {
+        actual fun toPlatformString(stringResource: StringResource): String = stringResource.desc().toString(this)
 
         actual fun toPlatformString(
             stringResource: StringResource,
             vararg args: Any,
-        ): String {
-            return stringResource.format(*args).toString(this)
-        }
+        ): String = stringResource.format(*args).toString(this)
 
         actual fun toast(
             string: String,

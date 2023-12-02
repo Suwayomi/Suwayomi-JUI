@@ -190,10 +190,16 @@ fun GlobalSearchItem(
 
         Spacer(Modifier.height(4.dp))
         when (search) {
-            is Search.Failure -> Box(Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp), contentAlignment = Alignment.Center) {
+            is Search.Failure -> Box(
+                Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp),
+                contentAlignment = Alignment.Center,
+            ) {
                 ErrorScreen(search.e)
             }
-            Search.Searching -> Box(Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp), contentAlignment = Alignment.Center) {
+            Search.Searching -> Box(
+                Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp),
+                contentAlignment = Alignment.Center,
+            ) {
                 CircularProgressIndicator()
             }
             is Search.Success -> Box(

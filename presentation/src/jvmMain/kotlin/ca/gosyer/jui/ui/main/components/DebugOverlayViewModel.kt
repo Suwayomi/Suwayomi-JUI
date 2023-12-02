@@ -18,7 +18,9 @@ import kotlin.time.Duration.Companion.milliseconds
 
 actual class DebugOverlayViewModel
     @Inject
-    constructor(contextWrapper: ContextWrapper) : ViewModel(contextWrapper) {
+    constructor(
+        contextWrapper: ContextWrapper,
+    ) : ViewModel(contextWrapper) {
         override val scope = MainScope()
 
         val runtime: Runtime = Runtime.getRuntime()

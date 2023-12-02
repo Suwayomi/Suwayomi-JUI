@@ -335,8 +335,8 @@ fun LanguageDialog(
 private fun getActionItems(
     openLanguageDialog: () -> Unit,
     openInstallExtensionFile: () -> Unit,
-): ImmutableList<ActionItem> {
-    return listOf(
+): ImmutableList<ActionItem> =
+    listOf(
         ActionItem(
             stringResource(MR.strings.enabled_languages),
             Icons.Rounded.Translate,
@@ -348,4 +348,3 @@ private fun getActionItems(
             doAction = openInstallExtensionFile,
         ),
     ).toImmutableList()
-}

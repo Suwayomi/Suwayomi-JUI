@@ -47,6 +47,7 @@ class DownloadService
                     .map {
                         it.filter { it.mangaId == mangaId }
                     }
+
             fun registerWatches(mangaIds: Set<Long>) =
                 downloadQueue
                     .map {

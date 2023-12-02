@@ -17,7 +17,9 @@ import org.lighthousegames.logging.logging
 
 class GetChapterPage
     @Inject
-    constructor(private val chapterRepository: ChapterRepository) {
+    constructor(
+        private val chapterRepository: ChapterRepository,
+    ) {
         suspend fun await(
             mangaId: Long,
             index: Int,

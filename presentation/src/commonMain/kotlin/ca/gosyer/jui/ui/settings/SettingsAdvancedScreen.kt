@@ -108,6 +108,7 @@ class SettingsAdvancedViewModel
                 chapterCache.clear()
             }
         }
+
         companion object {
             private val log = logging()
         }

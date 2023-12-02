@@ -22,7 +22,10 @@ abstract class AppComponent(
     @get:AppScope
     @get:Provides
     val context: Context,
-) : ViewModelComponent, DataComponent, DomainComponent, UiComponent {
+) : ViewModelComponent,
+    DataComponent,
+    DomainComponent,
+    UiComponent {
     abstract val appMigrations: AppMigrations
 
     @get:AppScope

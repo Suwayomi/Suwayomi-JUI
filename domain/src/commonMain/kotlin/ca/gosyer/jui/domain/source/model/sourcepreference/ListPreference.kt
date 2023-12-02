@@ -13,7 +13,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("ListPreference")
 @Immutable
-data class ListPreference(override val props: ListProps) : SourcePreference() {
+data class ListPreference(
+    override val props: ListProps,
+) : SourcePreference() {
     @Serializable
     @Immutable
     data class ListProps(

@@ -54,7 +54,9 @@ suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T): T = withCo
 
 suspend fun <T> withIOContext(block: suspend CoroutineScope.() -> T): T = withContext(Dispatchers.IO, block)
 
-fun Throwable.throwIfCancellation() { if (this is CancellationException) throw this }
+fun Throwable.throwIfCancellation() {
+    if (this is CancellationException) throw this
+}
 
 fun <T> Result<T>.throwIfCancellation(): Result<T> {
     if (isFailure) {

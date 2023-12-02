@@ -48,11 +48,19 @@ import kotlinx.coroutines.flow.Flow
 
 actual interface ScrollbarAdapter
 
-class ScrollStateScrollbarAdapter(val scrollState: ScrollState) : ScrollbarAdapter
+class ScrollStateScrollbarAdapter(
+    val scrollState: ScrollState,
+) : ScrollbarAdapter
 
-class LazyListStateScrollbarAdapter(val lazyListState: LazyListState) : ScrollbarAdapter
+class LazyListStateScrollbarAdapter(
+    val lazyListState: LazyListState,
+) : ScrollbarAdapter
 
-class LazyGridStateScrollbarAdapter(val lazyGridState: LazyGridState, val gridCells: GridCells, val spacing: Dp) : ScrollbarAdapter
+class LazyGridStateScrollbarAdapter(
+    val lazyGridState: LazyGridState,
+    val gridCells: GridCells,
+    val spacing: Dp,
+) : ScrollbarAdapter
 
 @Immutable
 actual class ScrollbarStyle

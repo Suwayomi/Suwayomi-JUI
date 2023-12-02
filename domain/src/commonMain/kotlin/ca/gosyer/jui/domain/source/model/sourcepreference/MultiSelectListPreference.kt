@@ -13,7 +13,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("MultiSelectListPreference")
 @Immutable
-data class MultiSelectListPreference(override val props: MultiSelectListProps) : SourcePreference() {
+data class MultiSelectListPreference(
+    override val props: MultiSelectListProps,
+) : SourcePreference() {
     @Serializable
     @Immutable
     data class MultiSelectListProps(

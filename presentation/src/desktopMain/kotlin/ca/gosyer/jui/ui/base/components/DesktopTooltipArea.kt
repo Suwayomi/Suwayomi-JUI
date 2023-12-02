@@ -22,10 +22,10 @@ actual class CursorPointImpl actual constructor(
     alignment: Alignment,
     windowMargin: Dp,
 ) : TooltipPlacement by androidx.compose.foundation.TooltipPlacement.CursorPoint(
-    offset = offset,
-    alignment = alignment,
-    windowMargin = windowMargin
-)
+        offset = offset,
+        alignment = alignment,
+        windowMargin = windowMargin,
+    )
 
 @OptIn(ExperimentalFoundationApi::class)
 actual class ComponentRectImpl actual constructor(
@@ -33,10 +33,10 @@ actual class ComponentRectImpl actual constructor(
     alignment: Alignment,
     offset: DpOffset,
 ) : TooltipPlacement by androidx.compose.foundation.TooltipPlacement.ComponentRect(
-    anchor = anchor,
-    alignment = alignment,
-    offset = offset
-)
+        anchor = anchor,
+        alignment = alignment,
+        offset = offset,
+    )
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

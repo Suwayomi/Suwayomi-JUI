@@ -157,10 +157,15 @@ class UpdatesPager
         @Immutable
         sealed class Updates {
             @Immutable
-            data class Update(val manga: Manga, val chapter: Chapter) : Updates()
+            data class Update(
+                val manga: Manga,
+                val chapter: Chapter,
+            ) : Updates()
 
             @Immutable
-            data class Date(val date: String) : Updates() {
+            data class Date(
+                val date: String,
+            ) : Updates() {
                 constructor(date: LocalDate) : this(date.toString())
             }
         }

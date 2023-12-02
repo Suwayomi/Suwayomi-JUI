@@ -110,10 +110,11 @@ fun WideMainMenu(
         }
         withDisplayController(controller) {
             val insets = WindowInsets.navigationBars.only(WindowInsetsSides.Start)
-            MainWindow(navigator,
+            MainWindow(
+                navigator,
                 Modifier.padding(start = startPadding)
                     .windowInsetsPadding(insets)
-                    .consumeWindowInsets(insets)
+                    .consumeWindowInsets(insets),
             )
         }
     }

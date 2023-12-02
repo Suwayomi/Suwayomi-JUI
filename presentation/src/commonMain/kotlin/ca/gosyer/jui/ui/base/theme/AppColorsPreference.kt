@@ -26,26 +26,23 @@ class AppColorsPreferenceState(
     val tertiaryStateFlow: PreferenceMutableStateFlow<Color>,
 )
 
-fun UiPreferences.getLightColors(): AppColorsPreference {
-    return AppColorsPreference(
+fun UiPreferences.getLightColors(): AppColorsPreference =
+    AppColorsPreference(
         colorPrimaryLight().asColor(),
         colorSecondaryLight().asColor(),
         colorTertiaryLight().asColor(),
     )
-}
 
-fun UiPreferences.getDarkColors(): AppColorsPreference {
-    return AppColorsPreference(
+fun UiPreferences.getDarkColors(): AppColorsPreference =
+    AppColorsPreference(
         colorPrimaryDark().asColor(),
         colorSecondaryDark().asColor(),
         colorTertiaryDark().asColor(),
     )
-}
 
-fun AppColorsPreference.asStateFlow(scope: CoroutineScope): AppColorsPreferenceState {
-    return AppColorsPreferenceState(
+fun AppColorsPreference.asStateFlow(scope: CoroutineScope): AppColorsPreferenceState =
+    AppColorsPreferenceState(
         primary.asStateIn(scope),
         secondary.asStateIn(scope),
         tertiary.asStateIn(scope),
     )
-}

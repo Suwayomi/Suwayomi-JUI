@@ -7,6 +7,11 @@
 package ca.gosyer.jui.ui.reader.model
 
 sealed class PageMove {
-    data class Direction(val moveTo: MoveTo) : PageMove()
-    data class Page(val page: ReaderItem) : PageMove()
+    data class Direction(
+        val moveTo: MoveTo,
+    ) : PageMove()
+
+    data class Page(
+        val page: ReaderItem,
+    ) : PageMove()
 }

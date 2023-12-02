@@ -10,7 +10,9 @@ import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.toPlatform
 import java.text.Collator
 
-actual class CollatorComparator(private val collator: Collator) : Comparator<String> {
+actual class CollatorComparator(
+    private val collator: Collator,
+) : Comparator<String> {
     actual constructor(locale: Locale) : this(Collator.getInstance(locale.toPlatform()))
 
     init {
@@ -20,7 +22,5 @@ actual class CollatorComparator(private val collator: Collator) : Comparator<Str
     actual override fun compare(
         source: String,
         target: String,
-    ): Int {
-        return collator.compare(source, target)
-    }
+    ): Int = collator.compare(source, target)
 }

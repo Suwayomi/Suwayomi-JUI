@@ -69,11 +69,10 @@ private val disposableEvents: Set<StackEvent> =
 private fun rememberNavigator(
     parent: Navigator,
     homeScreen: SourceHomeScreen,
-): SourcesNavigator {
-    return rememberSaveable(saver = navigatorSaver(parent, homeScreen)) {
+): SourcesNavigator =
+    rememberSaveable(saver = navigatorSaver(parent, homeScreen)) {
         SourcesNavigator(parent, homeScreen)
     }
-}
 
 private fun navigatorSaver(
     parent: Navigator,
@@ -113,8 +112,12 @@ private fun SourceNavigatorDisposableEffect(navigator: SourcesNavigator) {
 
 sealed class SourceNavigatorScreen {
     object HomeScreen : SourceNavigatorScreen()
+
     object SearchScreen : SourceNavigatorScreen()
-    data class SourceScreen(val source: Source) : SourceNavigatorScreen()
+
+    data class SourceScreen(
+        val source: Source,
+    ) : SourceNavigatorScreen()
 }
 
 class SourcesNavigator internal constructor(

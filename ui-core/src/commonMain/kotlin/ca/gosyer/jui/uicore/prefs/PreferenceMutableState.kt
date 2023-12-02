@@ -30,6 +30,4 @@ class PreferenceMutableStateFlow<T>(
         }
 }
 
-fun <T> Preference<T>.asStateIn(scope: CoroutineScope): PreferenceMutableStateFlow<T> {
-    return PreferenceMutableStateFlow(this, scope)
-}
+fun <T> Preference<T>.asStateIn(scope: CoroutineScope): PreferenceMutableStateFlow<T> = PreferenceMutableStateFlow(this, scope)

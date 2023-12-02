@@ -11,8 +11,6 @@ import androidx.compose.ui.graphics.toArgb
 import platform.Foundation.NSString
 import platform.Foundation.stringWithFormat
 
-actual fun Color.toHexString(): String {
-    return NSString.stringWithFormat("#%06X", (0xFFFFFF and toArgb()))
-}
+actual fun Color.toHexString(): String = NSString.stringWithFormat("#%06X", (0xFFFFFF and toArgb()))
 
 actual fun Color.toLong() = NSString.stringWithFormat("%06X", 0xFFFFFF and toArgb()).toLong(16)

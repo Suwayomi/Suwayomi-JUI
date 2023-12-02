@@ -131,8 +131,12 @@ class SourceHomeScreenViewModel
 @Stable
 sealed class SourceUI {
     @Stable
-    data class Header(val header: String) : SourceUI()
+    data class Header(
+        val header: String,
+    ) : SourceUI()
 
     @Stable
-    data class SourceItem(val source: Source) : SourceUI()
+    data class SourceItem(
+        val source: Source,
+    ) : SourceUI()
 }

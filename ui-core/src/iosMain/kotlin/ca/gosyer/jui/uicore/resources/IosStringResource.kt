@@ -18,6 +18,7 @@ import dev.icerock.moko.resources.desc.ResourceFormatted
 import dev.icerock.moko.resources.desc.StringDesc
 
 expect fun PluralStringDesc.localized(): String
+
 expect fun PluralFormattedStringDesc.localized(): String
 
 @Composable

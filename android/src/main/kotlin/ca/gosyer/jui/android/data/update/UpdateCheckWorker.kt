@@ -23,9 +23,12 @@ import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.desc.desc
 import java.util.concurrent.TimeUnit
 
-class UpdateCheckWorker(private val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
-    override suspend fun doWork(): Result {
-        return try {
+class UpdateCheckWorker(
+    private val context: Context,
+    workerParams: WorkerParameters,
+) : CoroutineWorker(context, workerParams) {
+    override suspend fun doWork(): Result =
+        try {
             val update = AppComponent.getInstance(context.applicationContext)
                 .let {
                     if (it.updatePreferences.enabled().get()) {
@@ -48,7 +51,6 @@ class UpdateCheckWorker(private val context: Context, workerParams: WorkerParame
         } catch (e: Exception) {
             Result.failure()
         }
-    }
 
     companion object {
         private const val TAG = "UpdateChecker"

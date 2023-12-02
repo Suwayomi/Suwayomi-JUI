@@ -31,11 +31,12 @@ object ImageUtil {
         return true
     }
 
-    private fun charByteArrayOf(vararg bytes: Int): ByteArray {
-        return ByteArray(bytes.size) { pos -> bytes[pos].toByte() }
-    }
+    private fun charByteArrayOf(vararg bytes: Int): ByteArray = ByteArray(bytes.size) { pos -> bytes[pos].toByte() }
 
-    enum class ImageType(val mime: String, val extension: String) {
+    enum class ImageType(
+        val mime: String,
+        val extension: String,
+    ) {
         JPG("image/jpeg", "jpg"),
         PNG("image/png", "png"),
         GIF("image/gif", "gif"),

@@ -24,6 +24,7 @@ class DisplayController(
     fun openSideMenu() {
         _sideMenuVisible.value = true
     }
+
     fun closeSideMenu() {
         _sideMenuVisible.value = false
     }

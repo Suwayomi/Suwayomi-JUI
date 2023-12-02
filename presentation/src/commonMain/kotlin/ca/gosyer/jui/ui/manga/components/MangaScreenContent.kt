@@ -226,7 +226,15 @@ fun MangaScreenContent(
                                         chapter,
                                         dateTimeFormatter,
                                         onClick = if (inActionMode) {
-                                            { if (chapter.isSelected.value) onUnselectChapter(chapter.chapter.id) else onSelectChapter(chapter.chapter.id) }
+                                            {
+                                                if (chapter.isSelected.value) {
+                                                    onUnselectChapter(
+                                                        chapter.chapter.id,
+                                                    )
+                                                } else {
+                                                    onSelectChapter(chapter.chapter.id)
+                                                }
+                                            }
                                         } else {
                                             { readerLauncher.launch(it, manga.id) }
                                         },
@@ -293,8 +301,8 @@ private fun getActionItems(
     downloadNext: (Int) -> Unit,
     downloadUnread: () -> Unit,
     downloadAll: () -> Unit,
-): ImmutableList<Action> {
-    return listOfNotNull(
+): ImmutableList<Action> =
+    listOfNotNull(
         ActionItem(
             name = stringResource(MR.strings.action_refresh_manga),
             icon = Icons.Rounded.Refresh,
@@ -353,15 +361,14 @@ private fun getActionItems(
             doAction = openInBrowser,
         ),
     ).toImmutableList()
-}
 
 @Composable
 @Stable
 private fun getActionModeActionItems(
     selectAll: () -> Unit,
     invertSelection: () -> Unit,
-): ImmutableList<ActionItem> {
-    return listOf(
+): ImmutableList<ActionItem> =
+    listOf(
         ActionItem(
             name = stringResource(MR.strings.action_select_all),
             icon = Icons.Rounded.SelectAll,
@@ -373,7 +380,6 @@ private fun getActionModeActionItems(
             doAction = invertSelection,
         ),
     ).toImmutableList()
-}
 
 @Composable
 @Stable
@@ -386,8 +392,8 @@ private fun getBottomActionItems(
     markPreviousAsRead: (Int) -> Unit,
     deleteChapter: () -> Unit,
     downloadChapters: () -> Unit,
-): ImmutableList<BottomActionItem> {
-    return listOfNotNull(
+): ImmutableList<BottomActionItem> =
+    listOfNotNull(
         BottomActionItem(
             name = stringResource(MR.strings.action_bookmark),
             icon = Icons.Rounded.BookmarkAdd,
@@ -424,4 +430,3 @@ private fun getBottomActionItems(
             onClick = deleteChapter,
         ).takeIf { selectedItems.fastAny { it.downloadState.value == ChapterDownloadState.Downloaded } },
     ).toImmutableList()
-}

@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class GetFilterList
     @Inject
-    constructor(private val sourceRepository: SourceRepository) {
+    constructor(
+        private val sourceRepository: SourceRepository,
+    ) {
         suspend fun await(
             source: Source,
             reset: Boolean,

@@ -16,11 +16,10 @@ actual class PreferenceStoreFactory
         private val rootNode: Preferences = Preferences.userRoot()
             .node("ca/gosyer/tachideskjui")
 
-        actual fun create(vararg names: String): PreferenceStore {
-            return StandardPreferenceStore(
+        actual fun create(vararg names: String): PreferenceStore =
+            StandardPreferenceStore(
                 PreferencesSettings(
                     rootNode.node(names.joinToString(separator = "/")),
                 ),
             )
-        }
     }

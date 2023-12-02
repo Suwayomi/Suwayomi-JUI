@@ -12,6 +12,4 @@ import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import org.jetbrains.skia.Image
 
-actual suspend fun HttpResponse.toImageBitmap(): ImageBitmap {
-    return Image.makeFromEncoded(body<ByteArray>()).toComposeImageBitmap()
-}
+actual suspend fun HttpResponse.toImageBitmap(): ImageBitmap = Image.makeFromEncoded(body<ByteArray>()).toComposeImageBitmap()

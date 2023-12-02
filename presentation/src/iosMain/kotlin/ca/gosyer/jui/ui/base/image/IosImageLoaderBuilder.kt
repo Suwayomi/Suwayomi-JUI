@@ -41,15 +41,14 @@ actual fun DiskCacheBuilder.configure(
 }
 
 @OptIn(ExperimentalForeignApi::class)
-private fun getCacheDir(): String {
-    return NSFileManager.defaultManager.URLForDirectory(
+private fun getCacheDir(): String =
+    NSFileManager.defaultManager.URLForDirectory(
         NSCachesDirectory,
         NSUserDomainMask,
         null,
         true,
         null,
     )!!.path.orEmpty()
-}
 
 actual fun MemoryCacheBuilder<MemoryKey, Bitmap>.configure(contextWrapper: ContextWrapper) {
     maxSizePercent(0.25)

@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class UpdateExtension
     @Inject
-    constructor(private val extensionRepository: ExtensionRepository) {
+    constructor(
+        private val extensionRepository: ExtensionRepository,
+    ) {
         suspend fun await(
             extension: Extension,
             onError: suspend (Throwable) -> Unit = {},

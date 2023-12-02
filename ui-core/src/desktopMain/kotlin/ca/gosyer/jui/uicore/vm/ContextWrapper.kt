@@ -19,15 +19,13 @@ actual class ContextWrapper {
     private val _toasts = MutableSharedFlow<Pair<String, Length>>()
     val toasts = _toasts.asSharedFlow()
 
-    actual fun toPlatformString(stringResource: StringResource): String {
-        return stringResource.localized()
-    }
+    actual fun toPlatformString(stringResource: StringResource): String = stringResource.localized()
+
     actual fun toPlatformString(
         stringResource: StringResource,
         vararg args: Any,
-    ): String {
-        return stringResource.format(*args).localized()
-    }
+    ): String = stringResource.format(*args).localized()
+
     actual fun toast(
         string: String,
         length: Length,

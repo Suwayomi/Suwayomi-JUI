@@ -57,7 +57,9 @@ sealed class LibraryState {
     object Loading : LibraryState()
 
     @Stable
-    data class Failed(val e: Throwable) : LibraryState()
+    data class Failed(
+        val e: Throwable,
+    ) : LibraryState()
 
     @Stable
     data class Loaded(
@@ -71,7 +73,9 @@ sealed class CategoryState {
     object Loading : CategoryState()
 
     @Stable
-    data class Failed(val e: Throwable) : CategoryState()
+    data class Failed(
+        val e: Throwable,
+    ) : CategoryState()
 
     @Stable
     data class Loaded(
@@ -81,18 +85,24 @@ sealed class CategoryState {
 }
 
 private typealias LibraryMap = MutableMap<Long, MutableStateFlow<CategoryState>>
-private data class Library(val categories: MutableStateFlow<LibraryState>, val mangaMap: LibraryMap)
+
+private data class Library(
+    val categories: MutableStateFlow<LibraryState>,
+    val mangaMap: LibraryMap,
+)
 
 private fun LibraryMap.getManga(id: Long) =
     getOrPut(id) {
         MutableStateFlow(CategoryState.Loading)
     }
+
 private fun LibraryMap.setError(
     id: Long,
     e: Throwable,
 ) {
     getManga(id).value = CategoryState.Failed(e)
 }
+
 private fun LibraryMap.setManga(
     id: Long,
     manga: ImmutableList<Manga>,
@@ -274,8 +284,14 @@ class LibraryScreenViewModel
                 .toList()
         }
 
-        private fun getMangaItemsFlow(unfilteredItemsFlow: StateFlow<List<Manga>>): StateFlow<ImmutableList<Manga>> {
-            return combine(unfilteredItemsFlow, query) { unfilteredItems, query ->
+        private fun getMangaItemsFlow(unfilteredItemsFlow: StateFlow<List<Manga>>): StateFlow<ImmutableList<Manga>> =
+            combine(
+                unfilteredItemsFlow,
+                query,
+            ) {
+                    unfilteredItems,
+                    query,
+                ->
                 filterManga(query, unfilteredItems)
             }.combine(filter) { filteredManga, filterer ->
                 filteredManga.filter(filterer)
@@ -284,19 +300,15 @@ class LibraryScreenViewModel
             }.map {
                 it.toImmutableList()
             }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
-        }
 
-        fun getLibraryForCategoryId(id: Long): StateFlow<CategoryState> {
-            return library.mangaMap.getManga(id)
-        }
+        fun getLibraryForCategoryId(id: Long): StateFlow<CategoryState> = library.mangaMap.getManga(id)
 
-        private fun getCategoriesToUpdate(mangaId: Long): List<Category> {
-            return library.mangaMap
+        private fun getCategoriesToUpdate(mangaId: Long): List<Category> =
+            library.mangaMap
                 .filter { mangaMapEntry ->
                     (mangaMapEntry.value.value as? CategoryState.Loaded)?.items?.value?.firstOrNull { it.id == mangaId } != null
                 }
                 .mapNotNull { (id) -> (library.categories.value as? LibraryState.Loaded)?.categories?.first { it.id == id } }
-        }
 
         fun removeManga(mangaId: Long) {
             scope.launch {

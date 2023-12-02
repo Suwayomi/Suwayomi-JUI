@@ -25,6 +25,4 @@ internal actual fun realRememberFileSaver(
     onFileSelected: (Sink) -> Unit,
     onCancel: () -> Unit,
     onError: () -> Unit,
-): FileSaver {
-    return remember { FileSaver(onFileSelected, onCancel, onError) }
-}
+): FileSaver = remember { FileSaver(onFileSelected, onCancel, onError) }

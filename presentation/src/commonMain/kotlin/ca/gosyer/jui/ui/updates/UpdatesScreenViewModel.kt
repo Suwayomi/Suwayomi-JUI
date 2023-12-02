@@ -123,7 +123,9 @@ class UpdatesScreenViewModel
                 _selectedIds.value = persistentListOf()
             }
         }
+
         fun markRead(id: Long?) = setRead(listOfNotNull(id).ifEmpty { _selectedIds.value }, true)
+
         fun markUnread(id: Long?) = setRead(listOfNotNull(id).ifEmpty { _selectedIds.value }, false)
 
         private fun setBookmarked(
@@ -135,7 +137,9 @@ class UpdatesScreenViewModel
                 _selectedIds.value = persistentListOf()
             }
         }
+
         fun bookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { _selectedIds.value }, true)
+
         fun unBookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { _selectedIds.value }, false)
 
         fun downloadChapter(chapter: Chapter?) {
@@ -207,6 +211,7 @@ class UpdatesScreenViewModel
                 _selectedIds.value = _selectedIds.value.plus(id).toImmutableList()
             }
         }
+
         fun unselectChapter(id: Long) {
             scope.launchDefault {
                 _selectedIds.value = _selectedIds.value.minus(id).toImmutableList()
@@ -234,6 +239,11 @@ class UpdatesScreenViewModel
     }
 
 sealed class UpdatesUI {
-    data class Item(val chapterDownloadItem: ChapterDownloadItem) : UpdatesUI()
-    data class Header(val date: String) : UpdatesUI()
+    data class Item(
+        val chapterDownloadItem: ChapterDownloadItem,
+    ) : UpdatesUI()
+
+    data class Header(
+        val date: String,
+    ) : UpdatesUI()
 }

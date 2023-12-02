@@ -11,8 +11,7 @@ import java.util.Formatter
 actual fun stringFormat(
     string: String,
     vararg args: Any?,
-): String {
-    return Formatter().use {
+): String =
+    Formatter().use {
         it.format(string, *args).toString()
     }
-}

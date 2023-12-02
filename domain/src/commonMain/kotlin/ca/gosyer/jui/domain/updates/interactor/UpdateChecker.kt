@@ -52,7 +52,10 @@ class UpdateChecker
             }.flowOn(Dispatchers.IO)
 
         sealed class Update {
-            data class UpdateFound(val release: GithubRelease) : Update()
+            data class UpdateFound(
+                val release: GithubRelease,
+            ) : Update()
+
             object NoUpdatesFound : Update()
         }
 

@@ -132,7 +132,9 @@ class SourceFiltersViewModel(
         getFilters(initialLoad = true)
     }
 
-    data class Params(val sourceId: Long)
+    data class Params(
+        val sourceId: Long,
+    )
 
     private fun List<SourceFilter>.toView() =
         mapIndexed { index, sourcePreference ->

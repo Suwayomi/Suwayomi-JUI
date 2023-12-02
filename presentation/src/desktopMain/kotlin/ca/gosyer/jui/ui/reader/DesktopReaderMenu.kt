@@ -67,6 +67,4 @@ actual class ReaderLauncher {
 }
 
 @Composable
-actual fun rememberReaderLauncher(): ReaderLauncher {
-    return remember { ReaderLauncher() }
-}
+actual fun rememberReaderLauncher(): ReaderLauncher = remember { ReaderLauncher() }

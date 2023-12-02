@@ -62,7 +62,7 @@ fun Modifier.navigationClickable(
                 detectTapGestures(
                     onTap = {
                         onClick(navigation.getAction(it, layoutSize.value))
-                    }
+                    },
                 )
             }
             .onGloballyPositioned {

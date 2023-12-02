@@ -24,20 +24,17 @@ internal class StandardPreference<T>(
     /**
      * Returns the key of this preference.
      */
-    override fun key(): String {
-        return key
-    }
+    override fun key(): String = key
 
     /**
      * Returns the current value of this preference.
      */
-    override fun get(): T {
-        return if (isSet()) {
+    override fun get(): T =
+        if (isSet()) {
             adapter.get(key, preferences)
         } else {
             defaultValue
         }
-    }
 
     /**
      * Sets a new [value] for this preference.
@@ -49,9 +46,7 @@ internal class StandardPreference<T>(
     /**
      * Returns whether there's an existing entry for this preference.
      */
-    override fun isSet(): Boolean {
-        return adapter.isSet(preferences.keys, key)
-    }
+    override fun isSet(): Boolean = adapter.isSet(preferences.keys, key)
 
     /**
      * Deletes the entry of this preference.
@@ -63,27 +58,22 @@ internal class StandardPreference<T>(
     /**
      * Returns the default value of this preference
      */
-    override fun defaultValue(): T {
-        return defaultValue
-    }
+    override fun defaultValue(): T = defaultValue
 
     /**
      * Returns a cold [Flow] of this preference to receive updates when its value changes.
      */
-    override fun changes(): Flow<T> {
-        return callbackFlow {
+    override fun changes(): Flow<T> =
+        callbackFlow {
             val listener = adapter.addListener(key, preferences) {
                 trySend(get())
             }
             awaitClose { listener.deactivate() }
         }
-    }
 
     /**
      * Returns a hot [StateFlow] of this preference bound to the given [scope], allowing to read the
      * current value and receive preference updates.
      */
-    override fun stateIn(scope: CoroutineScope): StateFlow<T> {
-        return changes().stateIn(scope, SharingStarted.Eagerly, get())
-    }
+    override fun stateIn(scope: CoroutineScope): StateFlow<T> = changes().stateIn(scope, SharingStarted.Eagerly, get())
 }

@@ -10,80 +10,74 @@ import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.PreferenceStore
 import ca.gosyer.jui.domain.server.service.host.ServerHostPreference
 
-class ServerHostPreferences(private val preferenceStore: PreferenceStore) {
-    fun host(): Preference<Boolean> {
-        return preferenceStore.getBoolean("host", true)
-    }
+class ServerHostPreferences(
+    private val preferenceStore: PreferenceStore,
+) {
+    fun host(): Preference<Boolean> = preferenceStore.getBoolean("host", true)
 
     private val ip = ServerHostPreference.IP(preferenceStore)
-    fun ip(): Preference<String> {
-        return ip.preference()
-    }
+
+    fun ip(): Preference<String> = ip.preference()
+
     private val port = ServerHostPreference.Port(preferenceStore)
-    fun port(): Preference<Int> {
-        return port.preference()
-    }
+
+    fun port(): Preference<Int> = port.preference()
 
     // Proxy
     private val socksProxyEnabled = ServerHostPreference.SocksProxyEnabled(preferenceStore)
-    fun socksProxyEnabled(): Preference<Boolean> {
-        return socksProxyEnabled.preference()
-    }
+
+    fun socksProxyEnabled(): Preference<Boolean> = socksProxyEnabled.preference()
+
     private val socksProxyHost = ServerHostPreference.SocksProxyHost(preferenceStore)
-    fun socksProxyHost(): Preference<String> {
-        return socksProxyHost.preference()
-    }
+
+    fun socksProxyHost(): Preference<String> = socksProxyHost.preference()
+
     private val socksProxyPort = ServerHostPreference.SocksProxyPort(preferenceStore)
-    fun socksProxyPort(): Preference<Int> {
-        return socksProxyPort.preference()
-    }
+
+    fun socksProxyPort(): Preference<Int> = socksProxyPort.preference()
 
     // Misc
     private val debugLogsEnabled = ServerHostPreference.DebugLogsEnabled(preferenceStore)
-    fun debugLogsEnabled(): Preference<Boolean> {
-        return debugLogsEnabled.preference()
-    }
+
+    fun debugLogsEnabled(): Preference<Boolean> = debugLogsEnabled.preference()
+
     private val systemTrayEnabled = ServerHostPreference.SystemTrayEnabled(preferenceStore)
-    fun systemTrayEnabled(): Preference<Boolean> {
-        return systemTrayEnabled.preference()
-    }
+
+    fun systemTrayEnabled(): Preference<Boolean> = systemTrayEnabled.preference()
 
     // Downloader
     private val downloadPath = ServerHostPreference.DownloadPath(preferenceStore)
-    fun downloadPath(): Preference<String> {
-        return downloadPath.preference()
-    }
+
+    fun downloadPath(): Preference<String> = downloadPath.preference()
+
     private val downloadAsCbz = ServerHostPreference.DownloadAsCbz(preferenceStore)
-    fun downloadAsCbz(): Preference<Boolean> {
-        return downloadAsCbz.preference()
-    }
+
+    fun downloadAsCbz(): Preference<Boolean> = downloadAsCbz.preference()
 
     // WebUI
     private val webUIEnabled = ServerHostPreference.WebUIEnabled(preferenceStore)
-    fun webUIEnabled(): Preference<Boolean> {
-        return webUIEnabled.preference()
-    }
+
+    fun webUIEnabled(): Preference<Boolean> = webUIEnabled.preference()
+
     private val openInBrowserEnabled = ServerHostPreference.OpenInBrowserEnabled(preferenceStore)
-    fun openInBrowserEnabled(): Preference<Boolean> {
-        return openInBrowserEnabled.preference()
-    }
+
+    fun openInBrowserEnabled(): Preference<Boolean> = openInBrowserEnabled.preference()
 
     // Authentication
     private val basicAuthEnabled = ServerHostPreference.BasicAuthEnabled(preferenceStore)
-    fun basicAuthEnabled(): Preference<Boolean> {
-        return basicAuthEnabled.preference()
-    }
-    private val basicAuthUsername = ServerHostPreference.BasicAuthUsername(preferenceStore)
-    fun basicAuthUsername(): Preference<String> {
-        return basicAuthUsername.preference()
-    }
-    private val basicAuthPassword = ServerHostPreference.BasicAuthPassword(preferenceStore)
-    fun basicAuthPassword(): Preference<String> {
-        return basicAuthPassword.preference()
-    }
 
-    fun properties(): Array<String> {
-        return listOf(
+    fun basicAuthEnabled(): Preference<Boolean> = basicAuthEnabled.preference()
+
+    private val basicAuthUsername = ServerHostPreference.BasicAuthUsername(preferenceStore)
+
+    fun basicAuthUsername(): Preference<String> = basicAuthUsername.preference()
+
+    private val basicAuthPassword = ServerHostPreference.BasicAuthPassword(preferenceStore)
+
+    fun basicAuthPassword(): Preference<String> = basicAuthPassword.preference()
+
+    fun properties(): Array<String> =
+        listOf(
             ip,
             port,
             socksProxyEnabled,
@@ -101,5 +95,4 @@ class ServerHostPreferences(private val preferenceStore: PreferenceStore) {
         ).mapNotNull {
             it.getProperty()
         }.toTypedArray()
-    }
 }

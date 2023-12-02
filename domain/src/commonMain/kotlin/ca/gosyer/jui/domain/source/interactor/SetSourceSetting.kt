@@ -16,7 +16,9 @@ import org.lighthousegames.logging.logging
 
 class SetSourceSetting
     @Inject
-    constructor(private val sourceRepository: SourceRepository) {
+    constructor(
+        private val sourceRepository: SourceRepository,
+    ) {
         suspend fun await(
             source: Source,
             settingIndex: Int,

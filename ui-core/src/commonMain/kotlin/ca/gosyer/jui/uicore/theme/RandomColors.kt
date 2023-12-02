@@ -31,11 +31,7 @@ object RandomColors {
         Color(0xff90a4ae),
     )
 
-    fun get(key: Any): Color {
-        return colors[abs(key.hashCode()) % colors.size]
-    }
+    fun get(key: Any): Color = colors[abs(key.hashCode()) % colors.size]
 
-    fun random(): Color {
-        return colors[Random.nextInt(colors.size)]
-    }
+    fun random(): Color = colors[Random.nextInt(colors.size)]
 }

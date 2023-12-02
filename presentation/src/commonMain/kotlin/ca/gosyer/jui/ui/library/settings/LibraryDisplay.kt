@@ -81,8 +81,8 @@ fun LibraryDisplay(
             checked = localBadges,
             onClick = { setLocalBadges(!localBadges) },
         )
-        // TODO: 2022-04-06 Enable when library contains manga source in manga object
-        /*CheckboxItem(
+        /* TODO: 2022-04-06 Enable when library contains manga source in manga object
+        CheckboxItem(
             text = stringResource(MR.strings.display_badge_language),
             checked = languageBadges,
             onClick = { setLanguageBadges(!languageBadges) }

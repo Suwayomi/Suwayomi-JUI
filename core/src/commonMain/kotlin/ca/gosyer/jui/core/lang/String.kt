@@ -13,18 +13,16 @@ package ca.gosyer.jui.core.lang
 fun String.chop(
     count: Int,
     replacement: String = "…",
-): String {
-    return if (length > count) {
+): String =
+    if (length > count) {
         take(count - replacement.length) + replacement
     } else {
         this
     }
-}
 
-fun String.addSuffix(char: Char): String {
-    return if (endsWith(char)) {
+fun String.addSuffix(char: Char): String =
+    if (endsWith(char)) {
         this
     } else {
         this + char
     }
-}

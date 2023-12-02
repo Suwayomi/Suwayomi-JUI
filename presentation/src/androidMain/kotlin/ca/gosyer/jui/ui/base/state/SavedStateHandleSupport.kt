@@ -107,22 +107,20 @@ internal class SavedStateHandlesProvider(
     /**
      * Restore the state associated with a particular SavedStateHandle, identified by its [key]
      */
-    fun consumeRestoredStateForKey(key: String): Bundle? {
-        return savedStateRegistry::class.java
+    fun consumeRestoredStateForKey(key: String): Bundle? =
+        savedStateRegistry::class.java
             .methods
             .find { it.name == "consumeRestoredStateForKey" }
             ?.invoke(savedStateRegistry, key) as? Bundle
-    }
 }
 
 inline fun <reified T : ScreenModel> CreationExtras.addScreenModelKey(
     screen: Screen,
     tag: String?,
-): CreationExtras {
-    return MutableCreationExtras(this).apply {
+): CreationExtras =
+    MutableCreationExtras(this).apply {
         set(
             VIEW_MODEL_KEY,
             "${screen.key}:${T::class.qualifiedName}:${tag ?: "default"}",
         )
     }
-}

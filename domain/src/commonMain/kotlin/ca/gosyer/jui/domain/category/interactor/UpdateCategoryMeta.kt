@@ -16,7 +16,9 @@ import org.lighthousegames.logging.logging
 
 class UpdateCategoryMeta
     @Inject
-    constructor(private val categoryRepository: CategoryRepository) {
+    constructor(
+        private val categoryRepository: CategoryRepository,
+    ) {
         suspend fun await(
             category: Category,
             example: Int = category.meta.example,

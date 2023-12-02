@@ -101,7 +101,8 @@ class CategoriesScreenViewModel
         }
 
         fun createCategory(name: String) {
-            _categories.value = _categories.value.toPersistentList() + MenuCategory(order = categories.value.size + 1, name = name, default = false)
+            _categories.value =
+                _categories.value.toPersistentList() + MenuCategory(order = categories.value.size + 1, name = name, default = false)
         }
 
         fun moveUp(category: MenuCategory) {
@@ -133,7 +134,12 @@ class CategoriesScreenViewModel
         private fun Category.toMenuCategory() = MenuCategory(id, order, name, default)
 
         @Stable
-        data class MenuCategory(val id: Long? = null, val order: Int, val name: String, val default: Boolean = false)
+        data class MenuCategory(
+            val id: Long? = null,
+            val order: Int,
+            val name: String,
+            val default: Boolean = false,
+        )
 
         private companion object {
             private val log = logging()

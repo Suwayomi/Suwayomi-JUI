@@ -108,6 +108,7 @@ actual class SettingsServerHostViewModel
 
         private val _serverSettingChanged = MutableStateFlow(false)
         val serverSettingChanged = _serverSettingChanged.asStateFlow()
+
         fun serverSettingChanged() {
             _serverSettingChanged.value = true
         }

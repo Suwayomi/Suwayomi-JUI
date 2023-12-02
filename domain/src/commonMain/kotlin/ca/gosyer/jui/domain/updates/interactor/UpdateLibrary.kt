@@ -14,7 +14,9 @@ import org.lighthousegames.logging.logging
 
 class UpdateLibrary
     @Inject
-    constructor(private val updatesRepository: UpdatesRepository) {
+    constructor(
+        private val updatesRepository: UpdatesRepository,
+    ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
                 .catch {

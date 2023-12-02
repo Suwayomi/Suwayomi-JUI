@@ -15,7 +15,5 @@ actual object ThemeScrollbarStyle {
 
     @Stable
     @Composable
-    actual fun getScrollbarStyle(): ScrollbarStyle {
-        return defaultScrollbarStyle
-    }
+    actual fun getScrollbarStyle(): ScrollbarStyle = defaultScrollbarStyle
 }

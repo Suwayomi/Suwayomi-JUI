@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class GetMangaCategories
     @Inject
-    constructor(private val categoryRepository: CategoryRepository) {
+    constructor(
+        private val categoryRepository: CategoryRepository,
+    ) {
         suspend fun await(
             mangaId: Long,
             onError: suspend (Throwable) -> Unit = {},

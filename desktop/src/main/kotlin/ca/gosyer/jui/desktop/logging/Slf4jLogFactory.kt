@@ -15,12 +15,12 @@ class Slf4jLogFactory : LogFactory {
     override fun createKmLog(
         tag: String,
         className: String,
-    ): KmLog {
-        return Slf4jLog(tag)
-    }
+    ): KmLog = Slf4jLog(tag)
 }
 
-class Slf4jLog(tag: String) : KmLog(tag) {
+class Slf4jLog(
+    tag: String,
+) : KmLog(tag) {
     private val logger: Logger = LoggerFactory.getLogger(tag)
 
     override fun verbose(

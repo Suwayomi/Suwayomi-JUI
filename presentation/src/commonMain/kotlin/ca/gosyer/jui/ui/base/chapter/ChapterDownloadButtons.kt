@@ -91,9 +91,7 @@ data class ChapterDownloadItem(
         _downloadState.value = ChapterDownloadState.NotDownloaded
     }
 
-    fun isSelected(selectedItems: List<Long>): Boolean {
-        return (chapter.id in selectedItems).also { _isSelected.value = it }
-    }
+    fun isSelected(selectedItems: List<Long>): Boolean = (chapter.id in selectedItems).also { _isSelected.value = it }
 }
 
 enum class ChapterDownloadState {

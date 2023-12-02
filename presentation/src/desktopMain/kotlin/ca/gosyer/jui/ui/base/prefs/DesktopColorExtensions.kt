@@ -17,11 +17,10 @@ internal actual fun Color.toHsv(): FloatArray {
     return result
 }
 
-internal actual fun hexStringToColor(hex: String): Color? {
-    return try {
+internal actual fun hexStringToColor(hex: String): Color? =
+    try {
         val color = java.awt.Color.decode(hex)
         Color(color.red, color.green, color.blue, color.alpha)
     } catch (e: Exception) {
         null
     }
-}

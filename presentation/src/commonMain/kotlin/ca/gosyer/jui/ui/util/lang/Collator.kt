@@ -8,7 +8,9 @@ package ca.gosyer.jui.ui.util.lang
 
 import androidx.compose.ui.text.intl.Locale
 
-expect class CollatorComparator(locale: Locale) : Comparator<String> {
+expect class CollatorComparator(
+    locale: Locale,
+) : Comparator<String> {
     override fun compare(
         source: String,
         target: String,

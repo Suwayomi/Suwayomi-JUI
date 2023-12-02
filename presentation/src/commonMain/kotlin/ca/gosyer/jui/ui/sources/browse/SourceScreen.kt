@@ -20,7 +20,10 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
-class SourceScreen(val source: Source, private val initialQuery: String? = null) : BaseScreen() {
+class SourceScreen(
+    val source: Source,
+    private val initialQuery: String? = null,
+) : BaseScreen() {
     override val key: ScreenKey = source.id.toString()
 
     @Composable

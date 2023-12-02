@@ -23,6 +23,7 @@ sealed class SourceFiltersView<T, R : Any?> {
     abstract val index: Int
     abstract val name: String
     abstract val state: StateFlow<R>
+
     abstract fun updateState(value: R)
 
     abstract val filter: T
@@ -34,6 +35,7 @@ sealed class SourceFiltersView<T, R : Any?> {
         private val _state: MutableStateFlow<Boolean> = MutableStateFlow(filter.state),
     ) : SourceFiltersView<CheckBoxFilter.CheckBoxProps, Boolean>() {
         override val state: StateFlow<Boolean> = _state.asStateFlow()
+
         override fun updateState(value: Boolean) {
             _state.value = value
         }
@@ -50,6 +52,7 @@ sealed class SourceFiltersView<T, R : Any?> {
         override val filter: HeaderFilter.HeaderProps,
     ) : SourceFiltersView<HeaderFilter.HeaderProps, Any>() {
         override val state: StateFlow<Any> = MutableStateFlow(filter.state).asStateFlow()
+
         override fun updateState(value: Any) {
             // NO-OP
         }
@@ -59,12 +62,14 @@ sealed class SourceFiltersView<T, R : Any?> {
             filter.filter,
         )
     }
+
     data class Separator internal constructor(
         override val index: Int,
         override val name: String,
         override val filter: SeparatorFilter.SeparatorProps,
     ) : SourceFiltersView<SeparatorFilter.SeparatorProps, Any>() {
         override val state: StateFlow<Any> = MutableStateFlow(filter.state).asStateFlow()
+
         override fun updateState(value: Any) {
             // NO-OP
         }
@@ -82,6 +87,7 @@ sealed class SourceFiltersView<T, R : Any?> {
     ) : SourceFiltersView<TextFilter.TextProps, String>() {
         private val _state = MutableStateFlow(filter.state)
         override val state: StateFlow<String> = _state.asStateFlow()
+
         override fun updateState(value: String) {
             _state.value = value
         }
@@ -99,6 +105,7 @@ sealed class SourceFiltersView<T, R : Any?> {
         private val _state: MutableStateFlow<Int> = MutableStateFlow(filter.state),
     ) : SourceFiltersView<TriStateFilter.TriStateProps, Int>() {
         override val state: StateFlow<Int> = _state.asStateFlow()
+
         override fun updateState(value: Int) {
             _state.value = value
         }
@@ -116,6 +123,7 @@ sealed class SourceFiltersView<T, R : Any?> {
         private val _state: MutableStateFlow<Int> = MutableStateFlow(filter.state),
     ) : SourceFiltersView<SelectFilter.SelectProps, Int>() {
         override val state: StateFlow<Int> = _state.asStateFlow()
+
         override fun updateState(value: Int) {
             _state.value = value
         }
@@ -125,6 +133,7 @@ sealed class SourceFiltersView<T, R : Any?> {
             filter.filter,
         )
     }
+
     data class Sort internal constructor(
         override val index: Int,
         override val name: String,
@@ -132,6 +141,7 @@ sealed class SourceFiltersView<T, R : Any?> {
         private val _state: MutableStateFlow<SortFilter.Selection?> = MutableStateFlow(filter.state),
     ) : SourceFiltersView<SortFilter.SortProps, SortFilter.Selection?>() {
         override val state: StateFlow<SortFilter.Selection?> = _state.asStateFlow()
+
         override fun updateState(value: SortFilter.Selection?) {
             _state.value = value
         }
@@ -152,6 +162,7 @@ sealed class SourceFiltersView<T, R : Any?> {
                 SourceFiltersView(itemIndex, sourceFilter)
             },
         ).asStateFlow()
+
         override fun updateState(value: List<SourceFiltersView<*, *>>) {
             // NO-OP
         }
@@ -167,8 +178,8 @@ sealed class SourceFiltersView<T, R : Any?> {
 fun SourceFiltersView(
     index: Int,
     sourceFilter: SourceFilter,
-): SourceFiltersView<*, *> {
-    return when (sourceFilter) {
+): SourceFiltersView<*, *> =
+    when (sourceFilter) {
         is CheckBoxFilter -> SourceFiltersView.CheckBox(index, sourceFilter)
         is HeaderFilter -> SourceFiltersView.Header(index, sourceFilter)
         is SeparatorFilter -> SourceFiltersView.Separator(index, sourceFilter)
@@ -178,4 +189,3 @@ fun SourceFiltersView(
         is SortFilter -> SourceFiltersView.Sort(index, sourceFilter)
         is GroupFilter -> SourceFiltersView.Group(index, sourceFilter)
     }
-}

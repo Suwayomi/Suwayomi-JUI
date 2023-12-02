@@ -15,7 +15,9 @@ import org.lighthousegames.logging.logging
 
 class BatchChapterDownload
     @Inject
-    constructor(private val downloadRepository: DownloadRepository) {
+    constructor(
+        private val downloadRepository: DownloadRepository,
+    ) {
         suspend fun await(
             chapterIds: List<Long>,
             onError: suspend (Throwable) -> Unit = {},

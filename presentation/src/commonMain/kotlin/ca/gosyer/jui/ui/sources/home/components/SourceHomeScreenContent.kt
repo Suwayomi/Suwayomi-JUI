@@ -350,12 +350,11 @@ fun ThinSourceItem(
 
 @Composable
 @Stable
-private fun getActionItems(openEnabledLanguagesClick: () -> Unit): ImmutableList<ActionItem> {
-    return persistentListOf(
+private fun getActionItems(openEnabledLanguagesClick: () -> Unit): ImmutableList<ActionItem> =
+    persistentListOf(
         ActionItem(
             stringResource(MR.strings.enabled_languages),
             Icons.Rounded.Translate,
             doAction = openEnabledLanguagesClick,
         ),
     ).toImmutableList()
-}

@@ -75,7 +75,8 @@ enum class OverflowMode {
 @Composable
 fun ActionMenu(
     items: ImmutableList<Action>,
-    numIcons: Int = 3, // includes overflow menu icon; may be overridden by NEVER_OVERFLOW
+    // includes overflow menu icon; may be overridden by NEVER_OVERFLOW
+    numIcons: Int = 3,
     menuVisible: MutableState<Boolean> = remember { mutableStateOf(false) },
     iconItem: @Composable (onClick: () -> Unit, name: String, icon: ImageVector, enabled: Boolean) -> Unit,
 ) {
@@ -99,7 +100,9 @@ fun ActionMenu(
             } else {
                 TextButton(
                     onClick = when (item) {
-                        is ActionGroup -> { { openGroup = item } }
+                        is ActionGroup -> {
+                            { openGroup = item }
+                        }
                         is ActionItem -> item.doAction
                     },
                     enabled = item.enabled,

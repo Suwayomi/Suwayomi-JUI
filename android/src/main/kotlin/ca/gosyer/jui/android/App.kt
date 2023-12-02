@@ -20,7 +20,9 @@ import kotlinx.coroutines.flow.launchIn
 import org.lighthousegames.logging.logging
 import java.util.Locale
 
-class App : Application(), DefaultLifecycleObserver {
+class App :
+    Application(),
+    DefaultLifecycleObserver {
     override fun onCreate() {
         super<Application>.onCreate()
 

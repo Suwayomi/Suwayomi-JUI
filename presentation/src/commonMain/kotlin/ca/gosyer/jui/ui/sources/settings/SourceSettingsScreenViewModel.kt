@@ -78,7 +78,9 @@ class SourceSettingsScreenViewModel
                 .launchIn(scope)
         }
 
-        data class Params(val sourceId: Long)
+        data class Params(
+            val sourceId: Long,
+        )
 
         private fun List<SourcePreference>.toView() =
             mapIndexed { index, sourcePreference ->

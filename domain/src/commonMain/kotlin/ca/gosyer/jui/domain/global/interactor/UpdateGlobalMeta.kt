@@ -16,7 +16,9 @@ import org.lighthousegames.logging.logging
 
 class UpdateGlobalMeta
     @Inject
-    constructor(private val globalRepository: GlobalRepository) {
+    constructor(
+        private val globalRepository: GlobalRepository,
+    ) {
         suspend fun await(
             globalMeta: GlobalMeta,
             example: Int = globalMeta.example,

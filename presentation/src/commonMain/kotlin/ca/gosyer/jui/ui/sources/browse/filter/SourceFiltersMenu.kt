@@ -252,11 +252,13 @@ fun SortRow(
             }
             val angle: Float by animateFloatAsState(
                 targetValue = if (rotation > 360 - rotation) {
-                    -(360 - rotation) } else {
+                    -(360 - rotation)
+                } else {
                     rotation
                 },
                 animationSpec = tween(
-                    durationMillis = 500, // rotation is retrieved with this frequency
+                    // rotation is retrieved with this frequency
+                    durationMillis = 500,
                     easing = LinearEasing,
                 ),
             )
