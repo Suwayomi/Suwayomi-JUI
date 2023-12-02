@@ -93,7 +93,7 @@ class ExtensionsScreenViewModel
             scope.launch {
                 try {
                     val file = FileSystem.SYSTEM_TEMPORARY_DIRECTORY
-                        .resolve("tachidesk.${Random.nextLong()}.proto.gz")
+                        .resolve("tachidesk.${Random.nextLong()}.apk")
                         .also { file ->
                             source.saveTo(file)
                         }

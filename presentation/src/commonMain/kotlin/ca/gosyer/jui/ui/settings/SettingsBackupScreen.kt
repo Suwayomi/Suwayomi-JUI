@@ -141,7 +141,7 @@ class SettingsBackupViewModel
             scope.launch {
                 val file = try {
                     FileSystem.SYSTEM_TEMPORARY_DIRECTORY
-                        .resolve("tachidesk.${Random.nextLong()}.proto.gz")
+                        .resolve("tachidesk.${Random.nextLong()}.tachibk")
                         .also { file ->
                             source.saveTo(file)
                         }
