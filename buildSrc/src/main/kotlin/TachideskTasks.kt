@@ -55,7 +55,7 @@ private fun Task.onlyIfSigning(project: Project) {
     }
 }
 
-private fun Project.getSigningIdentity() = "${properties["compose.desktop.mac.signing.identity"].toString().trim('"')} (${properties["compose.desktop.mac.notarization.teamID"].toString().trim('"')})"
+private fun Project.getSigningIdentity() = "${properties["compose.desktop.mac.signing.identity"].toString().trim('"','\'')} (${properties["compose.desktop.mac.notarization.teamID"].toString().trim('"','\'')})"
 
 private fun isSigning(properties: Map<String, Any?>) = properties["compose.desktop.mac.sign"].toString() == "true"
 
