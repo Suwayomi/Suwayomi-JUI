@@ -188,4 +188,8 @@
     <string name="host_socks_port_sub">Porta atual do proxy: %1$s</string>
     <string name="host_socks_host_sub">Host atual do proxy: %1$s</string>
     <string name="confirm_exit_message">Tem certeza que deseja sair\?</string>
+    <string name="status_cancelled">Cancelado</string>
+    <string name="location_about">Sobre</string>
+    <string name="grid_columns">Colunas</string>
+    <string name="action_close">Fechar</string>
 </resources>
