@@ -166,7 +166,8 @@ compose.desktop {
                 "java.scripting",
                 "java.sql",
                 "jdk.crypto.ec",
-                "jdk.unsupported"
+                "jdk.unsupported",
+                "jdk.xml.dom"
             )
 
             packageName = if (!isPreview) {
