@@ -24,8 +24,11 @@
 -dontwarn java.awt.**
 -dontwarn javax.swing.**
 
-## Process
+## Lang
 -dontwarn java.lang.ProcessHandle
+-dontwarn java.lang.Module
+-dontwarn java.lang.ModuleLayer
+-dontwarn java.lang.reflect.InaccessibleObjectException
 
 # Accessability
 -dontwarn javax.accessibility.Accessible
