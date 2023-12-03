@@ -10,6 +10,7 @@
 # Kotlin
 # todo optimize more
 -keep,includedescriptorclasses class kotlin.reflect.** { *; }
+-keep,includedescriptorclasses class kotlinx.coroutines.** { *; }
 
 # Log4J
 -dontwarn org.apache.logging.log4j.**
@@ -26,19 +27,24 @@
 
 # DarkLaf
 # todo optimize more
--keep,includedescriptorclasses class com.github.weisj.darklaf.** { *; }
+-keep,includedescriptorclasses,includecode class com.github.weisj.darklaf.** { *; }
 -dontwarn com.github.weisj.darklaf.**
--keep class com.github.weisj.jsvg.** { *; }
+-keep,includedescriptorclasses,includecode class com.github.weisj.jsvg.** { *; }
 -dontwarn com.github.weisj.jsvg.**
+-keep,includedescriptorclasses,includecode class com.github.weisj.iconset.** { *; }
+-keepdirectories com/github/weisj/darklaf/iconset/**
 
 # Ktor
 -keep,includedescriptorclasses class * extends io.ktor.client.HttpClientEngineContainer
+-keep,includedescriptorclasses class io.ktor.serialization.kotlinx.json.KotlinxSerializationJsonExtensionProvider
 -dontwarn io.ktor.network.sockets.DatagramSendChannel
 
 # Coroutines
 -keep,includedescriptorclasses class kotlinx.coroutines.swing.** { *; }
 
 # XML
+-keep,includedescriptorclasses class javax.xml.** { *; }
+-keep,includedescriptorclasses class org.xml.sax.** { *; }
 -dontwarn org.apache.batik.**
 -dontwarn javax.xml.**
 -dontwarn jdk.xml.**
