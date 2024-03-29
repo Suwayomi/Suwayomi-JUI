@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>GraphiQL</title>
+    <style>
+        body {
+            height: 100%;
+            margin: 0;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        #graphiql {
+            height: 100vh;
+        }
+    </style>
+
+    <!--
+      This GraphiQL example depends on Promise and fetch, which are available in
+      modern browsers, but can be "polyfilled" for older browsers.
+      GraphiQL itself depends on React DOM.
+      If you do not want to rely on a CDN, you can host these files locally or
+      include them directly in your favored resource bundler.
+    -->
+    <script
+            crossorigin="anonymous"
+            integrity="sha512-m7nhpWHotpucPI37I4lPovL28Bm2BhAMV8poF3F8Z9oOEZ3jlxGzkgvG0EMt1mVL1xydr1erlBbmN90js/ssUw=="
+            src="https://unpkg.com/react@18.2.0/umd/react.development.js"
+    ></script>
+    <script
+            crossorigin="anonymous"
+            integrity="sha512-SKTL5rMewKkHVooCoONgJHCICK1otCPqPFduipyXVLWgtHHmsQgzXXHUP+SPyL4eU/knSpDkMXKlLedcHmWJpQ=="
+            src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"
+    ></script>
+
+    <!--
+      These two files can be found in the npm module, however you may wish to
+      copy them directly into your environment, or perhaps include them in your
+      favored resource bundler.
+     -->
+    <link href="https://unpkg.com/graphiql@3.0.5/graphiql.min.css" rel="stylesheet"/>
+    <link href="https://unpkg.com/@graphiql/plugin-explorer@0.3.4/dist/style.css" rel="stylesheet"/>
+    <style>
+        .docExplorerWrap {
+            width: 100% !important;
+            padding-bottom: 20px;
+        }
+        .docExplorerHide {
+            display: none;
+        }
+
+        /*noinspection CssUnresolvedCustomProperty*/
+        .doc-explorer-title {
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-h2);
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .doc-explorer-contents {
+            height: 100%;
+            padding-bottom: 40px;
+        }
+        .graphiql-explorer-root {
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="graphiql">Loading...</div>
+    <script
+            src="https://unpkg.com/graphiql@3.0.5/graphiql.min.js"
+            type="application/javascript"
+    ></script>
+    <script
+            src="https://unpkg.com/@graphiql/plugin-explorer@0.3.4/dist/index.umd.js"
+            type="application/javascript"
+    ></script>
+
+    <script>
+        const root = ReactDOM.createRoot(document.getElementById('graphiql'));
+        const fetcher = GraphiQL.createFetcher({
+            url: window.location.href,
+            subscriptionUrl: window.location.href.replace(/^http/,'ws')
+        });
+        const explorer = GraphiQLPluginExplorer.explorerPlugin();
+
+        function GraphiQLWithExplorer() {
+            const [query, setQuery] = React.useState(
+                'query AllCategories {\n' +
+                '  categories {\n' +
+                '    nodes {\n' +
+                '      mangas {\n' +
+                '        nodes {\n' +
+                '          title\n' +
+                '        }\n' +
+                '      }\n' +
+                '    }\n' +
+                '  }\n' +
+                '}',
+            );
+            return React.createElement(GraphiQL, {
+                fetcher: fetcher,
+                defaultEditorToolsVisibility: true,
+                plugins: [explorer],
+                query: query,
+                onEditQuery: setQuery,
+            });
+        }
+
+        root.render(
+            React.createElement(GraphiQLWithExplorer)
+        );
+    </script>
+</body>
+</html>
