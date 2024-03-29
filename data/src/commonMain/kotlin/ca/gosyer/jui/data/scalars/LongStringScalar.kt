@@ -12,9 +12,10 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
 object LongStringScalar : Adapter<Long> {
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
-        return reader.nextString()!!.toLong()
-    }
+    override fun fromJson(
+        reader: JsonReader,
+        customScalarAdapters: CustomScalarAdapters,
+    ): Long = reader.nextString()!!.toLong()
 
     override fun toJson(
         writer: JsonWriter,
