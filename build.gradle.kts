@@ -21,6 +21,7 @@ plugins {
     alias(libs.plugins.kotlinter) apply false
     alias(libs.plugins.ktorfit) apply false
     alias(libs.plugins.aboutLibraries) apply false
+    alias(libs.plugins.apollo) apply false
     alias(libs.plugins.versions)
     //id("com.louiscad.complete-kotlin") version "1.1.0"
 }

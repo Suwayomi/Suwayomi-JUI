@@ -47,7 +47,7 @@ jobs:
           done
 
           # Query the GraphQL endpoint and save the result to a file
-          curl -X POST -s http://localhost:4567/api/graphql > graphql/scheme.graphql
+          ./gradlew :data:graphql:downloadApolloSchema --endpoint='http://localhost:4567/api/graphql' --schema=data/graphql/src/commonMain/graphql/schema.graphqls
 
           # Kill the Java process
           kill $pid

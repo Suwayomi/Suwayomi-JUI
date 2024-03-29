@@ -19,6 +19,7 @@ rootProject.name = "Tachidesk-JUI"
 include("core")
 include("i18n")
 include("data")
+include("data:graphql")
 include("domain")
 include("ui-core")
 include("presentation")
