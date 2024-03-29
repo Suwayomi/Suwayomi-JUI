@@ -40,7 +40,7 @@ jobs:
 
           # Wait for 'Server Started' message
           while true; do
-              if grep -q "Server started successfully" <(tail -n 5 output.log); then
+              if grep -q "Javalin started" <(tail -n 5 output.log); then
                   break
               fi
               sleep 1
