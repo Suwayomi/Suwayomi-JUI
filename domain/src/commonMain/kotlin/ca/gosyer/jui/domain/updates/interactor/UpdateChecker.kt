@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.domain.updates.interactor
 
-import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.domain.build.BuildKonfig
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.domain.updates.model.GithubRelease
@@ -14,6 +13,7 @@ import ca.gosyer.jui.domain.updates.service.UpdatePreferences
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn

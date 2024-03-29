@@ -6,13 +6,13 @@
 
 package ca.gosyer.jui.data
 
-import ca.gosyer.jui.core.lang.IO
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.Converter
 import de.jensklingenberg.ktorfit.internal.TypeData
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn

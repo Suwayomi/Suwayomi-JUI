@@ -7,7 +7,6 @@
 package ca.gosyer.jui.ui.sources.globalsearch
 
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import ca.gosyer.jui.core.lang.IO
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.interactor.GetSearchManga
 import ca.gosyer.jui.domain.source.interactor.GetSourceList
@@ -22,6 +21,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
