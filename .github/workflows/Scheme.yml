@@ -24,13 +24,23 @@ jobs:
           java-version: '17'
           architecture: x64
 
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            config:
+              - 'buildSrc/src/main/kotlin/Config.kt'
+
       - name: Set up gradle
+        if: steps.changes.outputs.config == 'true'
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build Suwayomi-Server
+        if: steps.changes.outputs.config == 'true'
         run: ./gradlew desktop:setupTachideskJar
 
       - name: Run Suwayomi-Server
+        if: steps.changes.outputs.config == 'true'
         run: |
           # Run the JAR file
           java -jar desktop/src/main/resources/Tachidesk.jar > output.log &
@@ -54,12 +64,14 @@ jobs:
           rm output.log
 
       - name: Commit library changes
+        if: steps.changes.outputs.config == 'true'
         uses: EndBug/add-and-commit@v9
         with:
           message: Update Scheme
           push: false
 
       - name: Push changes
+        if: steps.changes.outputs.config == 'true'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
