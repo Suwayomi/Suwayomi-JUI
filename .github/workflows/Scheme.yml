@@ -51,6 +51,7 @@ jobs:
 
           # Kill the Java process
           kill $pid
+          rm output.log
 
       - name: Commit library changes
         uses: EndBug/add-and-commit@v9
