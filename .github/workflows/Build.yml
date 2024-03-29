@@ -74,7 +74,6 @@ jobs:
           p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}
 
       - name: Build
-        uses: gradle/gradle-build-action@v2
         run: >
           ./gradlew
           ${{ matrix.build }}
