@@ -1,0 +1,65 @@
+name: Scheme
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  Scheme:
+    name: Scheme
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          architecture: x64
+
+      - name: Set up gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build Suwayomi-Server
+        run: ./gradlew desktop:copyTachidesk
+
+      - name: Build Suwayomi-Server
+        run: |
+          # Run the JAR file
+          java -jar desktop/src/main/resources/Tachidesk.jar &
+
+          # Capture the PID of the Java process
+          pid=$!
+
+          # Wait for 'Server Started' message
+          while true; do
+              if grep -q "Server started successfully" <(tail -n 5 output.log); then
+                  break
+              fi
+              sleep 1
+          done
+
+          # Query the GraphQL endpoint and save the result to a file
+          curl -s http://localhost:4567/api/graphql > graphql/scheme.graphql
+
+          # Kill the Java process
+          kill $pid
+
+      - name: Commit library changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: Update Scheme
+          push: false
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
