@@ -38,7 +38,7 @@ kotlinInject = "0.6.3"
 # Network
 ktor = "2.3.9"
 ktorfit = "1.12.0"
-apollo = "3.8.3"
+apollo = "4.0.0-beta.5"
 
 # Logging
 slf4j = "2.0.12"
@@ -129,7 +129,8 @@ ktor-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "kt
 ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "ktorfit" }
 ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfit" }
-apollo = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
+apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
+apollo-engine-ktor = { module = "com.apollographql.apollo3:apollo-engine-ktor", version.ref = "apollo" }
 
 # Logging
 logging-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }

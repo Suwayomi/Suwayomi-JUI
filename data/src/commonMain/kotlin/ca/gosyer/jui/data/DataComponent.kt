@@ -20,6 +20,8 @@ import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.settings.service.SettingsRepository
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.domain.updates.service.UpdatesRepository
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.network.ktorClient
 import de.jensklingenberg.ktorfit.Ktorfit
 import me.tatarka.inject.annotations.Provides
 
@@ -33,6 +35,15 @@ interface DataComponent {
         .httpClient(http)
         .converterFactories(FlowConverterFactory())
         .baseUrl(serverPreferences.serverUrl().get().toString().addSuffix('/'))
+        .build()
+
+    @Provides
+    fun apolloClient(
+        http: Http,
+        serverPreferences: ServerPreferences,
+    ) = ApolloClient.Builder()
+        .serverUrl(serverPreferences.serverUrl().get().toString())
+        .ktorClient(http)
         .build()
 
     @Provides

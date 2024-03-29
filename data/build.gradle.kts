@@ -61,6 +61,8 @@ kotlin {
                 api(libs.ktor.websockets)
                 api(libs.okio)
                 api(libs.dateTime)
+                api(libs.apollo.runtime)
+                api(libs.apollo.engine.ktor)
                 api(projects.core)
                 api(projects.i18n)
                 api(projects.domain)
@@ -124,5 +126,7 @@ android {
 apollo {
     service("service") {
         packageName.set("ca.gosyer.jui.data.graphql")
+        generateMethods.set(listOf("equalsHashCode"))
+        mapScalar("LongString","kotlin.Long", "ca.gosyer.jui.data.scalars.LongStringScalar")
     }
 }
