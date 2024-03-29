@@ -31,7 +31,6 @@ import org.lighthousegames.logging.logging
 import java.io.File.pathSeparatorChar
 import java.io.IOException
 import java.io.Reader
-import java.util.jar.Attributes
 import java.util.jar.JarInputStream
 import kotlin.concurrent.thread
 import kotlin.io.path.absolutePathString
@@ -100,7 +99,9 @@ class ServerService
 
         private suspend fun runService() {
             process?.destroy()
-            process?.waitFor()
+            withIOContext {
+                process?.waitFor()
+            }
             _initialized.value = if (host.value) {
                 ServerResult.STARTING
             } else {
@@ -116,7 +117,7 @@ class ServerService
                 try {
                     val jarVersion = withIOContext {
                         JarInputStream(FileSystem.SYSTEM.source(jarFile).buffer().inputStream()).use { jar ->
-                            jar.manifest?.mainAttributes?.getValue(Attributes.Name.IMPLEMENTATION_VERSION)?.toIntOrNull()
+                            jar.manifest?.mainAttributes?.getValue("JUI-KEY")?.toIntOrNull()
                         }
                     }
 
