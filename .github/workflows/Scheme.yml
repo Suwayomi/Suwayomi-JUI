@@ -38,7 +38,7 @@ jobs:
           # Capture the PID of the Java process
           pid=$!
 
-          # Wait for 'Server Started' message
+          # Wait for 'Javalin started' message
           while true; do
               if grep -q "Javalin started" <(tail -n 5 output.log); then
                   break
@@ -47,7 +47,7 @@ jobs:
           done
 
           # Query the GraphQL endpoint and save the result to a file
-          curl -s http://localhost:4567/api/graphql > graphql/scheme.graphql
+          curl -X POST -s http://localhost:4567/api/graphql > graphql/scheme.graphql
 
           # Kill the Java process
           kill $pid
