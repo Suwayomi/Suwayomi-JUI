@@ -13,7 +13,6 @@ import ca.gosyer.jui.domain.server.service.ServerPreferences
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.serialization.decodeFromString
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
@@ -37,6 +36,6 @@ class LibraryUpdateService
             private val log = logging()
 
             val status = MutableStateFlow(Status.STARTING)
-            val updateStatus = MutableStateFlow(UpdateStatus(emptyMap(), false))
+            val updateStatus = MutableStateFlow(UpdateStatus(emptyMap(), emptyMap(), false))
         }
     }

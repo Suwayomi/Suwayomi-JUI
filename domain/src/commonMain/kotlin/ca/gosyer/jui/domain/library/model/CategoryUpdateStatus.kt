@@ -11,9 +11,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Stable
-enum class JobStatus {
-    PENDING,
-    RUNNING,
-    COMPLETE,
-    FAILED,
+enum class CategoryUpdateStatus {
+    UPDATING,
+    SKIPPED,
 }

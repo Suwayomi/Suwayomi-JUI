@@ -50,7 +50,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.job
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.lighthousegames.logging.logging
 
@@ -199,15 +198,16 @@ class AndroidLibraryService : Service() {
     private fun onReceived(status: UpdateStatus) {
         LibraryUpdateService.updateStatus.value = status
 
-        val complete = status.statusMap[JobStatus.COMPLETE]?.size ?: 0
-        val failed = status.statusMap[JobStatus.FAILED]?.size ?: 0
-        val running = status.statusMap[JobStatus.RUNNING]?.size ?: 0
-        val pending = status.statusMap[JobStatus.PENDING]?.size ?: 0
-        val total = complete + failed + running + pending
-        val current = complete + failed
+        val complete = status.mangaStatusMap[JobStatus.COMPLETE]?.size ?: 0
+        val failed = status.mangaStatusMap[JobStatus.FAILED]?.size ?: 0
+        val running = status.mangaStatusMap[JobStatus.RUNNING]?.size ?: 0
+        val pending = status.mangaStatusMap[JobStatus.PENDING]?.size ?: 0
+        val skipped = status.mangaStatusMap[JobStatus.SKIPPED]?.size ?: 0
+        val total = complete + failed + running + pending + skipped
+        val current = complete + failed + skipped
         if (current != total) {
             val notification = with(progressNotificationBuilder) {
-                val updatingText = status.statusMap[JobStatus.RUNNING]
+                val updatingText = status.mangaStatusMap[JobStatus.RUNNING]
                     ?.joinToString("\n") { it.title.chop(40) }
                 setContentTitle(
                     MR.strings.notification_updating

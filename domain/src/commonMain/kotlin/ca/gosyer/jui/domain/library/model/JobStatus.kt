@@ -16,4 +16,5 @@ enum class JobStatus {
     RUNNING,
     COMPLETE,
     FAILED,
+    SKIPPED,
 }

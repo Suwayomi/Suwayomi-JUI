@@ -39,13 +39,17 @@ fun LibraryUpdatesExtraInfo() {
 
     fun Map<JobStatus, List<*>>.getSize(jobStatus: JobStatus): Int = get(jobStatus)?.size ?: 0
     val current = remember(updateStatus) {
-        updateStatus.statusMap.run {
-            getSize(JobStatus.COMPLETE) + getSize(JobStatus.FAILED)
+        updateStatus.mangaStatusMap.run {
+            getSize(JobStatus.COMPLETE) + getSize(JobStatus.FAILED) + getSize(JobStatus.SKIPPED)
         }
     }
     val total = remember(updateStatus) {
-        updateStatus.statusMap.run {
-            getSize(JobStatus.COMPLETE) + getSize(JobStatus.FAILED) + getSize(JobStatus.PENDING) + getSize(JobStatus.RUNNING)
+        updateStatus.mangaStatusMap.run {
+            getSize(JobStatus.COMPLETE) +
+                getSize(JobStatus.FAILED) +
+                getSize(JobStatus.PENDING) +
+                getSize(JobStatus.RUNNING) +
+                getSize(JobStatus.SKIPPED)
         }
     }
 

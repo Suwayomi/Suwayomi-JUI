@@ -61,17 +61,17 @@ private fun isSigning(properties: Map<String, Any?>) = properties["compose.deskt
 
 private const val tmpPath = "tmp"
 private val tarUrl = if (preview) {
-    "https://github.com/Suwayomi/Tachidesk-Server/archive/$previewCommit.tar.gz"
+    "https://github.com/Suwayomi/Suwayomi-Server/archive/$previewCommit.tar.gz"
 } else {
-    "https://github.com/Suwayomi/Tachidesk-Server/archive/refs/tags/$tachideskVersion.tar.gz"
+    "https://github.com/Suwayomi/Suwayomi-Server/archive/refs/tags/$tachideskVersion.tar.gz"
 }
-private const val tmpTar = "$tmpPath/Tachidesk-Server.tar.gz"
+private const val tmpTar = "$tmpPath/Suwayomi-Server.tar.gz"
 private val fileSuffix get() = if (preview) {
     previewCommit
 } else {
     tachideskVersion.drop(1)
 }
-private val tmpServerFolder = "$tmpPath/Tachidesk-Server-$fileSuffix/"
+private val tmpServerFolder = "$tmpPath/Suwayomi-Server-$fileSuffix/"
 private const val macosFolder = "$tmpPath/macos/"
 private const val macosJarFolder = "$tmpPath/macos/jar/"
 private const val destination = "src/main/resources/"
@@ -129,8 +129,8 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
             workingDir(tmpServerFolder)
             val os = DefaultNativePlatform.getCurrentOperatingSystem()
             when {
-                os.isWindows -> commandLine("cmd", "/c", "gradlew", ":server:shadowJar", "--no-daemon")
-                os.isLinux || os.isMacOsX -> commandLine("./gradlew", ":server:shadowJar", "--no-daemon")
+                os.isWindows -> commandLine("cmd", "/c", "gradlew", ":server:shadowJar", "--no-daemon", "-x", "ktlintFormat")
+                os.isLinux || os.isMacOsX -> commandLine("./gradlew", ":server:shadowJar", "--no-daemon", "-x", "ktlintFormat")
             }
         }
         register(copyTachideskJarTask) {
@@ -142,7 +142,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                 file("${tmpServerFolder}server/build/").listFiles()
                     .orEmpty()
                     .find {
-                        it.nameWithoutExtension.startsWith("Tachidesk-Server-$tachideskVersion-r") &&
+                        it.nameWithoutExtension.startsWith("Suwayomi-Server-$tachideskVersion-r") &&
                             it.extension == "jar"
                     }
                     ?.copyTo(file("${destination}Tachidesk.jar"))
