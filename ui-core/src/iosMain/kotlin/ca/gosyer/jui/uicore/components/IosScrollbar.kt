@@ -81,12 +81,15 @@ internal actual fun RealVerticalScrollbar(
         is ScrollStateScrollbarAdapter -> {
             Modifier.drawScrollbar(adapter.scrollState, Orientation.Vertical, reverseLayout)
         }
+
         is LazyListStateScrollbarAdapter -> {
             Modifier.drawScrollbar(adapter.lazyListState, Orientation.Vertical, reverseLayout)
         }
+
         is LazyGridStateScrollbarAdapter -> {
             Modifier.drawScrollbar(adapter.lazyGridState, adapter.gridCells, adapter.spacing, Orientation.Vertical, reverseLayout)
         }
+
         else -> Modifier
     }
     Box(modifier then Modifier.fillMaxSize() then scrollbarModifier)
@@ -104,49 +107,47 @@ internal actual fun RealHorizontalScrollbar(
         is ScrollStateScrollbarAdapter -> {
             Modifier.drawScrollbar(adapter.scrollState, Orientation.Horizontal, reverseLayout)
         }
+
         is LazyListStateScrollbarAdapter -> {
             Modifier.drawScrollbar(adapter.lazyListState, Orientation.Horizontal, reverseLayout)
         }
+
         else -> Modifier
     }
     Box(modifier then Modifier.fillMaxSize() then scrollbarModifier)
 }
 
 @Composable
-actual fun rememberScrollbarAdapter(scrollState: ScrollState): ScrollbarAdapter {
-    return remember(scrollState) {
+actual fun rememberScrollbarAdapter(scrollState: ScrollState): ScrollbarAdapter =
+    remember(scrollState) {
         ScrollStateScrollbarAdapter(scrollState)
     }
-}
 
 @Composable
-actual fun rememberScrollbarAdapter(scrollState: LazyListState): ScrollbarAdapter {
-    return remember(scrollState) {
+actual fun rememberScrollbarAdapter(scrollState: LazyListState): ScrollbarAdapter =
+    remember(scrollState) {
         LazyListStateScrollbarAdapter(scrollState)
     }
-}
 
 @Composable
 internal actual fun realRememberVerticalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Vertical?,
-): ScrollbarAdapter {
-    return remember(scrollState, gridCells) {
+): ScrollbarAdapter =
+    remember(scrollState, gridCells) {
         LazyGridStateScrollbarAdapter(scrollState, gridCells, arrangement?.spacing ?: Dp.Hairline)
     }
-}
 
 @Composable
 internal actual fun realRememberHorizontalScrollbarAdapter(
     scrollState: LazyGridState,
     gridCells: GridCells,
     arrangement: Arrangement.Horizontal?,
-): ScrollbarAdapter {
-    return remember(scrollState, gridCells) {
+): ScrollbarAdapter =
+    remember(scrollState, gridCells) {
         LazyGridStateScrollbarAdapter(scrollState, gridCells, arrangement?.spacing ?: Dp.Hairline)
     }
-}
 
 actual fun Modifier.scrollbarPadding() = this
 

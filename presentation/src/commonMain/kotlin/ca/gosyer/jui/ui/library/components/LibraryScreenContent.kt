@@ -220,9 +220,11 @@ fun WideLibraryScreenContent(
                 is LibraryState.Failed -> {
                     ErrorScreen(libraryState.e.message)
                 }
+
                 LibraryState.Loading -> {
                     LoadingScreen(true)
                 }
+
                 is LibraryState.Loaded -> {
                     LibraryPager(
                         pagerState = pagerState,
@@ -296,6 +298,7 @@ fun ThinLibraryScreenContent(
         confirmValueChange = {
             when (it) {
                 ModalBottomSheetValue.Hidden -> setShowingSheet(false)
+
                 ModalBottomSheetValue.Expanded,
                 ModalBottomSheetValue.HalfExpanded,
                 -> setShowingSheet(true)
@@ -359,9 +362,11 @@ fun ThinLibraryScreenContent(
                 LibraryState.Loading -> {
                     LoadingScreen(true)
                 }
+
                 is LibraryState.Failed -> {
                     ErrorScreen(libraryState.e.message)
                 }
+
                 is LibraryState.Loaded -> {
                     LibraryPager(
                         pagerState = pagerState,

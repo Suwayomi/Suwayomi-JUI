@@ -210,6 +210,7 @@ fun SettingsServerScreenContent(
                 }
                 when (proxyValue) {
                     Proxy.NO_PROXY -> Unit
+
                     Proxy.HTTP_PROXY -> {
                         item {
                             EditTextPreference(
@@ -226,6 +227,7 @@ fun SettingsServerScreenContent(
                             )
                         }
                     }
+
                     Proxy.SOCKS_PROXY -> {
                         item {
                             EditTextPreference(

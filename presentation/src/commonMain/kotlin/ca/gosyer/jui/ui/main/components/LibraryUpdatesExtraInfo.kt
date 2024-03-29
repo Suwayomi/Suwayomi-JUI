@@ -55,6 +55,7 @@ fun LibraryUpdatesExtraInfo() {
 
     val text = when (serviceStatus) {
         WebsocketService.Status.STARTING -> stringResource(MR.strings.downloads_loading)
+
         WebsocketService.Status.RUNNING -> {
             if (updateStatus.running) {
                 stringResource(MR.strings.notification_updating, current, total)
@@ -62,6 +63,7 @@ fun LibraryUpdatesExtraInfo() {
                 null
             }
         }
+
         WebsocketService.Status.STOPPED -> null
     }
     if (!text.isNullOrBlank()) {

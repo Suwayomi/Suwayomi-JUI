@@ -36,10 +36,9 @@ import platform.CoreGraphics.CGImageGetWidth
 import platform.UIKit.UIImage
 
 @Composable
-actual fun ImageResource.toPainter(): Painter {
-    return remember { toUIImage()?.toSkiaImage()?.toComposeImageBitmap()?.let(::BitmapPainter) }
+actual fun ImageResource.toPainter(): Painter =
+    remember { toUIImage()?.toSkiaImage()?.toComposeImageBitmap()?.let(::BitmapPainter) }
         ?: rememberVectorPainter(Icons.Rounded.BrokenImage)
-}
 
 // Taken from https://github.com/touchlab/DroidconKotlin/blob/main/shared-ui/src/iosMain/kotlin/co/touchlab/droidcon/ui/util/ToSkiaImage.kt
 // TODO: Add support for remaining color spaces when the Skia library supports them.
@@ -60,13 +59,16 @@ private fun UIImage.toSkiaImage(): Image? {
         CGImageAlphaInfo.kCGImageAlphaPremultipliedFirst,
         CGImageAlphaInfo.kCGImageAlphaPremultipliedLast,
         -> ColorAlphaType.PREMUL
+
         CGImageAlphaInfo.kCGImageAlphaFirst,
         CGImageAlphaInfo.kCGImageAlphaLast,
         -> ColorAlphaType.UNPREMUL
+
         CGImageAlphaInfo.kCGImageAlphaNone,
         CGImageAlphaInfo.kCGImageAlphaNoneSkipFirst,
         CGImageAlphaInfo.kCGImageAlphaNoneSkipLast,
         -> ColorAlphaType.OPAQUE
+
         else -> ColorAlphaType.UNKNOWN
     }
 

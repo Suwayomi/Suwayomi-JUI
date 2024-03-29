@@ -35,6 +35,7 @@ actual class DateHandler
                         setTimeStyle(NSDateFormatterNoStyle)
                         setLocale(Locale.current.toPlatform())
                     }
+
                 else -> NSDateFormatter()
                     .apply {
                         setDateFormat(format)

@@ -434,11 +434,13 @@ private fun PreferenceFile(
                     modifier = modifier,
                     tint = Color.Red,
                 )
+
                 Status.Success -> Icon(
                     Icons.Rounded.Check,
                     contentDescription = null,
                     modifier = modifier,
                 )
+
                 else -> Unit
             }
         }

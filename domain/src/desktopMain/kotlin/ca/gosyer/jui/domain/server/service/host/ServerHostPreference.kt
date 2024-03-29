@@ -17,9 +17,7 @@ sealed class ServerHostPreference<T : Any> {
     protected abstract val defaultValue: T
     protected abstract val serverValue: T
 
-    private fun validate(value: T): Boolean {
-        return value != serverValue
-    }
+    private fun validate(value: T): Boolean = value != serverValue
 
     fun getProperty(): String? {
         val preference = preference().get().takeIf(::validate)

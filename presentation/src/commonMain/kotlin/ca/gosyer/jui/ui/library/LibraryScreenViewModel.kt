@@ -111,6 +111,7 @@ private fun LibraryMap.setManga(
     val flow = getManga(id)
     when (val state = flow.value) {
         is CategoryState.Loaded -> state.unfilteredItems.value = manga
+
         else -> {
             val unfilteredItems = MutableStateFlow(manga)
             flow.value = CategoryState.Loaded(getItemsFlow(unfilteredItems), unfilteredItems)
@@ -160,15 +161,17 @@ class LibraryScreenViewModel
                     FilterState.EXCLUDED -> manga.downloadCount == null || manga.downloadCount == 0
                     FilterState.INCLUDED -> manga.downloadCount != null && (manga.downloadCount ?: 0) > 0
                     FilterState.IGNORED -> true
-                } && when (unread) {
-                    FilterState.EXCLUDED -> manga.unreadCount == null || manga.unreadCount == 0
-                    FilterState.INCLUDED -> manga.unreadCount != null && (manga.unreadCount ?: 0) > 0
-                    FilterState.IGNORED -> true
-                } && when (completed) {
-                    FilterState.EXCLUDED -> manga.status != MangaStatus.COMPLETED
-                    FilterState.INCLUDED -> manga.status == MangaStatus.COMPLETED
-                    FilterState.IGNORED -> true
-                }
+                } &&
+                    when (unread) {
+                        FilterState.EXCLUDED -> manga.unreadCount == null || manga.unreadCount == 0
+                        FilterState.INCLUDED -> manga.unreadCount != null && (manga.unreadCount ?: 0) > 0
+                        FilterState.IGNORED -> true
+                    } &&
+                    when (completed) {
+                        FilterState.EXCLUDED -> manga.status != MangaStatus.COMPLETED
+                        FilterState.INCLUDED -> manga.status == MangaStatus.COMPLETED
+                        FilterState.IGNORED -> true
+                    }
             }
         }
 
@@ -238,17 +241,22 @@ class LibraryScreenViewModel
                         collator.compare(a.title.toLowerCase(locale), b.title.toLowerCase(locale))
                     }
                 }
+
                 Sort.UNREAD -> {
                     { a, b ->
                         when {
                             // Ensure unread content comes first
                             (a.unreadCount ?: 0) == (b.unreadCount ?: 0) -> 0
+
                             a.unreadCount == null || a.unreadCount == 0 -> if (ascending) 1 else -1
+
                             b.unreadCount == null || b.unreadCount == 0 -> if (ascending) -1 else 1
+
                             else -> (a.unreadCount ?: 0).compareTo(b.unreadCount ?: 0)
                         }
                     }
                 }
+
                 Sort.DATE_ADDED -> {
                     { a, b ->
                         a.inLibraryAt.compareTo(b.inLibraryAt)

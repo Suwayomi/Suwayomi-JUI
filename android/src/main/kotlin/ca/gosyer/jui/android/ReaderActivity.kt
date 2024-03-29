@@ -21,13 +21,12 @@ class ReaderActivity : AppCompatActivity() {
             context: Context,
             mangaId: Long,
             chapterIndex: Int,
-        ): Intent {
-            return Intent(context, ReaderActivity::class.java).apply {
+        ): Intent =
+            Intent(context, ReaderActivity::class.java).apply {
                 putExtra("manga", mangaId)
                 putExtra("chapter", chapterIndex)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -77,12 +77,10 @@ class ServerService
             }
         }
 
-        private fun getRuntimeJava(): String? {
-            return System.getProperty("java.home")?.let { getJavaFromPath(it.toPath().resolve("bin")) }
-        }
+        private fun getRuntimeJava(): String? = System.getProperty("java.home")?.let { getJavaFromPath(it.toPath().resolve("bin")) }
 
-        private fun getPossibleJava(): String? {
-            return System.getProperty("java.library.path")?.split(pathSeparatorChar)
+        private fun getPossibleJava(): String? =
+            System.getProperty("java.library.path")?.split(pathSeparatorChar)
                 .orEmpty()
                 .asSequence()
                 .mapNotNull {
@@ -99,7 +97,6 @@ class ServerService
                 }
                 .mapNotNull { getJavaFromPath(it) }
                 .firstOrNull()
-        }
 
         private suspend fun runService() {
             process?.destroy()
@@ -154,6 +151,7 @@ class ServerService
                         when {
                             it.contains("Javalin started") ->
                                 _initialized.value = ServerResult.STARTED
+
                             it.contains("Javalin has stopped") ->
                                 _initialized.value = ServerResult.FAILED
                         }

@@ -32,6 +32,7 @@ actual class DateHandler
                 "" -> DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
                     .withLocale(Locale.current.toPlatform())
                     .withZone(ZoneId.systemDefault())
+
                 else -> DateTimeFormatter.ofPattern(format)
                     .withZone(ZoneId.systemDefault())
             }.let { formatter ->

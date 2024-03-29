@@ -73,9 +73,7 @@ class AndroidLibraryService : Service() {
             context.stopService(Intent(context, AndroidLibraryService::class.java))
         }
 
-        fun isRunning(): Boolean {
-            return instance != null
-        }
+        fun isRunning(): Boolean = instance != null
 
         private val json = Json {
             ignoreUnknownKeys = true
@@ -86,9 +84,7 @@ class AndroidLibraryService : Service() {
 
     private lateinit var ioScope: CoroutineScope
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
-    }
+    override fun onBind(intent: Intent): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -122,7 +118,9 @@ class AndroidLibraryService : Service() {
                 Actions.START.name,
                 Actions.RESTART.name,
                 -> startWebsocket()
+
                 Actions.STOP.name -> stopSelf()
+
                 else -> log.info { "This should never happen. No action in the received intent" }
             }
         } else {

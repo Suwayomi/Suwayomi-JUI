@@ -22,8 +22,8 @@ class FlowConverterFactory : Converter.Factory {
         val typeData: TypeData,
         val ktorfit: Ktorfit,
     ) : Converter.ResponseConverter<HttpResponse, Flow<Any?>> {
-        override fun convert(getResponse: suspend () -> HttpResponse): Flow<Any?> {
-            return flow {
+        override fun convert(getResponse: suspend () -> HttpResponse): Flow<Any?> =
+            flow {
                 val response = getResponse()
 
                 val convertedBody = ktorfit.nextSuspendResponseConverter(
@@ -33,7 +33,6 @@ class FlowConverterFactory : Converter.Factory {
                     ?: response.body(typeData.typeArgs.first().typeInfo)
                 emit(convertedBody)
             }.flowOn(Dispatchers.IO)
-        }
     }
 
     override fun responseConverter(

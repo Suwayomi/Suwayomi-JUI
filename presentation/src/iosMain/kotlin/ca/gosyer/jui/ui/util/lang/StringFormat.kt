@@ -21,11 +21,17 @@ actual fun stringFormat(
     @Suppress("MagicNumber")
     return when (args.size) {
         0 -> NSString.stringWithFormat(objcFormat)
+
         1 -> NSString.stringWithFormat(objcFormat, args[0])
+
         2 -> NSString.stringWithFormat(objcFormat, args[0], args[1])
+
         3 -> NSString.stringWithFormat(objcFormat, args[0], args[1], args[2])
+
         4 -> NSString.stringWithFormat(objcFormat, args[0], args[1], args[2], args[3])
+
         5 -> NSString.stringWithFormat(objcFormat, args[0], args[1], args[2], args[3], args[4])
+
         6 -> NSString.stringWithFormat(
             objcFormat,
             args[0],
@@ -35,6 +41,7 @@ actual fun stringFormat(
             args[4],
             args[5],
         )
+
         7 -> NSString.stringWithFormat(
             objcFormat,
             args[0],
@@ -45,6 +52,7 @@ actual fun stringFormat(
             args[5],
             args[6],
         )
+
         8 -> NSString.stringWithFormat(
             objcFormat,
             args[0],
@@ -56,6 +64,7 @@ actual fun stringFormat(
             args[6],
             args[7],
         )
+
         9 -> NSString.stringWithFormat(
             objcFormat,
             args[0],
@@ -68,6 +77,7 @@ actual fun stringFormat(
             args[7],
             args[8],
         )
+
         else -> throw IllegalArgumentException("can't handle more then 9 arguments now")
     }
 }

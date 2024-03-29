@@ -98,14 +98,17 @@ fun ImageLoaderImage(
                         error.value = action.error
                         ImageLoaderImageState.Failure
                     }
+
                     is ImageAction.Loading -> {
                         progress.value = 0.0F
                         ImageLoaderImageState.Loading
                     }
+
                     is ImageAction.Success -> {
                         progress.value = 1.0F
                         ImageLoaderImageState.Success
                     }
+
                     else -> {
                         ImageLoaderImageState.Loading
                     }
@@ -117,6 +120,7 @@ fun ImageLoaderImage(
                         ImageLoaderImageState.Loading -> if (onLoading != null) {
                             onLoading(progress.value)
                         }
+
                         ImageLoaderImageState.Success -> Image(
                             painter = rememberImageActionPainter(
                                 imageAction,
@@ -129,6 +133,7 @@ fun ImageLoaderImage(
                             alpha = alpha,
                             colorFilter = colorFilter,
                         )
+
                         ImageLoaderImageState.Failure -> {
                             if (onFailure != null) {
                                 onFailure(error.value ?: return@Crossfade)

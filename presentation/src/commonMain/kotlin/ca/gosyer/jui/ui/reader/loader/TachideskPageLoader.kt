@@ -154,8 +154,8 @@ class TachideskPageLoader(
         }
     }
 
-    private suspend fun getImageFromCache(page: ReaderPage): ReaderPage.ImageDecodeState {
-        return chapterCache.openSnapshot(page.cacheKey)?.use {
+    private suspend fun getImageFromCache(page: ReaderPage): ReaderPage.ImageDecodeState =
+        chapterCache.openSnapshot(page.cacheKey)?.use {
             it.source().use { source ->
                 val decoder = bitmapDecoderFactory.create(
                     ImageResult.OfSource(
@@ -183,7 +183,6 @@ class TachideskPageLoader(
                 }
             }
         } ?: ReaderPage.ImageDecodeState.FailedToGetSnapShot
-    }
 
     /**
      * Preloads the given [amount] of pages after the [currentPage] with a lower priority.

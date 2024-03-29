@@ -130,7 +130,9 @@ suspend fun main() {
                     SystemTheme.LIGHT, SystemTheme.UNKNOWN -> IntelliJTheme()
                     SystemTheme.DARK -> DarculaTheme()
                 }
+
                 ThemeMode.Light -> IntelliJTheme()
+
                 ThemeMode.Dark -> DarculaTheme()
             }
             withUIContext {
@@ -188,10 +190,12 @@ suspend fun main() {
                                 // backPressHandler.handle()
                                 false
                             }
+
                             Key.F3 -> {
                                 displayDebugInfoFlow.value = !displayDebugInfoFlow.value
                                 true
                             }
+
                             else -> false
                         }
                     } else {
@@ -220,6 +224,7 @@ suspend fun main() {
                                     )
                                 }
                             }
+
                             ServerResult.STARTING, ServerResult.FAILED -> {
                                 Surface {
                                     LoadingScreen(

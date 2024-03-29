@@ -19,9 +19,7 @@ class StandardPreferenceStore(
     override fun getString(
         key: String,
         defaultValue: String,
-    ): Preference<String> {
-        return StandardPreference(preferences, key, defaultValue, StringAdapter)
-    }
+    ): Preference<String> = StandardPreference(preferences, key, defaultValue, StringAdapter)
 
     /**
      * Returns a [Long] preference for this [key].
@@ -29,9 +27,7 @@ class StandardPreferenceStore(
     override fun getLong(
         key: String,
         defaultValue: Long,
-    ): Preference<Long> {
-        return StandardPreference(preferences, key, defaultValue, LongAdapter)
-    }
+    ): Preference<Long> = StandardPreference(preferences, key, defaultValue, LongAdapter)
 
     /**
      * Returns an [Int] preference for this [key].
@@ -39,9 +35,7 @@ class StandardPreferenceStore(
     override fun getInt(
         key: String,
         defaultValue: Int,
-    ): Preference<Int> {
-        return StandardPreference(preferences, key, defaultValue, IntAdapter)
-    }
+    ): Preference<Int> = StandardPreference(preferences, key, defaultValue, IntAdapter)
 
     /**
      * Returns a [Float] preference for this [key].
@@ -49,9 +43,7 @@ class StandardPreferenceStore(
     override fun getFloat(
         key: String,
         defaultValue: Float,
-    ): Preference<Float> {
-        return StandardPreference(preferences, key, defaultValue, FloatAdapter)
-    }
+    ): Preference<Float> = StandardPreference(preferences, key, defaultValue, FloatAdapter)
 
     /**
      * Returns a [Boolean] preference for this [key].
@@ -59,9 +51,7 @@ class StandardPreferenceStore(
     override fun getBoolean(
         key: String,
         defaultValue: Boolean,
-    ): Preference<Boolean> {
-        return StandardPreference(preferences, key, defaultValue, BooleanAdapter)
-    }
+    ): Preference<Boolean> = StandardPreference(preferences, key, defaultValue, BooleanAdapter)
 
     /**
      * Returns a [Set<String>] preference for this [key].
@@ -69,9 +59,7 @@ class StandardPreferenceStore(
     override fun getStringSet(
         key: String,
         defaultValue: Set<String>,
-    ): Preference<Set<String>> {
-        return StandardPreference(preferences, key, defaultValue, StringSetAdapter)
-    }
+    ): Preference<Set<String>> = StandardPreference(preferences, key, defaultValue, StringSetAdapter)
 
     /**
      * Returns preference of type [T] for this [key]. The [serializer] and [deserializer] function

@@ -57,12 +57,14 @@ fun httpClient(
         engine {
             proxy = when (serverPreferences.proxy().get()) {
                 Proxy.NO_PROXY -> null
+
                 Proxy.HTTP_PROXY -> ProxyBuilder.http(
                     URLBuilder(
                         host = serverPreferences.proxyHttpHost().get(),
                         port = serverPreferences.proxyHttpPort().get(),
                     ).build(),
                 )
+
                 Proxy.SOCKS_PROXY -> ProxyBuilder.socks(
                     serverPreferences.proxySocksHost().get(),
                     serverPreferences.proxySocksPort().get(),
@@ -71,6 +73,7 @@ fun httpClient(
         }
         when (serverPreferences.auth().get()) {
             Auth.NONE -> Unit
+
             Auth.BASIC -> AuthPlugin {
                 basic {
                     sendWithoutRequest {
@@ -84,6 +87,7 @@ fun httpClient(
                     }
                 }
             }
+
             Auth.DIGEST -> AuthPlugin {
                 digest {
                     credentials {

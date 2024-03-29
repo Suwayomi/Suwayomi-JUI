@@ -185,6 +185,7 @@ fun WideSourcesMenu(
                         sourceUI.header,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     )
+
                     is SourceUI.SourceItem -> WideSourceItem(
                         sourceUI,
                         onSourceClicked = onAddSource,
@@ -285,6 +286,7 @@ fun ThinSourcesMenu(
                         sourceUI.header,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     )
+
                     is SourceUI.SourceItem -> ThinSourceItem(
                         sourceUI,
                         onSourceClicked = onAddSource,

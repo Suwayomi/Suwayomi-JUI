@@ -14,15 +14,14 @@ object ImageUtil {
     private val gifMagic = "GIF8".toByteArray()
     private val webpMagic = "RIFF".toByteArray()
 
-    fun findType(bytes: ByteArray): ImageType? {
-        return when {
+    fun findType(bytes: ByteArray): ImageType? =
+        when {
             bytes.compareWith(jpgMagic) -> ImageType.JPG
             bytes.compareWith(pngMagic) -> ImageType.PNG
             bytes.compareWith(gifMagic) -> ImageType.GIF
             bytes.compareWith(webpMagic) -> ImageType.WEBP
             else -> null
         }
-    }
 
     private fun ByteArray.compareWith(magic: ByteArray): Boolean {
         for (i in magic.indices) {

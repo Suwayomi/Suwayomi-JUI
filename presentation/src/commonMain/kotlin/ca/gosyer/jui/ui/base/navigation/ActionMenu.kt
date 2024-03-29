@@ -103,6 +103,7 @@ fun ActionMenu(
                         is ActionGroup -> {
                             { openGroup = item }
                         }
+
                         is ActionItem -> item.doAction
                     },
                     enabled = item.enabled,
@@ -158,6 +159,7 @@ fun ActionMenu(
                     onClick = {
                         when (item) {
                             is ActionGroup -> openGroup = item
+
                             is ActionItem -> {
                                 openGroup = null
                                 item()
@@ -200,9 +202,11 @@ private fun separateIntoIconAndOverflow(
             OverflowMode.NEVER_OVERFLOW -> {
                 iconActions.add(item)
             }
+
             OverflowMode.ALWAYS_OVERFLOW -> {
                 overflowActions.add(item)
             }
+
             OverflowMode.IF_NECESSARY -> {
                 if (iconsAvailableBeforeOverflow > 0) {
                     iconActions.add(item)
@@ -211,6 +215,7 @@ private fun separateIntoIconAndOverflow(
                     overflowActions.add(item)
                 }
             }
+
             OverflowMode.NOT_SHOWN -> {
                 // skip
             }

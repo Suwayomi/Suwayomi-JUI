@@ -119,6 +119,7 @@ class SourceScreenViewModel(
                     )
                 }
             }
+
             isLatest.value -> {
                 { page ->
                     getLatestManga.await(
@@ -128,6 +129,7 @@ class SourceScreenViewModel(
                     )
                 }
             }
+
             else -> {
                 { page ->
                     getPopularManga.await(

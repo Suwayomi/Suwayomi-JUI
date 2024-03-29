@@ -63,6 +63,7 @@ fun PagerReader(
                             state.animateScrollToPage(page)
                         }
                     }
+
                     is PageMove.Page -> {
                         val pageNumber = pages.indexOf(pageMove.page)
                         if (pageNumber > -1) {
@@ -158,6 +159,7 @@ fun HandlePager(
                 contentScale = pageContentScale,
             )
         }
+
         is ReaderPageSeparator -> ChapterSeparator(
             previousChapter = image.previousChapter,
             nextChapter = image.nextChapter,

@@ -86,6 +86,7 @@ fun ContinuousReader(
                             )
                             Unit
                         }
+
                         is PageMove.Page -> {
                             val pageNumber = pages.indexOf(pageMove.page)
                             if (pageNumber > -1) {
@@ -155,6 +156,7 @@ fun ContinuousReader(
                     reverseLayout = direction == Direction.Up,
                 )
             }
+
             false -> {
                 LazyRow(
                     state = state,
@@ -217,6 +219,7 @@ private fun LazyListScope.items(
                     retry = retry,
                 )
             }
+
             is ReaderPageSeparator -> ChapterSeparator(
                 previousChapter = image.previousChapter,
                 nextChapter = image.nextChapter,

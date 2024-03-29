@@ -143,6 +143,7 @@ class UpdatesPager
             updates.map {
                 when (it) {
                     is Updates.Date -> it
+
                     is Updates.Update -> it.copy(
                         manga = changedManga[it.manga.id] ?: it.manga,
                         chapter = changedChapters[it.chapter.id] ?: it.chapter,

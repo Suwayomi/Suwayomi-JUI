@@ -39,6 +39,7 @@ fun DownloadsExtraInfo() {
     val list by vm.downloadQueue.collectAsState()
     val text = when (serviceStatus) {
         WebsocketService.Status.STARTING -> stringResource(MR.strings.downloads_loading)
+
         WebsocketService.Status.RUNNING -> {
             if (list.isNotEmpty()) {
                 val remainingDownloads = stringResource(MR.strings.downloads_remaining, list.size)
@@ -51,6 +52,7 @@ fun DownloadsExtraInfo() {
                 null
             }
         }
+
         WebsocketService.Status.STOPPED -> null
     }
     if (!text.isNullOrBlank()) {

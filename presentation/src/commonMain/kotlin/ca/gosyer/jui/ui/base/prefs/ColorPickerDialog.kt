@@ -208,10 +208,18 @@ private fun ColorPresetItem(
 private fun getColorShades(color: Color): ImmutableList<Color> {
     val f = color.toLong()
     return listOf(
-        shadeColor(f, 0.9), shadeColor(f, 0.7), shadeColor(f, 0.5),
-        shadeColor(f, 0.333), shadeColor(f, 0.166), shadeColor(f, -0.125),
-        shadeColor(f, -0.25), shadeColor(f, -0.375), shadeColor(f, -0.5),
-        shadeColor(f, -0.675), shadeColor(f, -0.7), shadeColor(f, -0.775),
+        shadeColor(f, 0.9),
+        shadeColor(f, 0.7),
+        shadeColor(f, 0.5),
+        shadeColor(f, 0.333),
+        shadeColor(f, 0.166),
+        shadeColor(f, -0.125),
+        shadeColor(f, -0.25),
+        shadeColor(f, -0.375),
+        shadeColor(f, -0.5),
+        shadeColor(f, -0.675),
+        shadeColor(f, -0.7),
+        shadeColor(f, -0.775),
     ).toImmutableList()
 }
 

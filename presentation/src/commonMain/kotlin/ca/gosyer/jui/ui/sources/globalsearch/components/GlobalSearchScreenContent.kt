@@ -196,12 +196,14 @@ fun GlobalSearchItem(
             ) {
                 ErrorScreen(search.e)
             }
+
             Search.Searching -> Box(
                 Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
+
             is Search.Success -> Box(
                 Modifier
                     .fillMaxWidth()

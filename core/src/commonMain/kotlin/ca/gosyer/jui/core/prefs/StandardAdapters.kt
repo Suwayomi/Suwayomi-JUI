@@ -60,18 +60,14 @@ internal object StringAdapter : Adapter<String> {
         key: String,
         preferences: ObservableSettings,
         callback: () -> Unit,
-    ): SettingsListener {
-        return preferences.addStringOrNullListener(key) { callback() }
-    }
+    ): SettingsListener = preferences.addStringOrNullListener(key) { callback() }
 }
 
 internal object LongAdapter : Adapter<Long> {
     override fun get(
         key: String,
         preferences: ObservableSettings,
-    ): Long {
-        return preferences.getLong(key, 0)
-    }
+    ): Long = preferences.getLong(key, 0)
 
     override fun set(
         key: String,
@@ -85,18 +81,14 @@ internal object LongAdapter : Adapter<Long> {
         key: String,
         preferences: ObservableSettings,
         callback: () -> Unit,
-    ): SettingsListener {
-        return preferences.addLongOrNullListener(key) { callback() }
-    }
+    ): SettingsListener = preferences.addLongOrNullListener(key) { callback() }
 }
 
 internal object IntAdapter : Adapter<Int> {
     override fun get(
         key: String,
         preferences: ObservableSettings,
-    ): Int {
-        return preferences.getInt(key, 0)
-    }
+    ): Int = preferences.getInt(key, 0)
 
     override fun set(
         key: String,
@@ -110,18 +102,14 @@ internal object IntAdapter : Adapter<Int> {
         key: String,
         preferences: ObservableSettings,
         callback: () -> Unit,
-    ): SettingsListener {
-        return preferences.addIntOrNullListener(key) { callback() }
-    }
+    ): SettingsListener = preferences.addIntOrNullListener(key) { callback() }
 }
 
 internal object FloatAdapter : Adapter<Float> {
     override fun get(
         key: String,
         preferences: ObservableSettings,
-    ): Float {
-        return preferences.getFloat(key, 0f)
-    }
+    ): Float = preferences.getFloat(key, 0f)
 
     override fun set(
         key: String,
@@ -135,18 +123,14 @@ internal object FloatAdapter : Adapter<Float> {
         key: String,
         preferences: ObservableSettings,
         callback: () -> Unit,
-    ): SettingsListener {
-        return preferences.addFloatOrNullListener(key) { callback() }
-    }
+    ): SettingsListener = preferences.addFloatOrNullListener(key) { callback() }
 }
 
 internal object BooleanAdapter : Adapter<Boolean> {
     override fun get(
         key: String,
         preferences: ObservableSettings,
-    ): Boolean {
-        return preferences.getBoolean(key, false)
-    }
+    ): Boolean = preferences.getBoolean(key, false)
 
     override fun set(
         key: String,
@@ -160,9 +144,7 @@ internal object BooleanAdapter : Adapter<Boolean> {
         key: String,
         preferences: ObservableSettings,
         callback: () -> Unit,
-    ): SettingsListener {
-        return preferences.addBooleanOrNullListener(key) { callback() }
-    }
+    ): SettingsListener = preferences.addBooleanOrNullListener(key) { callback() }
 }
 
 internal object StringSetAdapter : Adapter<Set<String>> {
@@ -189,9 +171,7 @@ internal object StringSetAdapter : Adapter<Set<String>> {
     override fun isSet(
         keys: Set<String>,
         key: String,
-    ): Boolean {
-        return keys.contains("$key.size")
-    }
+    ): Boolean = keys.contains("$key.size")
 
     /**
      * Watching the regular key doesn't produce updates for a string set for some reason
@@ -201,9 +181,7 @@ internal object StringSetAdapter : Adapter<Set<String>> {
         key: String,
         preferences: ObservableSettings,
         callback: () -> Unit,
-    ): SettingsListener {
-        return preferences.addIntOrNullListener("$key.size") { callback() }
-    }
+    ): SettingsListener = preferences.addIntOrNullListener("$key.size") { callback() }
 }
 
 internal class ObjectAdapter<T>(
@@ -229,9 +207,7 @@ internal class ObjectAdapter<T>(
         key: String,
         preferences: ObservableSettings,
         callback: () -> Unit,
-    ): SettingsListener {
-        return preferences.addStringOrNullListener(key) { callback() }
-    }
+    ): SettingsListener = preferences.addStringOrNullListener(key) { callback() }
 }
 
 internal class JsonObjectAdapter<T>(
@@ -261,9 +237,7 @@ internal class JsonObjectAdapter<T>(
     override fun isSet(
         keys: Set<String>,
         key: String,
-    ): Boolean {
-        return keys.any { it.startsWith(key) }
-    }
+    ): Boolean = keys.any { it.startsWith(key) }
 
     /**
      * Todo doesn't work

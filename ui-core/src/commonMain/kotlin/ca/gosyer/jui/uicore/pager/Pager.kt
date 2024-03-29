@@ -300,9 +300,7 @@ private fun lazyListSnapLayoutInfoProvider(
         lowerBound: Float,
         upperBound: Float,
     ): Float {
-        fun Float.isValidDistance(): Boolean {
-            return this != Float.POSITIVE_INFINITY && this != Float.NEGATIVE_INFINITY
-        }
+        fun Float.isValidDistance(): Boolean = this != Float.POSITIVE_INFINITY && this != Float.NEGATIVE_INFINITY
 
         val finalDistance = when (sign(velocity)) {
             0f -> {
@@ -314,7 +312,9 @@ private fun lazyListSnapLayoutInfoProvider(
             }
 
             1f -> upperBound
+
             -1f -> lowerBound
+
             else -> 0f
         }
 

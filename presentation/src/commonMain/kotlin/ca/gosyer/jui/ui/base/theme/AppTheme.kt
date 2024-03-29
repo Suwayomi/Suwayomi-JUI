@@ -107,10 +107,9 @@ class AppThemeViewModel
             fun getTheme(
                 id: Int,
                 isLight: Boolean,
-            ): Theme {
-                return themes.find { it.id == id && it.colors.isLight == isLight }
+            ): Theme =
+                themes.find { it.id == id && it.colors.isLight == isLight }
                     ?: themes.first { it.colors.isLight == isLight }
-            }
 
             return when (themeMode) {
                 ThemeMode.System -> if (!isSystemInDarkTheme()) {
@@ -118,7 +117,9 @@ class AppThemeViewModel
                 } else {
                     getTheme(darkTheme, false)
                 }
+
                 ThemeMode.Light -> getTheme(lightTheme, true)
+
                 ThemeMode.Dark -> getTheme(darkTheme, false)
             }
         }

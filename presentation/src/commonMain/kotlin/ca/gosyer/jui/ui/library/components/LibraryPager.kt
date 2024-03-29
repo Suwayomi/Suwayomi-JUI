@@ -40,7 +40,9 @@ fun LibraryPager(
     HorizontalPager(state = pagerState) {
         when (val library = getLibraryForPage(categories[it].id).value) {
             CategoryState.Loading -> LoadingScreen()
+
             is CategoryState.Failed -> ErrorScreen(library.e.message)
+
             is CategoryState.Loaded -> LibraryLoadedPage(
                 library = library,
                 displayMode = displayMode,
@@ -83,6 +85,7 @@ private fun LibraryLoadedPage(
             showLanguage = showLanguage,
             showLocal = showLocal,
         )
+
         DisplayMode.ComfortableGrid -> LibraryMangaComfortableGrid(
             library = items,
             gridColumns = gridColumns,
@@ -94,6 +97,7 @@ private fun LibraryLoadedPage(
             showLanguage = showLanguage,
             showLocal = showLocal,
         )
+
         DisplayMode.CoverOnlyGrid -> LibraryMangaCoverOnlyGrid(
             library = items,
             gridColumns = gridColumns,
@@ -105,6 +109,7 @@ private fun LibraryLoadedPage(
             showLanguage = showLanguage,
             showLocal = showLocal,
         )
+
         DisplayMode.List -> LibraryMangaList(
             library = items,
             onClickManga = onClickManga,
@@ -114,6 +119,7 @@ private fun LibraryLoadedPage(
             showLanguage = showLanguage,
             showLocal = showLocal,
         )
+
         else -> Box {}
     }
 }

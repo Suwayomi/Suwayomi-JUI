@@ -615,6 +615,7 @@ fun ChapterSeparator(
                 previousChapter == null && nextChapter != null -> {
                     Text(stringResource(MR.strings.no_previous_chapter))
                 }
+
                 previousChapter != null && nextChapter != null -> {
                     val prevChapter by previousChapter.stateObserver.collectAsState()
                     when (prevChapter) {
@@ -624,6 +625,7 @@ fun ChapterSeparator(
                             }
                             CircularProgressIndicator()
                         }
+
                         else -> Unit
                     }
                     Text(stringResource(MR.strings.previous_chapter, previousChapter.chapter.name))
@@ -637,9 +639,11 @@ fun ChapterSeparator(
                             }
                             CircularProgressIndicator()
                         }
+
                         else -> Unit
                     }
                 }
+
                 previousChapter != null && nextChapter == null -> {
                     Text(stringResource(MR.strings.no_next_chapter))
                 }

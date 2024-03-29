@@ -117,12 +117,14 @@ fun ChapterDownloadIcon(
                 onClick = { onClickDelete(chapter.chapter) },
             )
         }
+
         ChapterDownloadState.Downloading -> {
             DownloadingIconButton(
                 downloadChapter,
                 onClick = { onClickStop(chapter.chapter) },
             )
         }
+
         ChapterDownloadState.NotDownloaded -> {
             DownloadIconButton(onClick = { onClickDownload(chapter.chapter) })
         }
@@ -172,6 +174,7 @@ private fun DownloadingIconButton(
                 LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
                 2.dp,
             )
+
             DownloadState.Downloading -> if (downloadChapter.progress != 0.0F) {
                 val animatedProgress by animateFloatAsState(
                     targetValue = downloadChapter.progress,
@@ -202,6 +205,7 @@ private fun DownloadingIconButton(
                     2.dp,
                 )
             }
+
             DownloadState.Error -> Surface(shape = CircleShape, color = LocalContentColor.current) {
                 Icon(
                     Icons.Rounded.Error,
@@ -212,6 +216,7 @@ private fun DownloadingIconButton(
                     Color.Red,
                 )
             }
+
             DownloadState.Finished -> Surface(shape = CircleShape, color = LocalContentColor.current) {
                 Icon(
                     Icons.Rounded.Check,

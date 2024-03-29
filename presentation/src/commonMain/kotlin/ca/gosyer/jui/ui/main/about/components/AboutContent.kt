@@ -265,6 +265,7 @@ private fun LinkDisplay() {
                                 contentDescription = name,
                                 modifier = modifier,
                             )
+
                             is LinkIcon.Icon -> Icon(
                                 imageVector = it.icon.icon,
                                 contentDescription = name,
@@ -288,6 +289,7 @@ private fun LinkDisplay() {
                                 contentDescription = name,
                                 modifier = Modifier.fillMaxSize(),
                             )
+
                             is LinkIcon.Icon -> Icon(
                                 imageVector = it.icon.icon,
                                 contentDescription = name,

@@ -208,20 +208,26 @@ class ReaderMenuViewModel
                         setReaderSettingsMenuOpen(!readerSettingsMenuOpen.value)
                         null
                     }
+
                     Navigation.NEXT -> MoveTo.Next
+
                     Navigation.PREV -> MoveTo.Previous
+
                     Navigation.RIGHT -> when (readerModeSettings.direction.value) {
                         Direction.Left -> MoveTo.Previous
                         else -> MoveTo.Next
                     }
+
                     Navigation.LEFT -> when (readerModeSettings.direction.value) {
                         Direction.Left -> MoveTo.Next
                         else -> MoveTo.Previous
                     }
+
                     Navigation.DOWN -> when (readerModeSettings.direction.value) {
                         Direction.Up -> MoveTo.Previous
                         else -> MoveTo.Next
                     }
+
                     Navigation.UP -> when (readerModeSettings.direction.value) {
                         Direction.Up -> MoveTo.Next
                         else -> MoveTo.Previous

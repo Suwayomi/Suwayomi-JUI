@@ -155,11 +155,13 @@ fun SourcesSideMenu(
                                     contentDescription = stringResource(MR.strings.sources_home),
                                     modifier = modifier,
                                 )
+
                                 SourceNavigatorScreen.SearchScreen -> Icon(
                                     imageVector = Icons.Rounded.Search,
                                     contentDescription = stringResource(MR.strings.location_global_search),
                                     modifier = modifier,
                                 )
+
                                 is SourceNavigatorScreen.SourceScreen -> Box(Modifier.align(Alignment.Center)) {
                                     ImageLoaderImage(
                                         data = screen.source,

@@ -40,8 +40,8 @@ class ImageLoaderProvider
         @OptIn(DelicateCoroutinesApi::class)
         val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
 
-        fun get(imageCache: ImageCache): ImageLoader {
-            return ImageLoader {
+        fun get(imageCache: ImageCache): ImageLoader =
+            ImageLoader {
                 components {
                     register(context, http)
                     add(MokoResourceFetcher.Factory())
@@ -60,7 +60,6 @@ class ImageLoaderProvider
                     bitmapMemoryCacheConfig { configure(context) }
                 }
             }
-        }
 
         inner class MangaCoverMapper : Mapper<Url> {
             override fun map(

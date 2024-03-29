@@ -148,6 +148,7 @@ fun ExtensionsScreenContent(
                                 modifier = Modifier.animateItemPlacement()
                                     .padding(16.dp, 16.dp, 16.dp, 4.dp),
                             )
+
                             is ExtensionUI.ExtensionItem -> Column {
                                 ExtensionItem(
                                     Modifier.animateItemPlacement(),

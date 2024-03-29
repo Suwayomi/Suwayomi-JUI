@@ -184,6 +184,7 @@ fun UpdatesScreenContent(
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                 fontWeight = FontWeight.Medium,
                             )
+
                             is UpdatesUI.Item -> {
                                 val manga = item.chapterDownloadItem.manga!!
                                 val chapter = item.chapterDownloadItem.chapter

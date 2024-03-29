@@ -285,6 +285,7 @@ private fun SourceThinScreenContent(
         confirmValueChange = {
             when (it) {
                 ModalBottomSheetValue.Hidden -> setShowingFilters(false)
+
                 ModalBottomSheetValue.Expanded,
                 ModalBottomSheetValue.HalfExpanded,
                 -> setShowingFilters(true)
@@ -492,6 +493,7 @@ private fun MangaTable(
                 hasNextPage = hasNextPage,
                 onLoadNextPage = onLoadNextPage,
             )
+
             DisplayMode.ComfortableGrid -> SourceMangaComfortableGrid(
                 mangas = mangas,
                 gridColumns = gridColumns,
@@ -500,12 +502,14 @@ private fun MangaTable(
                 hasNextPage = hasNextPage,
                 onLoadNextPage = onLoadNextPage,
             )
+
             DisplayMode.List -> SourceMangaList(
                 mangas = mangas,
                 onClickManga = onMangaClick,
                 hasNextPage = hasNextPage,
                 onLoadNextPage = onLoadNextPage,
             )
+
             else -> Box {}
         }
     }
