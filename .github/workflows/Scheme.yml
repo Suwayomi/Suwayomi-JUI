@@ -28,12 +28,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build Suwayomi-Server
-        run: ./gradlew desktop:copyTachidesk
+        run: ./gradlew desktop:setupTachideskJar
 
-      - name: Build Suwayomi-Server
+      - name: Run Suwayomi-Server
         run: |
           # Run the JAR file
-          java -jar desktop/src/main/resources/Tachidesk.jar &
+          java -jar desktop/src/main/resources/Tachidesk.jar > output.log &
 
           # Capture the PID of the Java process
           pid=$!
