@@ -6,7 +6,7 @@ plugins {
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.buildkonfig.get().pluginId)
     id(libs.plugins.kotlinter.get().pluginId)
-    id(libs.plugins.ktorfit.get().pluginId)
+    id(libs.plugins.apollo.get().pluginId)
 }
 
 kotlin {
@@ -119,4 +119,10 @@ buildkonfig {
 
 android {
     namespace = "ca.gosyer.jui.data"
+}
+
+apollo {
+    service("service") {
+        packageName.set("ca.gosyer.jui.data.graphql")
+    }
 }

@@ -1,0 +1,46 @@
+query AllSettings {
+  settings {
+    autoDownloadNewChapters
+    autoDownloadNewChaptersLimit
+    backupInterval
+    backupPath
+    backupTTL
+    backupTime
+    basicAuthEnabled
+    basicAuthPassword
+    basicAuthUsername
+    debugLogsEnabled
+    downloadAsCbz
+    downloadsPath
+    electronPath
+    excludeCompleted
+    excludeEntryWithUnreadChapters
+    excludeNotStarted
+    excludeUnreadChapters
+    extensionRepos
+    flareSolverrEnabled
+    flareSolverrSessionName
+    flareSolverrSessionTtl
+    flareSolverrTimeout
+    flareSolverrUrl
+    globalUpdateInterval
+    gqlDebugLogsEnabled
+    initialOpenInBrowserEnabled
+    ip
+    localSourcePath
+    maxSourcesInParallel
+    port
+    socksProxyEnabled
+    socksProxyHost
+    socksProxyPassword
+    socksProxyPort
+    socksProxyUsername
+    socksProxyVersion
+    systemTrayEnabled
+    updateMangas
+    webUIChannel
+    webUIFlavor
+    webUIInterface
+    webUIUpdateCheckInterval
+  }
+}
