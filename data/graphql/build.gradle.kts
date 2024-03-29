@@ -93,6 +93,6 @@ android {
 
 apollo {
     service("service") {
-        packageName.set("com.example.rocketreserver")
+        packageName.set("ca.gosyer.jui.data.graphql")
     }
 }
