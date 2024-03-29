@@ -23,26 +23,42 @@ jobs:
           java-version: '17'
           architecture: x64
 
+      - name: Set up gradle
+        uses: gradle/actions/setup-gradle@v3
+
       - name: Setup Cl
         run: ./scripts/SetupClUnix.sh
 
-      - name: Update Locales
-        uses: gradle/gradle-build-action@v2
+      - uses: dorny/paths-filter@v3
+        id: changes
         with:
-          arguments: generateLocales
+          filters: |
+            config:
+              - 'buildSrc/src/main/kotlin/Config.kt'
+            locales:
+              - 'i18n/**'
+            versions:
+              - 'gradle/libs.versions.toml'
+            kt:
+              - '**.kt'
+
+      - name: Update Locales
+        if: steps.changes.outputs.locales == 'true'
+        run: ./gradlew generateLocales
 
       - name: Commit locale changes
+        if: steps.changes.outputs.locales == 'true'
         uses: EndBug/add-and-commit@v9
         with:
-          message: Update avalible Locales
+          message: Update available Locales
           push: false
 
       - name: Update Libraries
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: desktop:exportLibraryDefinitions -PexportPath=build
+        if: steps.changes.outputs.versions == 'true'
+        run: ./gradlew desktop:exportLibraryDefinitions -PexportPath=build
 
       - name: Move libraries json
+        if: steps.changes.outputs.versions == 'true'
         run: |
           mkdir -p build
           jq 'del(.metadata)' --sort-keys desktop/build/aboutlibraries.json > build/json1.json
@@ -55,20 +71,56 @@ jobs:
           fi
 
       - name: Commit library changes
+        if: steps.changes.outputs.versions == 'true'
         uses: EndBug/add-and-commit@v9
         with:
           message: Update Libraries
           push: false
 
       - name: Format files
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: formatKotlin
+        if: steps.changes.outputs.kt == 'true'
+        run: ./gradlew formatKotlin
 
       - name: Commit lint changes
+        if: steps.changes.outputs.kt == 'true'
         uses: EndBug/add-and-commit@v9
         with:
           message: Automatic Lint
+          push: false
+
+      - name: Build Suwayomi-Server
+        if: steps.changes.outputs.config == 'true'
+        run: ./gradlew desktop:setupTachideskJar
+
+      - name: Run Suwayomi-Server
+        if: steps.changes.outputs.config == 'true'
+        run: |
+          # Run the JAR file
+          java -jar desktop/src/main/resources/Tachidesk.jar > output.log &
+
+          # Capture the PID of the Java process
+          pid=$!
+
+          # Wait for 'Javalin started' message
+          while true; do
+              if grep -q "Javalin started" <(tail -n 5 output.log); then
+                  break
+              fi
+              sleep 1
+          done
+
+          # Query the GraphQL endpoint and save the result to a file
+          ./gradlew :data:graphql:downloadApolloSchema --endpoint='http://localhost:4567/api/graphql' --schema=data/graphql/src/commonMain/graphql/schema.graphqls
+
+          # Kill the Java process
+          kill $pid
+          rm output.log
+
+      - name: Commit library changes
+        if: steps.changes.outputs.config == 'true'
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: Update Scheme
           push: false
 
       - name: Push changes
