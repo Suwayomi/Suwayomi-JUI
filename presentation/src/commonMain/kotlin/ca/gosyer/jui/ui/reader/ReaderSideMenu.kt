@@ -36,9 +36,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.NavigateBefore
+import androidx.compose.material.icons.automirrored.rounded.NavigateNext
 import androidx.compose.material.icons.rounded.ChevronLeft
-import androidx.compose.material.icons.rounded.NavigateBefore
-import androidx.compose.material.icons.rounded.NavigateNext
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.runtime.Composable
@@ -318,7 +318,7 @@ private fun NavigateChapters(
         OutlinedButton(loadPrevChapter, Modifier.weight(0.5F)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val nextChapter = stringResource(MR.strings.nav_prev_chapter)
-                Icon(Icons.Rounded.NavigateBefore, nextChapter)
+                Icon(Icons.AutoMirrored.Rounded.NavigateBefore, nextChapter)
                 Text(nextChapter, fontSize = 10.sp)
             }
         }
@@ -326,7 +326,7 @@ private fun NavigateChapters(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val nextChapter = stringResource(MR.strings.nav_next_chapter)
                 Text(nextChapter, fontSize = 10.sp)
-                Icon(Icons.Rounded.NavigateNext, nextChapter)
+                Icon(Icons.AutoMirrored.Rounded.NavigateNext, nextChapter)
             }
         }
     }

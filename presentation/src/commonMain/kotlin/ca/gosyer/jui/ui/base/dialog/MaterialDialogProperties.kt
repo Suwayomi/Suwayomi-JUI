@@ -40,4 +40,5 @@ fun getMaterialDialogProperties(
         windowTitle = title,
         windowIcon = icon,
         windowIsResizable = resizable,
+        isWindowDialog = false,
     )

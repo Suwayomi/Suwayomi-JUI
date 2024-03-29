@@ -43,10 +43,10 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -168,7 +168,11 @@ private fun WideToolbar(
                     AnimatedVisibility(
                         !displayController.sideMenuVisible,
                     ) {
-                        ActionIcon(displayController::openSideMenu, "Open nav", Icons.Rounded.Sort)
+                        ActionIcon(
+                            displayController::openSideMenu,
+                            "Open nav",
+                            Icons.AutoMirrored.Rounded.Sort,
+                        )
                     }
                 }
 
@@ -257,7 +261,7 @@ private fun ThinToolbar(
                                 },
                             ) {
                                 Icon(
-                                    if (closeIcon === ToolbarDefault) Icons.Rounded.ArrowBack else closeIcon,
+                                    if (closeIcon === ToolbarDefault) Icons.AutoMirrored.Rounded.ArrowBack else closeIcon,
                                     stringResource(MR.strings.action_close),
                                 )
                             }

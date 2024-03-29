@@ -35,7 +35,6 @@ import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.ui.compose.Libraries
-import com.mikepenz.aboutlibraries.ui.compose.util.StableLibrary
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -59,10 +58,10 @@ fun LicensesContent() {
                 val state = rememberLazyListState()
                 val uriHandler = LocalUriHandler.current
                 Libraries(
-                    libraries = remember(libs) { libs.libraries.map { StableLibrary(it) }.toImmutableList() },
+                    libraries = remember(libs) { libs.libraries.toImmutableList() },
                     lazyListState = state,
                     onLibraryClick = {
-                        it.library.website?.let(uriHandler::openUri)
+                        it.website?.let(uriHandler::openUri)
                     },
                     contentPadding = WindowInsets.bottomNav.add(
                         WindowInsets.navigationBars.only(

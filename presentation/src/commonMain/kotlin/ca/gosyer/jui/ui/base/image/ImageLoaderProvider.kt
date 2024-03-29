@@ -22,6 +22,7 @@ import com.seiko.imageloader.component.ComponentRegistryBuilder
 import com.seiko.imageloader.component.fetcher.MokoResourceFetcher
 import com.seiko.imageloader.component.keyer.Keyer
 import com.seiko.imageloader.component.mapper.Mapper
+import com.seiko.imageloader.intercept.bitmapMemoryCacheConfig
 import com.seiko.imageloader.option.Options
 import com.seiko.imageloader.option.OptionsBuilder
 import io.ktor.http.Url
@@ -56,7 +57,7 @@ class ImageLoaderProvider
                 }
                 interceptor {
                     diskCache { imageCache }
-                    memoryCacheConfig { configure(context) }
+                    bitmapMemoryCacheConfig { configure(context) }
                 }
             }
         }

@@ -37,7 +37,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.List
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
@@ -183,7 +183,7 @@ private fun CategoryRow(
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Outlined.List,
+                    imageVector = Icons.AutoMirrored.Outlined.List,
                     modifier = Modifier.padding(16.dp),
                     tint = MaterialTheme.colors.primary,
                     contentDescription = null,

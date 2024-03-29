@@ -34,7 +34,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowForward
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -185,7 +185,7 @@ fun GlobalSearchItem(
                     fontSize = 12.sp,
                 )
             }
-            Icon(Icons.Rounded.ArrowForward, stringResource(MR.strings.action_search))
+            Icon(Icons.AutoMirrored.Rounded.ArrowForward, stringResource(MR.strings.action_search))
         }
 
         Spacer(Modifier.height(4.dp))

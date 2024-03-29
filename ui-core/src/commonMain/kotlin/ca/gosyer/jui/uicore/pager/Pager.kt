@@ -36,10 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMaxBy
-import androidx.compose.ui.util.fastSumBy
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.math.abs
 import kotlin.math.sign
@@ -242,9 +240,9 @@ private fun lazyListSnapLayoutInfoProvider(
         get() = lazyListState.layoutInfo
 
     // Single page snapping is the default
-    override fun Density.calculateApproachOffset(initialVelocity: Float): Float = 0f
+    override fun calculateApproachOffset(initialVelocity: Float): Float = 0f
 
-    override fun Density.calculateSnappingOffset(currentVelocity: Float): Float {
+    override fun calculateSnappingOffset(currentVelocity: Float): Float {
         var lowerBoundOffset = Float.NEGATIVE_INFINITY
         var upperBoundOffset = Float.POSITIVE_INFINITY
 
@@ -279,7 +277,7 @@ private fun lazyListSnapLayoutInfoProvider(
     }
 
     @OptIn(ExperimentalFoundationApi::class)
-    private fun Density.calculateDistanceToDesiredSnapPosition(
+    private fun calculateDistanceToDesiredSnapPosition(
         mainAxisViewPortSize: Int,
         beforeContentPadding: Int,
         afterContentPadding: Int,
@@ -291,7 +289,7 @@ private fun lazyListSnapLayoutInfoProvider(
         val containerSize = mainAxisViewPortSize - beforeContentPadding - afterContentPadding
 
         val desiredDistance = with(snapPositionInLayout) {
-            position(containerSize, itemSize, itemIndex)
+            position(containerSize, itemSize, beforeContentPadding, afterContentPadding, itemIndex)
         }.toFloat()
 
         return itemOffset - desiredDistance
@@ -326,15 +324,6 @@ private fun lazyListSnapLayoutInfoProvider(
             0f
         }
     }
-
-    override fun Density.calculateSnapStepSize(): Float =
-        with(layoutInfo) {
-            if (visibleItemsInfo.isNotEmpty()) {
-                visibleItemsInfo.fastSumBy { it.size } / visibleItemsInfo.size.toFloat()
-            } else {
-                0f
-            }
-        }
 }
 
 @Composable

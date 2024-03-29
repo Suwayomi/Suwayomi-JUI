@@ -22,8 +22,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ChromeReaderMode
 import androidx.compose.material.icons.rounded.Backup
-import androidx.compose.material.icons.rounded.ChromeReaderMode
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.CollectionsBookmark
 import androidx.compose.material.icons.rounded.Computer
@@ -110,7 +110,7 @@ fun SettingsScreenContent(navigator: Navigator) {
                 item {
                     PreferenceRow(
                         title = stringResource(MR.strings.settings_reader),
-                        icon = Icons.Rounded.ChromeReaderMode,
+                        icon = Icons.AutoMirrored.Rounded.ChromeReaderMode,
                         onClick = { navigator push SettingsReaderScreen() },
                     )
                 }

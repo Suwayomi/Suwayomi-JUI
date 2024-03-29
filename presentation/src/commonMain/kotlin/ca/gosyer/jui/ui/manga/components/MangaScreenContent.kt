@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Label
 import androidx.compose.material.icons.rounded.BookmarkAdd
 import androidx.compose.material.icons.rounded.BookmarkRemove
 import androidx.compose.material.icons.rounded.Close
@@ -34,7 +35,6 @@ import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.FlipToBack
-import androidx.compose.material.icons.rounded.Label
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RemoveDone
@@ -312,7 +312,7 @@ private fun getActionItems(
         if (categoryItemVisible) {
             ActionItem(
                 name = stringResource(MR.strings.edit_categories),
-                icon = Icons.Rounded.Label,
+                icon = Icons.AutoMirrored.Rounded.Label,
                 doAction = setCategories,
             )
         } else {

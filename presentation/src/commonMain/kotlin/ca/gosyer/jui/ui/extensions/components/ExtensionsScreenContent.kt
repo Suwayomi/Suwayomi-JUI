@@ -9,7 +9,6 @@ package ca.gosyer.jui.ui.extensions.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -318,7 +317,7 @@ fun LanguageDialog(
                     setLangs(indexes.map { list[it].first }.toSet())
                 },
             )
-            Box(Modifier.matchParentSize().height(IntrinsicSize.Min)) {
+            Box(Modifier.matchParentSize()) {
                 VerticalScrollbar(
                     rememberScrollbarAdapter(listState),
                     Modifier.align(Alignment.CenterEnd)

@@ -194,7 +194,7 @@ fun CategorySelectDialog(
                     onPositiveClick(indexes.map { categories[it] }, oldCategories)
                 },
             )
-            Box(Modifier.matchParentSize().height(IntrinsicSize.Min)) {
+            Box(Modifier.matchParentSize()) {
                 VerticalScrollbar(
                     rememberScrollbarAdapter(listState),
                     Modifier.align(Alignment.CenterEnd)

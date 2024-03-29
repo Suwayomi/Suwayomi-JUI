@@ -56,8 +56,8 @@ class UpdatesScreenViewModel
         private val _isLoading = MutableStateFlow(true)
         val isLoading = _isLoading.asStateFlow()
 
-        val updates = updatesPager.updates.map {
-            it.map {
+        val updates = updatesPager.updates.map { updates ->
+            updates.map {
                 when (it) {
                     is UpdatesPager.Updates.Date -> UpdatesUI.Header(it.date)
                     is UpdatesPager.Updates.Update -> UpdatesUI.Item(ChapterDownloadItem(it.manga, it.chapter))
