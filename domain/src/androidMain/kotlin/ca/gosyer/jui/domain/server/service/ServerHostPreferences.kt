@@ -16,14 +16,22 @@ import kotlinx.coroutines.flow.StateFlow
 actual class ServerHostPreferences actual constructor(
     @Suppress("unused") private val preferenceStore: PreferenceStore,
 ) {
-    actual fun host(): Preference<Boolean> = object : Preference<Boolean> {
-        override fun key(): String = "host"
-        override fun get(): Boolean = false
-        override fun isSet(): Boolean = false
-        override fun delete() {}
-        override fun defaultValue(): Boolean = false
-        override fun changes(): Flow<Boolean> = MutableStateFlow(false)
-        override fun stateIn(scope: CoroutineScope): StateFlow<Boolean> = MutableStateFlow(false)
-        override fun set(value: Boolean) {}
-    }
+    actual fun host(): Preference<Boolean> =
+        object : Preference<Boolean> {
+            override fun key(): String = "host"
+
+            override fun get(): Boolean = false
+
+            override fun isSet(): Boolean = false
+
+            override fun delete() {}
+
+            override fun defaultValue(): Boolean = false
+
+            override fun changes(): Flow<Boolean> = MutableStateFlow(false)
+
+            override fun stateIn(scope: CoroutineScope): StateFlow<Boolean> = MutableStateFlow(false)
+
+            override fun set(value: Boolean) {}
+        }
 }

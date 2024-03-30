@@ -9,5 +9,5 @@ package ca.gosyer.jui.domain.settings.model
 enum class WebUIInterface {
     BROWSER,
     ELECTRON,
-    UNKNOWN__;
+    UNKNOWN__,
 }

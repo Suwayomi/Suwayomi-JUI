@@ -10,5 +10,5 @@ enum class WebUIChannel {
     BUNDLED,
     STABLE,
     PREVIEW,
-    UNKNOWN__;
+    UNKNOWN__,
 }

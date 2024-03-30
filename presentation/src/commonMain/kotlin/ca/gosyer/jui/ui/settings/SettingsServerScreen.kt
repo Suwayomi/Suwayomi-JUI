@@ -144,7 +144,6 @@ private class ServerSettingMutableStateFlow<T>(
     scope: CoroutineScope,
     private val state: MutableStateFlow<T> = MutableStateFlow(getSetting(parent.value)),
 ) : MutableStateFlow<T> by state {
-
     init {
         parent
             .onEach { state.value = getSetting(it) }
@@ -164,184 +163,184 @@ class ServerSettings(
     private val setSettings: SetSettings,
     private val scope: CoroutineScope,
     initial: Settings,
-    private val onError: (String) -> Unit
+    private val onError: (String) -> Unit,
 ) {
     val settings = MutableStateFlow(initial)
 
     val autoDownloadNewChapters = getServerFlow(
         getSetting = { it.autoDownloadNewChapters },
-        getInput = { SetSettingsInput(autoDownloadNewChapters = it) }
+        getInput = { SetSettingsInput(autoDownloadNewChapters = it) },
     )
     val autoDownloadNewChaptersLimit = getServerFlow(
         getSetting = { it.autoDownloadNewChaptersLimit.toString() },
-        getInput = { SetSettingsInput(autoDownloadNewChaptersLimit = it.toIntOrNull()) }
+        getInput = { SetSettingsInput(autoDownloadNewChaptersLimit = it.toIntOrNull()) },
     )
     val backupInterval = getServerFlow(
         getSetting = { it.backupInterval.toString() },
-        getInput = { SetSettingsInput(backupInterval = it.toIntOrNull()) }
+        getInput = { SetSettingsInput(backupInterval = it.toIntOrNull()) },
     )
     val backupPath = getServerFlow(
         getSetting = { it.backupPath },
-        getInput = { SetSettingsInput(backupPath = it) }
+        getInput = { SetSettingsInput(backupPath = it) },
     )
     val backupTTL = getServerFlow(
         getSetting = { it.backupTTL.toString() },
-        getInput = { SetSettingsInput(backupTTL = it.toIntOrNull()) }
+        getInput = { SetSettingsInput(backupTTL = it.toIntOrNull()) },
     )
     val backupTime = getServerFlow(
         getSetting = { it.backupTime },
-        getInput = { SetSettingsInput(backupTime = it) }
+        getInput = { SetSettingsInput(backupTime = it) },
     )
     val basicAuthEnabled = getServerFlow(
         getSetting = { it.basicAuthEnabled },
-        getInput = { SetSettingsInput(basicAuthEnabled = it) }
+        getInput = { SetSettingsInput(basicAuthEnabled = it) },
     )
     val basicAuthPassword = getServerFlow(
         getSetting = { it.basicAuthPassword },
-        getInput = { SetSettingsInput(basicAuthPassword = it) }
+        getInput = { SetSettingsInput(basicAuthPassword = it) },
     )
     val basicAuthUsername = getServerFlow(
         getSetting = { it.basicAuthUsername },
-        getInput = { SetSettingsInput(basicAuthUsername = it) }
+        getInput = { SetSettingsInput(basicAuthUsername = it) },
     )
     val debugLogsEnabled = getServerFlow(
         getSetting = { it.debugLogsEnabled },
-        getInput = { SetSettingsInput(debugLogsEnabled = it) }
+        getInput = { SetSettingsInput(debugLogsEnabled = it) },
     )
     val downloadAsCbz = getServerFlow(
         getSetting = { it.downloadAsCbz },
-        getInput = { SetSettingsInput(downloadAsCbz = it) }
+        getInput = { SetSettingsInput(downloadAsCbz = it) },
     )
     val downloadsPath = getServerFlow(
         getSetting = { it.downloadsPath },
-        getInput = { SetSettingsInput(downloadsPath = it) }
+        getInput = { SetSettingsInput(downloadsPath = it) },
     )
     val electronPath = getServerFlow(
         getSetting = { it.electronPath },
-        getInput = { SetSettingsInput(electronPath = it) }
+        getInput = { SetSettingsInput(electronPath = it) },
     )
     val excludeCompleted = getServerFlow(
         getSetting = { it.excludeCompleted },
-        getInput = { SetSettingsInput(excludeCompleted = it) }
+        getInput = { SetSettingsInput(excludeCompleted = it) },
     )
     val excludeEntryWithUnreadChapters = getServerFlow(
         getSetting = { it.excludeEntryWithUnreadChapters },
-        getInput = { SetSettingsInput(excludeEntryWithUnreadChapters = it) }
+        getInput = { SetSettingsInput(excludeEntryWithUnreadChapters = it) },
     )
     val excludeNotStarted = getServerFlow(
         getSetting = { it.excludeNotStarted },
-        getInput = { SetSettingsInput(excludeNotStarted = it) }
+        getInput = { SetSettingsInput(excludeNotStarted = it) },
     )
     val excludeUnreadChapters = getServerFlow(
         getSetting = { it.excludeUnreadChapters },
-        getInput = { SetSettingsInput(excludeUnreadChapters = it) }
+        getInput = { SetSettingsInput(excludeUnreadChapters = it) },
     )
     val extensionRepos = getServerFlow(
         getSetting = { it.extensionRepos },
-        getInput = { SetSettingsInput(extensionRepos = it) }
+        getInput = { SetSettingsInput(extensionRepos = it) },
     )
     val flareSolverrEnabled = getServerFlow(
         getSetting = { it.flareSolverrEnabled },
-        getInput = { SetSettingsInput(flareSolverrEnabled = it) }
+        getInput = { SetSettingsInput(flareSolverrEnabled = it) },
     )
     val flareSolverrSessionName = getServerFlow(
         getSetting = { it.flareSolverrSessionName },
-        getInput = { SetSettingsInput(flareSolverrSessionName = it) }
+        getInput = { SetSettingsInput(flareSolverrSessionName = it) },
     )
     val flareSolverrSessionTtl = getServerFlow(
         getSetting = { it.flareSolverrSessionTtl.toString() },
-        getInput = { SetSettingsInput(flareSolverrSessionTtl = it.toIntOrNull()) }
+        getInput = { SetSettingsInput(flareSolverrSessionTtl = it.toIntOrNull()) },
     )
     val flareSolverrTimeout = getServerFlow(
         getSetting = { it.flareSolverrTimeout.toString() },
-        getInput = { SetSettingsInput(flareSolverrTimeout = it.toIntOrNull()) }
+        getInput = { SetSettingsInput(flareSolverrTimeout = it.toIntOrNull()) },
     )
     val flareSolverrUrl = getServerFlow(
         getSetting = { it.flareSolverrUrl },
-        getInput = { SetSettingsInput(flareSolverrUrl = it) }
+        getInput = { SetSettingsInput(flareSolverrUrl = it) },
     )
     val globalUpdateInterval = getServerFlow(
         getSetting = { it.globalUpdateInterval.toString() },
-        getInput = { SetSettingsInput(globalUpdateInterval = it.toDoubleOrNull()?.takeIf { it !in 0.01..5.99 }) }
+        getInput = { SetSettingsInput(globalUpdateInterval = it.toDoubleOrNull()?.takeIf { it !in 0.01..5.99 }) },
     )
     val gqlDebugLogsEnabled = getServerFlow(
         getSetting = { it.gqlDebugLogsEnabled },
-        getInput = { SetSettingsInput(gqlDebugLogsEnabled = it) }
+        getInput = { SetSettingsInput(gqlDebugLogsEnabled = it) },
     )
     val initialOpenInBrowserEnabled = getServerFlow(
         getSetting = { it.initialOpenInBrowserEnabled },
-        getInput = { SetSettingsInput(initialOpenInBrowserEnabled = it) }
+        getInput = { SetSettingsInput(initialOpenInBrowserEnabled = it) },
     )
     val ip = getServerFlow(
         getSetting = { it.ip },
-        getInput = { SetSettingsInput(ip = it) }
+        getInput = { SetSettingsInput(ip = it) },
     )
     val localSourcePath = getServerFlow(
         getSetting = { it.localSourcePath },
-        getInput = { SetSettingsInput(localSourcePath = it) }
+        getInput = { SetSettingsInput(localSourcePath = it) },
     )
     val maxSourcesInParallel = getServerFlow(
         getSetting = { it.maxSourcesInParallel.toString() },
-        getInput = { SetSettingsInput(maxSourcesInParallel = it.toIntOrNull()) }
+        getInput = { SetSettingsInput(maxSourcesInParallel = it.toIntOrNull()) },
     )
     val port = getServerFlow(
         getSetting = { it.port.toString() },
-        getInput = { SetSettingsInput(port = it.toIntOrNull()) }
+        getInput = { SetSettingsInput(port = it.toIntOrNull()) },
     )
     val socksProxyEnabled = getServerFlow(
         getSetting = { it.socksProxyEnabled },
-        getInput = { SetSettingsInput(socksProxyEnabled = it) }
+        getInput = { SetSettingsInput(socksProxyEnabled = it) },
     )
     val socksProxyHost = getServerFlow(
         getSetting = { it.socksProxyHost },
-        getInput = { SetSettingsInput(socksProxyHost = it) }
+        getInput = { SetSettingsInput(socksProxyHost = it) },
     )
     val socksProxyPassword = getServerFlow(
         getSetting = { it.socksProxyPassword },
-        getInput = { SetSettingsInput(socksProxyPassword = it) }
+        getInput = { SetSettingsInput(socksProxyPassword = it) },
     )
     val socksProxyPort = getServerFlow(
         getSetting = { it.socksProxyPort },
-        getInput = { SetSettingsInput(socksProxyPort = it) }
+        getInput = { SetSettingsInput(socksProxyPort = it) },
     )
     val socksProxyUsername = getServerFlow(
         getSetting = { it.socksProxyUsername },
-        getInput = { SetSettingsInput(socksProxyUsername = it) }
+        getInput = { SetSettingsInput(socksProxyUsername = it) },
     )
     val socksProxyVersion = getServerFlow(
         getSetting = { it.socksProxyVersion },
-        getInput = { SetSettingsInput(socksProxyVersion = it) }
+        getInput = { SetSettingsInput(socksProxyVersion = it) },
     )
     val systemTrayEnabled = getServerFlow(
         getSetting = { it.systemTrayEnabled },
-        getInput = { SetSettingsInput(systemTrayEnabled = it) }
+        getInput = { SetSettingsInput(systemTrayEnabled = it) },
     )
     val updateMangas = getServerFlow(
         getSetting = { it.updateMangas },
-        getInput = { SetSettingsInput(updateMangas = it) }
+        getInput = { SetSettingsInput(updateMangas = it) },
     )
     val webUIChannel = getServerFlow(
         getSetting = { it.webUIChannel },
-        getInput = { SetSettingsInput(webUIChannel = it) }
+        getInput = { SetSettingsInput(webUIChannel = it) },
     )
     val webUIFlavor = getServerFlow(
         getSetting = { it.webUIFlavor },
-        getInput = { SetSettingsInput(webUIFlavor = it) }
+        getInput = { SetSettingsInput(webUIFlavor = it) },
     )
     val webUIInterface = getServerFlow(
         getSetting = { it.webUIInterface },
-        getInput = { SetSettingsInput(webUIInterface = it) }
+        getInput = { SetSettingsInput(webUIInterface = it) },
     )
     val webUIUpdateCheckInterval = getServerFlow(
         getSetting = { it.webUIUpdateCheckInterval },
-        getInput = { SetSettingsInput(webUIUpdateCheckInterval = it) }
+        getInput = { SetSettingsInput(webUIUpdateCheckInterval = it) },
     )
 
     private fun <T> getServerFlow(
         getSetting: (Settings) -> T,
         getInput: (T) -> SetSettingsInput,
-    ): MutableStateFlow<T> {
-        return ServerSettingMutableStateFlow(
+    ): MutableStateFlow<T> =
+        ServerSettingMutableStateFlow(
             parent = settings,
             getSetting = getSetting,
             setSetting = {
@@ -349,7 +348,7 @@ class ServerSettings(
                     val input = getInput(it)
                     setSettings.await(
                         input,
-                        onError = { onError(it.message.orEmpty()) }
+                        onError = { onError(it.message.orEmpty()) },
                     )
                     val response = getSettings.await(onError = { onError(it.message.orEmpty()) })
                     if (response != null) {
@@ -359,7 +358,6 @@ class ServerSettings(
             },
             scope = scope,
         )
-    }
 }
 
 class SettingsServerViewModel
@@ -598,7 +596,7 @@ fun LazyListScope.ServerSettingsItems(
             preference = serverSettings.ip,
             title = stringResource(MR.strings.host_ip),
             subtitle = stringResource(MR.strings.host_ip_sub, ipValue),
-            enabled = !hosted
+            enabled = !hosted,
         )
     }
     item {
@@ -607,7 +605,7 @@ fun LazyListScope.ServerSettingsItems(
             preference = serverSettings.port,
             title = stringResource(MR.strings.host_port),
             subtitle = stringResource(MR.strings.host_port_sub, portValue),
-            enabled = !hosted
+            enabled = !hosted,
         )
     }
     item {
@@ -615,7 +613,7 @@ fun LazyListScope.ServerSettingsItems(
         PreferenceRow(
             stringResource(MR.strings.extension_repos),
             subtitle = stringResource(MR.strings.extension_repos_sub),
-            onClick = dialog::show
+            onClick = dialog::show,
         )
         val repos by serverSettings.extensionRepos.collectAsState()
         ExtensionReposDialog(
@@ -623,7 +621,7 @@ fun LazyListScope.ServerSettingsItems(
             repos,
             onSetRepos = {
                 serverSettings.extensionRepos.value = it
-            }
+            },
         )
     }
     item {
@@ -675,7 +673,7 @@ fun LazyListScope.ServerSettingsItems(
             preference = serverSettings.socksProxyVersion,
             choices = mapOf(
                 4 to "SOCKS4",
-                5 to "SOCKS5"
+                5 to "SOCKS5",
             ).toImmutableMap(),
             title = stringResource(MR.strings.host_socks_version),
             enabled = socksProxyEnabled,
@@ -685,7 +683,7 @@ fun LazyListScope.ServerSettingsItems(
         EditTextPreference(
             preference = serverSettings.globalUpdateInterval,
             title = stringResource(MR.strings.global_update_interval),
-            subtitle = stringResource(MR.strings.global_update_interval_sub)
+            subtitle = stringResource(MR.strings.global_update_interval_sub),
         )
     }
     item {
@@ -720,7 +718,7 @@ fun LazyListScope.ServerSettingsItems(
         EditTextPreference(
             preference = serverSettings.maxSourcesInParallel,
             title = stringResource(MR.strings.max_sources_parallel),
-            subtitle = stringResource(MR.strings.max_sources_parallel_sub)
+            subtitle = stringResource(MR.strings.max_sources_parallel_sub),
         )
     }
 
@@ -778,7 +776,7 @@ fun LazyListScope.ServerSettingsItems(
             preference = serverSettings.initialOpenInBrowserEnabled,
             title = stringResource(MR.strings.host_open_in_browser),
             subtitle = stringResource(MR.strings.host_open_in_browser_sub),
-            enabled = !hosted, //webUIEnabledValue,
+            enabled = !hosted, // webUIEnabledValue,
         )
     }
 
@@ -802,14 +800,14 @@ fun LazyListScope.ServerSettingsItems(
         PreferenceRow(
             title = stringResource(MR.strings.backup_time),
             subtitle = stringResource(MR.strings.backup_time_sub),
-            onClick = dialog::show
+            onClick = dialog::show,
         )
         BackupTimeDialog(
             dialog,
             backupTime,
             onSetTime = {
                 serverSettings.backupTime.value = it
-            }
+            },
         )
     }
 
@@ -818,7 +816,7 @@ fun LazyListScope.ServerSettingsItems(
             preference = serverSettings.basicAuthEnabled,
             title = stringResource(MR.strings.basic_auth),
             subtitle = stringResource(MR.strings.host_basic_auth_sub),
-            enabled = !hosted
+            enabled = !hosted,
         )
     }
 
@@ -888,13 +886,13 @@ private val repoRegex =
     (
         "https:\\/\\/(?>www\\.|raw\\.)?(github|githubusercontent)\\.com" +
             "\\/([^\\/]+)\\/([^\\/]+)(?>(?>\\/tree|\\/blob)?\\/([^\\/\\n]*))?(?>\\/([^\\/\\n]*\\.json)?)?"
-        ).toRegex()
+    ).toRegex()
 
 @Composable
 fun ExtensionReposDialog(
     state: MaterialDialogState,
     extensionRepos: List<String>,
-    onSetRepos: (List<String>) -> Unit
+    onSetRepos: (List<String>) -> Unit,
 ) {
     val repos = remember(state.showing) {
         extensionRepos.toMutableStateList()
@@ -928,7 +926,7 @@ fun ExtensionReposDialog(
                                 repos.add(newRepo)
                                 newRepo = ""
                             }
-                        }
+                        },
                     ),
                 isError = newRepo.isNotBlank() && !repoMatches,
             )
@@ -938,11 +936,11 @@ fun ExtensionReposDialog(
                     newRepo = ""
                 },
                 enabled = repoMatches,
-                modifier = Modifier.weight(1f, fill = false)
+                modifier = Modifier.weight(1f, fill = false),
             ) {
                 Icon(
                     Icons.Rounded.Add,
-                    contentDescription = stringResource(MR.strings.action_add)
+                    contentDescription = stringResource(MR.strings.action_add),
                 )
             }
         }
@@ -963,15 +961,15 @@ fun ExtensionReposDialog(
                     style = MaterialTheme.typography.body1,
                     modifier = Modifier
                         .weight(4f)
-                        .wrapContentWidth(Alignment.Start)
+                        .wrapContentWidth(Alignment.Start),
                 )
                 IconButton(
                     onClick = { repos.remove(item) },
-                    modifier = Modifier.weight(1f, fill = false)
+                    modifier = Modifier.weight(1f, fill = false),
                 ) {
                     Icon(
                         Icons.Rounded.Delete,
-                        contentDescription = stringResource(MR.strings.action_delete)
+                        contentDescription = stringResource(MR.strings.action_delete),
                     )
                 }
             }
@@ -984,11 +982,12 @@ val formatter = LocalTime.Format {
     char(':')
     minute()
 }
+
 @Composable
 fun BackupTimeDialog(
     state: MaterialDialogState,
     backupTime: String,
-    onSetTime: (String) -> Unit
+    onSetTime: (String) -> Unit,
 ) {
     val time = remember(state.showing) {
         LocalTime.parse(backupTime, formatter)

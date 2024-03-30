@@ -18,13 +18,15 @@ class SetSettings
     constructor(
         private val settingsRepository: SettingsRepository,
     ) {
-        suspend fun await(input: SetSettingsInput, onError: suspend (Throwable) -> Unit = {}) =
-            asFlow(input)
-                .catch {
-                    onError(it)
-                    log.warn(it) { "Failed to check for server updates" }
-                }
-                .singleOrNull()
+        suspend fun await(
+            input: SetSettingsInput,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(input)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to check for server updates" }
+            }
+            .singleOrNull()
 
         fun asFlow(input: SetSettingsInput) = settingsRepository.setSettings(input)
 

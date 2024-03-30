@@ -11,7 +11,6 @@ import ca.gosyer.jui.domain.settings.model.Settings
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
-
     fun getSettings(): Flow<Settings>
 
     fun setSettings(input: SetSettingsInput): Flow<Unit>

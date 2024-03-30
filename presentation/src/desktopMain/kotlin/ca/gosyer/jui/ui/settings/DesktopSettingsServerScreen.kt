@@ -79,8 +79,10 @@ actual class SettingsServerHostViewModel
 
         // Downloader
         val downloadPath = serverHostPreferences.downloadPath().asStateIn(scope)
+
         // Backup
         val backupPath = serverHostPreferences.backupPath().asStateIn(scope)
+
         // LocalSource
         val localSourcePath = serverHostPreferences.localSourcePath().asStateIn(scope)
 

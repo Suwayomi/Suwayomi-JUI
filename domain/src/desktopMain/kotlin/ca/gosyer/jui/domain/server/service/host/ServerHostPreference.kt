@@ -92,19 +92,19 @@ sealed class ServerHostPreference<T : Any> {
     class BackupPath(
         preferenceStore: PreferenceStore,
     ) : StringServerHostPreference(
-        preferenceStore,
-        "backupPath",
-        "",
-    )
+            preferenceStore,
+            "backupPath",
+            "",
+        )
 
     // LocalSource
     class LocalSourcePath(
         preferenceStore: PreferenceStore,
     ) : StringServerHostPreference(
-        preferenceStore,
-        "localSourcePath",
-        "",
-    )
+            preferenceStore,
+            "localSourcePath",
+            "",
+        )
 
     // Authentication
     class BasicAuthEnabled(

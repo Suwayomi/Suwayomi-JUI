@@ -71,9 +71,10 @@ internal class StandardPreference<T>(
     /**
      * Returns a cold [Flow] of this preference to receive updates when its value changes.
      */
-    override fun changes(): Flow<T> = listener
-        .filter { it == key }
-        .map { get() }
+    override fun changes(): Flow<T> =
+        listener
+            .filter { it == key }
+            .map { get() }
 
     /**
      * Returns a hot [StateFlow] of this preference bound to the given [scope], allowing to read the

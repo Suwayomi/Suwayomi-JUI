@@ -10,5 +10,5 @@ enum class WebUIFlavor {
     WEBUI,
     VUI,
     CUSTOM,
-    UNKNOWN__;
+    UNKNOWN__,
 }

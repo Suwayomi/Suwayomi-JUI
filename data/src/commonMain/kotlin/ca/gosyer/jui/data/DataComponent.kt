@@ -51,7 +51,7 @@ interface DataComponent {
         .serverUrl(
             URLBuilder(serverPreferences.serverUrl().get())
                 .appendPathSegments("api", "graphql")
-                .buildString()
+                .buildString(),
         )
         .ktorClient(http)
         .build()
@@ -90,6 +90,5 @@ interface DataComponent {
     fun updatesRepository(ktorfit: Ktorfit) = ktorfit.create<UpdatesRepository>()
 
     @Provides
-    fun settingsRepository(apolloClient: ApolloClient): SettingsRepository =
-        SettingsRepositoryImpl(apolloClient)
+    fun settingsRepository(apolloClient: ApolloClient): SettingsRepository = SettingsRepositoryImpl(apolloClient)
 }

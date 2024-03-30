@@ -64,6 +64,6 @@ actual class ServerHostPreferences actual constructor(
         ).mapNotNull {
             it.getProperty()
         }.plus(
-            "-Dsuwayomi.tachidesk.config.server.initialOpenInBrowserEnabled=false"
+            "-Dsuwayomi.tachidesk.config.server.initialOpenInBrowserEnabled=false",
         ).toTypedArray()
 }
