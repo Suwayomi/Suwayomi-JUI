@@ -16,25 +16,25 @@ if [ -f "$msi" ]; then
   fi
 fi
 
-# Find DMG
-dmg_dirs="$(find ./ -type d -iname '*-macos-*' 2>/dev/null)"
-for dir in $dmg_dirs; do
-  arch=$(basename "$dir" | cut -d'-' -f3) # Extract architecture from directory name
-  dmg="$dir/*.dmg"
-  if [ "$(ls -A $dir/*.dmg 2>/dev/null)" ]; then
-    version=$(tmp=$(basename $dir/*.dmg .dmg) && echo "${tmp##*-}")
+dmg_x64="$(find ./runner-package-osx-x64/binaries/\(main-release\|main\)/dmg/ -iname '*.dmg' 2>/dev/null)"
+if [ -f "$dmg_x64" ]; then
+  dir="$(dirname "$dmg_x64")"
+  version=$(tmp="${dmg_x64%.*}" && echo "${tmp##*-}")
 
-    if [ "$arch" == "x64" ]; then
-      if [ "$(basename $dir/*.dmg)" != "$name-macos-x64-$version.dmg" ]; then
-        mv $dir/*.dmg "$dir/$name-macos-x64-$version.dmg"
-      fi
-    elif [ "$arch" == "arm64" ]; then
-      if [ "$(basename $dir/*.dmg)" != "$name-macos-arm64-$version.dmg" ]; then
-        mv $dir/*.dmg "$dir/$name-macos-arm64-$version.dmg"
-      fi
-    fi
+  if [ "$(basename "$dmg_x64")" != "$name-macos-x64-$version.dmg" ]; then
+    mv "$dmg_x64" "$dir/$name-macos-x64-$version.dmg"
   fi
-done
+fi
+
+dmg_arm64="$(find ./runner-package-osx-arm64/binaries/\(main-release\|main\)/dmg/ -iname '*.dmg' 2>/dev/null)"
+if [ -f "$dmg_arm64" ]; then
+  dir="$(dirname "$dmg_arm64")"
+  version=$(tmp="${dmg_arm64%.*}" && echo "${tmp##*-}")
+
+  if [ "$(basename "$dmg_arm64")" != "$name-macos-m1-$version.dmg" ]; then
+    mv "$dmg_arm64" "$dir/$name-macos-m1-$version.dmg"
+  fi
+fi
 
 apk="$(find ./ -iname '*.apk' 2>/dev/null)"
 if [ -f "$apk" ]; then

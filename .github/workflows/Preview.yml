@@ -118,6 +118,7 @@ jobs:
             desktop/build/compose/binaries/main-release/*/
             desktop/build/compose/jars/
             !desktop/build/compose/binaries/main/app/
+            !desktop/build/compose/binaries/main-release/app/
             ${{ env.ANDROID_SIGNED_FILE }}
 
         # Upload runner errors
@@ -162,6 +163,7 @@ jobs:
             desktop/build/compose/binaries/main-release/*/
             desktop/build/compose/jars/
             !desktop/build/compose/binaries/main/app/
+            !desktop/build/compose/binaries/main-release/app/
 
         # Upload runner errors
       - name: Upload error logs
@@ -197,11 +199,10 @@ jobs:
 
       - name: Get previous release
         id: last_release
-        uses: Dmagine/get-latest-release@master
+        uses: pozetroninc/github-action-get-latest-release@v0.7.0
         with:
-          myToken: ${{ github.token }}
-          exclude_types: "draft|prerelease"
-          view_top: 1
+          token: ${{ github.token }}
+          exclude_types: "prerelease, draft"
           owner: Suwayomi
           repo: Suwayomi-JUI-preview
 
@@ -212,7 +213,7 @@ jobs:
           echo "COMMIT_COUNT=$commit_count" >> $GITHUB_ENV
           current_sha=$(git rev-parse --short HEAD)
           echo "CURRENT_SHA=$current_sha" >> $GITHUB_ENV
-          prev_commit_count=$(echo "${{ steps.last_release.outputs.tag_name }}" | sed -e "s/^r//")
+          prev_commit_count=$(echo "${{ steps.last_release.outputs.release }}" | sed -e "s/^r//")
           commit_count_diff=$(expr $commit_count - $prev_commit_count)
           prev_release_sha=$(git rev-parse --short HEAD~$commit_count_diff)
           echo "PREV_RELEASE_SHA=$prev_release_sha" >> $GITHUB_ENV

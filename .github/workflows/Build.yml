@@ -110,6 +110,7 @@ jobs:
             desktop/build/compose/binaries/main-release/*/
             desktop/build/compose/jars/
             !desktop/build/compose/binaries/main/app/
+            !desktop/build/compose/binaries/main-release/app/
             ${{ env.ANDROID_SIGNED_FILE }}
 
         # Upload runner errors
@@ -154,6 +155,7 @@ jobs:
             desktop/build/compose/binaries/main-release/*/
             desktop/build/compose/jars/
             !desktop/build/compose/binaries/main/app/
+            !desktop/build/compose/binaries/main-release/app/
 
         # Upload runner errors
       - name: Upload error logs
