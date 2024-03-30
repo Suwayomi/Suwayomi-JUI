@@ -32,6 +32,7 @@ dependencies {
     implementation(libs.voyager.core)
     implementation(libs.voyager.navigation)
     implementation(libs.voyager.transitions)
+    implementation(libs.voyager.screenmodel)
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pagerIndicators)
     implementation(libs.accompanist.flowLayout)
@@ -66,6 +67,10 @@ dependencies {
     // Ktorfit
     implementation(libs.ktorfit.lib)
     ksp(libs.ktorfit.ksp)
+
+    // Apollo GraphQL
+    implementation(libs.apollo.runtime)
+    implementation(libs.apollo.engine.ktor)
 
     // Logging
     implementation(libs.logging.slf4j.api)

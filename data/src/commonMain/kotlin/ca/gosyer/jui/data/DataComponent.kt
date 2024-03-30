@@ -21,8 +21,11 @@ import ca.gosyer.jui.domain.settings.service.SettingsRepository
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.domain.updates.service.UpdatesRepository
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.network.ktorClient
 import de.jensklingenberg.ktorfit.Ktorfit
+import io.ktor.http.URLBuilder
+import io.ktor.http.appendPathSegments
 import me.tatarka.inject.annotations.Provides
 
 interface DataComponent {
@@ -37,12 +40,17 @@ interface DataComponent {
         .baseUrl(serverPreferences.serverUrl().get().toString().addSuffix('/'))
         .build()
 
+    @OptIn(ApolloExperimental::class)
     @Provides
     fun apolloClient(
         http: Http,
         serverPreferences: ServerPreferences,
     ) = ApolloClient.Builder()
-        .serverUrl(serverPreferences.serverUrl().get().toString())
+        .serverUrl(
+            URLBuilder(serverPreferences.serverUrl().get())
+                .appendPathSegments("api", "graphql")
+                .buildString()
+        )
         .ktorClient(http)
         .build()
 

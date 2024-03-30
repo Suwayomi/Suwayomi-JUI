@@ -6,6 +6,10 @@
 
 package ca.gosyer.jui.ui.base.screen
 
-import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 
-actual typealias BaseScreen = AndroidScreen
+actual abstract class BaseScreen : Screen {
+    override val key: ScreenKey = uniqueScreenKey
+}

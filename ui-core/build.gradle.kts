@@ -59,6 +59,7 @@ kotlin {
                 api(libs.imageloader.core)
                 api(libs.imageloader.moko)
                 api(libs.voyager.core)
+                api(libs.voyager.screenmodel)
                 api(libs.dateTime)
                 api(libs.immutableCollections)
                 api(projects.core)

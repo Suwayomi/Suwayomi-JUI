@@ -64,6 +64,7 @@ kotlin {
                 api(libs.voyager.core)
                 api(libs.voyager.navigation)
                 api(libs.voyager.transitions)
+                api(libs.voyager.screenmodel)
                 api(libs.materialDialogs.core)
                 api(libs.accompanist.pager)
                 api(libs.accompanist.pagerIndicators)
@@ -120,7 +121,6 @@ kotlin {
                 api(libs.androidx.core)
                 api(libs.androidx.appCompat)
                 api(libs.androidx.activity.compose)
-                api(libs.voyager.androidx)
             }
         }
         val androidUnitTest by getting {
