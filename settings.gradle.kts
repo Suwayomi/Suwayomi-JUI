@@ -14,7 +14,7 @@ dependencyResolutionManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
-rootProject.name = "Tachidesk-JUI"
+rootProject.name = "Suwayomi-JUI"
 
 include("core")
 include("i18n")

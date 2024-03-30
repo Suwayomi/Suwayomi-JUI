@@ -65,11 +65,11 @@ class UpdateChecker
             val newVersion = versionTag.replace("[^\\d.]".toRegex(), "")
 
             return if (BuildKonfig.IS_PREVIEW) {
-                // Preview builds: based on releases in "Suwayomi/Tachidesk-JUI-preview" repo
+                // Preview builds: based on releases in "Suwayomi/Suwayomi-JUI-preview" repo
                 // tagged as something like "r123"
                 newVersion.toInt() > BuildKonfig.PREVIEW_BUILD
             } else {
-                // Release builds: based on releases in "Suwayomi/Tachidesk-JUI" repo
+                // Release builds: based on releases in "Suwayomi/Suwayomi-JUI" repo
                 // tagged as something like "v1.1.2"
                 newVersion != BuildKonfig.VERSION
             }
@@ -77,9 +77,9 @@ class UpdateChecker
 
         companion object {
             private val GITHUB_REPO = if (BuildKonfig.IS_PREVIEW) {
-                "Suwayomi/Tachidesk-JUI-preview"
+                "Suwayomi/Suwayomi-JUI-preview"
             } else {
-                "Suwayomi/Tachidesk-JUI"
+                "Suwayomi/Suwayomi-JUI"
             }
 
             private val RELEASE_TAG: String by lazy {

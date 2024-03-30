@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [[ "$*" == *"preview"* ]]; then
-    name="Tachidesk-JUI-Preview"
+    name="Suwayomi-JUI-Preview"
 else
-    name="Tachidesk-JUI"
+    name="Suwayomi-JUI"
 fi
 
 msi="$(find ./ -iname '*.msi' 2>/dev/null)"

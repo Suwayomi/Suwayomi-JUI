@@ -177,11 +177,11 @@ compose.desktop {
             )
 
             packageName = if (!isPreview) {
-                "Tachidesk-JUI"
+                "Suwayomi-JUI"
             } else {
-                "Tachidesk-JUI Preview"
+                "Suwayomi-JUI Preview"
             }
-            description = "Tachidesk-JUI is a Jvm client for a Tachidesk Server"
+            description = "Suwayomi-JUI is a Jvm client for Suwayomi-Server"
             copyright = "Mozilla Public License v2.0"
             vendor = "Suwayomi"
             if (isPreview) {

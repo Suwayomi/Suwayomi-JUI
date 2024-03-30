@@ -196,7 +196,7 @@ jobs:
           exclude_types: "draft|prerelease"
           view_top: 1
           owner: Suwayomi
-          repo: Tachidesk-JUI-preview
+          repo: Suwayomi-JUI-preview
 
       - name: Prepare build
         run: |
@@ -211,7 +211,7 @@ jobs:
           echo "PREV_RELEASE_SHA=$prev_release_sha" >> $GITHUB_ENV
           echo "COMMIT_LOGS<<{delimiter}
           $(curl -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/suwayomi/tachidesk-jui/compare/$prev_release_sha...$current_sha" \
+            "https://api.github.com/repos/suwayomi/suwayomi-jui/compare/$prev_release_sha...$current_sha" \
             | jq '[.commits[]|{message:(.commit.message | split("\n")), username:.author.login}]' \
             | jq -r '.[]|"- \(.message | first) (@\(.username))"')
           {delimiter}" >> $GITHUB_ENV
@@ -220,12 +220,12 @@ jobs:
         with:
           artifacts: "*/binaries/main/*/*.*,*/binaries/main-release/*/*.*,*/jars/*.jar,*/android/build/outputs/apk/release/*.apk"
           token: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
-          repo: Tachidesk-JUI-preview
+          repo: Suwayomi-JUI-preview
           tag: r${{ env.COMMIT_COUNT }}
-          name: Tachidesk-JUI Preview r${{ env.COMMIT_COUNT }}
+          name: Suwayomi-JUI Preview r${{ env.COMMIT_COUNT }}
           body: |
             ### Commits
-            https://github.com/Suwayomi/Tachidesk-JUI/compare/${{ env.PREV_RELEASE_SHA }}...${{ env.CURRENT_SHA }}
+            https://github.com/Suwayomi/Suwayomi-JUI/compare/${{ env.PREV_RELEASE_SHA }}...${{ env.CURRENT_SHA }}
 
             ${{ env.COMMIT_LOGS }}
 
@@ -236,4 +236,4 @@ jobs:
         with:
           keep_latest: 15
           delete_tags: true
-          repo: Suwayomi/Tachidesk-JUI-preview
+          repo: Suwayomi/Suwayomi-JUI-preview
