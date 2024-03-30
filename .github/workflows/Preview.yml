@@ -30,6 +30,13 @@ jobs:
             build: packageReleaseUberJarForCurrentOS packageReleaseDmg notarizeReleaseDmg
             setupCl: ./scripts/SetupClUnix.sh
 
+          - runtime: osx-arm64
+            arch: aarch64
+            os: macOS-14
+            shell: bash
+            build: packageReleaseUberJarForCurrentOS packageReleaseDmg notarizeReleaseDmg
+            setupCl: ./scripts/SetupClUnix.sh
+
           - runtime: win-x64
             arch: x64
             os: windows-latest
@@ -68,7 +75,7 @@ jobs:
 
       - name: Setup MacOS Keychain
         uses: apple-actions/import-codesign-certs@v2
-        if: ${{ matrix.runtime == 'osx-x64' }}
+        if: ${{ matrix.runtime == 'osx-x64' || matrix.runtime == 'osx-arm64' }}
         with:
           p12-file-base64: ${{ secrets.APPLE_CERT }}
           p12-password: ${{ secrets.APPLE_CERT_PASSWORD }}

@@ -16,15 +16,25 @@ if [ -f "$msi" ]; then
   fi
 fi
 
-dmg="$(find ./ -iname '*.dmg' 2>/dev/null)"
-if [ -f "$dmg" ]; then
-  dir="$(dirname "$dmg")"
-  version=$(tmp="${dmg%.*}" && echo "${tmp##*-}")
+# Find DMG
+dmg_dirs="$(find ./ -type d -iname '*-macos-*' 2>/dev/null)"
+for dir in $dmg_dirs; do
+  arch=$(basename "$dir" | cut -d'-' -f3) # Extract architecture from directory name
+  dmg="$dir/*.dmg"
+  if [ "$(ls -A $dir/*.dmg 2>/dev/null)" ]; then
+    version=$(tmp=$(basename $dir/*.dmg .dmg) && echo "${tmp##*-}")
 
-  if [ "$(basename "$dmg")" != "$name-macos-x64-$version.dmg" ]; then
-    mv "$dmg" "$dir/$name-macos-x64-$version.dmg"
+    if [ "$arch" == "x64" ]; then
+      if [ "$(basename $dir/*.dmg)" != "$name-macos-x64-$version.dmg" ]; then
+        mv $dir/*.dmg "$dir/$name-macos-x64-$version.dmg"
+      fi
+    elif [ "$arch" == "arm64" ]; then
+      if [ "$(basename $dir/*.dmg)" != "$name-macos-arm64-$version.dmg" ]; then
+        mv $dir/*.dmg "$dir/$name-macos-arm64-$version.dmg"
+      fi
+    fi
   fi
-fi
+done
 
 apk="$(find ./ -iname '*.apk' 2>/dev/null)"
 if [ -f "$apk" ]; then
