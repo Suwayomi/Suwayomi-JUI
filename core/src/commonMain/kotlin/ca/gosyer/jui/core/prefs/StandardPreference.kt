@@ -8,12 +8,16 @@ package ca.gosyer.jui.core.prefs
 
 import com.russhwolf.settings.ObservableSettings
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 internal class StandardPreference<T>(
     private val preferences: ObservableSettings,
@@ -39,8 +43,12 @@ internal class StandardPreference<T>(
     /**
      * Sets a new [value] for this preference.
      */
+    @OptIn(DelicateCoroutinesApi::class)
     override fun set(value: T) {
         adapter.set(key, value, preferences)
+        GlobalScope.launch {
+            listener.emit(key)
+        }
     }
 
     /**
@@ -63,17 +71,17 @@ internal class StandardPreference<T>(
     /**
      * Returns a cold [Flow] of this preference to receive updates when its value changes.
      */
-    override fun changes(): Flow<T> =
-        callbackFlow {
-            val listener = adapter.addListener(key, preferences) {
-                trySend(get())
-            }
-            awaitClose { listener.deactivate() }
-        }
+    override fun changes(): Flow<T> = listener
+        .filter { it == key }
+        .map { get() }
 
     /**
      * Returns a hot [StateFlow] of this preference bound to the given [scope], allowing to read the
      * current value and receive preference updates.
      */
     override fun stateIn(scope: CoroutineScope): StateFlow<T> = changes().stateIn(scope, SharingStarted.Eagerly, get())
+
+    companion object {
+        private val listener = MutableSharedFlow<String>()
+    }
 }

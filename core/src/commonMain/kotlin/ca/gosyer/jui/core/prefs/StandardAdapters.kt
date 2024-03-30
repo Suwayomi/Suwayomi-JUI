@@ -7,7 +7,6 @@
 package ca.gosyer.jui.core.prefs
 
 import com.russhwolf.settings.ObservableSettings
-import com.russhwolf.settings.SettingsListener
 import com.russhwolf.settings.serialization.decodeValue
 import com.russhwolf.settings.serialization.encodeValue
 import kotlinx.serialization.KSerializer
@@ -32,12 +31,6 @@ interface Adapter<T> {
         keys: Set<String>,
         key: String,
     ): Boolean = key in keys
-
-    fun addListener(
-        key: String,
-        preferences: ObservableSettings,
-        callback: () -> Unit,
-    ): SettingsListener
 }
 
 internal object StringAdapter : Adapter<String> {
@@ -55,12 +48,6 @@ internal object StringAdapter : Adapter<String> {
     ) {
         editor.putString(key, value)
     }
-
-    override fun addListener(
-        key: String,
-        preferences: ObservableSettings,
-        callback: () -> Unit,
-    ): SettingsListener = preferences.addStringOrNullListener(key) { callback() }
 }
 
 internal object LongAdapter : Adapter<Long> {
@@ -76,12 +63,6 @@ internal object LongAdapter : Adapter<Long> {
     ) {
         editor.putLong(key, value)
     }
-
-    override fun addListener(
-        key: String,
-        preferences: ObservableSettings,
-        callback: () -> Unit,
-    ): SettingsListener = preferences.addLongOrNullListener(key) { callback() }
 }
 
 internal object IntAdapter : Adapter<Int> {
@@ -97,12 +78,6 @@ internal object IntAdapter : Adapter<Int> {
     ) {
         editor.putInt(key, value)
     }
-
-    override fun addListener(
-        key: String,
-        preferences: ObservableSettings,
-        callback: () -> Unit,
-    ): SettingsListener = preferences.addIntOrNullListener(key) { callback() }
 }
 
 internal object FloatAdapter : Adapter<Float> {
@@ -118,12 +93,6 @@ internal object FloatAdapter : Adapter<Float> {
     ) {
         editor.putFloat(key, value)
     }
-
-    override fun addListener(
-        key: String,
-        preferences: ObservableSettings,
-        callback: () -> Unit,
-    ): SettingsListener = preferences.addFloatOrNullListener(key) { callback() }
 }
 
 internal object BooleanAdapter : Adapter<Boolean> {
@@ -139,12 +108,6 @@ internal object BooleanAdapter : Adapter<Boolean> {
     ) {
         editor.putBoolean(key, value)
     }
-
-    override fun addListener(
-        key: String,
-        preferences: ObservableSettings,
-        callback: () -> Unit,
-    ): SettingsListener = preferences.addBooleanOrNullListener(key) { callback() }
 }
 
 internal object StringSetAdapter : Adapter<Set<String>> {
@@ -172,16 +135,6 @@ internal object StringSetAdapter : Adapter<Set<String>> {
         keys: Set<String>,
         key: String,
     ): Boolean = keys.contains("$key.size")
-
-    /**
-     * Watching the regular key doesn't produce updates for a string set for some reason
-     * TODO make better, doesn't produce updates when you add something and remove something
-     */
-    override fun addListener(
-        key: String,
-        preferences: ObservableSettings,
-        callback: () -> Unit,
-    ): SettingsListener = preferences.addIntOrNullListener("$key.size") { callback() }
 }
 
 internal class ObjectAdapter<T>(
@@ -202,12 +155,6 @@ internal class ObjectAdapter<T>(
     ) {
         editor.putString(key, serializer(value))
     }
-
-    override fun addListener(
-        key: String,
-        preferences: ObservableSettings,
-        callback: () -> Unit,
-    ): SettingsListener = preferences.addStringOrNullListener(key) { callback() }
 }
 
 internal class JsonObjectAdapter<T>(
@@ -238,16 +185,4 @@ internal class JsonObjectAdapter<T>(
         keys: Set<String>,
         key: String,
     ): Boolean = keys.any { it.startsWith(key) }
-
-    /**
-     * Todo doesn't work
-     */
-    override fun addListener(
-        key: String,
-        preferences: ObservableSettings,
-        callback: () -> Unit,
-    ): SettingsListener {
-        @Suppress("DEPRECATION") // Because we don't care about the type, and it crashes with any other listener
-        return preferences.addListener(key) { callback() }
-    }
 }

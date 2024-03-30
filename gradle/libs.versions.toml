@@ -50,7 +50,7 @@ okio = "3.9.0"
 appDirs = "1.2.0"
 
 # Preferences
-multiplatformSettings = "1.0.0-alpha01"
+multiplatformSettings = "1.1.1"
 
 # Utility
 desugarJdkLibs = "2.0.4"
