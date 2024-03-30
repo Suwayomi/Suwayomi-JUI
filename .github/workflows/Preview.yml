@@ -102,7 +102,7 @@ jobs:
         uses: ilharp/sign-android-release@v1
         if: ${{ matrix.runtime == 'android' }}
         with:
-          releaseDirectory: android/build/outputs/apk/release
+          releaseDir: android/build/outputs/apk/release
           signingKey: ${{ secrets.ANDROID_SIGNING_KEY }}
           keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
