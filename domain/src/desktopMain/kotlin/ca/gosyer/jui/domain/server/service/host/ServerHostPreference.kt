@@ -79,49 +79,6 @@ sealed class ServerHostPreference<T : Any> {
             4567,
         )
 
-    // Proxy
-    class SocksProxyEnabled(
-        preferenceStore: PreferenceStore,
-    ) : BooleanServerHostPreference(
-            preferenceStore,
-            "socksProxyEnabled",
-            false,
-        )
-
-    class SocksProxyHost(
-        preferenceStore: PreferenceStore,
-    ) : StringServerHostPreference(
-            preferenceStore,
-            "socksProxyHost",
-            "",
-        )
-
-    class SocksProxyPort(
-        override val preferenceStore: PreferenceStore,
-    ) : IntServerHostPreference(
-            preferenceStore,
-            "socksProxyPort",
-            0,
-        )
-
-    // Misc
-    class DebugLogsEnabled(
-        preferenceStore: PreferenceStore,
-    ) : BooleanServerHostPreference(
-            preferenceStore,
-            "debugLogsEnabled",
-            false,
-        )
-
-    class SystemTrayEnabled(
-        preferenceStore: PreferenceStore,
-    ) : BooleanServerHostPreference(
-            preferenceStore,
-            "systemTrayEnabled",
-            false,
-            true,
-        )
-
     // Downloader
     class DownloadPath(
         preferenceStore: PreferenceStore,
@@ -131,32 +88,23 @@ sealed class ServerHostPreference<T : Any> {
             "",
         )
 
-    class DownloadAsCbz(
+    // Backup
+    class BackupPath(
         preferenceStore: PreferenceStore,
-    ) : BooleanServerHostPreference(
-            preferenceStore,
-            "downloadAsCbz",
-            false,
-        )
+    ) : StringServerHostPreference(
+        preferenceStore,
+        "backupPath",
+        "",
+    )
 
-    // WebUI
-    class WebUIEnabled(
+    // LocalSource
+    class LocalSourcePath(
         preferenceStore: PreferenceStore,
-    ) : BooleanServerHostPreference(
-            preferenceStore,
-            "webUIEnabled",
-            false,
-            true,
-        )
-
-    class OpenInBrowserEnabled(
-        preferenceStore: PreferenceStore,
-    ) : BooleanServerHostPreference(
-            preferenceStore,
-            "initialOpenInBrowserEnabled",
-            false,
-            true,
-        )
+    ) : StringServerHostPreference(
+        preferenceStore,
+        "localSourcePath",
+        "",
+    )
 
     // Authentication
     class BasicAuthEnabled(

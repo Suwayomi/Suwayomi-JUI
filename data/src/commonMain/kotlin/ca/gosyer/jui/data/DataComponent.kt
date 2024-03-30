@@ -7,6 +7,7 @@
 package ca.gosyer.jui.data
 
 import ca.gosyer.jui.core.lang.addSuffix
+import ca.gosyer.jui.data.settings.SettingsRepositoryImpl
 import ca.gosyer.jui.domain.backup.service.BackupRepository
 import ca.gosyer.jui.domain.category.service.CategoryRepository
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
@@ -18,6 +19,7 @@ import ca.gosyer.jui.domain.manga.service.MangaRepository
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.settings.service.SettingsRepository
+import ca.gosyer.jui.domain.settings.service.SettingsRepositoryOld
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.domain.updates.service.UpdatesRepository
 import com.apollographql.apollo3.ApolloClient
@@ -79,11 +81,15 @@ interface DataComponent {
     fun mangaRepository(ktorfit: Ktorfit) = ktorfit.create<MangaRepository>()
 
     @Provides
-    fun settingsRepository(ktorfit: Ktorfit) = ktorfit.create<SettingsRepository>()
+    fun settingsRepositoryOld(ktorfit: Ktorfit) = ktorfit.create<SettingsRepositoryOld>()
 
     @Provides
     fun sourceRepository(ktorfit: Ktorfit) = ktorfit.create<SourceRepository>()
 
     @Provides
     fun updatesRepository(ktorfit: Ktorfit) = ktorfit.create<UpdatesRepository>()
+
+    @Provides
+    fun settingsRepository(apolloClient: ApolloClient): SettingsRepository =
+        SettingsRepositoryImpl(apolloClient)
 }

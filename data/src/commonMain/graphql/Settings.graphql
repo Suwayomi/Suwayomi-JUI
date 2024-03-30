@@ -1,46 +1,146 @@
+fragment SettingsTypeFragment on SettingsType {
+  autoDownloadNewChapters
+  autoDownloadNewChaptersLimit
+  backupInterval
+  backupPath
+  backupTTL
+  backupTime
+  basicAuthEnabled
+  basicAuthPassword
+  basicAuthUsername
+  debugLogsEnabled
+  downloadAsCbz
+  downloadsPath
+  electronPath
+  excludeCompleted
+  excludeEntryWithUnreadChapters
+  excludeNotStarted
+  excludeUnreadChapters
+  extensionRepos
+  flareSolverrEnabled
+  flareSolverrSessionName
+  flareSolverrSessionTtl
+  flareSolverrTimeout
+  flareSolverrUrl
+  globalUpdateInterval
+  gqlDebugLogsEnabled
+  initialOpenInBrowserEnabled
+  ip
+  localSourcePath
+  maxSourcesInParallel
+  port
+  socksProxyEnabled
+  socksProxyHost
+  socksProxyPassword
+  socksProxyPort
+  socksProxyUsername
+  socksProxyVersion
+  systemTrayEnabled
+  updateMangas
+  webUIChannel
+  webUIFlavor
+  webUIInterface
+  webUIUpdateCheckInterval
+}
+
 query AllSettings {
   settings {
-    autoDownloadNewChapters
-    autoDownloadNewChaptersLimit
-    backupInterval
-    backupPath
-    backupTTL
-    backupTime
-    basicAuthEnabled
-    basicAuthPassword
-    basicAuthUsername
-    debugLogsEnabled
-    downloadAsCbz
-    downloadsPath
-    electronPath
-    excludeCompleted
-    excludeEntryWithUnreadChapters
-    excludeNotStarted
-    excludeUnreadChapters
-    extensionRepos
-    flareSolverrEnabled
-    flareSolverrSessionName
-    flareSolverrSessionTtl
-    flareSolverrTimeout
-    flareSolverrUrl
-    globalUpdateInterval
-    gqlDebugLogsEnabled
-    initialOpenInBrowserEnabled
-    ip
-    localSourcePath
-    maxSourcesInParallel
-    port
-    socksProxyEnabled
-    socksProxyHost
-    socksProxyPassword
-    socksProxyPort
-    socksProxyUsername
-    socksProxyVersion
-    systemTrayEnabled
-    updateMangas
-    webUIChannel
-    webUIFlavor
-    webUIInterface
-    webUIUpdateCheckInterval
+    ...SettingsTypeFragment
+  }
+}
+
+mutation SetSettings(
+  $autoDownloadNewChapters: Boolean = null,
+  $autoDownloadNewChaptersLimit: Int = null,
+  $backupInterval: Int = null,
+  $backupPath: String = null,
+  $backupTTL: Int = null,
+  $backupTime: String = null,
+  $basicAuthEnabled: Boolean = null,
+  $basicAuthPassword: String = null,
+  $basicAuthUsername: String = null,
+  $debugLogsEnabled: Boolean = null,
+  $downloadAsCbz: Boolean = null,
+  $downloadsPath: String = null,
+  $electronPath: String = null,
+  $excludeCompleted: Boolean = null,
+  $excludeEntryWithUnreadChapters: Boolean = null,
+  $excludeNotStarted: Boolean = null,
+  $excludeUnreadChapters: Boolean = null,
+  $extensionRepos: [String!] = null,
+  $flareSolverrEnabled: Boolean = null,
+  $flareSolverrSessionName: String = null,
+  $flareSolverrSessionTtl: Int = null,
+  $flareSolverrTimeout: Int = null,
+  $flareSolverrUrl: String = null,
+  $globalUpdateInterval: Float = null,
+  $gqlDebugLogsEnabled: Boolean = null,
+  $initialOpenInBrowserEnabled: Boolean = null,
+  $ip: String = null,
+  $localSourcePath: String = null,
+  $maxSourcesInParallel: Int = null,
+  $port: Int = null,
+  $socksProxyEnabled: Boolean = null,
+  $socksProxyHost: String = null,
+  $socksProxyPassword: String = null,
+  $socksProxyPort: String = null,
+  $socksProxyUsername: String = null,
+  $socksProxyVersion: Int = null,
+  $systemTrayEnabled: Boolean = null,
+  $updateMangas: Boolean = null,
+  $webUIChannel: WebUIChannel = null,
+  $webUIFlavor: WebUIFlavor = null,
+  $webUIInterface: WebUIInterface = null,
+  $webUIUpdateCheckInterval: Float = null
+) {
+  setSettings(
+    input: {
+      settings: {
+        autoDownloadNewChapters: $autoDownloadNewChapters,
+        autoDownloadNewChaptersLimit: $autoDownloadNewChaptersLimit,
+        backupInterval: $backupInterval,
+        backupPath: $backupPath,
+        backupTTL: $backupTTL,
+        backupTime: $backupTime,
+        basicAuthEnabled: $basicAuthEnabled,
+        basicAuthPassword: $basicAuthPassword,
+        basicAuthUsername: $basicAuthUsername,
+        debugLogsEnabled: $debugLogsEnabled,
+        downloadAsCbz: $downloadAsCbz,
+        downloadsPath: $downloadsPath,
+        electronPath: $electronPath,
+        excludeCompleted: $excludeCompleted,
+        excludeEntryWithUnreadChapters: $excludeEntryWithUnreadChapters,
+        excludeNotStarted: $excludeNotStarted,
+        excludeUnreadChapters: $excludeUnreadChapters,
+        extensionRepos: $extensionRepos,
+        flareSolverrEnabled: $flareSolverrEnabled,
+        flareSolverrSessionName: $flareSolverrSessionName,
+        flareSolverrSessionTtl: $flareSolverrSessionTtl,
+        flareSolverrTimeout: $flareSolverrTimeout,
+        flareSolverrUrl: $flareSolverrUrl,
+        globalUpdateInterval: $globalUpdateInterval,
+        gqlDebugLogsEnabled: $gqlDebugLogsEnabled,
+        initialOpenInBrowserEnabled: $initialOpenInBrowserEnabled,
+        ip: $ip,
+        localSourcePath: $localSourcePath,
+        maxSourcesInParallel: $maxSourcesInParallel,
+        port: $port,
+        socksProxyEnabled: $socksProxyEnabled,
+        socksProxyHost: $socksProxyHost,
+        socksProxyPassword: $socksProxyPassword,
+        socksProxyPort: $socksProxyPort,
+        socksProxyUsername: $socksProxyUsername,
+        socksProxyVersion: $socksProxyVersion,
+        systemTrayEnabled: $systemTrayEnabled,
+        updateMangas: $updateMangas,
+        webUIChannel: $webUIChannel,
+        webUIFlavor: $webUIFlavor,
+        webUIInterface: $webUIInterface,
+        webUIUpdateCheckInterval: $webUIUpdateCheckInterval
+      }
+    }
+  ) {
+    clientMutationId
   }
 }

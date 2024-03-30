@@ -60,6 +60,7 @@ kotlin {
                 implementation(libs.imageloader.core)
                 implementation(libs.imageloader.moko)
                 implementation(libs.materialDialogs.core)
+                implementation(libs.materialDialogs.datetime)
 
                 // Threading
                 implementation(libs.coroutines.core)

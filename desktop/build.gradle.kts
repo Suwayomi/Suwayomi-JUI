@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.imageloader.core)
     implementation(libs.imageloader.moko)
     implementation(libs.materialDialogs.core)
+    implementation(libs.materialDialogs.datetime)
 
     // UI (Swing)
     implementation(libs.darklaf)

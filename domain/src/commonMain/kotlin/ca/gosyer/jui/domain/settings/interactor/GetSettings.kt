@@ -6,26 +6,26 @@
 
 package ca.gosyer.jui.domain.settings.interactor
 
-import ca.gosyer.jui.domain.settings.service.SettingsRepositoryOld
+import ca.gosyer.jui.domain.settings.service.SettingsRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class AboutServer
+class GetSettings
     @Inject
     constructor(
-        private val settingsRepositoryOld: SettingsRepositoryOld,
+        private val settingsRepository: SettingsRepository,
     ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
                 .catch {
                     onError(it)
-                    log.warn(it) { "Failed to get server information" }
+                    log.warn(it) { "Failed to check for server updates" }
                 }
                 .singleOrNull()
 
-        fun asFlow() = settingsRepositoryOld.aboutServer()
+        fun asFlow() = settingsRepository.getSettings()
 
         companion object {
             private val log = logging()

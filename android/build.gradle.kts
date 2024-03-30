@@ -31,6 +31,7 @@ dependencies {
     implementation(libs.imageloader.core)
     implementation(libs.imageloader.moko)
     implementation(libs.materialDialogs.core)
+    implementation(libs.materialDialogs.datetime)
 
     // Android
     implementation(libs.androidx.core)
@@ -111,6 +112,9 @@ android {
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debug"
+            isMinifyEnabled = true
+            isShrinkResources = true
+            setProguardFiles(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"))
         }
         getByName("release") {
             isMinifyEnabled = true

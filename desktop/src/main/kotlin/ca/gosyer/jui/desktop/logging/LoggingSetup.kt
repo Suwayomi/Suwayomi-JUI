@@ -36,7 +36,6 @@ const val filePattern =
         '$' +
         "{LOG_EXCEPTION_CONVERSION_WORD:-%xEx}"
 
-@Suppress("UPPER_BOUND_VIOLATED_WARNING")
 fun initializeLogger(loggingLocation: Path) {
     val ctx = LogManager.getContext(false) as LoggerContext
     val builder = ConfigurationBuilderFactory.newConfigurationBuilder()

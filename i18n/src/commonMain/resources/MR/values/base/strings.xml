@@ -220,9 +220,9 @@
 
     <!-- Backup Settings -->
     <string name="backup_restore">Restore Backup</string>
-    <string name="backup_restore_sub">Restore a backup into Tachidesk</string>
+    <string name="backup_restore_sub">Restore a backup to your library</string>
     <string name="backup_create">Create Backup</string>
-    <string name="backup_create_sub">Create a backup from Tachidesk</string>
+    <string name="backup_create_sub">Create a backup from your library</string>
     <string name="missing_sources">Missing sources:</string>
 
     <!-- General Settings -->
@@ -282,17 +282,21 @@
 
     <!-- Server Settings -->
     <string name="host_server">Host server inside Tachidesk-JUI</string>
-    <string name="host_settings">Tachidesk-Server settings</string>
-    <string name="host_settings_sub">The below settings configure the internal Tachidesk-Server</string>
+    <string name="host_settings">Suwayomi-Server settings</string>
+    <string name="host_settings_sub">The below settings configure the internal Suwayomi-Server</string>
+
     <string name="host_ip">Server IP</string>
     <string name="host_ip_sub">Current server IP: %1$s</string>
     <string name="host_port">Server PORT</string>
     <string name="host_port_sub">Current server PORT: %1$s</string>
-    <string name="host_socks_enabled">Server SOCKS5 Proxy</string>
-    <string name="host_socks_host">Server SOCKS5 Proxy HOST</string>
+    <string name="host_socks_enabled">Server SOCKS Proxy</string>
+    <string name="host_socks_host">Server SOCKS Proxy HOST</string>
     <string name="host_socks_host_sub">Current Proxy HOST: %1$s</string>
-    <string name="host_socks_port">Server SOCKS5 Proxy PORT</string>
+    <string name="host_socks_port">Server SOCKS Proxy PORT</string>
     <string name="host_socks_port_sub">Current Proxy PORT: %1$s</string>
+    <string name="host_socks_username">Server SOCKS Proxy username</string>
+    <string name="host_socks_password">Server SOCKS Proxy password</string>
+    <string name="host_socks_version">Server SOCKS Proxy version</string>
     <string name="host_debug_logging">Server debug logs</string>
     <string name="host_debug_logging_sub">Output debug logs from the server to JUI</string>
     <string name="host_system_tray">Server system tray icon</string>
@@ -300,10 +304,16 @@
     <string name="host_download_path">Download path</string>
     <string name="host_download_path_sub">Current download path: %1$s</string>
     <string name="host_download_path_sub_empty">Using default download path</string>
+    <string name="host_backup_path">Backup path</string>
+    <string name="host_backup_path_sub">Current backup path: %1$s</string>
+    <string name="host_backup_path_sub_empty">Using default backup path</string>
+    <string name="host_local_source_path">Local source path</string>
+    <string name="host_local_source_path_sub">Current local source path: %1$s</string>
+    <string name="host_local_source_path_sub_empty">Using default local source path</string>
     <string name="host_download_as_cbz">Download as CBZ</string>
     <string name="host_download_as_cbz_sub">Download chapters into CBZ archives</string>
     <string name="host_webui">Server WebUI</string>
-    <string name="host_webui_sub">Whether the server\'s default WebUI is enabled, makes you able to use Tachidesk in your browser</string>
+    <string name="host_webui_sub">Whether the server\'s default WebUI is enabled, makes you able to use Suwayomi in your browser</string>
     <string name="host_open_in_browser">Open Server WebUI on startup</string>
     <string name="host_open_in_browser_sub">Open the WebUI inside your browser on server startup. Requires the WebUI be enabled</string>
     <string name="host_basic_auth_sub">Use basic auth to protect your library, requires username and password</string>
@@ -327,6 +337,37 @@
     <string name="digest_auth">Digest auth</string>
     <string name="auth_username">Auth username</string>
     <string name="auth_password">Auth password</string>
+    <string name="server_settings_sub">The below settings configure the connected Suwayomi-Server</string>
+    <string name="extension_repos">Extension repos</string>
+    <string name="extension_repos_sub">Configure your extension repos to allow extensions to be found</string>
+    <string name="global_update_interval">Global update interval</string>
+    <string name="global_update_interval_sub">Update interval in hours, 0 to disable, values under 6 hours will be ignored</string>
+    <string name="update_manga_info">Update manga info</string>
+    <string name="update_manga_info_sub">Update manga info alongside manga chapters in the library update</string>
+    <string name="exclude_completed">Exclude completed</string>
+    <string name="exclude_completed_sub">Exclude completed manga from library update</string>
+    <string name="exclude_unread">Exclude unread</string>
+    <string name="exclude_unread_sub">Exclude manga with unread chapters from library update</string>
+    <string name="exclude_not_started">Exclude not started</string>
+    <string name="exclude_not_started_sub">Exclude manga with no read chapters from library update</string>
+    <string name="max_sources_parallel">Max sources in parallel</string>
+    <string name="max_sources_parallel_sub">How many sources can be updated or downloaded in parallel</string>
+    <string name="graphql_debug_logs">Server GraphQL debug logs</string>
+    <string name="graphql_debug_logs_sub">Output GraphQL debug logs from the server to JUI</string>
+    <string name="download_new_chapters">Download new chapters</string>
+    <string name="download_chapter_limit">Chapter download limit</string>
+    <string name="download_chapter_limit_sub">Limit the amount of new chapters that are going to get downloaded</string>
+    <string name="ignore_unread_entries">Ignore entries with unread chapters</string>
+    <string name="backup_interval">Backup interval</string>
+    <string name="backup_interval_sub">Automatic backup interval in days, 0 to disable it</string>
+    <string name="backup_ttl">Backup TTL</string>
+    <string name="backup_ttl_sub">How long to keep a specific backup, in days, 0 to disable</string>
+    <string name="backup_time">Backup time</string>
+    <string name="backup_time_sub">When to run the automatic backup</string>
+    <string name="flaresolverr_url">FlareSolverr server url</string>
+    <string name="flaresolverr_timeout">FlareSolverr request timeout</string>
+    <string name="flaresolverr_session_name">FlareSolverr session name</string>
+    <string name="flaresolverr_session_ttl">FlareSolverr session TTL</string>
 
     <!-- Advanced Settings -->
     <string name="update_checker">Check for updates</string>

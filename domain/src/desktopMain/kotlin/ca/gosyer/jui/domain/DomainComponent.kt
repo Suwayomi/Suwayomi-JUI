@@ -20,11 +20,6 @@ actual interface DomainComponent : SharedDomainComponent {
 
     @get:AppScope
     @get:Provides
-    val serverHostPreferencesFactory: ServerHostPreferences
-        get() = ServerHostPreferences(preferenceFactory.create("host"))
-
-    @get:AppScope
-    @get:Provides
     val serverServiceFactory: ServerService
         get() = ServerService(serverHostPreferences)
 

@@ -82,7 +82,6 @@ fun SourceSettingsScreenContent(settings: ImmutableList<SourceSettingsView<*, *>
                 ).asPaddingValues(),
             ) {
                 items(settings, { it.props.hashCode() }) {
-                    @Suppress("UNCHECKED_CAST")
                     when (it) {
                         is CheckBox, is Switch -> {
                             TwoStatePreference(it as TwoState, it is CheckBox)

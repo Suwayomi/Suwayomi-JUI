@@ -10,10 +10,10 @@ import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.PreferenceStore
 import ca.gosyer.jui.domain.server.service.host.ServerHostPreference
 
-class ServerHostPreferences(
+actual class ServerHostPreferences actual constructor(
     private val preferenceStore: PreferenceStore,
 ) {
-    fun host(): Preference<Boolean> = preferenceStore.getBoolean("host", true)
+    actual fun host(): Preference<Boolean> = preferenceStore.getBoolean("host", true)
 
     private val ip = ServerHostPreference.IP(preferenceStore)
 
@@ -23,45 +23,20 @@ class ServerHostPreferences(
 
     fun port(): Preference<Int> = port.preference()
 
-    // Proxy
-    private val socksProxyEnabled = ServerHostPreference.SocksProxyEnabled(preferenceStore)
-
-    fun socksProxyEnabled(): Preference<Boolean> = socksProxyEnabled.preference()
-
-    private val socksProxyHost = ServerHostPreference.SocksProxyHost(preferenceStore)
-
-    fun socksProxyHost(): Preference<String> = socksProxyHost.preference()
-
-    private val socksProxyPort = ServerHostPreference.SocksProxyPort(preferenceStore)
-
-    fun socksProxyPort(): Preference<Int> = socksProxyPort.preference()
-
-    // Misc
-    private val debugLogsEnabled = ServerHostPreference.DebugLogsEnabled(preferenceStore)
-
-    fun debugLogsEnabled(): Preference<Boolean> = debugLogsEnabled.preference()
-
-    private val systemTrayEnabled = ServerHostPreference.SystemTrayEnabled(preferenceStore)
-
-    fun systemTrayEnabled(): Preference<Boolean> = systemTrayEnabled.preference()
-
     // Downloader
     private val downloadPath = ServerHostPreference.DownloadPath(preferenceStore)
 
     fun downloadPath(): Preference<String> = downloadPath.preference()
 
-    private val downloadAsCbz = ServerHostPreference.DownloadAsCbz(preferenceStore)
+    // Backup
+    private val backupPath = ServerHostPreference.BackupPath(preferenceStore)
 
-    fun downloadAsCbz(): Preference<Boolean> = downloadAsCbz.preference()
+    fun backupPath(): Preference<String> = backupPath.preference()
 
-    // WebUI
-    private val webUIEnabled = ServerHostPreference.WebUIEnabled(preferenceStore)
+    // LocalSource
+    private val localSourcePath = ServerHostPreference.LocalSourcePath(preferenceStore)
 
-    fun webUIEnabled(): Preference<Boolean> = webUIEnabled.preference()
-
-    private val openInBrowserEnabled = ServerHostPreference.OpenInBrowserEnabled(preferenceStore)
-
-    fun openInBrowserEnabled(): Preference<Boolean> = openInBrowserEnabled.preference()
+    fun localSourcePath(): Preference<String> = localSourcePath.preference()
 
     // Authentication
     private val basicAuthEnabled = ServerHostPreference.BasicAuthEnabled(preferenceStore)
@@ -80,19 +55,15 @@ class ServerHostPreferences(
         listOf(
             ip,
             port,
-            socksProxyEnabled,
-            socksProxyHost,
-            socksProxyPort,
-            debugLogsEnabled,
-            systemTrayEnabled,
             downloadPath,
-            downloadAsCbz,
-            webUIEnabled,
-            openInBrowserEnabled,
+            backupPath,
+            localSourcePath,
             basicAuthEnabled,
             basicAuthUsername,
             basicAuthPassword,
         ).mapNotNull {
             it.getProperty()
-        }.toTypedArray()
+        }.plus(
+            "-Dsuwayomi.tachidesk.config.server.initialOpenInBrowserEnabled=false"
+        ).toTypedArray()
 }

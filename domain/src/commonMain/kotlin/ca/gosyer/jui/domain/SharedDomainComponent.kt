@@ -17,6 +17,7 @@ import ca.gosyer.jui.domain.migration.service.MigrationPreferences
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.domain.server.httpClient
+import ca.gosyer.jui.domain.server.service.ServerHostPreferences
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.domain.ui.service.UiPreferences
@@ -106,6 +107,11 @@ interface SharedDomainComponent : CoreComponent {
     @get:Provides
     val updatePreferencesFactory: UpdatePreferences
         get() = UpdatePreferences(preferenceFactory.create("update"))
+
+    @get:AppScope
+    @get:Provides
+    val serverHostPreferencesFactory: ServerHostPreferences
+        get() = ServerHostPreferences(preferenceFactory.create("host"))
 
     @get:AppScope
     @get:Provides

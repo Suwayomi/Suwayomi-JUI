@@ -99,6 +99,7 @@ accompanist-systemUIController = { module = "com.google.accompanist:accompanist-
 imageloader-core = { module = "io.github.qdsfdhvh:image-loader", version.ref = "imageloader" }
 imageloader-moko = { module = "io.github.qdsfdhvh:image-loader-extension-moko-resources", version.ref = "imageloader" }
 materialDialogs-core = { module = "ca.gosyer:compose-material-dialogs-core", version.ref = "materialDialogs" }
+materialDialogs-datetime = { module = "ca.gosyer:compose-material-dialogs-datetime", version.ref = "materialDialogs" }
 
 # Android
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "core" }

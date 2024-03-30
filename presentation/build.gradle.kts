@@ -66,6 +66,7 @@ kotlin {
                 api(libs.voyager.transitions)
                 api(libs.voyager.screenmodel)
                 api(libs.materialDialogs.core)
+                api(libs.materialDialogs.datetime)
                 api(libs.accompanist.pager)
                 api(libs.accompanist.pagerIndicators)
                 api(libs.accompanist.flowLayout)

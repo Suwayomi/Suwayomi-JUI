@@ -71,7 +71,6 @@ import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
-import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogButtons
@@ -85,6 +84,7 @@ import com.vanpra.composematerialdialogs.title
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun PreferenceRow(
@@ -151,7 +151,7 @@ fun PreferenceRow(
 
 @Composable
 fun SwitchPreference(
-    preference: PreferenceMutableStateFlow<Boolean>,
+    preference: MutableStateFlow<Boolean>,
     title: String,
     subtitle: String? = null,
     icon: ImageVector? = null,
@@ -176,7 +176,7 @@ fun SwitchPreference(
 
 @Composable
 fun EditTextPreference(
-    preference: PreferenceMutableStateFlow<String>,
+    preference: MutableStateFlow<String>,
     title: String,
     subtitle: String? = null,
     icon: ImageVector? = null,
@@ -221,7 +221,7 @@ fun EditTextPreference(
 
 @Composable
 fun <Key> ChoicePreference(
-    preference: PreferenceMutableStateFlow<Key>,
+    preference: MutableStateFlow<Key>,
     choices: ImmutableMap<Key, String>,
     title: String,
     subtitle: String? = null,
@@ -344,7 +344,7 @@ fun <T> MultiSelectDialog(
 
 @Composable
 fun ColorPreference(
-    preference: PreferenceMutableStateFlow<Color>,
+    preference: MutableStateFlow<Color>,
     title: String,
     subtitle: String? = null,
     enabled: Boolean = true,

@@ -121,7 +121,7 @@ class SettingsLibraryViewModel
 
         @Composable
         fun getDisplayModeChoices() =
-            DisplayMode.values()
+            DisplayMode.entries
                 .associateWith { stringResource(it.res) }
                 .toImmutableMap()
     }

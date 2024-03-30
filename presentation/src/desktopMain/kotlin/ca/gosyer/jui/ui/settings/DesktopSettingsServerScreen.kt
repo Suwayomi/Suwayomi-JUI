@@ -24,7 +24,6 @@ import ca.gosyer.jui.ui.base.prefs.EditTextPreference
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow
 import ca.gosyer.jui.ui.base.prefs.SwitchPreference
 import ca.gosyer.jui.ui.util.system.folderPicker
-import ca.gosyer.jui.uicore.prefs.PreferenceMutableStateFlow
 import ca.gosyer.jui.uicore.prefs.asStateIn
 import ca.gosyer.jui.uicore.prefs.asStringStateIn
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -56,15 +55,9 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
             host = serverVm.host,
             ip = serverVm.ip,
             port = serverVm.port,
-            socksProxyEnabled = serverVm.socksProxyEnabled,
-            socksProxyHost = serverVm.socksProxyHost,
-            socksProxyPort = serverVm.socksProxyPort,
-            debugLogsEnabled = serverVm.debugLogsEnabled,
-            systemTrayEnabled = serverVm.systemTrayEnabled,
             downloadPath = serverVm.downloadPath,
-            downloadAsCbz = serverVm.downloadAsCbz,
-            webUIEnabled = serverVm.webUIEnabled,
-            openInBrowserEnabled = serverVm.openInBrowserEnabled,
+            backupPath = serverVm.backupPath,
+            localSourcePath = serverVm.localSourcePath,
             basicAuthEnabled = serverVm.basicAuthEnabled,
             basicAuthUsername = serverVm.basicAuthUsername,
             basicAuthPassword = serverVm.basicAuthPassword,
@@ -84,22 +77,12 @@ actual class SettingsServerHostViewModel
         val ip = serverHostPreferences.ip().asStateIn(scope)
         val port = serverHostPreferences.port().asStringStateIn(scope)
 
-        // Proxy
-        val socksProxyEnabled = serverHostPreferences.socksProxyEnabled().asStateIn(scope)
-        val socksProxyHost = serverHostPreferences.socksProxyHost().asStateIn(scope)
-        val socksProxyPort = serverHostPreferences.socksProxyPort().asStringStateIn(scope)
-
-        // Misc
-        val debugLogsEnabled = serverHostPreferences.debugLogsEnabled().asStateIn(scope)
-        val systemTrayEnabled = serverHostPreferences.systemTrayEnabled().asStateIn(scope)
-
         // Downloader
         val downloadPath = serverHostPreferences.downloadPath().asStateIn(scope)
-        val downloadAsCbz = serverHostPreferences.downloadAsCbz().asStateIn(scope)
-
-        // WebUI
-        val webUIEnabled = serverHostPreferences.webUIEnabled().asStateIn(scope)
-        val openInBrowserEnabled = serverHostPreferences.openInBrowserEnabled().asStateIn(scope)
+        // Backup
+        val backupPath = serverHostPreferences.backupPath().asStateIn(scope)
+        // LocalSource
+        val localSourcePath = serverHostPreferences.localSourcePath().asStateIn(scope)
 
         // Authentication
         val basicAuthEnabled = serverHostPreferences.basicAuthEnabled().asStateIn(scope)
@@ -145,21 +128,15 @@ fun LazyListScope.ServerHostItems(
     hostValue: Boolean,
     basicAuthEnabledValue: Boolean,
     serverSettingChanged: () -> Unit,
-    host: PreferenceMutableStateFlow<Boolean>,
-    ip: PreferenceMutableStateFlow<String>,
-    port: PreferenceMutableStateFlow<String>,
-    socksProxyEnabled: PreferenceMutableStateFlow<Boolean>,
-    socksProxyHost: PreferenceMutableStateFlow<String>,
-    socksProxyPort: PreferenceMutableStateFlow<String>,
-    debugLogsEnabled: PreferenceMutableStateFlow<Boolean>,
-    systemTrayEnabled: PreferenceMutableStateFlow<Boolean>,
-    downloadPath: PreferenceMutableStateFlow<String>,
-    downloadAsCbz: PreferenceMutableStateFlow<Boolean>,
-    webUIEnabled: PreferenceMutableStateFlow<Boolean>,
-    openInBrowserEnabled: PreferenceMutableStateFlow<Boolean>,
-    basicAuthEnabled: PreferenceMutableStateFlow<Boolean>,
-    basicAuthUsername: PreferenceMutableStateFlow<String>,
-    basicAuthPassword: PreferenceMutableStateFlow<String>,
+    host: MutableStateFlow<Boolean>,
+    ip: MutableStateFlow<String>,
+    port: MutableStateFlow<String>,
+    downloadPath: MutableStateFlow<String>,
+    backupPath: MutableStateFlow<String>,
+    localSourcePath: MutableStateFlow<String>,
+    basicAuthEnabled: MutableStateFlow<Boolean>,
+    basicAuthUsername: MutableStateFlow<String>,
+    basicAuthPassword: MutableStateFlow<String>,
 ) {
     item {
         SwitchPreference(preference = host, title = stringResource(MR.strings.host_server))
@@ -191,47 +168,6 @@ fun LazyListScope.ServerHostItems(
             )
         }
         item {
-            SwitchPreference(
-                preference = socksProxyEnabled,
-                title = stringResource(MR.strings.host_socks_enabled),
-                changeListener = serverSettingChanged,
-            )
-        }
-        item {
-            val proxyHost by socksProxyHost.collectAsState()
-            EditTextPreference(
-                preference = socksProxyHost,
-                title = stringResource(MR.strings.host_socks_host),
-                subtitle = stringResource(MR.strings.host_socks_host_sub, proxyHost),
-                changeListener = serverSettingChanged,
-            )
-        }
-        item {
-            val proxyPort by socksProxyPort.collectAsState()
-            EditTextPreference(
-                preference = socksProxyPort,
-                title = stringResource(MR.strings.host_socks_port),
-                subtitle = stringResource(MR.strings.host_socks_port_sub, proxyPort),
-                changeListener = serverSettingChanged,
-            )
-        }
-        item {
-            SwitchPreference(
-                preference = debugLogsEnabled,
-                title = stringResource(MR.strings.host_debug_logging),
-                subtitle = stringResource(MR.strings.host_debug_logging_sub),
-                changeListener = serverSettingChanged,
-            )
-        }
-        item {
-            SwitchPreference(
-                preference = systemTrayEnabled,
-                title = stringResource(MR.strings.host_system_tray),
-                subtitle = stringResource(MR.strings.host_system_tray_sub),
-                changeListener = serverSettingChanged,
-            )
-        }
-        item {
             val downloadPathValue by downloadPath.collectAsState()
             PreferenceRow(
                 title = stringResource(MR.strings.host_download_path),
@@ -253,29 +189,45 @@ fun LazyListScope.ServerHostItems(
             )
         }
         item {
-            SwitchPreference(
-                preference = downloadAsCbz,
-                title = stringResource(MR.strings.host_download_as_cbz),
-                subtitle = stringResource(MR.strings.host_download_as_cbz_sub),
-                changeListener = serverSettingChanged,
+            val backupPathValue by backupPath.collectAsState()
+            PreferenceRow(
+                title = stringResource(MR.strings.host_backup_path),
+                subtitle = if (backupPathValue.isEmpty()) {
+                    stringResource(MR.strings.host_backup_path_sub_empty)
+                } else {
+                    stringResource(MR.strings.host_backup_path_sub, backupPathValue)
+                },
+                onClick = {
+                    folderPicker {
+                        backupPath.value = it.toString()
+                        serverSettingChanged()
+                    }
+                },
+                onLongClick = {
+                    backupPath.value = ""
+                    serverSettingChanged()
+                },
             )
         }
         item {
-            SwitchPreference(
-                preference = webUIEnabled,
-                title = stringResource(MR.strings.host_webui),
-                subtitle = stringResource(MR.strings.host_webui_sub),
-                changeListener = serverSettingChanged,
-            )
-        }
-        item {
-            val webUIEnabledValue by webUIEnabled.collectAsState()
-            SwitchPreference(
-                preference = openInBrowserEnabled,
-                title = stringResource(MR.strings.host_open_in_browser),
-                subtitle = stringResource(MR.strings.host_open_in_browser_sub),
-                changeListener = serverSettingChanged,
-                enabled = webUIEnabledValue,
+            val localSourcePathValue by localSourcePath.collectAsState()
+            PreferenceRow(
+                title = stringResource(MR.strings.host_local_source_path),
+                subtitle = if (localSourcePathValue.isEmpty()) {
+                    stringResource(MR.strings.host_local_source_path_sub_empty)
+                } else {
+                    stringResource(MR.strings.host_local_source_path_sub, localSourcePathValue)
+                },
+                onClick = {
+                    folderPicker {
+                        localSourcePath.value = it.toString()
+                        serverSettingChanged()
+                    }
+                },
+                onLongClick = {
+                    localSourcePath.value = ""
+                    serverSettingChanged()
+                },
             )
         }
         item {
