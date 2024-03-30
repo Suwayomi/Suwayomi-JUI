@@ -90,11 +90,11 @@ jobs:
         run: >
           ./gradlew
           ${{ matrix.build }}
-          -Pcompose.desktop.mac.sign=true
-          -Pcompose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }}
-          -Pcompose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }}
-          -Pcompose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}
-          -Pcompose.desktop.mac.notarization.teamID=${{ secrets.APPLE_TEAM_ID }}
+          -P"compose.desktop.mac.sign=true"
+          -P"compose.desktop.mac.signing.identity=${{ secrets.APPLE_IDENTITY }}"
+          -P"compose.desktop.mac.notarization.appleID=${{ secrets.APPLE_ID }}"
+          -P"compose.desktop.mac.notarization.password=${{ secrets.APPLE_PASSWORD }}"
+          -P"compose.desktop.mac.notarization.teamID=${{ secrets.APPLE_TEAM_ID }}"
           -Ppreview="${{ env.COMMIT_COUNT }}"
           --stacktrace
 
