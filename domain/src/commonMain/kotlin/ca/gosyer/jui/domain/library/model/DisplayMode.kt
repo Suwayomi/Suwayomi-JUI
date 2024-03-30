@@ -22,10 +22,4 @@ enum class DisplayMode(
     CoverOnlyGrid(MR.strings.display_cover_only),
     List(MR.strings.display_list),
     ;
-
-    companion object {
-        val values by lazy {
-            values().asList()
-        }
-    }
 }

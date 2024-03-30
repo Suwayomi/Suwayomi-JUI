@@ -120,7 +120,7 @@ class SettingsReaderViewModel
         }
 
         fun getDirectionChoices() =
-            Direction.values().associateWith { it.res.toPlatformString() }
+            Direction.entries.associateWith { it.res.toPlatformString() }
                 .toImmutableMap()
 
         fun getPaddingChoices() =
@@ -149,11 +149,11 @@ class SettingsReaderViewModel
             }.toImmutableMap()
 
         fun getImageScaleChoices() =
-            ImageScale.values().associateWith { it.res.toPlatformString() }
+            ImageScale.entries.associateWith { it.res.toPlatformString() }
                 .toImmutableMap()
 
         fun getNavigationModeChoices() =
-            NavigationMode.values().associateWith { it.res.toPlatformString() }
+            NavigationMode.entries.associateWith { it.res.toPlatformString() }
                 .toImmutableMap()
     }
 

@@ -20,7 +20,7 @@ class ReaderModePreferences(
     constructor(mode: String, factory: (String) -> PreferenceStore) :
         this(mode, factory(mode))
 
-    private val defaultMode by lazy { DefaultReaderMode.values().find { it.res == mode } }
+    private val defaultMode by lazy { DefaultReaderMode.entries.find { it.res == mode } }
 
     fun default(): Preference<Boolean> = preferenceStore.getBoolean("default", defaultMode != null)
 

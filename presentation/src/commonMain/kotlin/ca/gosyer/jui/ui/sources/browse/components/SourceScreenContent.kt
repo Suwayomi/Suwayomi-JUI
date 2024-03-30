@@ -456,7 +456,7 @@ fun DisplayModeSelect(
         isVisible,
         onDismissRequest,
     ) {
-        val list = DisplayMode.values().toList() - DisplayMode.CoverOnlyGrid
+        val list = DisplayMode.entries - DisplayMode.CoverOnlyGrid
         list.fastForEach {
             DropdownMenuItem(
                 onClick = {

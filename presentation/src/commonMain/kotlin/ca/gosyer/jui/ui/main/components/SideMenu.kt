@@ -78,7 +78,7 @@ fun SideMenu(
                     }
                 }
                 Spacer(Modifier.height(20.dp))
-                remember { TopLevelMenus.values().asList().dropLast(1) }.fastForEach { topLevelMenu ->
+                remember { TopLevelMenus.entries.dropLast(1) }.fastForEach { topLevelMenu ->
                     SideMenuItem(
                         topLevelMenu.isSelected(navigator),
                         topLevelMenu,
@@ -89,7 +89,7 @@ fun SideMenu(
             Column {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
                     Column(Modifier.padding(vertical = 8.dp)) {
-                        remember { MoreMenus.values() }.forEach { topLevelMenu ->
+                        MoreMenus.entries.forEach { topLevelMenu ->
                             SideMenuItem(
                                 topLevelMenu.isSelected(navigator),
                                 topLevelMenu,

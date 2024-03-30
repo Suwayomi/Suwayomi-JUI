@@ -85,7 +85,7 @@ fun MoreContent() {
                 item {
                     Divider()
                 }
-                MoreMenus.values().asList().fastForEach {
+                MoreMenus.entries.fastForEach {
                     item {
                         val navigator = LocalNavigator.current
                         Row(

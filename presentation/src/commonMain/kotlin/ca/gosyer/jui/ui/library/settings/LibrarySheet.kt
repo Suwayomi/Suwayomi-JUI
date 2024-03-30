@@ -51,7 +51,7 @@ fun LibrarySheet(
     librarySort: @Composable () -> Unit,
     libraryDisplay: @Composable () -> Unit,
 ) {
-    val pagerState = rememberPagerState { LibrarySheetTabs.values().size }
+    val pagerState = rememberPagerState { LibrarySheetTabs.entries.size }
     val selectedPage = pagerState.currentPage
     val scope = rememberCoroutineScope()
     Column(Modifier.fillMaxSize()) {
@@ -63,7 +63,7 @@ fun LibrarySheet(
                 )
             },
         ) {
-            LibrarySheetTabs.values().asList().fastForEachIndexed { index, tab ->
+            LibrarySheetTabs.entries.fastForEachIndexed { index, tab ->
                 Tab(
                     selected = selectedPage == index,
                     onClick = {

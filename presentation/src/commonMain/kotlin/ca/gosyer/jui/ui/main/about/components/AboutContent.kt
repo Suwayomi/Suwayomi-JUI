@@ -248,7 +248,7 @@ private fun LinkDisplay() {
     BoxWithConstraints {
         FlowRow(Modifier.fillMaxWidth(), mainAxisAlignment = FlowMainAxisAlignment.Center) {
             if (maxWidth > 720.dp) {
-                Link.values().asList().fastForEach {
+                Link.entries.fastForEach {
                     Column(
                         Modifier
                             .width(92.dp)
@@ -276,7 +276,7 @@ private fun LinkDisplay() {
                     }
                 }
             } else {
-                Link.values().asList().fastForEach {
+                Link.entries.fastForEach {
                     Box(
                         modifier = Modifier.clickable { uriHandler.openUri(it.uri) }
                             .padding(horizontal = 16.dp, vertical = 8.dp)

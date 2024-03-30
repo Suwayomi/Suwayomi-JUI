@@ -23,7 +23,7 @@ class ReaderPreferences(
     fun modes(): Preference<List<String>> =
         preferenceStore.getJsonObject(
             "modes",
-            DefaultReaderMode.values().map { it.res },
+            DefaultReaderMode.entries.map { it.res },
             ListSerializer(String.serializer()),
         )
 

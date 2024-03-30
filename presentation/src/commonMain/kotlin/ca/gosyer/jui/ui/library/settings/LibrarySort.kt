@@ -49,7 +49,7 @@ fun LibrarySort(
     setAscending: (Boolean) -> Unit,
 ) {
     Column(Modifier.fillMaxWidth()) {
-        Sort.values().asList().fastForEach { sort ->
+        Sort.entries.fastForEach { sort ->
             SourceFilterAction(
                 name = stringResource(sort.res),
                 onClick = {

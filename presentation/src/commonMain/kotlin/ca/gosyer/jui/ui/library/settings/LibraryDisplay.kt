@@ -58,7 +58,7 @@ fun LibraryDisplay(
 ) {
     Column(Modifier.fillMaxWidth()) {
         TitleText(stringResource(MR.strings.display_mode))
-        DisplayMode.values.fastForEach {
+        DisplayMode.entries.fastForEach {
             RadioSelectionItem(
                 text = stringResource(it.res),
                 selected = it == displayMode,
