@@ -1,7 +1,7 @@
 import org.gradle.api.JavaVersion
 
 object Config {
-    const val migrationCode = 4
+    const val migrationCode = 5
 
     // Suwayomi-Server version
     const val tachideskVersion = "v1.0.0"

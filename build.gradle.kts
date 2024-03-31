@@ -28,7 +28,7 @@ plugins {
 
 allprojects {
     group = "ca.gosyer"
-    version = "1.3.2"
+    version = "1.3.3"
 
     dependencies {
         modules {
