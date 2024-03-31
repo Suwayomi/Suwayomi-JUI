@@ -129,6 +129,7 @@ apollo {
         packageName.set("ca.gosyer.jui.data.graphql")
         generateMethods.set(listOf("equalsHashCode"))
         mapScalar("LongString","kotlin.Long", "ca.gosyer.jui.data.scalars.LongStringScalar")
+        mapScalarToUpload("Upload")
         introspection {
             endpointUrl.set("http://localhost:4567/api/graphql")
             schemaFile.set(file("src/main/graphql/schema.graphqls"))

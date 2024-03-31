@@ -25,6 +25,7 @@ import ca.gosyer.jui.domain.updates.service.UpdatesRepositoryOld
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.network.ktorClient
+import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.http.URLBuilder
 import io.ktor.http.appendPathSegments
@@ -54,6 +55,7 @@ interface DataComponent {
                 .buildString(),
         )
         .ktorClient(http)
+        .wsProtocol(GraphQLWsProtocol.Factory())
         .build()
 
     @Provides
