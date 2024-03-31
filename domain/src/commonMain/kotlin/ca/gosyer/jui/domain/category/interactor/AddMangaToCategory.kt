@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.category.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.category.model.Category
-import ca.gosyer.jui.domain.category.service.CategoryRepository
+import ca.gosyer.jui.domain.category.service.CategoryRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -20,7 +20,7 @@ import org.lighthousegames.logging.logging
 class AddMangaToCategory
     @Inject
     constructor(
-        private val categoryRepository: CategoryRepository,
+        private val categoryRepositoryOld: CategoryRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -49,7 +49,7 @@ class AddMangaToCategory
             mangaId: Long,
             categoryId: Long,
         ) = if (categoryId != 0L) {
-            categoryRepository.addMangaToCategory(mangaId, categoryId)
+            categoryRepositoryOld.addMangaToCategory(mangaId, categoryId)
                 .map { serverListeners.updateCategoryManga(categoryId) }
         } else {
             flow {
@@ -62,7 +62,7 @@ class AddMangaToCategory
             manga: Manga,
             category: Category,
         ) = if (category.id != 0L) {
-            categoryRepository.addMangaToCategory(manga.id, category.id)
+            categoryRepositoryOld.addMangaToCategory(manga.id, category.id)
                 .map { serverListeners.updateCategoryManga(category.id) }
         } else {
             flow {

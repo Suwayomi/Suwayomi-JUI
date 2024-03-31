@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.manga.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.manga.model.Manga
-import ca.gosyer.jui.domain.manga.service.MangaRepository
+import ca.gosyer.jui.domain.manga.service.MangaRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.singleOrNull
@@ -19,7 +19,7 @@ import org.lighthousegames.logging.logging
 class RefreshManga
     @Inject
     constructor(
-        private val mangaRepository: MangaRepository,
+        private val mangaRepositoryOld: MangaRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -44,9 +44,9 @@ class RefreshManga
             }
             .singleOrNull()
 
-        fun asFlow(mangaId: Long) = mangaRepository.getManga(mangaId, true).onEach { serverListeners.updateManga(mangaId) }
+        fun asFlow(mangaId: Long) = mangaRepositoryOld.getManga(mangaId, true).onEach { serverListeners.updateManga(mangaId) }
 
-        fun asFlow(manga: Manga) = mangaRepository.getManga(manga.id, true).onEach { serverListeners.updateManga(manga.id) }
+        fun asFlow(manga: Manga) = mangaRepositoryOld.getManga(manga.id, true).onEach { serverListeners.updateManga(manga.id) }
 
         companion object {
             private val log = logging()

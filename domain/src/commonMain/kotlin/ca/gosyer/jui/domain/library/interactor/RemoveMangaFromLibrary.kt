@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.library.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
-import ca.gosyer.jui.domain.library.service.LibraryRepository
+import ca.gosyer.jui.domain.library.service.LibraryRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 class RemoveMangaFromLibrary
     @Inject
     constructor(
-        private val libraryRepository: LibraryRepository,
+        private val libraryRepositoryOld: LibraryRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -42,11 +42,11 @@ class RemoveMangaFromLibrary
             .singleOrNull()
 
         fun asFlow(mangaId: Long) =
-            libraryRepository.removeMangaFromLibrary(mangaId)
+            libraryRepositoryOld.removeMangaFromLibrary(mangaId)
                 .onEach { serverListeners.updateManga(mangaId) }
 
         fun asFlow(manga: Manga) =
-            libraryRepository.removeMangaFromLibrary(manga.id)
+            libraryRepositoryOld.removeMangaFromLibrary(manga.id)
                 .onEach { serverListeners.updateManga(manga.id) }
 
         companion object {

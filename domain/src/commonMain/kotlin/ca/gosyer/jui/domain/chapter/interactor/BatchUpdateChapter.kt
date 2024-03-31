@@ -11,7 +11,7 @@ import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.chapter.model.ChapterBatchEditInput
 import ca.gosyer.jui.domain.chapter.model.ChapterChange
 import ca.gosyer.jui.domain.chapter.model.MangaChapterBatchEditInput
-import ca.gosyer.jui.domain.chapter.service.ChapterRepository
+import ca.gosyer.jui.domain.chapter.service.ChapterRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -23,7 +23,7 @@ import kotlin.jvm.JvmName
 class BatchUpdateChapter
     @Inject
     constructor(
-        private val chapterRepository: ChapterRepository,
+        private val chapterRepositoryOld: ChapterRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         @JvmName("awaitChapters")
@@ -222,7 +222,7 @@ class BatchUpdateChapter
             lastPageRead: Int? = null,
             delete: Boolean? = null,
         ) = if (mangaId != null) {
-            chapterRepository.batchUpdateChapter(
+            chapterRepositoryOld.batchUpdateChapter(
                 mangaId,
                 MangaChapterBatchEditInput(
                     chapterIds = chapterIds,
@@ -235,7 +235,7 @@ class BatchUpdateChapter
                 ),
             )
         } else {
-            chapterRepository.batchUpdateChapter(
+            chapterRepositoryOld.batchUpdateChapter(
                 ChapterBatchEditInput(
                     chapterIds = chapterIds,
                     change = ChapterChange(

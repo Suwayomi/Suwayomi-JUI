@@ -12,7 +12,7 @@ import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 
-interface LibraryRepository {
+interface LibraryRepositoryOld {
     @GET("api/v1/manga/{mangaId}/library")
     fun addMangaToLibrary(
         @Path("mangaId") mangaId: Long,

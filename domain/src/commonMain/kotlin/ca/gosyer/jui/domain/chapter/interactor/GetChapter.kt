@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.chapter.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.chapter.service.ChapterRepository
+import ca.gosyer.jui.domain.chapter.service.ChapterRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
@@ -19,7 +19,7 @@ import org.lighthousegames.logging.logging
 class GetChapter
     @Inject
     constructor(
-        private val chapterRepository: ChapterRepository,
+        private val chapterRepositoryOld: ChapterRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -61,7 +61,7 @@ class GetChapter
             mangaId: Long,
             index: Int,
         ) = serverListeners.combineChapters(
-            chapterRepository.getChapter(mangaId, index),
+            chapterRepositoryOld.getChapter(mangaId, index),
             indexPredate = { id, chapterIndexes ->
                 id == mangaId && (chapterIndexes == null || index in chapterIndexes)
             },
@@ -72,7 +72,7 @@ class GetChapter
             manga: Manga,
             index: Int,
         ) = serverListeners.combineChapters(
-            chapterRepository.getChapter(manga.id, index),
+            chapterRepositoryOld.getChapter(manga.id, index),
             indexPredate = { id, chapterIndexes ->
                 id == manga.id && (chapterIndexes == null || index in chapterIndexes)
             },
@@ -81,7 +81,7 @@ class GetChapter
 
         fun asFlow(chapter: Chapter) =
             serverListeners.combineChapters(
-                chapterRepository.getChapter(chapter.mangaId, chapter.index),
+                chapterRepositoryOld.getChapter(chapter.mangaId, chapter.index),
                 indexPredate = { id, chapterIndexes ->
                     id == chapter.mangaId && (chapterIndexes == null || chapter.index in chapterIndexes)
                 },

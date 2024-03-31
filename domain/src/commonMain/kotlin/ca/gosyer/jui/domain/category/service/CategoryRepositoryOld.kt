@@ -18,7 +18,7 @@ import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 
-interface CategoryRepository {
+interface CategoryRepositoryOld {
     @GET("api/v1/manga/{mangaId}/category/")
     fun getMangaCategories(
         @Path("mangaId") mangaId: Long,

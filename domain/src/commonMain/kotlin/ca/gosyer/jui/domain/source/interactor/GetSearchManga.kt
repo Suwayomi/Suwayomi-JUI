@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.source.interactor
 
 import ca.gosyer.jui.domain.source.model.Source
-import ca.gosyer.jui.domain.source.service.SourceRepository
+import ca.gosyer.jui.domain.source.service.SourceRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
@@ -16,7 +16,7 @@ import org.lighthousegames.logging.logging
 class GetSearchManga
     @Inject
     constructor(
-        private val sourceRepository: SourceRepository,
+        private val sourceRepositoryOld: SourceRepositoryOld,
     ) {
         suspend fun await(
             source: Source,
@@ -48,7 +48,7 @@ class GetSearchManga
             source: Source,
             searchTerm: String?,
             page: Int,
-        ) = sourceRepository.getSearchResults(
+        ) = sourceRepositoryOld.getSearchResults(
             source.id,
             searchTerm?.ifBlank { null },
             page,
@@ -58,7 +58,7 @@ class GetSearchManga
             sourceId: Long,
             searchTerm: String?,
             page: Int,
-        ) = sourceRepository.getSearchResults(
+        ) = sourceRepositoryOld.getSearchResults(
             sourceId,
             searchTerm?.ifBlank { null },
             page,

@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.updates.interactor
 
 import ca.gosyer.jui.domain.category.model.Category
-import ca.gosyer.jui.domain.updates.service.UpdatesRepository
+import ca.gosyer.jui.domain.updates.service.UpdatesRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -16,7 +16,7 @@ import org.lighthousegames.logging.logging
 class UpdateCategory
     @Inject
     constructor(
-        private val updatesRepository: UpdatesRepository,
+        private val updatesRepositoryOld: UpdatesRepositoryOld,
     ) {
         suspend fun await(
             categoryId: Long,
@@ -38,9 +38,9 @@ class UpdateCategory
             }
             .collect()
 
-        fun asFlow(categoryId: Long) = updatesRepository.updateCategory(categoryId)
+        fun asFlow(categoryId: Long) = updatesRepositoryOld.updateCategory(categoryId)
 
-        fun asFlow(category: Category) = updatesRepository.updateCategory(category.id)
+        fun asFlow(category: Category) = updatesRepositoryOld.updateCategory(category.id)
 
         companion object {
             private val log = logging()

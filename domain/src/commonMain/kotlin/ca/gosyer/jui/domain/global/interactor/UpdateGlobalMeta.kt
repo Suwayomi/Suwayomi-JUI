@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.global.interactor
 
 import ca.gosyer.jui.domain.global.model.GlobalMeta
-import ca.gosyer.jui.domain.global.service.GlobalRepository
+import ca.gosyer.jui.domain.global.service.GlobalRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -17,7 +17,7 @@ import org.lighthousegames.logging.logging
 class UpdateGlobalMeta
     @Inject
     constructor(
-        private val globalRepository: GlobalRepository,
+        private val globalRepositoryOld: GlobalRepositoryOld,
     ) {
         suspend fun await(
             globalMeta: GlobalMeta,
@@ -35,7 +35,7 @@ class UpdateGlobalMeta
             example: Int = globalMeta.example,
         ) = flow {
             if (example != globalMeta.example) {
-                globalRepository.updateGlobalMeta(
+                globalRepositoryOld.updateGlobalMeta(
                     "example",
                     example.toString(),
                 ).collect()

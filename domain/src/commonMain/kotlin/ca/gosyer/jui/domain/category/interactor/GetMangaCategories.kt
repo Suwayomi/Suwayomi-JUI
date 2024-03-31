@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.category.interactor
 
-import ca.gosyer.jui.domain.category.service.CategoryRepository
+import ca.gosyer.jui.domain.category.service.CategoryRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
@@ -16,7 +16,7 @@ import org.lighthousegames.logging.logging
 class GetMangaCategories
     @Inject
     constructor(
-        private val categoryRepository: CategoryRepository,
+        private val categoryRepositoryOld: CategoryRepositoryOld,
     ) {
         suspend fun await(
             mangaId: Long,
@@ -38,9 +38,9 @@ class GetMangaCategories
             }
             .singleOrNull()
 
-        fun asFlow(mangaId: Long) = categoryRepository.getMangaCategories(mangaId)
+        fun asFlow(mangaId: Long) = categoryRepositoryOld.getMangaCategories(mangaId)
 
-        fun asFlow(manga: Manga) = categoryRepository.getMangaCategories(manga.id)
+        fun asFlow(manga: Manga) = categoryRepositoryOld.getMangaCategories(manga.id)
 
         companion object {
             private val log = logging()

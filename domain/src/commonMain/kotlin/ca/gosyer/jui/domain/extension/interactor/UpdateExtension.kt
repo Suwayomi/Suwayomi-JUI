@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.extension.interactor
 
 import ca.gosyer.jui.domain.extension.model.Extension
-import ca.gosyer.jui.domain.extension.service.ExtensionRepository
+import ca.gosyer.jui.domain.extension.service.ExtensionRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -16,7 +16,7 @@ import org.lighthousegames.logging.logging
 class UpdateExtension
     @Inject
     constructor(
-        private val extensionRepository: ExtensionRepository,
+        private val extensionRepositoryOld: ExtensionRepositoryOld,
     ) {
         suspend fun await(
             extension: Extension,
@@ -28,7 +28,7 @@ class UpdateExtension
             }
             .collect()
 
-        fun asFlow(extension: Extension) = extensionRepository.updateExtension(extension.pkgName)
+        fun asFlow(extension: Extension) = extensionRepositoryOld.updateExtension(extension.pkgName)
 
         companion object {
             private val log = logging()

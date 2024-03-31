@@ -25,7 +25,7 @@ import okio.FileSystem
 import okio.Path
 import okio.buffer
 
-interface BackupRepository {
+interface BackupRepositoryOld {
     @Multipart
     @POST("api/v1/backup/import/file")
     fun importBackupFile(

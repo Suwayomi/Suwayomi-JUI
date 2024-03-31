@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.category.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.category.model.Category
-import ca.gosyer.jui.domain.category.service.CategoryRepository
+import ca.gosyer.jui.domain.category.service.CategoryRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.take
@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 class GetMangaListFromCategory
     @Inject
     constructor(
-        private val categoryRepository: CategoryRepository,
+        private val categoryRepositoryOld: CategoryRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -45,12 +45,12 @@ class GetMangaListFromCategory
 
         fun asFlow(categoryId: Long) =
             serverListeners.combineCategoryManga(
-                categoryRepository.getMangaFromCategory(categoryId),
+                categoryRepositoryOld.getMangaFromCategory(categoryId),
             ) { categoryId == it }
 
         fun asFlow(category: Category) =
             serverListeners.combineCategoryManga(
-                categoryRepository.getMangaFromCategory(category.id),
+                categoryRepositoryOld.getMangaFromCategory(category.id),
             ) { category.id == it }
 
         companion object {

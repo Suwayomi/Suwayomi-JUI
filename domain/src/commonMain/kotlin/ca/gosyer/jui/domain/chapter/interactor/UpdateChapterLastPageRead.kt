@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.chapter.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.chapter.service.ChapterRepository
+import ca.gosyer.jui.domain.chapter.service.ChapterRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -19,7 +19,7 @@ import org.lighthousegames.logging.logging
 class UpdateChapterLastPageRead
     @Inject
     constructor(
-        private val chapterRepository: ChapterRepository,
+        private val chapterRepositoryOld: ChapterRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -61,7 +61,7 @@ class UpdateChapterLastPageRead
             mangaId: Long,
             index: Int,
             lastPageRead: Int,
-        ) = chapterRepository.updateChapter(
+        ) = chapterRepositoryOld.updateChapter(
             mangaId = mangaId,
             chapterIndex = index,
             lastPageRead = lastPageRead,
@@ -71,7 +71,7 @@ class UpdateChapterLastPageRead
             manga: Manga,
             index: Int,
             lastPageRead: Int,
-        ) = chapterRepository.updateChapter(
+        ) = chapterRepositoryOld.updateChapter(
             mangaId = manga.id,
             chapterIndex = index,
             lastPageRead = lastPageRead,
@@ -80,7 +80,7 @@ class UpdateChapterLastPageRead
         fun asFlow(
             chapter: Chapter,
             lastPageRead: Int,
-        ) = chapterRepository.updateChapter(
+        ) = chapterRepositoryOld.updateChapter(
             mangaId = chapter.mangaId,
             chapterIndex = chapter.index,
             lastPageRead = lastPageRead,

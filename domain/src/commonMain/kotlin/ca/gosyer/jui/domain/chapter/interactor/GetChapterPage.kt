@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.chapter.interactor
 
 import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.chapter.service.ChapterRepository
+import ca.gosyer.jui.domain.chapter.service.ChapterRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import io.ktor.client.request.HttpRequestBuilder
 import kotlinx.coroutines.flow.catch
@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 class GetChapterPage
     @Inject
     constructor(
-        private val chapterRepository: ChapterRepository,
+        private val chapterRepositoryOld: ChapterRepositoryOld,
     ) {
         suspend fun await(
             mangaId: Long,
@@ -63,20 +63,20 @@ class GetChapterPage
             index: Int,
             pageNum: Int,
             block: HttpRequestBuilder.() -> Unit,
-        ) = chapterRepository.getPage(mangaId, index, pageNum, block)
+        ) = chapterRepositoryOld.getPage(mangaId, index, pageNum, block)
 
         fun asFlow(
             manga: Manga,
             index: Int,
             pageNum: Int,
             block: HttpRequestBuilder.() -> Unit,
-        ) = chapterRepository.getPage(manga.id, index, pageNum, block)
+        ) = chapterRepositoryOld.getPage(manga.id, index, pageNum, block)
 
         fun asFlow(
             chapter: Chapter,
             pageNum: Int,
             block: HttpRequestBuilder.() -> Unit,
-        ) = chapterRepository.getPage(chapter.mangaId, chapter.index, pageNum, block)
+        ) = chapterRepositoryOld.getPage(chapter.mangaId, chapter.index, pageNum, block)
 
         companion object {
             private val log = logging()

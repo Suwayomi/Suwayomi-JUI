@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.category.interactor
 
-import ca.gosyer.jui.domain.category.service.CategoryRepository
+import ca.gosyer.jui.domain.category.service.CategoryRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
@@ -16,7 +16,7 @@ import org.lighthousegames.logging.logging
 class GetCategories
     @Inject
     constructor(
-        private val categoryRepository: CategoryRepository,
+        private val categoryRepositoryOld: CategoryRepositoryOld,
     ) {
         suspend fun await(
             dropDefault: Boolean = false,
@@ -29,7 +29,7 @@ class GetCategories
             .singleOrNull()
 
         fun asFlow(dropDefault: Boolean = false) =
-            categoryRepository.getCategories()
+            categoryRepositoryOld.getCategories()
                 .map { categories ->
                     if (dropDefault) {
                         categories.filterNot { it.name.equals("default", true) }

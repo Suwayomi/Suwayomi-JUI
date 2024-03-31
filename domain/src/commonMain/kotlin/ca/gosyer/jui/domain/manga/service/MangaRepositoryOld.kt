@@ -19,7 +19,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.flow.Flow
 
-interface MangaRepository {
+interface MangaRepositoryOld {
     @GET("api/v1/manga/{mangaId}/")
     fun getManga(
         @Path("mangaId") mangaId: Long,

@@ -9,7 +9,7 @@ package ca.gosyer.jui.domain.source.interactor
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterChange
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterData
-import ca.gosyer.jui.domain.source.service.SourceRepository
+import ca.gosyer.jui.domain.source.service.SourceRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 class GetQuickSearchManga
     @Inject
     constructor(
-        private val sourceRepository: SourceRepository,
+        private val sourceRepositoryOld: SourceRepositoryOld,
     ) {
         suspend fun await(
             source: Source,
@@ -51,7 +51,7 @@ class GetQuickSearchManga
             searchTerm: String?,
             page: Int,
             filters: List<SourceFilterChange>?,
-        ) = sourceRepository.getQuickSearchResults(
+        ) = sourceRepositoryOld.getQuickSearchResults(
             source.id,
             page,
             SourceFilterData(
@@ -65,7 +65,7 @@ class GetQuickSearchManga
             searchTerm: String?,
             page: Int,
             filters: List<SourceFilterChange>?,
-        ) = sourceRepository.getQuickSearchResults(
+        ) = sourceRepositoryOld.getQuickSearchResults(
             sourceId,
             page,
             SourceFilterData(

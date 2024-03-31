@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.chapter.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
-import ca.gosyer.jui.domain.chapter.service.ChapterRepository
+import ca.gosyer.jui.domain.chapter.service.ChapterRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 class RefreshChapters
     @Inject
     constructor(
-        private val chapterRepository: ChapterRepository,
+        private val chapterRepositoryOld: ChapterRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -42,11 +42,11 @@ class RefreshChapters
             .singleOrNull()
 
         fun asFlow(mangaId: Long) =
-            chapterRepository.getChapters(mangaId, true)
+            chapterRepositoryOld.getChapters(mangaId, true)
                 .onEach { serverListeners.updateChapters(mangaId) }
 
         fun asFlow(manga: Manga) =
-            chapterRepository.getChapters(manga.id, true)
+            chapterRepositoryOld.getChapters(manga.id, true)
                 .onEach { serverListeners.updateChapters(manga.id) }
 
         companion object {

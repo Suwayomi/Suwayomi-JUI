@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.category.interactor
 
 import ca.gosyer.jui.domain.category.model.Category
-import ca.gosyer.jui.domain.category.service.CategoryRepository
+import ca.gosyer.jui.domain.category.service.CategoryRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -16,7 +16,7 @@ import org.lighthousegames.logging.logging
 class DeleteCategory
     @Inject
     constructor(
-        private val categoryRepository: CategoryRepository,
+        private val categoryRepositoryOld: CategoryRepositoryOld,
     ) {
         suspend fun await(
             categoryId: Long,
@@ -38,9 +38,9 @@ class DeleteCategory
             }
             .collect()
 
-        fun asFlow(categoryId: Long) = categoryRepository.deleteCategory(categoryId)
+        fun asFlow(categoryId: Long) = categoryRepositoryOld.deleteCategory(categoryId)
 
-        fun asFlow(category: Category) = categoryRepository.deleteCategory(category.id)
+        fun asFlow(category: Category) = categoryRepositoryOld.deleteCategory(category.id)
 
         companion object {
             private val log = logging()

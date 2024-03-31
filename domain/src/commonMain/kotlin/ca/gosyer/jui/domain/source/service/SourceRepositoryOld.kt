@@ -22,7 +22,7 @@ import de.jensklingenberg.ktorfit.http.Query
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 
-interface SourceRepository {
+interface SourceRepositoryOld {
     @GET("api/v1/source/list")
     fun getSourceList(): Flow<List<Source>>
 

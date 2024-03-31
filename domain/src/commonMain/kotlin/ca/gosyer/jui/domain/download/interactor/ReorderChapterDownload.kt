@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.download.interactor
 
 import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.download.service.DownloadRepository
+import ca.gosyer.jui.domain.download.service.DownloadRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -17,7 +17,7 @@ import org.lighthousegames.logging.logging
 class ReorderChapterDownload
     @Inject
     constructor(
-        private val downloadRepository: DownloadRepository,
+        private val downloadRepositoryOld: DownloadRepositoryOld,
     ) {
         suspend fun await(
             mangaId: Long,
@@ -58,18 +58,18 @@ class ReorderChapterDownload
             mangaId: Long,
             index: Int,
             to: Int,
-        ) = downloadRepository.reorderChapterDownload(mangaId, index, to)
+        ) = downloadRepositoryOld.reorderChapterDownload(mangaId, index, to)
 
         fun asFlow(
             manga: Manga,
             index: Int,
             to: Int,
-        ) = downloadRepository.reorderChapterDownload(manga.id, index, to)
+        ) = downloadRepositoryOld.reorderChapterDownload(manga.id, index, to)
 
         fun asFlow(
             chapter: Chapter,
             to: Int,
-        ) = downloadRepository.reorderChapterDownload(chapter.mangaId, chapter.index, to)
+        ) = downloadRepositoryOld.reorderChapterDownload(chapter.mangaId, chapter.index, to)
 
         companion object {
             private val log = logging()

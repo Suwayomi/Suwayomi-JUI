@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.manga.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.manga.model.Manga
-import ca.gosyer.jui.domain.manga.service.MangaRepository
+import ca.gosyer.jui.domain.manga.service.MangaRepositoryOld
 import io.ktor.http.decodeURLQueryComponent
 import io.ktor.http.encodeURLQueryComponent
 import kotlinx.coroutines.flow.catch
@@ -20,7 +20,7 @@ import org.lighthousegames.logging.logging
 class UpdateMangaMeta
     @Inject
     constructor(
-        private val mangaRepository: MangaRepository,
+        private val mangaRepositoryOld: MangaRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -39,7 +39,7 @@ class UpdateMangaMeta
             readerMode: String = manga.meta.juiReaderMode.decodeURLQueryComponent(),
         ) = flow {
             if (readerMode.encodeURLQueryComponent() != manga.meta.juiReaderMode) {
-                mangaRepository.updateMangaMeta(
+                mangaRepositoryOld.updateMangaMeta(
                     manga.id,
                     "juiReaderMode",
                     readerMode,

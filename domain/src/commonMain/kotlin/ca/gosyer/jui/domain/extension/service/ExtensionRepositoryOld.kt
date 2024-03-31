@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import okio.FileSystem
 import okio.buffer
 
-interface ExtensionRepository {
+interface ExtensionRepositoryOld {
     @GET("api/v1/extension/list")
     fun getExtensionList(): Flow<List<Extension>>
 

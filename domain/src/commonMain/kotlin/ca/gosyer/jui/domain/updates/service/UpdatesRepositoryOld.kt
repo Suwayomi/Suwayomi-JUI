@@ -15,7 +15,7 @@ import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 
-interface UpdatesRepository {
+interface UpdatesRepositoryOld {
     @GET("api/v1/update/recentChapters/{pageNum}/")
     fun getRecentUpdates(
         @Path("pageNum") pageNum: Int,

@@ -17,7 +17,7 @@ import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 
-interface DownloadRepository {
+interface DownloadRepositoryOld {
     @GET("api/v1/downloads/start")
     fun startDownloading(): Flow<HttpResponse>
 

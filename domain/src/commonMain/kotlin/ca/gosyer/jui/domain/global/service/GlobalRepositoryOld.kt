@@ -14,7 +14,7 @@ import de.jensklingenberg.ktorfit.http.PATCH
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 
-interface GlobalRepository {
+interface GlobalRepositoryOld {
     @GET("api/v1/meta")
     fun getGlobalMeta(): Flow<GlobalMeta>
 

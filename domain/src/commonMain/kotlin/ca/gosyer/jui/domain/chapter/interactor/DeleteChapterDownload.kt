@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.chapter.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.chapter.service.ChapterRepository
+import ca.gosyer.jui.domain.chapter.service.ChapterRepositoryOld
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -19,7 +19,7 @@ import org.lighthousegames.logging.logging
 class DeleteChapterDownload
     @Inject
     constructor(
-        private val chapterRepository: ChapterRepository,
+        private val chapterRepositoryOld: ChapterRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -57,17 +57,17 @@ class DeleteChapterDownload
         fun asFlow(
             mangaId: Long,
             index: Int,
-        ) = chapterRepository.deleteChapterDownload(mangaId, index)
+        ) = chapterRepositoryOld.deleteChapterDownload(mangaId, index)
             .onEach { serverListeners.updateChapters(mangaId, index) }
 
         fun asFlow(
             manga: Manga,
             index: Int,
-        ) = chapterRepository.deleteChapterDownload(manga.id, index)
+        ) = chapterRepositoryOld.deleteChapterDownload(manga.id, index)
             .onEach { serverListeners.updateChapters(manga.id, index) }
 
         fun asFlow(chapter: Chapter) =
-            chapterRepository.deleteChapterDownload(chapter.mangaId, chapter.index)
+            chapterRepositoryOld.deleteChapterDownload(chapter.mangaId, chapter.index)
                 .onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
 
         companion object {

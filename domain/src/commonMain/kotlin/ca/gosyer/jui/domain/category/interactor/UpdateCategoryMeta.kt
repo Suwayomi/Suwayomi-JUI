@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.category.interactor
 
 import ca.gosyer.jui.domain.category.model.Category
-import ca.gosyer.jui.domain.category.service.CategoryRepository
+import ca.gosyer.jui.domain.category.service.CategoryRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -17,7 +17,7 @@ import org.lighthousegames.logging.logging
 class UpdateCategoryMeta
     @Inject
     constructor(
-        private val categoryRepository: CategoryRepository,
+        private val categoryRepositoryOld: CategoryRepositoryOld,
     ) {
         suspend fun await(
             category: Category,
@@ -35,7 +35,7 @@ class UpdateCategoryMeta
             example: Int = category.meta.example,
         ) = flow {
             if (example != category.meta.example) {
-                categoryRepository.updateCategoryMeta(
+                categoryRepositoryOld.updateCategoryMeta(
                     category.id,
                     "example",
                     example.toString(),

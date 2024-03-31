@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.source.interactor
 
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterChange
-import ca.gosyer.jui.domain.source.service.SourceRepository
+import ca.gosyer.jui.domain.source.service.SourceRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.serialization.encodeToString
@@ -19,7 +19,7 @@ import org.lighthousegames.logging.logging
 class SetSourceFilter
     @Inject
     constructor(
-        private val sourceRepository: SourceRepository,
+        private val sourceRepositoryOld: SourceRepositoryOld,
     ) {
         suspend fun await(
             source: Source,
@@ -85,7 +85,7 @@ class SetSourceFilter
             source: Source,
             filterIndex: Int,
             filter: Any,
-        ) = sourceRepository.setFilter(
+        ) = sourceRepositoryOld.setFilter(
             source.id,
             SourceFilterChange(filterIndex, filter),
         )
@@ -94,7 +94,7 @@ class SetSourceFilter
             sourceId: Long,
             filterIndex: Int,
             filter: Any,
-        ) = sourceRepository.setFilter(
+        ) = sourceRepositoryOld.setFilter(
             sourceId,
             SourceFilterChange(filterIndex, filter),
         )
@@ -104,7 +104,7 @@ class SetSourceFilter
             filterIndex: Int,
             childFilterIndex: Int,
             filter: Any,
-        ) = sourceRepository.setFilter(
+        ) = sourceRepositoryOld.setFilter(
             source.id,
             SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter))),
         )
@@ -114,7 +114,7 @@ class SetSourceFilter
             filterIndex: Int,
             childFilterIndex: Int,
             filter: Any,
-        ) = sourceRepository.setFilter(
+        ) = sourceRepositoryOld.setFilter(
             sourceId,
             SourceFilterChange(filterIndex, Json.encodeToString(SourceFilterChange(childFilterIndex, filter))),
         )

@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.updates.interactor
 
-import ca.gosyer.jui.domain.updates.service.UpdatesRepository
+import ca.gosyer.jui.domain.updates.service.UpdatesRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
@@ -15,7 +15,7 @@ import org.lighthousegames.logging.logging
 class GetRecentUpdates
     @Inject
     constructor(
-        private val updatesRepository: UpdatesRepository,
+        private val updatesRepositoryOld: UpdatesRepositoryOld,
     ) {
         suspend fun await(
             pageNum: Int,
@@ -27,7 +27,7 @@ class GetRecentUpdates
             }
             .singleOrNull()
 
-        fun asFlow(pageNum: Int) = updatesRepository.getRecentUpdates(pageNum)
+        fun asFlow(pageNum: Int) = updatesRepositoryOld.getRecentUpdates(pageNum)
 
         companion object {
             private val log = logging()

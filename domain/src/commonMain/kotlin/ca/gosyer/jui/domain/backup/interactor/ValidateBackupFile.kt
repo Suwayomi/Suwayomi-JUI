@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.backup.interactor
 
-import ca.gosyer.jui.domain.backup.service.BackupRepository
+import ca.gosyer.jui.domain.backup.service.BackupRepositoryOld
 import io.ktor.client.request.HttpRequestBuilder
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
@@ -17,7 +17,7 @@ import org.lighthousegames.logging.logging
 class ValidateBackupFile
     @Inject
     constructor(
-        private val backupRepository: BackupRepository,
+        private val backupRepositoryOld: BackupRepositoryOld,
     ) {
         suspend fun await(
             file: Path,
@@ -33,7 +33,7 @@ class ValidateBackupFile
         fun asFlow(
             file: Path,
             block: HttpRequestBuilder.() -> Unit = {},
-        ) = backupRepository.validateBackupFile(BackupRepository.buildBackupFormData(file), block)
+        ) = backupRepositoryOld.validateBackupFile(BackupRepositoryOld.buildBackupFormData(file), block)
 
         companion object {
             private val log = logging()

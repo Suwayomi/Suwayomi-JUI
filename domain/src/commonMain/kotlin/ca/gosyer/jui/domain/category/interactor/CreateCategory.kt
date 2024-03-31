@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.category.interactor
 
-import ca.gosyer.jui.domain.category.service.CategoryRepository
+import ca.gosyer.jui.domain.category.service.CategoryRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -15,7 +15,7 @@ import org.lighthousegames.logging.logging
 class CreateCategory
     @Inject
     constructor(
-        private val categoryRepository: CategoryRepository,
+        private val categoryRepositoryOld: CategoryRepositoryOld,
     ) {
         suspend fun await(
             name: String,
@@ -27,7 +27,7 @@ class CreateCategory
             }
             .collect()
 
-        fun asFlow(name: String) = categoryRepository.createCategory(name)
+        fun asFlow(name: String) = categoryRepositoryOld.createCategory(name)
 
         companion object {
             private val log = logging()

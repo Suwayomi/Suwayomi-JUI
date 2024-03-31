@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.manga.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.manga.model.Manga
-import ca.gosyer.jui.domain.manga.service.MangaRepository
+import ca.gosyer.jui.domain.manga.service.MangaRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.take
@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 class GetMangaFull
     @Inject
     constructor(
-        private val mangaRepository: MangaRepository,
+        private val mangaRepositoryOld: MangaRepositoryOld,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -45,12 +45,12 @@ class GetMangaFull
 
         fun asFlow(mangaId: Long) =
             serverListeners.combineMangaUpdates(
-                mangaRepository.getMangaFull(mangaId),
+                mangaRepositoryOld.getMangaFull(mangaId),
             ) { mangaId in it }
 
         fun asFlow(manga: Manga) =
             serverListeners.combineMangaUpdates(
-                mangaRepository.getMangaFull(manga.id),
+                mangaRepositoryOld.getMangaFull(manga.id),
             ) { manga.id in it }
 
         companion object {

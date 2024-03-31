@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.source.interactor
 
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreferenceChange
-import ca.gosyer.jui.domain.source.service.SourceRepository
+import ca.gosyer.jui.domain.source.service.SourceRepositoryOld
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -17,7 +17,7 @@ import org.lighthousegames.logging.logging
 class SetSourceSetting
     @Inject
     constructor(
-        private val sourceRepository: SourceRepository,
+        private val sourceRepositoryOld: SourceRepositoryOld,
     ) {
         suspend fun await(
             source: Source,
@@ -49,7 +49,7 @@ class SetSourceSetting
             source: Source,
             settingIndex: Int,
             setting: Any,
-        ) = sourceRepository.setSourceSetting(
+        ) = sourceRepositoryOld.setSourceSetting(
             source.id,
             SourcePreferenceChange(settingIndex, setting),
         )
@@ -58,7 +58,7 @@ class SetSourceSetting
             sourceId: Long,
             settingIndex: Int,
             setting: Any,
-        ) = sourceRepository.setSourceSetting(
+        ) = sourceRepositoryOld.setSourceSetting(
             sourceId,
             SourcePreferenceChange(settingIndex, setting),
         )
