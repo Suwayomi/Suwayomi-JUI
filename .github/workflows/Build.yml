@@ -20,12 +20,12 @@ jobs:
             arch: x64
             os: ubuntu-latest
             shell: bash
-            build: packageReleaseUberJarForCurrentOS packageDeb
+            build: packageReleaseUberJarForCurrentOS packageReleaseDeb
             setupCl: ./scripts/SetupClUnix.sh
 
           - runtime: osx-x64
             arch: x64
-            os: macOS-12
+            os: macOS-latest
             shell: bash
             build: packageReleaseUberJarForCurrentOS packageReleaseDmg notarizeReleaseDmg
             setupCl: ./scripts/SetupClUnix.sh
