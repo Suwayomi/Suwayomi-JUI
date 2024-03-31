@@ -29,6 +29,8 @@ import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.http.URLBuilder
 import io.ktor.http.appendPathSegments
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import me.tatarka.inject.annotations.Provides
 
 interface DataComponent {
@@ -56,6 +58,7 @@ interface DataComponent {
         )
         .ktorClient(http)
         .wsProtocol(GraphQLWsProtocol.Factory())
+        .dispatcher(Dispatchers.IO)
         .build()
 
     @Provides
