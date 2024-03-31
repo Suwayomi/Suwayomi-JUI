@@ -16,7 +16,7 @@ if [ -f "$msi" ]; then
   fi
 fi
 
-dmg_x64="$(find ./runner-package-osx-x64/binaries/\(main-release\|main\)/dmg/ -iname '*.dmg' 2>/dev/null)"
+dmg_x64="$(find ./runner-package-osx-x64/ -iname '*.dmg' 2>/dev/null)"
 if [ -f "$dmg_x64" ]; then
   dir="$(dirname "$dmg_x64")"
   version=$(tmp="${dmg_x64%.*}" && echo "${tmp##*-}")
@@ -26,7 +26,7 @@ if [ -f "$dmg_x64" ]; then
   fi
 fi
 
-dmg_arm64="$(find ./runner-package-osx-arm64/binaries/\(main-release\|main\)/dmg/ -iname '*.dmg' 2>/dev/null)"
+dmg_arm64="$(find ./runner-package-osx-arm64/ -iname '*.dmg' 2>/dev/null)"
 if [ -f "$dmg_arm64" ]; then
   dir="$(dirname "$dmg_arm64")"
   version=$(tmp="${dmg_arm64%.*}" && echo "${tmp##*-}")

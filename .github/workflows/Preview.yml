@@ -202,7 +202,7 @@ jobs:
         uses: pozetroninc/github-action-get-latest-release@v0.7.0
         with:
           token: ${{ github.token }}
-          exclude_types: "prerelease, draft"
+          excludes: "prerelease, draft"
           owner: Suwayomi
           repo: Suwayomi-JUI-preview
 
