@@ -56,11 +56,6 @@ type BindTrackPayload {
   trackRecord: TrackRecordType!
 }
 
-"""
-Built-in Boolean
-"""
-scalar Boolean
-
 input BooleanFilterInput {
   distinctFrom: Boolean
 
@@ -906,11 +901,6 @@ input FilterChangeInput {
   triState: TriState
 }
 
-"""
-Built-in Float
-"""
-scalar Float
-
 input FloatFilterInput {
   distinctFrom: Float
 
@@ -986,11 +976,6 @@ type InstallExternalExtensionPayload {
 
   extension: ExtensionType!
 }
-
-"""
-Built-in Int
-"""
-scalar Int
 
 input IntFilterInput {
   distinctFrom: Int
@@ -2265,11 +2250,6 @@ type StopDownloaderPayload {
   downloadStatus: DownloadStatus!
 }
 
-"""
-Built-in String
-"""
-scalar String
-
 input StringFilterInput {
   distinctFrom: String
 
@@ -2981,6 +2961,8 @@ type WebUIUpdateStatus {
   state: UpdateState!
 }
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 type __Directive {
   """
   The __Directive type represents a Directive that a server supports.
@@ -2996,6 +2978,8 @@ type __Directive {
   args(includeDeprecated: Boolean = false): [__InputValue!]!
 }
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 """
 An enum describing valid locations where a directive can be placed
 """
@@ -3096,6 +3080,8 @@ enum __DirectiveLocation {
   INPUT_FIELD_DEFINITION
 }
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 type __EnumValue {
   name: String!
 
@@ -3106,6 +3092,8 @@ type __EnumValue {
   deprecationReason: String
 }
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 type __Field {
   name: String!
 
@@ -3120,6 +3108,8 @@ type __Field {
   deprecationReason: String
 }
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 type __InputValue {
   name: String!
 
@@ -3134,6 +3124,8 @@ type __InputValue {
   deprecationReason: String
 }
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 """
 A GraphQL Introspection defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, the entry points for query, mutation, and subscription operations.
 """
@@ -3166,6 +3158,8 @@ type __Schema {
   subscriptionType: __Type
 }
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 type __Type {
   kind: __TypeKind!
 
@@ -3190,6 +3184,8 @@ type __Type {
   specifiedByUrl: String @deprecated(reason: "This legacy name has been replaced by `specifiedByURL`")
 }
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 """
 An enum describing what kind of type a given __Type is
 """
@@ -3235,21 +3231,29 @@ enum __TypeKind {
   NON_NULL
 }
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 """
 Directs the executor to include this field or fragment only when the `if` argument is true
 """
 directive @include ("Included when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 """
 Directs the executor to skip this field or fragment when the `if` argument is true.
 """
 directive @skip ("Skipped when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 """
 Marks the field, argument, input field or enum value as deprecated
 """
 directive @deprecated ("The reason for the deprecation" reason: String = "No longer supported") on FIELD_DEFINITION|ARGUMENT_DEFINITION|ENUM_VALUE|INPUT_FIELD_DEFINITION
 
+# See https://github.com/JetBrains/js-graphql-intellij-plugin/issues/665
+# noinspection GraphQLTypeRedefinition
 """
 Exposes a URL that specifies the behaviour of this scalar.
 """
