@@ -63,6 +63,15 @@ sealed class ServerHostPreference<T : Any> {
         override fun preference(): Preference<Boolean> = preferenceStore.getBoolean(propertyName, defaultValue)
     }
 
+    // Root
+    class RootPath(
+        preferenceStore: PreferenceStore,
+    ) : StringServerHostPreference(
+        preferenceStore,
+        "rootDir",
+        "",
+    )
+
     class IP(
         preferenceStore: PreferenceStore,
     ) : StringServerHostPreference(

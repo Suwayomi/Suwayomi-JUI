@@ -15,6 +15,7 @@ actual class ServerHostPreferences actual constructor(
 ) {
     actual fun host(): Preference<Boolean> = preferenceStore.getBoolean("host", true)
 
+    // IP
     private val ip = ServerHostPreference.IP(preferenceStore)
 
     fun ip(): Preference<String> = ip.preference()
@@ -22,6 +23,11 @@ actual class ServerHostPreferences actual constructor(
     private val port = ServerHostPreference.Port(preferenceStore)
 
     fun port(): Preference<Int> = port.preference()
+
+    // Root
+    private val rootPath = ServerHostPreference.RootPath(preferenceStore)
+
+    fun rootPath(): Preference<String> = rootPath.preference()
 
     // Downloader
     private val downloadPath = ServerHostPreference.DownloadPath(preferenceStore)
@@ -55,6 +61,7 @@ actual class ServerHostPreferences actual constructor(
         listOf(
             ip,
             port,
+            rootPath,
             downloadPath,
             backupPath,
             localSourcePath,

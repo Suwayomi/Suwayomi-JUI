@@ -301,6 +301,9 @@
     <string name="host_debug_logging_sub">Output debug logs from the server to JUI</string>
     <string name="host_system_tray">Server system tray icon</string>
     <string name="host_system_tray_sub">Use the system tray icon to view whether the server is running</string>
+    <string name="host_root_path">Root path</string>
+    <string name="host_root_path_sub">Current root path: %1$s</string>
+    <string name="host_root_path_sub_empty">Using default root path</string>
     <string name="host_download_path">Download path</string>
     <string name="host_download_path_sub">Current download path: %1$s</string>
     <string name="host_download_path_sub_empty">Using default download path</string>

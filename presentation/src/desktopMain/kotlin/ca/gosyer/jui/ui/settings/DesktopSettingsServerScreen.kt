@@ -55,6 +55,7 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
             host = serverVm.host,
             ip = serverVm.ip,
             port = serverVm.port,
+            rootPath = serverVm.rootPath,
             downloadPath = serverVm.downloadPath,
             backupPath = serverVm.backupPath,
             localSourcePath = serverVm.localSourcePath,
@@ -74,8 +75,13 @@ actual class SettingsServerHostViewModel
         contextWrapper: ContextWrapper,
     ) : ViewModel(contextWrapper) {
         val host = serverHostPreferences.host().asStateIn(scope)
+
+        // IP
         val ip = serverHostPreferences.ip().asStateIn(scope)
         val port = serverHostPreferences.port().asStringStateIn(scope)
+
+        // Root
+        val rootPath = serverHostPreferences.rootPath().asStateIn(scope)
 
         // Downloader
         val downloadPath = serverHostPreferences.downloadPath().asStateIn(scope)
@@ -133,6 +139,7 @@ fun LazyListScope.ServerHostItems(
     host: MutableStateFlow<Boolean>,
     ip: MutableStateFlow<String>,
     port: MutableStateFlow<String>,
+    rootPath: MutableStateFlow<String>,
     downloadPath: MutableStateFlow<String>,
     backupPath: MutableStateFlow<String>,
     localSourcePath: MutableStateFlow<String>,
@@ -167,6 +174,27 @@ fun LazyListScope.ServerHostItems(
                 title = stringResource(MR.strings.host_port),
                 subtitle = stringResource(MR.strings.host_port_sub, portValue),
                 changeListener = serverSettingChanged,
+            )
+        }
+        item {
+            val rootPathValue by rootPath.collectAsState()
+            PreferenceRow(
+                title = stringResource(MR.strings.host_root_path),
+                subtitle = if (rootPathValue.isEmpty()) {
+                    stringResource(MR.strings.host_root_path_sub_empty)
+                } else {
+                    stringResource(MR.strings.host_root_path_sub, rootPathValue)
+                },
+                onClick = {
+                    folderPicker {
+                        rootPath.value = it.toString()
+                        serverSettingChanged()
+                    }
+                },
+                onLongClick = {
+                    rootPath.value = ""
+                    serverSettingChanged()
+                },
             )
         }
         item {
