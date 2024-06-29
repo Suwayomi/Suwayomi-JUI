@@ -209,7 +209,7 @@ private fun HelpTranslate() {
     PreferenceRow(
         title = stringResource(MR.strings.help_translate),
         onClick = {
-            uriHandler.openUri("https://hosted.weblate.org/projects/tachideskjui/desktop/")
+            uriHandler.openUri("https://hosted.weblate.org/projects/suwayomi-jui/app/")
         },
     )
 }
