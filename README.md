@@ -86,11 +86,11 @@ Run `./gradlew packageUberJarForCurrentOS`, the resulting built jar file will be
 Run `./gradlew run`, JUI will build and run. Use this for debugging and development purposes.
 
 ## Translation
-Feel free to translate the project on [Weblate](https://hosted.weblate.org/projects/tachideskjui/desktop/)
+Feel free to translate the project on [Weblate](https://hosted.weblate.org/projects/suwayomi-jui/app/)
 
 <details><summary>Translation Progress</summary>
-<a href="https://hosted.weblate.org/engage/tachideskjui/">
-<img src="https://hosted.weblate.org/widgets/tachideskjui/-/desktop/multi-auto.svg" alt="Translation status" />
+<a href="https://hosted.weblate.org/engage/suwayomi-jui/">
+<img src="https://hosted.weblate.org/widgets/suwayomi-jui/-/desktop/multi-auto.svg" alt="Translation status" />
 </a>
 </details>
 
