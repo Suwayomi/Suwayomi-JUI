@@ -96,9 +96,9 @@
     <string name="window_decorations_sub">जब यह सेटिंग बदली जाए तो JUI को पुनरारंभ करें</string>
     <!-- Backup Settings -->
     <string name="backup_restore">रिस्टोर बैकअप</string>
-    <string name="backup_restore_sub">Tachidesk का बैकअप रिस्टोर करें</string>
+    <string name="backup_restore_sub">Suwayomi का बैकअप रिस्टोर करें</string>
     <string name="backup_create">क्रिएट बैकअप</string>
-    <string name="backup_create_sub">Tachidesk का बैकअप बनाएं</string>
+    <string name="backup_create_sub">Suwayomi का बैकअप बनाएं</string>
     <!-- General Settings -->
     <string name="start_screen">प्रथम प्रदर्शनी</string>
     <string name="confirm_exit">कन्फर्म एग्जिट</string>
@@ -141,7 +141,7 @@
     <string name="nav_edge">एज नेविगेशन</string>
     <string name="nav_left_right">दाएं और बाएं</string>
     <!-- Server Settings -->
-    <string name="host_server">Tachidesk-JUI के अंदर सर्वर होस्ट करें</string>
+    <string name="host_server">Suwayomi-JUI के अंदर सर्वर होस्ट करें</string>
     <string name="server_url">सर्वर यूआरएल</string>
     <string name="server_port">सर्वर पोर्ट</string>
     <string name="host_open_in_browser_sub">सर्वर स्टार्टअप पर अपने ब्राउज़र के अंदर वेबयूआई खोलें। वेबयूआई को सक्षम होने की आवश्यकता है</string>

@@ -7,7 +7,7 @@
     <string name="categories_delete_confirm">Supprimer la catégorie %1$s \?</string>
     <string name="action_delete">Supprimer</string>
     <string name="backup_create">Créer une Sauvegarde</string>
-    <string name="backup_create_sub">Créer une sauvegarde à partir de Tachidesk</string>
+    <string name="backup_create_sub">Créer une sauvegarde à partir de Suwayomi</string>
     <string name="action_create">Créer</string>
     <string name="action_continue">Continuer</string>
     <string name="action_retry">Réessayer</string>
@@ -112,7 +112,7 @@
     <string name="max_height">Hauteur maximale</string>
     <string name="max_width">Largeur maximale</string>
     <string name="max_width_sub">Hauteur maximale d\'une image, actuellement %1$d dp. Le paramètre ci-dessus augmente la taille des images, et les verrouille une fois qu\'une certaine largeur est atteinte.</string>
-    <string name="host_server">Serveur hôte dans Tachidesk-JUI</string>
+    <string name="host_server">Serveur hôte dans Suwayomi-JUI</string>
     <string name="host_debug_logging_sub">Envoyer les journaux de débogage du serveur à l\'interface utilisateur Java (JUI)</string>
     <string name="host_open_in_browser">Ouvrir la WebUI au démarrage du serveur</string>
     <string name="http_port">Port HTTP</string>
@@ -168,7 +168,7 @@
     <string name="location_sources">Sources</string>
     <string name="downloads_stopped">Stoppé</string>
     <string name="host_ip">IP du serveur</string>
-    <string name="host_settings">Paramètres du serveur Tachidesk</string>
+    <string name="host_settings">Paramètres du serveur Suwayomi</string>
     <string name="server_preference_warning_sub">Les paramètres ci-dessous nécessitent un redémarrage pour être pris en compte</string>
     <string name="dir_rtl">De droite à gauche</string>
     <string name="action_start_anyway">Démarrer quand même</string>
@@ -189,12 +189,12 @@
     <string name="host_system_tray">Icône de la barre d\'état système du serveur</string>
     <string name="host_webui">WebUI du serveur</string>
     <string name="group_updates">Mises à jour</string>
-    <string name="new_update_title">Mise à jour de Tachidesk-JUI disponible</string>
+    <string name="new_update_title">Mise à jour de Suwayomi-JUI disponible</string>
     <string name="host_socks_port">Port du proxy SOCKS5 du serveur</string>
     <string name="host_debug_logging">Journaux de débogage du serveur</string>
     <string name="host_socks_host">Hôte du proxy SOCKS5 du serveur</string>
     <string name="host_socks_enabled">Proxy SOCKS5 du serveur</string>
-    <string name="host_webui_sub">Active la WebUI par défaut du serveur permettant l\'utilisation de Tachidesk depuis un navigateur</string>
+    <string name="host_webui_sub">Active la WebUI par défaut du serveur permettant l\'utilisation de Suwayomi depuis un navigateur</string>
     <string name="host_system_tray_sub">Utiliser l\'icône de la barre d\'état système pour savoir si le serveur est en cours d\'exécution</string>
     <string name="items_per_row_sub_adaptive">Colonnes : Adaptable, Taille : %1$d</string>
     <string name="reddit">Reddit</string>
@@ -209,7 +209,7 @@
     <string name="display_badge_unread">Chapitres non lus</string>
     <string name="whats_new">Nouveautés</string>
     <string name="window_decorations_sub">Redémarrez JUI quand ce paramètre est modifié</string>
-    <string name="backup_restore_sub">Restaurer une sauvegarde vers Tachidesk</string>
+    <string name="backup_restore_sub">Restaurer une sauvegarde vers Suwayomi</string>
     <string name="color_secondary">Secondaire</string>
     <string name="theme_text">Texte</string>
     <string name="theme">Thème</string>
@@ -226,7 +226,7 @@
     <string name="socks_proxy">Proxy SOCKS</string>
     <string name="scale_stretch">Étiré</string>
     <string name="date_system_default">Du système par défaut</string>
-    <string name="host_settings_sub">Les paramètres ci-dessous configurent le serveur Tachidesk interne</string>
+    <string name="host_settings_sub">Les paramètres ci-dessous configurent le serveur Suwayomi interne</string>
     <string name="dir_down">De haut en bas</string>
     <string name="host_basic_auth_sub">Utiliser l\'authentification basique pour protéger votre bibliothèque, nécessite un nom d\'utilisateur et un mot de passe</string>
     <string name="host_download_path_sub_empty">Utilisation du répertoire de téléchargement par défaut</string>
@@ -290,4 +290,5 @@
     <string name="channel_downloading">Progrès</string>
     <string name="disabled">Désactivée</string>
     <string name="action_move_down">Descendre</string>
+    <string name="action_select_inverse">Selectionner invers (?)</string>
 </resources>

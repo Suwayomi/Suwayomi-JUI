@@ -3,7 +3,7 @@
     <string name="action_no">Không</string>
     <string name="confirm_exit_toast">Nhấn lại một lần nữa để thoát</string>
     <string name="new_update_message">hiện đã có sẵn %1$s!</string>
-    <string name="new_update_title">Bản cập nhật Tachidesk-JUI có sẵn</string>
+    <string name="new_update_title">Bản cập nhật Suwayomi-JUI có sẵn</string>
     <string name="action_uninstall">Gỡ cài đặt</string>
     <string name="action_install">Cài đặt</string>
     <string name="action_update">Cập nhật</string>
@@ -94,9 +94,9 @@
     <string name="backup_restore">Khôi phục sao lưu</string>
     <string name="window_decorations_sub">Khởi động lại JUI khi cài đặt này được thay đổi</string>
     <string name="backup_create">Tạo bản sao lưu</string>
-    <string name="backup_restore_sub">Khôi phục bản sao lưu từ Tachidesk</string>
+    <string name="backup_restore_sub">Khôi phục bản sao lưu từ Suwayomi</string>
     <string name="missing_sources">Thiếu nguồn:</string>
-    <string name="backup_create_sub">Tạo bản sao lưu từ Tachidesk</string>
+    <string name="backup_create_sub">Tạo bản sao lưu từ Suwayomi</string>
     <string name="language">Ngôn ngữ</string>
     <string name="start_screen">Màn hình bắt đầu</string>
     <string name="language_system_default">Mặc định hệ thống (%1$s)</string>
@@ -253,9 +253,9 @@
     <string name="image_scale">Tỷ lệ hình ảnh</string>
     <string name="nav_kindle_ish">Kindle-ish</string>
     <string name="scale_stretch">Kéo dài</string>
-    <string name="host_settings_sub">Các cài đặt dưới đây định cấu hình Tachidesk-Server nội bộ</string>
-    <string name="host_server">Máy chủ lưu trữ bên trong Tachidesk-JUI</string>
-    <string name="host_settings">Cài đặt Tachidesk-Server</string>
+    <string name="host_settings_sub">Các cài đặt dưới đây định cấu hình Suwayomi-Server nội bộ</string>
+    <string name="host_server">Máy chủ lưu trữ bên trong Suwayomi-JUI</string>
+    <string name="host_settings">Cài đặt Suwayomi-Server</string>
     <string name="host_download_path_sub">Đường dẫn tải xuống hiện tại: %1$s</string>
     <string name="host_socks_host_sub">Máy chủ proxy hiện tại: %1$s</string>
     <string name="host_socks_port_sub">Cổng(PORT) proxy hiện tại: %1$s</string>
@@ -271,7 +271,7 @@
     <string name="host_debug_logging">Nhật ký gỡ lỗi máy chủ</string>
     <string name="host_ip">IP máy chủ</string>
     <string name="host_port">Cổng(PORT) máy chủ</string>
-    <string name="host_webui_sub">Cho phép bạn sử dụng Tachidesk trong trình duyệt của mình, cho dù giao diện web mặc định của máy chủ có được kích hoạt hay không</string>
+    <string name="host_webui_sub">Cho phép bạn sử dụng Suwayomi trong trình duyệt của mình, cho dù giao diện web mặc định của máy chủ có được kích hoạt hay không</string>
     <string name="no_proxy">Không có proxy</string>
     <string name="server_path_prefix_sub">Tiền tố đường dẫn được sử dụng trước đường dẫn điểm cuối, để trống nếu không sử dụng.</string>
     <string name="http_port">HTTP PORT</string>

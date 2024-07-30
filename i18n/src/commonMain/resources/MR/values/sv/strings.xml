@@ -141,7 +141,7 @@
     <string name="nav_edge">Edge</string>
     <string name="nav_left_right">Höger och vänster</string>
     <!-- Server Settings -->
-    <string name="host_server">Host server inom Tachidesk-JUI</string>
+    <string name="host_server">Host server inom Suwayomi-JUI</string>
     <string name="server_url">Server Url</string>
     <string name="server_port">Server Port</string>
 </resources>

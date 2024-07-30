@@ -45,7 +45,7 @@
     <string name="confirm_exit">Подтверждение выхода</string>
     <string name="action_start_anyway">Запустить в любом случае</string>
     <string name="action_pause">Пауза</string>
-    <string name="new_update_title">Tachidesk-JUI вышло обновление</string>
+    <string name="new_update_title">Suwayomi-JUI вышло обновление</string>
     <string name="action_create">Создать</string>
     <string name="new_update_message">%1$s теперь доступно</string>
     <string name="action_add">Добавить</string>
@@ -88,7 +88,7 @@
     <string name="server_version">Версия сервера</string>
     <string name="version">Версия</string>
     <string name="status_unknown">Не известно</string>
-    <string name="host_webui_sub">Независимо от того, включен ли веб-интерфейс сервера по умолчанию, вы можете использовать Tachidesk в своем браузере.</string>
+    <string name="host_webui_sub">Независимо от того, включен ли веб-интерфейс сервера по умолчанию, вы можете использовать Suwayomi в своем браузере.</string>
     <string name="server_url">URL сервера</string>
     <string name="server_proxy">Доступ к серверу через прокси</string>
     <string name="no_proxy">Без Прокси</string>
