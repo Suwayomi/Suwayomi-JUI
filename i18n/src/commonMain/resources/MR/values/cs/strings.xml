@@ -38,7 +38,7 @@
     <string name="nav_left_right">Napravo a nalevo</string>
     <string name="action_retry">Zkusit znovu</string>
     <string name="backup_restore">Obnovit ze Zálohy</string>
-    <string name="backup_restore_sub">Obnovit data ze zálohy do Tachidesk</string>
+    <string name="backup_restore_sub">Obnovit data ze zálohy do Suwayomi</string>
     <string name="action_rename">Přejmenovat</string>
     <string name="action_refresh_manga">Znovu načíst mangu</string>
     <string name="settings_reader_screen">Nastavení Prohlížení</string>
@@ -107,7 +107,7 @@
     <string name="date_format">Formát Data &amp; Času</string>
     <string name="theme_dark">Tmavý</string>
     <string name="backup_create">Vytvořit Zálohu</string>
-    <string name="backup_create_sub">Vytvořít zálohu dat z Tachidesk</string>
+    <string name="backup_create_sub">Vytvořít zálohu dat z Suwayomi</string>
     <string name="action_create">Vytvořit</string>
     <string name="continuous">Kontinuální posuv</string>
     <string name="action_continue">Pokračovat</string>

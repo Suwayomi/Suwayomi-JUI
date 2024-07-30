@@ -96,9 +96,9 @@
     <string name="window_decorations_sub">Reinicie o JUI quando esta configuração for alterada</string>
     <!-- Backup Settings -->
     <string name="backup_restore">Restaurar Backup</string>
-    <string name="backup_restore_sub">Restaurar um backuo no Tachidesk</string>
+    <string name="backup_restore_sub">Restaurar um backuo no Suwayomi</string>
     <string name="backup_create">Criar Backup</string>
-    <string name="backup_create_sub">Crie um backup do Tachidesk</string>
+    <string name="backup_create_sub">Crie um backup do Suwayomi</string>
     <!-- General Settings -->
     <string name="start_screen">Tela inicial</string>
     <string name="confirm_exit">Confirmar saída</string>
@@ -141,7 +141,7 @@
     <string name="nav_edge">Borda</string>
     <string name="nav_left_right">Direita e esquerda</string>
     <!-- Server Settings -->
-    <string name="host_server">Servidor host dentro do Tachidesk-JUI</string>
+    <string name="host_server">Servidor host dentro do Suwayomi-JUI</string>
     <string name="server_url">URL do servidor</string>
     <string name="server_port">Porta do servidor</string>
     <string name="downloads_stopped">Parado</string>
@@ -165,10 +165,10 @@
     <string name="basic_auth">Autenticação básica</string>
     <string name="auth_password">Senha de autenticação</string>
     <string name="all">Tudo</string>
-    <string name="host_webui_sub">Estando ativada a WebUI padrão do servidor, permite que você use o Tachidesk no seu navegador</string>
+    <string name="host_webui_sub">Estando ativada a WebUI padrão do servidor, permite que você use o Suwayomi no seu navegador</string>
     <string name="host_system_tray_sub">Use o ícone de bandeja do sistema para ver se o servidor está executando</string>
-    <string name="host_settings_sub">As configurações abaixo configuram o Tachidesk-Server interno</string>
-    <string name="host_settings">Configurações do Tachidesk-Server</string>
+    <string name="host_settings_sub">As configurações abaixo configuram o Suwayomi-Server interno</string>
+    <string name="host_settings">Configurações do Suwayomi-Server</string>
     <string name="host_webui">WebUI do servidor</string>
     <string name="host_system_tray">Ícone da bandeja do sistema do servidor</string>
     <string name="host_socks_port">Porta do SOCKS5 proxy do servidor</string>

@@ -95,9 +95,9 @@
     <string name="window_decorations_sub">برای این که تنضیمات تغییر کند JUI را باید دوباره اجرا کنید</string>
     <!-- Backup Settings -->
     <string name="backup_restore">بازگردانی بکاپ</string>
-    <string name="backup_restore_sub">بازگردانی یک بکاپ در Tachidesk</string>
+    <string name="backup_restore_sub">بازگردانی یک بکاپ در Suwayomi</string>
     <string name="backup_create">ساختن بکاپ</string>
-    <string name="backup_create_sub">ساختن بکاپ از Tachidesk</string>
+    <string name="backup_create_sub">ساختن بکاپ از Suwayomi</string>
     <!-- General Settings -->
     <string name="start_screen">صفحه شروع</string>
     <string name="confirm_exit">تایید خروج</string>
@@ -140,8 +140,23 @@
     <string name="nav_edge">لبه</string>
     <string name="nav_left_right">راست و چپ</string>
     <!-- Server Settings -->
-    <string name="host_server">میزبانی سرور در Tachidesk-JUI</string>
+    <string name="host_server">میزبانی سرور در Suwayomi-JUI</string>
     <string name="server_url">آدرس سرور</string>
     <string name="server_port">پورت سرور</string>
     <string name="theme_dark">تیره</string>
+    <string name="confirm_exit_message">آیا قصد خروج دارید؟</string>
+    <string name="group_updates_channel_app">بروزرسانی های برنامه</string>
+    <string name="status_cancelled">لغو شده</string>
+    <string name="location_about">درباره</string>
+    <string name="all">همه</string>
+    <string name="download_chapter_limit">سقف دانلود فصل ها</string>
+    <string name="action_bookmark">نشان گذاری فصل</string>
+    <string name="action_filter_bookmarked">نشان شده</string>
+    <string name="edit_categories">دسته ها</string>
+    <string name="download_all">همه</string>
+    <string name="sort_alphabetical">به ترتیب الفبا</string>
+    <string name="clear_chapter_cache">پاک کردن حافظه موقت فصل</string>
+    <string name="channel_active">فعال</string>
+    <string name="new_update_message">%1$s حالا در دسترس است!</string>
+    <string name="update_checker">بررسی برای بروزرسانی</string>
 </resources>
