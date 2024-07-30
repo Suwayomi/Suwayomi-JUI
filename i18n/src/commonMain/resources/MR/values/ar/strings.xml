@@ -13,7 +13,7 @@
     <string name="date_format">صيغة التاريخ</string>
     <string name="theme_dark">داكن</string>
     <string name="backup_create">إنشاء نسخة احتياطية</string>
-    <string name="backup_create_sub">إنشاء نسخة احتياطية من Tachidesk</string>
+    <string name="backup_create_sub">إنشاء نسخة احتياطية من Suwayomi</string>
     <string name="action_create">إنشاء</string>
     <string name="continuous">مستمر</string>
     <string name="action_continue">إستمر</string>
@@ -85,7 +85,7 @@
     <string name="nav_left_right">من اليمين لليسار</string>
     <string name="action_retry">إعادة المحاولة</string>
     <string name="backup_restore">استرجاع نسخة احتياطية</string>
-    <string name="backup_restore_sub">استرجاع نسخة احتياطية لبرنامج Tachidesk</string>
+    <string name="backup_restore_sub">استرجاع نسخة احتياطية لبرنامج Suwayomi</string>
     <string name="window_decorations_sub">إعادة بدأ البرنامج عند تغير الإعدادات</string>
     <string name="action_rename">إعادة التسمية</string>
     <string name="action_refresh_manga">تحديث</string>
@@ -124,7 +124,7 @@
     <string name="image_scale">حجم الصورة</string>
     <string name="http_proxy">وكيل بروتوكول HTTP</string>
     <string name="http_port">منفذ بروتوكول HTTP</string>
-    <string name="host_server">الخادم المضيف داخل Tachidesk-JUI</string>
+    <string name="host_server">الخادم المضيف داخل Suwayomi-JUI</string>
     <string name="sources_home">الرئيسية</string>
     <string name="settings_general_screen">الإعدادات العامة</string>
     <string name="settings_general">عام</string>
@@ -149,16 +149,16 @@
     <string name="confirm_exit_message">هل أنت متأكد من رغبتك بالخروج؟</string>
     <string name="action_close">إغلق</string>
     <string name="update_checker">تحقق من وجود تحديثات</string>
-    <string name="host_webui_sub">سواء تم تمكين WebUI الافتراضي للخادم ، فإنه يجعلك قادرًا على استخدام Tachidesk في متصفحك</string>
+    <string name="host_webui_sub">سواء تم تمكين WebUI الافتراضي للخادم ، فإنه يجعلك قادرًا على استخدام Suwayomi في متصفحك</string>
     <string name="status_ongoing">مستمرة</string>
     <string name="host_open_in_browser_sub">افتح WebUI داخل المستعرض الخاص بك عند بدء تشغيل الخادم. يتطلب تشغيل WebUI</string>
     <string name="host_port">منفذ الخادم</string>
-    <string name="host_settings_sub">الإعدادات أدناه تكوين خادم Tachidesk الداخلي</string>
+    <string name="host_settings_sub">الإعدادات أدناه تكوين خادم Suwayomi الداخلي</string>
     <string name="host_system_tray_sub">استخدم أيقونة النظام لمعرفة إذا كان الخادم قيد التشغيل</string>
     <string name="missing_sources">مصادر مفقودة:</string>
     <string name="nav_l_shaped">على شكل حرف L</string>
     <string name="location_updates">تحديثات</string>
-    <string name="new_update_title">يتوفر تحديث Tachidesk-JUI</string>
+    <string name="new_update_title">يتوفر تحديث Suwayomi-JUI</string>
     <string name="new_update_message">%1$sمتوفر الآن!</string>
     <string name="status_completed">كمل</string>
     <string name="nav_next_chapter">الفصل التالي</string>
@@ -170,7 +170,7 @@
     <string name="nav_kindle_ish">كيندل-إيش</string>
     <string name="host_debug_logging">سجلات تصحيح أخطاء الخادم</string>
     <string name="host_ip">IP الخادم</string>
-    <string name="host_settings">إعدادات خادم Tachidesk</string>
+    <string name="host_settings">إعدادات خادم Suwayomi</string>
     <string name="host_debug_logging_sub">سجلات تصحيح الإخراج من الخادم إلى JUI</string>
     <string name="host_socks_enabled">الخادم الوكيل SOCKS5</string>
     <string name="host_socks_host">SOCKS5 Proxy HOST الخادم</string>

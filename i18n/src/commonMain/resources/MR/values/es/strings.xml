@@ -193,7 +193,7 @@
     <string name="open_source_licenses">Licencias de código abierto</string>
     <string name="display_comfortable">Cuadricula confortable</string>
     <string name="display_list">Lista</string>
-    <string name="host_server">Alojar servidor desde Tachidesk-JUI</string>
+    <string name="host_server">Alojar servidor desde Suwayomi-JUI</string>
     <string name="host_download_path_sub">Ruta de descarga actual: %1$s</string>
     <string name="host_webui_sub">Si la WebUI por defecto del servidor está activada, hace que puedas utilizar Suwayomi en tu navegador</string>
     <string name="no_auth">Sin autenticación</string>
@@ -287,7 +287,7 @@
     <string name="disabled">Deshabilitado</string>
     <string name="host_download_path">Ruta de descarga</string>
     <string name="host_debug_logging">Registros de depuración del servidor</string>
-    <string name="host_settings">Ajustes del servidor Tachidesk</string>
+    <string name="host_settings">Ajustes del servidor Suwayomi</string>
     <string name="host_download_path_sub_empty">Usando la ruta de descarga predeterminada</string>
     <string name="host_socks_host_sub">ALOJAMIENTO del Proxy actual: %1$s</string>
     <string name="host_socks_host">Servidor Proxy HOST SOCKS</string>
@@ -331,4 +331,7 @@
     <string name="update_manga_info_sub">Actualizar la información del manga junto con los capítulos del manga en la actualización de la biblioteca</string>
     <string name="host_backup_path_sub_empty">Utilizar una ruta para la copia de seguridad por defecto</string>
     <string name="host_local_source_path_sub_empty">Utilizar la ruta de origen local por defecto</string>
+    <string name="host_root_path_sub">Ruta root actual: %1$s</string>
+    <string name="host_root_path">Ruta root</string>
+    <string name="host_root_path_sub_empty">Usando la ruta root predeterminada</string>
 </resources>
