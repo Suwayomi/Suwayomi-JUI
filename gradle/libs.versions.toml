@@ -56,7 +56,7 @@ appDirs = "1.2.0"
 multiplatformSettings = "1.1.1"
 
 # Utility
-desugarJdkLibs = "2.0.4"
+desugarJdkLibs = "2.1.1"
 aboutLibraries = "11.2.2"
 dateTime = "0.6.1"
 immutableCollections = "0.3.7"
