@@ -55,7 +55,7 @@ multiplatformSettings = "1.1.1"
 # Utility
 desugarJdkLibs = "2.0.4"
 aboutLibraries = "11.1.1"
-dateTime = "0.6.0-RC.2"
+dateTime = "0.6.1"
 immutableCollections = "0.3.7"
 korge = "5.4.0"
 gradleDownloadTask = "5.4.0"
