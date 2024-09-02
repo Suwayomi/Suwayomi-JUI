@@ -21,7 +21,9 @@ actual class FileChooser(
     private val resultLauncher: ManagedActivityResultLauncher<String, Uri?>,
 ) {
     actual fun launch(extension: String) {
-        resultLauncher.launch(MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension))
+        val mime = MimeTypeMap.getSingleton()
+            .getMimeTypeFromExtension(extension) ?: return
+        resultLauncher.launch(mime)
     }
 }
 
