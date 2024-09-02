@@ -15,7 +15,6 @@ import de.jensklingenberg.ktorfit.Ktorfit
 import me.tatarka.inject.annotations.Provides
 
 actual interface SharedDataComponent {
-
     @Provides
     fun backupRepositoryOld(ktorfit: Ktorfit) = ktorfit.createBackupRepositoryOld()
 
