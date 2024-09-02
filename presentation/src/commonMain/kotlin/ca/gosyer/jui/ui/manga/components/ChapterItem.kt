@@ -58,7 +58,7 @@ expect fun Modifier.chapterItemModifier(
 fun ChapterItem(
     chapterDownload: ChapterDownloadItem,
     format: (Instant) -> String,
-    onClick: (Int) -> Unit,
+    onClick: (Long) -> Unit,
     markRead: (Long) -> Unit,
     markUnread: (Long) -> Unit,
     bookmarkChapter: (Long) -> Unit,
@@ -78,7 +78,7 @@ fun ChapterItem(
             .height(70.dp)
             .selectedBackground(isSelected)
             .chapterItemModifier(
-                onClick = { onClick(chapter.index) },
+                onClick = { onClick(chapter.id) },
                 markRead = { markRead(chapter.id) }.takeUnless { chapter.read },
                 markUnread = { markUnread(chapter.id) }.takeIf { chapter.read },
                 bookmarkChapter = { bookmarkChapter(chapter.id) }.takeUnless { chapter.bookmarked },

@@ -228,11 +228,9 @@ fun MangaScreenContent(
                                         onClick = if (inActionMode) {
                                             {
                                                 if (chapter.isSelected.value) {
-                                                    onUnselectChapter(
-                                                        chapter.chapter.id,
-                                                    )
+                                                    onUnselectChapter(it)
                                                 } else {
-                                                    onSelectChapter(chapter.chapter.id)
+                                                    onSelectChapter(it)
                                                 }
                                             }
                                         } else {

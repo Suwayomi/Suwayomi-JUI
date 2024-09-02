@@ -77,7 +77,7 @@ fun UpdatesScreenContent(
     inActionMode: Boolean,
     selectedItems: ImmutableList<ChapterDownloadItem>,
     loadNextPage: () -> Unit,
-    openChapter: (index: Int, mangaId: Long) -> Unit,
+    openChapter: (id: Long, mangaId: Long) -> Unit,
     openManga: (Long) -> Unit,
     markRead: (Long?) -> Unit,
     markUnread: (Long?) -> Unit,
@@ -201,7 +201,7 @@ fun UpdatesScreenContent(
                                             }
                                         }
                                     } else {
-                                        { openChapter(chapter.index, manga.id) }
+                                        { openChapter(chapter.id, manga.id) }
                                     },
                                     markRead = markRead,
                                     markUnread = markUnread,

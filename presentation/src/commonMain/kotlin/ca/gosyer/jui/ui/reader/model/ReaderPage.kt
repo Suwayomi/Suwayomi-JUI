@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 @Immutable
 data class ReaderPage(
-    val index: Int,
+    val url: String,
+    val index2: Int,
     val bitmap: MutableStateFlow<StableHolder<(suspend () -> ImageDecodeState)?>>,
     val bitmapInfo: MutableStateFlow<BitmapInfo?>,
     val progress: MutableStateFlow<Float>,

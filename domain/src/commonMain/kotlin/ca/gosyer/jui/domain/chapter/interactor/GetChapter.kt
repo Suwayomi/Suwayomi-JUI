@@ -8,8 +8,7 @@ package ca.gosyer.jui.domain.chapter.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.chapter.service.ChapterRepositoryOld
-import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.take
@@ -19,30 +18,17 @@ import org.lighthousegames.logging.logging
 class GetChapter
     @Inject
     constructor(
-        private val chapterRepositoryOld: ChapterRepositoryOld,
+        private val chapterRepository: ChapterRepository,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
-            mangaId: Long,
-            index: Int,
+            chapterId: Long,
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(mangaId, index)
+        ) = asFlow(chapterId)
             .take(1)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to get chapter $index for $mangaId" }
-            }
-            .singleOrNull()
-
-        suspend fun await(
-            manga: Manga,
-            index: Int,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(manga, index)
-            .take(1)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get chapter $index for ${manga.title}(${manga.id})" }
+                log.warn(it) { "Failed to get chapter $chapterId" }
             }
             .singleOrNull()
 
@@ -58,34 +44,16 @@ class GetChapter
             .singleOrNull()
 
         fun asFlow(
-            mangaId: Long,
-            index: Int,
+            chapterId: Long,
         ) = serverListeners.combineChapters(
-            chapterRepositoryOld.getChapter(mangaId, index),
-            indexPredate = { id, chapterIndexes ->
-                id == mangaId && (chapterIndexes == null || index in chapterIndexes)
-            },
-            idPredate = { id, _ -> id == mangaId },
-        )
-
-        fun asFlow(
-            manga: Manga,
-            index: Int,
-        ) = serverListeners.combineChapters(
-            chapterRepositoryOld.getChapter(manga.id, index),
-            indexPredate = { id, chapterIndexes ->
-                id == manga.id && (chapterIndexes == null || index in chapterIndexes)
-            },
-            idPredate = { id, _ -> id == manga.id },
+            chapterRepository.getChapter(chapterId),
+            idPredate = { ids -> chapterId in ids },
         )
 
         fun asFlow(chapter: Chapter) =
             serverListeners.combineChapters(
-                chapterRepositoryOld.getChapter(chapter.mangaId, chapter.index),
-                indexPredate = { id, chapterIndexes ->
-                    id == chapter.mangaId && (chapterIndexes == null || chapter.index in chapterIndexes)
-                },
-                idPredate = { id, _ -> id == chapter.mangaId },
+                chapterRepository.getChapter(chapter.id),
+                idPredate = { ids -> chapter.id in ids },
             )
 
         companion object {

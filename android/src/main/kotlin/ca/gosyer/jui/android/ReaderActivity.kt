@@ -20,11 +20,11 @@ class ReaderActivity : AppCompatActivity() {
         fun newIntent(
             context: Context,
             mangaId: Long,
-            chapterIndex: Int,
+            chapterId: Long,
         ): Intent =
             Intent(context, ReaderActivity::class.java).apply {
                 putExtra("manga", mangaId)
-                putExtra("chapter", chapterIndex)
+                putExtra("chapter", chapterId)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
     }
@@ -34,8 +34,8 @@ class ReaderActivity : AppCompatActivity() {
         val hooks = AppComponent.getInstance(applicationContext).hooks
 
         val mangaId = intent.extras!!.getLong("manga", -1)
-        val chapterIndex = intent.extras!!.getInt("chapter", -1)
-        if (mangaId == -1L || chapterIndex == -1) {
+        val chapterId = intent.extras!!.getLong("chapter", -1)
+        if (mangaId == -1L || chapterId == -1L) {
             finish()
             return
         }
@@ -44,7 +44,7 @@ class ReaderActivity : AppCompatActivity() {
             CompositionLocalProvider(*hooks) {
                 AppTheme {
                     ReaderMenu(
-                        chapterIndex = chapterIndex,
+                        chapterId = chapterId,
                         mangaId = mangaId,
                         onCloseRequest = onBackPressedDispatcher::onBackPressed,
                     )

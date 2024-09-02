@@ -16,12 +16,12 @@ actual class ReaderLauncher(
     private val context: Context,
 ) {
     actual fun launch(
-        chapterIndex: Int,
+        chapterId: Long,
         mangaId: Long,
     ) {
         Intent(context, Class.forName("ca.gosyer.jui.android.ReaderActivity")).apply {
             putExtra("manga", mangaId)
-            putExtra("chapter", chapterIndex)
+            putExtra("chapter", chapterId)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }.let(context::startActivity)
     }

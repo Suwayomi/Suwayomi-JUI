@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
@@ -35,12 +34,7 @@ class ServerListeners
         )
         val mangaListener = _mangaListener.asSharedFlow()
 
-        private val _chapterIndexesListener = MutableSharedFlow<Pair<Long, List<Int>?>>(
-            extraBufferCapacity = Channel.UNLIMITED,
-        )
-        val chapterIndexesListener = _chapterIndexesListener.asSharedFlow()
-
-        private val _chapterIdsListener = MutableSharedFlow<Pair<Long?, List<Long>>>(
+        private val _chapterIdsListener = MutableSharedFlow<List<Long>>(
             extraBufferCapacity = Channel.UNLIMITED,
         )
         val chapterIdsListener = _chapterIdsListener.asSharedFlow()
@@ -91,58 +85,32 @@ class ServerListeners
 
         fun <T> combineChapters(
             flow: Flow<T>,
-            indexPredate: (suspend (Long, List<Int>?) -> Boolean)? = null,
-            idPredate: (suspend (Long?, List<Long>) -> Boolean)? = null,
+            idPredate: (suspend (List<Long>) -> Boolean)? = null,
         ): Flow<T> {
-            val indexListener = if (indexPredate != null) {
-                _chapterIndexesListener.filter { indexPredate(it.first, it.second) }.startWith(Unit)
-            } else {
-                _chapterIndexesListener.startWith(Unit)
-            }
             val idsListener = if (idPredate != null) {
-                _chapterIdsListener.filter { idPredate(it.first, it.second) }.startWith(Unit)
+                _chapterIdsListener.filter { idPredate(it) }.startWith(Unit)
             } else {
                 _chapterIdsListener.startWith(Unit)
             }
 
-            return combine(indexListener, idsListener) { _, _ -> }
+            return idsListener
                 .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
                 .flatMapLatest { flow }
         }
 
         fun updateChapters(
-            mangaId: Long,
-            chapterIndexes: List<Int>,
-        ) {
-            scope.launch {
-                _chapterIndexesListener.emit(mangaId to chapterIndexes.ifEmpty { null })
-            }
-        }
-
-        fun updateChapters(
-            mangaId: Long,
-            vararg chapterIndexes: Int,
-        ) {
-            scope.launch {
-                _chapterIndexesListener.emit(mangaId to chapterIndexes.toList().ifEmpty { null })
-            }
-        }
-
-        fun updateChapters(
-            mangaId: Long?,
             chapterIds: List<Long>,
         ) {
             scope.launch {
-                _chapterIdsListener.emit(mangaId to chapterIds)
+                _chapterIdsListener.emit(chapterIds)
             }
         }
 
         fun updateChapters(
-            mangaId: Long?,
             vararg chapterIds: Long,
         ) {
             scope.launch {
-                _chapterIdsListener.emit(mangaId to chapterIds.toList())
+                _chapterIdsListener.emit(chapterIds.toList())
             }
         }
 

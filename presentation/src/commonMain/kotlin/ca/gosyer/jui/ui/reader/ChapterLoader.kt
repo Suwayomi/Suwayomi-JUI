@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.reader
 
+import ca.gosyer.jui.domain.chapter.interactor.GetChapterPages
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
@@ -26,6 +27,7 @@ class ChapterLoader(
     private val http: Http,
     private val chapterCache: DiskCache,
     private val bitmapDecoderFactory: BitmapDecoderFactory,
+    private val getChapterPages: GetChapterPages,
 ) {
     fun loadChapter(chapter: ReaderChapter): StateFlow<PagesState> {
         if (chapterIsReady(chapter)) {
@@ -34,7 +36,7 @@ class ChapterLoader(
             chapter.state = ReaderChapter.State.Loading
             log.debug { "Loading pages for ${chapter.chapter.name}" }
 
-            val loader = TachideskPageLoader(chapter, readerPreferences, http, chapterCache, bitmapDecoderFactory)
+            val loader = TachideskPageLoader(chapter, readerPreferences, http, chapterCache, bitmapDecoderFactory, getChapterPages)
 
             val pages = loader.getPages()
 

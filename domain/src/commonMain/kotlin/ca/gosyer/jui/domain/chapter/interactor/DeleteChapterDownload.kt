@@ -8,42 +8,31 @@ package ca.gosyer.jui.domain.chapter.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.chapter.service.ChapterRepositoryOld
-import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
+import kotlin.jvm.JvmName
 
 class DeleteChapterDownload
     @Inject
     constructor(
-        private val chapterRepositoryOld: ChapterRepositoryOld,
+        private val chapterRepository: ChapterRepository,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
-            mangaId: Long,
-            index: Int,
+            chapterId: Long,
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(mangaId, index)
+        ) = asFlow(chapterId)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to delete chapter download for $index of $mangaId" }
+                log.warn(it) { "Failed to delete chapter download for $chapterId" }
             }
             .collect()
 
-        suspend fun await(
-            manga: Manga,
-            index: Int,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(manga, index)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to delete chapter download for $index of ${manga.title}(${manga.id})" }
-            }
-            .collect()
-
+        @JvmName("awaitChapter")
         suspend fun await(
             chapter: Chapter,
             onError: suspend (Throwable) -> Unit = {},
@@ -54,21 +43,46 @@ class DeleteChapterDownload
             }
             .collect()
 
-        fun asFlow(
-            mangaId: Long,
-            index: Int,
-        ) = chapterRepositoryOld.deleteChapterDownload(mangaId, index)
-            .onEach { serverListeners.updateChapters(mangaId, index) }
+        suspend fun await(
+            chapterIds: List<Long>,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(chapterIds)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to delete chapter download for $chapterIds" }
+            }
+            .collect()
+
+        @JvmName("awaitChapters")
+        suspend fun await(
+            chapters: List<Chapter>,
+            onError: suspend (Throwable) -> Unit = {},
+        ) = asFlow(chapters)
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to delete chapter download for ${chapters.joinToString { it.id.toString() }}" }
+            }
+            .collect()
 
         fun asFlow(
-            manga: Manga,
-            index: Int,
-        ) = chapterRepositoryOld.deleteChapterDownload(manga.id, index)
-            .onEach { serverListeners.updateChapters(manga.id, index) }
+            chapterId: Long,
+        ) = chapterRepository.deleteDownloadedChapter(chapterId)
+            .onEach { serverListeners.updateChapters(chapterId) }
 
+        @JvmName("asFlowChapter")
         fun asFlow(chapter: Chapter) =
-            chapterRepositoryOld.deleteChapterDownload(chapter.mangaId, chapter.index)
-                .onEach { serverListeners.updateChapters(chapter.mangaId, chapter.index) }
+            chapterRepository.deleteDownloadedChapter(chapter.id)
+                .onEach { serverListeners.updateChapters(chapter.id) }
+
+        fun asFlow(
+            chapterIds: List<Long>,
+        ) = chapterRepository.deleteDownloadedChapters(chapterIds)
+            .onEach { serverListeners.updateChapters(chapterIds) }
+
+        @JvmName("asFlowChapters")
+        fun asFlow(chapter: List<Chapter>) =
+            chapterRepository.deleteDownloadedChapters(chapter.map { it.id })
+                .onEach { serverListeners.updateChapters(chapter.map { it.id }) }
 
         companion object {
             private val log = logging()

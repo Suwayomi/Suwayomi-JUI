@@ -84,7 +84,7 @@ fun PagerReader(
     val modifier = parentModifier then Modifier.fillMaxSize()
 
     fun retry(index: Int) {
-        pages.find { it is ReaderPage && it.index == index }?.let { retry(it as ReaderPage) }
+        pages.find { it is ReaderPage && it.index2 == index }?.let { retry(it as ReaderPage) }
     }
 
     if (direction.isVertical) {
@@ -95,7 +95,7 @@ fun PagerReader(
             modifier = modifier,
             key = {
                 when (val page = pages.getOrNull(it)) {
-                    is ReaderPage -> page.chapter.chapter.index to page.index
+                    is ReaderPage -> page.chapter.chapter.index to page.index2
                     is ReaderPageSeparator -> page.previousChapter?.chapter?.index to page.nextChapter?.chapter?.index
                     else -> it
                 }
@@ -118,7 +118,7 @@ fun PagerReader(
             modifier = modifier,
             key = {
                 when (val page = pages.getOrNull(it)) {
-                    is ReaderPage -> page.chapter.chapter.index to page.index
+                    is ReaderPage -> page.chapter.chapter.index to page.index2
                     is ReaderPageSeparator -> page.previousChapter?.chapter?.index to page.nextChapter?.chapter?.index
                     else -> it
                 }
@@ -148,7 +148,7 @@ fun HandlePager(
     when (val image = pages[page]) {
         is ReaderPage -> {
             ReaderImage(
-                imageIndex = image.index,
+                imageIndex = image.index2,
                 drawableHolder = image.bitmap.collectAsState().value,
                 bitmapInfo = image.bitmapInfo.collectAsState().value,
                 progress = image.progress.collectAsState().value,

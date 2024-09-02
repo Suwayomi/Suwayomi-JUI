@@ -25,7 +25,6 @@ data class Chapter(
     val index: Int,
     val fetchedAt: Long,
     val realUrl: String?,
-    val chapterCount: Int?,
     val pageCount: Int?,
     val lastReadAt: Int?,
     val downloaded: Boolean,

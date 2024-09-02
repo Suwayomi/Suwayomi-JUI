@@ -9,11 +9,10 @@ package ca.gosyer.jui.ui.reader
 import ca.gosyer.jui.core.lang.launchDefault
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.domain.chapter.interactor.GetChapter
-import ca.gosyer.jui.domain.chapter.interactor.GetChapterPage
+import ca.gosyer.jui.domain.chapter.interactor.GetChapterPages
 import ca.gosyer.jui.domain.chapter.interactor.GetChapters
-import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterLastPageRead
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapter
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterMeta
-import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterRead
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.manga.interactor.GetManga
 import ca.gosyer.jui.domain.manga.interactor.UpdateMangaMeta
@@ -77,9 +76,8 @@ class ReaderMenuViewModel
         private val getManga: GetManga,
         private val getChapters: GetChapters,
         private val getChapter: GetChapter,
-        private val getChapterPage: GetChapterPage,
-        private val updateChapterRead: UpdateChapterRead,
-        private val updateChapterLastPageRead: UpdateChapterLastPageRead,
+        private val getChapterPages: GetChapterPages,
+        private val updateChapter: UpdateChapter,
         private val updateMangaMeta: UpdateMangaMeta,
         private val updateChapterMeta: UpdateChapterMeta,
         private val chapterCache: ChapterCache,
@@ -157,6 +155,7 @@ class ReaderMenuViewModel
             http = http,
             chapterCache = chapterCache,
             bitmapDecoderFactory = BitmapDecoderFactory(contextWrapper),
+            getChapterPages = getChapterPages,
         )
 
         init {
@@ -167,7 +166,7 @@ class ReaderMenuViewModel
             scope.launchDefault {
                 runCatching {
                     initManga(params.mangaId)
-                    initChapters(params.mangaId, params.chapterIndex)
+                    initChapters(params.mangaId, params.chapterId)
                 }
             }
         }
@@ -179,11 +178,13 @@ class ReaderMenuViewModel
                     .collectLatest { page ->
                         page.chapter.pageLoader?.loadPage(page)
                         if (page.chapter == chapter.value) {
-                            if ((page.index + 1) >= page.chapter.chapter.pageCount!!) {
+                            val pages = page.chapter.pages.value as? PagesState.Success
+                                ?: return@collectLatest
+                            if ((page.index2 + 1) >= pages.pages.size) {
                                 markChapterRead(page.chapter)
                             }
                             val nextChapter = nextChapter.value
-                            if (nextChapter != null && (page.index + 1) >= (page.chapter.chapter.pageCount!! - 5)) {
+                            if (nextChapter != null && (page.index2 + 1) >= ((pages.pages.size - 5).coerceAtLeast(1))) {
                                 requestPreloadChapter(nextChapter)
                             }
                         } else {
@@ -191,10 +192,10 @@ class ReaderMenuViewModel
                             val nextChapter = nextChapter.value
                             if (page.chapter == previousChapter) {
                                 viewerChapters.value = viewerChapters.value.movePrev()
-                                initChapters(params.mangaId, page.chapter.chapter.index, fromMenuButton = false)
+                                initChapters(params.mangaId, page.chapter.chapter.id, fromMenuButton = false)
                             } else if (page.chapter == nextChapter) {
                                 viewerChapters.value = viewerChapters.value.moveNext()
-                                initChapters(params.mangaId, page.chapter.chapter.index, fromMenuButton = false)
+                                initChapters(params.mangaId, page.chapter.chapter.id, fromMenuButton = false)
                             }
                         }
                     }
@@ -253,7 +254,7 @@ class ReaderMenuViewModel
         }
 
         fun retry(page: ReaderPage) {
-            log.info { "Retrying ${page.index}" }
+            log.info { "Retrying ${page.index2}" }
             chapter.value?.pageLoader?.retryPage(page)
         }
 
@@ -277,7 +278,7 @@ class ReaderMenuViewModel
                     _state.value = ReaderChapter.State.Wait
                     sendProgress()
                     viewerChapters.value = viewerChapters.value.movePrev()
-                    initChapters(params.mangaId, prevChapter.chapter.index, fromMenuButton = true)
+                    initChapters(params.mangaId, prevChapter.chapter.id, fromMenuButton = true)
                 } catch (e: Exception) {
                     log.warn(e) { "Error loading prev chapter" }
                 }
@@ -291,7 +292,7 @@ class ReaderMenuViewModel
                     _state.value = ReaderChapter.State.Wait
                     sendProgress()
                     viewerChapters.value = viewerChapters.value.moveNext()
-                    initChapters(params.mangaId, nextChapter.chapter.index, fromMenuButton = true)
+                    initChapters(params.mangaId, nextChapter.chapter.id, fromMenuButton = true)
                 } catch (e: Exception) {
                     log.warn(e) { "Error loading next chapter" }
                 }
@@ -313,52 +314,45 @@ class ReaderMenuViewModel
 
         private suspend fun initChapters(
             mangaId: Long,
-            chapterIndex: Int,
+            chapterId: Long,
             fromMenuButton: Boolean = true,
         ) {
-            log.debug { "Loading chapter index $chapterIndex" }
+            log.debug { "Loading chapter index $chapterId" }
             val (chapter, pages) = coroutineScope {
-                val getCurrentChapter = async {
-                    val chapter = getReaderChapter(chapterIndex) ?: return@async null
-                    val pages = loader.loadChapter(chapter)
-                    viewerChapters.update { it.copy(currChapter = chapter) }
-                    chapter to pages
+                val chapters = getChapters.asFlow(mangaId)
+                    .take(1)
+                    .catch {
+                        _state.value = ReaderChapter.State.Error(it)
+                        log.warn(it) { "Error getting chapters for $mangaId" }
+                    }
+                    .singleOrNull()
+                    ?: return@coroutineScope null
+                val chapter = chapters.find { it.id == chapterId }
+                    ?.let { ReaderChapter(it) }
+                    ?: return@coroutineScope null
+                val pages = loader.loadChapter(chapter)
+                viewerChapters.update { it.copy(currChapter = chapter) }
+
+                if (viewerChapters.value.nextChapter == null) {
+                    val nextChapter = chapters.find { it.index == chapter.chapter.index + 1 }
+                    if (nextChapter != null) {
+                        val nextReaderChapter = ReaderChapter(nextChapter)
+                        viewerChapters.update { it.copy(nextChapter = nextReaderChapter) }
+                    } else {
+                        viewerChapters.update { it.copy(nextChapter = null) }
+                    }
                 }
 
-                val getAdjacentChapters = async {
-                    val chapters = getChapters.await(
-                        mangaId,
-                        onError = { /* TODO: 2022-07-01 Error toast */ },
-                    ).orEmpty()
-
-                    val nextChapter = async {
-                        if (viewerChapters.value.nextChapter == null) {
-                            val nextChapter = chapters.find { it.index == chapterIndex + 1 }
-                            if (nextChapter != null) {
-                                val nextReaderChapter = getReaderChapter(nextChapter.index)
-                                viewerChapters.update { it.copy(nextChapter = nextReaderChapter) }
-                            } else {
-                                viewerChapters.update { it.copy(nextChapter = null) }
-                            }
-                        }
+                if (viewerChapters.value.prevChapter == null) {
+                    val prevChapter = chapters.find { it.index == chapter.chapter.index - 1 }
+                    if (prevChapter != null) {
+                        val prevReaderChapter = ReaderChapter(prevChapter)
+                        viewerChapters.update { it.copy(prevChapter = prevReaderChapter) }
+                    } else {
+                        viewerChapters.update { it.copy(prevChapter = null) }
                     }
-                    val prevChapter = async {
-                        if (viewerChapters.value.prevChapter == null) {
-                            val prevChapter = chapters.find { it.index == chapterIndex - 1 }
-                            if (prevChapter != null) {
-                                val prevReaderChapter = getReaderChapter(prevChapter.index)
-                                viewerChapters.update { it.copy(prevChapter = prevReaderChapter) }
-                            } else {
-                                viewerChapters.update { it.copy(prevChapter = null) }
-                            }
-                        }
-                    }
-                    nextChapter.await()
-                    prevChapter.await()
                 }
-
-                getAdjacentChapters.await()
-                getCurrentChapter.await()
+                chapter to pages
             } ?: return
 
             if (fromMenuButton) {
@@ -386,18 +380,6 @@ class ReaderMenuViewModel
             }
         }
 
-        private suspend fun getReaderChapter(chapterIndex: Int): ReaderChapter? {
-            return ReaderChapter(
-                getChapter.asFlow(params.mangaId, chapterIndex)
-                    .take(1)
-                    .catch {
-                        _state.value = ReaderChapter.State.Error(it)
-                        log.warn(it) { "Error getting chapter $chapterIndex" }
-                    }
-                    .singleOrNull() ?: return null,
-            )
-        }
-
         fun requestPreloadChapter(chapter: ReaderChapter) {
             if (chapter.state != ReaderChapter.State.Wait && chapter.state !is ReaderChapter.State.Error) {
                 return
@@ -408,19 +390,19 @@ class ReaderMenuViewModel
 
         private fun markChapterRead(chapter: ReaderChapter) {
             scope.launch {
-                updateChapterRead.await(chapter.chapter, read = true, onError = { toast(it.message.orEmpty()) })
+                updateChapter.await(chapter.chapter, read = true, onError = { toast(it.message.orEmpty()) })
             }
         }
 
         @OptIn(DelicateCoroutinesApi::class)
         fun sendProgress(
             chapter: Chapter? = this.chapter.value?.chapter,
-            lastPageRead: Int = (currentPage.value as? ReaderPage)?.index ?: 0,
+            lastPageRead: Int = (currentPage.value as? ReaderPage)?.index2 ?: 0,
         ) {
             chapter ?: return
             if (chapter.read) return
             GlobalScope.launch {
-                updateChapterLastPageRead.await(
+                updateChapter.await(
                     chapter,
                     lastPageRead = lastPageRead,
                     onError = { toast(it.message.orEmpty()) },
@@ -448,7 +430,7 @@ class ReaderMenuViewModel
         }
 
         data class Params(
-            val chapterIndex: Int,
+            val chapterId: Long,
             val mangaId: Long,
         )
 

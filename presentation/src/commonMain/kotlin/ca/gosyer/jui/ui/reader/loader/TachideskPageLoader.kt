@@ -8,15 +8,16 @@ package ca.gosyer.jui.ui.reader.loader
 
 import androidx.compose.ui.unit.IntSize
 import ca.gosyer.jui.core.io.SYSTEM
+import ca.gosyer.jui.core.io.source
 import ca.gosyer.jui.core.lang.PriorityChannel
 import ca.gosyer.jui.core.lang.throwIfCancellation
+import ca.gosyer.jui.domain.chapter.interactor.GetChapterPages
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
 import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
-import ca.gosyer.jui.ui.util.lang.toSource
 import cafe.adriel.voyager.core.concurrent.AtomicInt32
 import com.seiko.imageloader.asImageBitmap
 import com.seiko.imageloader.cache.disk.DiskCache
@@ -25,9 +26,6 @@ import com.seiko.imageloader.model.DataSource
 import com.seiko.imageloader.model.ImageResult
 import com.seiko.imageloader.option.Options
 import io.ktor.client.plugins.onDownload
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -39,6 +37,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -57,6 +56,7 @@ class TachideskPageLoader(
     private val http: Http,
     private val chapterCache: DiskCache,
     private val bitmapDecoderFactory: BitmapDecoderFactory,
+    private val getChapterPages: GetChapterPages,
 ) : PageLoader() {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -109,15 +109,15 @@ class TachideskPageLoader(
     }
 
     private suspend fun fetchImage(page: ReaderPage) {
-        log.debug { "Loading page ${page.index}" }
+        log.debug { "Loading page ${page.index2}" }
         flow {
-            val response = http.get("api/v1/manga/${chapter.chapter.mangaId}/chapter/${chapter.chapter.index}/page/${page.index}") {
+            val response = getChapterPages.asFlow(page.url) {
                 onDownload { bytesSentTotal, contentLength ->
                     page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
                 }
             }
 
-            emit(response)
+            emitAll(response)
         }
             .onEach {
                 putImageInCache(it, page)
@@ -129,21 +129,21 @@ class TachideskPageLoader(
                 page.bitmap.value = StableHolder(null)
                 page.status.value = ReaderPage.Status.ERROR
                 page.error.value = it.message
-                log.warn(it) { "Failed to get page ${page.index} for chapter ${chapter.chapter.index} for ${chapter.chapter.mangaId}" }
+                log.warn(it) { "Failed to get page ${page.index2} for chapter ${chapter.chapter.index} for ${chapter.chapter.mangaId}" }
             }
             .flowOn(Dispatchers.IO)
             .collect()
     }
 
     private suspend fun putImageInCache(
-        response: HttpResponse,
+        response: ByteArray,
         page: ReaderPage,
     ) {
         val editor = chapterCache.openEditor(page.cacheKey)
             ?: throw Exception("Couldn't open cache")
         try {
             FileSystem.SYSTEM.write(editor.data) {
-                response.bodyAsChannel().toSource().use {
+                response.source().use {
                     writeAll(it)
                 }
             }
@@ -192,7 +192,7 @@ class TachideskPageLoader(
         currentPage: ReaderPage,
         amount: Int,
     ): List<PriorityPage> {
-        val pageIndex = currentPage.index
+        val pageIndex = currentPage.index2
         val pages = (currentPage.chapter.pages.value as? PagesState.Success)?.pages ?: return emptyList()
         if (pageIndex >= pages.lastIndex) return emptyList()
 
@@ -214,14 +214,15 @@ class TachideskPageLoader(
     override fun getPages(): StateFlow<PagesState> {
         scope.launch {
             if (pagesFlow.value != PagesState.Loading) return@launch
-            val pageRange = chapter.chapter.pageCount?.let { 0..it.minus(1) }
-            pagesFlow.value = if (pageRange == null || pageRange.isEmpty()) {
+            val pages = getChapterPages.await(chapter.chapter.id)
+            pagesFlow.value = if (pages.isNullOrEmpty()) {
                 PagesState.Empty
             } else {
                 PagesState.Success(
-                    pageRange.map {
+                    pages.mapIndexed { index, url ->
                         ReaderPage(
-                            index = it,
+                            url = url,
+                            index2 = index,
                             bitmap = MutableStateFlow(StableHolder(null)),
                             bitmapInfo = MutableStateFlow(null),
                             progress = MutableStateFlow(0.0F),
@@ -295,7 +296,7 @@ class TachideskPageLoader(
     }
 
     private val ReaderPage.cacheKey
-        get() = "${chapter.chapter.mangaId}-${chapter.chapter.index}-$index"
+        get() = "${chapter.chapter.id}-$url"
 
     private fun DiskCache.Snapshot.source(): BufferedSource = FileSystem.SYSTEM.source(data).buffer()
 

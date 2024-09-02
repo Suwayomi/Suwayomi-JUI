@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.chapter.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
-import ca.gosyer.jui.domain.chapter.service.ChapterRepositoryOld
+import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
@@ -18,7 +18,7 @@ import org.lighthousegames.logging.logging
 class GetChapters
     @Inject
     constructor(
-        private val chapterRepositoryOld: ChapterRepositoryOld,
+        private val chapterRepository: ChapterRepository,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -45,16 +45,14 @@ class GetChapters
 
         fun asFlow(mangaId: Long) =
             serverListeners.combineChapters(
-                chapterRepositoryOld.getChapters(mangaId),
-                indexPredate = { id, _ -> id == mangaId },
-                idPredate = { id, _ -> id == mangaId },
+                chapterRepository.getChapters(mangaId),
+                idPredate = { ids -> false }, // todo
             )
 
         fun asFlow(manga: Manga) =
             serverListeners.combineChapters(
-                chapterRepositoryOld.getChapters(manga.id),
-                indexPredate = { id, _ -> id == manga.id },
-                idPredate = { id, _ -> id == manga.id },
+                chapterRepository.getChapters(manga.id),
+                idPredate = { ids -> false }, // todo
             )
 
         companion object {

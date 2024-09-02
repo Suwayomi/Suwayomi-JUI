@@ -101,7 +101,7 @@ import kotlinx.coroutines.launch
 
 expect class ReaderLauncher {
     fun launch(
-        chapterIndex: Int,
+        chapterId: Long,
         mangaId: Long,
     )
 
@@ -114,12 +114,12 @@ expect fun rememberReaderLauncher(): ReaderLauncher
 
 @Composable
 fun ReaderMenu(
-    chapterIndex: Int,
+    chapterId: Long,
     mangaId: Long,
     onCloseRequest: () -> Unit,
 ) {
     val viewModels = LocalViewModels.current
-    val vm = remember { viewModels.readerViewModel(ReaderMenuViewModel.Params(chapterIndex, mangaId)) }
+    val vm = remember { viewModels.readerViewModel(ReaderMenuViewModel.Params(chapterId, mangaId)) }
     DisposableEffect(vm) {
         onDispose(vm::onDispose)
     }

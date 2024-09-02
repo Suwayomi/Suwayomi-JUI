@@ -24,13 +24,13 @@ import ca.gosyer.jui.ui.util.lang.launchApplication
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 actual class ReaderLauncher {
-    private var isOpen by mutableStateOf<Pair<Int, Long>?>(null)
+    private var isOpen by mutableStateOf<Pair<Long, Long>?>(null)
 
     actual fun launch(
-        chapterIndex: Int,
+        chapterId: Long,
         mangaId: Long,
     ) {
-        isOpen = chapterIndex to mangaId
+        isOpen = chapterId to mangaId
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -38,7 +38,7 @@ actual class ReaderLauncher {
     actual fun Reader() {
         val localParams = currentCompositionLocalContext
         DisposableEffect(isOpen) {
-            isOpen?.let { (chapterIndex, mangaId) ->
+            isOpen?.let { (chapterId, mangaId) ->
                 launchApplication {
                     val windowState = rememberWindowState(
                         position = WindowPosition.Aligned(Alignment.Center),
@@ -52,7 +52,7 @@ actual class ReaderLauncher {
                             state = windowState,
                         ) {
                             ReaderMenu(
-                                chapterIndex = chapterIndex,
+                                chapterId = chapterId,
                                 mangaId = mangaId,
                                 onCloseRequest = ::exitApplication,
                             )

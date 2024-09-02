@@ -12,11 +12,10 @@ import ca.gosyer.jui.domain.category.interactor.GetCategories
 import ca.gosyer.jui.domain.category.interactor.GetMangaCategories
 import ca.gosyer.jui.domain.category.interactor.RemoveMangaFromCategory
 import ca.gosyer.jui.domain.category.model.Category
-import ca.gosyer.jui.domain.chapter.interactor.BatchUpdateChapter
 import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
 import ca.gosyer.jui.domain.chapter.interactor.GetChapters
 import ca.gosyer.jui.domain.chapter.interactor.RefreshChapters
-import ca.gosyer.jui.domain.chapter.interactor.UpdateChapterMarkPreviousRead
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapter
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.interactor.BatchChapterDownload
 import ca.gosyer.jui.domain.download.interactor.QueueChapterDownload
@@ -63,8 +62,7 @@ class MangaScreenViewModel
         private val refreshManga: RefreshManga,
         private val getChapters: GetChapters,
         private val refreshChapters: RefreshChapters,
-        private val batchUpdateChapter: BatchUpdateChapter,
-        private val updateChapterMarkPreviousRead: UpdateChapterMarkPreviousRead,
+        private val updateChapter: UpdateChapter,
         private val queueChapterDownload: QueueChapterDownload,
         private val stopChapterDownload: StopChapterDownload,
         private val deleteChapterDownload: DeleteChapterDownload,
@@ -253,8 +251,8 @@ class MangaScreenViewModel
             read: Boolean,
         ) {
             scope.launch {
-                manga.value?.let { manga ->
-                    batchUpdateChapter.await(manga, chapterIds, isRead = read, onError = { toast(it.message.orEmpty()) })
+                manga.value?.let {
+                    updateChapter.await(chapterIds, read = read, onError = { toast(it.message.orEmpty()) })
                     _selectedIds.value = persistentListOf()
                 }
             }
@@ -269,8 +267,8 @@ class MangaScreenViewModel
             bookmark: Boolean,
         ) {
             scope.launch {
-                manga.value?.let { manga ->
-                    batchUpdateChapter.await(manga, chapterIds, isBookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
+                manga.value?.let {
+                    updateChapter.await(chapterIds, bookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
                     _selectedIds.value = persistentListOf()
                 }
             }
@@ -282,8 +280,11 @@ class MangaScreenViewModel
 
         fun markPreviousRead(index: Int) {
             scope.launch {
-                manga.value?.let { manga ->
-                    updateChapterMarkPreviousRead.await(manga, index, onError = { toast(it.message.orEmpty()) })
+                manga.value?.let {
+                    val chapters = chapters.value
+                        .sortedBy { it.chapter.index }
+                        .subList(0, index).map{it.chapter.id} // todo test
+                    updateChapter.await(chapters, read = true, onError = { toast(it.message.orEmpty()) })
                     _selectedIds.value = persistentListOf()
                 }
             }
@@ -298,9 +299,8 @@ class MangaScreenViewModel
         fun deleteDownload(id: Long?) {
             scope.launch {
                 if (id == null) {
-                    val manga = _manga.value ?: return@launch
                     val chapterIds = _selectedIds.value
-                    batchUpdateChapter.await(manga, chapterIds, delete = true, onError = { toast(it.message.orEmpty()) })
+                    deleteChapterDownload.await(chapterIds, onError = { toast(it.message.orEmpty()) })
                     selectedItems.value.forEach {
                         it.setNotDownloaded()
                     }

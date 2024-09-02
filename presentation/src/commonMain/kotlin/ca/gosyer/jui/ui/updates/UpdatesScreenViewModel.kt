@@ -7,8 +7,8 @@
 package ca.gosyer.jui.ui.updates
 
 import ca.gosyer.jui.core.lang.launchDefault
-import ca.gosyer.jui.domain.chapter.interactor.BatchUpdateChapter
 import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
+import ca.gosyer.jui.domain.chapter.interactor.UpdateChapter
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.interactor.BatchChapterDownload
 import ca.gosyer.jui.domain.download.interactor.QueueChapterDownload
@@ -47,7 +47,7 @@ class UpdatesScreenViewModel
         private val stopChapterDownload: StopChapterDownload,
         private val deleteChapterDownload: DeleteChapterDownload,
         private val getRecentUpdates: GetRecentUpdates,
-        private val batchUpdateChapter: BatchUpdateChapter,
+        private val updateChapter: UpdateChapter,
         private val batchChapterDownload: BatchChapterDownload,
         private val updateLibrary: UpdateLibrary,
         private val updatesPager: UpdatesPager,
@@ -119,7 +119,7 @@ class UpdatesScreenViewModel
             read: Boolean,
         ) {
             scope.launch {
-                batchUpdateChapter.await(chapterIds, isRead = read, onError = { toast(it.message.orEmpty()) })
+                updateChapter.await(chapterIds, read = read, onError = { toast(it.message.orEmpty()) })
                 _selectedIds.value = persistentListOf()
             }
         }
@@ -133,7 +133,7 @@ class UpdatesScreenViewModel
             bookmark: Boolean,
         ) {
             scope.launch {
-                batchUpdateChapter.await(chapterIds, isBookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
+                updateChapter.await(chapterIds, bookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
                 _selectedIds.value = persistentListOf()
             }
         }
@@ -158,7 +158,7 @@ class UpdatesScreenViewModel
             scope.launchDefault {
                 if (chapter == null) {
                     val selectedIds = _selectedIds.value
-                    batchUpdateChapter.await(selectedIds, delete = true, onError = { toast(it.message.orEmpty()) })
+                    deleteChapterDownload.await(selectedIds, onError = { toast(it.message.orEmpty()) })
                     selectedItems.value.forEach {
                         it.setNotDownloaded()
                     }

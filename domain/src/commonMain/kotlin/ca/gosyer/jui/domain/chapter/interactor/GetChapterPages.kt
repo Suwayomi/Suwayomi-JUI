@@ -6,48 +6,47 @@
 
 package ca.gosyer.jui.domain.chapter.interactor
 
-import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
-import ca.gosyer.jui.domain.manga.model.Manga
+import io.ktor.client.request.HttpRequestBuilder
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class RefreshChapters
+class GetChapterPages
     @Inject
     constructor(
         private val chapterRepository: ChapterRepository,
-        private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
-            mangaId: Long,
+            chapterId: Long,
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(mangaId)
+        ) = asFlow(chapterId)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to refresh chapters for $mangaId" }
+                log.warn(it) { "Failed to get pages for $chapterId" }
             }
             .singleOrNull()
 
         suspend fun await(
-            manga: Manga,
+            url: String,
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(manga)
+            block: HttpRequestBuilder.() -> Unit,
+        ) = asFlow(url, block)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to refresh chapters for ${manga.title}(${manga.id})" }
+                log.warn(it) { "Failed to get page $url" }
             }
             .singleOrNull()
 
-        fun asFlow(mangaId: Long) =
-            chapterRepository.fetchChapters(mangaId)
-                .onEach { serverListeners.updateChapters(mangaId) }
+        fun asFlow(
+            chapterId: Long,
+        ) = chapterRepository.getPages(chapterId)
 
-        fun asFlow(manga: Manga) =
-            chapterRepository.fetchChapters(manga.id)
-                .onEach { serverListeners.updateChapters(manga.id) }
+        fun asFlow(
+            url: String,
+            block: HttpRequestBuilder.() -> Unit,
+        ) = chapterRepository.getPage(url, block)
 
         companion object {
             private val log = logging()

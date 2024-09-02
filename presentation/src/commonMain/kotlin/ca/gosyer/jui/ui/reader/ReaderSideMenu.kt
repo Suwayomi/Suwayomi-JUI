@@ -42,7 +42,9 @@ import androidx.compose.material.icons.rounded.ChevronLeft
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -56,6 +58,7 @@ import ca.gosyer.jui.core.util.replace
 import ca.gosyer.jui.domain.manga.model.MangaMeta
 import ca.gosyer.jui.domain.reader.model.Direction
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.reader.loader.PagesState
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderItem
 import ca.gosyer.jui.uicore.components.AroundLayout
@@ -82,7 +85,6 @@ fun ReaderSideMenu(
 ) {
     Surface(Modifier.fillMaxHeight().width(260.dp)) {
         Column(Modifier.fillMaxSize()) {
-            val pageCount = chapter.chapter.pageCount!!
             ReaderMenuToolbar(onCloseSideMenuClicked = onCloseSideMenuClicked)
             Spacer(Modifier.height(4.dp))
             ReaderModeSetting(
@@ -91,6 +93,12 @@ fun ReaderSideMenu(
                 onSetReaderMode = onSetReaderMode,
             )
             Spacer(Modifier.height(4.dp))
+            val chapterPages by key(chapter.chapter.id) { chapter.pages.collectAsState() }
+            val pageCount = when (chapterPages) {
+                PagesState.Empty -> null
+                PagesState.Loading -> null
+                is PagesState.Success -> (chapterPages as? PagesState.Success)?.pages?.size
+            }
             ReaderProgressSlider(
                 pages = pages,
                 currentPage = currentPage,
@@ -183,6 +191,12 @@ fun ReaderExpandBottomMenu(
                 shape = CircleShape,
                 backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.5F),
             ) {
+                val chapterPages by key(chapter.chapter.id) { chapter.pages.collectAsState() }
+                val pageCount = when (chapterPages) {
+                    PagesState.Empty -> null
+                    PagesState.Loading -> null
+                    is PagesState.Success -> (chapterPages as? PagesState.Success)?.pages?.size
+                }
                 AroundLayout(
                     Modifier.padding(horizontal = 8.dp),
                     startLayout = {
@@ -190,7 +204,7 @@ fun ReaderExpandBottomMenu(
                             val text = if (!isRtL) {
                                 pages.indexOf(currentPage)
                             } else {
-                                chapter.chapter.pageCount!!
+                                pageCount ?: "1"
                             }.toString()
                             Text(text, fontSize = 15.sp)
                         }
@@ -200,7 +214,7 @@ fun ReaderExpandBottomMenu(
                             val text = if (isRtL) {
                                 pages.indexOf(currentPage)
                             } else {
-                                chapter.chapter.pageCount!!
+                                pageCount ?: "1"
                             }.toString()
                             Text(text, fontSize = 15.sp)
                         }
@@ -212,7 +226,7 @@ fun ReaderExpandBottomMenu(
                             .padding(horizontal = 4.dp),
                         pages = pages,
                         currentPage = currentPage,
-                        pageCount = chapter.chapter.pageCount!!,
+                        pageCount = pageCount,
                         onNewPageClicked = navigate,
                         isRtL = isRtL,
                     )
@@ -278,7 +292,7 @@ private fun ReaderProgressSlider(
     modifier: Modifier = Modifier,
     pages: ImmutableList<ReaderItem>,
     currentPage: ReaderItem?,
-    pageCount: Int,
+    pageCount: Int?,
     onNewPageClicked: (Int) -> Unit,
     isRtL: Boolean,
 ) {
@@ -295,9 +309,10 @@ private fun ReaderProgressSlider(
                 onNewPageClicked(it.roundToInt())
             }
         },
-        valueRange = 0F..pageCount.toFloat(),
-        steps = pageCount,
+        valueRange = 0F..(pageCount ?: 1).toFloat(),
+        steps = (pageCount ?: 1),
         onValueChangeFinished = { isValueChanging = false },
+        enabled = pageCount != null,
         modifier = modifier.let {
             if (isRtL) {
                 it then Modifier.rotate(180F)

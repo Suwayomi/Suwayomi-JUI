@@ -126,7 +126,7 @@ fun ContinuousReader(
         }
 
         fun retry(index: Int) {
-            pages.find { it is ReaderPage && it.index == index }?.let { retry(it as ReaderPage) }
+            pages.find { it is ReaderPage && it.index2 == index }?.let { retry(it as ReaderPage) }
         }
 
         when (direction.isVertical) {
@@ -199,7 +199,7 @@ private fun LazyListScope.items(
         pages,
         key = {
             when (it) {
-                is ReaderPage -> it.chapter.chapter.index to it.index
+                is ReaderPage -> it.chapter.chapter.index to it.index2
                 is ReaderPageSeparator -> it.previousChapter?.chapter?.index to it.nextChapter?.chapter?.index
             }
         },
@@ -207,7 +207,7 @@ private fun LazyListScope.items(
         when (image) {
             is ReaderPage -> Box(modifier, contentAlignment = Alignment.Center) {
                 ReaderImage(
-                    imageIndex = image.index,
+                    imageIndex = image.index2,
                     drawableHolder = image.bitmap.collectAsState().value,
                     bitmapInfo = image.bitmapInfo.collectAsState().value,
                     progress = image.progress.collectAsState().value,

@@ -81,7 +81,7 @@ class UpdatesPager
             updates.filterIsInstance<Updates.Update>().map { it.manga.id }
         }.stateIn(this, SharingStarted.Eagerly, emptyList())
         private val chapterIds = foldedUpdates.map { updates ->
-            updates.filterIsInstance<Updates.Update>().map { Triple(it.manga.id, it.chapter.index, it.chapter.id) }
+            updates.filterIsInstance<Updates.Update>().map { it.chapter.id }
         }.stateIn(this, SharingStarted.Eagerly, emptyList())
 
         private val changedManga = serverListeners.mangaListener.runningFold(emptyMap<Long, Manga>()) { manga, updatedMangaIds ->
@@ -97,36 +97,12 @@ class UpdatesPager
         private val changedChapters = MutableStateFlow(emptyMap<Long, Chapter>())
 
         init {
-            serverListeners.chapterIndexesListener
-                .onEach { (mangaId, chapterIndexes) ->
-                    if (chapterIndexes == null) {
-                        val chapters = coroutineScope {
-                            foldedUpdates.value.filterIsInstance<Updates.Update>().filter { it.manga.id == mangaId }.map {
-                                async {
-                                    getChapter.await(it.manga.id, it.chapter.index)
-                                }
-                            }.awaitAll().filterNotNull().associateBy { it.id }
-                        }
-                        changedChapters.update { it + chapters }
-                    } else {
-                        val chapters = coroutineScope {
-                            chapterIndexes.mapNotNull { index -> chapterIds.value.find { it.first == mangaId && it.second == index } }
-                                .map {
-                                    async {
-                                        getChapter.await(it.first, it.second)
-                                    }
-                                }.awaitAll().filterNotNull().associateBy { it.id }
-                        }
-                        changedChapters.update { it + chapters }
-                    }
-                }
-                .launchIn(this)
             serverListeners.chapterIdsListener
-                .onEach { (_, updatedChapterIds) ->
+                .onEach { updatedChapterIds ->
                     val chapters = coroutineScope {
-                        updatedChapterIds.mapNotNull { id -> chapterIds.value.find { it.third == id } }.map {
+                        updatedChapterIds.mapNotNull { id -> chapterIds.value.find { it == id } }.map {
                             async {
-                                getChapter.await(it.first, it.second)
+                                getChapter.await(it)
                             }
                         }.awaitAll().filterNotNull().associateBy { it.id }
                     }
