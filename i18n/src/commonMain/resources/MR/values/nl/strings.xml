@@ -21,7 +21,7 @@
     <string name="action_retry">Opnieuw proberen</string>
     <string name="location_sources">Bronnen</string>
     <string name="action_start_anyway">Alsnog starten</string>
-    <string name="new_update_title">Tachidesk-JUI update beschikbaar</string>
+    <string name="new_update_title">Suwayomi-JUI update beschikbaar</string>
     <string name="action_uninstall">Verwijderen</string>
     <string name="action_update">Bijwerken</string>
     <string name="location_updates">Updates</string>
@@ -84,7 +84,7 @@
     <string name="scale_fit_screen">Scherm passend</string>
     <string name="scale_fit_width">Op breedte passen</string>
     <string name="theme_follow_system">Volg systeem instellingen</string>
-    <string name="host_server">Hoster server binnen Tachidesk-JUI</string>
+    <string name="host_server">Hoster server binnen Suwayomi-JUI</string>
     <string name="image_scale">Afbeelding Schaal</string>
     <string name="nav_kindle_ish">Kindle-achtig</string>
     <string name="language">Taal</string>
@@ -102,7 +102,7 @@
     <string name="color_primary">Eerste</string>
     <string name="reader_mode">Lezer Modus</string>
     <string name="window_decorations_sub">Herstart JUI wanneer deze instelling is gewijzigd</string>
-    <string name="backup_restore_sub">Zet een back-up terug in Tachidesk</string>
+    <string name="backup_restore_sub">Zet een back-up terug in Suwayomi</string>
     <string name="backup_restore">Zet een back-up terug</string>
     <string name="nav_left_right">Rechts en links</string>
     <string name="dir_rtl">Rechts naar links</string>
@@ -150,13 +150,13 @@
     <string name="host_webui">Server WebUI</string>
     <string name="socks_port">SOCKS PORT</string>
     <string name="socks_proxy">SOCKS Proxy</string>
-    <string name="host_settings">Tachidesk-Server instellingen</string>
-    <string name="host_settings_sub">The onderstaande instellingen configureren de interne Tachidesk-Server</string>
+    <string name="host_settings">Suwayomi-Server instellingen</string>
+    <string name="host_settings_sub">The onderstaande instellingen configureren de interne Suwayomi-Server</string>
     <string name="server_preference_warning_sub">The onderstaande instellingen vereisen een herstart om effect te hebben</string>
     <string name="host_basic_auth_sub">Gebruik basisverificatie om je bibliotheek te beschermen, vereist gebruikersnaam en wachtwoord</string>
     <string name="host_system_tray_sub">Gebruik het taakbalk icoon om te kijken of de server actief is</string>
     <string name="server_preference_warning">Waarschuwing</string>
-    <string name="host_webui_sub">Als de servers standaard WebUI is ingeschakeld kun je Tachidesk in je browser gebruiken</string>
+    <string name="host_webui_sub">Als de servers standaard WebUI is ingeschakeld kun je Suwayomi in je browser gebruiken</string>
     <string name="digest_auth">Authenticatie controleren</string>
     <string name="all">Alles</string>
     <string name="settings_backup">Back-up</string>
@@ -164,7 +164,7 @@
     <string name="confirm_exit">Afsluiten bevestigen</string>
     <string name="action_create">Maken</string>
     <string name="action_continue">Doorgaan</string>
-    <string name="backup_create_sub">Maak een back-up van Tachidesk</string>
+    <string name="backup_create_sub">Maak een back-up van Suwayomi</string>
     <string name="categories_delete_confirm">Verwijder de %1$s categorie\?</string>
     <string name="force_fit_height">Geforceerd op hoogte passen</string>
     <string name="max_width_sub">Maximale breedte van een afbeelding, nu %1$ddp. De bovenstaande instelling schaalt afbeeldingen op en beperkt ze zodra een bepaalde breedte is bereikt</string>

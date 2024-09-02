@@ -10,7 +10,7 @@
     <string name="unable_to_start_server">無法啟動伺服器</string>
     <string name="confirm_exit">確認退出</string>
     <string name="confirm_exit_toast">再按一次返回鍵退出</string>
-    <string name="new_update_title">Tachidesk-JUI 有可用的更新</string>
+    <string name="new_update_title">Suwayomi-JUI 有可用的更新</string>
     <string name="download_all">全部</string>
     <string name="http_proxy">HTTP 代理</string>
     <string name="no_proxy">無代理</string>
@@ -38,7 +38,7 @@
     <string name="settings_backup">備份</string>
     <string name="edit_categories">編輯類別</string>
     <string name="clear_chapter_cache">清除章節快取</string>
-    <string name="backup_create_sub">從 Tachidesk 建立備份</string>
+    <string name="backup_create_sub">從 Suwayomi 建立備份</string>
     <string name="host_basic_auth_username">基本認證使用者名稱</string>
     <string name="action_filter_bookmarked">已加入書籤</string>
     <string name="color_primary_sub">在您的應用程式中最常顯示</string>
@@ -122,7 +122,7 @@
     <string name="settings_general_screen">一般設定</string>
     <string name="location_global_search">全域搜尋</string>
     <string name="help_translate">協助翻譯</string>
-    <string name="host_server">Tachidesk-JUI 內建主機伺服器</string>
+    <string name="host_server">Suwayomi-JUI 內建主機伺服器</string>
     <string name="continuous_sub">如果閱讀器是翻頁或捲動視窗</string>
     <string name="image_scale">圖片比例</string>
     <string name="in_library">在書櫃裡</string>
@@ -190,7 +190,7 @@
     <string name="server_preference_warning">警告</string>
     <string name="host_system_tray_sub">使用系統匣圖示查看伺服器是否正在運行</string>
     <string name="whats_new">更新日誌</string>
-    <string name="host_webui_sub">讓您能夠在瀏覽器中使用 Tachidesk，無論是否啟用了服务器的預設網路介面</string>
+    <string name="host_webui_sub">讓您能夠在瀏覽器中使用 Suwayomi，無論是否啟用了服务器的預設網路介面</string>
     <string name="window_decorations">窗口裝飾</string>
     <string name="action_yes">是</string>
     <string name="theme_yinyang">陰陽</string>
@@ -220,7 +220,7 @@
     <string name="backup_restore">還原備份</string>
     <string name="window_decorations_sub">當此設置改變時，重新啟動 JUI</string>
     <string name="force_fit_width_sub">縮放圖片以符合窗口的寬度</string>
-    <string name="backup_restore_sub">將備份還原到 Tachidesk</string>
+    <string name="backup_restore_sub">將備份還原到 Suwayomi</string>
     <string name="dir_rtl">由右至左</string>
     <string name="force_fit_height_sub">縮放圖片以符合窗口的高度</string>
     <string name="action_searching">搜尋…</string>
@@ -259,7 +259,7 @@
     <string name="location_sources">來源</string>
     <string name="action_start_anyway">無論如何繼續</string>
     <string name="theme_strawberry_daiquiri">草莓黛綺莉</string>
-    <string name="host_settings">Tachidesk-伺服器設定</string>
+    <string name="host_settings">Suwayomi-伺服器設定</string>
     <string name="theme_tealturquoise">綠松色</string>
     <string name="date_system_default">系統預設</string>
     <string name="language_system_default">系統預設 (%1$s)</string>
@@ -269,7 +269,7 @@
     <string name="notification_updating">正在更新書櫃… (%1$d/%2$d)</string>
     <string name="color_tertiary">三次色</string>
     <string name="theme_text">文本</string>
-    <string name="host_settings_sub">以下設定配置 Tachidesk 的内部伺服器</string>
+    <string name="host_settings_sub">以下設定配置 Suwayomi 的内部伺服器</string>
     <string name="theme">主題</string>
     <string name="server_preference_warning_sub">以下設定需要重新啟動才能生效</string>
     <string name="no_previous_chapter">没有前一章</string>

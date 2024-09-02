@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="downloads_remaining">Залишилось %1$d</string>
-    <string name="new_update_title">Доступне оновлення Tachidesk-JUI</string>
+    <string name="new_update_title">Доступне оновлення Suwayomi-JUI</string>
     <string name="action_pause">Пауза</string>
     <string name="new_update_message">%1$s вже доступно!</string>
     <string name="action_continue">Продовжити</string>

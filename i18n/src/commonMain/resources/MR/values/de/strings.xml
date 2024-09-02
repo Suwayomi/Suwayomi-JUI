@@ -48,7 +48,7 @@
     <string name="date_format">Datumsformat</string>
     <string name="theme_dark">Dunkel</string>
     <string name="backup_create">Backup erstellen</string>
-    <string name="backup_create_sub">Erstellen eines Backups von Tachidesk</string>
+    <string name="backup_create_sub">Erstellen eines Backups von Suwayomi</string>
     <string name="action_create">Erstellen</string>
     <string name="continuous">Fortlaufend</string>
     <string name="action_continue">Fortsetzen</string>
@@ -100,7 +100,7 @@
     <string name="force_fit_width_sub">Das Bild auf Breite des Fensters skalieren</string>
     <string name="reset_filters">Zurücksetzen</string>
     <string name="max_width_sub">Maximale Bildbreite, aktuell %1$d dp. Die obige Einstellung vergrößert Bilder und schränkt sie beim Erreichen einer bestimmten Breite ein</string>
-    <string name="host_settings_sub">Die folgenden EInstellungen betreffen den internen Tachidesk-Server</string>
+    <string name="host_settings_sub">Die folgenden EInstellungen betreffen den internen Suwayomi-Server</string>
     <string name="settings_server">Server</string>
     <string name="items_per_row_sub">Spalten: %1$d</string>
     <string name="items_per_row">Einträge pro Reihe</string>
@@ -174,7 +174,7 @@
     <string name="host_socks_port_sub">Aktueller Proxy PORT: %1$s</string>
     <string name="host_basic_auth_sub">Einfache Authentifikation nutzen um die Bibliothek zu schützen, benötigt Nutzername und Passwort</string>
     <string name="host_open_in_browser">Server-WebUI beim Start öffnen</string>
-    <string name="host_webui_sub">Ob die WebUI des Servers aktiviert ist, entscheidet ob du Tachidesk im Browser verwenden kannst</string>
+    <string name="host_webui_sub">Ob die WebUI des Servers aktiviert ist, entscheidet ob du Suwayomi im Browser verwenden kannst</string>
     <string name="host_webui">Server-WebUI</string>
     <string name="server_preference_warning">Warnung</string>
     <string name="server_path_prefix_sub">Pfadpräfix vor den Endpoint-Pfaden; bei Nichtverwendung leer lassen.</string>
@@ -209,14 +209,14 @@
     <string name="color_tertiary">Tertiär</string>
     <string name="theme_yinyang">Yin &amp; Yang</string>
     <string name="theme_yotsuba">Yotsuba</string>
-    <string name="backup_restore_sub">Sicherung in Tachidesk einspielen</string>
+    <string name="backup_restore_sub">Sicherung in Suwayomi einspielen</string>
     <string name="display_mode">Anzeige-Modus</string>
     <string name="show_all_category">Alle Kategorien anzeigen</string>
     <string name="language_system_default">System-Standard (%1$s)</string>
     <string name="display_compact">Kompaktes Raster</string>
-    <string name="host_server">Server in Tachidesk-JUI ausführen</string>
+    <string name="host_server">Server in Suwayomi-JUI ausführen</string>
     <string name="nav_left_right">Rechts und links</string>
-    <string name="host_settings">Tachidesk-Server Einstellungen</string>
+    <string name="host_settings">Suwayomi-Server Einstellungen</string>
     <string name="host_ip_sub">Aktuelle Server-IP: %1$s</string>
     <string name="host_port_sub">Aktueller Server-PORT: %1$s</string>
     <string name="host_ip">Server-IP</string>
@@ -268,7 +268,7 @@
     <string name="categories_create">Neue Kategorie</string>
     <string name="default_reader_mode">Standard</string>
     <string name="location_global_search">Globale Suche</string>
-    <string name="new_update_title">Tachidesk-JUI Aktualisierung verfügbar</string>
+    <string name="new_update_title">Suwayomi-JUI Aktualisierung verfügbar</string>
     <string name="action_uninstall">Deinstallieren</string>
     <string name="in_library">In der Bibliothek</string>
     <string name="local_badge">Lokal</string>
@@ -291,4 +291,7 @@
     <string name="server_port">Server-PORT</string>
     <string name="other">Sonstige</string>
     <string name="nav_prev_chapter">Vorheriges Kapitel</string>
+    <string name="action_open_in_browser">Im Browser öffnen</string>
+    <string name="host_download_as_cbz">Herunterladen als CBZ</string>
+    <string name="host_download_as_cbz_sub">Kapitel in einem CBZ-Archiv herunterladen</string>
 </resources>
