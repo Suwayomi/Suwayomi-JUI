@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Autoclose issues
-        uses: arkon/issue-closer-action@v3.0
+        uses: tachiyomiorg/issue-moderator-action@v1
         with:
           repo-token: ${{ github.token }}
           rules: |
