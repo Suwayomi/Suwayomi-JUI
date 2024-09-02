@@ -24,6 +24,7 @@
 # OKHTTP
 -dontwarn org.codehaus.mojo.animal_sniffer.*
 -dontwarn okhttp3.internal.platform.**
+-keep class okio.** { *; }
 
 # DarkLaf
 # todo optimize more
@@ -77,3 +78,6 @@
 
 # Skiko
 -dontwarn org.jetbrains.skiko.**
+
+# Compose
+-keep class androidx.compose.runtime.** { *; }
