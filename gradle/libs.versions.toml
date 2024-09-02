@@ -4,7 +4,7 @@ kotlin = "2.0.20"
 coroutines = "1.8.1"
 
 # Serialization
-json = "1.7.1"
+json = "1.7.2"
 
 # Compose
 composeGradle = "1.6.11"
