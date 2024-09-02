@@ -13,7 +13,7 @@ composeGradle = "1.6.11"
 parcelize = "0.9.0"
 voyager = "1.0.0"
 accompanist = "0.30.1"
-googleAccompanist = "0.30.1"
+googleAccompanist = "0.34.0"
 imageloader = "1.8.1"
 materialDialogs = "0.9.5"
 
