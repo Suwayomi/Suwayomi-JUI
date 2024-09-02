@@ -238,7 +238,7 @@ jobs:
             ${{ env.COMMIT_LOGS }}
 
       - name: Prune old releases
-        uses: dev-drprasad/delete-older-releases@v0.3.3
+        uses: dev-drprasad/delete-older-releases@v0.3.4
         env:
           GITHUB_TOKEN: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
         with:
