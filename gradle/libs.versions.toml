@@ -41,7 +41,7 @@ ktorfit = "1.12.0"
 apollo = "4.0.0-beta.5"
 
 # Logging
-slf4j = "2.0.12"
+slf4j = "2.0.16"
 log4j = "2.23.1"
 kmlogging = "1.4.2"
 
