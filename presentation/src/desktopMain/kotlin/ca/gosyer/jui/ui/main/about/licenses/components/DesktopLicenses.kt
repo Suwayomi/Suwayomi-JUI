@@ -19,7 +19,7 @@ actual fun getLicenses(): Libs? {
         null,
     ) {
         withIOContext {
-            val json = MR.files.aboutlibraries.readText()
+            val json = MR.files.aboutlibraries_json.readText()
             value = Libs.Builder().withJson(json).build()
         }
     }

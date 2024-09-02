@@ -8,4 +8,4 @@ package ca.gosyer.jui.ui.base.screen
 
 import cafe.adriel.voyager.core.screen.Screen
 
-expect abstract class BaseScreen : Screen
+expect abstract class BaseScreen() : Screen

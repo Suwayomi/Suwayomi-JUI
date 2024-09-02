@@ -16,7 +16,7 @@ import ca.gosyer.jui.data.util.toOptional
 import ca.gosyer.jui.domain.settings.model.SetSettingsInput
 import ca.gosyer.jui.domain.settings.model.Settings
 import ca.gosyer.jui.domain.settings.service.SettingsRepository
-import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo.ApolloClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow

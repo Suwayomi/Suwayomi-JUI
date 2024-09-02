@@ -62,11 +62,11 @@ jobs:
         run: |
           mkdir -p build
           jq 'del(.metadata)' --sort-keys desktop/build/aboutlibraries.json > build/json1.json
-          jq 'del(.metadata)' --sort-keys i18n/src/commonMain/resources/MR/files/aboutlibraries.json > build/json2.json
+          jq 'del(.metadata)' --sort-keys i18n/src/commonMain/moko-resources/files/aboutlibraries.json > build/json2.json
           if cmp --silent build/json1.json build/json2.json; then
               echo "Libraries didn't change"
           else
-              mv desktop/build/aboutlibraries.json i18n/src/commonMain/resources/MR/files/aboutlibraries.json -f
+              mv desktop/build/aboutlibraries.json i18n/src/commonMain/moko-resources/files/aboutlibraries.json -f
               echo "Moved file"
           fi
 

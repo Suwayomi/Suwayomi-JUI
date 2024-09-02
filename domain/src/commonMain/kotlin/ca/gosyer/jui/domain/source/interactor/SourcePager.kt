@@ -29,14 +29,16 @@ import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-typealias GetMangaPage = @param:Assisted suspend (page: Int) -> MangaPage?
+fun interface GetMangaPage {
+    suspend fun get(page: Int): MangaPage?
+}
 
 class SourcePager
     @Inject
     constructor(
         private val getManga: GetManga,
         private val serverListeners: ServerListeners,
-        private val fetcher: GetMangaPage,
+        @Assisted private val fetcher: GetMangaPage,
     ) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
         private val sourceMutex = Mutex()
 
@@ -72,7 +74,7 @@ class SourcePager
             launch {
                 if (hasNextPage.value && sourceMutex.tryLock()) {
                     _pageNum.value++
-                    val page = fetcher(_pageNum.value)
+                    val page = fetcher.get(_pageNum.value)
                     if (page != null) {
                         _sourceManga.value = _sourceManga.value + page.mangaList
                         _hasNextPage.value = page.hasNextPage

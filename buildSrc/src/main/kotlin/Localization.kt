@@ -8,13 +8,13 @@ fun TaskContainerScope.registerLocalizationTask(project: Project) {
     with(project) {
         register("generateLocales") {
             doFirst {
-                val langs = listOf("en") + file("src/commonMain/resources/MR/values").listFiles()?.map { it.name }
+                val langs = listOf("en") + file("src/commonMain/moko-resources/values").listFiles()?.map { it.name }
                     ?.minus("base")
                     ?.map { it.replace("-r", "-") }
                     ?.sorted()
                     .orEmpty()
 
-                val langFile = file("src/commonMain/resources/MR/files/languages.json")
+                val langFile = file("src/commonMain/moko-resources/files/languages.json")
                 if (langFile.exists()) {
                     val currentLangs = langFile.reader().use {
                         Gson().fromJson(it, JsonObject::class.java)

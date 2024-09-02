@@ -1,47 +1,49 @@
 [versions]
 # Kotlin
-kotlin = "1.9.23"
+kotlin = "2.0.20"
 coroutines = "1.8.1"
 
 # Serialization
-json = "1.6.3"
+json = "1.7.1"
 
 # Compose
-composeGradle = "1.6.1"
+composeGradle = "1.6.11"
 
 # Compose Libraries
 voyager = "1.0.0"
 accompanist = "0.30.1"
 googleAccompanist = "0.30.1"
-imageloader = "1.7.8"
+imageloader = "1.8.1"
 materialDialogs = "0.9.5"
 
 # Android
-androidGradle = "8.3.1"
-core = "1.12.0"
+androidGradle = "8.5.2"
+core = "1.13.1"
 appCompat = "1.7.0"
-activityCompose = "1.8.2"
+activityCompose = "1.9.1"
 work = "2.9.1"
 
 # Android Lifecycle
-lifecycle = "2.7.0"
+lifecycle = "2.8.4"
 
 # Swing
 darklaf = "3.0.2"
 
 # Ksp
-ksp = "1.9.23-1.0.19"
+ksp = "2.0.20-1.0.24"
 
 # Dependency Injection
-kotlinInject = "0.6.3"
+kotlinInject = "0.7.1"
 
 # Network
-ktor = "2.3.9"
-ktorfit = "1.12.0"
-apollo = "4.0.0-beta.5"
+ktor = "2.3.12"
+ktorfit = "2.0.1"
+ktorfitKsp = "2.0.1-1.0.24"
+apollo = "4.0.0"
+apolloKtor = "0.0.2"
 
 # Logging
-slf4j = "2.0.12"
+slf4j = "2.0.16"
 log4j = "2.23.1"
 kmlogging = "1.4.2"
 
@@ -54,14 +56,14 @@ multiplatformSettings = "1.1.1"
 
 # Utility
 desugarJdkLibs = "2.0.4"
-aboutLibraries = "11.1.1"
-dateTime = "0.6.0-RC.2"
+aboutLibraries = "11.2.2"
+dateTime = "0.6.1"
 immutableCollections = "0.3.7"
 korge = "5.4.0"
-gradleDownloadTask = "5.4.0"
+gradleDownloadTask = "5.6.0"
 
 # Localization
-moko = "0.23.0"
+moko = "0.24.2"
 
 # BuildConfigs
 buildconfig = "5.3.5"
@@ -129,9 +131,9 @@ ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
 ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "ktorfit" }
-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfit" }
-apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
-apollo-engine-ktor = { module = "com.apollographql.apollo3:apollo-engine-ktor", version.ref = "apollo" }
+ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfitKsp" }
+apollo-runtime = { module = "com.apollographql.apollo:apollo-runtime", version.ref = "apollo" }
+apollo-engine-ktor = { module = "com.apollographql.ktor:apollo-engine-ktor", version.ref = "apolloKtor" }
 
 # Logging
 logging-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
@@ -166,6 +168,8 @@ moko-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "m
 proguard = { module = "com.guardsquare:proguard-gradle", version.ref = "proguard" }
 
 # Gradle
+gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+gradle-android = { module = "com.android.tools.build:gradle", version.ref = "androidGradle" }
 gradle-download-task = { module = "de.undercouch:gradle-download-task", version.ref = "gradleDownloadTask" }
 
 [plugins]
@@ -174,6 +178,7 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 # Android
 android-library = { id = "com.android.library", version.ref = "androidGradle" }
@@ -187,7 +192,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Network
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
-apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
 
 # Localization
 moko-gradle = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko" }

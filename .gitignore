@@ -8,6 +8,7 @@ build/
 tmp/
 Tachidesk.jar
 /wix311
+.kotlin
 
 # Eclipse
 .classpath

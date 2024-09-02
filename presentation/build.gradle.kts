@@ -1,8 +1,8 @@
 import org.jetbrains.compose.compose
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    id(libs.plugins.kotlin.compose.get().pluginId)
     id(libs.plugins.android.library.get().pluginId)
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.compose.get().pluginId)
@@ -14,14 +14,22 @@ kotlin {
     androidTarget {
         compilations {
             all {
-                kotlinOptions.jvmTarget = Config.androidJvmTarget.toString()
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        jvmTarget = Config.androidJvmTarget
+                    }
+                }
             }
         }
     }
     jvm("desktop") {
         compilations {
             all {
-                kotlinOptions.jvmTarget = Config.desktopJvmTarget.toString()
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        jvmTarget = Config.desktopJvmTarget
+                    }
+                }
             }
         }
     }
@@ -57,7 +65,6 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api(kotlin("stdlib-common"))
                 api(libs.coroutines.core)
                 api(libs.imageloader.core)
                 api(libs.imageloader.moko)
@@ -97,8 +104,6 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-                api(kotlin("stdlib-jdk8"))
-
                 api(compose.desktop.currentOs)
             }
         }

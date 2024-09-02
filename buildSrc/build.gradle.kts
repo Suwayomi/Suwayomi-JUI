@@ -5,6 +5,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    google()
     maven("https://plugins.gradle.org/m2/")
 }
 
@@ -13,4 +14,6 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
     implementation(libs.gradle.download.task)
+    implementation(libs.gradle.kotlin)
+    implementation(libs.gradle.android)
 }

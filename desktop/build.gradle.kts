@@ -6,9 +6,9 @@ import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.jvm.get().pluginId)
+    id(libs.plugins.kotlin.compose.get().pluginId)
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.compose.get().pluginId)
     id(libs.plugins.buildconfig.get().pluginId)
@@ -106,15 +106,15 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = Config.desktopJvmTarget
-    targetCompatibility = Config.desktopJvmTarget
+    sourceCompatibility = JavaVersion.toVersion(Config.desktopJvmTarget.target)
+    targetCompatibility = JavaVersion.toVersion(Config.desktopJvmTarget.target)
 }
 
 tasks {
     withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = Config.desktopJvmTarget.toString()
-            freeCompilerArgs = listOf(
+        compilerOptions {
+            jvmTarget = Config.desktopJvmTarget
+            freeCompilerArgs.add(
                 "-opt-in=androidx.compose.ui.ExperimentalComposeUiApi"
             )
         }

@@ -2,17 +2,15 @@ import Config.migrationCode
 import Config.serverCode
 import Config.tachideskVersion
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
+import de.jensklingenberg.ktorfit.gradle.ErrorCheckingMode
 import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.compose) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.buildconfig) apply false
@@ -47,14 +45,14 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 subprojects {
     tasks.withType<KotlinJvmCompile> {
-        kotlinOptions {
+        compilerOptions {
             if (name.contains("android", true)) {
-                jvmTarget = Config.androidJvmTarget.toString()
+                jvmTarget = Config.androidJvmTarget
             }
-            freeCompilerArgs += listOf("-Xexpect-actual-classes")
+            freeCompilerArgs.add("-Xexpect-actual-classes")
 
             if (project.hasProperty("generateComposeCompilerMetrics")) {
-                freeCompilerArgs = freeCompilerArgs + listOf(
+                freeCompilerArgs.addAll(
                     "-P",
                     "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
                         project.layout.buildDirectory.dir("compose_metrics").get().asFile.absolutePath,
@@ -87,8 +85,8 @@ subprojects {
             }
             compileOptions {
                 isCoreLibraryDesugaringEnabled = true
-                sourceCompatibility(Config.androidJvmTarget)
-                targetCompatibility(Config.androidJvmTarget)
+                sourceCompatibility(Config.androidJvmTarget.target)
+                targetCompatibility(Config.androidJvmTarget.target)
             }
             dependencies {
                 add("coreLibraryDesugaring", libs.desugarJdkLibs)
@@ -131,7 +129,7 @@ subprojects {
 
     plugins.withType<de.jensklingenberg.ktorfit.gradle.KtorfitGradlePlugin> {
         configure<de.jensklingenberg.ktorfit.gradle.KtorfitGradleConfiguration> {
-            logging = project.hasProperty("debugApp")
+            errorCheckingMode = ErrorCheckingMode.WARNING
         }
     }
 

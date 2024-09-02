@@ -1,6 +1,5 @@
 import org.jetbrains.compose.compose
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
     id(libs.plugins.kotlin.serialization.get().pluginId)
@@ -8,20 +7,29 @@ plugins {
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.buildkonfig.get().pluginId)
     id(libs.plugins.kotlinter.get().pluginId)
+    id(libs.plugins.ktorfit.get().pluginId)
 }
 
 kotlin {
     androidTarget {
         compilations {
             all {
-                kotlinOptions.jvmTarget = Config.androidJvmTarget.toString()
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        jvmTarget = Config.androidJvmTarget
+                    }
+                }
             }
         }
     }
     jvm("desktop") {
         compilations {
             all {
-                kotlinOptions.jvmTarget = Config.desktopJvmTarget.toString()
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        jvmTarget = Config.desktopJvmTarget
+                    }
+                }
             }
         }
     }
@@ -54,8 +62,6 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api(kotlin("stdlib-common"))
-                api(kotlin("stdlib-common"))
                 api(libs.coroutines.core)
                 api(libs.serialization.json.core)
                 api(libs.serialization.json.okio)
@@ -83,7 +89,6 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-                api(kotlin("stdlib-jdk8"))
                 api(libs.ktor.okHttp)
             }
         }
@@ -123,7 +128,6 @@ dependencies {
         "kspIosX64"
     ).forEach {
         add(it, libs.kotlinInject.compiler)
-        add(it, libs.ktorfit.ksp)
     }
 }
 

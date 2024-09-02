@@ -1,4 +1,4 @@
-import org.gradle.api.JavaVersion
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 object Config {
     const val migrationCode = 5
@@ -10,6 +10,6 @@ object Config {
     const val preview = false
     const val previewCommit = "54df9d634a1e83143a6cacf6206b6504721b6ca8"
 
-    val desktopJvmTarget = JavaVersion.VERSION_17
-    val androidJvmTarget = JavaVersion.VERSION_11
+    val desktopJvmTarget = JvmTarget.JVM_17
+    val androidJvmTarget = JvmTarget.JVM_17
 }

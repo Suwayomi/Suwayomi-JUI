@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
     id(libs.plugins.android.library.get().pluginId)
@@ -9,14 +8,22 @@ kotlin {
     androidTarget {
         compilations {
             all {
-                kotlinOptions.jvmTarget = Config.androidJvmTarget.toString()
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        jvmTarget = Config.androidJvmTarget
+                    }
+                }
             }
         }
     }
     jvm("desktop") {
         compilations {
             all {
-                kotlinOptions.jvmTarget = Config.desktopJvmTarget.toString()
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        jvmTarget = Config.desktopJvmTarget
+                    }
+                }
             }
         }
     }
@@ -35,38 +42,26 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     sourceSets {
-        val commonMain by getting {
+        getByName("commonMain") {
             dependencies {
-                api(kotlin("stdlib-common"))
                 api(libs.moko.core)
             }
         }
-        val commonTest by getting {
+        getByName("commonTest") {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
             }
-        }
-
-        getByName("desktopMain") {
-            dependsOn(commonMain)
-        }
-
-        getByName("androidMain") {
-            dependsOn(commonMain)
         }
     }
 }
 
 tasks {
     registerLocalizationTask(project)
-
-    getByName("desktopProcessResources")
-        .dependsOn("generateMRcommonMain", "generateMRdesktopMain")
 }
 
 multiplatformResources {
-    multiplatformResourcesPackage = "ca.gosyer.jui.i18n"
+    resourcesPackage = "ca.gosyer.jui.i18n"
 }
 
 android {

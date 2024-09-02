@@ -1,4 +1,3 @@
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
     id(libs.plugins.kotlin.serialization.get().pluginId)
@@ -6,7 +5,6 @@ plugins {
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.buildkonfig.get().pluginId)
     id(libs.plugins.kotlinter.get().pluginId)
-    id(libs.plugins.ktorfit.get().pluginId)
     id(libs.plugins.apollo.get().pluginId)
 }
 
@@ -14,14 +12,22 @@ kotlin {
     androidTarget {
         compilations {
             all {
-                kotlinOptions.jvmTarget = Config.androidJvmTarget.toString()
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        jvmTarget = Config.androidJvmTarget
+                    }
+                }
             }
         }
     }
     jvm("desktop") {
         compilations {
             all {
-                kotlinOptions.jvmTarget = Config.desktopJvmTarget.toString()
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        jvmTarget = Config.desktopJvmTarget
+                    }
+                }
             }
         }
     }
@@ -53,7 +59,6 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api(kotlin("stdlib-common"))
                 api(libs.coroutines.core)
                 api(libs.serialization.json.core)
                 api(libs.serialization.json.okio)
@@ -62,8 +67,9 @@ kotlin {
                 api(libs.ktor.websockets)
                 api(libs.okio)
                 api(libs.dateTime)
-                api(libs.apollo.runtime)
-                api(libs.apollo.engine.ktor)
+                implementation(libs.apollo.runtime)
+                implementation(libs.apollo.engine.ktor)
+                implementation(libs.ktorfit.lib)
                 api(projects.core)
                 api(projects.i18n)
                 api(projects.domain)
@@ -78,7 +84,6 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-                api(kotlin("stdlib-jdk8"))
             }
         }
         val jvmTest by getting {
@@ -110,7 +115,8 @@ dependencies {
         "kspAndroid",
         "kspIosArm64",
         "kspIosSimulatorArm64",
-        "kspIosX64"
+        "kspIosX64",
+        "kspCommonMainMetadata"
     ).forEach {
         add(it, libs.kotlinInject.compiler)
     }

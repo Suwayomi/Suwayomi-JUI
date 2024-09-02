@@ -1,8 +1,8 @@
 import Config.migrationCode
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.android.get().pluginId)
+    id(libs.plugins.kotlin.compose.get().pluginId)
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.compose.get().pluginId)
@@ -142,6 +142,6 @@ android {
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(Config.androidJvmTarget.majorVersion))
+        languageVersion.set(JavaLanguageVersion.of(Config.androidJvmTarget.target))
     }
 }

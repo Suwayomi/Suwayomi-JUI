@@ -1,14 +1,15 @@
 import org.jetbrains.compose.compose
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    id(libs.plugins.kotlin.compose.get().pluginId)
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.compose.get().pluginId)
     id(libs.plugins.buildkonfig.get().pluginId)
     id(libs.plugins.kotlinter.get().pluginId)
     id(libs.plugins.aboutLibraries.get().pluginId)
+    id(libs.plugins.ktorfit.get().pluginId)
 }
 
 kotlin {

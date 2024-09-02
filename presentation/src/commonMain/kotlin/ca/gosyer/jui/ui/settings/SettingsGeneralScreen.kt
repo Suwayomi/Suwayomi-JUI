@@ -104,7 +104,7 @@ class SettingsGeneralViewModel
 
         @Composable
         fun getLanguageChoices(): ImmutableMap<String, String> {
-            val langJsonState = MR.files.languages.readTextAsync()
+            val langJsonState = MR.files.languages_json.readTextAsync()
             val langs by produceState(emptyMap(), langJsonState.value) {
                 val langJson = langJsonState.value
                 if (langJson != null) {

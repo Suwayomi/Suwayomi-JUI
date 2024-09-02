@@ -8,7 +8,8 @@ package ca.gosyer.jui.data
 
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.converter.Converter
-import de.jensklingenberg.ktorfit.internal.TypeData
+import de.jensklingenberg.ktorfit.converter.KtorfitResult
+import de.jensklingenberg.ktorfit.converter.TypeData
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +30,7 @@ class FlowConverterFactory : Converter.Factory {
                 val convertedBody = ktorfit.nextSuspendResponseConverter(
                     null,
                     typeData.typeArgs.first(),
-                )?.convert(response)
+                )?.convert(KtorfitResult.Success(response))
                     ?: response.body(typeData.typeArgs.first().typeInfo)
                 emit(convertedBody)
             }.flowOn(Dispatchers.IO)

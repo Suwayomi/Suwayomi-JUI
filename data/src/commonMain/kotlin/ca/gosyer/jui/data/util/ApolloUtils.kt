@@ -6,6 +6,6 @@
 
 package ca.gosyer.jui.data.util
 
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 
 internal fun <T> T?.toOptional() = Optional.presentIfNotNull(this)
