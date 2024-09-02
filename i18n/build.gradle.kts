@@ -53,6 +53,12 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
+
+        getByName("iosMain") {
+            dependencies {
+                implementation(libs.moko.parcelize)
+            }
+        }
     }
 }
 

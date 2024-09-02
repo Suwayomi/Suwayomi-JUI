@@ -42,3 +42,5 @@ abstract class AppComponent(
                 .also { appComponentInstance = it }
     }
 }
+
+expect fun create(context: ContextWrapper): AppComponent

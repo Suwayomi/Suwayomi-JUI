@@ -134,3 +134,5 @@ dependencies {
 buildkonfig {
     packageName = "ca.gosyer.jui.ios.build"
 }
+
+tasks.register("kspCommonMainKotlinMetadata")
