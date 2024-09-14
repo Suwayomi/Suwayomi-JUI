@@ -45,7 +45,7 @@ apolloKtor = "0.0.2"
 
 # Logging
 slf4j = "2.0.16"
-log4j = "2.23.1"
+log4j = "2.24.0"
 kmlogging = "1.5.0"
 
 # Storage
