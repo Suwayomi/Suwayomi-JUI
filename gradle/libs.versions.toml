@@ -34,7 +34,7 @@ darklaf = "3.0.2"
 ksp = "2.0.20-1.0.25"
 
 # Dependency Injection
-kotlinInject = "0.7.1"
+kotlinInject = "0.7.2"
 
 # Network
 ktor = "2.3.12"
