@@ -31,7 +31,7 @@ lifecycle = "2.8.4"
 darklaf = "3.0.2"
 
 # Ksp
-ksp = "2.0.20-1.0.24"
+ksp = "2.0.20-1.0.25"
 
 # Dependency Injection
 kotlinInject = "0.7.1"
