@@ -49,7 +49,7 @@ log4j = "2.24.0"
 kmlogging = "1.5.0"
 
 # Storage
-okio = "3.9.0"
+okio = "3.9.1"
 appDirs = "1.2.0"
 
 # Preferences
