@@ -59,7 +59,7 @@ multiplatformSettings = "1.2.0"
 desugarJdkLibs = "2.1.2"
 aboutLibraries = "11.2.3"
 dateTime = "0.6.1"
-immutableCollections = "0.3.7"
+immutableCollections = "0.3.8"
 korge = "5.4.0"
 gradleDownloadTask = "5.6.0"
 
