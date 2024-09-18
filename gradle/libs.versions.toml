@@ -67,7 +67,7 @@ gradleDownloadTask = "5.6.0"
 moko = "0.24.2"
 
 # BuildConfigs
-buildconfig = "5.4.0"
+buildconfig = "5.5.0"
 buildkonfig = "0.15.2"
 
 # Linter
