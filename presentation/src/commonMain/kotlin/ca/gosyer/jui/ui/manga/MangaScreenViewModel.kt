@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.ui.manga
 
-import ca.gosyer.jui.data.base.DateHandler
+import ca.gosyer.jui.core.util.DateHandler
 import ca.gosyer.jui.domain.category.interactor.AddMangaToCategory
 import ca.gosyer.jui.domain.category.interactor.GetCategories
 import ca.gosyer.jui.domain.category.interactor.GetMangaCategories

@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.ui.main.about
 
-import ca.gosyer.jui.data.base.DateHandler
+import ca.gosyer.jui.core.util.DateHandler
 import ca.gosyer.jui.domain.settings.interactor.AboutServer
 import ca.gosyer.jui.domain.settings.model.About
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker

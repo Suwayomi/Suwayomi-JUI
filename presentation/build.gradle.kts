@@ -85,7 +85,6 @@ kotlin {
                 api(projects.core)
                 api(projects.i18n)
                 api(projects.domain)
-                api(projects.data)
                 api(projects.uiCore)
                 api(compose.runtime)
                 api(compose.foundation)

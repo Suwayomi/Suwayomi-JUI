@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.getDisplayName
 import ca.gosyer.jui.core.lang.withIOContext
-import ca.gosyer.jui.data.base.DateHandler
+import ca.gosyer.jui.core.util.DateHandler
 import ca.gosyer.jui.domain.ui.model.StartScreen
 import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.i18n.MR

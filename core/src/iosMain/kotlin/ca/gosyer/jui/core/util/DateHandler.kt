@@ -1,19 +1,9 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
-package ca.gosyer.jui.data.base
+package ca.gosyer.jui.core.util
 
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.toPlatform
 import kotlinx.datetime.Instant
-import kotlinx.datetime.toNSDate
 import me.tatarka.inject.annotations.Inject
-import platform.Foundation.NSDateFormatter
-import platform.Foundation.NSDateFormatterNoStyle
-import platform.Foundation.NSDateFormatterShortStyle
 
 actual class DateHandler
     @Inject
