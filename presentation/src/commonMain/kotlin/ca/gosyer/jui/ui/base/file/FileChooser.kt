@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import okio.Source
 
 expect class FileChooser {
-    fun launch(extension: String)
+    fun launch(vararg extensions: String)
 }
 
 @Composable

@@ -45,6 +45,8 @@ import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.backup.interactor.ExportBackupFile
 import ca.gosyer.jui.domain.backup.interactor.ImportBackupFile
 import ca.gosyer.jui.domain.backup.interactor.ValidateBackupFile
+import ca.gosyer.jui.domain.backup.model.RestoreState
+import ca.gosyer.jui.domain.backup.model.RestoreStatus
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.ui.base.file.rememberFileChooser
@@ -53,7 +55,6 @@ import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.base.navigation.Toolbar
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow
 import ca.gosyer.jui.ui.main.components.bottomNav
-import ca.gosyer.jui.ui.util.lang.toSource
 import ca.gosyer.jui.ui.viewModel
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
@@ -70,8 +71,6 @@ import com.vanpra.composematerialdialogs.listItems
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.vanpra.composematerialdialogs.title
 import io.ktor.client.plugins.onDownload
-import io.ktor.client.plugins.onUpload
-import io.ktor.client.statement.bodyAsChannel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -172,19 +171,12 @@ class SettingsBackupViewModel
 
         fun restoreBackup(file: Path) {
             importBackupFile
-                .asFlow(file) {
-                    onUpload { bytesSentTotal, contentLength ->
-                        _restoreStatus.value = Status.InProgress(
-                            (bytesSentTotal.toFloat() / contentLength)
-                                .coerceAtMost(1.0F),
-                        )
-                    }
-                }
+                .asFlow(file)
                 .onStart {
                     _restoreStatus.value = Status.InProgress(null)
                 }
                 .onEach {
-                    _restoreStatus.value = Status.Success
+                    _restoreStatus.value = it.second.toStatus()
                 }
                 .catch {
                     toast(it.message.orEmpty())
@@ -192,6 +184,15 @@ class SettingsBackupViewModel
                     _restoreStatus.value = Status.Error
                 }
                 .launchIn(scope)
+        }
+
+        private fun RestoreStatus.toStatus() = when (state) {
+            RestoreState.IDLE -> Status.Success
+            RestoreState.SUCCESS -> Status.Success
+            RestoreState.FAILURE -> Status.Error
+            RestoreState.RESTORING_CATEGORIES -> Status.InProgress(0.01f)
+            RestoreState.RESTORING_MANGA -> Status.InProgress((completed.toFloat() / total).coerceIn(0f, 1f))
+            RestoreState.UNKNOWN -> Status.Error
         }
 
         fun stopRestore() {
@@ -203,7 +204,9 @@ class SettingsBackupViewModel
 
         fun exportBackup() {
             exportBackupFile
-                .asFlow {
+                .asFlow(
+                    true, true // todo
+                ) {
                     onDownload { bytesSentTotal, contentLength ->
                         _creatingStatus.value = Status.InProgress(
                             (bytesSentTotal.toFloat() / contentLength)
@@ -214,15 +217,12 @@ class SettingsBackupViewModel
                 .onStart {
                     _creatingStatus.value = Status.InProgress(null)
                 }
-                .onEach { backup ->
-                    val filename =
-                        backup.headers["content-disposition"]?.substringAfter("filename=")
-                            ?.trim('"') ?: "backup"
+                .onEach { (filename, source) ->
                     tempFile.value = FileSystem.SYSTEM_TEMPORARY_DIRECTORY.resolve(filename).also {
                         mutex.tryLock()
                         scope.launch {
                             try {
-                                backup.bodyAsChannel().toSource().saveTo(it)
+                                source.saveTo(it)
                             } catch (e: Exception) {
                                 e.throwIfCancellation()
                                 log.warn(e) { "Error creating backup" }
@@ -338,7 +338,7 @@ private fun SettingsBackupScreenContent(
                         stringResource(MR.strings.backup_restore_sub),
                         restoreStatus,
                     ) {
-                        fileChooser.launch("gz")
+                        fileChooser.launch("gz", "tachibk")
                     }
                     PreferenceFile(
                         stringResource(MR.strings.backup_create),

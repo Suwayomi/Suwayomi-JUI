@@ -65,11 +65,11 @@ subprojects {
     }
     tasks.withType<org.jmailen.gradle.kotlinter.tasks.LintTask> {
         source(files("src"))
-        exclude("ca/gosyer/jui/*/build")
+        exclude("ca/gosyer/jui/*/build", "graphql")
     }
     tasks.withType<org.jmailen.gradle.kotlinter.tasks.FormatTask> {
         source(files("src"))
-        exclude("ca/gosyer/jui/*/build")
+        exclude("ca/gosyer/jui/*/build", "ca/gosyer/jui/*/build")
     }
     plugins.withType<com.android.build.gradle.BasePlugin> {
         configure<com.android.build.gradle.BaseExtension> {

@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.backup.interactor
 
-import ca.gosyer.jui.domain.backup.service.BackupRepositoryOld
+import ca.gosyer.jui.domain.backup.service.BackupRepository
 import io.ktor.client.request.HttpRequestBuilder
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
@@ -16,19 +16,25 @@ import org.lighthousegames.logging.logging
 class ExportBackupFile
     @Inject
     constructor(
-        private val backupRepositoryOld: BackupRepositoryOld,
+        private val backupRepository: BackupRepository,
     ) {
         suspend fun await(
+            includeCategories: Boolean,
+            includeChapters: Boolean,
             block: HttpRequestBuilder.() -> Unit = {},
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(block)
+        ) = asFlow(includeCategories, includeChapters, block)
             .catch {
                 onError(it)
                 log.warn(it) { "Failed to export backup" }
             }
             .singleOrNull()
 
-        fun asFlow(block: HttpRequestBuilder.() -> Unit = {}) = backupRepositoryOld.exportBackupFile(block)
+        fun asFlow(
+            includeCategories: Boolean,
+            includeChapters: Boolean,
+            block: HttpRequestBuilder.() -> Unit = {},
+        ) = backupRepository.createBackup(includeCategories, includeChapters, block)
 
         companion object {
             private val log = logging()

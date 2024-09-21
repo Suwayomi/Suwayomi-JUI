@@ -1,0 +1,35 @@
+fragment RestoreStatusFragment on BackupRestoreStatus {
+  state
+  mangaProgress
+  totalManga
+}
+
+query ValidateBackup($backup: Upload!) {
+  validateBackup(input: {backup: $backup}) {
+    missingSources {
+      id
+      name
+    }
+  }
+}
+
+mutation RestoreBackup($backup: Upload!) {
+  restoreBackup(input: {backup: $backup}) {
+    id
+    status {
+      ...RestoreStatusFragment
+    }
+  }
+}
+
+query RestoreStatus($id: String!) {
+  restoreStatus(id: $id) {
+    ...RestoreStatusFragment
+  }
+}
+
+mutation CreateBackup($includeCategories: Boolean!, $includeChapters: Boolean!) {
+  createBackup(input: {includeCategories: $includeCategories, includeChapters: $includeChapters}) {
+    url
+  }
+}

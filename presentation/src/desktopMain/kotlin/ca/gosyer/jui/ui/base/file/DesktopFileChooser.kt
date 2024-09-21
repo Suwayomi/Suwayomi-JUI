@@ -26,9 +26,9 @@ actual class FileChooser(
             details?.actionPerformed(null)
         }
 
-    actual fun launch(extension: String) {
+    actual fun launch(vararg extensions: String) {
         scope.launchDefault {
-            fileChooser.fileFilter = FileNameExtensionFilter("$extension file", extension)
+            fileChooser.fileFilter = FileNameExtensionFilter("${extensions.joinToString()} files", *extensions)
             when (fileChooser.showOpenDialog(null)) {
                 JFileChooser.APPROVE_OPTION -> onFileFound(fileChooser.selectedFile.source())
             }

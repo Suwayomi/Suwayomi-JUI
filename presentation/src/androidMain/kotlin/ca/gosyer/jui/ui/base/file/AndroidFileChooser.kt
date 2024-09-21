@@ -18,19 +18,21 @@ import okio.Source
 import okio.source
 
 actual class FileChooser(
-    private val resultLauncher: ManagedActivityResultLauncher<String, Uri?>,
+    private val resultLauncher: ManagedActivityResultLauncher<Array<String>, Uri?>,
 ) {
-    actual fun launch(extension: String) {
-        val mime = MimeTypeMap.getSingleton()
-            .getMimeTypeFromExtension(extension) ?: return
-        resultLauncher.launch(mime)
+    actual fun launch(vararg extensions: String) {
+        val mimes = extensions.mapNotNull { extension ->
+            MimeTypeMap.getSingleton()
+                .getMimeTypeFromExtension(extension)
+        }.toTypedArray()
+        resultLauncher.launch(mimes)
     }
 }
 
 @Composable
 actual fun rememberFileChooser(onFileFound: (Source) -> Unit): FileChooser {
     val context = LocalContext.current
-    val result = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+    val result = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
         if (it != null) {
             context.contentResolver.openInputStream(it)?.source()?.let(onFileFound)
         }

@@ -6,24 +6,24 @@
 
 package ca.gosyer.jui.domain.backup.interactor
 
-import ca.gosyer.jui.domain.backup.service.BackupRepositoryOld
-import io.ktor.client.request.HttpRequestBuilder
+import ca.gosyer.jui.domain.backup.service.BackupRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
+import okio.FileSystem
 import okio.Path
+import okio.SYSTEM
 import org.lighthousegames.logging.logging
 
 class ValidateBackupFile
     @Inject
     constructor(
-        private val backupRepositoryOld: BackupRepositoryOld,
+        private val backupRepository: BackupRepository,
     ) {
         suspend fun await(
             file: Path,
-            block: HttpRequestBuilder.() -> Unit = {},
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(file, block)
+        ) = asFlow(file)
             .catch {
                 onError(it)
                 log.warn(it) { "Failed to validate backup ${file.name}" }
@@ -32,8 +32,7 @@ class ValidateBackupFile
 
         fun asFlow(
             file: Path,
-            block: HttpRequestBuilder.() -> Unit = {},
-        ) = backupRepositoryOld.validateBackupFile(BackupRepositoryOld.buildBackupFormData(file), block)
+        ) = backupRepository.validateBackup(FileSystem.SYSTEM.source(file))
 
         companion object {
             private val log = logging()

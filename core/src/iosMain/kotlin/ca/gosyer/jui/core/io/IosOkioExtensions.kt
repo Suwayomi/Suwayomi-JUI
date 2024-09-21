@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-package ca.gosyer.jui.ui.util.lang
+package ca.gosyer.jui.core.io
 
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.cancel
@@ -17,7 +17,7 @@ import kotlin.coroutines.CoroutineContext
 
 actual suspend fun ByteReadChannel.toSource(context: CoroutineContext): Source {
     val channel = this
-    return object : okio.Source {
+    return object : Source {
         override fun close() {
             channel.cancel()
         }

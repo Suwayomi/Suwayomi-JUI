@@ -135,7 +135,6 @@ android {
             "META-INF/README.md",
             "META-INF/NOTICE",
             "META-INF/*.kotlin_module",
-            "META-INF/*.version",
         ))
     }
 }

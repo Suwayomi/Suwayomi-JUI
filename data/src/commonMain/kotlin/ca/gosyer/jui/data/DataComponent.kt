@@ -7,8 +7,10 @@
 package ca.gosyer.jui.data
 
 import ca.gosyer.jui.core.lang.addSuffix
+import ca.gosyer.jui.data.backup.BackupRepositoryImpl
 import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
 import ca.gosyer.jui.data.settings.SettingsRepositoryImpl
+import ca.gosyer.jui.domain.backup.service.BackupRepository
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.domain.server.service.ServerPreferences
@@ -59,4 +61,11 @@ interface DataComponent : SharedDataComponent {
         http: Http,
         serverPreferences: ServerPreferences,
     ): ChapterRepository = ChapterRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+
+    @Provides
+    fun backupRepository(
+        apolloClient: ApolloClient,
+        http: Http,
+        serverPreferences: ServerPreferences,
+    ): BackupRepository = BackupRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
 }

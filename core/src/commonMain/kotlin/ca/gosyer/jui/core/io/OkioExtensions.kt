@@ -7,6 +7,7 @@
 package ca.gosyer.jui.core.io
 
 import ca.gosyer.jui.core.lang.withIOContext
+import io.ktor.utils.io.ByteReadChannel
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
@@ -15,6 +16,8 @@ import okio.Path
 import okio.Source
 import okio.buffer
 import okio.use
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 suspend fun Source.saveTo(path: Path) {
     withIOContext {
@@ -36,3 +39,5 @@ suspend fun Source.copyTo(sink: BufferedSink) {
 }
 
 fun ByteArray.source(): BufferedSource = Buffer().write(this)
+
+expect suspend fun ByteReadChannel.toSource(context: CoroutineContext = EmptyCoroutineContext): Source
