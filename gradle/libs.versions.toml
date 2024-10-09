@@ -37,7 +37,7 @@ ksp = "2.0.20-1.0.25"
 kotlinInject = "0.7.2"
 
 # Network
-ktor = "2.3.12"
+ktor = "3.0.0"
 ktorfit = "2.1.0"
 ktorfitKsp = "2.1.0-1.0.25"
 apollo = "4.0.0"
