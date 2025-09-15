@@ -7,7 +7,7 @@ coroutines = "1.9.0"
 json = "1.7.3"
 
 # Compose
-composeGradle = "1.6.11"
+composeGradle = "1.9.0"
 
 # Compose Libraries
 parcelize = "0.9.0"
