@@ -7,18 +7,40 @@
 package ca.gosyer.jui.ui.sources.browse
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import ca.gosyer.jui.domain.source.model.Source
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
 import ca.gosyer.jui.ui.base.screen.BaseScreen
 import ca.gosyer.jui.ui.manga.MangaScreen
 import ca.gosyer.jui.ui.sources.browse.components.SourceScreenContent
 import ca.gosyer.jui.ui.sources.browse.filter.SourceFiltersViewModel
+import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
 import ca.gosyer.jui.ui.sources.components.LocalSourcesNavigator
 import ca.gosyer.jui.ui.sources.settings.SourceSettingsScreen
 import ca.gosyer.jui.ui.stateViewModel
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.merge
+import org.lighthousegames.logging.logging
+
+private fun SourceFiltersView<*, *>.toSourceFilter(): SourceFilter {
+    return when (this) {
+        is SourceFiltersView.CheckBox -> filter.copy(value = state.value)
+        is SourceFiltersView.Group -> filter.copy(value = state.value.map { it.toSourceFilter() })
+        is SourceFiltersView.Header -> filter
+        is SourceFiltersView.Select -> filter.copy(value = state.value)
+        is SourceFiltersView.Separator -> filter
+        is SourceFiltersView.Sort -> filter.copy(value = state.value)
+        is SourceFiltersView.Text -> filter.copy(value = state.value)
+        is SourceFiltersView.TriState -> filter.copy(value = state.value)
+    }
+}
+
+val logs = logging()
 
 class SourceScreen(
     val source: Source,
@@ -33,6 +55,21 @@ class SourceScreen(
         }
         val filterVM = stateViewModel {
             sourceFiltersViewModel(it, SourceFiltersViewModel.Params(source.id))
+        }
+        LaunchedEffect(filterVM) {
+            filterVM.filters.collect { filters ->
+                filters.map {
+                    if (it is SourceFiltersView.Group) {
+                        it.state.value.map { it.state }
+                    } else {
+                        listOf(it.state)
+                    }
+                }.flatten().merge()
+                    .mapLatest {
+                        sourceVM.updateFilters(filters.map { it.toSourceFilter() })
+                    }
+                    .collect()
+            }
         }
         val sourcesNavigator = LocalSourcesNavigator.current
         val navigator = LocalNavigator.currentOrThrow

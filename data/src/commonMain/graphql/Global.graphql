@@ -1,0 +1,14 @@
+query GetGlobalMeta {
+  metas {
+    nodes {
+      key
+      value
+    }
+  }
+}
+
+mutation SetGlobalMeta($key: String!, $value: String!) {
+  setGlobalMeta(input: {meta: {key: $key, value: $value}}) {
+    clientMutationId
+  }
+}

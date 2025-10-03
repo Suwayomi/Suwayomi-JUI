@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.source.interactor
 
 import ca.gosyer.jui.domain.source.model.Source
-import ca.gosyer.jui.domain.source.service.SourceRepositoryOld
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
@@ -16,7 +16,7 @@ import org.lighthousegames.logging.logging
 class GetLatestManga
     @Inject
     constructor(
-        private val sourceRepositoryOld: SourceRepositoryOld,
+        private val sourceRepository: SourceRepository,
     ) {
         suspend fun await(
             source: Source,
@@ -43,12 +43,12 @@ class GetLatestManga
         fun asFlow(
             source: Source,
             page: Int,
-        ) = sourceRepositoryOld.getLatestManga(source.id, page)
+        ) = sourceRepository.getLatestManga(source.id, page)
 
         fun asFlow(
             sourceId: Long,
             page: Int,
-        ) = sourceRepositoryOld.getLatestManga(sourceId, page)
+        ) = sourceRepository.getLatestManga(sourceId, page)
 
         companion object {
             private val log = logging()

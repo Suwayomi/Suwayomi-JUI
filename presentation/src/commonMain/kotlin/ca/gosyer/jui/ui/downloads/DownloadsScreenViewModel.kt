@@ -71,14 +71,14 @@ class DownloadsScreenViewModel
         }
 
         fun stopDownload(chapter: Chapter) {
-            scope.launch { stopChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) }) }
+            scope.launch { stopChapterDownload.await(chapter.id, onError = { toast(it.message.orEmpty()) }) }
         }
 
         fun moveUp(chapter: Chapter) {
             scope.launch {
                 val index = downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
                 if (index == -1 || index <= 0) return@launch
-                reorderChapterDownload.await(chapter, index - 1, onError = { toast(it.message.orEmpty()) })
+                reorderChapterDownload.await(chapter.id, index - 1, onError = { toast(it.message.orEmpty()) })
             }
         }
 
@@ -86,19 +86,19 @@ class DownloadsScreenViewModel
             scope.launch {
                 val index = downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
                 if (index == -1 || index >= downloadQueue.value.lastIndex) return@launch
-                reorderChapterDownload.await(chapter, index + 1, onError = { toast(it.message.orEmpty()) })
+                reorderChapterDownload.await(chapter.id, index + 1, onError = { toast(it.message.orEmpty()) })
             }
         }
 
         fun moveToTop(chapter: Chapter) {
             scope.launch {
-                reorderChapterDownload.await(chapter, 0, onError = { toast(it.message.orEmpty()) })
+                reorderChapterDownload.await(chapter.id, 0, onError = { toast(it.message.orEmpty()) })
             }
         }
 
         fun moveToBottom(chapter: Chapter) {
             scope.launch {
-                reorderChapterDownload.await(chapter, downloadQueue.value.lastIndex, onError = { toast(it.message.orEmpty()) })
+                reorderChapterDownload.await(chapter.id, downloadQueue.value.lastIndex, onError = { toast(it.message.orEmpty()) })
             }
         }
 

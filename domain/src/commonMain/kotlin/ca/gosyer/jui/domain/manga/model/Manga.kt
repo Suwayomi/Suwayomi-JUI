@@ -8,7 +8,6 @@ package ca.gosyer.jui.domain.manga.model
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.StringResource
@@ -42,7 +41,7 @@ data class Manga(
     val unreadCount: Int?,
     val downloadCount: Int?,
     val chapterCount: Int?,
-    val lastChapterRead: Chapter? = null,
+    val lastChapterReadTime: Long? = null,
     val age: Long?,
     val chaptersAge: Long?,
 )

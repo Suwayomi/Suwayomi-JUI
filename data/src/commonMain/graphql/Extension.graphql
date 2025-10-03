@@ -1,0 +1,32 @@
+
+mutation FetchExtensions {
+  fetchExtensions(input: {}) {
+    extensions {
+      ...ExtensionFragment
+    }
+  }
+}
+
+mutation InstallExtension($pkgName: String!) {
+  updateExtension(input: {id: $pkgName, patch: {install: true}}) {
+    clientMutationId
+  }
+}
+
+mutation InstallExternalExtension($extensionFile: Upload!) {
+  installExternalExtension(input: {extensionFile: $extensionFile}) {
+    clientMutationId
+  }
+}
+
+mutation UninstallExtension($pkgName: String!) {
+  updateExtension(input: {id: $pkgName, patch: {uninstall: true}}) {
+    clientMutationId
+  }
+}
+
+mutation UpdateExtension($pkgName: String!) {
+  updateExtension(input: {id: $pkgName, patch: {update: true}}) {
+    clientMutationId
+  }
+}

@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.source.interactor
 
-import ca.gosyer.jui.domain.source.service.SourceRepositoryOld
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
@@ -15,7 +15,7 @@ import org.lighthousegames.logging.logging
 class GetSourceList
     @Inject
     constructor(
-        private val sourceRepositoryOld: SourceRepositoryOld,
+        private val sourceRepository: SourceRepository,
     ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
@@ -25,7 +25,7 @@ class GetSourceList
                 }
                 .singleOrNull()
 
-        fun asFlow() = sourceRepositoryOld.getSourceList()
+        fun asFlow() = sourceRepository.getSourceList()
 
         companion object {
             private val log = logging()

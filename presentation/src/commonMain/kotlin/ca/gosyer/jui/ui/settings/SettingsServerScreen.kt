@@ -191,18 +191,18 @@ class ServerSettings(
         getSetting = { it.backupTime },
         getInput = { SetSettingsInput(backupTime = it) },
     )
-    val basicAuthEnabled = getServerFlow(
-        getSetting = { it.basicAuthEnabled },
-        getInput = { SetSettingsInput(basicAuthEnabled = it) },
-    )
-    val basicAuthPassword = getServerFlow(
-        getSetting = { it.basicAuthPassword },
-        getInput = { SetSettingsInput(basicAuthPassword = it) },
-    )
-    val basicAuthUsername = getServerFlow(
-        getSetting = { it.basicAuthUsername },
-        getInput = { SetSettingsInput(basicAuthUsername = it) },
-    )
+//    val basicAuthEnabled = getServerFlow(
+//        getSetting = { it.basicAuthEnabled },
+//        getInput = { SetSettingsInput(basicAuthEnabled = it) },
+//    )
+//    val basicAuthPassword = getServerFlow(
+//        getSetting = { it.basicAuthPassword },
+//        getInput = { SetSettingsInput(basicAuthPassword = it) },
+//    )
+//    val basicAuthUsername = getServerFlow(
+//        getSetting = { it.basicAuthUsername },
+//        getInput = { SetSettingsInput(basicAuthUsername = it) },
+//    )
     val debugLogsEnabled = getServerFlow(
         getSetting = { it.debugLogsEnabled },
         getInput = { SetSettingsInput(debugLogsEnabled = it) },
@@ -263,10 +263,10 @@ class ServerSettings(
         getSetting = { it.globalUpdateInterval.toString() },
         getInput = { SetSettingsInput(globalUpdateInterval = it.toDoubleOrNull()?.takeIf { it !in 0.01..5.99 }) },
     )
-    val gqlDebugLogsEnabled = getServerFlow(
-        getSetting = { it.gqlDebugLogsEnabled },
-        getInput = { SetSettingsInput(gqlDebugLogsEnabled = it) },
-    )
+//    val gqlDebugLogsEnabled = getServerFlow(
+//        getSetting = { it.gqlDebugLogsEnabled },
+//        getInput = { SetSettingsInput(gqlDebugLogsEnabled = it) },
+//    )
     val initialOpenInBrowserEnabled = getServerFlow(
         getSetting = { it.initialOpenInBrowserEnabled },
         getInput = { SetSettingsInput(initialOpenInBrowserEnabled = it) },
@@ -756,13 +756,13 @@ fun LazyListScope.ServerSettingsItems(
             subtitle = stringResource(MR.strings.host_debug_logging_sub),
         )
     }
-    item {
-        SwitchPreference(
-            preference = serverSettings.gqlDebugLogsEnabled,
-            title = stringResource(MR.strings.graphql_debug_logs),
-            subtitle = stringResource(MR.strings.graphql_debug_logs_sub),
-        )
-    }
+//    item {
+//        SwitchPreference(
+//            preference = serverSettings.gqlDebugLogsEnabled,
+//            title = stringResource(MR.strings.graphql_debug_logs),
+//            subtitle = stringResource(MR.strings.graphql_debug_logs_sub),
+//        )
+//    }
     item {
         SwitchPreference(
             preference = serverSettings.systemTrayEnabled,
@@ -811,32 +811,32 @@ fun LazyListScope.ServerSettingsItems(
         )
     }
 
-    item {
-        SwitchPreference(
-            preference = serverSettings.basicAuthEnabled,
-            title = stringResource(MR.strings.basic_auth),
-            subtitle = stringResource(MR.strings.host_basic_auth_sub),
-            enabled = !hosted,
-        )
-    }
-
-    item {
-        val basicAuthEnabledValue by serverSettings.basicAuthEnabled.collectAsState()
-        EditTextPreference(
-            preference = serverSettings.basicAuthUsername,
-            title = stringResource(MR.strings.host_basic_auth_username),
-            enabled = basicAuthEnabledValue && !hosted,
-        )
-    }
-    item {
-        val basicAuthEnabledValue by serverSettings.basicAuthEnabled.collectAsState()
-        EditTextPreference(
-            preference = serverSettings.basicAuthPassword,
-            title = stringResource(MR.strings.host_basic_auth_password),
-            visualTransformation = PasswordVisualTransformation(),
-            enabled = basicAuthEnabledValue && !hosted,
-        )
-    }
+//    item {
+//        SwitchPreference(
+//            preference = serverSettings.basicAuthEnabled,
+//            title = stringResource(MR.strings.basic_auth),
+//            subtitle = stringResource(MR.strings.host_basic_auth_sub),
+//            enabled = !hosted,
+//        )
+//    }
+//
+//    item {
+//        val basicAuthEnabledValue by serverSettings.basicAuthEnabled.collectAsState()
+//        EditTextPreference(
+//            preference = serverSettings.basicAuthUsername,
+//            title = stringResource(MR.strings.host_basic_auth_username),
+//            enabled = basicAuthEnabledValue && !hosted,
+//        )
+//    }
+//    item {
+//        val basicAuthEnabledValue by serverSettings.basicAuthEnabled.collectAsState()
+//        EditTextPreference(
+//            preference = serverSettings.basicAuthPassword,
+//            title = stringResource(MR.strings.host_basic_auth_password),
+//            visualTransformation = PasswordVisualTransformation(),
+//            enabled = basicAuthEnabledValue && !hosted,
+//        )
+//    }
     item {
         SwitchPreference(
             preference = serverSettings.flareSolverrEnabled,

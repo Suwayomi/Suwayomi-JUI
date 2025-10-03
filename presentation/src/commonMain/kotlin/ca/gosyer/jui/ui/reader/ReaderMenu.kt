@@ -574,6 +574,9 @@ fun ReaderImage(
         }
         val decode = decodeState.value
         if (decode != null && decode is ReaderPage.ImageDecodeState.Success) {
+            LaunchedEffect(Unit) {
+                println("loaded")
+            }
             Image(
                 bitmap = decode.bitmap,
                 modifier = imageModifier,
@@ -582,6 +585,9 @@ fun ReaderImage(
                 filterQuality = FilterQuality.High,
             )
         } else {
+            LaunchedEffect(Unit) {
+                println("not loaded")
+            }
             LoadingScreen(
                 status == ReaderPage.Status.QUEUE || status == ReaderPage.Status.WORKING,
                 loadingModifier.let { modifier ->

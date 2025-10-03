@@ -15,6 +15,7 @@ import ca.gosyer.jui.domain.source.interactor.GetSearchManga
 import ca.gosyer.jui.domain.source.interactor.SourcePager
 import ca.gosyer.jui.domain.source.model.MangaPage
 import ca.gosyer.jui.domain.source.model.Source
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.ui.base.state.SavedStateHandle
 import ca.gosyer.jui.ui.base.state.getStateFlow
@@ -76,6 +77,7 @@ class SourceScreenViewModel(
     val isLatest = _isLatest.asStateFlow()
 
     private val _usingFilters by savedStateHandle.getStateFlow { false }
+    private val filters = MutableStateFlow<List<SourceFilter>?>(null)
 
     private val _sourceSearchQuery by savedStateHandle.getStateFlow<String?> { initialQuery }
     val sourceSearchQuery = _sourceSearchQuery.asStateFlow()
@@ -113,8 +115,9 @@ class SourceScreenViewModel(
                 { page ->
                     getSearchManga.await(
                         sourceId = source.id,
-                        searchTerm = _query.value,
                         page = page,
+                        searchTerm = _query.value,
+                        filters = filters.value,
                         onError = { toast(it.message.orEmpty()) },
                     )
                 }
@@ -161,6 +164,10 @@ class SourceScreenViewModel(
 
     fun search(query: String) {
         _sourceSearchQuery.value = query
+    }
+
+    fun updateFilters(filters: List<SourceFilter>) {
+        this.filters.value = filters
     }
 
     fun submitSearch() {

@@ -64,8 +64,8 @@ fun ChapterItem(
     bookmarkChapter: (Long) -> Unit,
     unBookmarkChapter: (Long) -> Unit,
     markPreviousAsRead: (Int) -> Unit,
-    onClickDownload: (Int) -> Unit,
-    onClickStopDownload: (Int) -> Unit,
+    onClickDownload: (Long) -> Unit,
+    onClickStopDownload: (Long) -> Unit,
     onClickDeleteChapter: (Long) -> Unit,
     onSelectChapter: (Long) -> Unit,
     onUnselectChapter: (Long) -> Unit,
@@ -155,8 +155,8 @@ fun ChapterItem(
 
             ChapterDownloadIcon(
                 chapterDownload,
-                { onClickDownload(it.index) },
-                { onClickStopDownload(it.index) },
+                { onClickDownload(it.id) },
+                { onClickStopDownload(it.id) },
                 { onClickDeleteChapter(it.id) },
             )
         }

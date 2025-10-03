@@ -52,8 +52,7 @@ class SourceSettingsScreenViewModel
                             .onEach {
                                 setSourceSetting.await(
                                     sourceId = params.sourceId,
-                                    settingIndex = setting.index,
-                                    setting = it,
+                                    setting.props,
                                     onError = { toast(it.message.orEmpty()) },
                                 )
                                 getSourceSettings()

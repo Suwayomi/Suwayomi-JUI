@@ -8,11 +8,11 @@ package ca.gosyer.jui.domain.source.service
 
 import ca.gosyer.jui.domain.source.model.MangaPage
 import ca.gosyer.jui.domain.source.model.Source
-import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
-import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterChange
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterChangeOld
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterData
-import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilterOld
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreferenceChange
+import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreferenceOld
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
@@ -54,20 +54,20 @@ interface SourceRepositoryOld {
     fun getFilterList(
         @Path("sourceId") sourceId: Long,
         @Query("reset") reset: Boolean = false,
-    ): Flow<List<SourceFilter>>
+    ): Flow<List<SourceFilterOld>>
 
     @POST("api/v1/source/{sourceId}/filters")
     @Headers("Content-Type: application/json")
     fun setFilter(
         @Path("sourceId") sourceId: Long,
-        @Body sourceFilter: SourceFilterChange,
+        @Body sourceFilter: SourceFilterChangeOld,
     ): Flow<HttpResponse>
 
     @POST("api/v1/source/{sourceId}/filters")
     @Headers("Content-Type: application/json")
     fun setFilters(
         @Path("sourceId") sourceId: Long,
-        @Body sourceFilters: List<SourceFilterChange>,
+        @Body sourceFilters: List<SourceFilterChangeOld>,
     ): Flow<HttpResponse>
 
     @POST("api/v1/source/{sourceId}/quick-search")
@@ -81,7 +81,7 @@ interface SourceRepositoryOld {
     @GET("api/v1/source/{sourceId}/preferences")
     fun getSourceSettings(
         @Path("sourceId") sourceId: Long,
-    ): Flow<List<SourcePreference>>
+    ): Flow<List<SourcePreferenceOld>>
 
     @POST("api/v1/source/{sourceId}/preferences")
     @Headers("Content-Type: application/json")

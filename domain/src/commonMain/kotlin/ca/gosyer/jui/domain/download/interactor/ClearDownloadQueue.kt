@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.download.interactor
 
-import ca.gosyer.jui.domain.download.service.DownloadRepositoryOld
+import ca.gosyer.jui.domain.download.service.DownloadRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -15,7 +15,7 @@ import org.lighthousegames.logging.logging
 class ClearDownloadQueue
     @Inject
     constructor(
-        private val downloadRepositoryOld: DownloadRepositoryOld,
+        private val downloadRepository: DownloadRepository,
     ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
@@ -25,7 +25,7 @@ class ClearDownloadQueue
                 }
                 .collect()
 
-        fun asFlow() = downloadRepositoryOld.clearDownloadQueue()
+        fun asFlow() = downloadRepository.clearDownloadQueue()
 
         companion object {
             private val log = logging()

@@ -44,7 +44,6 @@ import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.EditText
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.List
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.MultiSelect
 import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.Switch
-import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.TwoState
 import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.keyboardHandler
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
@@ -84,7 +83,7 @@ fun SourceSettingsScreenContent(settings: ImmutableList<SourceSettingsView<*, *>
                 items(settings, { it.props.hashCode() }) {
                     when (it) {
                         is CheckBox, is Switch -> {
-                            TwoStatePreference(it as TwoState, it is CheckBox)
+                            TwoStatePreference(it, it is CheckBox)
                         }
 
                         is List -> {
@@ -120,7 +119,7 @@ fun SourceSettingsScreenContent(settings: ImmutableList<SourceSettingsView<*, *>
 
 @Composable
 private fun TwoStatePreference(
-    twoState: TwoState,
+    twoState: SourceSettingsView<*, Boolean>,
     checkbox: Boolean,
 ) {
     val state by twoState.state.collectAsState()

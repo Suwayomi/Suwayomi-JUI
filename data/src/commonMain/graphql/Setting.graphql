@@ -1,0 +1,231 @@
+fragment SettingsTypeFragment on SettingsType {
+  authMode
+  authPassword
+  authUsername
+  autoDownloadIgnoreReUploads
+  autoDownloadNewChapters
+  autoDownloadNewChaptersLimit
+  backupInterval
+  backupPath
+  backupTTL
+  backupTime
+  databasePassword
+  databaseType
+  databaseUrl
+  databaseUsername
+  debugLogsEnabled
+  downloadAsCbz
+  downloadConversions {
+    compressionLevel
+    mimeType
+    target
+  }
+  downloadsPath
+  electronPath
+  excludeCompleted
+  excludeEntryWithUnreadChapters
+  excludeNotStarted
+  excludeUnreadChapters
+  extensionRepos
+  flareSolverrAsResponseFallback
+  flareSolverrEnabled
+  flareSolverrSessionName
+  flareSolverrSessionTtl
+  flareSolverrTimeout
+  flareSolverrUrl
+  globalUpdateInterval
+  initialOpenInBrowserEnabled
+  ip
+  jwtAudience
+  jwtRefreshExpiry
+  jwtTokenExpiry
+  koreaderSyncChecksumMethod
+  koreaderSyncDeviceId
+  koreaderSyncPercentageTolerance
+  koreaderSyncServerUrl
+  koreaderSyncStrategyBackward
+  koreaderSyncStrategyForward
+  koreaderSyncUserkey
+  koreaderSyncUsername
+  localSourcePath
+  maxLogFileSize
+  maxLogFiles
+  maxLogFolderSize
+  maxSourcesInParallel
+  opdsChapterSortOrder
+  opdsEnablePageReadProgress
+  opdsItemsPerPage
+  opdsMarkAsReadOnDownload
+  opdsShowOnlyDownloadedChapters
+  opdsShowOnlyUnreadChapters
+  opdsUseBinaryFileSizes
+  port
+  socksProxyEnabled
+  socksProxyHost
+  socksProxyPassword
+  socksProxyPort
+  socksProxyUsername
+  socksProxyVersion
+  systemTrayEnabled
+  updateMangas
+  webUIChannel
+  webUIFlavor
+  webUIInterface
+  webUIUpdateCheckInterval
+}
+
+query AllSettings {
+  settings {
+    ...SettingsTypeFragment
+  }
+}
+
+mutation SetSettings(
+  $authMode: AuthMode = null,
+  $authPassword: String = null,
+  $authUsername: String = null,
+  $autoDownloadIgnoreReUploads: Boolean = null,
+  $autoDownloadNewChapters: Boolean = null,
+  $autoDownloadNewChaptersLimit: Int = null,
+  $backupInterval: Int = null,
+  $backupPath: String = null,
+  $backupTTL: Int = null,
+  $backupTime: String = null,
+  $databasePassword: String = null,
+  $databaseType: DatabaseType = null,
+  $databaseUrl: String = null,
+  $databaseUsername: String = null,
+  $debugLogsEnabled: Boolean = null,
+  $downloadAsCbz: Boolean = null,
+  $downloadConversions: [SettingsDownloadConversionTypeInput!] = null,
+  $downloadsPath: String = null,
+  $electronPath: String = null,
+  $excludeCompleted: Boolean = null,
+  $excludeEntryWithUnreadChapters: Boolean = null,
+  $excludeNotStarted: Boolean = null,
+  $excludeUnreadChapters: Boolean = null,
+  $extensionRepos: [String!] = null,
+  $flareSolverrAsResponseFallback: Boolean = null,
+  $flareSolverrEnabled: Boolean = null,
+  $flareSolverrSessionName: String = null,
+  $flareSolverrSessionTtl: Int = null,
+  $flareSolverrTimeout: Int = null,
+  $flareSolverrUrl: String = null,
+  $globalUpdateInterval: Float = null,
+  $initialOpenInBrowserEnabled: Boolean = null,
+  $ip: String = null,
+  $jwtAudience: String = null,
+  $jwtRefreshExpiry: Duration = null,
+  $jwtTokenExpiry: Duration = null,
+  $koreaderSyncChecksumMethod: KoreaderSyncChecksumMethod = null,
+  $koreaderSyncDeviceId: String = null,
+  $koreaderSyncPercentageTolerance: Float = null,
+  $koreaderSyncServerUrl: String = null,
+  $koreaderSyncStrategyBackward: KoreaderSyncConflictStrategy = null,
+  $koreaderSyncStrategyForward: KoreaderSyncConflictStrategy = null,
+  $koreaderSyncUserkey: String = null,
+  $koreaderSyncUsername: String = null,
+  $localSourcePath: String = null,
+  $maxLogFileSize: String = null,
+  $maxLogFiles: Int = null,
+  $maxLogFolderSize: String = null,
+  $maxSourcesInParallel: Int = null,
+  $opdsChapterSortOrder: SortOrder = null,
+  $opdsEnablePageReadProgress: Boolean = null,
+  $opdsItemsPerPage: Int = null,
+  $opdsMarkAsReadOnDownload: Boolean = null,
+  $opdsShowOnlyDownloadedChapters: Boolean = null,
+  $opdsShowOnlyUnreadChapters: Boolean = null,
+  $opdsUseBinaryFileSizes: Boolean = null,
+  $port: Int = null,
+  $socksProxyEnabled: Boolean = null,
+  $socksProxyHost: String = null,
+  $socksProxyPassword: String = null,
+  $socksProxyPort: String = null,
+  $socksProxyUsername: String = null,
+  $socksProxyVersion: Int = null,
+  $systemTrayEnabled: Boolean = null,
+  $updateMangas: Boolean = null,
+  $webUIChannel: WebUIChannel = null,
+  $webUIFlavor: WebUIFlavor = null,
+  $webUIInterface: WebUIInterface = null,
+  $webUIUpdateCheckInterval: Float = null
+) {
+  setSettings(
+    input: {
+      settings: {
+        authMode: $authMode,
+        authPassword: $authPassword,
+        authUsername: $authUsername,
+        autoDownloadIgnoreReUploads: $autoDownloadIgnoreReUploads,
+        autoDownloadNewChapters: $autoDownloadNewChapters,
+        autoDownloadNewChaptersLimit: $autoDownloadNewChaptersLimit,
+        backupInterval: $backupInterval,
+        backupPath: $backupPath,
+        backupTTL: $backupTTL,
+        backupTime: $backupTime,
+        databasePassword: $databasePassword,
+        databaseType: $databaseType,
+        databaseUrl: $databaseUrl,
+        databaseUsername: $databaseUsername,
+        debugLogsEnabled: $debugLogsEnabled,
+        downloadAsCbz: $downloadAsCbz,
+        downloadConversions: $downloadConversions,
+        downloadsPath: $downloadsPath,
+        electronPath: $electronPath,
+        excludeCompleted: $excludeCompleted,
+        excludeEntryWithUnreadChapters: $excludeEntryWithUnreadChapters,
+        excludeNotStarted: $excludeNotStarted,
+        excludeUnreadChapters: $excludeUnreadChapters,
+        extensionRepos: $extensionRepos,
+        flareSolverrAsResponseFallback: $flareSolverrAsResponseFallback,
+        flareSolverrEnabled: $flareSolverrEnabled,
+        flareSolverrSessionName: $flareSolverrSessionName,
+        flareSolverrSessionTtl: $flareSolverrSessionTtl,
+        flareSolverrTimeout: $flareSolverrTimeout,
+        flareSolverrUrl: $flareSolverrUrl,
+        globalUpdateInterval: $globalUpdateInterval,
+        initialOpenInBrowserEnabled: $initialOpenInBrowserEnabled,
+        ip: $ip,
+        jwtAudience: $jwtAudience,
+        jwtRefreshExpiry: $jwtRefreshExpiry,
+        jwtTokenExpiry: $jwtTokenExpiry,
+        koreaderSyncChecksumMethod: $koreaderSyncChecksumMethod,
+        koreaderSyncDeviceId: $koreaderSyncDeviceId,
+        koreaderSyncPercentageTolerance: $koreaderSyncPercentageTolerance,
+        koreaderSyncServerUrl: $koreaderSyncServerUrl,
+        koreaderSyncStrategyBackward: $koreaderSyncStrategyBackward,
+        koreaderSyncStrategyForward: $koreaderSyncStrategyForward,
+        koreaderSyncUserkey: $koreaderSyncUserkey,
+        koreaderSyncUsername: $koreaderSyncUsername,
+        localSourcePath: $localSourcePath,
+        maxLogFileSize: $maxLogFileSize,
+        maxLogFiles: $maxLogFiles,
+        maxLogFolderSize: $maxLogFolderSize,
+        maxSourcesInParallel: $maxSourcesInParallel,
+        opdsChapterSortOrder: $opdsChapterSortOrder,
+        opdsEnablePageReadProgress: $opdsEnablePageReadProgress,
+        opdsItemsPerPage: $opdsItemsPerPage,
+        opdsMarkAsReadOnDownload: $opdsMarkAsReadOnDownload,
+        opdsShowOnlyDownloadedChapters: $opdsShowOnlyDownloadedChapters,
+        opdsShowOnlyUnreadChapters: $opdsShowOnlyUnreadChapters,
+        opdsUseBinaryFileSizes: $opdsUseBinaryFileSizes,
+        port: $port,
+        socksProxyEnabled: $socksProxyEnabled,
+        socksProxyHost: $socksProxyHost,
+        socksProxyPassword: $socksProxyPassword,
+        socksProxyPort: $socksProxyPort,
+        socksProxyUsername: $socksProxyUsername,
+        socksProxyVersion: $socksProxyVersion,
+        systemTrayEnabled: $systemTrayEnabled,
+        updateMangas: $updateMangas,
+        webUIChannel: $webUIChannel,
+        webUIFlavor: $webUIFlavor,
+        webUIInterface: $webUIInterface,
+        webUIUpdateCheckInterval: $webUIUpdateCheckInterval
+      }
+    }
+  ) {
+    clientMutationId
+  }
+}

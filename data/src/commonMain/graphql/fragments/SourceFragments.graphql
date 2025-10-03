@@ -1,0 +1,11 @@
+fragment SourceFragment on SourceType {
+  id
+  name
+  displayName
+  baseUrl
+  iconUrl
+  isConfigurable
+  isNsfw
+  lang
+  supportsLatest
+}

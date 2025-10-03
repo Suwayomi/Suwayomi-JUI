@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.extension.interactor
 
 import ca.gosyer.jui.domain.extension.model.Extension
-import ca.gosyer.jui.domain.extension.service.ExtensionRepositoryOld
+import ca.gosyer.jui.domain.extension.service.ExtensionRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -16,7 +16,7 @@ import org.lighthousegames.logging.logging
 class UninstallExtension
     @Inject
     constructor(
-        private val extensionRepositoryOld: ExtensionRepositoryOld,
+        private val extensionRepository: ExtensionRepository,
     ) {
         suspend fun await(
             extension: Extension,
@@ -28,7 +28,7 @@ class UninstallExtension
             }
             .collect()
 
-        fun asFlow(extension: Extension) = extensionRepositoryOld.uninstallExtension(extension.pkgName)
+        fun asFlow(extension: Extension) = extensionRepository.uninstallExtension(extension.pkgName)
 
         companion object {
             private val log = logging()

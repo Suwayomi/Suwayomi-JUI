@@ -7,7 +7,6 @@
 package ca.gosyer.jui.ui.sources.browse.filter
 
 import ca.gosyer.jui.domain.source.interactor.GetFilterList
-import ca.gosyer.jui.domain.source.interactor.SetSourceFilter
 import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
 import ca.gosyer.jui.ui.base.state.SavedStateHandle
 import ca.gosyer.jui.ui.base.state.getStateFlow
@@ -20,12 +19,9 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.supervisorScope
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
@@ -33,21 +29,18 @@ import org.lighthousegames.logging.logging
 class SourceFiltersViewModel(
     private val sourceId: Long,
     private val getFilterList: GetFilterList,
-    private val setSourceFilter: SetSourceFilter,
     contextWrapper: ContextWrapper,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel(contextWrapper) {
     @Inject
     constructor(
         getFilterList: GetFilterList,
-        setSourceFilter: SetSourceFilter,
         contextWrapper: ContextWrapper,
         @Assisted savedStateHandle: SavedStateHandle,
         @Assisted params: Params,
     ) : this(
         params.sourceId,
         getFilterList,
-        setSourceFilter,
         contextWrapper,
         savedStateHandle,
     )
@@ -65,44 +58,10 @@ class SourceFiltersViewModel(
     val filterButtonEnabled = _filterButtonEnabled.asStateFlow()
 
     init {
-        getFilters(initialLoad = savedStateHandle["initialLoad"] ?: true)
-        savedStateHandle["initialLoad"] = false
+        getFilters()
 
         filters.mapLatest { settings ->
             _filterButtonEnabled.value = settings.isNotEmpty()
-            supervisorScope {
-                settings.forEach { filter ->
-                    if (filter is SourceFiltersView.Group) {
-                        filter.state.value.forEach { childFilter ->
-                            childFilter.state.drop(1)
-                                .filterNotNull()
-                                .onEach {
-                                    setSourceFilter.await(
-                                        sourceId = sourceId,
-                                        filterIndex = filter.index,
-                                        childFilterIndex = childFilter.index,
-                                        filter = it,
-                                        onError = { toast(it.message.orEmpty()) },
-                                    )
-                                    getFilters()
-                                }
-                                .launchIn(this)
-                        }
-                    } else {
-                        filter.state.drop(1).filterNotNull()
-                            .onEach {
-                                setSourceFilter.await(
-                                    sourceId = sourceId,
-                                    filterIndex = filter.index,
-                                    filter = it,
-                                    onError = { toast(it.message.orEmpty()) },
-                                )
-                                getFilters()
-                            }
-                            .launchIn(this)
-                    }
-                }
-            }
         }
             .catch {
                 log.warn(it) { "Error with filters" }
@@ -114,8 +73,8 @@ class SourceFiltersViewModel(
         _showingFilters.value = show
     }
 
-    private fun getFilters(initialLoad: Boolean = false) {
-        getFilterList.asFlow(sourceId, reset = initialLoad)
+    private fun getFilters() {
+        getFilterList.asFlow(sourceId)
             .onEach {
                 _filters.value = it.toView()
                 _loading.value = false
@@ -129,7 +88,7 @@ class SourceFiltersViewModel(
     }
 
     fun resetFilters() {
-        getFilters(initialLoad = true)
+        getFilters()
     }
 
     data class Params(
@@ -137,8 +96,8 @@ class SourceFiltersViewModel(
     )
 
     private fun List<SourceFilter>.toView() =
-        mapIndexed { index, sourcePreference ->
-            SourceFiltersView(index, sourcePreference)
+        mapIndexed { index, sourceFilters ->
+            SourceFiltersView(index, sourceFilters)
         }.toImmutableList()
 
     private companion object {

@@ -74,11 +74,11 @@ class CategoriesScreenViewModel
                 }
             }
             var updatedCategories = getCategories.await(true, onError = { toast(it.message.orEmpty()) })
-            categories.forEach { category ->
+            categories.sortedBy { it.order }.forEach { category ->
                 val updatedCategory = updatedCategories?.find { it.id == category.id || it.name == category.name } ?: return@forEach
                 if (category.order != updatedCategory.order) {
                     log.debug { "${category.name}: ${updatedCategory.order} to ${category.order}" }
-                    reorderCategory.await(category.order, updatedCategory.order, onError = { toast(it.message.orEmpty()) })
+                    reorderCategory.await(category.id!!, category.order, onError = { toast(it.message.orEmpty()) })
                 }
                 updatedCategories = getCategories.await(true, onError = { toast(it.message.orEmpty()) })
             }

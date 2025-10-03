@@ -1,0 +1,205 @@
+query GetSourceList {
+  sources {
+    nodes {
+      ...SourceFragment
+    }
+  }
+}
+
+query GetSource($id: LongString!) {
+  source(id: $id) {
+    ...SourceFragment
+  }
+}
+
+mutation FetchPopularManga($source: LongString!, $page: Int!) {
+  fetchSourceManga(input: {page: $page, source: $source, type: POPULAR}) {
+    hasNextPage
+    mangas {
+      ...MangaFragment
+    }
+  }
+}
+
+mutation FetchLatestManga($source: LongString!, $page: Int!) {
+  fetchSourceManga(input: {page: $page, source: $source, type: LATEST}) {
+    hasNextPage
+    mangas {
+      ...MangaFragment
+    }
+  }
+}
+
+mutation FetchSearchManga($source: LongString!, $page: Int!, $query: String, $filters: [FilterChangeInput!]) {
+  fetchSourceManga(
+    input: {page: $page, source: $source, type: SEARCH, query: $query, filters: $filters}
+  ) {
+    hasNextPage
+    mangas {
+      ...MangaFragment
+    }
+  }
+}
+
+
+query GetSourceFilters($id: LongString!) {
+  source(id: $id) {
+    filters {
+      ... on CheckBoxFilter {
+        type: __typename
+        checkBoxFilterDefault: default
+        name
+      }
+      ... on HeaderFilter {
+        type: __typename
+        name
+      }
+      ... on SelectFilter {
+        type: __typename
+        selectFilterDefault: default
+        name
+        values
+      }
+      ... on TriStateFilter {
+        type: __typename
+        triStateFilterDefault: default
+        name
+      }
+      ... on TextFilter {
+        type: __typename
+        textFilterDefault: default
+        name
+      }
+      ... on SortFilter {
+        type: __typename
+        sortFilterDefault: default {
+          ascending
+          index
+        }
+        name
+        values
+      }
+      ... on SeparatorFilter {
+        type: __typename
+        name
+      }
+      ... on GroupFilter {
+        type: __typename
+        name
+        filters {
+          ... on CheckBoxFilter {
+            type: __typename
+            checkBoxFilterDefault: default
+            name
+          }
+          ... on HeaderFilter {
+            type: __typename
+            name
+          }
+          ... on SelectFilter {
+            type: __typename
+            selectFilterDefault: default
+            name
+            values
+          }
+          ... on TriStateFilter {
+            type: __typename
+            triStateFilterDefault: default
+            name
+          }
+          ... on TextFilter {
+            type: __typename
+            textFilterDefault: default
+            name
+          }
+          ... on SortFilter {
+            type: __typename
+            sortFilterDefault: default {
+              ascending
+              index
+            }
+            name
+            values
+          }
+          ... on SeparatorFilter {
+            type: __typename
+            name
+          }
+        }
+      }
+    }
+  }
+}
+
+
+query GetSourcePreferences($id: LongString!) {
+  source(id: $id) {
+    preferences {
+      ... on CheckBoxPreference {
+        type: __typename
+        checkBoxCheckBoxCurrentValue: currentValue
+        summary
+        checkBoxDefault: default
+        visible
+        enabled
+        key
+        checkBoxTitle: title
+      }
+      ... on EditTextPreference {
+        type: __typename
+        editTextPreferenceCurrentValue: currentValue
+        editTextPreferenceDefault: default
+        editTextPreferenceTitle: title
+        text
+        summary
+        key
+        visible
+        enabled
+        dialogTitle
+        dialogMessage
+      }
+      ... on SwitchPreference {
+        type: __typename
+        switchPreferenceCurrentValue: currentValue
+        summary
+        key
+        visible
+        enabled
+        switchPreferenceDefault: default
+        switchPreferenceTitle: title
+      }
+      ... on MultiSelectListPreference {
+        type: __typename
+        dialogMessage
+        dialogTitle
+        multiSelectListPreferenceTitle: title
+        summary
+        key
+        visible
+        enabled
+        entryValues
+        entries
+        multiSelectListPreferenceDefault: default
+        multiSelectListPreferenceCurrentValue: currentValue
+      }
+      ... on ListPreference {
+        type: __typename
+        listPreferenceCurrentValue: currentValue
+        listPreferenceDefault: default
+        listPreferenceTitle: title
+        summary
+        key
+        visible
+        enabled
+        entryValues
+        entries
+      }
+    }
+  }
+}
+
+mutation SetSourceSetting($source: LongString!, $change: SourcePreferenceChangeInput!) {
+  updateSourcePreference(input: {change: $change, source: $source}) {
+    clientMutationId
+  }
+}

@@ -111,7 +111,7 @@ class GlobalSearchViewModel
                         sources.map { source ->
                             async {
                                 semaphore.withPermit {
-                                    getSearchManga.asFlow(source, query, 1)
+                                    getSearchManga.asFlow(source, 1, query, null)
                                         .map {
                                             if (it.mangaList.isEmpty()) {
                                                 Search.Failure(MR.strings.no_results_found.toPlatformString())

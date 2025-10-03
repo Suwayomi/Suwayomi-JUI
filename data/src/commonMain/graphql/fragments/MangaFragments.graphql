@@ -1,0 +1,79 @@
+fragment MangaFragment on MangaType {
+  title
+  artist
+  author
+  description
+  status
+  sourceId
+  id
+  url
+  thumbnailUrl
+  thumbnailUrlLastFetched
+  initialized
+  genre
+  inLibrary
+  inLibraryAt
+  updateStrategy
+  meta {
+    key
+    value
+  }
+  realUrl
+  lastFetchedAt
+  chaptersLastFetchedAt
+  age
+}
+
+fragment LibraryMangaFragment on MangaType {
+  title
+  artist
+  author
+  description
+  status
+  sourceId
+  id
+  url
+  thumbnailUrl
+  thumbnailUrlLastFetched
+  initialized
+  genre
+  inLibrary
+  inLibraryAt
+  updateStrategy
+  meta {
+    key
+    value
+  }
+  realUrl
+  lastFetchedAt
+  chaptersLastFetchedAt
+  downloadCount
+  chapters {
+    totalCount
+  }
+  lastReadChapter {
+    lastReadAt
+  }
+  age
+  bookmarkCount
+  chaptersAge
+  unreadCount
+  highestNumberedChapter {
+    chapterNumber
+  }
+  firstUnreadChapter {
+    id
+  }
+  latestUploadedChapter {
+    uploadDate
+  }
+  latestReadChapter {
+    lastReadAt
+  }
+  latestFetchedChapter {
+    sourceOrder
+  }
+  source {
+    ...SourceFragment
+  }
+}

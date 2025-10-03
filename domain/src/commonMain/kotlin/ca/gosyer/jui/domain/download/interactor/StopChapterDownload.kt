@@ -6,9 +6,7 @@
 
 package ca.gosyer.jui.domain.download.interactor
 
-import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.download.service.DownloadRepositoryOld
-import ca.gosyer.jui.domain.manga.model.Manga
+import ca.gosyer.jui.domain.download.service.DownloadRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -17,51 +15,19 @@ import org.lighthousegames.logging.logging
 class StopChapterDownload
     @Inject
     constructor(
-        private val downloadRepositoryOld: DownloadRepositoryOld,
+        private val downloadRepository: DownloadRepository,
     ) {
         suspend fun await(
-            mangaId: Long,
-            index: Int,
+            chapterId: Long,
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(mangaId, index)
+        ) = asFlow(chapterId)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to stop chapter download for $index of $mangaId" }
+                log.warn(it) { "Failed to stop chapter download for $chapterId" }
             }
             .collect()
 
-        suspend fun await(
-            manga: Manga,
-            index: Int,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(manga, index)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to stop chapter download for $index of ${manga.title}(${manga.id})" }
-            }
-            .collect()
-
-        suspend fun await(
-            chapter: Chapter,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(chapter)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to stop chapter download for ${chapter.index} of ${chapter.mangaId}" }
-            }
-            .collect()
-
-        fun asFlow(
-            mangaId: Long,
-            index: Int,
-        ) = downloadRepositoryOld.stopChapterDownload(mangaId, index)
-
-        fun asFlow(
-            manga: Manga,
-            index: Int,
-        ) = downloadRepositoryOld.stopChapterDownload(manga.id, index)
-
-        fun asFlow(chapter: Chapter) = downloadRepositoryOld.stopChapterDownload(chapter.mangaId, chapter.index)
+        fun asFlow(chapterId: Long) = downloadRepository.stopChapterDownload(chapterId)
 
         companion object {
             private val log = logging()

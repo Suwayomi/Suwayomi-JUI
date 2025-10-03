@@ -1,0 +1,12 @@
+fragment CategoryFragment on CategoryType {
+  id
+  name
+  order
+  default
+  includeInDownload
+  includeInUpdate
+  meta {
+    key
+    value
+  }
+}

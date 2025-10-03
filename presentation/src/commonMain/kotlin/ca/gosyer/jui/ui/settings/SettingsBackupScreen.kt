@@ -191,7 +191,9 @@ class SettingsBackupViewModel
             RestoreState.SUCCESS -> Status.Success
             RestoreState.FAILURE -> Status.Error
             RestoreState.RESTORING_CATEGORIES -> Status.InProgress(0.01f)
-            RestoreState.RESTORING_MANGA -> Status.InProgress((completed.toFloat() / total).coerceIn(0f, 1f))
+            RestoreState.RESTORING_SETTINGS -> Status.InProgress(0.02f)
+            RestoreState.RESTORING_MANGA -> Status.InProgress((completed.toFloat() / total).coerceIn(0f, 0.99f))
+            RestoreState.RESTORING_META -> Status.InProgress(1f)
             RestoreState.UNKNOWN -> Status.Error
         }
 

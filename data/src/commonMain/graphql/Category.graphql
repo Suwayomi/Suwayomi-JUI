@@ -1,0 +1,74 @@
+
+query GetMangaCategories($id: Int!) {
+  manga(id: $id) {
+    categories {
+      nodes {
+        ...CategoryFragment
+      }
+    }
+  }
+}
+
+mutation AddMangaToCategories($id: Int!, $addToCategories: [Int!]!) {
+  updateMangaCategories(
+    input: {id: $id, patch: {addToCategories: $addToCategories}}
+  ) {
+    clientMutationId
+  }
+}
+
+mutation RemoveMangaFromCategories($id: Int!, $removeFromCategories: [Int!]!) {
+  updateMangaCategories(
+    input: {id: $id, patch: {removeFromCategories: $removeFromCategories}}
+  ) {
+    clientMutationId
+  }
+}
+
+query GetCategories {
+  categories(orderBy: ORDER, orderByType: ASC) {
+    nodes {
+      ...CategoryFragment
+    }
+  }
+}
+
+mutation CreateCategory($name: String!) {
+  createCategory(input: {name: $name}) {
+    clientMutationId
+  }
+}
+
+mutation ModifyCategory($id: Int!, $name: String!) {
+  updateCategory(input: {id: $id, patch: {name: $name}}) {
+    clientMutationId
+  }
+}
+
+mutation ReorderCategory($id: Int!, $position: Int!) {
+  updateCategoryOrder(input: {id: $id, position: $position}) {
+    clientMutationId
+  }
+}
+
+mutation DeleteCategory($categoryId: Int!) {
+  deleteCategory(input: {categoryId: $categoryId}) {
+    clientMutationId
+  }
+}
+
+query GetCategoryManga($categoryId: [Int!]!) {
+  mangas(orderBy: ID, condition: {categoryIds: $categoryId}) {
+    nodes {
+      ...MangaFragment
+    }
+  }
+}
+
+mutation SetCategoryMeta($categoryId: Int!, $key: String!, $value: String!) {
+  setCategoryMeta(
+    input: {meta: {categoryId: $categoryId, key: $key, value: $value}}
+  ) {
+    clientMutationId
+  }
+}

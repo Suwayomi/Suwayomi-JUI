@@ -83,7 +83,7 @@ data class ChapterDownloadItem(
     }
 
     suspend fun stopDownloading(stopChapterDownload: StopChapterDownload) {
-        stopChapterDownload.await(chapter)
+        stopChapterDownload.await(chapter.id)
         _downloadState.value = ChapterDownloadState.NotDownloaded
     }
 

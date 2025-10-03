@@ -1,0 +1,41 @@
+mutation StartDownloader {
+  startDownloader(input: {}) {
+    clientMutationId
+  }
+}
+
+mutation StopDownloader {
+  stopDownloader(input: {}) {
+    clientMutationId
+  }
+}
+
+mutation ClearDownloader {
+  clearDownloader(input: {}) {
+    clientMutationId
+  }
+}
+
+mutation EnqueueChapterDownload($id: Int!) {
+  enqueueChapterDownload(input: {id: $id}) {
+    clientMutationId
+  }
+}
+
+mutation DequeueChapterDownload($id: Int!) {
+  dequeueChapterDownload(input: {id: $id}) {
+    clientMutationId
+  }
+}
+
+mutation ReorderChapterDownload($chapterId: Int!, $to: Int!) {
+  reorderChapterDownload(input: {chapterId: $chapterId, to: $to}) {
+    clientMutationId
+  }
+}
+
+mutation EnqueueChapterDownloads($ids: [Int!]!) {
+  enqueueChapterDownloads(input: {ids: $ids}) {
+    clientMutationId
+  }
+}

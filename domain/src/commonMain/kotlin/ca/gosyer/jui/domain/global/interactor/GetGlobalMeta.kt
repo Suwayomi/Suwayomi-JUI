@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.global.interactor
 
-import ca.gosyer.jui.domain.global.service.GlobalRepositoryOld
+import ca.gosyer.jui.domain.global.service.GlobalRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
@@ -15,7 +15,7 @@ import org.lighthousegames.logging.logging
 class GetGlobalMeta
     @Inject
     constructor(
-        private val globalRepositoryOld: GlobalRepositoryOld,
+        private val globalRepository: GlobalRepository,
     ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
@@ -25,7 +25,7 @@ class GetGlobalMeta
                 }
                 .singleOrNull()
 
-        fun asFlow() = globalRepositoryOld.getGlobalMeta()
+        fun asFlow() = globalRepository.getGlobalMeta()
 
         companion object {
             private val log = logging()

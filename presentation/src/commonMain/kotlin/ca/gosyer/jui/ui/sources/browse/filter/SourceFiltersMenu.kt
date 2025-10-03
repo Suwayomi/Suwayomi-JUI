@@ -58,7 +58,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
-import ca.gosyer.jui.domain.source.model.sourcefilters.SortFilter
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.prefs.ExpandablePreference
 import ca.gosyer.jui.ui.sources.browse.filter.model.SourceFiltersView
@@ -224,7 +224,7 @@ fun SelectView(select: SourceFiltersView.Select) {
         Spinner(
             modifier = Modifier.weight(1f),
             // TODO: 2022-05-06 Remove it.values when we hit server version 0.7.0
-            items = select.filter.let { it.displayValues ?: it.values.map(Any::toString) },
+            items = select.filter.values,
             selectedItemIndex = state,
             onSelectItem = select::updateState,
         )
@@ -297,13 +297,13 @@ fun SortView(
                     asc = state?.ascending ?: false,
                 ) {
                     sort.updateState(
-                        value = SortFilter.Selection(
-                            index,
+                        value = SourceFilter.Sort.SelectionChange(
                             if (state?.index == index) {
                                 state?.ascending?.not() ?: false
                             } else {
                                 false
                             },
+                            index,
                         ),
                     )
                 }
@@ -356,18 +356,18 @@ fun TriStateView(triState: SourceFiltersView.TriState) {
         onClick = {
             triState.updateState(
                 when (state) {
-                    0 -> 1
-                    1 -> 2
-                    else -> 0
+                    SourceFilter.TriState.TriStateValue.IGNORE -> SourceFilter.TriState.TriStateValue.INCLUDE
+                    SourceFilter.TriState.TriStateValue.INCLUDE -> SourceFilter.TriState.TriStateValue.EXCLUDE
+                    SourceFilter.TriState.TriStateValue.EXCLUDE -> SourceFilter.TriState.TriStateValue.IGNORE
                 },
             )
         },
         action = {
             TriStateCheckbox(
                 state = when (state) {
-                    1 -> ToggleableState.On
-                    2 -> ToggleableState.Indeterminate
-                    else -> ToggleableState.Off
+                    SourceFilter.TriState.TriStateValue.INCLUDE -> ToggleableState.On
+                    SourceFilter.TriState.TriStateValue.EXCLUDE -> ToggleableState.Indeterminate
+                    SourceFilter.TriState.TriStateValue.IGNORE -> ToggleableState.Off
                 },
                 onClick = null,
             )

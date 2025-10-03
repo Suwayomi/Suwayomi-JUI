@@ -6,8 +6,7 @@
 
 package ca.gosyer.jui.domain.download.interactor
 
-import ca.gosyer.jui.domain.download.model.DownloadEnqueue
-import ca.gosyer.jui.domain.download.service.DownloadRepositoryOld
+import ca.gosyer.jui.domain.download.service.DownloadRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -16,7 +15,7 @@ import org.lighthousegames.logging.logging
 class BatchChapterDownload
     @Inject
     constructor(
-        private val downloadRepositoryOld: DownloadRepositoryOld,
+        private val downloadRepository: DownloadRepository,
     ) {
         suspend fun await(
             chapterIds: List<Long>,
@@ -38,9 +37,9 @@ class BatchChapterDownload
             }
             .collect()
 
-        fun asFlow(chapterIds: List<Long>) = downloadRepositoryOld.batchDownload(DownloadEnqueue(chapterIds))
+        fun asFlow(chapterIds: List<Long>) = downloadRepository.batchDownload(chapterIds)
 
-        fun asFlow(vararg chapterIds: Long) = downloadRepositoryOld.batchDownload(DownloadEnqueue(chapterIds.asList()))
+        fun asFlow(vararg chapterIds: Long) = downloadRepository.batchDownload(chapterIds.asList())
 
         companion object {
             private val log = logging()

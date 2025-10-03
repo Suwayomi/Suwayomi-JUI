@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.category.interactor
 
-import ca.gosyer.jui.domain.category.service.CategoryRepositoryOld
+import ca.gosyer.jui.domain.category.service.CategoryRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -15,23 +15,23 @@ import org.lighthousegames.logging.logging
 class ReorderCategory
     @Inject
     constructor(
-        private val categoryRepositoryOld: CategoryRepositoryOld,
+        private val categoryRepository: CategoryRepository,
     ) {
         suspend fun await(
-            to: Int,
-            from: Int,
+            categoryId: Long,
+            position: Int,
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(to, from)
+        ) = asFlow(categoryId, position)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to move category from $from to $to" }
+                log.warn(it) { "Failed to move category $categoryId to $position" }
             }
             .collect()
 
         fun asFlow(
-            to: Int,
-            from: Int,
-        ) = categoryRepositoryOld.reorderCategory(to, from)
+            categoryId: Long,
+            position: Int,
+        ) = categoryRepository.reorderCategory(categoryId, position)
 
         companion object {
             private val log = logging()

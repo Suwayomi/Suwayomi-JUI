@@ -7,7 +7,8 @@
 package ca.gosyer.jui.domain.source.interactor
 
 import ca.gosyer.jui.domain.source.model.Source
-import ca.gosyer.jui.domain.source.service.SourceRepositoryOld
+import ca.gosyer.jui.domain.source.model.sourcefilters.SourceFilter
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
@@ -16,15 +17,16 @@ import org.lighthousegames.logging.logging
 class GetSearchManga
     @Inject
     constructor(
-        private val sourceRepositoryOld: SourceRepositoryOld,
+        private val sourceRepository: SourceRepository,
     ) {
         suspend fun await(
             source: Source,
-            searchTerm: String?,
             page: Int,
+            searchTerm: String?,
+            filters: List<SourceFilter>?,
             onError: suspend (Throwable) -> Unit = {
             },
-        ) = asFlow(source.id, searchTerm, page)
+        ) = asFlow(source.id, page, searchTerm, filters)
             .catch {
                 onError(it)
                 log.warn(it) { "Failed to get search results from ${source.displayName} on page $page with query '$searchTerm'" }
@@ -35,9 +37,10 @@ class GetSearchManga
             sourceId: Long,
             searchTerm: String?,
             page: Int,
+            filters: List<SourceFilter>?,
             onError: suspend (Throwable) -> Unit = {
             },
-        ) = asFlow(sourceId, searchTerm, page)
+        ) = asFlow(sourceId, page, searchTerm, filters)
             .catch {
                 onError(it)
                 log.warn(it) { "Failed to get search results from $sourceId on page $page with query '$searchTerm'" }
@@ -46,22 +49,26 @@ class GetSearchManga
 
         fun asFlow(
             source: Source,
-            searchTerm: String?,
             page: Int,
-        ) = sourceRepositoryOld.getSearchResults(
+            searchTerm: String?,
+            filters: List<SourceFilter>?,
+        ) = sourceRepository.getSearchResults(
             source.id,
-            searchTerm?.ifBlank { null },
             page,
+            searchTerm?.ifBlank { null },
+            filters,
         )
 
         fun asFlow(
             sourceId: Long,
-            searchTerm: String?,
             page: Int,
-        ) = sourceRepositoryOld.getSearchResults(
+            searchTerm: String?,
+            filters: List<SourceFilter>?,
+        ) = sourceRepository.getSearchResults(
             sourceId,
-            searchTerm?.ifBlank { null },
             page,
+            searchTerm?.ifBlank { null },
+            filters,
         )
 
         companion object {

@@ -14,6 +14,8 @@ enum class RestoreState {
     FAILURE,
     RESTORING_CATEGORIES,
     RESTORING_MANGA,
+    RESTORING_META,
+    RESTORING_SETTINGS,
     UNKNOWN,
 }
 

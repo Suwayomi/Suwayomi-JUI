@@ -8,7 +8,7 @@ package ca.gosyer.jui.domain.category.interactor
 
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.category.model.Category
-import ca.gosyer.jui.domain.category.service.CategoryRepositoryOld
+import ca.gosyer.jui.domain.category.service.CategoryRepository
 import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -20,7 +20,7 @@ import org.lighthousegames.logging.logging
 class RemoveMangaFromCategory
     @Inject
     constructor(
-        private val categoryRepositoryOld: CategoryRepositoryOld,
+        private val categoryRepository: CategoryRepository,
         private val serverListeners: ServerListeners,
     ) {
         suspend fun await(
@@ -49,7 +49,7 @@ class RemoveMangaFromCategory
             mangaId: Long,
             categoryId: Long,
         ) = if (categoryId != 0L) {
-            categoryRepositoryOld.removeMangaFromCategory(mangaId, categoryId)
+            categoryRepository.removeMangaFromCategory(mangaId, categoryId)
                 .map { serverListeners.updateCategoryManga(categoryId) }
         } else {
             flow {
@@ -62,7 +62,7 @@ class RemoveMangaFromCategory
             manga: Manga,
             category: Category,
         ) = if (category.id != 0L) {
-            categoryRepositoryOld.removeMangaFromCategory(manga.id, category.id)
+            categoryRepository.removeMangaFromCategory(manga.id, category.id)
                 .map { serverListeners.updateCategoryManga(category.id) }
         } else {
             flow {

@@ -6,17 +6,19 @@
 
 package ca.gosyer.jui.domain.extension.interactor
 
-import ca.gosyer.jui.domain.extension.service.ExtensionRepositoryOld
+import ca.gosyer.jui.domain.extension.service.ExtensionRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
+import okio.FileSystem
 import okio.Path
+import okio.SYSTEM
 import org.lighthousegames.logging.logging
 
 class InstallExtensionFile
     @Inject
     constructor(
-        private val extensionRepositoryOld: ExtensionRepositoryOld,
+        private val extensionRepository: ExtensionRepository,
     ) {
         suspend fun await(
             path: Path,
@@ -28,7 +30,7 @@ class InstallExtensionFile
             }
             .collect()
 
-        fun asFlow(path: Path) = extensionRepositoryOld.installExtension(ExtensionRepositoryOld.buildExtensionFormData(path))
+        fun asFlow(path: Path) = extensionRepository.installExtension(FileSystem.SYSTEM.source(path))
 
         companion object {
             private val log = logging()

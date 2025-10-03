@@ -6,13 +6,17 @@
 
 package ca.gosyer.jui.ui.sources.settings.model
 
-import ca.gosyer.jui.domain.source.model.sourcepreference.CheckBoxPreference
-import ca.gosyer.jui.domain.source.model.sourcepreference.EditTextPreference
-import ca.gosyer.jui.domain.source.model.sourcepreference.ListPreference
-import ca.gosyer.jui.domain.source.model.sourcepreference.MultiSelectListPreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.CheckBoxSourcePreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.EditTextSourcePreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.ListSourcePreference
+import ca.gosyer.jui.domain.source.model.sourcepreference.MultiSelectListSourcePreference
 import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
-import ca.gosyer.jui.domain.source.model.sourcepreference.SwitchPreference
-import ca.gosyer.jui.domain.source.model.sourcepreference.TwoStateProps
+import ca.gosyer.jui.domain.source.model.sourcepreference.SwitchSourcePreference
+import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.CheckBox
+import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.EditText
+import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.List
+import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.MultiSelect
+import ca.gosyer.jui.ui.sources.settings.model.SourceSettingsView.Switch
 import ca.gosyer.jui.ui.util.lang.stringFormat
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.minus
@@ -23,7 +27,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-sealed class SourceSettingsView<T, R : Any?> {
+sealed class SourceSettingsView<T : SourcePreference, R : Any?> {
     abstract val index: Int
     abstract val title: String?
     abstract val subtitle: String?
@@ -36,32 +40,26 @@ sealed class SourceSettingsView<T, R : Any?> {
     open val summary: String?
         get() = subtitle?.let { withFormat(it, state.value) }
 
-    sealed class TwoState(
-        props: TwoStateProps,
-        private val _state: MutableStateFlow<Boolean> = MutableStateFlow(
-            props.currentValue
-                ?: props.defaultValue
-                ?: false,
-        ),
-    ) : SourceSettingsView<TwoStateProps, Boolean>() {
+    data class CheckBox internal constructor(
+        override val index: Int,
+        override val title: String?,
+        override val subtitle: String?,
+        override val props: CheckBoxSourcePreference,
+    ) : SourceSettingsView<CheckBoxSourcePreference, Boolean>(){
+        private val _state = MutableStateFlow(
+            props.currentValue ?: props.default,
+        )
         override val state: StateFlow<Boolean> = _state.asStateFlow()
 
         override fun updateState(value: Boolean) {
             _state.value = value
         }
-    }
 
-    data class CheckBox internal constructor(
-        override val index: Int,
-        override val title: String?,
-        override val subtitle: String?,
-        override val props: TwoStateProps,
-    ) : TwoState(props) {
-        internal constructor(index: Int, preference: CheckBoxPreference) : this(
+        internal constructor(index: Int, preference: CheckBoxSourcePreference) : this(
             index,
-            preference.props.title,
-            preference.props.summary,
-            preference.props,
+            preference.title,
+            preference.summary,
+            preference,
         )
     }
 
@@ -69,13 +67,22 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val index: Int,
         override val title: String?,
         override val subtitle: String?,
-        override val props: TwoStateProps,
-    ) : TwoState(props) {
-        internal constructor(index: Int, preference: SwitchPreference) : this(
+        override val props: SwitchSourcePreference,
+    ) : SourceSettingsView<SwitchSourcePreference, Boolean>() {
+        private val _state = MutableStateFlow(
+            props.currentValue ?: props.default,
+        )
+        override val state: StateFlow<Boolean> = _state.asStateFlow()
+
+        override fun updateState(value: Boolean) {
+            _state.value = value
+        }
+
+        internal constructor(index: Int, preference: SwitchSourcePreference) : this(
             index,
-            preference.props.title,
-            preference.props.summary,
-            preference.props,
+            preference.title,
+            preference.summary,
+            preference,
         )
     }
 
@@ -83,21 +90,21 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val index: Int,
         override val title: String?,
         override val subtitle: String?,
-        override val props: ListPreference.ListProps,
-    ) : SourceSettingsView<ListPreference.ListProps, String>() {
+        override val props: ListSourcePreference,
+    ) : SourceSettingsView<ListSourcePreference, String>() {
         private val _state = MutableStateFlow(
-            props.currentValue ?: props.defaultValue ?: "0",
+            props.currentValue ?: props.default ?: "0",
         )
         override val state: StateFlow<String> = _state.asStateFlow()
 
         override fun updateState(value: String) {
             _state.value = value
         }
-        internal constructor(index: Int, preference: ListPreference) : this(
+        internal constructor(index: Int, preference: ListSourcePreference) : this(
             index,
-            preference.props.title,
-            preference.props.summary,
-            preference.props,
+            preference.title,
+            preference.summary,
+            preference,
         )
 
         override val summary: String?
@@ -113,21 +120,21 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val index: Int,
         override val title: String?,
         override val subtitle: String?,
-        override val props: MultiSelectListPreference.MultiSelectListProps,
-    ) : SourceSettingsView<MultiSelectListPreference.MultiSelectListProps, ImmutableList<String>?>() {
+        override val props: MultiSelectListSourcePreference,
+    ) : SourceSettingsView<MultiSelectListSourcePreference, ImmutableList<String>?>() {
         private val _state = MutableStateFlow(
-            props.currentValue?.toImmutableList() ?: props.defaultValue?.toImmutableList(),
+            props.currentValue?.toImmutableList() ?: props.default?.toImmutableList(),
         )
         override val state: StateFlow<ImmutableList<String>?> = _state.asStateFlow()
 
         override fun updateState(value: ImmutableList<String>?) {
             _state.value = value
         }
-        internal constructor(index: Int, preference: MultiSelectListPreference) : this(
+        internal constructor(index: Int, preference: MultiSelectListSourcePreference) : this(
             index,
-            preference.props.title,
-            preference.props.summary,
-            preference.props,
+            preference.title,
+            preference.summary,
+            preference,
         )
 
         fun getOptions() =
@@ -150,21 +157,21 @@ sealed class SourceSettingsView<T, R : Any?> {
         override val subtitle: String?,
         val dialogTitle: String?,
         val dialogMessage: String?,
-        override val props: EditTextPreference.EditTextProps,
-    ) : SourceSettingsView<EditTextPreference.EditTextProps, String>() {
-        private val _state = MutableStateFlow(props.currentValue ?: props.defaultValue.orEmpty())
+        override val props: EditTextSourcePreference,
+    ) : SourceSettingsView<EditTextSourcePreference, String>() {
+        private val _state = MutableStateFlow(props.currentValue ?: props.default.orEmpty())
         override val state: StateFlow<String> = _state.asStateFlow()
 
         override fun updateState(value: String) {
             _state.value = value
         }
-        internal constructor(index: Int, preference: EditTextPreference) : this(
+        internal constructor(index: Int, preference: EditTextSourcePreference) : this(
             index,
-            preference.props.title,
-            preference.props.summary,
-            preference.props.dialogTitle,
-            preference.props.dialogMessage,
-            preference.props,
+            preference.title,
+            preference.summary,
+            preference.dialogTitle,
+            preference.dialogMessage,
+            preference,
         )
     }
 }
@@ -179,9 +186,9 @@ fun SourceSettingsView(
     preference: SourcePreference,
 ): SourceSettingsView<*, *> =
     when (preference) {
-        is CheckBoxPreference -> SourceSettingsView.CheckBox(index, preference)
-        is SwitchPreference -> SourceSettingsView.Switch(index, preference)
-        is ListPreference -> SourceSettingsView.List(index, preference)
-        is MultiSelectListPreference -> SourceSettingsView.MultiSelect(index, preference)
-        is EditTextPreference -> SourceSettingsView.EditText(index, preference)
+        is CheckBoxSourcePreference -> CheckBox(index, preference)
+        is SwitchSourcePreference -> Switch(index, preference)
+        is EditTextSourcePreference -> EditText(index, preference)
+        is ListSourcePreference -> List(index, preference)
+        is MultiSelectListSourcePreference -> MultiSelect(index, preference)
     }

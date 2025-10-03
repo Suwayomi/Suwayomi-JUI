@@ -1,0 +1,31 @@
+query GetChapterUpdates($first: Int!, $offset: Int!) {
+  chapters(
+    filter: {inLibrary: {equalTo:true}}
+    first: $first
+    offset: $offset
+    order: [
+      { by: FETCHED_AT, byType: DESC },
+      { by: SOURCE_ORDER, byType: DESC },
+    ]
+  ) {
+    nodes {
+      ...ChapterWithMangaFragment
+    }
+    pageInfo {
+      hasNextPage
+    }
+    totalCount
+  }
+}
+
+mutation UpdateLibrary {
+  updateLibraryManga(input: {}) {
+    clientMutationId
+  }
+}
+
+mutation UpdateCategory($categories: [Int!]!) {
+  updateCategoryManga(input: {categories: $categories}) {
+    clientMutationId
+  }
+}

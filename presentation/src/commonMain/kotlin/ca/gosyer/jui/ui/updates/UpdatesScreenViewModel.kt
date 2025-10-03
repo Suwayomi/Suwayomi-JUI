@@ -150,7 +150,7 @@ class UpdatesScreenViewModel
                     _selectedIds.value = persistentListOf()
                     return@launch
                 }
-                queueChapterDownload.await(chapter, onError = { toast(it.message.orEmpty()) })
+                queueChapterDownload.await(chapter.id, onError = { toast(it.message.orEmpty()) })
             }
         }
 

@@ -111,6 +111,8 @@ class BackupRepositoryImpl(
                 BackupRestoreState.FAILURE -> RestoreState.FAILURE
                 BackupRestoreState.RESTORING_CATEGORIES -> RestoreState.RESTORING_CATEGORIES
                 BackupRestoreState.RESTORING_MANGA -> RestoreState.RESTORING_MANGA
+                BackupRestoreState.RESTORING_META -> RestoreState.RESTORING_META
+                BackupRestoreState.RESTORING_SETTINGS -> RestoreState.RESTORING_SETTINGS
                 BackupRestoreState.UNKNOWN__ -> RestoreState.UNKNOWN
             },
             mangaProgress,

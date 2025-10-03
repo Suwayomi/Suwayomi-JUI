@@ -1,0 +1,32 @@
+mutation RefreshManga($id: Int!) {
+  fetchManga(input: {id: $id}) {
+    manga {
+      ...MangaFragment
+    }
+  }
+}
+
+query GetManga($id: Int!) {
+  manga(id: $id) {
+    ...MangaFragment
+  }
+}
+
+query GetMangaLibrary($id: Int!) {
+  manga(id: $id) {
+    ...LibraryMangaFragment
+  }
+}
+
+mutation SetMangaMeta($mangaId: Int!, $key: String!, $value: String!) {
+  setMangaMeta(input: {meta: {key: $key, mangaId: $mangaId, value: $value}}) {
+    clientMutationId
+  }
+}
+
+query GetThumbnailUrl($id: Int!) {
+  manga(id: $id) {
+    thumbnailUrl
+    thumbnailUrlLastFetched
+  }
+}

@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.source.interactor
 
 import ca.gosyer.jui.domain.source.model.Source
-import ca.gosyer.jui.domain.source.service.SourceRepositoryOld
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
@@ -16,39 +16,35 @@ import org.lighthousegames.logging.logging
 class GetFilterList
     @Inject
     constructor(
-        private val sourceRepositoryOld: SourceRepositoryOld,
+        private val sourceRepository: SourceRepository,
     ) {
         suspend fun await(
             source: Source,
-            reset: Boolean,
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(source.id, reset)
+        ) = asFlow(source.id)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to get filter list for ${source.displayName} with reset = $reset" }
+                log.warn(it) { "Failed to get filter list for ${source.displayName}" }
             }
             .singleOrNull()
 
         suspend fun await(
             sourceId: Long,
-            reset: Boolean,
             onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(sourceId, reset)
+        ) = asFlow(sourceId)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to get filter list for $sourceId with reset = $reset" }
+                log.warn(it) { "Failed to get filter list for $sourceId" }
             }
             .singleOrNull()
 
         fun asFlow(
             source: Source,
-            reset: Boolean,
-        ) = sourceRepositoryOld.getFilterList(source.id, reset)
+        ) = sourceRepository.getFilterList(source.id)
 
         fun asFlow(
             sourceId: Long,
-            reset: Boolean,
-        ) = sourceRepositoryOld.getFilterList(sourceId, reset)
+        ) = sourceRepository.getFilterList(sourceId)
 
         companion object {
             private val log = logging()

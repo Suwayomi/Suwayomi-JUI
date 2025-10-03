@@ -137,6 +137,15 @@ class MangaScreenViewModel
             }
                 .onEach {
                     _manga.value = it
+                    if (_manga.value?.initialized == false) {
+                        refreshManga.await(
+                            params.mangaId,
+                            onError = {
+                                log.warn(it) { "Error when fetching manga" }
+                                toast(it.message.orEmpty())
+                            }
+                        )
+                    }
                     loadingManga.value = false
                 }
                 .catch {
@@ -151,10 +160,20 @@ class MangaScreenViewModel
             }
                 .onEach {
                     _chapters.value = it.toDownloadChapters()
+                    if (_chapters.value.isEmpty()) {
+                        refreshChapters.await(
+                            params.mangaId,
+                            onError = {
+                                log.warn(it) { "Error when fetching chapters" }
+                                toast(it.message.orEmpty())
+                            }
+                        )
+                    }
                     loadingChapters.value = false
                 }
                 .catch {
                     toast(it.message.orEmpty())
+                    log.warn(it) { "Error when getting chapters" }
                     loadingChapters.value = false
                 }
                 .launchIn(scope)
@@ -182,11 +201,25 @@ class MangaScreenViewModel
         fun refreshManga() {
             scope.launch {
                 loadingManga.value = true
-                refreshManga.await(params.mangaId, onError = { toast(it.message.orEmpty()) })
+                refreshManga.await(
+                    params.mangaId,
+                    onError = {
+                        log.warn(it) { "Error when refreshing manga" }
+                        toast(it.message.orEmpty())
+                    }
+                )
+                loadingManga.value = false
             }
             scope.launch {
                 loadingChapters.value = true
-                refreshChapters.await(params.mangaId, onError = { toast(it.message.orEmpty()) })
+                refreshChapters.await(
+                    params.mangaId,
+                    onError = {
+                        log.warn(it) { "Error when refreshing chapters" }
+                        toast(it.message.orEmpty())
+                    }
+                )
+                loadingChapters.value = false
             }
         }
 
@@ -290,10 +323,8 @@ class MangaScreenViewModel
             }
         }
 
-        fun downloadChapter(index: Int) {
-            manga.value?.let { manga ->
-                scope.launch { queueChapterDownload.await(manga, index, onError = { toast(it.message.orEmpty()) }) }
-            }
+        fun downloadChapter(chapterId: Long) {
+            scope.launch { queueChapterDownload.await(chapterId, onError = { toast(it.message.orEmpty()) }) }
         }
 
         fun deleteDownload(id: Long?) {
@@ -312,9 +343,9 @@ class MangaScreenViewModel
             }
         }
 
-        fun stopDownloadingChapter(index: Int) {
+        fun stopDownloadingChapter(chapterId: Long) {
             scope.launch {
-                chapters.value.find { it.chapter.index == index }
+                chapters.value.find { it.chapter.id == chapterId }
                     ?.stopDownloading(stopChapterDownload)
             }
         }

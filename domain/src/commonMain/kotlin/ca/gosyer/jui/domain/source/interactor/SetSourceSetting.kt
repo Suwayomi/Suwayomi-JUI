@@ -6,9 +6,8 @@
 
 package ca.gosyer.jui.domain.source.interactor
 
-import ca.gosyer.jui.domain.source.model.Source
-import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreferenceChange
-import ca.gosyer.jui.domain.source.service.SourceRepositoryOld
+import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
+import ca.gosyer.jui.domain.source.service.SourceRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
@@ -17,50 +16,26 @@ import org.lighthousegames.logging.logging
 class SetSourceSetting
     @Inject
     constructor(
-        private val sourceRepositoryOld: SourceRepositoryOld,
+        private val sourceRepository: SourceRepository,
     ) {
         suspend fun await(
-            source: Source,
-            settingIndex: Int,
-            setting: Any,
-            onError: suspend (Throwable) -> Unit = {
-            },
-        ) = asFlow(source, settingIndex, setting)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to set setting for ${source.displayName} with index = $settingIndex and value = $setting" }
-            }
-            .collect()
-
-        suspend fun await(
             sourceId: Long,
-            settingIndex: Int,
-            setting: Any,
+            sourcePreference: SourcePreference,
             onError: suspend (Throwable) -> Unit = {
             },
-        ) = asFlow(sourceId, settingIndex, setting)
+        ) = asFlow(sourceId, sourcePreference)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to set setting for $sourceId with index = $settingIndex and value = $setting" }
+                log.warn(it) { "Failed to set setting for $sourceId with index = ${sourcePreference.position}" }
             }
             .collect()
 
         fun asFlow(
-            source: Source,
-            settingIndex: Int,
-            setting: Any,
-        ) = sourceRepositoryOld.setSourceSetting(
-            source.id,
-            SourcePreferenceChange(settingIndex, setting),
-        )
-
-        fun asFlow(
             sourceId: Long,
-            settingIndex: Int,
-            setting: Any,
-        ) = sourceRepositoryOld.setSourceSetting(
+            sourcePreference: SourcePreference,
+        ) = sourceRepository.setSourceSetting(
             sourceId,
-            SourcePreferenceChange(settingIndex, setting),
+            sourcePreference,
         )
 
         companion object {

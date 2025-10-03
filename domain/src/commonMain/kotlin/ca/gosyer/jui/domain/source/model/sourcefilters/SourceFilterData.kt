@@ -11,5 +11,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SourceFilterData(
     val searchTerm: String?,
-    val filter: List<SourceFilterChange>?,
+    val filter: List<SourceFilterChangeOld>?,
 )

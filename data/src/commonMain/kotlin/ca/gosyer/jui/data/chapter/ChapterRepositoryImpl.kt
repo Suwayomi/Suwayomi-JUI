@@ -10,11 +10,14 @@ import ca.gosyer.jui.data.graphql.UpdateChapterMetaMutation
 import ca.gosyer.jui.data.graphql.UpdateChapterMutation
 import ca.gosyer.jui.data.graphql.UpdateChaptersMutation
 import ca.gosyer.jui.data.graphql.fragment.ChapterFragment
+import ca.gosyer.jui.data.graphql.fragment.ChapterWithMangaFragment
 import ca.gosyer.jui.data.graphql.type.UpdateChapterPatchInput
+import ca.gosyer.jui.data.manga.MangaRepositoryImpl.Companion.toManga
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.chapter.model.ChapterMeta
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import ca.gosyer.jui.domain.server.Http
+import ca.gosyer.jui.domain.updates.model.MangaAndChapter
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Optional
 import io.ktor.client.request.HttpRequestBuilder
@@ -153,7 +156,7 @@ class ChapterRepositoryImpl(
             .toFlow()
             .map {
                 val chapters = it.dataAssertNoErrors
-                chapters.fetchChapters.chapters.map { it.chapterFragment.toChapter() }
+                chapters.fetchChapters!!.chapters.map { it.chapterFragment.toChapter() }
             }
     }
 
@@ -166,7 +169,7 @@ class ChapterRepositoryImpl(
             .toFlow()
             .map {
                 val chapters = it.dataAssertNoErrors
-                chapters.fetchChapterPages.pages
+                chapters.fetchChapterPages!!.pages
             }
     }
 
@@ -202,6 +205,13 @@ class ChapterRepositoryImpl(
                 meta = ChapterMeta(
                     juiPageOffset = meta.find { it.key == "juiPageOffset" }?.value?.toIntOrNull() ?: 0
                 )
+            )
+        }
+
+        internal fun ChapterWithMangaFragment.toMangaAndChapter(): MangaAndChapter {
+            return MangaAndChapter(
+                manga.mangaFragment.toManga(),
+                chapterFragment.toChapter(),
             )
         }
     }
