@@ -164,7 +164,7 @@ class ChapterRepositoryImpl(
     ): Flow<ByteArray> {
         val realUrl = Url("$serverUrl$url")
 
-        return flow { http.get(realUrl, block).readBytes() }
+        return flow { emit(http.get(realUrl, block).readBytes()) }
     }
 
     companion object {

@@ -192,8 +192,8 @@ class TachideskPageLoader(
         currentPage: ReaderPage,
         amount: Int,
     ): List<PriorityPage> {
-        val pageIndex = currentPage.index2
         val pages = (currentPage.chapter.pages.value as? PagesState.Success)?.pages ?: return emptyList()
+        val pageIndex = pages.indexOf(currentPage)
         if (pageIndex >= pages.lastIndex) return emptyList()
 
         return pages
