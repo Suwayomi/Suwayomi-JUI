@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.data.settings
 
+import ca.gosyer.jui.data.graphql.AboutServerQuery
 import ca.gosyer.jui.data.graphql.AllSettingsQuery
 import ca.gosyer.jui.data.graphql.SetSettingsMutation
 import ca.gosyer.jui.data.graphql.fragment.SettingsTypeFragment
@@ -20,6 +21,8 @@ import ca.gosyer.jui.data.graphql.type.WebUIChannel
 import ca.gosyer.jui.data.graphql.type.WebUIFlavor
 import ca.gosyer.jui.data.graphql.type.WebUIInterface
 import ca.gosyer.jui.data.util.toOptional
+import ca.gosyer.jui.domain.settings.model.About
+import ca.gosyer.jui.domain.settings.model.AboutBuildType
 import ca.gosyer.jui.domain.settings.model.SetSettingsInput
 import ca.gosyer.jui.domain.settings.model.Settings
 import ca.gosyer.jui.domain.settings.service.SettingsRepository
@@ -350,4 +353,26 @@ class SettingsRepositoryImpl(
                 Unit
             }
             .flowOn(Dispatchers.IO)
+
+    override fun aboutServer(): Flow<About> {
+        return apolloClient.query(
+            AboutServerQuery()
+        )
+            .toFlow()
+            .map {
+                val data = it.dataAssertNoErrors
+                About(
+                    data.aboutServer.name,
+                    data.aboutServer.version,
+                    when (data.aboutServer.buildType) {
+                        "Preview" -> AboutBuildType.Preview
+                        else -> AboutBuildType.Stable
+                    },
+                    data.aboutServer.buildTime,
+                    data.aboutServer.github,
+                    data.aboutServer.discord
+                )
+            }
+            .flowOn(Dispatchers.IO)
+    }
 }

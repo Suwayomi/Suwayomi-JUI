@@ -187,7 +187,7 @@ private fun ServerVersionInfo(
     } else {
         PreferenceRow(
             title = stringResource(MR.strings.server_version),
-            subtitle = "${about.buildType.name} ${about.version}-${about.revision} ($formattedBuildTime)",
+            subtitle = "${about.buildType.name} ${about.version} ($formattedBuildTime)",
         )
     }
 }

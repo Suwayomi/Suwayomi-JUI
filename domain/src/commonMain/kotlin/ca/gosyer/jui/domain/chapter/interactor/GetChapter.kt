@@ -47,13 +47,13 @@ class GetChapter
             chapterId: Long,
         ) = serverListeners.combineChapters(
             chapterRepository.getChapter(chapterId),
-            idPredate = { ids -> chapterId in ids },
+            chapterIdPredate = { ids -> chapterId in ids },
         )
 
         fun asFlow(chapter: Chapter) =
             serverListeners.combineChapters(
                 chapterRepository.getChapter(chapter.id),
-                idPredate = { ids -> chapter.id in ids },
+                chapterIdPredate = { ids -> chapter.id in ids },
             )
 
         companion object {

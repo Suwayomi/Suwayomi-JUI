@@ -6,7 +6,7 @@
 
 package ca.gosyer.jui.domain.settings.interactor
 
-import ca.gosyer.jui.domain.settings.service.SettingsRepositoryOld
+import ca.gosyer.jui.domain.settings.service.SettingsRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
@@ -15,7 +15,7 @@ import org.lighthousegames.logging.logging
 class AboutServer
     @Inject
     constructor(
-        private val settingsRepositoryOld: SettingsRepositoryOld,
+        private val settingsRepository: SettingsRepository,
     ) {
         suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
             asFlow()
@@ -25,7 +25,7 @@ class AboutServer
                 }
                 .singleOrNull()
 
-        fun asFlow() = settingsRepositoryOld.aboutServer()
+        fun asFlow() = settingsRepository.aboutServer()
 
         companion object {
             private val log = logging()

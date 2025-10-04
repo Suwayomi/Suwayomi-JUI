@@ -42,6 +42,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -90,7 +91,9 @@ class MangaScreenViewModel
 
         private val loadingManga = MutableStateFlow(true)
         private val loadingChapters = MutableStateFlow(true)
-        val isLoading = combine(loadingManga, loadingChapters) { a, b -> a || b }
+        private val refreshingChapters = MutableStateFlow(false)
+        private val refreshingManga = MutableStateFlow(false)
+        val isLoading = combine(loadingManga, loadingChapters, refreshingManga, refreshingChapters) { a, b, c, d -> a || b || c || d }
             .stateIn(scope, SharingStarted.Eagerly, true)
 
         val categories = getCategories.asFlow(true)
@@ -137,19 +140,11 @@ class MangaScreenViewModel
             }
                 .onEach {
                     _manga.value = it
-                    if (_manga.value?.initialized == false) {
-                        refreshManga.await(
-                            params.mangaId,
-                            onError = {
-                                log.warn(it) { "Error when fetching manga" }
-                                toast(it.message.orEmpty())
-                            }
-                        )
-                    }
                     loadingManga.value = false
                 }
                 .catch {
                     toast(it.message.orEmpty())
+                    log.warn(it) { "Error when loading manga" }
                     loadingManga.value = false
                 }
                 .launchIn(scope)
@@ -159,16 +154,7 @@ class MangaScreenViewModel
                 getChapters.asFlow(params.mangaId)
             }
                 .onEach {
-                    _chapters.value = it.toDownloadChapters()
-                    if (_chapters.value.isEmpty()) {
-                        refreshChapters.await(
-                            params.mangaId,
-                            onError = {
-                                log.warn(it) { "Error when fetching chapters" }
-                                toast(it.message.orEmpty())
-                            }
-                        )
-                    }
+                    updateChapters(it)
                     loadingChapters.value = false
                 }
                 .catch {
@@ -182,6 +168,13 @@ class MangaScreenViewModel
                 val mangaCategories = getMangaCategories.await(params.mangaId, onError = { toast(it.message.orEmpty()) })
                 if (mangaCategories != null) {
                     _mangaCategories.value = mangaCategories.toImmutableList()
+                }
+            }
+
+            scope.launch {
+                val manga = manga.first { it != null }!!
+                if (!manga.initialized) {
+                    refreshManga()
                 }
             }
         }
@@ -198,28 +191,38 @@ class MangaScreenViewModel
             }
         }
 
+        fun updateChapters(chapters: List<Chapter>) {
+            _chapters.value = chapters.sortedByDescending { it.index }.toDownloadChapters()
+        }
+
         fun refreshManga() {
             scope.launch {
-                loadingManga.value = true
-                refreshManga.await(
+                refreshingManga.value = true
+                val manga = refreshManga.await(
                     params.mangaId,
                     onError = {
                         log.warn(it) { "Error when refreshing manga" }
                         toast(it.message.orEmpty())
                     }
                 )
-                loadingManga.value = false
+                if (manga != null) {
+                    _manga.value = manga
+                }
+                refreshingManga.value = false
             }
             scope.launch {
-                loadingChapters.value = true
-                refreshChapters.await(
+                refreshingChapters.value = true
+                val chapters = refreshChapters.await(
                     params.mangaId,
                     onError = {
                         log.warn(it) { "Error when refreshing chapters" }
                         toast(it.message.orEmpty())
                     }
                 )
-                loadingChapters.value = false
+                if (!chapters.isNullOrEmpty()) {
+                    updateChapters(chapters)
+                }
+                refreshingChapters.value = false
             }
         }
 
@@ -242,6 +245,7 @@ class MangaScreenViewModel
                             chooseCategoriesFlow.emit(Unit)
                         }
                     }
+                    loadManga()
                 }
             }
         }
@@ -275,6 +279,8 @@ class MangaScreenViewModel
                     if (mangaCategories != null) {
                         _mangaCategories.value = mangaCategories.toImmutableList()
                     }
+
+                    loadManga()
                 }
             }
         }
@@ -287,6 +293,7 @@ class MangaScreenViewModel
                 manga.value?.let {
                     updateChapter.await(chapterIds, read = read, onError = { toast(it.message.orEmpty()) })
                     _selectedIds.value = persistentListOf()
+                    loadChapters()
                 }
             }
         }
@@ -303,6 +310,7 @@ class MangaScreenViewModel
                 manga.value?.let {
                     updateChapter.await(chapterIds, bookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
                     _selectedIds.value = persistentListOf()
+                    loadChapters()
                 }
             }
         }
@@ -319,6 +327,7 @@ class MangaScreenViewModel
                         .subList(0, index).map{it.chapter.id} // todo test
                     updateChapter.await(chapters, read = true, onError = { toast(it.message.orEmpty()) })
                     _selectedIds.value = persistentListOf()
+                    loadChapters()
                 }
             }
         }

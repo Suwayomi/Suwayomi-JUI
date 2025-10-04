@@ -15,7 +15,6 @@ import kotlinx.serialization.Serializable
 data class About(
     val name: String,
     val version: String,
-    val revision: String,
     val buildType: AboutBuildType,
     val buildTime: Long,
     val github: String,

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
@@ -38,6 +39,11 @@ class ServerListeners
             extraBufferCapacity = Channel.UNLIMITED,
         )
         val chapterIdsListener = _chapterIdsListener.asSharedFlow()
+
+        private val _mangaChapterIdsListener = MutableSharedFlow<List<Long>>(
+            extraBufferCapacity = Channel.UNLIMITED,
+        )
+        val mangaChapterIdsListener = _mangaChapterIdsListener.asSharedFlow()
 
         private val categoryMangaListener = MutableSharedFlow<Long>(
             extraBufferCapacity = Channel.UNLIMITED,
@@ -85,13 +91,16 @@ class ServerListeners
 
         fun <T> combineChapters(
             flow: Flow<T>,
-            idPredate: (suspend (List<Long>) -> Boolean)? = null,
+            chapterIdPredate: (suspend (List<Long>) -> Boolean)? = null,
+            mangaIdPredate: (suspend (List<Long>) -> Boolean)? = null,
         ): Flow<T> {
-            val idsListener = if (idPredate != null) {
-                _chapterIdsListener.filter { idPredate(it) }.startWith(Unit)
-            } else {
-                _chapterIdsListener.startWith(Unit)
-            }
+            val idsListener = _chapterIdsListener
+                .filter { chapterIdPredate?.invoke(it) ?: false }
+                .startWith(Unit)
+                .combine(
+                    _mangaChapterIdsListener.filter { mangaIdPredate?.invoke(it) ?: false }
+                        .startWith(Unit)
+                ) { _, _ -> }
 
             return idsListener
                 .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)

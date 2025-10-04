@@ -229,3 +229,14 @@ mutation SetSettings(
     clientMutationId
   }
 }
+
+query AboutServer {
+  aboutServer {
+    buildTime
+    buildType
+    discord
+    github
+    name
+    version
+  }
+}

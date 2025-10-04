@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.domain.settings.service
 
+import ca.gosyer.jui.domain.settings.model.About
 import ca.gosyer.jui.domain.settings.model.SetSettingsInput
 import ca.gosyer.jui.domain.settings.model.Settings
 import kotlinx.coroutines.flow.Flow
@@ -14,4 +15,6 @@ interface SettingsRepository {
     fun getSettings(): Flow<Settings>
 
     fun setSettings(input: SetSettingsInput): Flow<Unit>
+
+    fun aboutServer(): Flow<About>
 }
