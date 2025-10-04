@@ -28,9 +28,8 @@ class BackupRepositoryImpl(
     private val http: Http,
     private val serverUrl: Url,
 ) : BackupRepository {
-
-    override fun validateBackup(source: Source): Flow<BackupValidationResult> {
-        return apolloClient.query(
+    override fun validateBackup(source: Source): Flow<BackupValidationResult> =
+        apolloClient.query(
             ValidateBackupQuery(
                 DefaultUpload.Builder()
                     .content {
@@ -38,21 +37,20 @@ class BackupRepositoryImpl(
                     }
                     .fileName("backup.tachibk")
                     .contentType("application/octet-stream")
-                    .build()
-            )
+                    .build(),
+            ),
         ).toFlow()
             .map {
                 BackupValidationResult(
                     missingSources = it.dataAssertNoErrors.validateBackup.missingSources.map { source ->
                         "${source.name} (${source.id})"
                     },
-                    missingTrackers = emptyList()
+                    missingTrackers = emptyList(),
                 )
             }
-    }
 
-    override fun restoreBackup(source: Source): Flow<Pair<String, RestoreStatus>> {
-        return apolloClient.mutation(
+    override fun restoreBackup(source: Source): Flow<Pair<String, RestoreStatus>> =
+        apolloClient.mutation(
             RestoreBackupMutation(
                 DefaultUpload.Builder()
                     .content {
@@ -60,8 +58,8 @@ class BackupRepositoryImpl(
                     }
                     .fileName("backup.tachibk")
                     .contentType("application/octet-stream")
-                    .build()
-            )
+                    .build(),
+            ),
         ).toFlow()
             .map {
                 val data = it.dataAssertNoErrors
@@ -69,54 +67,52 @@ class BackupRepositoryImpl(
                     .restoreStatusFragment
                     .toRestoreStatus()
             }
-    }
 
-    override fun restoreStatus(id: String): Flow<RestoreStatus> {
-        return apolloClient.query(
-            RestoreStatusQuery(id)
+    override fun restoreStatus(id: String): Flow<RestoreStatus> =
+        apolloClient.query(
+            RestoreStatusQuery(id),
         ).toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.restoreStatus!!.restoreStatusFragment.toRestoreStatus()
             }
-    }
 
     override fun createBackup(
         includeCategories: Boolean,
         includeChapters: Boolean,
         block: HttpRequestBuilder.() -> Unit,
-    ): Flow<Pair<String, Source>> {
-        return apolloClient
+    ): Flow<Pair<String, Source>> =
+        apolloClient
             .mutation(
-                CreateBackupMutation(includeCategories, includeChapters)
+                CreateBackupMutation(includeCategories, includeChapters),
             )
             .toFlow()
             .map {
                 val url = it.dataAssertNoErrors.createBackup.url
                 val response = http.get(
-                    Url("$serverUrl${url}")
+                    Url("$serverUrl$url"),
                 )
                 val fileName = response.headers["content-disposition"]!!
                     .substringAfter("filename=")
                     .trim('"')
                 fileName to response.bodyAsChannel().toSource()
             }
-    }
 
     companion object {
-        private fun RestoreStatusFragment.toRestoreStatus() = RestoreStatus(
-            when (state) {
-                BackupRestoreState.IDLE -> RestoreState.IDLE
-                BackupRestoreState.SUCCESS -> RestoreState.SUCCESS
-                BackupRestoreState.FAILURE -> RestoreState.FAILURE
-                BackupRestoreState.RESTORING_CATEGORIES -> RestoreState.RESTORING_CATEGORIES
-                BackupRestoreState.RESTORING_MANGA -> RestoreState.RESTORING_MANGA
-                BackupRestoreState.RESTORING_META -> RestoreState.RESTORING_META
-                BackupRestoreState.RESTORING_SETTINGS -> RestoreState.RESTORING_SETTINGS
-                BackupRestoreState.UNKNOWN__ -> RestoreState.UNKNOWN
-            },
-            mangaProgress,
-            totalManga,
-        )
+        private fun RestoreStatusFragment.toRestoreStatus() =
+            RestoreStatus(
+                when (state) {
+                    BackupRestoreState.IDLE -> RestoreState.IDLE
+                    BackupRestoreState.SUCCESS -> RestoreState.SUCCESS
+                    BackupRestoreState.FAILURE -> RestoreState.FAILURE
+                    BackupRestoreState.RESTORING_CATEGORIES -> RestoreState.RESTORING_CATEGORIES
+                    BackupRestoreState.RESTORING_MANGA -> RestoreState.RESTORING_MANGA
+                    BackupRestoreState.RESTORING_META -> RestoreState.RESTORING_META
+                    BackupRestoreState.RESTORING_SETTINGS -> RestoreState.RESTORING_SETTINGS
+                    BackupRestoreState.UNKNOWN__ -> RestoreState.UNKNOWN
+                },
+                mangaProgress,
+                totalManga,
+            )
     }
 }

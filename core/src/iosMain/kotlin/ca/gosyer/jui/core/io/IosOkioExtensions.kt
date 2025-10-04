@@ -22,16 +22,16 @@ actual suspend fun ByteReadChannel.toSource(context: CoroutineContext): Source {
             channel.cancel()
         }
 
-        override fun read(sink: Buffer, byteCount: Long): Long {
+        override fun read(
+            sink: Buffer,
+            byteCount: Long,
+        ): Long {
             val buffer = ByteArray(byteCount.toInt())
             val read = runBlocking(context) { channel.readAvailable(buffer) }
             sink.write(buffer.reversedArray())
             return read.toLong()
         }
 
-        override fun timeout(): Timeout {
-            return Timeout()
-        }
+        override fun timeout(): Timeout = Timeout()
     }
 }
-

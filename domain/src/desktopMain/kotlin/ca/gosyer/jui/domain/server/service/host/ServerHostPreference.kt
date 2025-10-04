@@ -67,10 +67,10 @@ sealed class ServerHostPreference<T : Any> {
     class RootPath(
         preferenceStore: PreferenceStore,
     ) : StringServerHostPreference(
-        preferenceStore,
-        "rootDir",
-        "",
-    )
+            preferenceStore,
+            "rootDir",
+            "",
+        )
 
     class IP(
         preferenceStore: PreferenceStore,

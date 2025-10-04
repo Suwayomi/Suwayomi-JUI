@@ -64,20 +64,18 @@ class DeleteChapterDownload
             }
             .collect()
 
-        fun asFlow(
-            chapterId: Long,
-        ) = chapterRepository.deleteDownloadedChapter(chapterId)
-            .onEach { serverListeners.updateChapters(chapterId) }
+        fun asFlow(chapterId: Long) =
+            chapterRepository.deleteDownloadedChapter(chapterId)
+                .onEach { serverListeners.updateChapters(chapterId) }
 
         @JvmName("asFlowChapter")
         fun asFlow(chapter: Chapter) =
             chapterRepository.deleteDownloadedChapter(chapter.id)
                 .onEach { serverListeners.updateChapters(chapter.id) }
 
-        fun asFlow(
-            chapterIds: List<Long>,
-        ) = chapterRepository.deleteDownloadedChapters(chapterIds)
-            .onEach { serverListeners.updateChapters(chapterIds) }
+        fun asFlow(chapterIds: List<Long>) =
+            chapterRepository.deleteDownloadedChapters(chapterIds)
+                .onEach { serverListeners.updateChapters(chapterIds) }
 
         @JvmName("asFlowChapters")
         fun asFlow(chapter: List<Chapter>) =

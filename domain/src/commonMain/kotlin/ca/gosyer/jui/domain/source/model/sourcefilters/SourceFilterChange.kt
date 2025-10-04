@@ -25,31 +25,31 @@ data class SourceFilterChangeOld(
     )
 }
 
-
 sealed interface SourceFilter {
     val position: Int
+
     data class Checkbox(
         override val position: Int,
         val name: String,
         val default: Boolean,
         val value: Boolean = default,
-    ): SourceFilter
+    ) : SourceFilter
 
     data class Header(
         override val position: Int,
         val name: String,
-    ): SourceFilter
+    ) : SourceFilter
 
     data class Separator(
         override val position: Int,
         val name: String,
-    ): SourceFilter
+    ) : SourceFilter
 
     data class Group(
         override val position: Int,
         val name: String,
         val value: List<SourceFilter>,
-    ): SourceFilter
+    ) : SourceFilter
 
     data class Select(
         override val position: Int,
@@ -57,7 +57,7 @@ sealed interface SourceFilter {
         val values: List<String>,
         val default: Int,
         val value: Int = default,
-    ): SourceFilter
+    ) : SourceFilter
 
     data class Sort(
         override val position: Int,
@@ -65,10 +65,10 @@ sealed interface SourceFilter {
         val values: List<String>,
         val default: SelectionChange?,
         val value: SelectionChange? = default,
-    ): SourceFilter {
+    ) : SourceFilter {
         data class SelectionChange(
             val ascending: Boolean,
-            val index: Int
+            val index: Int,
         )
     }
 
@@ -77,18 +77,18 @@ sealed interface SourceFilter {
         val name: String,
         val default: String,
         val value: String = default,
-    ): SourceFilter
+    ) : SourceFilter
 
     data class TriState(
         override val position: Int,
         val name: String,
         val default: TriStateValue,
         val value: TriStateValue = default,
-    ): SourceFilter {
+    ) : SourceFilter {
         enum class TriStateValue {
             IGNORE,
             INCLUDE,
-            EXCLUDE
+            EXCLUDE,
         }
     }
 }

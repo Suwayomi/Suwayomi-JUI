@@ -11,22 +11,13 @@ import kotlinx.coroutines.flow.Flow
 import okio.Source
 
 interface ExtensionRepository {
-
     fun getExtensionList(): Flow<List<Extension>>
 
-    fun installExtension(
-        source: Source,
-    ): Flow<Unit>
+    fun installExtension(source: Source): Flow<Unit>
 
-    fun installExtension(
-        pkgName: String,
-    ): Flow<Unit>
+    fun installExtension(pkgName: String): Flow<Unit>
 
-    fun updateExtension(
-        pkgName: String,
-    ): Flow<Unit>
+    fun updateExtension(pkgName: String): Flow<Unit>
 
-    fun uninstallExtension(
-        pkgName: String,
-    ): Flow<Unit>
+    fun uninstallExtension(pkgName: String): Flow<Unit>
 }

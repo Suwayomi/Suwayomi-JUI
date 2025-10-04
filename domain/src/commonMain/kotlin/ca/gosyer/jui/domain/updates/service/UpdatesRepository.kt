@@ -10,13 +10,9 @@ import ca.gosyer.jui.domain.updates.model.Updates
 import kotlinx.coroutines.flow.Flow
 
 interface UpdatesRepository {
-    fun getRecentUpdates(
-        pageNum: Int,
-    ): Flow<Updates>
+    fun getRecentUpdates(pageNum: Int): Flow<Updates>
 
     fun updateLibrary(): Flow<Unit>
 
-    fun updateCategory(
-        categoryId: Long,
-    ): Flow<Unit>
+    fun updateCategory(categoryId: Long): Flow<Unit>
 }

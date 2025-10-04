@@ -38,13 +38,9 @@ class GetFilterList
             }
             .singleOrNull()
 
-        fun asFlow(
-            source: Source,
-        ) = sourceRepository.getFilterList(source.id)
+        fun asFlow(source: Source) = sourceRepository.getFilterList(source.id)
 
-        fun asFlow(
-            sourceId: Long,
-        ) = sourceRepository.getFilterList(sourceId)
+        fun asFlow(sourceId: Long) = sourceRepository.getFilterList(sourceId)
 
         companion object {
             private val log = logging()

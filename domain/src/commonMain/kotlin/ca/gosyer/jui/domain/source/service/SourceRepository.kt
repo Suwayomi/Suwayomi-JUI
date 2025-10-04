@@ -13,12 +13,9 @@ import ca.gosyer.jui.domain.source.model.sourcepreference.SourcePreference
 import kotlinx.coroutines.flow.Flow
 
 interface SourceRepository {
-
     fun getSourceList(): Flow<List<Source>>
 
-    fun getSourceInfo(
-        sourceId: Long,
-    ): Flow<Source>
+    fun getSourceInfo(sourceId: Long): Flow<Source>
 
     fun getPopularManga(
         sourceId: Long,
@@ -30,9 +27,7 @@ interface SourceRepository {
         pageNum: Int,
     ): Flow<MangaPage>
 
-    fun getFilterList(
-        sourceId: Long,
-    ): Flow<List<SourceFilter>>
+    fun getFilterList(sourceId: Long): Flow<List<SourceFilter>>
 
     fun getSearchResults(
         sourceId: Long,
@@ -41,9 +36,7 @@ interface SourceRepository {
         filters: List<SourceFilter>?,
     ): Flow<MangaPage>
 
-    fun getSourceSettings(
-        sourceId: Long,
-    ): Flow<List<SourcePreference>>
+    fun getSourceSettings(sourceId: Long): Flow<List<SourcePreference>>
 
     fun setSourceSetting(
         sourceId: Long,

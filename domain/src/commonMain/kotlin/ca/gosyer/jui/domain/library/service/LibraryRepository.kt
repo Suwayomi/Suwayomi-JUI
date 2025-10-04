@@ -9,11 +9,7 @@ package ca.gosyer.jui.domain.library.service
 import kotlinx.coroutines.flow.Flow
 
 interface LibraryRepository {
-    fun addMangaToLibrary(
-        mangaId: Long,
-    ): Flow<Unit>
+    fun addMangaToLibrary(mangaId: Long): Flow<Unit>
 
-    fun removeMangaFromLibrary(
-        mangaId: Long,
-    ): Flow<Unit>
+    fun removeMangaFromLibrary(mangaId: Long): Flow<Unit>
 }

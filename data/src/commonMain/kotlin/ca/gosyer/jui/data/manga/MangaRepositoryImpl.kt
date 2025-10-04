@@ -30,71 +30,66 @@ class MangaRepositoryImpl(
     private val http: Http,
     private val serverUrl: Url,
 ) : MangaRepository {
-    override fun getManga(mangaId: Long): Flow<Manga> {
-        return apolloClient.query(
-            GetMangaQuery(mangaId.toInt())
+    override fun getManga(mangaId: Long): Flow<Manga> =
+        apolloClient.query(
+            GetMangaQuery(mangaId.toInt()),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.manga.mangaFragment.toManga()
             }
-    }
 
-    override fun refreshManga(mangaId: Long): Flow<Manga> {
-        return apolloClient.mutation(
-            RefreshMangaMutation(mangaId.toInt())
+    override fun refreshManga(mangaId: Long): Flow<Manga> =
+        apolloClient.mutation(
+            RefreshMangaMutation(mangaId.toInt()),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.fetchManga!!.manga.mangaFragment.toManga()
             }
-    }
 
-    override fun getMangaLibrary(mangaId: Long): Flow<Manga> {
-        return apolloClient.query(
-            GetMangaLibraryQuery(mangaId.toInt())
+    override fun getMangaLibrary(mangaId: Long): Flow<Manga> =
+        apolloClient.query(
+            GetMangaLibraryQuery(mangaId.toInt()),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.manga.libraryMangaFragment.toManga()
             }
-    }
 
     override fun getMangaThumbnail(
         mangaId: Long,
         block: HttpRequestBuilder.() -> Unit,
-    ): Flow<ByteReadChannel> {
-        return apolloClient.query(
-            GetThumbnailUrlQuery(mangaId.toInt())
+    ): Flow<ByteReadChannel> =
+        apolloClient.query(
+            GetThumbnailUrlQuery(mangaId.toInt()),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 http.get(data.manga.thumbnailUrl!!).bodyAsChannel()
             }
-    }
 
     override fun updateMangaMeta(
         mangaId: Long,
         key: String,
         value: String,
-    ): Flow<Unit> {
-        return apolloClient.mutation(
-            SetMangaMetaMutation(mangaId.toInt(), key, value)
+    ): Flow<Unit> =
+        apolloClient.mutation(
+            SetMangaMetaMutation(mangaId.toInt(), key, value),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.setMangaMeta!!.clientMutationId
             }
-    }
 
     companion object {
-        internal fun MangaFragment.toManga(): Manga {
-            return Manga(
+        internal fun MangaFragment.toManga(): Manga =
+            Manga(
                 id = id.toLong(),
                 sourceId = sourceId,
                 url = url,
@@ -137,10 +132,9 @@ class MangaRepositoryImpl(
                 age = age,
                 chaptersAge = null,
             )
-        }
 
-        internal fun LibraryMangaFragment.toManga(): Manga {
-            return Manga(
+        internal fun LibraryMangaFragment.toManga(): Manga =
+            Manga(
                 id = id.toLong(),
                 sourceId = sourceId,
                 url = url,
@@ -183,6 +177,5 @@ class MangaRepositoryImpl(
                 age = age,
                 chaptersAge = null,
             )
-        }
     }
 }

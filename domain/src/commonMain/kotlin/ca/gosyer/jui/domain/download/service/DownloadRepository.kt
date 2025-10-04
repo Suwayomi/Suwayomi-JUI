@@ -9,27 +9,20 @@ package ca.gosyer.jui.domain.download.service
 import kotlinx.coroutines.flow.Flow
 
 interface DownloadRepository {
-
     fun startDownloading(): Flow<Unit>
 
     fun stopDownloading(): Flow<Unit>
 
     fun clearDownloadQueue(): Flow<Unit>
 
-    fun queueChapterDownload(
-        chapterId: Long,
-    ): Flow<Unit>
+    fun queueChapterDownload(chapterId: Long): Flow<Unit>
 
-    fun stopChapterDownload(
-        chapterId: Long,
-    ): Flow<Unit>
+    fun stopChapterDownload(chapterId: Long): Flow<Unit>
 
     fun reorderChapterDownload(
         chapterId: Long,
         to: Int,
     ): Flow<Unit>
 
-    fun batchDownload(
-        chapterIds: List<Long>,
-    ): Flow<Unit>
+    fun batchDownload(chapterIds: List<Long>): Flow<Unit>
 }

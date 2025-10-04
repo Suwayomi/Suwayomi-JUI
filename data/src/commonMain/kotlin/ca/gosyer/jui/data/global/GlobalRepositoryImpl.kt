@@ -20,28 +20,27 @@ class GlobalRepositoryImpl(
     private val apolloClient: ApolloClient,
     private val http: Http,
     private val serverUrl: Url,
-): GlobalRepository {
-
-    override fun getGlobalMeta(): Flow<GlobalMeta> {
-        return apolloClient.query(
-            GetGlobalMetaQuery()
+) : GlobalRepository {
+    override fun getGlobalMeta(): Flow<GlobalMeta> =
+        apolloClient.query(
+            GetGlobalMetaQuery(),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 GlobalMeta(data.metas.nodes.find { it.key == "example" }?.value?.toIntOrNull() ?: 0)
             }
-    }
 
-    override fun updateGlobalMeta(key: String, value: String): Flow<Unit> {
-        return apolloClient.mutation(
-            SetGlobalMetaMutation(key, value)
+    override fun updateGlobalMeta(
+        key: String,
+        value: String,
+    ): Flow<Unit> =
+        apolloClient.mutation(
+            SetGlobalMetaMutation(key, value),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.setGlobalMeta!!.clientMutationId
             }
-    }
-
 }

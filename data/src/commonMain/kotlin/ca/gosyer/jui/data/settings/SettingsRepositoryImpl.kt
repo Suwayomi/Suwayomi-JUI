@@ -118,7 +118,6 @@ class SettingsRepositoryImpl(
             webUIUpdateCheckInterval = webUIUpdateCheckInterval,
         )
 
-
     private fun AuthMode.toDomain() =
         when (this) {
             AuthMode.NONE -> DomainAuthMode.NONE
@@ -354,9 +353,9 @@ class SettingsRepositoryImpl(
             }
             .flowOn(Dispatchers.IO)
 
-    override fun aboutServer(): Flow<About> {
-        return apolloClient.query(
-            AboutServerQuery()
+    override fun aboutServer(): Flow<About> =
+        apolloClient.query(
+            AboutServerQuery(),
         )
             .toFlow()
             .map {
@@ -370,9 +369,8 @@ class SettingsRepositoryImpl(
                     },
                     data.aboutServer.buildTime,
                     data.aboutServer.github,
-                    data.aboutServer.discord
+                    data.aboutServer.discord,
                 )
             }
             .flowOn(Dispatchers.IO)
-    }
 }

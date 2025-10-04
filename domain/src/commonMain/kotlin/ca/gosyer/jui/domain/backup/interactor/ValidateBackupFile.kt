@@ -30,9 +30,7 @@ class ValidateBackupFile
             }
             .singleOrNull()
 
-        fun asFlow(
-            file: Path,
-        ) = backupRepository.validateBackup(FileSystem.SYSTEM.source(file))
+        fun asFlow(file: Path) = backupRepository.validateBackup(FileSystem.SYSTEM.source(file))
 
         companion object {
             private val log = logging()

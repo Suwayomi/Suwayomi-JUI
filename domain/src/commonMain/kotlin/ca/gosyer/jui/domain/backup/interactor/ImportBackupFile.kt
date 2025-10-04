@@ -30,9 +30,7 @@ class ImportBackupFile
             }
             .singleOrNull()
 
-        fun asFlow(
-            file: Path,
-        ) = backupRepository.restoreBackup(FileSystem.SYSTEM.source(file))
+        fun asFlow(file: Path) = backupRepository.restoreBackup(FileSystem.SYSTEM.source(file))
 
         companion object {
             private val log = logging()

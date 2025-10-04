@@ -13,22 +13,20 @@ class LibraryRepositoryImpl(
     private val http: Http,
     private val serverUrl: Url,
 ) : LibraryRepository {
-     fun setMangaInLibrary(mangaId: Long, inLibrary: Boolean): Flow<Unit> {
-        return apolloClient.mutation(
-            SetMangaInLibraryMutation(mangaId.toInt(), inLibrary)
+    fun setMangaInLibrary(
+        mangaId: Long,
+        inLibrary: Boolean,
+    ): Flow<Unit> =
+        apolloClient.mutation(
+            SetMangaInLibraryMutation(mangaId.toInt(), inLibrary),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.updateManga!!.clientMutationId
             }
-    }
 
-    override fun addMangaToLibrary(mangaId: Long): Flow<Unit> {
-        return setMangaInLibrary(mangaId, true)
-    }
+    override fun addMangaToLibrary(mangaId: Long): Flow<Unit> = setMangaInLibrary(mangaId, true)
 
-    override fun removeMangaFromLibrary(mangaId: Long): Flow<Unit> {
-        return setMangaInLibrary(mangaId, false)
-    }
+    override fun removeMangaFromLibrary(mangaId: Long): Flow<Unit> = setMangaInLibrary(mangaId, false)
 }

@@ -22,42 +22,37 @@ class UpdatesRepositoryImpl(
     private val apolloClient: ApolloClient,
     private val http: Http,
     private val serverUrl: Url,
-): UpdatesRepository {
-    override fun getRecentUpdates(pageNum: Int): Flow<Updates> {
-        return apolloClient.query(
-            GetChapterUpdatesQuery(50, pageNum * 50)
+) : UpdatesRepository {
+    override fun getRecentUpdates(pageNum: Int): Flow<Updates> =
+        apolloClient.query(
+            GetChapterUpdatesQuery(50, pageNum * 50),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 Updates(
                     data.chapters.nodes.map { it.chapterWithMangaFragment.toMangaAndChapter() },
-                    data.chapters.pageInfo.hasNextPage
+                    data.chapters.pageInfo.hasNextPage,
                 )
-
             }
-    }
 
-    override fun updateLibrary(): Flow<Unit> {
-        return apolloClient.mutation(
-            UpdateLibraryMutation()
+    override fun updateLibrary(): Flow<Unit> =
+        apolloClient.mutation(
+            UpdateLibraryMutation(),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.updateLibraryManga!!.clientMutationId
             }
-    }
 
-    override fun updateCategory(categoryId: Long): Flow<Unit> {
-        return apolloClient.mutation(
-            UpdateCategoryMutation(listOf(categoryId.toInt()))
+    override fun updateCategory(categoryId: Long): Flow<Unit> =
+        apolloClient.mutation(
+            UpdateCategoryMutation(listOf(categoryId.toInt())),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.updateCategoryManga!!.clientMutationId
             }
-    }
-
 }

@@ -25,7 +25,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
-import org.lighthousegames.logging.logging
 
 private fun SourceFiltersView<*, *>.toSourceFilter(): SourceFilter {
     return when (this) {
@@ -39,8 +38,6 @@ private fun SourceFiltersView<*, *>.toSourceFilter(): SourceFilter {
         is SourceFiltersView.TriState -> filter.copy(value = state.value)
     }
 }
-
-val logs = logging()
 
 class SourceScreen(
     val source: Source,

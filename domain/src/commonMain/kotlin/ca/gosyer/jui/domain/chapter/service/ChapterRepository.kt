@@ -5,13 +5,9 @@ import io.ktor.client.request.HttpRequestBuilder
 import kotlinx.coroutines.flow.Flow
 
 interface ChapterRepository {
-    fun getChapter(
-        chapterId: Long,
-    ): Flow<Chapter>
+    fun getChapter(chapterId: Long): Flow<Chapter>
 
-    fun getChapters(
-        mangaId: Long,
-    ): Flow<List<Chapter>>
+    fun getChapters(mangaId: Long): Flow<List<Chapter>>
 
     fun updateChapter(
         chapterId: Long,
@@ -27,13 +23,9 @@ interface ChapterRepository {
         lastPageRead: Int? = null,
     ): Flow<Unit>
 
-    fun deleteDownloadedChapter(
-        chapterId: Long,
-    ): Flow<Unit>
+    fun deleteDownloadedChapter(chapterId: Long): Flow<Unit>
 
-    fun deleteDownloadedChapters(
-        chapterIds: List<Long>,
-    ): Flow<Unit>
+    fun deleteDownloadedChapters(chapterIds: List<Long>): Flow<Unit>
 
     fun updateChapterMeta(
         chapterId: Long,
@@ -41,13 +33,9 @@ interface ChapterRepository {
         value: String,
     ): Flow<Unit>
 
-    fun fetchChapters(
-        mangaId: Long,
-    ): Flow<List<Chapter>>
+    fun fetchChapters(mangaId: Long): Flow<List<Chapter>>
 
-    fun getPages(
-        chapterId: Long,
-    ): Flow<List<String>>
+    fun getPages(chapterId: Long): Flow<List<String>>
 
     fun getPage(
         url: String,

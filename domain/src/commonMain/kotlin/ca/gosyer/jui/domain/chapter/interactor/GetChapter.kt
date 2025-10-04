@@ -43,12 +43,11 @@ class GetChapter
             }
             .singleOrNull()
 
-        fun asFlow(
-            chapterId: Long,
-        ) = serverListeners.combineChapters(
-            chapterRepository.getChapter(chapterId),
-            chapterIdPredate = { ids -> chapterId in ids },
-        )
+        fun asFlow(chapterId: Long) =
+            serverListeners.combineChapters(
+                chapterRepository.getChapter(chapterId),
+                chapterIdPredate = { ids -> chapterId in ids },
+            )
 
         fun asFlow(chapter: Chapter) =
             serverListeners.combineChapters(

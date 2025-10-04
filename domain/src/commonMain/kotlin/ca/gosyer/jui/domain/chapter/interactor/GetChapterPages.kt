@@ -39,9 +39,7 @@ class GetChapterPages
             }
             .singleOrNull()
 
-        fun asFlow(
-            chapterId: Long,
-        ) = chapterRepository.getPages(chapterId)
+        fun asFlow(chapterId: Long) = chapterRepository.getPages(chapterId)
 
         fun asFlow(
             url: String,

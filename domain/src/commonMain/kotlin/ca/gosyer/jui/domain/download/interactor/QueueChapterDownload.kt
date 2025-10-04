@@ -23,13 +23,11 @@ class QueueChapterDownload
         ) = asFlow(chapterId)
             .catch {
                 onError(it)
-                log.warn(it) { "Failed to queue chapter ${chapterId} for a download" }
+                log.warn(it) { "Failed to queue chapter $chapterId for a download" }
             }
             .collect()
 
-        fun asFlow(
-            chapterId: Long,
-        ) = downloadRepository.queueChapterDownload(chapterId)
+        fun asFlow(chapterId: Long) = downloadRepository.queueChapterDownload(chapterId)
 
         companion object {
             private val log = logging()

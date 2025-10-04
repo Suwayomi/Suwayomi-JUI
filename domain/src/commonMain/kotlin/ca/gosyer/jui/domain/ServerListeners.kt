@@ -99,7 +99,7 @@ class ServerListeners
                 .startWith(Unit)
                 .combine(
                     _mangaChapterIdsListener.filter { mangaIdPredate?.invoke(it) ?: false }
-                        .startWith(Unit)
+                        .startWith(Unit),
                 ) { _, _ -> }
 
             return idsListener
@@ -107,17 +107,13 @@ class ServerListeners
                 .flatMapLatest { flow }
         }
 
-        fun updateChapters(
-            chapterIds: List<Long>,
-        ) {
+        fun updateChapters(chapterIds: List<Long>) {
             scope.launch {
                 _chapterIdsListener.emit(chapterIds)
             }
         }
 
-        fun updateChapters(
-            vararg chapterIds: Long,
-        ) {
+        fun updateChapters(vararg chapterIds: Long) {
             scope.launch {
                 _chapterIdsListener.emit(chapterIds.toList())
             }

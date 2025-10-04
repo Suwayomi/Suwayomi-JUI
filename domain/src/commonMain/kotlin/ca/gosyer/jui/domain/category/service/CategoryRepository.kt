@@ -11,10 +11,7 @@ import ca.gosyer.jui.domain.manga.model.Manga
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-
-    fun getMangaCategories(
-        mangaId: Long,
-    ): Flow<List<Category>>
+    fun getMangaCategories(mangaId: Long): Flow<List<Category>>
 
     fun addMangaToCategory(
         mangaId: Long,
@@ -28,9 +25,7 @@ interface CategoryRepository {
 
     fun getCategories(): Flow<List<Category>>
 
-    fun createCategory(
-        name: String,
-    ): Flow<Unit>
+    fun createCategory(name: String): Flow<Unit>
 
     fun modifyCategory(
         categoryId: Long,
@@ -42,13 +37,9 @@ interface CategoryRepository {
         position: Int,
     ): Flow<Unit>
 
-    fun deleteCategory(
-        categoryId: Long,
-    ): Flow<Unit>
+    fun deleteCategory(categoryId: Long): Flow<Unit>
 
-    fun getMangaFromCategory(
-        categoryId: Long,
-    ): Flow<List<Manga>>
+    fun getMangaFromCategory(categoryId: Long): Flow<List<Manga>>
 
     fun updateCategoryMeta(
         categoryId: Long,

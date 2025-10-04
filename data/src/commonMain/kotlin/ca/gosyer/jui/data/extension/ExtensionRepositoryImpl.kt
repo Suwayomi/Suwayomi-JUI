@@ -26,19 +26,18 @@ class ExtensionRepositoryImpl(
     private val apolloClient: ApolloClient,
     private val http: Http,
     private val serverUrl: Url,
-): ExtensionRepository {
-    override fun getExtensionList(): Flow<List<Extension>> {
-        return apolloClient.mutation(
-            FetchExtensionsMutation()
+) : ExtensionRepository {
+    override fun getExtensionList(): Flow<List<Extension>> =
+        apolloClient.mutation(
+            FetchExtensionsMutation(),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors.fetchExtensions!!.extensions.map { it.extensionFragment.toExtension() }
             }
-    }
 
-    override fun installExtension(source: Source): Flow<Unit> {
-        return apolloClient.mutation(
+    override fun installExtension(source: Source): Flow<Unit> =
+        apolloClient.mutation(
             InstallExternalExtensionMutation(
                 DefaultUpload.Builder()
                     .content {
@@ -46,48 +45,44 @@ class ExtensionRepositoryImpl(
                     }
                     .fileName("extension.apk")
                     .contentType("application/octet-stream")
-                    .build()
-            )
+                    .build(),
+            ),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors.installExternalExtension!!
             }
-    }
 
-    override fun installExtension(pkgName: String): Flow<Unit> {
-        return apolloClient.mutation(
-            InstallExtensionMutation(pkgName)
+    override fun installExtension(pkgName: String): Flow<Unit> =
+        apolloClient.mutation(
+            InstallExtensionMutation(pkgName),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors.updateExtension
             }
-    }
 
-    override fun updateExtension(pkgName: String): Flow<Unit> {
-        return apolloClient.mutation(
-            UpdateExtensionMutation(pkgName)
+    override fun updateExtension(pkgName: String): Flow<Unit> =
+        apolloClient.mutation(
+            UpdateExtensionMutation(pkgName),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors.updateExtension
             }
-    }
 
-    override fun uninstallExtension(pkgName: String): Flow<Unit> {
-        return apolloClient.mutation(
-            UninstallExtensionMutation(pkgName)
+    override fun uninstallExtension(pkgName: String): Flow<Unit> =
+        apolloClient.mutation(
+            UninstallExtensionMutation(pkgName),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors.updateExtension
             }
-    }
 
     companion object {
-        internal fun ExtensionFragment.toExtension(): Extension {
-            return Extension(
+        internal fun ExtensionFragment.toExtension(): Extension =
+            Extension(
                 name = name,
                 pkgName = pkgName,
                 versionName = versionName,
@@ -100,6 +95,5 @@ class ExtensionRepositoryImpl(
                 obsolete = isObsolete,
                 isNsfw = isNsfw,
             )
-        }
     }
 }

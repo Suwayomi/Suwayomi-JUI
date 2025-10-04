@@ -37,67 +37,61 @@ class SourceRepositoryImpl(
     private val http: Http,
     private val serverUrl: Url,
 ) : SourceRepository {
-    override fun getSourceList(): Flow<List<Source>> {
-        return apolloClient.query(
-            GetSourceListQuery()
+    override fun getSourceList(): Flow<List<Source>> =
+        apolloClient.query(
+            GetSourceListQuery(),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.sources.nodes.map { it.sourceFragment.toSource() }
             }
-    }
 
-    override fun getSourceInfo(sourceId: Long): Flow<Source> {
-        return apolloClient.query(
-            GetSourceQuery(sourceId)
+    override fun getSourceInfo(sourceId: Long): Flow<Source> =
+        apolloClient.query(
+            GetSourceQuery(sourceId),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 data.source.sourceFragment.toSource()
             }
-    }
 
     override fun getPopularManga(
         sourceId: Long,
         pageNum: Int,
-    ): Flow<MangaPage> {
-        return apolloClient.mutation(
-            FetchPopularMangaMutation(sourceId, pageNum)
+    ): Flow<MangaPage> =
+        apolloClient.mutation(
+            FetchPopularMangaMutation(sourceId, pageNum),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 MangaPage(
                     data.fetchSourceManga!!.mangas.map { it.mangaFragment.toManga() },
-                    data.fetchSourceManga.hasNextPage
+                    data.fetchSourceManga.hasNextPage,
                 )
             }
-    }
 
     override fun getLatestManga(
         sourceId: Long,
         pageNum: Int,
-    ): Flow<MangaPage> {
-        return apolloClient.mutation(
-            FetchLatestMangaMutation(sourceId, pageNum)
+    ): Flow<MangaPage> =
+        apolloClient.mutation(
+            FetchLatestMangaMutation(sourceId, pageNum),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
                 MangaPage(
                     data.fetchSourceManga!!.mangas.map { it.mangaFragment.toManga() },
-                    data.fetchSourceManga.hasNextPage
+                    data.fetchSourceManga.hasNextPage,
                 )
             }
-    }
 
-    override fun getFilterList(
-        sourceId: Long,
-    ): Flow<List<SourceFilter>> {
-        return apolloClient.query(
-            GetSourceFiltersQuery(sourceId)
+    override fun getFilterList(sourceId: Long): Flow<List<SourceFilter>> =
+        apolloClient.query(
+            GetSourceFiltersQuery(sourceId),
         )
             .toFlow()
             .map {
@@ -112,6 +106,7 @@ class SourceRepositoryImpl(
                                 filter.checkBoxFilterDefault,
                             )
                         }
+
                         "HeaderFilter" -> {
                             val filter = filter.onHeaderFilter!!
                             SourceFilter.Header(
@@ -119,15 +114,17 @@ class SourceRepositoryImpl(
                                 filter.name,
                             )
                         }
+
                         "SelectFilter" -> {
                             val filter = filter.onSelectFilter!!
                             SourceFilter.Select(
                                 index,
                                 filter.name,
                                 filter.values,
-                                filter.selectFilterDefault
+                                filter.selectFilterDefault,
                             )
                         }
+
                         "TriStateFilter" -> {
                             val filter = filter.onTriStateFilter!!
                             SourceFilter.TriState(
@@ -141,6 +138,7 @@ class SourceRepositoryImpl(
                                 },
                             )
                         }
+
                         "TextFilter" -> {
                             val filter = filter.onTextFilter!!
                             SourceFilter.Text(
@@ -149,6 +147,7 @@ class SourceRepositoryImpl(
                                 filter.textFilterDefault,
                             )
                         }
+
                         "SortFilter" -> {
                             val filter = filter.onSortFilter!!
                             SourceFilter.Sort(
@@ -160,6 +159,7 @@ class SourceRepositoryImpl(
                                 },
                             )
                         }
+
                         "SeparatorFilter" -> {
                             val filter = filter.onSeparatorFilter!!
                             SourceFilter.Separator(
@@ -167,6 +167,7 @@ class SourceRepositoryImpl(
                                 filter.name,
                             )
                         }
+
                         "GroupFilter" -> {
                             SourceFilter.Group(
                                 index,
@@ -181,6 +182,7 @@ class SourceRepositoryImpl(
                                                 filter.checkBoxFilterDefault,
                                             )
                                         }
+
                                         "HeaderFilter" -> {
                                             val filter = filter.onHeaderFilter!!
                                             SourceFilter.Header(
@@ -188,15 +190,17 @@ class SourceRepositoryImpl(
                                                 filter.name,
                                             )
                                         }
+
                                         "SelectFilter" -> {
                                             val filter = filter.onSelectFilter!!
                                             SourceFilter.Select(
                                                 index,
                                                 filter.name,
                                                 filter.values,
-                                                filter.selectFilterDefault
+                                                filter.selectFilterDefault,
                                             )
                                         }
+
                                         "TriStateFilter" -> {
                                             val filter = filter.onTriStateFilter!!
                                             SourceFilter.TriState(
@@ -210,6 +214,7 @@ class SourceRepositoryImpl(
                                                 },
                                             )
                                         }
+
                                         "TextFilter" -> {
                                             val filter = filter.onTextFilter!!
                                             SourceFilter.Text(
@@ -218,6 +223,7 @@ class SourceRepositoryImpl(
                                                 filter.textFilterDefault,
                                             )
                                         }
+
                                         "SortFilter" -> {
                                             val filter = filter.onSortFilter!!
                                             SourceFilter.Sort(
@@ -229,6 +235,7 @@ class SourceRepositoryImpl(
                                                 },
                                             )
                                         }
+
                                         "SeparatorFilter" -> {
                                             val filter = filter.onSeparatorFilter!!
                                             SourceFilter.Separator(
@@ -236,16 +243,17 @@ class SourceRepositoryImpl(
                                                 filter.name,
                                             )
                                         }
+
                                         else -> SourceFilter.Header(index, "")
                                     }
-                                }
+                                },
                             )
                         }
+
                         else -> SourceFilter.Header(index, "")
                     }
                 }
             }
-    }
 
     fun SourceFilter.toFilterChange(): List<FilterChangeInput>? {
         return when (this) {
@@ -254,28 +262,34 @@ class SourceRepositoryImpl(
             } else {
                 null
             }
+
             is SourceFilter.Header -> null
+
             is SourceFilter.Select -> if (value != default) {
                 listOf(FilterChangeInput(position = position, selectState = value.toOptional()))
             } else {
                 null
             }
+
             is SourceFilter.Separator -> null
+
             is SourceFilter.Sort -> if (value != default) {
                 listOf(
                     FilterChangeInput(
                         position = position,
-                        sortState = value?.let { SortSelectionInput(it.ascending, it.index) }.toOptional()
-                    )
+                        sortState = value?.let { SortSelectionInput(it.ascending, it.index) }.toOptional(),
+                    ),
                 )
             } else {
                 null
             }
+
             is SourceFilter.Text -> if (value != default) {
                 listOf(FilterChangeInput(position = position, textState = value.toOptional()))
             } else {
                 null
             }
+
             is SourceFilter.TriState -> if (value != default) {
                 listOf(
                     FilterChangeInput(
@@ -285,29 +299,31 @@ class SourceRepositoryImpl(
                             TriStateValue.INCLUDE -> TriState.INCLUDE
                             TriStateValue.EXCLUDE -> TriState.EXCLUDE
                         }.toOptional(),
-                    )
+                    ),
                 )
             } else {
                 null
             }
+
             is SourceFilter.Group -> value.mapNotNull {
                 FilterChangeInput(
                     position = position,
                     groupChange = it.toFilterChange()
                         ?.firstOrNull()
                         ?.toOptional()
-                        ?: return@mapNotNull null
+                        ?: return@mapNotNull null,
                 )
             }
         }
     }
+
     override fun getSearchResults(
         sourceId: Long,
         pageNum: Int,
         searchTerm: String?,
         filters: List<SourceFilter>?,
-    ): Flow<MangaPage> {
-        return apolloClient.mutation(
+    ): Flow<MangaPage> =
+        apolloClient.mutation(
             FetchSearchMangaMutation(
                 sourceId,
                 pageNum,
@@ -322,14 +338,13 @@ class SourceRepositoryImpl(
                 val data = it.dataAssertNoErrors
                 MangaPage(
                     data.fetchSourceManga!!.mangas.map { it.mangaFragment.toManga() },
-                    data.fetchSourceManga.hasNextPage
+                    data.fetchSourceManga.hasNextPage,
                 )
             }
-    }
 
-    override fun getSourceSettings(sourceId: Long): Flow<List<SourcePreference>> {
-        return apolloClient.query(
-            GetSourcePreferencesQuery(sourceId)
+    override fun getSourceSettings(sourceId: Long): Flow<List<SourcePreference>> =
+        apolloClient.query(
+            GetSourcePreferencesQuery(sourceId),
         )
             .toFlow()
             .map {
@@ -349,6 +364,7 @@ class SourceRepositoryImpl(
                                 default = it.checkBoxDefault,
                             )
                         }
+
                         "EditTextPreference" -> preference.onEditTextPreference!!.let {
                             EditTextSourcePreference(
                                 position = index,
@@ -364,6 +380,7 @@ class SourceRepositoryImpl(
                                 text = it.text,
                             )
                         }
+
                         "SwitchPreference" -> preference.onSwitchPreference!!.let {
                             SwitchSourcePreference(
                                 position = index,
@@ -376,6 +393,7 @@ class SourceRepositoryImpl(
                                 default = it.switchPreferenceDefault,
                             )
                         }
+
                         "MultiSelectListPreference" -> preference.onMultiSelectListPreference!!.let {
                             MultiSelectListSourcePreference(
                                 position = index,
@@ -389,9 +407,10 @@ class SourceRepositoryImpl(
                                 dialogTitle = it.dialogTitle,
                                 dialogMessage = it.dialogMessage,
                                 entries = it.entries,
-                                entryValues = it.entryValues
+                                entryValues = it.entryValues,
                             )
                         }
+
                         "ListPreference" -> preference.onListPreference!!.let {
                             ListSourcePreference(
                                 position = index,
@@ -403,20 +422,20 @@ class SourceRepositoryImpl(
                                 currentValue = it.listPreferenceCurrentValue,
                                 default = it.listPreferenceDefault,
                                 entries = it.entries,
-                                entryValues = it.entryValues
+                                entryValues = it.entryValues,
                             )
                         }
+
                         else -> null
                     }
                 }
             }
-    }
 
     override fun setSourceSetting(
         sourceId: Long,
         sourcePreference: SourcePreference,
-    ): Flow<Unit> {
-        return apolloClient.mutation(
+    ): Flow<Unit> =
+        apolloClient.mutation(
             SetSourceSettingMutation(
                 sourceId,
                 SourcePreferenceChangeInput(
@@ -426,18 +445,17 @@ class SourceRepositoryImpl(
                     editTextState = (sourcePreference as? EditTextSourcePreference)?.currentValue.toOptional(),
                     multiSelectState = (sourcePreference as? MultiSelectListSourcePreference)?.currentValue.toOptional(),
                     listState = (sourcePreference as? ListSourcePreference)?.currentValue.toOptional(),
-                )
-            )
+                ),
+            ),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors.updateSourcePreference!!.clientMutationId
             }
-    }
 
     companion object {
-        internal fun SourceFragment.toSource(): Source {
-            return Source(
+        internal fun SourceFragment.toSource(): Source =
+            Source(
                 id,
                 name,
                 lang,
@@ -445,8 +463,7 @@ class SourceRepositoryImpl(
                 supportsLatest,
                 isConfigurable,
                 isNsfw,
-                displayName
+                displayName,
             )
-        }
     }
 }

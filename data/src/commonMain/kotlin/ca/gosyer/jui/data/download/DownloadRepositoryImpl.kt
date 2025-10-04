@@ -24,79 +24,70 @@ class DownloadRepositoryImpl(
     private val apolloClient: ApolloClient,
     private val http: Http,
     private val serverUrl: Url,
-): DownloadRepository {
-    override fun startDownloading(): Flow<Unit> {
-        return apolloClient.mutation(
-            StartDownloaderMutation()
+) : DownloadRepository {
+    override fun startDownloading(): Flow<Unit> =
+        apolloClient.mutation(
+            StartDownloaderMutation(),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors
             }
-    }
 
-    override fun stopDownloading(): Flow<Unit> {
-        return apolloClient.mutation(
-            StopDownloaderMutation()
+    override fun stopDownloading(): Flow<Unit> =
+        apolloClient.mutation(
+            StopDownloaderMutation(),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors
             }
-    }
 
-    override fun clearDownloadQueue(): Flow<Unit> {
-        return apolloClient.mutation(
-            ClearDownloaderMutation()
+    override fun clearDownloadQueue(): Flow<Unit> =
+        apolloClient.mutation(
+            ClearDownloaderMutation(),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors
             }
-    }
 
-    override fun queueChapterDownload(chapterId: Long): Flow<Unit> {
-        return apolloClient.mutation(
-            EnqueueChapterDownloadMutation(chapterId.toInt())
+    override fun queueChapterDownload(chapterId: Long): Flow<Unit> =
+        apolloClient.mutation(
+            EnqueueChapterDownloadMutation(chapterId.toInt()),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors
             }
-    }
 
-    override fun stopChapterDownload(chapterId: Long): Flow<Unit> {
-        return apolloClient.mutation(
-            DequeueChapterDownloadMutation(chapterId.toInt())
+    override fun stopChapterDownload(chapterId: Long): Flow<Unit> =
+        apolloClient.mutation(
+            DequeueChapterDownloadMutation(chapterId.toInt()),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors
             }
-    }
 
     override fun reorderChapterDownload(
         chapterId: Long,
         to: Int,
-    ): Flow<Unit> {
-        return apolloClient.mutation(
-            ReorderChapterDownloadMutation(chapterId.toInt(), to)
+    ): Flow<Unit> =
+        apolloClient.mutation(
+            ReorderChapterDownloadMutation(chapterId.toInt(), to),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors
             }
-    }
 
-    override fun batchDownload(chapterIds: List<Long>): Flow<Unit> {
-        return apolloClient.mutation(
-            EnqueueChapterDownloadsMutation(chapterIds.map { it.toInt() })
+    override fun batchDownload(chapterIds: List<Long>): Flow<Unit> =
+        apolloClient.mutation(
+            EnqueueChapterDownloadsMutation(chapterIds.map { it.toInt() }),
         )
             .toFlow()
             .map {
                 it.dataAssertNoErrors
             }
-    }
-
-
 }
