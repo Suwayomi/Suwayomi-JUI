@@ -84,7 +84,7 @@ class ReaderMenuViewModel(
     @Assisted private val params: Params,
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()
-    private val _manga = MutableStateFlow<Manga?>(null)
+    private val manga = MutableStateFlow<Manga?>(null)
     private val viewerChapters = MutableStateFlow(ViewerChapters(null, null, null))
     val previousChapter = viewerChapters.map { it.prevChapter }.stateIn(scope, SharingStarted.Eagerly, null)
     val chapter = viewerChapters.map { it.currChapter }.stateIn(scope, SharingStarted.Eagerly, null)
@@ -133,7 +133,7 @@ class ReaderMenuViewModel(
         .getAsFlow()
         .map { it.toImmutableList() }
         .stateIn(scope, SharingStarted.Eagerly, persistentListOf())
-    val readerMode = combine(readerPreferences.mode().getAsFlow(), _manga) { mode, manga ->
+    val readerMode = combine(readerPreferences.mode().getAsFlow(), manga) { mode, manga ->
         val mangaMode = manga?.meta?.juiReaderMode?.decodeURLQueryComponent()
         if (
             mangaMode != null &&
@@ -258,7 +258,7 @@ class ReaderMenuViewModel(
 
     fun setMangaReaderMode(mode: String) {
         scope.launchDefault {
-            _manga.value?.let {
+            manga.value?.let {
                 updateMangaMeta.await(it, mode, onError = { toast(it.message.orEmpty()) })
             }
             initManga(params.mangaId)
@@ -301,7 +301,7 @@ class ReaderMenuViewModel(
         getManga.asFlow(mangaId)
             .take(1)
             .onEach {
-                _manga.value = it
+                manga.value = it
             }
             .catch {
                 _state.value = ReaderChapter.State.Error(it)

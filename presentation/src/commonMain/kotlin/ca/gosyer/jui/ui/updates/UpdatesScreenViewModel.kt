@@ -64,8 +64,8 @@ class UpdatesScreenViewModel(
         }.toImmutableList()
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    private val _selectedIds = MutableStateFlow<ImmutableList<Long>>(persistentListOf())
-    val selectedItems = combine(updates, _selectedIds) { updates, selectedItems ->
+    private val selectedIds = MutableStateFlow<ImmutableList<Long>>(persistentListOf())
+    val selectedItems = combine(updates, selectedIds) { updates, selectedItems ->
         updates.asSequence()
             .filterIsInstance<UpdatesUI.Item>()
             .filter { it.chapterDownloadItem.isSelected(selectedItems) }
@@ -73,7 +73,7 @@ class UpdatesScreenViewModel(
             .toImmutableList()
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    val inActionMode = _selectedIds.map { it.isNotEmpty() }
+    val inActionMode = selectedIds.map { it.isNotEmpty() }
         .stateIn(scope, SharingStarted.Eagerly, false)
 
     init {
@@ -119,13 +119,13 @@ class UpdatesScreenViewModel(
     ) {
         scope.launch {
             updateChapter.await(chapterIds, read = read, onError = { toast(it.message.orEmpty()) })
-            _selectedIds.value = persistentListOf()
+            selectedIds.value = persistentListOf()
         }
     }
 
-    fun markRead(id: Long?) = setRead(listOfNotNull(id).ifEmpty { _selectedIds.value }, true)
+    fun markRead(id: Long?) = setRead(listOfNotNull(id).ifEmpty { selectedIds.value }, true)
 
-    fun markUnread(id: Long?) = setRead(listOfNotNull(id).ifEmpty { _selectedIds.value }, false)
+    fun markUnread(id: Long?) = setRead(listOfNotNull(id).ifEmpty { selectedIds.value }, false)
 
     private fun setBookmarked(
         chapterIds: List<Long>,
@@ -133,20 +133,20 @@ class UpdatesScreenViewModel(
     ) {
         scope.launch {
             updateChapter.await(chapterIds, bookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
-            _selectedIds.value = persistentListOf()
+            selectedIds.value = persistentListOf()
         }
     }
 
-    fun bookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { _selectedIds.value }, true)
+    fun bookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { selectedIds.value }, true)
 
-    fun unBookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { _selectedIds.value }, false)
+    fun unBookmarkChapter(id: Long?) = setBookmarked(listOfNotNull(id).ifEmpty { selectedIds.value }, false)
 
     fun downloadChapter(chapter: Chapter?) {
         scope.launch {
             if (chapter == null) {
-                val selectedIds = _selectedIds.value
+                val selectedIds = selectedIds.value
                 batchChapterDownload.await(selectedIds, onError = { toast(it.message.orEmpty()) })
-                _selectedIds.value = persistentListOf()
+                this@UpdatesScreenViewModel.selectedIds.value = persistentListOf()
                 return@launch
             }
             queueChapterDownload.await(chapter.id, onError = { toast(it.message.orEmpty()) })
@@ -156,12 +156,12 @@ class UpdatesScreenViewModel(
     fun deleteDownloadedChapter(chapter: Chapter?) {
         scope.launchDefault {
             if (chapter == null) {
-                val selectedIds = _selectedIds.value
+                val selectedIds = selectedIds.value
                 deleteChapterDownload.await(selectedIds, onError = { toast(it.message.orEmpty()) })
                 selectedItems.value.forEach {
                     it.setNotDownloaded()
                 }
-                _selectedIds.value = persistentListOf()
+                this@UpdatesScreenViewModel.selectedIds.value = persistentListOf()
                 return@launchDefault
             }
             updates.value
@@ -190,7 +190,7 @@ class UpdatesScreenViewModel(
 
     fun selectAll() {
         scope.launchDefault {
-            _selectedIds.value = updates.value.filterIsInstance<UpdatesUI.Item>()
+            selectedIds.value = updates.value.filterIsInstance<UpdatesUI.Item>()
                 .map { it.chapterDownloadItem.chapter.id }
                 .toImmutableList()
         }
@@ -198,28 +198,28 @@ class UpdatesScreenViewModel(
 
     fun invertSelection() {
         scope.launchDefault {
-            _selectedIds.value = updates.value.filterIsInstance<UpdatesUI.Item>()
+            selectedIds.value = updates.value.filterIsInstance<UpdatesUI.Item>()
                 .map { it.chapterDownloadItem.chapter.id }
-                .minus(_selectedIds.value)
+                .minus(selectedIds.value)
                 .toImmutableList()
         }
     }
 
     fun selectChapter(id: Long) {
         scope.launchDefault {
-            _selectedIds.value = _selectedIds.value.plus(id).toImmutableList()
+            selectedIds.value = selectedIds.value.plus(id).toImmutableList()
         }
     }
 
     fun unselectChapter(id: Long) {
         scope.launchDefault {
-            _selectedIds.value = _selectedIds.value.minus(id).toImmutableList()
+            selectedIds.value = selectedIds.value.minus(id).toImmutableList()
         }
     }
 
     fun clearSelection() {
         scope.launchDefault {
-            _selectedIds.value = persistentListOf()
+            selectedIds.value = persistentListOf()
         }
     }
 

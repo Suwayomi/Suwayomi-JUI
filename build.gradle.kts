@@ -72,7 +72,7 @@ subprojects {
             "ca/gosyer/jui/*/build",
             "**/generated/**",
             "ca/gosyer/jui/data/graphql",
-            "ca/gosyer/jui/uicore/icons/juiassets",
+            "ca/gosyer/jui/desktop/InjectAppComponent.kt"
         )
     }
     plugins.withType<com.android.build.gradle.BasePlugin> {

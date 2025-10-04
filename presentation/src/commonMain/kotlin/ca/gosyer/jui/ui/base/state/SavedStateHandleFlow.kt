@@ -46,10 +46,6 @@ class SavedStateHandleStateFlow<T>(
 ) : StateFlow<T> by stateFlow {
     override var value: T
         get() = stateFlow.value
-
-        /**
-         * May have to be called on the main thread if there is a livedata with the same [key]
-         */
         set(value) = savedStateHandle.set(key, value)
 
     fun asStateFlow() = stateFlow

@@ -107,8 +107,8 @@ class SettingsBackupScreen : Screen {
         SettingsBackupScreenContent(
             restoreStatus = vm.restoreStatus.collectAsState().value,
             creatingStatus = vm.creatingStatus.collectAsState().value,
-            missingSourceFlowHolder = vm.missingSourceFlowHolder,
-            createFlowHolder = vm.createFlowHolder,
+            missingSourceFlowHolder = vm.missingSourceFlow,
+            createFlowHolder = vm.createFlow,
             restoreFile = vm::restoreFile,
             restoreBackup = vm::restoreBackup,
             stopRestore = vm::stopRestore,
@@ -129,12 +129,12 @@ class SettingsBackupViewModel(
     val restoreStatus = _restoreStatus.asStateFlow()
 
     private val _missingSourceFlow = MutableSharedFlow<Pair<Path, ImmutableList<String>>>()
-    val missingSourceFlowHolder = StableHolder(_missingSourceFlow.asSharedFlow())
+    val missingSourceFlow = StableHolder(_missingSourceFlow.asSharedFlow())
 
     private val _creatingStatus = MutableStateFlow<Status>(Status.Nothing)
     val creatingStatus = _creatingStatus.asStateFlow()
     private val _createFlow = MutableSharedFlow<String>()
-    val createFlowHolder = StableHolder(_createFlow.asSharedFlow())
+    val createFlow = StableHolder(_createFlow.asSharedFlow())
 
     fun restoreFile(source: Source) {
         scope.launch {

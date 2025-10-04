@@ -76,13 +76,13 @@ class SourceScreenViewModel(
     private val _isLatest by savedStateHandle.getStateFlow { false }
     val isLatest = _isLatest.asStateFlow()
 
-    private val _usingFilters by savedStateHandle.getStateFlow { false }
+    private val usingFilters by savedStateHandle.getStateFlow { false }
     private val filters = MutableStateFlow<List<SourceFilter>?>(null)
 
-    private val _sourceSearchQuery by savedStateHandle.getStateFlow<String?> { initialQuery }
+    private val _sourceSearchQuery by savedStateHandle.getStateFlow { initialQuery }
     val sourceSearchQuery = _sourceSearchQuery.asStateFlow()
 
-    private val _query = MutableStateFlow(sourceSearchQuery.value)
+    private val query = MutableStateFlow(sourceSearchQuery.value)
 
     private val pager = MutableStateFlow(getPager())
 
@@ -104,19 +104,19 @@ class SourceScreenViewModel(
     fun setMode(toLatest: Boolean) {
         if (isLatest.value != toLatest) {
             _isLatest.value = toLatest
-            _query.value = null
+            query.value = null
             updatePager()
         }
     }
 
     private fun getPager(): SourcePager {
         val fetcher: suspend (page: Int) -> MangaPage? = when {
-            _query.value != null || _usingFilters.value -> {
+            query.value != null || usingFilters.value -> {
                 { page ->
                     getSearchManga.await(
                         sourceId = source.id,
                         page = page,
-                        searchTerm = _query.value,
+                        searchTerm = query.value,
                         filters = filters.value,
                         onError = { toast(it.message.orEmpty()) },
                     )
@@ -154,12 +154,12 @@ class SourceScreenViewModel(
     }
 
     fun startSearch(query: String?) {
-        _query.value = query
+        this.query.value = query
         updatePager()
     }
 
     fun setUsingFilters(usingFilters: Boolean) {
-        _usingFilters.value = usingFilters
+        this.usingFilters.value = usingFilters
     }
 
     fun search(query: String) {
