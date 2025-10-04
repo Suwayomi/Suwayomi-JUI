@@ -7,7 +7,6 @@ plugins {
     id(libs.plugins.ksp.get().pluginId)
     id(libs.plugins.buildkonfig.get().pluginId)
     id(libs.plugins.kotlinter.get().pluginId)
-    id(libs.plugins.ktorfit.get().pluginId)
 }
 
 kotlin {
@@ -57,7 +56,6 @@ kotlin {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
-                optIn("de.jensklingenberg.ktorfit.internal.InternalKtorfitApi")
             }
         }
         val commonMain by getting {
@@ -72,7 +70,6 @@ kotlin {
                 api(libs.ktor.auth)
                 api(libs.ktor.logging)
                 api(libs.ktor.websockets)
-                api(libs.ktorfit.lib)
                 api(libs.okio)
                 api(libs.dateTime)
                 api(compose("org.jetbrains.compose.runtime:runtime"))

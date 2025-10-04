@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.data
 
-import ca.gosyer.jui.core.lang.addSuffix
 import ca.gosyer.jui.data.backup.BackupRepositoryImpl
 import ca.gosyer.jui.data.category.CategoryRepositoryImpl
 import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
@@ -34,7 +33,6 @@ import ca.gosyer.jui.domain.updates.service.UpdatesRepository
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.network.ws.GraphQLWsProtocol
 import com.apollographql.ktor.ktorClient
-import de.jensklingenberg.ktorfit.Ktorfit
 import io.ktor.http.URLBuilder
 import io.ktor.http.appendPathSegments
 import kotlinx.coroutines.Dispatchers
@@ -42,17 +40,6 @@ import kotlinx.coroutines.IO
 import me.tatarka.inject.annotations.Provides
 
 interface DataComponent : SharedDataComponent {
-    @Provides
-    fun ktorfit(
-        http: Http,
-        serverPreferences: ServerPreferences,
-    ) = Ktorfit
-        .Builder()
-        .httpClient(http)
-        .converterFactories(FlowConverterFactory())
-        .baseUrl(serverPreferences.serverUrl().get().toString().addSuffix('/'))
-        .build()
-
     @Provides
     fun apolloClient(
         http: Http,

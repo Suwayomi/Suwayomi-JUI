@@ -65,10 +65,6 @@ dependencies {
     implementation(libs.ktor.websockets)
     implementation(libs.ktor.auth)
 
-    // Ktorfit
-    implementation(libs.ktorfit.lib)
-    ksp(libs.ktorfit.ksp)
-
     // Apollo GraphQL
     implementation(libs.apollo.runtime)
     implementation(libs.apollo.engine.ktor)

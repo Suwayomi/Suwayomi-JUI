@@ -38,8 +38,6 @@ kotlinInject = "0.7.2"
 
 # Network
 ktor = "2.3.12"
-ktorfit = "2.1.0"
-ktorfitKsp = "2.1.0-1.0.25"
 apollo = "4.0.0"
 apolloKtor = "0.0.2"
 
@@ -131,8 +129,6 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
 ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
-ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "ktorfit" }
-ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfitKsp" }
 apollo-runtime = { module = "com.apollographql.apollo:apollo-runtime", version.ref = "apollo" }
 apollo-engine-ktor = { module = "com.apollographql.ktor:apollo-engine-ktor", version.ref = "apolloKtor" }
 
@@ -193,7 +189,6 @@ compose = { id = "org.jetbrains.compose", version.ref = "composeGradle" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Network
-ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 apollo = { id = "com.apollographql.apollo", version.ref = "apollo" }
 
 # Localization

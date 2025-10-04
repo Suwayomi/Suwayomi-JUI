@@ -2,7 +2,6 @@ import Config.migrationCode
 import Config.serverCode
 import Config.tachideskVersion
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
-import de.jensklingenberg.ktorfit.gradle.ErrorCheckingMode
 import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -17,7 +16,6 @@ plugins {
     alias(libs.plugins.buildkonfig) apply false
     alias(libs.plugins.moko.gradle) apply false
     alias(libs.plugins.kotlinter) apply false
-    alias(libs.plugins.ktorfit) apply false
     alias(libs.plugins.aboutLibraries) apply false
     alias(libs.plugins.apollo) apply false
     alias(libs.plugins.versions)
@@ -124,12 +122,6 @@ subprojects {
             if (project.hasProperty("debugApp")) {
                 arg("me.tatarka.inject.dumpGraph", "true")
             }
-        }
-    }
-
-    plugins.withType<de.jensklingenberg.ktorfit.gradle.KtorfitGradlePlugin> {
-        configure<de.jensklingenberg.ktorfit.gradle.KtorfitGradleConfiguration> {
-            errorCheckingMode = ErrorCheckingMode.WARNING
         }
     }
 

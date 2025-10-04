@@ -9,7 +9,6 @@ plugins {
     id(libs.plugins.buildkonfig.get().pluginId)
     id(libs.plugins.kotlinter.get().pluginId)
     id(libs.plugins.aboutLibraries.get().pluginId)
-    id(libs.plugins.ktorfit.get().pluginId)
 }
 
 kotlin {
@@ -82,9 +81,6 @@ kotlin {
                 implementation(libs.ktor.websockets)
                 implementation(libs.ktor.auth)
 
-                // Ktorfit
-                implementation(libs.ktorfit.lib)
-
                 // Apollo GraphQL
                 implementation(libs.apollo.runtime)
                 implementation(libs.apollo.engine.ktor)
@@ -127,7 +123,6 @@ dependencies {
         "kspUikitX64"
     ).forEach {
         add(it, libs.kotlinInject.compiler)
-        add(it, libs.ktorfit.ksp)
     }
 }
 

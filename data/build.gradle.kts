@@ -69,7 +69,6 @@ kotlin {
                 api(libs.dateTime)
                 implementation(libs.apollo.runtime)
                 implementation(libs.apollo.engine.ktor)
-                implementation(libs.ktorfit.lib)
                 api(projects.core)
                 api(projects.i18n)
                 api(projects.domain)
