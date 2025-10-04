@@ -20,7 +20,7 @@ materialDialogs = "0.9.5"
 # Android
 androidGradle = "8.6.1"
 core = "1.13.1"
-appCompat = "1.7.0"
+appCompat = "1.7.1"
 activityCompose = "1.9.2"
 work = "2.9.1"
 
