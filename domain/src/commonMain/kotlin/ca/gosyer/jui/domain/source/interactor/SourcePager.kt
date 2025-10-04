@@ -33,21 +33,21 @@ fun interface GetMangaPage {
     suspend fun get(page: Int): MangaPage?
 }
 
-class SourcePager
-    @Inject
-    constructor(
-        private val getManga: GetManga,
-        private val serverListeners: ServerListeners,
-        @Assisted private val fetcher: GetMangaPage,
-    ) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
-        private val sourceMutex = Mutex()
+@Inject
+class SourcePager(
+    private val getManga: GetManga,
+    private val serverListeners: ServerListeners,
+    @Assisted private val fetcher: GetMangaPage,
+) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
+    private val sourceMutex = Mutex()
 
-        private val _sourceManga = MutableStateFlow<List<Manga>>(emptyList())
+    private val _sourceManga = MutableStateFlow<List<Manga>>(emptyList())
 
-        private val mangaIds = _sourceManga.map { mangas -> mangas.map { it.id } }
-            .stateIn(this, SharingStarted.Eagerly, emptyList())
+    private val mangaIds = _sourceManga.map { mangas -> mangas.map { it.id } }
+        .stateIn(this, SharingStarted.Eagerly, emptyList())
 
-        private val changedManga = serverListeners.mangaListener.runningFold(emptyMap<Long, Manga>()) { manga, updatedMangaIds ->
+    private val changedManga =
+        serverListeners.mangaListener.runningFold(emptyMap<Long, Manga>()) { manga, updatedMangaIds ->
             coroutineScope {
                 manga + updatedMangaIds.filter { it in mangaIds.value }.map {
                     async {
@@ -57,37 +57,37 @@ class SourcePager
             }
         }.stateIn(this, SharingStarted.Eagerly, emptyMap())
 
-        val mangas = combine(_sourceManga, changedManga) { sourceManga, changedManga ->
-            sourceManga.map { changedManga[it.id] ?: it }
-        }.stateIn(this, SharingStarted.Eagerly, emptyList())
+    val mangas = combine(_sourceManga, changedManga) { sourceManga, changedManga ->
+        sourceManga.map { changedManga[it.id] ?: it }
+    }.stateIn(this, SharingStarted.Eagerly, emptyList())
 
-        private val _pageNum = MutableStateFlow(0)
-        val pageNum = _pageNum.asStateFlow()
+    private val _pageNum = MutableStateFlow(0)
+    val pageNum = _pageNum.asStateFlow()
 
-        private val _hasNextPage = MutableStateFlow(true)
-        val hasNextPage = _hasNextPage.asStateFlow()
+    private val _hasNextPage = MutableStateFlow(true)
+    val hasNextPage = _hasNextPage.asStateFlow()
 
-        private val _loading = MutableStateFlow(true)
-        val loading = _loading.asStateFlow()
+    private val _loading = MutableStateFlow(true)
+    val loading = _loading.asStateFlow()
 
-        fun loadNextPage() {
-            launch {
-                if (hasNextPage.value && sourceMutex.tryLock()) {
-                    _pageNum.value++
-                    val page = fetcher.get(_pageNum.value)
-                    if (page != null) {
-                        _sourceManga.value = _sourceManga.value + page.mangaList
-                        _hasNextPage.value = page.hasNextPage
-                    } else {
-                        _pageNum.value--
-                    }
-                    sourceMutex.unlock()
+    fun loadNextPage() {
+        launch {
+            if (hasNextPage.value && sourceMutex.tryLock()) {
+                _pageNum.value++
+                val page = fetcher.get(_pageNum.value)
+                if (page != null) {
+                    _sourceManga.value = _sourceManga.value + page.mangaList
+                    _hasNextPage.value = page.hasNextPage
+                } else {
+                    _pageNum.value--
                 }
-                _loading.value = false
+                sourceMutex.unlock()
             }
-        }
-
-        companion object {
-            private val log = logging()
+            _loading.value = false
         }
     }
+
+    companion object {
+        private val log = logging()
+    }
+}

@@ -15,24 +15,23 @@ import okio.Path
 import okio.SYSTEM
 import org.lighthousegames.logging.logging
 
-class InstallExtensionFile
-    @Inject
-    constructor(
-        private val extensionRepository: ExtensionRepository,
-    ) {
-        suspend fun await(
-            path: Path,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(path)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to install extension from $path" }
-            }
-            .collect()
-
-        fun asFlow(path: Path) = extensionRepository.installExtension(FileSystem.SYSTEM.source(path))
-
-        companion object {
-            private val log = logging()
+@Inject
+class InstallExtensionFile(
+    private val extensionRepository: ExtensionRepository,
+) {
+    suspend fun await(
+        path: Path,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(path)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to install extension from $path" }
         }
+        .collect()
+
+    fun asFlow(path: Path) = extensionRepository.installExtension(FileSystem.SYSTEM.source(path))
+
+    companion object {
+        private val log = logging()
     }
+}

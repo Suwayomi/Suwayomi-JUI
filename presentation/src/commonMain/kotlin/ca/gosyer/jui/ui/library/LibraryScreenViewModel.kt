@@ -119,224 +119,223 @@ private fun LibraryMap.setManga(
     }
 }
 
-class LibraryScreenViewModel
-    @Inject
-    constructor(
-        private val getCategories: GetCategories,
-        private val getMangaListFromCategory: GetMangaListFromCategory,
-        private val removeMangaFromLibrary: RemoveMangaFromLibrary,
-        private val updateLibrary: UpdateLibrary,
-        private val updateCategory: UpdateCategory,
-        libraryPreferences: LibraryPreferences,
-        contextWrapper: ContextWrapper,
-        @Assisted private val savedStateHandle: SavedStateHandle,
-    ) : ViewModel(contextWrapper) {
-        private val library = Library(MutableStateFlow(LibraryState.Loading), mutableMapOf())
-        val categories = library.categories.asStateFlow()
+@Inject
+class LibraryScreenViewModel(
+    private val getCategories: GetCategories,
+    private val getMangaListFromCategory: GetMangaListFromCategory,
+    private val removeMangaFromLibrary: RemoveMangaFromLibrary,
+    private val updateLibrary: UpdateLibrary,
+    private val updateCategory: UpdateCategory,
+    libraryPreferences: LibraryPreferences,
+    contextWrapper: ContextWrapper,
+    @Assisted private val savedStateHandle: SavedStateHandle,
+) : ViewModel(contextWrapper) {
+    private val library = Library(MutableStateFlow(LibraryState.Loading), mutableMapOf())
+    val categories = library.categories.asStateFlow()
 
-        private val _selectedCategoryIndex by savedStateHandle.getStateFlow { 0 }
-        val selectedCategoryIndex = _selectedCategoryIndex.asStateFlow()
+    private val _selectedCategoryIndex by savedStateHandle.getStateFlow { 0 }
+    val selectedCategoryIndex = _selectedCategoryIndex.asStateFlow()
 
-        private val _showingMenu by savedStateHandle.getStateFlow { false }
-        val showingMenu = _showingMenu.asStateFlow()
+    private val _showingMenu by savedStateHandle.getStateFlow { false }
+    val showingMenu = _showingMenu.asStateFlow()
 
-        val displayMode = libraryPreferences.displayMode().stateIn(scope)
-        val gridColumns = libraryPreferences.gridColumns().stateIn(scope)
-        val gridSize = libraryPreferences.gridSize().stateIn(scope)
-        val unreadBadges = libraryPreferences.unreadBadge().stateIn(scope)
-        val downloadBadges = libraryPreferences.downloadBadge().stateIn(scope)
-        val languageBadges = libraryPreferences.languageBadge().stateIn(scope)
-        val localBadges = libraryPreferences.localBadge().stateIn(scope)
+    val displayMode = libraryPreferences.displayMode().stateIn(scope)
+    val gridColumns = libraryPreferences.gridColumns().stateIn(scope)
+    val gridSize = libraryPreferences.gridSize().stateIn(scope)
+    val unreadBadges = libraryPreferences.unreadBadge().stateIn(scope)
+    val downloadBadges = libraryPreferences.downloadBadge().stateIn(scope)
+    val languageBadges = libraryPreferences.languageBadge().stateIn(scope)
+    val localBadges = libraryPreferences.localBadge().stateIn(scope)
 
-        private val sortMode = libraryPreferences.sortMode().stateIn(scope)
-        private val sortAscending = libraryPreferences.sortAscending().stateIn(scope)
+    private val sortMode = libraryPreferences.sortMode().stateIn(scope)
+    private val sortAscending = libraryPreferences.sortAscending().stateIn(scope)
 
-        private val filter: Flow<(Manga) -> Boolean> = combine(
-            libraryPreferences.filterDownloaded().getAsFlow(),
-            libraryPreferences.filterUnread().getAsFlow(),
-            libraryPreferences.filterCompleted().getAsFlow(),
-        ) { downloaded, unread, completed ->
-            { manga ->
-                when (downloaded) {
-                    FilterState.EXCLUDED -> manga.downloadCount == null || manga.downloadCount == 0
-                    FilterState.INCLUDED -> manga.downloadCount != null && (manga.downloadCount ?: 0) > 0
+    private val filter: Flow<(Manga) -> Boolean> = combine(
+        libraryPreferences.filterDownloaded().getAsFlow(),
+        libraryPreferences.filterUnread().getAsFlow(),
+        libraryPreferences.filterCompleted().getAsFlow(),
+    ) { downloaded, unread, completed ->
+        { manga ->
+            when (downloaded) {
+                FilterState.EXCLUDED -> manga.downloadCount == null || manga.downloadCount == 0
+                FilterState.INCLUDED -> manga.downloadCount != null && (manga.downloadCount ?: 0) > 0
+                FilterState.IGNORED -> true
+            } &&
+                when (unread) {
+                    FilterState.EXCLUDED -> manga.unreadCount == null || manga.unreadCount == 0
+                    FilterState.INCLUDED -> manga.unreadCount != null && (manga.unreadCount ?: 0) > 0
                     FilterState.IGNORED -> true
                 } &&
-                    when (unread) {
-                        FilterState.EXCLUDED -> manga.unreadCount == null || manga.unreadCount == 0
-                        FilterState.INCLUDED -> manga.unreadCount != null && (manga.unreadCount ?: 0) > 0
-                        FilterState.IGNORED -> true
-                    } &&
-                    when (completed) {
-                        FilterState.EXCLUDED -> manga.status != MangaStatus.COMPLETED
-                        FilterState.INCLUDED -> manga.status == MangaStatus.COMPLETED
-                        FilterState.IGNORED -> true
-                    }
-            }
-        }
-
-        private val _query by savedStateHandle.getStateFlow { "" }
-        val query = _query.asStateFlow()
-
-        private val comparator = combine(sortMode, sortAscending) { sortMode, sortAscending ->
-            getComparator(sortMode, sortAscending)
-        }.stateIn(scope, SharingStarted.Eagerly, compareBy { it.title })
-
-        init {
-            getLibrary()
-        }
-
-        private fun getLibrary() {
-            library.categories.value = LibraryState.Loading
-            getCategories.asFlow()
-                .onEach { categories ->
-                    if (categories.isEmpty()) {
-                        throw Exception(MR.strings.library_empty.toPlatformString())
-                    }
-                    library.categories.value = LibraryState.Loaded(
-                        categories.sortedBy { it.order }
-                            .toImmutableList(),
-                    )
-                    categories.forEach { category ->
-                        getMangaListFromCategory.asFlow(category)
-                            .onEach {
-                                library.mangaMap.setManga(
-                                    id = category.id,
-                                    manga = it.toImmutableList(),
-                                    getItemsFlow = ::getMangaItemsFlow,
-                                )
-                            }
-                            .catch {
-                                log.warn(it) { "Failed to get manga list from category ${category.name}" }
-                                library.mangaMap.setError(category.id, it)
-                            }
-                            .launchIn(scope)
-                    }
+                when (completed) {
+                    FilterState.EXCLUDED -> manga.status != MangaStatus.COMPLETED
+                    FilterState.INCLUDED -> manga.status == MangaStatus.COMPLETED
+                    FilterState.IGNORED -> true
                 }
-                .catch {
-                    library.categories.value = LibraryState.Failed(it)
-                    log.warn(it) { "Failed to get categories" }
-                }
-                .launchIn(scope)
-        }
-
-        fun setSelectedPage(page: Int) {
-            _selectedCategoryIndex.value = page
-        }
-
-        fun setShowingMenu(showingMenu: Boolean) {
-            _showingMenu.value = showingMenu
-        }
-
-        private fun getComparator(
-            sortMode: Sort,
-            ascending: Boolean,
-        ): Comparator<Manga> {
-            val sortFn: (Manga, Manga) -> Int = when (sortMode) {
-                Sort.ALPHABETICAL -> {
-                    val locale = Locale.current
-                    val collator = CollatorComparator(locale);
-
-                    { a, b ->
-                        collator.compare(a.title.toLowerCase(locale), b.title.toLowerCase(locale))
-                    }
-                }
-
-                Sort.UNREAD -> {
-                    { a, b ->
-                        when {
-                            // Ensure unread content comes first
-                            (a.unreadCount ?: 0) == (b.unreadCount ?: 0) -> 0
-
-                            a.unreadCount == null || a.unreadCount == 0 -> if (ascending) 1 else -1
-
-                            b.unreadCount == null || b.unreadCount == 0 -> if (ascending) -1 else 1
-
-                            else -> (a.unreadCount ?: 0).compareTo(b.unreadCount ?: 0)
-                        }
-                    }
-                }
-
-                Sort.DATE_ADDED -> {
-                    { a, b ->
-                        a.inLibraryAt.compareTo(b.inLibraryAt)
-                    }
-                }
-            }
-            return if (ascending) {
-                Comparator(sortFn)
-            } else {
-                Comparator(sortFn).reversed()
-            }
-        }
-
-        private suspend fun filterManga(
-            query: String,
-            mangaList: List<Manga>,
-        ): List<Manga> {
-            if (query.isBlank()) return mangaList
-            val queries = query.split(" ")
-            return mangaList.asFlow()
-                .filter { manga ->
-                    queries.all { query ->
-                        manga.title.contains(query, true) ||
-                            manga.author.orEmpty().contains(query, true) ||
-                            manga.artist.orEmpty().contains(query, true) ||
-                            manga.genre.any { it.contains(query, true) } ||
-                            manga.description.orEmpty().contains(query, true) ||
-                            manga.status.name.contains(query, true)
-                    }
-                }
-                .cancellable()
-                .buffer()
-                .toList()
-        }
-
-        private fun getMangaItemsFlow(unfilteredItemsFlow: StateFlow<List<Manga>>): StateFlow<ImmutableList<Manga>> =
-            combine(
-                unfilteredItemsFlow,
-                query,
-            ) {
-                    unfilteredItems,
-                    query,
-                ->
-                filterManga(query, unfilteredItems)
-            }.combine(filter) { filteredManga, filterer ->
-                filteredManga.filter(filterer)
-            }.combine(comparator) { filteredManga, comparator ->
-                filteredManga.sortedWith(comparator)
-            }.map {
-                it.toImmutableList()
-            }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
-
-        fun getLibraryForCategoryId(id: Long): StateFlow<CategoryState> = library.mangaMap.getManga(id)
-
-        private fun getCategoriesToUpdate(mangaId: Long): List<Category> =
-            library.mangaMap
-                .filter { mangaMapEntry ->
-                    (mangaMapEntry.value.value as? CategoryState.Loaded)?.items?.value?.firstOrNull { it.id == mangaId } != null
-                }
-                .mapNotNull { (id) -> (library.categories.value as? LibraryState.Loaded)?.categories?.first { it.id == id } }
-
-        fun removeManga(mangaId: Long) {
-            scope.launch {
-                removeMangaFromLibrary.await(mangaId, onError = { toast(it.message.orEmpty()) })
-            }
-        }
-
-        fun updateQuery(query: String) {
-            _query.value = query
-        }
-
-        fun updateLibrary() {
-            scope.launch { updateLibrary.await(onError = { toast(it.message.orEmpty()) }) }
-        }
-
-        fun updateCategory(category: Category) {
-            scope.launch { updateCategory.await(category, onError = { toast(it.message.orEmpty()) }) }
-        }
-
-        private companion object {
-            private val log = logging()
         }
     }
+
+    private val _query by savedStateHandle.getStateFlow { "" }
+    val query = _query.asStateFlow()
+
+    private val comparator = combine(sortMode, sortAscending) { sortMode, sortAscending ->
+        getComparator(sortMode, sortAscending)
+    }.stateIn(scope, SharingStarted.Eagerly, compareBy { it.title })
+
+    init {
+        getLibrary()
+    }
+
+    private fun getLibrary() {
+        library.categories.value = LibraryState.Loading
+        getCategories.asFlow()
+            .onEach { categories ->
+                if (categories.isEmpty()) {
+                    throw Exception(MR.strings.library_empty.toPlatformString())
+                }
+                library.categories.value = LibraryState.Loaded(
+                    categories.sortedBy { it.order }
+                        .toImmutableList(),
+                )
+                categories.forEach { category ->
+                    getMangaListFromCategory.asFlow(category)
+                        .onEach {
+                            library.mangaMap.setManga(
+                                id = category.id,
+                                manga = it.toImmutableList(),
+                                getItemsFlow = ::getMangaItemsFlow,
+                            )
+                        }
+                        .catch {
+                            log.warn(it) { "Failed to get manga list from category ${category.name}" }
+                            library.mangaMap.setError(category.id, it)
+                        }
+                        .launchIn(scope)
+                }
+            }
+            .catch {
+                library.categories.value = LibraryState.Failed(it)
+                log.warn(it) { "Failed to get categories" }
+            }
+            .launchIn(scope)
+    }
+
+    fun setSelectedPage(page: Int) {
+        _selectedCategoryIndex.value = page
+    }
+
+    fun setShowingMenu(showingMenu: Boolean) {
+        _showingMenu.value = showingMenu
+    }
+
+    private fun getComparator(
+        sortMode: Sort,
+        ascending: Boolean,
+    ): Comparator<Manga> {
+        val sortFn: (Manga, Manga) -> Int = when (sortMode) {
+            Sort.ALPHABETICAL -> {
+                val locale = Locale.current
+                val collator = CollatorComparator(locale);
+
+                { a, b ->
+                    collator.compare(a.title.toLowerCase(locale), b.title.toLowerCase(locale))
+                }
+            }
+
+            Sort.UNREAD -> {
+                { a, b ->
+                    when {
+                        // Ensure unread content comes first
+                        (a.unreadCount ?: 0) == (b.unreadCount ?: 0) -> 0
+
+                        a.unreadCount == null || a.unreadCount == 0 -> if (ascending) 1 else -1
+
+                        b.unreadCount == null || b.unreadCount == 0 -> if (ascending) -1 else 1
+
+                        else -> (a.unreadCount ?: 0).compareTo(b.unreadCount ?: 0)
+                    }
+                }
+            }
+
+            Sort.DATE_ADDED -> {
+                { a, b ->
+                    a.inLibraryAt.compareTo(b.inLibraryAt)
+                }
+            }
+        }
+        return if (ascending) {
+            Comparator(sortFn)
+        } else {
+            Comparator(sortFn).reversed()
+        }
+    }
+
+    private suspend fun filterManga(
+        query: String,
+        mangaList: List<Manga>,
+    ): List<Manga> {
+        if (query.isBlank()) return mangaList
+        val queries = query.split(" ")
+        return mangaList.asFlow()
+            .filter { manga ->
+                queries.all { query ->
+                    manga.title.contains(query, true) ||
+                        manga.author.orEmpty().contains(query, true) ||
+                        manga.artist.orEmpty().contains(query, true) ||
+                        manga.genre.any { it.contains(query, true) } ||
+                        manga.description.orEmpty().contains(query, true) ||
+                        manga.status.name.contains(query, true)
+                }
+            }
+            .cancellable()
+            .buffer()
+            .toList()
+    }
+
+    private fun getMangaItemsFlow(unfilteredItemsFlow: StateFlow<List<Manga>>): StateFlow<ImmutableList<Manga>> =
+        combine(
+            unfilteredItemsFlow,
+            query,
+        ) {
+                unfilteredItems,
+                query,
+            ->
+            filterManga(query, unfilteredItems)
+        }.combine(filter) { filteredManga, filterer ->
+            filteredManga.filter(filterer)
+        }.combine(comparator) { filteredManga, comparator ->
+            filteredManga.sortedWith(comparator)
+        }.map {
+            it.toImmutableList()
+        }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
+
+    fun getLibraryForCategoryId(id: Long): StateFlow<CategoryState> = library.mangaMap.getManga(id)
+
+    private fun getCategoriesToUpdate(mangaId: Long): List<Category> =
+        library.mangaMap
+            .filter { mangaMapEntry ->
+                (mangaMapEntry.value.value as? CategoryState.Loaded)?.items?.value?.firstOrNull { it.id == mangaId } != null
+            }
+            .mapNotNull { (id) -> (library.categories.value as? LibraryState.Loaded)?.categories?.first { it.id == id } }
+
+    fun removeManga(mangaId: Long) {
+        scope.launch {
+            removeMangaFromLibrary.await(mangaId, onError = { toast(it.message.orEmpty()) })
+        }
+    }
+
+    fun updateQuery(query: String) {
+        _query.value = query
+    }
+
+    fun updateLibrary() {
+        scope.launch { updateLibrary.await(onError = { toast(it.message.orEmpty()) }) }
+    }
+
+    fun updateCategory(category: Category) {
+        scope.launch { updateCategory.await(category, onError = { toast(it.message.orEmpty()) }) }
+    }
+
+    private companion object {
+        private val log = logging()
+    }
+}

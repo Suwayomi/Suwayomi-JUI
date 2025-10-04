@@ -12,22 +12,21 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class StopDownloading
-    @Inject
-    constructor(
-        private val downloadRepository: DownloadRepository,
-    ) {
-        suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
-            asFlow()
-                .catch {
-                    onError(it)
-                    log.warn(it) { "Failed to stop downloader" }
-                }
-                .collect()
+@Inject
+class StopDownloading(
+    private val downloadRepository: DownloadRepository,
+) {
+    suspend fun await(onError: suspend (Throwable) -> Unit = {}) =
+        asFlow()
+            .catch {
+                onError(it)
+                log.warn(it) { "Failed to stop downloader" }
+            }
+            .collect()
 
-        fun asFlow() = downloadRepository.stopDownloading()
+    fun asFlow() = downloadRepository.stopDownloading()
 
-        companion object {
-            private val log = logging()
-        }
+    companion object {
+        private val log = logging()
     }
+}

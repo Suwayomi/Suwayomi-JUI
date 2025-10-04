@@ -15,41 +15,40 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class RemoveMangaFromLibrary
-    @Inject
-    constructor(
-        private val libraryRepository: LibraryRepository,
-        private val serverListeners: ServerListeners,
-    ) {
-        suspend fun await(
-            mangaId: Long,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(mangaId)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to remove $mangaId from library" }
-            }
-            .singleOrNull()
-
-        suspend fun await(
-            manga: Manga,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(manga)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to remove ${manga.title}(${manga.id}) from library" }
-            }
-            .singleOrNull()
-
-        fun asFlow(mangaId: Long) =
-            libraryRepository.removeMangaFromLibrary(mangaId)
-                .onEach { serverListeners.updateManga(mangaId) }
-
-        fun asFlow(manga: Manga) =
-            libraryRepository.removeMangaFromLibrary(manga.id)
-                .onEach { serverListeners.updateManga(manga.id) }
-
-        companion object {
-            private val log = logging()
+@Inject
+class RemoveMangaFromLibrary(
+    private val libraryRepository: LibraryRepository,
+    private val serverListeners: ServerListeners,
+) {
+    suspend fun await(
+        mangaId: Long,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(mangaId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to remove $mangaId from library" }
         }
+        .singleOrNull()
+
+    suspend fun await(
+        manga: Manga,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(manga)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to remove ${manga.title}(${manga.id}) from library" }
+        }
+        .singleOrNull()
+
+    fun asFlow(mangaId: Long) =
+        libraryRepository.removeMangaFromLibrary(mangaId)
+            .onEach { serverListeners.updateManga(mangaId) }
+
+    fun asFlow(manga: Manga) =
+        libraryRepository.removeMangaFromLibrary(manga.id)
+            .onEach { serverListeners.updateManga(manga.id) }
+
+    companion object {
+        private val log = logging()
     }
+}

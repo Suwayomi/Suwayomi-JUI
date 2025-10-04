@@ -11,22 +11,21 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
 import me.tatarka.inject.annotations.Inject
 
-class LibrarySettingsViewModel
-    @Inject
-    constructor(
-        libraryPreferences: LibraryPreferences,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        val filterDownloaded = libraryPreferences.filterDownloaded().asStateFlow()
-        val filterUnread = libraryPreferences.filterUnread().asStateFlow()
-        val filterCompleted = libraryPreferences.filterCompleted().asStateFlow()
+@Inject
+class LibrarySettingsViewModel(
+    libraryPreferences: LibraryPreferences,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    val filterDownloaded = libraryPreferences.filterDownloaded().asStateFlow()
+    val filterUnread = libraryPreferences.filterUnread().asStateFlow()
+    val filterCompleted = libraryPreferences.filterCompleted().asStateFlow()
 
-        val sortMode = libraryPreferences.sortMode().asStateFlow()
-        val sortAscending = libraryPreferences.sortAscending().asStateFlow()
+    val sortMode = libraryPreferences.sortMode().asStateFlow()
+    val sortAscending = libraryPreferences.sortAscending().asStateFlow()
 
-        val displayMode = libraryPreferences.displayMode().asStateFlow()
-        val unreadBadges = libraryPreferences.unreadBadge().asStateFlow()
-        val downloadBadges = libraryPreferences.downloadBadge().asStateFlow()
-        val languageBadges = libraryPreferences.languageBadge().asStateFlow()
-        val localBadges = libraryPreferences.localBadge().asStateFlow()
-    }
+    val displayMode = libraryPreferences.displayMode().asStateFlow()
+    val unreadBadges = libraryPreferences.unreadBadge().asStateFlow()
+    val downloadBadges = libraryPreferences.downloadBadge().asStateFlow()
+    val languageBadges = libraryPreferences.languageBadge().asStateFlow()
+    val localBadges = libraryPreferences.localBadge().asStateFlow()
+}

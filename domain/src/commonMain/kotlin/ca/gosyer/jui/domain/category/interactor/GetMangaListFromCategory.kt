@@ -15,45 +15,44 @@ import kotlinx.coroutines.flow.take
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetMangaListFromCategory
-    @Inject
-    constructor(
-        private val categoryRepository: CategoryRepository,
-        private val serverListeners: ServerListeners,
-    ) {
-        suspend fun await(
-            categoryId: Long,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(categoryId)
-            .take(1)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get manga list from category $categoryId" }
-            }
-            .singleOrNull()
-
-        suspend fun await(
-            category: Category,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(category)
-            .take(1)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get manga list from category ${category.name}" }
-            }
-            .singleOrNull()
-
-        fun asFlow(categoryId: Long) =
-            serverListeners.combineCategoryManga(
-                categoryRepository.getMangaFromCategory(categoryId),
-            ) { categoryId == it }
-
-        fun asFlow(category: Category) =
-            serverListeners.combineCategoryManga(
-                categoryRepository.getMangaFromCategory(category.id),
-            ) { category.id == it }
-
-        companion object {
-            private val log = logging()
+@Inject
+class GetMangaListFromCategory(
+    private val categoryRepository: CategoryRepository,
+    private val serverListeners: ServerListeners,
+) {
+    suspend fun await(
+        categoryId: Long,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(categoryId)
+        .take(1)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get manga list from category $categoryId" }
         }
+        .singleOrNull()
+
+    suspend fun await(
+        category: Category,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(category)
+        .take(1)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get manga list from category ${category.name}" }
+        }
+        .singleOrNull()
+
+    fun asFlow(categoryId: Long) =
+        serverListeners.combineCategoryManga(
+            categoryRepository.getMangaFromCategory(categoryId),
+        ) { categoryId == it }
+
+    fun asFlow(category: Category) =
+        serverListeners.combineCategoryManga(
+            categoryRepository.getMangaFromCategory(category.id),
+        ) { category.id == it }
+
+    companion object {
+        private val log = logging()
     }
+}

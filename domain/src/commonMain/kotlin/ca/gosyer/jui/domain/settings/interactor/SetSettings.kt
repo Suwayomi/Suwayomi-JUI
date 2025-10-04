@@ -13,24 +13,23 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class SetSettings
-    @Inject
-    constructor(
-        private val settingsRepository: SettingsRepository,
-    ) {
-        suspend fun await(
-            input: SetSettingsInput,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(input)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to check for server updates" }
-            }
-            .singleOrNull()
-
-        fun asFlow(input: SetSettingsInput) = settingsRepository.setSettings(input)
-
-        companion object {
-            private val log = logging()
+@Inject
+class SetSettings(
+    private val settingsRepository: SettingsRepository,
+) {
+    suspend fun await(
+        input: SetSettingsInput,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(input)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to check for server updates" }
         }
+        .singleOrNull()
+
+    fun asFlow(input: SetSettingsInput) = settingsRepository.setSettings(input)
+
+    companion object {
+        private val log = logging()
     }
+}

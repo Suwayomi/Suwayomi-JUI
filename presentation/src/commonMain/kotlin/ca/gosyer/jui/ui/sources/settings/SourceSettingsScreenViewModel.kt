@@ -28,65 +28,64 @@ import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class SourceSettingsScreenViewModel
-    @Inject
-    constructor(
-        private val getSourceSettings: GetSourceSettings,
-        private val setSourceSetting: SetSourceSetting,
-        contextWrapper: ContextWrapper,
-        @Assisted private val params: Params,
-    ) : ViewModel(contextWrapper) {
-        private val _loading = MutableStateFlow(true)
-        val loading = _loading.asStateFlow()
+@Inject
+class SourceSettingsScreenViewModel(
+    private val getSourceSettings: GetSourceSettings,
+    private val setSourceSetting: SetSourceSetting,
+    contextWrapper: ContextWrapper,
+    @Assisted private val params: Params,
+) : ViewModel(contextWrapper) {
+    private val _loading = MutableStateFlow(true)
+    val loading = _loading.asStateFlow()
 
-        private val _sourceSettings = MutableStateFlow<ImmutableList<SourceSettingsView<*, *>>>(persistentListOf())
-        val sourceSettings = _sourceSettings.asStateFlow()
+    private val _sourceSettings = MutableStateFlow<ImmutableList<SourceSettingsView<*, *>>>(persistentListOf())
+    val sourceSettings = _sourceSettings.asStateFlow()
 
-        init {
-            getSourceSettings()
-            sourceSettings.mapLatest { settings ->
-                supervisorScope {
-                    settings.forEach { setting ->
-                        setting.state.drop(1)
-                            .filterNotNull()
-                            .onEach {
-                                setSourceSetting.await(
-                                    sourceId = params.sourceId,
-                                    setting.props,
-                                    onError = { toast(it.message.orEmpty()) },
-                                )
-                                getSourceSettings()
-                            }
-                            .launchIn(this)
-                    }
+    init {
+        getSourceSettings()
+        sourceSettings.mapLatest { settings ->
+            supervisorScope {
+                settings.forEach { setting ->
+                    setting.state.drop(1)
+                        .filterNotNull()
+                        .onEach {
+                            setSourceSetting.await(
+                                sourceId = params.sourceId,
+                                setting.props,
+                                onError = { toast(it.message.orEmpty()) },
+                            )
+                            getSourceSettings()
+                        }
+                        .launchIn(this)
                 }
-            }.launchIn(scope)
-        }
-
-        private fun getSourceSettings() {
-            getSourceSettings.asFlow(params.sourceId)
-                .onEach {
-                    _sourceSettings.value = it.toView()
-                    _loading.value = false
-                }
-                .catch {
-                    toast(it.message.orEmpty())
-                    log.warn(it) { "Error setting source setting" }
-                    _loading.value = false
-                }
-                .launchIn(scope)
-        }
-
-        data class Params(
-            val sourceId: Long,
-        )
-
-        private fun List<SourcePreference>.toView() =
-            mapIndexed { index, sourcePreference ->
-                SourceSettingsView(index, sourcePreference)
-            }.toImmutableList()
-
-        private companion object {
-            private val log = logging()
-        }
+            }
+        }.launchIn(scope)
     }
+
+    private fun getSourceSettings() {
+        getSourceSettings.asFlow(params.sourceId)
+            .onEach {
+                _sourceSettings.value = it.toView()
+                _loading.value = false
+            }
+            .catch {
+                toast(it.message.orEmpty())
+                log.warn(it) { "Error setting source setting" }
+                _loading.value = false
+            }
+            .launchIn(scope)
+    }
+
+    data class Params(
+        val sourceId: Long,
+    )
+
+    private fun List<SourcePreference>.toView() =
+        mapIndexed { index, sourcePreference ->
+            SourceSettingsView(index, sourcePreference)
+        }.toImmutableList()
+
+    private companion object {
+        private val log = logging()
+    }
+}

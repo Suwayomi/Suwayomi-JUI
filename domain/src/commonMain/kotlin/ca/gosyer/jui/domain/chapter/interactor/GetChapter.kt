@@ -15,47 +15,46 @@ import kotlinx.coroutines.flow.take
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetChapter
-    @Inject
-    constructor(
-        private val chapterRepository: ChapterRepository,
-        private val serverListeners: ServerListeners,
-    ) {
-        suspend fun await(
-            chapterId: Long,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(chapterId)
-            .take(1)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get chapter $chapterId" }
-            }
-            .singleOrNull()
-
-        suspend fun await(
-            chapter: Chapter,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(chapter)
-            .take(1)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get chapter ${chapter.index} for ${chapter.mangaId}" }
-            }
-            .singleOrNull()
-
-        fun asFlow(chapterId: Long) =
-            serverListeners.combineChapters(
-                chapterRepository.getChapter(chapterId),
-                chapterIdPredate = { ids -> chapterId in ids },
-            )
-
-        fun asFlow(chapter: Chapter) =
-            serverListeners.combineChapters(
-                chapterRepository.getChapter(chapter.id),
-                chapterIdPredate = { ids -> chapter.id in ids },
-            )
-
-        companion object {
-            private val log = logging()
+@Inject
+class GetChapter(
+    private val chapterRepository: ChapterRepository,
+    private val serverListeners: ServerListeners,
+) {
+    suspend fun await(
+        chapterId: Long,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(chapterId)
+        .take(1)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get chapter $chapterId" }
         }
+        .singleOrNull()
+
+    suspend fun await(
+        chapter: Chapter,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(chapter)
+        .take(1)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get chapter ${chapter.index} for ${chapter.mangaId}" }
+        }
+        .singleOrNull()
+
+    fun asFlow(chapterId: Long) =
+        serverListeners.combineChapters(
+            chapterRepository.getChapter(chapterId),
+            chapterIdPredate = { ids -> chapterId in ids },
+        )
+
+    fun asFlow(chapter: Chapter) =
+        serverListeners.combineChapters(
+            chapterRepository.getChapter(chapter.id),
+            chapterIdPredate = { ids -> chapter.id in ids },
+        )
+
+    companion object {
+        private val log = logging()
     }
+}

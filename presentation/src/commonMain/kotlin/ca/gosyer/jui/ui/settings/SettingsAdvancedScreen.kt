@@ -73,46 +73,45 @@ class SettingsAdvancedScreen : Screen {
     }
 }
 
-class SettingsAdvancedViewModel
-    @Inject
-    constructor(
-        updatePreferences: UpdatePreferences,
-        private val imageCache: ImageCache,
-        private val chapterCache: ChapterCache,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        val updatesEnabled = updatePreferences.enabled().asStateFlow()
+@Inject
+class SettingsAdvancedViewModel(
+    updatePreferences: UpdatePreferences,
+    private val imageCache: ImageCache,
+    private val chapterCache: ChapterCache,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    val updatesEnabled = updatePreferences.enabled().asStateFlow()
 
-        val imageCacheSize = flow {
-            while (currentCoroutineContext().isActive) {
-                emit(imageCache.size.bytesIntoHumanReadable())
-                delay(1.seconds)
-            }
-        }.stateIn(scope, SharingStarted.Eagerly, "")
-
-        val chapterCacheSize = flow {
-            while (currentCoroutineContext().isActive) {
-                emit(chapterCache.size.bytesIntoHumanReadable())
-                delay(1.seconds)
-            }
-        }.stateIn(scope, SharingStarted.Eagerly, "")
-
-        fun clearImageCache() {
-            scope.launchIO {
-                imageCache.clear()
-            }
+    val imageCacheSize = flow {
+        while (currentCoroutineContext().isActive) {
+            emit(imageCache.size.bytesIntoHumanReadable())
+            delay(1.seconds)
         }
+    }.stateIn(scope, SharingStarted.Eagerly, "")
 
-        fun clearChapterCache() {
-            scope.launchIO {
-                chapterCache.clear()
-            }
+    val chapterCacheSize = flow {
+        while (currentCoroutineContext().isActive) {
+            emit(chapterCache.size.bytesIntoHumanReadable())
+            delay(1.seconds)
         }
+    }.stateIn(scope, SharingStarted.Eagerly, "")
 
-        companion object {
-            private val log = logging()
+    fun clearImageCache() {
+        scope.launchIO {
+            imageCache.clear()
         }
     }
+
+    fun clearChapterCache() {
+        scope.launchIO {
+            chapterCache.clear()
+        }
+    }
+
+    companion object {
+        private val log = logging()
+    }
+}
 
 @Composable
 fun SettingsAdvancedScreenContent(

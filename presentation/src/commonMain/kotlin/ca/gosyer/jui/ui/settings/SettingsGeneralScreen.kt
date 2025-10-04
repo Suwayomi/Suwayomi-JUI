@@ -78,62 +78,66 @@ class SettingsGeneralScreen : Screen {
     }
 }
 
-class SettingsGeneralViewModel
-    @Inject
-    constructor(
-        private val dateHandler: DateHandler,
-        uiPreferences: UiPreferences,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        val startScreen = uiPreferences.startScreen().asStateFlow()
-        val confirmExit = uiPreferences.confirmExit().asStateFlow()
-        val language = uiPreferences.language().asStateFlow()
-        val dateFormat = uiPreferences.dateFormat().asStateFlow()
+@Inject
+class SettingsGeneralViewModel(
+    private val dateHandler: DateHandler,
+    uiPreferences: UiPreferences,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    val startScreen = uiPreferences.startScreen().asStateFlow()
+    val confirmExit = uiPreferences.confirmExit().asStateFlow()
+    val language = uiPreferences.language().asStateFlow()
+    val dateFormat = uiPreferences.dateFormat().asStateFlow()
 
-        private val now = Clock.System.now()
-        private val currentLocale = Locale.current
+    private val now = Clock.System.now()
+    private val currentLocale = Locale.current
 
-        @Composable
-        fun getStartScreenChoices(): ImmutableMap<StartScreen, String> =
-            persistentMapOf(
-                StartScreen.Library to stringResource(MR.strings.location_library),
-                StartScreen.Updates to stringResource(MR.strings.location_updates),
-                StartScreen.Sources to stringResource(MR.strings.location_sources),
-                StartScreen.Extensions to stringResource(MR.strings.location_extensions),
-            )
+    @Composable
+    fun getStartScreenChoices(): ImmutableMap<StartScreen, String> =
+        persistentMapOf(
+            StartScreen.Library to stringResource(MR.strings.location_library),
+            StartScreen.Updates to stringResource(MR.strings.location_updates),
+            StartScreen.Sources to stringResource(MR.strings.location_sources),
+            StartScreen.Extensions to stringResource(MR.strings.location_extensions),
+        )
 
-        @Composable
-        fun getLanguageChoices(): ImmutableMap<String, String> {
-            val langJsonState = MR.files.languages_json.readTextAsync()
-            val langs by produceState(emptyMap(), langJsonState.value) {
-                val langJson = langJsonState.value
-                if (langJson != null) {
-                    withIOContext {
-                        value = Json.decodeFromString<JsonObject>(langJson)["langs"]
-                            ?.jsonArray
-                            .orEmpty()
-                            .map { it.jsonPrimitive.content }
-                            .associateWith { Locale(it).getDisplayName(currentLocale) }
-                    }
+    @Composable
+    fun getLanguageChoices(): ImmutableMap<String, String> {
+        val langJsonState = MR.files.languages_json.readTextAsync()
+        val langs by produceState(emptyMap(), langJsonState.value) {
+            val langJson = langJsonState.value
+            if (langJson != null) {
+                withIOContext {
+                    value = Json.decodeFromString<JsonObject>(langJson)["langs"]
+                        ?.jsonArray
+                        .orEmpty()
+                        .map { it.jsonPrimitive.content }
+                        .associateWith { Locale(it).getDisplayName(currentLocale) }
                 }
             }
-            return mapOf("" to stringResource(MR.strings.language_system_default, currentLocale.getDisplayName(currentLocale)))
-                .plus(langs)
-                .toImmutableMap()
         }
-
-        @Composable
-        fun getDateChoices(): ImmutableMap<String, String> =
-            dateHandler.formatOptions
-                .associateWith {
-                    it.ifEmpty { stringResource(MR.strings.date_system_default) } +
-                        " (${getFormattedDate(it)})"
-                }
-                .toImmutableMap()
-
-        @Composable
-        private fun getFormattedDate(prefValue: String): String = dateHandler.getDateFormat(prefValue).invoke(now)
+        return mapOf(
+            "" to stringResource(
+                MR.strings.language_system_default,
+                currentLocale.getDisplayName(currentLocale),
+            ),
+        )
+            .plus(langs)
+            .toImmutableMap()
     }
+
+    @Composable
+    fun getDateChoices(): ImmutableMap<String, String> =
+        dateHandler.formatOptions
+            .associateWith {
+                it.ifEmpty { stringResource(MR.strings.date_system_default) } +
+                    " (${getFormattedDate(it)})"
+            }
+            .toImmutableMap()
+
+    @Composable
+    private fun getFormattedDate(prefValue: String): String = dateHandler.getDateFormat(prefValue).invoke(now)
+}
 
 @Composable
 fun SettingsGeneralScreenContent(

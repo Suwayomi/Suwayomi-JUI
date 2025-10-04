@@ -11,12 +11,12 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import me.tatarka.inject.annotations.Inject
 
+@Inject
 actual class DebugOverlayViewModel
-    @Inject
-    constructor(
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        actual val maxMemory: String
-            get() = ""
-        actual val usedMemoryFlow: MutableStateFlow<String> = MutableStateFlow("")
-    }
+constructor(
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    actual val maxMemory: String
+        get() = ""
+    actual val usedMemoryFlow: MutableStateFlow<String> = MutableStateFlow("")
+}

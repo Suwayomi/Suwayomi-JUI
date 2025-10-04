@@ -17,61 +17,60 @@ import kotlinx.coroutines.flow.map
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class AddMangaToCategory
-    @Inject
-    constructor(
-        private val categoryRepository: CategoryRepository,
-        private val serverListeners: ServerListeners,
-    ) {
-        suspend fun await(
-            mangaId: Long,
-            categoryId: Long,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(mangaId, categoryId)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to add $mangaId to category $categoryId" }
-            }
-            .collect()
-
-        suspend fun await(
-            manga: Manga,
-            category: Category,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(manga, category)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to add ${manga.title}(${manga.id}) to category ${category.name}" }
-            }
-            .collect()
-
-        fun asFlow(
-            mangaId: Long,
-            categoryId: Long,
-        ) = if (categoryId != 0L) {
-            categoryRepository.addMangaToCategory(mangaId, categoryId)
-                .map { serverListeners.updateCategoryManga(categoryId) }
-        } else {
-            flow {
-                serverListeners.updateCategoryManga(categoryId)
-                emit(Unit)
-            }
+@Inject
+class AddMangaToCategory(
+    private val categoryRepository: CategoryRepository,
+    private val serverListeners: ServerListeners,
+) {
+    suspend fun await(
+        mangaId: Long,
+        categoryId: Long,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(mangaId, categoryId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to add $mangaId to category $categoryId" }
         }
+        .collect()
 
-        fun asFlow(
-            manga: Manga,
-            category: Category,
-        ) = if (category.id != 0L) {
-            categoryRepository.addMangaToCategory(manga.id, category.id)
-                .map { serverListeners.updateCategoryManga(category.id) }
-        } else {
-            flow {
-                serverListeners.updateCategoryManga(category.id)
-                emit(Unit)
-            }
+    suspend fun await(
+        manga: Manga,
+        category: Category,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(manga, category)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to add ${manga.title}(${manga.id}) to category ${category.name}" }
         }
+        .collect()
 
-        companion object {
-            private val log = logging()
+    fun asFlow(
+        mangaId: Long,
+        categoryId: Long,
+    ) = if (categoryId != 0L) {
+        categoryRepository.addMangaToCategory(mangaId, categoryId)
+            .map { serverListeners.updateCategoryManga(categoryId) }
+    } else {
+        flow {
+            serverListeners.updateCategoryManga(categoryId)
+            emit(Unit)
         }
     }
+
+    fun asFlow(
+        manga: Manga,
+        category: Category,
+    ) = if (category.id != 0L) {
+        categoryRepository.addMangaToCategory(manga.id, category.id)
+            .map { serverListeners.updateCategoryManga(category.id) }
+    } else {
+        flow {
+            serverListeners.updateCategoryManga(category.id)
+            emit(Unit)
+        }
+    }
+
+    companion object {
+        private val log = logging()
+    }
+}

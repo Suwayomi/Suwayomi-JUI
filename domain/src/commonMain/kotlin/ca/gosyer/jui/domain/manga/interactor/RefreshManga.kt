@@ -16,39 +16,38 @@ import kotlinx.coroutines.flow.take
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class RefreshManga
-    @Inject
-    constructor(
-        private val mangaRepository: MangaRepository,
-        private val serverListeners: ServerListeners,
-    ) {
-        suspend fun await(
-            mangaId: Long,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(mangaId)
-            .take(1)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to refresh manga $mangaId" }
-            }
-            .singleOrNull()
-
-        suspend fun await(
-            manga: Manga,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(manga)
-            .take(1)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to refresh manga ${manga.title}(${manga.id})" }
-            }
-            .singleOrNull()
-
-        fun asFlow(mangaId: Long) = mangaRepository.refreshManga(mangaId).onEach { serverListeners.updateManga(mangaId) }
-
-        fun asFlow(manga: Manga) = mangaRepository.refreshManga(manga.id).onEach { serverListeners.updateManga(manga.id) }
-
-        companion object {
-            private val log = logging()
+@Inject
+class RefreshManga(
+    private val mangaRepository: MangaRepository,
+    private val serverListeners: ServerListeners,
+) {
+    suspend fun await(
+        mangaId: Long,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(mangaId)
+        .take(1)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to refresh manga $mangaId" }
         }
+        .singleOrNull()
+
+    suspend fun await(
+        manga: Manga,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(manga)
+        .take(1)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to refresh manga ${manga.title}(${manga.id})" }
+        }
+        .singleOrNull()
+
+    fun asFlow(mangaId: Long) = mangaRepository.refreshManga(mangaId).onEach { serverListeners.updateManga(mangaId) }
+
+    fun asFlow(manga: Manga) = mangaRepository.refreshManga(manga.id).onEach { serverListeners.updateManga(manga.id) }
+
+    companion object {
+        private val log = logging()
     }
+}

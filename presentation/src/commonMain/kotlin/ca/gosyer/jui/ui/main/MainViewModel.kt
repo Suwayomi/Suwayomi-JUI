@@ -14,23 +14,22 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import me.tatarka.inject.annotations.Inject
 
-class MainViewModel
-    @Inject
-    constructor(
-        uiPreferences: UiPreferences,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        override val scope = MainScope()
+@Inject
+class MainViewModel(
+    uiPreferences: UiPreferences,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    override val scope = MainScope()
 
-        val startScreen = uiPreferences.startScreen().get()
-        val confirmExit = uiPreferences.confirmExit().stateIn(scope)
+    val startScreen = uiPreferences.startScreen().get()
+    val confirmExit = uiPreferences.confirmExit().stateIn(scope)
 
-        override fun onDispose() {
-            super.onDispose()
-            scope.cancel()
-        }
-
-        fun confirmExitToast() {
-            toast(MR.strings.confirm_exit_toast.toPlatformString())
-        }
+    override fun onDispose() {
+        super.onDispose()
+        scope.cancel()
     }
+
+    fun confirmExitToast() {
+        toast(MR.strings.confirm_exit_toast.toPlatformString())
+    }
+}

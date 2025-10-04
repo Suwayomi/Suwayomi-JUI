@@ -13,30 +13,29 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class ExportBackupFile
-    @Inject
-    constructor(
-        private val backupRepository: BackupRepository,
-    ) {
-        suspend fun await(
-            includeCategories: Boolean,
-            includeChapters: Boolean,
-            block: HttpRequestBuilder.() -> Unit = {},
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(includeCategories, includeChapters, block)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to export backup" }
-            }
-            .singleOrNull()
-
-        fun asFlow(
-            includeCategories: Boolean,
-            includeChapters: Boolean,
-            block: HttpRequestBuilder.() -> Unit = {},
-        ) = backupRepository.createBackup(includeCategories, includeChapters, block)
-
-        companion object {
-            private val log = logging()
+@Inject
+class ExportBackupFile(
+    private val backupRepository: BackupRepository,
+) {
+    suspend fun await(
+        includeCategories: Boolean,
+        includeChapters: Boolean,
+        block: HttpRequestBuilder.() -> Unit = {},
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(includeCategories, includeChapters, block)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to export backup" }
         }
+        .singleOrNull()
+
+    fun asFlow(
+        includeCategories: Boolean,
+        includeChapters: Boolean,
+        block: HttpRequestBuilder.() -> Unit = {},
+    ) = backupRepository.createBackup(includeCategories, includeChapters, block)
+
+    companion object {
+        private val log = logging()
     }
+}

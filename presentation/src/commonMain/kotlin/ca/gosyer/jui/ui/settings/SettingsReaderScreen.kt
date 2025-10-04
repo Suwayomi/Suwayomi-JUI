@@ -88,74 +88,74 @@ class SettingsReaderScreen : Screen {
     }
 }
 
-class SettingsReaderViewModel
-    @Inject
-    constructor(
-        readerPreferences: ReaderPreferences,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        val modes = readerPreferences.modes().asStateFlow()
-            .map {
-                it.associateWith { it }
-                    .toImmutableMap()
-            }
-            .stateIn(scope, SharingStarted.Eagerly, persistentMapOf())
-        val selectedMode = readerPreferences.mode().asStateIn(scope)
+@Inject
+class SettingsReaderViewModel(
+    readerPreferences: ReaderPreferences,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    val modes = readerPreferences.modes().asStateFlow()
+        .map {
+            it.associateWith { it }
+                .toImmutableMap()
+        }
+        .stateIn(scope, SharingStarted.Eagerly, persistentMapOf())
+    val selectedMode = readerPreferences.mode().asStateIn(scope)
 
-        private val _modeSettings = MutableStateFlow<ImmutableList<StableHolder<ReaderModePreference>>>(
-            persistentListOf(),
-        )
-        val modeSettings = _modeSettings.asStateFlow()
+    private val _modeSettings = MutableStateFlow<ImmutableList<StableHolder<ReaderModePreference>>>(
+        persistentListOf(),
+    )
+    val modeSettings = _modeSettings.asStateFlow()
 
-        init {
-            modes.onEach { modes ->
-                val modeSettings = _modeSettings.value
-                val modesInSettings = modeSettings.map { it.item.mode }
-                _modeSettings.value = modeSettings.filter { it.item.mode in modes }.toPersistentList() + modes.filter { (it) ->
+    init {
+        modes.onEach { modes ->
+            val modeSettings = _modeSettings.value
+            val modesInSettings = modeSettings.map { it.item.mode }
+            _modeSettings.value =
+                modeSettings.filter { it.item.mode in modes }.toPersistentList() + modes.filter { (it) ->
                     it !in modesInSettings
                 }.map { (it) ->
                     StableHolder(ReaderModePreference(scope, it, readerPreferences.getMode(it)))
                 }
-            }.launchIn(scope)
-        }
-
-        fun getDirectionChoices() =
-            Direction.entries.associateWith { it.res.toPlatformString() }
-                .toImmutableMap()
-
-        fun getPaddingChoices() =
-            mapOf(
-                0 to MR.strings.page_padding_none.toPlatformString(),
-                8 to "8 Dp",
-                16 to "16 Dp",
-                32 to "32 Dp",
-            ).toImmutableMap()
-
-        fun getMaxSizeChoices(direction: Direction) =
-            if (direction == Direction.Right || direction == Direction.Left) {
-                mapOf(
-                    0 to MR.strings.max_size_unrestricted.toPlatformString(),
-                    700 to "700 Dp",
-                    900 to "900 Dp",
-                    1100 to "1100 Dp",
-                )
-            } else {
-                mapOf(
-                    0 to MR.strings.max_size_unrestricted.toPlatformString(),
-                    500 to "500 Dp",
-                    700 to "700 Dp",
-                    900 to "900 Dp",
-                )
-            }.toImmutableMap()
-
-        fun getImageScaleChoices() =
-            ImageScale.entries.associateWith { it.res.toPlatformString() }
-                .toImmutableMap()
-
-        fun getNavigationModeChoices() =
-            NavigationMode.entries.associateWith { it.res.toPlatformString() }
-                .toImmutableMap()
+        }.launchIn(scope)
     }
+
+    fun getDirectionChoices() =
+        Direction.entries.associateWith { it.res.toPlatformString() }
+            .toImmutableMap()
+
+    fun getPaddingChoices() =
+        mapOf(
+            0 to MR.strings.page_padding_none.toPlatformString(),
+            8 to "8 Dp",
+            16 to "16 Dp",
+            32 to "32 Dp",
+        ).toImmutableMap()
+
+    fun getMaxSizeChoices(direction: Direction) =
+        if (direction == Direction.Right || direction == Direction.Left) {
+            mapOf(
+                0 to MR.strings.max_size_unrestricted.toPlatformString(),
+                700 to "700 Dp",
+                900 to "900 Dp",
+                1100 to "1100 Dp",
+            )
+        } else {
+            mapOf(
+                0 to MR.strings.max_size_unrestricted.toPlatformString(),
+                500 to "500 Dp",
+                700 to "700 Dp",
+                900 to "900 Dp",
+            )
+        }.toImmutableMap()
+
+    fun getImageScaleChoices() =
+        ImageScale.entries.associateWith { it.res.toPlatformString() }
+            .toImmutableMap()
+
+    fun getNavigationModeChoices() =
+        NavigationMode.entries.associateWith { it.res.toPlatformString() }
+            .toImmutableMap()
+}
 
 data class ReaderModePreference(
     val scope: CoroutineScope,

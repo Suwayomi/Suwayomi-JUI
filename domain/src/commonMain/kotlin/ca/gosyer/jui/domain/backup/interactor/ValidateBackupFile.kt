@@ -15,24 +15,23 @@ import okio.Path
 import okio.SYSTEM
 import org.lighthousegames.logging.logging
 
-class ValidateBackupFile
-    @Inject
-    constructor(
-        private val backupRepository: BackupRepository,
-    ) {
-        suspend fun await(
-            file: Path,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(file)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to validate backup ${file.name}" }
-            }
-            .singleOrNull()
-
-        fun asFlow(file: Path) = backupRepository.validateBackup(FileSystem.SYSTEM.source(file))
-
-        companion object {
-            private val log = logging()
+@Inject
+class ValidateBackupFile(
+    private val backupRepository: BackupRepository,
+) {
+    suspend fun await(
+        file: Path,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(file)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to validate backup ${file.name}" }
         }
+        .singleOrNull()
+
+    fun asFlow(file: Path) = backupRepository.validateBackup(FileSystem.SYSTEM.source(file))
+
+    companion object {
+        private val log = logging()
     }
+}

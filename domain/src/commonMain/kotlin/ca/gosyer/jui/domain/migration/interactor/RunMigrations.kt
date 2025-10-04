@@ -11,20 +11,19 @@ import ca.gosyer.jui.domain.migration.service.MigrationPreferences
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import me.tatarka.inject.annotations.Inject
 
-class RunMigrations
-    @Inject
-    constructor(
-        private val migrationPreferences: MigrationPreferences,
-        private val readerPreferences: ReaderPreferences,
-    ) {
-        fun runMigrations() {
-            val code = migrationPreferences.version().get()
-            if (code <= 0) {
-                readerPreferences.modes().get().forEach {
-                    readerPreferences.getMode(it).direction().delete()
-                }
-                migrationPreferences.version().set(BuildKonfig.MIGRATION_CODE)
-                return
+@Inject
+class RunMigrations(
+    private val migrationPreferences: MigrationPreferences,
+    private val readerPreferences: ReaderPreferences,
+) {
+    fun runMigrations() {
+        val code = migrationPreferences.version().get()
+        if (code <= 0) {
+            readerPreferences.modes().get().forEach {
+                readerPreferences.getMode(it).direction().delete()
             }
+            migrationPreferences.version().set(BuildKonfig.MIGRATION_CODE)
+            return
         }
     }
+}

@@ -16,115 +16,114 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 import kotlin.jvm.JvmName
 
-class UpdateChapter
-    @Inject
-    constructor(
-        private val chapterRepository: ChapterRepository,
-        private val serverListeners: ServerListeners,
-    ) {
-        suspend fun await(
-            chapterId: Long,
-            bookmarked: Boolean? = null,
-            read: Boolean? = null,
-            lastPageRead: Int? = null,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(chapterId, bookmarked, read, lastPageRead)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to update chapter bookmark for chapter $chapterId" }
-            }
-            .collect()
-
-        suspend fun await(
-            chapter: Chapter,
-            bookmarked: Boolean? = null,
-            read: Boolean? = null,
-            lastPageRead: Int? = null,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(chapter, bookmarked, read, lastPageRead)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to update chapter bookmark for chapter ${chapter.index} of ${chapter.mangaId}" }
-            }
-            .collect()
-
-        suspend fun await(
-            chapterIds: List<Long>,
-            bookmarked: Boolean? = null,
-            read: Boolean? = null,
-            lastPageRead: Int? = null,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(chapterIds, bookmarked, read, lastPageRead)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to update chapter bookmark for chapters $chapterIds" }
-            }
-            .collect()
-
-        @JvmName("awaitChapters")
-        suspend fun await(
-            chapters: List<Chapter>,
-            bookmarked: Boolean? = null,
-            read: Boolean? = null,
-            lastPageRead: Int? = null,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(chapters, bookmarked, read, lastPageRead)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to update chapter bookmark for chapters ${chapters.joinToString { it.id.toString() }}" }
-            }
-            .collect()
-
-        fun asFlow(
-            chapterId: Long,
-            bookmarked: Boolean? = null,
-            read: Boolean? = null,
-            lastPageRead: Int? = null,
-        ) = chapterRepository.updateChapter(
-            chapterId = chapterId,
-            bookmarked = bookmarked,
-            read = read,
-            lastPageRead = lastPageRead,
-        ).onEach { serverListeners.updateChapters(chapterId) }
-
-        fun asFlow(
-            chapter: Chapter,
-            bookmarked: Boolean? = null,
-            read: Boolean? = null,
-            lastPageRead: Int? = null,
-        ) = chapterRepository.updateChapter(
-            chapterId = chapter.id,
-            bookmarked = bookmarked,
-            read = read,
-            lastPageRead = lastPageRead,
-        ).onEach { serverListeners.updateChapters(chapter.id) }
-
-        fun asFlow(
-            chapterIds: List<Long>,
-            bookmarked: Boolean? = null,
-            read: Boolean? = null,
-            lastPageRead: Int? = null,
-        ) = chapterRepository.updateChapters(
-            chapterIds = chapterIds,
-            bookmarked = bookmarked,
-            read = read,
-            lastPageRead = lastPageRead,
-        ).onEach { serverListeners.updateChapters(chapterIds) }
-
-        @JvmName("asFlowChapters")
-        fun asFlow(
-            chapters: List<Chapter>,
-            bookmarked: Boolean? = null,
-            read: Boolean? = null,
-            lastPageRead: Int? = null,
-        ) = chapterRepository.updateChapters(
-            chapterIds = chapters.map { it.id },
-            bookmarked = bookmarked,
-            read = read,
-            lastPageRead = lastPageRead,
-        ).onEach { serverListeners.updateChapters(chapters.map { it.id }) }
-
-        companion object {
-            private val log = logging()
+@Inject
+class UpdateChapter(
+    private val chapterRepository: ChapterRepository,
+    private val serverListeners: ServerListeners,
+) {
+    suspend fun await(
+        chapterId: Long,
+        bookmarked: Boolean? = null,
+        read: Boolean? = null,
+        lastPageRead: Int? = null,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(chapterId, bookmarked, read, lastPageRead)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update chapter bookmark for chapter $chapterId" }
         }
+        .collect()
+
+    suspend fun await(
+        chapter: Chapter,
+        bookmarked: Boolean? = null,
+        read: Boolean? = null,
+        lastPageRead: Int? = null,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(chapter, bookmarked, read, lastPageRead)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update chapter bookmark for chapter ${chapter.index} of ${chapter.mangaId}" }
+        }
+        .collect()
+
+    suspend fun await(
+        chapterIds: List<Long>,
+        bookmarked: Boolean? = null,
+        read: Boolean? = null,
+        lastPageRead: Int? = null,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(chapterIds, bookmarked, read, lastPageRead)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update chapter bookmark for chapters $chapterIds" }
+        }
+        .collect()
+
+    @JvmName("awaitChapters")
+    suspend fun await(
+        chapters: List<Chapter>,
+        bookmarked: Boolean? = null,
+        read: Boolean? = null,
+        lastPageRead: Int? = null,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(chapters, bookmarked, read, lastPageRead)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update chapter bookmark for chapters ${chapters.joinToString { it.id.toString() }}" }
+        }
+        .collect()
+
+    fun asFlow(
+        chapterId: Long,
+        bookmarked: Boolean? = null,
+        read: Boolean? = null,
+        lastPageRead: Int? = null,
+    ) = chapterRepository.updateChapter(
+        chapterId = chapterId,
+        bookmarked = bookmarked,
+        read = read,
+        lastPageRead = lastPageRead,
+    ).onEach { serverListeners.updateChapters(chapterId) }
+
+    fun asFlow(
+        chapter: Chapter,
+        bookmarked: Boolean? = null,
+        read: Boolean? = null,
+        lastPageRead: Int? = null,
+    ) = chapterRepository.updateChapter(
+        chapterId = chapter.id,
+        bookmarked = bookmarked,
+        read = read,
+        lastPageRead = lastPageRead,
+    ).onEach { serverListeners.updateChapters(chapter.id) }
+
+    fun asFlow(
+        chapterIds: List<Long>,
+        bookmarked: Boolean? = null,
+        read: Boolean? = null,
+        lastPageRead: Int? = null,
+    ) = chapterRepository.updateChapters(
+        chapterIds = chapterIds,
+        bookmarked = bookmarked,
+        read = read,
+        lastPageRead = lastPageRead,
+    ).onEach { serverListeners.updateChapters(chapterIds) }
+
+    @JvmName("asFlowChapters")
+    fun asFlow(
+        chapters: List<Chapter>,
+        bookmarked: Boolean? = null,
+        read: Boolean? = null,
+        lastPageRead: Int? = null,
+    ) = chapterRepository.updateChapters(
+        chapterIds = chapters.map { it.id },
+        bookmarked = bookmarked,
+        read = read,
+        lastPageRead = lastPageRead,
+    ).onEach { serverListeners.updateChapters(chapters.map { it.id }) }
+
+    companion object {
+        private val log = logging()
     }
+}

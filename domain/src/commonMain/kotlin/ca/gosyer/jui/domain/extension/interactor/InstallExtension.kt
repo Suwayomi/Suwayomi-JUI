@@ -13,24 +13,23 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class InstallExtension
-    @Inject
-    constructor(
-        private val extensionRepository: ExtensionRepository,
-    ) {
-        suspend fun await(
-            extension: Extension,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(extension)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to install extension ${extension.apkName}" }
-            }
-            .collect()
-
-        fun asFlow(extension: Extension) = extensionRepository.installExtension(extension.pkgName)
-
-        companion object {
-            private val log = logging()
+@Inject
+class InstallExtension(
+    private val extensionRepository: ExtensionRepository,
+) {
+    suspend fun await(
+        extension: Extension,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(extension)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to install extension ${extension.apkName}" }
         }
+        .collect()
+
+    fun asFlow(extension: Extension) = extensionRepository.installExtension(extension.pkgName)
+
+    companion object {
+        private val log = logging()
     }
+}

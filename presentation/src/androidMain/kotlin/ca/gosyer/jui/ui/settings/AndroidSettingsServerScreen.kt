@@ -15,8 +15,7 @@ import me.tatarka.inject.annotations.Inject
 @Composable
 actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostViewModel): LazyListScope.() -> Unit = {}
 
-actual class SettingsServerHostViewModel
-    @Inject
-    constructor(
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper)
+@Inject
+actual class SettingsServerHostViewModel(
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper)

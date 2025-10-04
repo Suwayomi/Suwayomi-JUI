@@ -15,7 +15,7 @@ enum class StartScreen {
     Library,
     Updates,
 
-//  History,
+    //  History,
     Sources,
     Extensions,
 }

@@ -94,37 +94,36 @@ class SettingsLibraryScreen : Screen {
     }
 }
 
-class SettingsLibraryViewModel
-    @Inject
-    constructor(
-        libraryPreferences: LibraryPreferences,
-        private val getCategories: GetCategories,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        val displayMode = libraryPreferences.displayMode().asStateFlow()
-        val gridColumns = libraryPreferences.gridColumns().asStateFlow()
-        val gridSize = libraryPreferences.gridSize().asStateFlow()
+@Inject
+class SettingsLibraryViewModel(
+    libraryPreferences: LibraryPreferences,
+    private val getCategories: GetCategories,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    val displayMode = libraryPreferences.displayMode().asStateFlow()
+    val gridColumns = libraryPreferences.gridColumns().asStateFlow()
+    val gridSize = libraryPreferences.gridSize().asStateFlow()
 
-        val showAllCategory = libraryPreferences.showAllCategory().asStateFlow()
-        private val _categories = MutableStateFlow(0)
-        val categories = _categories.asStateFlow()
+    val showAllCategory = libraryPreferences.showAllCategory().asStateFlow()
+    private val _categories = MutableStateFlow(0)
+    val categories = _categories.asStateFlow()
 
-        init {
-            refreshCategoryCount()
-        }
-
-        fun refreshCategoryCount() {
-            scope.launch {
-                _categories.value = getCategories.await(true, onError = { toast(it.message.orEmpty()) })?.size ?: 0
-            }
-        }
-
-        @Composable
-        fun getDisplayModeChoices() =
-            DisplayMode.entries
-                .associateWith { stringResource(it.res) }
-                .toImmutableMap()
+    init {
+        refreshCategoryCount()
     }
+
+    fun refreshCategoryCount() {
+        scope.launch {
+            _categories.value = getCategories.await(true, onError = { toast(it.message.orEmpty()) })?.size ?: 0
+        }
+    }
+
+    @Composable
+    fun getDisplayModeChoices() =
+        DisplayMode.entries
+            .associateWith { stringResource(it.res) }
+            .toImmutableMap()
+}
 
 @Composable
 fun SettingsLibraryScreenContent(

@@ -21,77 +21,76 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateChecker
-    @Inject
-    constructor(
-        private val updatePreferences: UpdatePreferences,
-        private val client: Http,
-    ) {
-        suspend fun await(
-            manualFetch: Boolean,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(manualFetch)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to check for updates" }
-            }
-            .singleOrNull()
-
-        fun asFlow(manualFetch: Boolean) =
-            flow {
-                if (!manualFetch && !updatePreferences.enabled().get()) return@flow
-                val latestRelease = client.get(
-                    "https://api.github.com/repos/$GITHUB_REPO/releases/latest",
-                ).body<GithubRelease>()
-
-                if (isNewVersion(latestRelease.version)) {
-                    emit(Update.UpdateFound(latestRelease))
-                } else {
-                    emit(Update.NoUpdatesFound)
-                }
-            }.flowOn(Dispatchers.IO)
-
-        sealed class Update {
-            data class UpdateFound(
-                val release: GithubRelease,
-            ) : Update()
-
-            data object NoUpdatesFound : Update()
+@Inject
+class UpdateChecker(
+    private val updatePreferences: UpdatePreferences,
+    private val client: Http,
+) {
+    suspend fun await(
+        manualFetch: Boolean,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(manualFetch)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to check for updates" }
         }
+        .singleOrNull()
 
-        // Thanks to Tachiyomi for inspiration
-        private fun isNewVersion(versionTag: String): Boolean {
-            // Removes prefixes like "r" or "v"
-            val newVersion = versionTag.replace("[^\\d.]".toRegex(), "")
+    fun asFlow(manualFetch: Boolean) =
+        flow {
+            if (!manualFetch && !updatePreferences.enabled().get()) return@flow
+            val latestRelease = client.get(
+                "https://api.github.com/repos/$GITHUB_REPO/releases/latest",
+            ).body<GithubRelease>()
 
-            return if (BuildKonfig.IS_PREVIEW) {
-                // Preview builds: based on releases in "Suwayomi/Suwayomi-JUI-preview" repo
-                // tagged as something like "r123"
-                newVersion.toInt() > BuildKonfig.PREVIEW_BUILD
+            if (isNewVersion(latestRelease.version)) {
+                emit(Update.UpdateFound(latestRelease))
             } else {
-                // Release builds: based on releases in "Suwayomi/Suwayomi-JUI" repo
-                // tagged as something like "v1.1.2"
-                newVersion != BuildKonfig.VERSION
+                emit(Update.NoUpdatesFound)
             }
-        }
+        }.flowOn(Dispatchers.IO)
 
-        companion object {
-            private val GITHUB_REPO = if (BuildKonfig.IS_PREVIEW) {
-                "Suwayomi/Suwayomi-JUI-preview"
-            } else {
-                "Suwayomi/Suwayomi-JUI"
-            }
+    sealed class Update {
+        data class UpdateFound(
+            val release: GithubRelease,
+        ) : Update()
 
-            private val RELEASE_TAG: String by lazy {
-                if (BuildKonfig.IS_PREVIEW) {
-                    "r${BuildKonfig.PREVIEW_BUILD}"
-                } else {
-                    "v${BuildKonfig.VERSION}"
-                }
-            }
+        data object NoUpdatesFound : Update()
+    }
 
-            val RELEASE_URL = "https://github.com/$GITHUB_REPO/releases/tag/$RELEASE_TAG"
+    // Thanks to Tachiyomi for inspiration
+    private fun isNewVersion(versionTag: String): Boolean {
+        // Removes prefixes like "r" or "v"
+        val newVersion = versionTag.replace("[^\\d.]".toRegex(), "")
 
-            private val log = logging()
+        return if (BuildKonfig.IS_PREVIEW) {
+            // Preview builds: based on releases in "Suwayomi/Suwayomi-JUI-preview" repo
+            // tagged as something like "r123"
+            newVersion.toInt() > BuildKonfig.PREVIEW_BUILD
+        } else {
+            // Release builds: based on releases in "Suwayomi/Suwayomi-JUI" repo
+            // tagged as something like "v1.1.2"
+            newVersion != BuildKonfig.VERSION
         }
     }
+
+    companion object {
+        private val GITHUB_REPO = if (BuildKonfig.IS_PREVIEW) {
+            "Suwayomi/Suwayomi-JUI-preview"
+        } else {
+            "Suwayomi/Suwayomi-JUI"
+        }
+
+        private val RELEASE_TAG: String by lazy {
+            if (BuildKonfig.IS_PREVIEW) {
+                "r${BuildKonfig.PREVIEW_BUILD}"
+            } else {
+                "v${BuildKonfig.VERSION}"
+            }
+        }
+
+        val RELEASE_URL = "https://github.com/$GITHUB_REPO/releases/tag/$RELEASE_TAG"
+
+        private val log = logging()
+    }
+}

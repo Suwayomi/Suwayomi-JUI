@@ -12,24 +12,23 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetRecentUpdates
-    @Inject
-    constructor(
-        private val updatesRepository: UpdatesRepository,
-    ) {
-        suspend fun await(
-            pageNum: Int,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(pageNum)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get updates for page $pageNum" }
-            }
-            .singleOrNull()
-
-        fun asFlow(pageNum: Int) = updatesRepository.getRecentUpdates(pageNum)
-
-        companion object {
-            private val log = logging()
+@Inject
+class GetRecentUpdates(
+    private val updatesRepository: UpdatesRepository,
+) {
+    suspend fun await(
+        pageNum: Int,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(pageNum)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get updates for page $pageNum" }
         }
+        .singleOrNull()
+
+    fun asFlow(pageNum: Int) = updatesRepository.getRecentUpdates(pageNum)
+
+    companion object {
+        private val log = logging()
     }
+}

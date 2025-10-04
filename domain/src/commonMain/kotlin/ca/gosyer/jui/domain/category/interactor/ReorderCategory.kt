@@ -12,28 +12,27 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class ReorderCategory
-    @Inject
-    constructor(
-        private val categoryRepository: CategoryRepository,
-    ) {
-        suspend fun await(
-            categoryId: Long,
-            position: Int,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(categoryId, position)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to move category $categoryId to $position" }
-            }
-            .collect()
-
-        fun asFlow(
-            categoryId: Long,
-            position: Int,
-        ) = categoryRepository.reorderCategory(categoryId, position)
-
-        companion object {
-            private val log = logging()
+@Inject
+class ReorderCategory(
+    private val categoryRepository: CategoryRepository,
+) {
+    suspend fun await(
+        categoryId: Long,
+        position: Int,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(categoryId, position)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to move category $categoryId to $position" }
         }
+        .collect()
+
+    fun asFlow(
+        categoryId: Long,
+        position: Int,
+    ) = categoryRepository.reorderCategory(categoryId, position)
+
+    companion object {
+        private val log = logging()
     }
+}

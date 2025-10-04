@@ -191,7 +191,8 @@ class ServerSettings(
         getSetting = { it.backupTime },
         getInput = { SetSettingsInput(backupTime = it) },
     )
-//    val basicAuthEnabled = getServerFlow(
+
+    //    val basicAuthEnabled = getServerFlow(
 //        getSetting = { it.basicAuthEnabled },
 //        getInput = { SetSettingsInput(basicAuthEnabled = it) },
 //    )
@@ -263,7 +264,8 @@ class ServerSettings(
         getSetting = { it.globalUpdateInterval.toString() },
         getInput = { SetSettingsInput(globalUpdateInterval = it.toDoubleOrNull()?.takeIf { it !in 0.01..5.99 }) },
     )
-//    val gqlDebugLogsEnabled = getServerFlow(
+
+    //    val gqlDebugLogsEnabled = getServerFlow(
 //        getSetting = { it.gqlDebugLogsEnabled },
 //        getInput = { SetSettingsInput(gqlDebugLogsEnabled = it) },
 //    )
@@ -360,67 +362,66 @@ class ServerSettings(
         )
 }
 
-class SettingsServerViewModel
-    @Inject
-    constructor(
-        private val getSettings: GetSettings,
-        private val setSettings: SetSettings,
-        serverPreferences: ServerPreferences,
-        serverHostPreferences: ServerHostPreferences,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        val serverUrl = serverPreferences.server().asStateIn(scope)
-        val serverPort = serverPreferences.port().asStringStateIn(scope)
-        val serverPathPrefix = serverPreferences.pathPrefix().asStateIn(scope)
+@Inject
+class SettingsServerViewModel(
+    private val getSettings: GetSettings,
+    private val setSettings: SetSettings,
+    serverPreferences: ServerPreferences,
+    serverHostPreferences: ServerHostPreferences,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    val serverUrl = serverPreferences.server().asStateIn(scope)
+    val serverPort = serverPreferences.port().asStringStateIn(scope)
+    val serverPathPrefix = serverPreferences.pathPrefix().asStateIn(scope)
 
-        val proxy = serverPreferences.proxy().asStateIn(scope)
+    val proxy = serverPreferences.proxy().asStateIn(scope)
 
-        val host = serverHostPreferences.host().asStateIn(scope)
+    val host = serverHostPreferences.host().asStateIn(scope)
 
-        @Composable
-        fun getProxyChoices(): ImmutableMap<Proxy, String> =
-            persistentMapOf(
-                Proxy.NO_PROXY to stringResource(MR.strings.no_proxy),
-                Proxy.HTTP_PROXY to stringResource(MR.strings.http_proxy),
-                Proxy.SOCKS_PROXY to stringResource(MR.strings.socks_proxy),
-            )
+    @Composable
+    fun getProxyChoices(): ImmutableMap<Proxy, String> =
+        persistentMapOf(
+            Proxy.NO_PROXY to stringResource(MR.strings.no_proxy),
+            Proxy.HTTP_PROXY to stringResource(MR.strings.http_proxy),
+            Proxy.SOCKS_PROXY to stringResource(MR.strings.socks_proxy),
+        )
 
-        val httpHost = serverPreferences.proxyHttpHost().asStateIn(scope)
-        val httpPort = serverPreferences.proxyHttpPort().asStringStateIn(scope)
-        val socksHost = serverPreferences.proxySocksHost().asStateIn(scope)
-        val socksPort = serverPreferences.proxySocksPort().asStringStateIn(scope)
+    val httpHost = serverPreferences.proxyHttpHost().asStateIn(scope)
+    val httpPort = serverPreferences.proxyHttpPort().asStringStateIn(scope)
+    val socksHost = serverPreferences.proxySocksHost().asStateIn(scope)
+    val socksPort = serverPreferences.proxySocksPort().asStringStateIn(scope)
 
-        val auth = serverPreferences.auth().asStateIn(scope)
+    val auth = serverPreferences.auth().asStateIn(scope)
 
-        @Composable
-        fun getAuthChoices(): ImmutableMap<Auth, String> =
-            persistentMapOf(
-                Auth.NONE to stringResource(MR.strings.no_auth),
-                Auth.BASIC to stringResource(MR.strings.basic_auth),
-                Auth.DIGEST to stringResource(MR.strings.digest_auth),
-            )
+    @Composable
+    fun getAuthChoices(): ImmutableMap<Auth, String> =
+        persistentMapOf(
+            Auth.NONE to stringResource(MR.strings.no_auth),
+            Auth.BASIC to stringResource(MR.strings.basic_auth),
+            Auth.DIGEST to stringResource(MR.strings.digest_auth),
+        )
 
-        val authUsername = serverPreferences.authUsername().asStateIn(scope)
-        val authPassword = serverPreferences.authPassword().asStateIn(scope)
+    val authUsername = serverPreferences.authUsername().asStateIn(scope)
+    val authPassword = serverPreferences.authPassword().asStateIn(scope)
 
-        private val _serverSettings = MutableStateFlow<ServerSettings?>(null)
-        val serverSettings = _serverSettings.asStateFlow()
+    private val _serverSettings = MutableStateFlow<ServerSettings?>(null)
+    val serverSettings = _serverSettings.asStateFlow()
 
-        init {
-            scope.launchIO {
-                val initialSettings = getSettings.await(onError = { toast(it.message.orEmpty()) })
-                if (initialSettings != null) {
-                    _serverSettings.value = ServerSettings(
-                        getSettings,
-                        setSettings,
-                        scope,
-                        initialSettings,
-                        onError = { toast(it) },
-                    )
-                }
+    init {
+        scope.launchIO {
+            val initialSettings = getSettings.await(onError = { toast(it.message.orEmpty()) })
+            if (initialSettings != null) {
+                _serverSettings.value = ServerSettings(
+                    getSettings,
+                    setSettings,
+                    scope,
+                    initialSettings,
+                    onError = { toast(it) },
+                )
             }
         }
     }
+}
 
 @Composable
 fun SettingsServerScreenContent(
@@ -886,7 +887,7 @@ private val repoRegex =
     (
         "https:\\/\\/(?>www\\.|raw\\.)?(github|githubusercontent)\\.com" +
             "\\/([^\\/]+)\\/([^\\/]+)(?>(?>\\/tree|\\/blob)?\\/([^\\/\\n]*))?(?>\\/([^\\/\\n]*\\.json)?)?"
-    ).toRegex()
+        ).toRegex()
 
 @Composable
 fun ExtensionReposDialog(

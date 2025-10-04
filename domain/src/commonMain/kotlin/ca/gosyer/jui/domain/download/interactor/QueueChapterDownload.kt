@@ -12,24 +12,23 @@ import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class QueueChapterDownload
-    @Inject
-    constructor(
-        private val downloadRepository: DownloadRepository,
-    ) {
-        suspend fun await(
-            chapterId: Long,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(chapterId)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to queue chapter $chapterId for a download" }
-            }
-            .collect()
-
-        fun asFlow(chapterId: Long) = downloadRepository.queueChapterDownload(chapterId)
-
-        companion object {
-            private val log = logging()
+@Inject
+class QueueChapterDownload(
+    private val downloadRepository: DownloadRepository,
+) {
+    suspend fun await(
+        chapterId: Long,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(chapterId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to queue chapter $chapterId for a download" }
         }
+        .collect()
+
+    fun asFlow(chapterId: Long) = downloadRepository.queueChapterDownload(chapterId)
+
+    companion object {
+        private val log = logging()
     }
+}

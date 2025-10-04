@@ -108,23 +108,22 @@ class SettingsAppearanceScreen : Screen {
     }
 }
 
-class ThemesViewModel
-    @Inject
-    constructor(
-        private val uiPreferences: UiPreferences,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        val themeMode = uiPreferences.themeMode().asStateFlow()
-        val lightTheme = uiPreferences.lightTheme().asStateFlow()
-        val darkTheme = uiPreferences.darkTheme().asStateFlow()
-        val lightColors = uiPreferences.getLightColors().asStateFlow(scope)
-        val darkColors = uiPreferences.getDarkColors().asStateFlow(scope)
+@Inject
+class ThemesViewModel(
+    private val uiPreferences: UiPreferences,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    val themeMode = uiPreferences.themeMode().asStateFlow()
+    val lightTheme = uiPreferences.lightTheme().asStateFlow()
+    val darkTheme = uiPreferences.darkTheme().asStateFlow()
+    val lightColors = uiPreferences.getLightColors().asStateFlow(scope)
+    val darkColors = uiPreferences.getDarkColors().asStateFlow(scope)
 
-        val windowDecorations = uiPreferences.windowDecorations().asStateFlow()
+    val windowDecorations = uiPreferences.windowDecorations().asStateFlow()
 
-        @Composable
-        fun getActiveColors(): AppColorsPreferenceState = if (MaterialTheme.colors.isLight) lightColors else darkColors
-    }
+    @Composable
+    fun getActiveColors(): AppColorsPreferenceState = if (MaterialTheme.colors.isLight) lightColors else darkColors
+}
 
 expect val showWindowDecorationsOption: Boolean
 

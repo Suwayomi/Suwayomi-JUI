@@ -18,26 +18,26 @@ import kotlinx.coroutines.flow.shareIn
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
+@Inject
 class TrayViewModel
-    @Inject
-    constructor(
-        updateChecker: UpdateChecker,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        override val scope = MainScope()
+constructor(
+    updateChecker: UpdateChecker,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    override val scope = MainScope()
 
-        val updateFound = updateChecker
-            .asFlow(false)
-            .catch { log.warn(it) { "Failed to check for updates" } }
-            .filterIsInstance<UpdateChecker.Update.UpdateFound>()
-            .shareIn(scope, SharingStarted.Eagerly, 1)
+    val updateFound = updateChecker
+        .asFlow(false)
+        .catch { log.warn(it) { "Failed to check for updates" } }
+        .filterIsInstance<UpdateChecker.Update.UpdateFound>()
+        .shareIn(scope, SharingStarted.Eagerly, 1)
 
-        override fun onDispose() {
-            super.onDispose()
-            scope.cancel()
-        }
-
-        companion object {
-            private val log = logging()
-        }
+    override fun onDispose() {
+        super.onDispose()
+        scope.cancel()
     }
+
+    companion object {
+        private val log = logging()
+    }
+}

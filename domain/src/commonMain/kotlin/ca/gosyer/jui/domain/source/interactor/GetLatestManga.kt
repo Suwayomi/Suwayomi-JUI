@@ -13,44 +13,43 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetLatestManga
-    @Inject
-    constructor(
-        private val sourceRepository: SourceRepository,
-    ) {
-        suspend fun await(
-            source: Source,
-            page: Int,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(source.id, page)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get latest manga from ${source.displayName} on page $page" }
-            }
-            .singleOrNull()
-
-        suspend fun await(
-            sourceId: Long,
-            page: Int,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(sourceId, page)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get latest manga from $sourceId on page $page" }
-            }
-            .singleOrNull()
-
-        fun asFlow(
-            source: Source,
-            page: Int,
-        ) = sourceRepository.getLatestManga(source.id, page)
-
-        fun asFlow(
-            sourceId: Long,
-            page: Int,
-        ) = sourceRepository.getLatestManga(sourceId, page)
-
-        companion object {
-            private val log = logging()
+@Inject
+class GetLatestManga(
+    private val sourceRepository: SourceRepository,
+) {
+    suspend fun await(
+        source: Source,
+        page: Int,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(source.id, page)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get latest manga from ${source.displayName} on page $page" }
         }
+        .singleOrNull()
+
+    suspend fun await(
+        sourceId: Long,
+        page: Int,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(sourceId, page)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get latest manga from $sourceId on page $page" }
+        }
+        .singleOrNull()
+
+    fun asFlow(
+        source: Source,
+        page: Int,
+    ) = sourceRepository.getLatestManga(source.id, page)
+
+    fun asFlow(
+        sourceId: Long,
+        page: Int,
+    ) = sourceRepository.getLatestManga(sourceId, page)
+
+    companion object {
+        private val log = logging()
     }
+}

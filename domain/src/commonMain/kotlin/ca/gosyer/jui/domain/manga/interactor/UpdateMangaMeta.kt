@@ -17,39 +17,38 @@ import kotlinx.coroutines.flow.flow
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class UpdateMangaMeta
-    @Inject
-    constructor(
-        private val mangaRepository: MangaRepository,
-        private val serverListeners: ServerListeners,
-    ) {
-        suspend fun await(
-            manga: Manga,
-            readerMode: String = manga.meta.juiReaderMode,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(manga, readerMode)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to update ${manga.title}(${manga.id}) meta" }
-            }
-            .collect()
-
-        fun asFlow(
-            manga: Manga,
-            readerMode: String = manga.meta.juiReaderMode.decodeURLQueryComponent(),
-        ) = flow {
-            if (readerMode.encodeURLQueryComponent() != manga.meta.juiReaderMode) {
-                mangaRepository.updateMangaMeta(
-                    manga.id,
-                    "juiReaderMode",
-                    readerMode,
-                ).collect()
-                serverListeners.updateManga(manga.id)
-            }
-            emit(Unit)
+@Inject
+class UpdateMangaMeta(
+    private val mangaRepository: MangaRepository,
+    private val serverListeners: ServerListeners,
+) {
+    suspend fun await(
+        manga: Manga,
+        readerMode: String = manga.meta.juiReaderMode,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(manga, readerMode)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to update ${manga.title}(${manga.id}) meta" }
         }
+        .collect()
 
-        companion object {
-            private val log = logging()
+    fun asFlow(
+        manga: Manga,
+        readerMode: String = manga.meta.juiReaderMode.decodeURLQueryComponent(),
+    ) = flow {
+        if (readerMode.encodeURLQueryComponent() != manga.meta.juiReaderMode) {
+            mangaRepository.updateMangaMeta(
+                manga.id,
+                "juiReaderMode",
+                readerMode,
+            ).collect()
+            serverListeners.updateManga(manga.id)
         }
+        emit(Unit)
     }
+
+    companion object {
+        private val log = logging()
+    }
+}

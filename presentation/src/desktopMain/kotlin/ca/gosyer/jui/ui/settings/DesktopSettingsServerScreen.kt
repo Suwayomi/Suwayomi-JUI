@@ -66,71 +66,71 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
     }
 }
 
+@Inject
 actual class SettingsServerHostViewModel
-    @Inject
-    constructor(
-        serverPreferences: ServerPreferences,
-        serverHostPreferences: ServerHostPreferences,
-        private val serverService: ServerService,
-        contextWrapper: ContextWrapper,
-    ) : ViewModel(contextWrapper) {
-        val host = serverHostPreferences.host().asStateIn(scope)
+constructor(
+    serverPreferences: ServerPreferences,
+    serverHostPreferences: ServerHostPreferences,
+    private val serverService: ServerService,
+    contextWrapper: ContextWrapper,
+) : ViewModel(contextWrapper) {
+    val host = serverHostPreferences.host().asStateIn(scope)
 
-        // IP
-        val ip = serverHostPreferences.ip().asStateIn(scope)
-        val port = serverHostPreferences.port().asStringStateIn(scope)
+    // IP
+    val ip = serverHostPreferences.ip().asStateIn(scope)
+    val port = serverHostPreferences.port().asStringStateIn(scope)
 
-        // Root
-        val rootPath = serverHostPreferences.rootPath().asStateIn(scope)
+    // Root
+    val rootPath = serverHostPreferences.rootPath().asStateIn(scope)
 
-        // Downloader
-        val downloadPath = serverHostPreferences.downloadPath().asStateIn(scope)
+    // Downloader
+    val downloadPath = serverHostPreferences.downloadPath().asStateIn(scope)
 
-        // Backup
-        val backupPath = serverHostPreferences.backupPath().asStateIn(scope)
+    // Backup
+    val backupPath = serverHostPreferences.backupPath().asStateIn(scope)
 
-        // LocalSource
-        val localSourcePath = serverHostPreferences.localSourcePath().asStateIn(scope)
+    // LocalSource
+    val localSourcePath = serverHostPreferences.localSourcePath().asStateIn(scope)
 
-        // Authentication
-        val basicAuthEnabled = serverHostPreferences.basicAuthEnabled().asStateIn(scope)
-        val basicAuthUsername = serverHostPreferences.basicAuthUsername().asStateIn(scope)
-        val basicAuthPassword = serverHostPreferences.basicAuthPassword().asStateIn(scope)
+    // Authentication
+    val basicAuthEnabled = serverHostPreferences.basicAuthEnabled().asStateIn(scope)
+    val basicAuthUsername = serverHostPreferences.basicAuthUsername().asStateIn(scope)
+    val basicAuthPassword = serverHostPreferences.basicAuthPassword().asStateIn(scope)
 
-        private val _serverSettingChanged = MutableStateFlow(false)
-        val serverSettingChanged = _serverSettingChanged.asStateFlow()
+    private val _serverSettingChanged = MutableStateFlow(false)
+    val serverSettingChanged = _serverSettingChanged.asStateFlow()
 
-        fun serverSettingChanged() {
-            _serverSettingChanged.value = true
-        }
+    fun serverSettingChanged() {
+        _serverSettingChanged.value = true
+    }
 
-        fun restartServer() {
-            if (serverSettingChanged.value) {
-                serverService.startServer()
-            }
-        }
-
-        // Handle password connection to hosted server
-        val auth = serverPreferences.auth().asStateIn(scope)
-        val authUsername = serverPreferences.authUsername().asStateIn(scope)
-        val authPassword = serverPreferences.authPassword().asStateIn(scope)
-
-        init {
-            combine(host, basicAuthEnabled, basicAuthUsername, basicAuthPassword) { host, enabled, username, password ->
-                if (host) {
-                    if (enabled) {
-                        auth.value = Auth.BASIC
-                        authUsername.value = username
-                        authPassword.value = password
-                    } else {
-                        auth.value = Auth.NONE
-                        authUsername.value = ""
-                        authPassword.value = ""
-                    }
-                }
-            }.launchIn(scope)
+    fun restartServer() {
+        if (serverSettingChanged.value) {
+            serverService.startServer()
         }
     }
+
+    // Handle password connection to hosted server
+    val auth = serverPreferences.auth().asStateIn(scope)
+    val authUsername = serverPreferences.authUsername().asStateIn(scope)
+    val authPassword = serverPreferences.authPassword().asStateIn(scope)
+
+    init {
+        combine(host, basicAuthEnabled, basicAuthUsername, basicAuthPassword) { host, enabled, username, password ->
+            if (host) {
+                if (enabled) {
+                    auth.value = Auth.BASIC
+                    authUsername.value = username
+                    authPassword.value = password
+                } else {
+                    auth.value = Auth.NONE
+                    authUsername.value = ""
+                    authPassword.value = ""
+                }
+            }
+        }.launchIn(scope)
+    }
+}
 
 fun LazyListScope.ServerHostItems(
     hostValue: Boolean,

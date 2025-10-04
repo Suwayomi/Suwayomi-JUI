@@ -18,33 +18,32 @@ import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class LibraryUpdatesViewModel
-    @Inject
-    constructor(
-        private val libraryUpdateService: LibraryUpdateService,
-        private val contextWrapper: ContextWrapper,
-        @Assisted standalone: Boolean,
-    ) : ViewModel(contextWrapper) {
-        private val uiScope = if (standalone) {
-            MainScope()
-        } else {
-            null
-        }
-
-        override val scope: CoroutineScope
-            get() = uiScope ?: super.scope
-
-        val serviceStatus = LibraryUpdateService.status.asStateFlow()
-        val updateStatus = LibraryUpdateService.updateStatus.asStateFlow()
-
-        fun restartLibraryUpdates() = startLibraryUpdatesService(contextWrapper, libraryUpdateService, Actions.RESTART)
-
-        override fun onDispose() {
-            super.onDispose()
-            uiScope?.cancel()
-        }
-
-        private companion object {
-            private val log = logging()
-        }
+@Inject
+class LibraryUpdatesViewModel(
+    private val libraryUpdateService: LibraryUpdateService,
+    private val contextWrapper: ContextWrapper,
+    @Assisted standalone: Boolean,
+) : ViewModel(contextWrapper) {
+    private val uiScope = if (standalone) {
+        MainScope()
+    } else {
+        null
     }
+
+    override val scope: CoroutineScope
+        get() = uiScope ?: super.scope
+
+    val serviceStatus = LibraryUpdateService.status.asStateFlow()
+    val updateStatus = LibraryUpdateService.updateStatus.asStateFlow()
+
+    fun restartLibraryUpdates() = startLibraryUpdatesService(contextWrapper, libraryUpdateService, Actions.RESTART)
+
+    override fun onDispose() {
+        super.onDispose()
+        uiScope?.cancel()
+    }
+
+    private companion object {
+        private val log = logging()
+    }
+}

@@ -13,36 +13,35 @@ import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GetFilterList
-    @Inject
-    constructor(
-        private val sourceRepository: SourceRepository,
-    ) {
-        suspend fun await(
-            source: Source,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(source.id)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get filter list for ${source.displayName}" }
-            }
-            .singleOrNull()
-
-        suspend fun await(
-            sourceId: Long,
-            onError: suspend (Throwable) -> Unit = {},
-        ) = asFlow(sourceId)
-            .catch {
-                onError(it)
-                log.warn(it) { "Failed to get filter list for $sourceId" }
-            }
-            .singleOrNull()
-
-        fun asFlow(source: Source) = sourceRepository.getFilterList(source.id)
-
-        fun asFlow(sourceId: Long) = sourceRepository.getFilterList(sourceId)
-
-        companion object {
-            private val log = logging()
+@Inject
+class GetFilterList(
+    private val sourceRepository: SourceRepository,
+) {
+    suspend fun await(
+        source: Source,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(source.id)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get filter list for ${source.displayName}" }
         }
+        .singleOrNull()
+
+    suspend fun await(
+        sourceId: Long,
+        onError: suspend (Throwable) -> Unit = {},
+    ) = asFlow(sourceId)
+        .catch {
+            onError(it)
+            log.warn(it) { "Failed to get filter list for $sourceId" }
+        }
+        .singleOrNull()
+
+    fun asFlow(source: Source) = sourceRepository.getFilterList(source.id)
+
+    fun asFlow(sourceId: Long) = sourceRepository.getFilterList(sourceId)
+
+    companion object {
+        private val log = logging()
     }
+}

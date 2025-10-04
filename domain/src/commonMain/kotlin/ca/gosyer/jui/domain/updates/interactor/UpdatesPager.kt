@@ -37,54 +37,54 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import me.tatarka.inject.annotations.Inject
 
-class UpdatesPager
-    @Inject
-    constructor(
-        private val getRecentUpdates: GetRecentUpdates,
-        private val getManga: GetManga,
-        private val getChapter: GetChapter,
-        private val serverListeners: ServerListeners,
-    ) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
-        private val updatesMutex = Mutex()
+@Inject
+class UpdatesPager(
+    private val getRecentUpdates: GetRecentUpdates,
+    private val getManga: GetManga,
+    private val getChapter: GetChapter,
+    private val serverListeners: ServerListeners,
+) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
+    private val updatesMutex = Mutex()
 
-        private val fetchedUpdates = MutableSharedFlow<List<MangaAndChapter>>()
-        private val foldedUpdates = fetchedUpdates.runningFold(emptyList<Updates>()) { updates, newUpdates ->
-            updates.ifEmpty {
-                val first = newUpdates.firstOrNull()?.chapter ?: return@runningFold updates
-                listOf(
-                    Updates.Date(
-                        Instant.fromEpochSeconds(first.fetchedAt)
-                            .toLocalDateTime(TimeZone.currentSystemDefault())
-                            .date,
-                    ),
-                )
-            } + newUpdates.fold(emptyList()) { list, (manga, chapter) ->
-                val date = (list.lastOrNull() as? Updates.Update)?.let {
-                    val lastUpdateDate = Instant.fromEpochSeconds(it.chapter.fetchedAt)
+    private val fetchedUpdates = MutableSharedFlow<List<MangaAndChapter>>()
+    private val foldedUpdates = fetchedUpdates.runningFold(emptyList<Updates>()) { updates, newUpdates ->
+        updates.ifEmpty {
+            val first = newUpdates.firstOrNull()?.chapter ?: return@runningFold updates
+            listOf(
+                Updates.Date(
+                    Instant.fromEpochSeconds(first.fetchedAt)
                         .toLocalDateTime(TimeZone.currentSystemDefault())
-                        .date
-                    val chapterDate = Instant.fromEpochSeconds(chapter.fetchedAt)
-                        .toLocalDateTime(TimeZone.currentSystemDefault())
-                        .date
-                    chapterDate.takeUnless { it == lastUpdateDate }
-                }
-
-                if (date == null) {
-                    list + Updates.Update(manga, chapter)
-                } else {
-                    list + Updates.Date(date) + Updates.Update(manga, chapter)
-                }
+                        .date,
+                ),
+            )
+        } + newUpdates.fold(emptyList()) { list, (manga, chapter) ->
+            val date = (list.lastOrNull() as? Updates.Update)?.let {
+                val lastUpdateDate = Instant.fromEpochSeconds(it.chapter.fetchedAt)
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .date
+                val chapterDate = Instant.fromEpochSeconds(chapter.fetchedAt)
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .date
+                chapterDate.takeUnless { it == lastUpdateDate }
             }
-        }.stateIn(this, SharingStarted.Eagerly, emptyList())
 
-        private val mangaIds = foldedUpdates.map { updates ->
-            updates.filterIsInstance<Updates.Update>().map { it.manga.id }
-        }.stateIn(this, SharingStarted.Eagerly, emptyList())
-        private val chapterIds = foldedUpdates.map { updates ->
-            updates.filterIsInstance<Updates.Update>().map { it.chapter.id }
-        }.stateIn(this, SharingStarted.Eagerly, emptyList())
+            if (date == null) {
+                list + Updates.Update(manga, chapter)
+            } else {
+                list + Updates.Date(date) + Updates.Update(manga, chapter)
+            }
+        }
+    }.stateIn(this, SharingStarted.Eagerly, emptyList())
 
-        private val changedManga = serverListeners.mangaListener.runningFold(emptyMap<Long, Manga>()) { manga, updatedMangaIds ->
+    private val mangaIds = foldedUpdates.map { updates ->
+        updates.filterIsInstance<Updates.Update>().map { it.manga.id }
+    }.stateIn(this, SharingStarted.Eagerly, emptyList())
+    private val chapterIds = foldedUpdates.map { updates ->
+        updates.filterIsInstance<Updates.Update>().map { it.chapter.id }
+    }.stateIn(this, SharingStarted.Eagerly, emptyList())
+
+    private val changedManga =
+        serverListeners.mangaListener.runningFold(emptyMap<Long, Manga>()) { manga, updatedMangaIds ->
             coroutineScope {
                 manga + updatedMangaIds.filter { it in mangaIds.value }.map {
                     async {
@@ -94,82 +94,82 @@ class UpdatesPager
             }
         }.stateIn(this, SharingStarted.Eagerly, emptyMap())
 
-        private val changedChapters = MutableStateFlow(emptyMap<Long, Chapter>())
+    private val changedChapters = MutableStateFlow(emptyMap<Long, Chapter>())
 
-        init {
-            serverListeners.chapterIdsListener
-                .onEach { updatedChapterIds ->
-                    val chapters = coroutineScope {
-                        updatedChapterIds.mapNotNull { id -> chapterIds.value.find { it == id } }.map {
-                            async {
-                                getChapter.await(it)
-                            }
-                        }.awaitAll().filterNotNull().associateBy { it.id }
-                    }
-                    changedChapters.update { it + chapters }
+    init {
+        serverListeners.chapterIdsListener
+            .onEach { updatedChapterIds ->
+                val chapters = coroutineScope {
+                    updatedChapterIds.mapNotNull { id -> chapterIds.value.find { it == id } }.map {
+                        async {
+                            getChapter.await(it)
+                        }
+                    }.awaitAll().filterNotNull().associateBy { it.id }
                 }
-                .launchIn(this)
-        }
-
-        val updates = combine(
-            foldedUpdates,
-            changedManga,
-            changedChapters,
-        ) { updates, changedManga, changedChapters ->
-            updates.map {
-                when (it) {
-                    is Updates.Date -> it
-
-                    is Updates.Update -> it.copy(
-                        manga = changedManga[it.manga.id] ?: it.manga,
-                        chapter = changedChapters[it.chapter.id] ?: it.chapter,
-                    )
-                }
+                changedChapters.update { it + chapters }
             }
-        }.stateIn(this, SharingStarted.Eagerly, emptyList())
+            .launchIn(this)
+    }
 
-        private val currentPage = MutableStateFlow(0)
-        private val hasNextPage = MutableStateFlow(true)
+    val updates = combine(
+        foldedUpdates,
+        changedManga,
+        changedChapters,
+    ) { updates, changedManga, changedChapters ->
+        updates.map {
+            when (it) {
+                is Updates.Date -> it
+
+                is Updates.Update -> it.copy(
+                    manga = changedManga[it.manga.id] ?: it.manga,
+                    chapter = changedChapters[it.chapter.id] ?: it.chapter,
+                )
+            }
+        }
+    }.stateIn(this, SharingStarted.Eagerly, emptyList())
+
+    private val currentPage = MutableStateFlow(0)
+    private val hasNextPage = MutableStateFlow(true)
+
+    @Immutable
+    sealed class Updates {
+        @Immutable
+        data class Update(
+            val manga: Manga,
+            val chapter: Chapter,
+        ) : Updates()
 
         @Immutable
-        sealed class Updates {
-            @Immutable
-            data class Update(
-                val manga: Manga,
-                val chapter: Chapter,
-            ) : Updates()
-
-            @Immutable
-            data class Date(
-                val date: String,
-            ) : Updates() {
-                constructor(date: LocalDate) : this(date.toString())
-            }
-        }
-
-        fun loadNextPage(
-            onComplete: (() -> Unit)? = null,
-            onError: suspend (Throwable) -> Unit,
-        ) {
-            launch {
-                if (hasNextPage.value && updatesMutex.tryLock()) {
-                    currentPage.value++
-                    if (!getUpdates(currentPage.value, onError)) {
-                        currentPage.value--
-                    }
-                    updatesMutex.unlock()
-                }
-                onComplete?.invoke()
-            }
-        }
-
-        private suspend fun getUpdates(
-            page: Int,
-            onError: suspend (Throwable) -> Unit,
-        ): Boolean {
-            val updates = getRecentUpdates.await(page, onError) ?: return false
-            hasNextPage.value = updates.hasNextPage
-            fetchedUpdates.emit(updates.page)
-            return true
+        data class Date(
+            val date: String,
+        ) : Updates() {
+            constructor(date: LocalDate) : this(date.toString())
         }
     }
+
+    fun loadNextPage(
+        onComplete: (() -> Unit)? = null,
+        onError: suspend (Throwable) -> Unit,
+    ) {
+        launch {
+            if (hasNextPage.value && updatesMutex.tryLock()) {
+                currentPage.value++
+                if (!getUpdates(currentPage.value, onError)) {
+                    currentPage.value--
+                }
+                updatesMutex.unlock()
+            }
+            onComplete?.invoke()
+        }
+    }
+
+    private suspend fun getUpdates(
+        page: Int,
+        onError: suspend (Throwable) -> Unit,
+    ): Boolean {
+        val updates = getRecentUpdates.await(page, onError) ?: return false
+        hasNextPage.value = updates.hasNextPage
+        fetchedUpdates.emit(updates.page)
+        return true
+    }
+}

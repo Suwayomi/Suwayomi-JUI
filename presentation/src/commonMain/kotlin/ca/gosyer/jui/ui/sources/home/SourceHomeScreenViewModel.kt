@@ -34,99 +34,98 @@ import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class SourceHomeScreenViewModel
-    @Inject
-    constructor(
-        private val getSourceList: GetSourceList,
-        catalogPreferences: CatalogPreferences,
-        contextWrapper: ContextWrapper,
-        @Assisted private val savedStateHandle: SavedStateHandle,
-    ) : ViewModel(contextWrapper) {
-        private val _isLoading = MutableStateFlow(true)
-        val isLoading = _isLoading.asStateFlow()
+@Inject
+class SourceHomeScreenViewModel(
+    private val getSourceList: GetSourceList,
+    catalogPreferences: CatalogPreferences,
+    contextWrapper: ContextWrapper,
+    @Assisted private val savedStateHandle: SavedStateHandle,
+) : ViewModel(contextWrapper) {
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading.asStateFlow()
 
-        private val installedSources = MutableStateFlow(emptyList<Source>())
+    private val installedSources = MutableStateFlow(emptyList<Source>())
 
-        private val _languages = catalogPreferences.languages().asStateFlow()
-        val languages = _languages.asStateFlow()
-            .map { it.toImmutableSet() }
-            .stateIn(scope, SharingStarted.Eagerly, persistentSetOf())
+    private val _languages = catalogPreferences.languages().asStateFlow()
+    val languages = _languages.asStateFlow()
+        .map { it.toImmutableSet() }
+        .stateIn(scope, SharingStarted.Eagerly, persistentSetOf())
 
-        val sources = combine(installedSources, languages) { installedSources, languages ->
-            val all = MR.strings.all.toPlatformString()
-            val other = MR.strings.other.toPlatformString()
-            installedSources
-                .distinctBy { it.id }
-                .filter {
-                    it.lang in languages || it.id == Source.LOCAL_SOURCE_ID
+    val sources = combine(installedSources, languages) { installedSources, languages ->
+        val all = MR.strings.all.toPlatformString()
+        val other = MR.strings.other.toPlatformString()
+        installedSources
+            .distinctBy { it.id }
+            .filter {
+                it.lang in languages || it.id == Source.LOCAL_SOURCE_ID
+            }
+            .groupBy(Source::displayLang)
+            .mapValues {
+                it.value.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, Source::name))
+                    .map(SourceUI::SourceItem)
+            }
+            .mapKeys { (key) ->
+                when (key) {
+                    "all" -> all
+                    "other" -> other
+                    else -> Locale(key).displayName
                 }
-                .groupBy(Source::displayLang)
-                .mapValues {
-                    it.value.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER, Source::name))
-                        .map(SourceUI::SourceItem)
-                }
-                .mapKeys { (key) ->
+            }
+            .toList()
+            .sortedWith(
+                compareBy<Pair<String, *>> { (key) ->
                     when (key) {
-                        "all" -> all
-                        "other" -> other
-                        else -> Locale(key).displayName
+                        all -> 1
+                        other -> 3
+                        else -> 2
                     }
-                }
-                .toList()
-                .sortedWith(
-                    compareBy<Pair<String, *>> { (key) ->
-                        when (key) {
-                            all -> 1
-                            other -> 3
-                            else -> 2
-                        }
-                    }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<String, *>::first),
-                )
-                .flatMap { (key, value) ->
-                    listOf(SourceUI.Header(key)) + value
-                }
-                .toImmutableList()
-        }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
+                }.thenBy(String.CASE_INSENSITIVE_ORDER, Pair<String, *>::first),
+            )
+            .flatMap { (key, value) ->
+                listOf(SourceUI.Header(key)) + value
+            }
+            .toImmutableList()
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-        val sourceLanguages = installedSources.map { sources ->
-            sources.map { it.lang }.distinct().minus(Source.LOCAL_SOURCE_LANG)
-                .toImmutableList()
-        }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
+    val sourceLanguages = installedSources.map { sources ->
+        sources.map { it.lang }.distinct().minus(Source.LOCAL_SOURCE_LANG)
+            .toImmutableList()
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-        private val _query by savedStateHandle.getStateFlow { "" }
-        val query = _query.asStateFlow()
+    private val _query by savedStateHandle.getStateFlow { "" }
+    val query = _query.asStateFlow()
 
-        init {
-            getSources()
-        }
-
-        private fun getSources() {
-            getSourceList.asFlow()
-                .onEach {
-                    installedSources.value = it
-                    _isLoading.value = false
-                }
-                .catch {
-                    toast(it.message.orEmpty())
-                    log.warn(it) { "Error getting sources" }
-                    _isLoading.value = false
-                }
-                .launchIn(scope)
-        }
-
-        fun setEnabledLanguages(langs: Set<String>) {
-            log.info { langs }
-            _languages.value = langs
-        }
-
-        fun setQuery(query: String) {
-            _query.value = query
-        }
-
-        private companion object {
-            private val log = logging()
-        }
+    init {
+        getSources()
     }
+
+    private fun getSources() {
+        getSourceList.asFlow()
+            .onEach {
+                installedSources.value = it
+                _isLoading.value = false
+            }
+            .catch {
+                toast(it.message.orEmpty())
+                log.warn(it) { "Error getting sources" }
+                _isLoading.value = false
+            }
+            .launchIn(scope)
+    }
+
+    fun setEnabledLanguages(langs: Set<String>) {
+        log.info { langs }
+        _languages.value = langs
+    }
+
+    fun setQuery(query: String) {
+        _query.value = query
+    }
+
+    private companion object {
+        private val log = logging()
+    }
+}
 
 @Stable
 sealed class SourceUI {

@@ -30,103 +30,102 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import me.tatarka.inject.annotations.Inject
 
-class ImageLoaderProvider
-    @Inject
-    constructor(
-        private val http: Http,
-        serverPreferences: ServerPreferences,
-        private val context: ContextWrapper,
-    ) {
-        @OptIn(DelicateCoroutinesApi::class)
-        val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
+@Inject
+class ImageLoaderProvider(
+    private val http: Http,
+    serverPreferences: ServerPreferences,
+    private val context: ContextWrapper,
+) {
+    @OptIn(DelicateCoroutinesApi::class)
+    val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
 
-        fun get(imageCache: ImageCache): ImageLoader =
-            ImageLoader {
-                components {
-                    register(context, http)
-                    add(MokoResourceFetcher.Factory())
-                    add(MangaCoverMapper())
-                    add(MangaCoverKeyer())
-                    add(ExtensionIconMapper())
-                    add(ExtensionIconKeyer())
-                    add(SourceIconMapper())
-                    add(SourceIconKeyer())
-                }
-                options {
-                    configure(context)
-                }
-                interceptor {
-                    diskCache { imageCache }
-                    bitmapMemoryCacheConfig { configure(context) }
-                }
+    fun get(imageCache: ImageCache): ImageLoader =
+        ImageLoader {
+            components {
+                register(context, http)
+                add(MokoResourceFetcher.Factory())
+                add(MangaCoverMapper())
+                add(MangaCoverKeyer())
+                add(ExtensionIconMapper())
+                add(ExtensionIconKeyer())
+                add(SourceIconMapper())
+                add(SourceIconKeyer())
             }
-
-        inner class MangaCoverMapper : Mapper<Url> {
-            override fun map(
-                data: Any,
-                options: Options,
-            ): Url? {
-                if (data !is Manga) return null
-                if (data.thumbnailUrl.isNullOrBlank()) return null
-                return Url(serverUrl.value.toString() + data.thumbnailUrl)
+            options {
+                configure(context)
+            }
+            interceptor {
+                diskCache { imageCache }
+                bitmapMemoryCacheConfig { configure(context) }
             }
         }
 
-        class MangaCoverKeyer : Keyer {
-            override fun key(
-                data: Any,
-                options: Options,
-                type: Keyer.Type,
-            ): String? {
-                if (data !is Manga) return null
-                return "${data.sourceId}-${data.thumbnailUrl}-${data.thumbnailUrlLastFetched}"
-            }
-        }
-
-        inner class ExtensionIconMapper : Mapper<Url> {
-            override fun map(
-                data: Any,
-                options: Options,
-            ): Url? {
-                if (data !is Extension) return null
-                if (data.iconUrl.isBlank()) return null
-                return Url("${serverUrl.value}${data.iconUrl}")
-            }
-        }
-
-        class ExtensionIconKeyer : Keyer {
-            override fun key(
-                data: Any,
-                options: Options,
-                type: Keyer.Type,
-            ): String? {
-                if (data !is Extension) return null
-                return data.iconUrl
-            }
-        }
-
-        inner class SourceIconMapper : Mapper<Url> {
-            override fun map(
-                data: Any,
-                options: Options,
-            ): Url? {
-                if (data !is Source) return null
-                if (data.iconUrl.isBlank()) return null
-                return Url(serverUrl.value.toString() + data.iconUrl)
-            }
-        }
-
-        class SourceIconKeyer : Keyer {
-            override fun key(
-                data: Any,
-                options: Options,
-                type: Keyer.Type,
-            ): String? {
-                if (data !is Source) return null
-                return data.iconUrl
-            }
+    inner class MangaCoverMapper : Mapper<Url> {
+        override fun map(
+            data: Any,
+            options: Options,
+        ): Url? {
+            if (data !is Manga) return null
+            if (data.thumbnailUrl.isNullOrBlank()) return null
+            return Url(serverUrl.value.toString() + data.thumbnailUrl)
         }
     }
+
+    class MangaCoverKeyer : Keyer {
+        override fun key(
+            data: Any,
+            options: Options,
+            type: Keyer.Type,
+        ): String? {
+            if (data !is Manga) return null
+            return "${data.sourceId}-${data.thumbnailUrl}-${data.thumbnailUrlLastFetched}"
+        }
+    }
+
+    inner class ExtensionIconMapper : Mapper<Url> {
+        override fun map(
+            data: Any,
+            options: Options,
+        ): Url? {
+            if (data !is Extension) return null
+            if (data.iconUrl.isBlank()) return null
+            return Url("${serverUrl.value}${data.iconUrl}")
+        }
+    }
+
+    class ExtensionIconKeyer : Keyer {
+        override fun key(
+            data: Any,
+            options: Options,
+            type: Keyer.Type,
+        ): String? {
+            if (data !is Extension) return null
+            return data.iconUrl
+        }
+    }
+
+    inner class SourceIconMapper : Mapper<Url> {
+        override fun map(
+            data: Any,
+            options: Options,
+        ): Url? {
+            if (data !is Source) return null
+            if (data.iconUrl.isBlank()) return null
+            return Url(serverUrl.value.toString() + data.iconUrl)
+        }
+    }
+
+    class SourceIconKeyer : Keyer {
+        override fun key(
+            data: Any,
+            options: Options,
+            type: Keyer.Type,
+        ): String? {
+            if (data !is Source) return null
+            return data.iconUrl
+        }
+    }
+}
 
 expect fun OptionsBuilder.configure(contextWrapper: ContextWrapper)
 

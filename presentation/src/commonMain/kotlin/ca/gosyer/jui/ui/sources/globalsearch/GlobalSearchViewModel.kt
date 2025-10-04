@@ -43,129 +43,128 @@ import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
-class GlobalSearchViewModel
-    @Inject
-    constructor(
-        private val getSourceList: GetSourceList,
-        private val getSearchManga: GetSearchManga,
-        catalogPreferences: CatalogPreferences,
-        contextWrapper: ContextWrapper,
-        @Assisted private val savedStateHandle: SavedStateHandle,
-        @Assisted params: Params,
-    ) : ViewModel(contextWrapper) {
-        private val _query by savedStateHandle.getStateFlow { params.initialQuery }
-        val query = _query.asStateFlow()
+@Inject
+class GlobalSearchViewModel(
+    private val getSourceList: GetSourceList,
+    private val getSearchManga: GetSearchManga,
+    catalogPreferences: CatalogPreferences,
+    contextWrapper: ContextWrapper,
+    @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted params: Params,
+) : ViewModel(contextWrapper) {
+    private val _query by savedStateHandle.getStateFlow { params.initialQuery }
+    val query = _query.asStateFlow()
 
-        private val installedSources = MutableStateFlow(emptyList<Source>())
+    private val installedSources = MutableStateFlow(emptyList<Source>())
 
-        private val languages = catalogPreferences.languages().stateIn(scope)
-        val displayMode = catalogPreferences.displayMode().stateIn(scope)
+    private val languages = catalogPreferences.languages().stateIn(scope)
+    val displayMode = catalogPreferences.displayMode().stateIn(scope)
 
-        private val _isLoading = MutableStateFlow(true)
-        val isLoading = _isLoading.asStateFlow()
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading.asStateFlow()
 
-        val sources = combine(installedSources, languages) { installedSources, languages ->
-            installedSources.filter {
-                it.lang in languages || it.id == Source.LOCAL_SOURCE_ID
-            }.toImmutableList()
-        }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
+    val sources = combine(installedSources, languages) { installedSources, languages ->
+        installedSources.filter {
+            it.lang in languages || it.id == Source.LOCAL_SOURCE_ID
+        }.toImmutableList()
+    }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-        private val search by savedStateHandle.getStateFlow { params.initialQuery }
+    private val search by savedStateHandle.getStateFlow { params.initialQuery }
 
-        val results = SnapshotStateMap<Long, Search>()
+    val results = SnapshotStateMap<Long, Search>()
 
-        init {
-            getSources()
-            readySearch()
-        }
+    init {
+        getSources()
+        readySearch()
+    }
 
-        private fun getSources() {
-            getSourceList.asFlow()
-                .onEach { sources ->
-                    installedSources.value = sources.sortedWith(
-                        compareBy<Source, String>(String.CASE_INSENSITIVE_ORDER) { it.lang }
-                            .thenBy(String.CASE_INSENSITIVE_ORDER) {
-                                it.name
-                            },
-                    )
-                    _isLoading.value = false
-                }
-                .catch {
-                    toast(it.message.orEmpty())
-                    log.warn(it) { "Error getting sources" }
-                    _isLoading.value = false
-                }
-                .launchIn(scope)
-        }
-
-        private val semaphore = Semaphore(5)
-
-        private fun readySearch() {
-            search
-                .combine(sources) { query, sources ->
-                    query to sources
-                }
-                .mapLatest { (query, sources) ->
-                    results.clear()
-                    supervisorScope {
-                        sources.map { source ->
-                            async {
-                                semaphore.withPermit {
-                                    getSearchManga.asFlow(source, 1, query, null)
-                                        .map {
-                                            if (it.mangaList.isEmpty()) {
-                                                Search.Failure(MR.strings.no_results_found.toPlatformString())
-                                            } else {
-                                                Search.Success(it.mangaList.toImmutableList())
-                                            }
-                                        }
-                                        .catch {
-                                            log.warn(it) { "Error getting search from ${source.displayName}" }
-                                            emit(Search.Failure(it))
-                                        }
-                                        .onEach {
-                                            results[source.id] = it
-                                        }
-                                        .collect()
-                                }
-                            }
-                        }.awaitAll()
-                    }
-                }
-                .catch {
-                    log.warn(it) { "Error getting sources" }
-                }
-                .flowOn(Dispatchers.IO)
-                .launchIn(scope)
-        }
-
-        fun setQuery(query: String) {
-            _query.value = query
-        }
-
-        fun startSearch(query: String) {
-            search.value = query
-        }
-
-        data class Params(
-            val initialQuery: String,
-        )
-
-        sealed class Search {
-            data object Searching : Search()
-
-            data class Success(
-                val mangaList: ImmutableList<Manga>,
-            ) : Search()
-
-            data class Failure(
-                val e: String?,
-            ) : Search() {
-                constructor(e: Throwable) : this(e.message)
+    private fun getSources() {
+        getSourceList.asFlow()
+            .onEach { sources ->
+                installedSources.value = sources.sortedWith(
+                    compareBy<Source, String>(String.CASE_INSENSITIVE_ORDER) { it.lang }
+                        .thenBy(String.CASE_INSENSITIVE_ORDER) {
+                            it.name
+                        },
+                )
+                _isLoading.value = false
             }
-        }
+            .catch {
+                toast(it.message.orEmpty())
+                log.warn(it) { "Error getting sources" }
+                _isLoading.value = false
+            }
+            .launchIn(scope)
+    }
 
-        private companion object {
-            private val log = logging()
+    private val semaphore = Semaphore(5)
+
+    private fun readySearch() {
+        search
+            .combine(sources) { query, sources ->
+                query to sources
+            }
+            .mapLatest { (query, sources) ->
+                results.clear()
+                supervisorScope {
+                    sources.map { source ->
+                        async {
+                            semaphore.withPermit {
+                                getSearchManga.asFlow(source, 1, query, null)
+                                    .map {
+                                        if (it.mangaList.isEmpty()) {
+                                            Search.Failure(MR.strings.no_results_found.toPlatformString())
+                                        } else {
+                                            Search.Success(it.mangaList.toImmutableList())
+                                        }
+                                    }
+                                    .catch {
+                                        log.warn(it) { "Error getting search from ${source.displayName}" }
+                                        emit(Search.Failure(it))
+                                    }
+                                    .onEach {
+                                        results[source.id] = it
+                                    }
+                                    .collect()
+                            }
+                        }
+                    }.awaitAll()
+                }
+            }
+            .catch {
+                log.warn(it) { "Error getting sources" }
+            }
+            .flowOn(Dispatchers.IO)
+            .launchIn(scope)
+    }
+
+    fun setQuery(query: String) {
+        _query.value = query
+    }
+
+    fun startSearch(query: String) {
+        search.value = query
+    }
+
+    data class Params(
+        val initialQuery: String,
+    )
+
+    sealed class Search {
+        data object Searching : Search()
+
+        data class Success(
+            val mangaList: ImmutableList<Manga>,
+        ) : Search()
+
+        data class Failure(
+            val e: String?,
+        ) : Search() {
+            constructor(e: Throwable) : this(e.message)
         }
     }
+
+    private companion object {
+        private val log = logging()
+    }
+}
