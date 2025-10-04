@@ -11,25 +11,24 @@ import ca.gosyer.jui.domain.migration.service.MigrationPreferences
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import me.tatarka.inject.annotations.Inject
 
-class AppMigrations
-    @Inject
-    constructor(
-        private val migrationPreferences: MigrationPreferences,
-        private val contextWrapper: ContextWrapper,
-    ) {
-        fun runMigrations(): Boolean {
-            val oldVersion = migrationPreferences.appVersion().get()
-            if (oldVersion < BuildConfig.VERSION_CODE) {
-                migrationPreferences.appVersion().set(BuildConfig.VERSION_CODE)
+@Inject
+class AppMigrations(
+    private val migrationPreferences: MigrationPreferences,
+    private val contextWrapper: ContextWrapper,
+) {
+    fun runMigrations(): Boolean {
+        val oldVersion = migrationPreferences.appVersion().get()
+        if (oldVersion < BuildConfig.VERSION_CODE) {
+            migrationPreferences.appVersion().set(BuildConfig.VERSION_CODE)
 
-                UpdateCheckWorker.setupTask(contextWrapper)
+            UpdateCheckWorker.setupTask(contextWrapper)
 
-                // Fresh install
-                if (oldVersion == 0) {
-                    return false
-                }
-                return true
+            // Fresh install
+            if (oldVersion == 0) {
+                return false
             }
-            return false
+            return true
         }
+        return false
     }
+}

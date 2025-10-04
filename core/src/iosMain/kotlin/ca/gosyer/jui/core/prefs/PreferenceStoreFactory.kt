@@ -10,13 +10,12 @@ import com.russhwolf.settings.NSUserDefaultsSettings
 import me.tatarka.inject.annotations.Inject
 import platform.Foundation.NSUserDefaults
 
-actual class PreferenceStoreFactory
-    @Inject
-    constructor() {
-        actual fun create(vararg names: String): PreferenceStore =
-            StandardPreferenceStore(
-                NSUserDefaultsSettings(
-                    NSUserDefaults.standardUserDefaults,
-                ),
-            )
-    }
+@Inject
+actual class PreferenceStoreFactory() {
+    actual fun create(vararg names: String): PreferenceStore =
+        StandardPreferenceStore(
+            NSUserDefaultsSettings(
+                NSUserDefaults.standardUserDefaults,
+            ),
+        )
+}

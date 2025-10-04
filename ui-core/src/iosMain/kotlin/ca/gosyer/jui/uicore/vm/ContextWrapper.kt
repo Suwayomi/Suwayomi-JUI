@@ -15,25 +15,24 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import me.tatarka.inject.annotations.Inject
 
-actual class ContextWrapper
-    @Inject
-    constructor() {
-        private val _toasts = MutableSharedFlow<Pair<String, Length>>()
-        val toasts = _toasts.asSharedFlow()
+@Inject
+actual class ContextWrapper() {
+    private val _toasts = MutableSharedFlow<Pair<String, Length>>()
+    val toasts = _toasts.asSharedFlow()
 
-        actual fun toPlatformString(stringResource: StringResource): String = stringResource.desc().localized()
+    actual fun toPlatformString(stringResource: StringResource): String = stringResource.desc().localized()
 
-        actual fun toPlatformString(
-            stringResource: StringResource,
-            vararg args: Any,
-        ): String = stringResource.format(*args).localized()
+    actual fun toPlatformString(
+        stringResource: StringResource,
+        vararg args: Any,
+    ): String = stringResource.format(*args).localized()
 
-        actual fun toast(
-            string: String,
-            length: Length,
-        ) {
-            GlobalScope.launchDefault {
-                _toasts.emit(string to length)
-            }
+    actual fun toast(
+        string: String,
+        length: Length,
+    ) {
+        GlobalScope.launchDefault {
+            _toasts.emit(string to length)
         }
     }
+}
