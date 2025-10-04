@@ -17,8 +17,7 @@ import me.tatarka.inject.annotations.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
 @Inject
-actual class DebugOverlayViewModel
-constructor(
+actual class DebugOverlayViewModel(
     contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     override val scope = MainScope()

@@ -45,7 +45,7 @@ sealed class SourceSettingsView<T : SourcePreference, R : Any?> {
         override val title: String?,
         override val subtitle: String?,
         override val props: CheckBoxSourcePreference,
-    ) : SourceSettingsView<CheckBoxSourcePreference, Boolean>(){
+    ) : SourceSettingsView<CheckBoxSourcePreference, Boolean>() {
         private val _state = MutableStateFlow(
             props.currentValue ?: props.default,
         )

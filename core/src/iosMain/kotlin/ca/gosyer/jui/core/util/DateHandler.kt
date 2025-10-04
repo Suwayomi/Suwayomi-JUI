@@ -5,8 +5,10 @@ import ca.gosyer.jui.core.lang.toPlatform
 import kotlinx.datetime.Instant
 import me.tatarka.inject.annotations.Inject
 
-@Inject
-actual class DateHandler() {
+actual class DateHandler {
+    @Inject
+    constructor()
+
     actual val formatOptions by lazy {
         listOf(
             "",

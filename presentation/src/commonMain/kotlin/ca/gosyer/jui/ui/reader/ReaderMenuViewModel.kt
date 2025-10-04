@@ -113,7 +113,7 @@ class ReaderMenuViewModel(
                     cur.orEmpty() +
                     ReaderPageSeparator(viewerChapters.currChapter, viewerChapters.nextChapter) +
                     next.orEmpty()
-                ).toImmutableList()
+            ).toImmutableList()
         }
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 

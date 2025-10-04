@@ -887,7 +887,7 @@ private val repoRegex =
     (
         "https:\\/\\/(?>www\\.|raw\\.)?(github|githubusercontent)\\.com" +
             "\\/([^\\/]+)\\/([^\\/]+)(?>(?>\\/tree|\\/blob)?\\/([^\\/\\n]*))?(?>\\/([^\\/\\n]*\\.json)?)?"
-        ).toRegex()
+    ).toRegex()
 
 @Composable
 fun ExtensionReposDialog(

@@ -10,7 +10,8 @@ import androidx.compose.ui.text.intl.Locale
 import platform.Foundation.NSString
 import platform.Foundation.localizedCaseInsensitiveCompare
 
-actual class CollatorComparator() : Comparator<String> {
+actual class CollatorComparator : Comparator<String> {
+    constructor()
     actual constructor(locale: Locale) : this()
 
     actual override fun compare(

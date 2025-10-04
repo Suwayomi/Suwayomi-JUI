@@ -15,8 +15,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import me.tatarka.inject.annotations.Inject
 
-@Inject
-actual class ContextWrapper() {
+actual class ContextWrapper {
+    @Inject
+    constructor()
+
     private val _toasts = MutableSharedFlow<Pair<String, Length>>()
     val toasts = _toasts.asSharedFlow()
 

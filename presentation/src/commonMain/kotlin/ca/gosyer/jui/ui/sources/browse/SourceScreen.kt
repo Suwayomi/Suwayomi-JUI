@@ -26,8 +26,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
 
-private fun SourceFiltersView<*, *>.toSourceFilter(): SourceFilter {
-    return when (this) {
+private fun SourceFiltersView<*, *>.toSourceFilter(): SourceFilter =
+    when (this) {
         is SourceFiltersView.CheckBox -> filter.copy(value = state.value)
         is SourceFiltersView.Group -> filter.copy(value = state.value.map { it.toSourceFilter() })
         is SourceFiltersView.Header -> filter
@@ -37,7 +37,6 @@ private fun SourceFiltersView<*, *>.toSourceFilter(): SourceFilter {
         is SourceFiltersView.Text -> filter.copy(value = state.value)
         is SourceFiltersView.TriState -> filter.copy(value = state.value)
     }
-}
 
 class SourceScreen(
     val source: Source,

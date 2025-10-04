@@ -67,8 +67,7 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
 }
 
 @Inject
-actual class SettingsServerHostViewModel
-constructor(
+actual class SettingsServerHostViewModel(
     serverPreferences: ServerPreferences,
     serverHostPreferences: ServerHostPreferences,
     private val serverService: ServerService,

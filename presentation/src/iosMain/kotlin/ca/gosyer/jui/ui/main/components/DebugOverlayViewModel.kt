@@ -12,8 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-actual class DebugOverlayViewModel
-constructor(
+actual class DebugOverlayViewModel(
     contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     actual val maxMemory: String

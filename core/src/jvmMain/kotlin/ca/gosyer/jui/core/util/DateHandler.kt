@@ -9,8 +9,10 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-@Inject
-actual class DateHandler() {
+actual class DateHandler {
+    @Inject
+    constructor()
+
     actual val formatOptions by lazy {
         listOf(
             "",

@@ -23,8 +23,8 @@ class DownloadService(
     serverPreferences: ServerPreferences,
     client: Http,
 ) : WebsocketService(serverPreferences, client) {
-    override val _status: MutableStateFlow<Status>
-        get() = status
+    override val status: MutableStateFlow<Status>
+        get() = DownloadService.status
 
     override val query: String
         get() = "/api/v1/downloads"

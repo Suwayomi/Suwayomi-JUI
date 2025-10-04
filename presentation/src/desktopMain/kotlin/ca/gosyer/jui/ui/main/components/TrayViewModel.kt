@@ -19,8 +19,7 @@ import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
 
 @Inject
-class TrayViewModel
-constructor(
+class TrayViewModel(
     updateChecker: UpdateChecker,
     contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {

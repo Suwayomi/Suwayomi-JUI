@@ -21,8 +21,8 @@ class LibraryUpdateService(
     serverPreferences: ServerPreferences,
     client: Http,
 ) : WebsocketService(serverPreferences, client) {
-    override val _status: MutableStateFlow<Status>
-        get() = status
+    override val status: MutableStateFlow<Status>
+        get() = LibraryUpdateService.status
 
     override val query: String
         get() = "/api/v1/update"

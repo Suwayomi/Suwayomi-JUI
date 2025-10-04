@@ -8,6 +8,4 @@ package ca.gosyer.jui.ios
 
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 
-actual fun create(context: ContextWrapper): AppComponent {
-    return AppComponent.create(context)
-}
+actual fun create(context: ContextWrapper): AppComponent = AppComponent.create(context)

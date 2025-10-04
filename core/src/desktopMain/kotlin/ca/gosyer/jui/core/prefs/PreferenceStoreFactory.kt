@@ -10,8 +10,10 @@ import com.russhwolf.settings.PreferencesSettings
 import me.tatarka.inject.annotations.Inject
 import java.util.prefs.Preferences
 
-@Inject
-actual class PreferenceStoreFactory() {
+actual class PreferenceStoreFactory {
+    @Inject
+    constructor()
+
     private val rootNode: Preferences = Preferences.userRoot()
         .node("ca/gosyer/tachideskjui")
 

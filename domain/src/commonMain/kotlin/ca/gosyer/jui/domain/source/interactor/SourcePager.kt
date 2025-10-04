@@ -41,9 +41,9 @@ class SourcePager(
 ) : CoroutineScope by CoroutineScope(Dispatchers.Default + SupervisorJob()) {
     private val sourceMutex = Mutex()
 
-    private val _sourceManga = MutableStateFlow<List<Manga>>(emptyList())
+    private val sourceManga = MutableStateFlow<List<Manga>>(emptyList())
 
-    private val mangaIds = _sourceManga.map { mangas -> mangas.map { it.id } }
+    private val mangaIds = sourceManga.map { mangas -> mangas.map { it.id } }
         .stateIn(this, SharingStarted.Eagerly, emptyList())
 
     private val changedManga =
@@ -57,7 +57,7 @@ class SourcePager(
             }
         }.stateIn(this, SharingStarted.Eagerly, emptyMap())
 
-    val mangas = combine(_sourceManga, changedManga) { sourceManga, changedManga ->
+    val mangas = combine(sourceManga, changedManga) { sourceManga, changedManga ->
         sourceManga.map { changedManga[it.id] ?: it }
     }.stateIn(this, SharingStarted.Eagerly, emptyList())
 
@@ -76,7 +76,7 @@ class SourcePager(
                 _pageNum.value++
                 val page = fetcher.get(_pageNum.value)
                 if (page != null) {
-                    _sourceManga.value = _sourceManga.value + page.mangaList
+                    sourceManga.value += page.mangaList
                     _hasNextPage.value = page.hasNextPage
                 } else {
                     _pageNum.value--

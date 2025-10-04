@@ -34,7 +34,7 @@ abstract class WebsocketService(
     protected val json = Json {
         ignoreUnknownKeys = true
     }
-    protected abstract val _status: MutableStateFlow<Status>
+    protected abstract val status: MutableStateFlow<Status>
 
     protected val serverUrl = serverPreferences.serverUrl().stateIn(GlobalScope)
 
@@ -47,10 +47,10 @@ abstract class WebsocketService(
         job?.cancel()
         job = serverUrl
             .mapLatest { serverUrl ->
-                _status.value = Status.STARTING
+                status.value = Status.STARTING
                 while (true) {
                     if (errorConnectionCount > 3) {
-                        _status.value = Status.STOPPED
+                        status.value = Status.STOPPED
                         throw CancellationException("Finish")
                     }
                     runCatching {
@@ -65,7 +65,7 @@ abstract class WebsocketService(
                             },
                         ) {
                             errorConnectionCount = 0
-                            _status.value = Status.RUNNING
+                            status.value = Status.RUNNING
                             send(Frame.Text("STATUS"))
 
                             incoming.receiveAsFlow()
@@ -77,13 +77,13 @@ abstract class WebsocketService(
                                 .collect()
                         }
                     }.throwIfCancellation().isFailure.let {
-                        _status.value = Status.STARTING
+                        status.value = Status.STARTING
                         if (it) errorConnectionCount++
                     }
                 }
             }
             .catch {
-                _status.value = Status.STOPPED
+                status.value = Status.STOPPED
                 log.warn(it) { "Error while running websocket service" }
             }
             .launchIn(GlobalScope)
