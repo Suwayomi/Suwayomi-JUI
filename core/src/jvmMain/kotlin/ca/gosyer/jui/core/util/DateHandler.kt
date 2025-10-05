@@ -2,12 +2,12 @@ package ca.gosyer.jui.core.util
 
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.toPlatform
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toJavaInstant
 import me.tatarka.inject.annotations.Inject
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.time.Instant
+import kotlin.time.toJavaInstant
 
 actual class DateHandler {
     @Inject

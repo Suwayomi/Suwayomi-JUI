@@ -41,7 +41,7 @@ import ca.gosyer.jui.ui.base.chapter.ChapterDownloadIcon
 import ca.gosyer.jui.ui.base.chapter.ChapterDownloadItem
 import ca.gosyer.jui.uicore.components.selectedBackground
 import ca.gosyer.jui.uicore.resources.stringResource
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 expect fun Modifier.chapterItemModifier(
     onClick: () -> Unit,

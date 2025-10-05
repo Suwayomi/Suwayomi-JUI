@@ -53,12 +53,12 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import me.tatarka.inject.annotations.Inject
+import kotlin.time.Clock
 
 class SettingsGeneralScreen : Screen {
     override val key: ScreenKey = uniqueScreenKey
