@@ -22,8 +22,9 @@ import cafe.adriel.voyager.core.concurrent.AtomicInt32
 import com.seiko.imageloader.asImageBitmap
 import com.seiko.imageloader.cache.disk.DiskCache
 import com.seiko.imageloader.component.decoder.DecodeResult
-import com.seiko.imageloader.model.DataSource
 import com.seiko.imageloader.model.ImageResult
+import com.seiko.imageloader.model.ImageSource
+import com.seiko.imageloader.model.ImageSourceFrom
 import com.seiko.imageloader.option.Options
 import io.ktor.client.plugins.onDownload
 import kotlinx.coroutines.CoroutineScope
@@ -159,8 +160,8 @@ class TachideskPageLoader(
             it.source().use { source ->
                 val decoder = bitmapDecoderFactory.create(
                     ImageResult.OfSource(
-                        source,
-                        DataSource.Engine,
+                        ImageSource(source),
+                        ImageSourceFrom.Disk,
                     ),
                     Options(),
                 )
