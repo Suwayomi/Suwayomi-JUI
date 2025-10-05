@@ -2,6 +2,7 @@ import Config.migrationCode
 import Config.serverCode
 import Config.tachideskVersion
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
+import com.google.devtools.ksp.gradle.KspAATask
 import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -77,7 +78,7 @@ subprojects {
     }
     plugins.withType<com.android.build.gradle.BasePlugin> {
         configure<com.android.build.gradle.BaseExtension> {
-            compileSdkVersion(34)
+            compileSdkVersion(36)
             defaultConfig {
                 minSdk = 21
                 targetSdk = 31
@@ -103,6 +104,9 @@ subprojects {
         }
     }
     plugins.withType<com.codingfeline.buildkonfig.gradle.BuildKonfigPlugin> {
+        tasks.withType<KspAATask> {
+            mustRunAfter("generateBuildKonfig")
+        }
         configure<com.codingfeline.buildkonfig.gradle.BuildKonfigExtension> {
             defaultConfigs {
                 buildConfigField(Type.STRING, "NAME", rootProject.name, const = true)

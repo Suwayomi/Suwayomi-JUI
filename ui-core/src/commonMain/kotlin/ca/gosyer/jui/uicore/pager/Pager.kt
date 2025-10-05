@@ -6,12 +6,10 @@
 
 package ca.gosyer.jui.uicore.pager
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
-import androidx.compose.foundation.gestures.snapping.SnapPositionInLayout
-import androidx.compose.foundation.gestures.snapping.SnapPositionInLayout.Companion.CenterToCenter
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,9 +24,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,10 +36,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMaxBy
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 @Composable
@@ -234,103 +238,150 @@ class PagerState(
 // https://android.googlesource.com/platform/frameworks/support/+/refs/changes/78/2160778/35/compose/foundation/foundation/src/commonMain/kotlin/androidx/compose/foundation/gestures/snapping/LazyListSnapLayoutInfoProvider.kt
 private fun lazyListSnapLayoutInfoProvider(
     lazyListState: LazyListState,
-    positionInLayout: SnapPositionInLayout = CenterToCenter,
-) = object : SnapLayoutInfoProvider {
-    private val layoutInfo: LazyListLayoutInfo
-        get() = lazyListState.layoutInfo
+    snapPosition: SnapPosition = SnapPosition.Center,
+    density: State<Density>,
+): SnapLayoutInfoProvider =
+    object : SnapLayoutInfoProvider {
 
-    // Single page snapping is the default
-    override fun calculateApproachOffset(initialVelocity: Float): Float = 0f
+        private val layoutInfo: LazyListLayoutInfo
+            get() = lazyListState.layoutInfo
 
-    override fun calculateSnappingOffset(currentVelocity: Float): Float {
-        var lowerBoundOffset = Float.NEGATIVE_INFINITY
-        var upperBoundOffset = Float.POSITIVE_INFINITY
-
-        layoutInfo.visibleItemsInfo.fastForEach { item ->
-            val offset =
-                calculateDistanceToDesiredSnapPosition(
-                    mainAxisViewPortSize = layoutInfo.singleAxisViewportSize,
-                    beforeContentPadding = layoutInfo.beforeContentPadding,
-                    afterContentPadding = layoutInfo.afterContentPadding,
-                    itemSize = item.size,
-                    itemOffset = item.offset,
-                    itemIndex = item.index,
-                    snapPositionInLayout = positionInLayout,
-                )
-
-            // Find item that is closest to the center
-            if (offset <= 0 && offset > lowerBoundOffset) {
-                lowerBoundOffset = offset
+        private val averageItemSize: Int
+            get() {
+                val layoutInfo = layoutInfo
+                return if (layoutInfo.visibleItemsInfo.isEmpty()) {
+                    0
+                } else {
+                    val numberOfItems = layoutInfo.visibleItemsInfo.size
+                    layoutInfo.visibleItemsInfo.sumOf { it.size } / numberOfItems
+                }
             }
 
-            // Find item that is closest to center, but after it
-            if (offset >= 0 && offset < upperBoundOffset) {
-                upperBoundOffset = offset
-            }
+        override fun calculateApproachOffset(velocity: Float, decayOffset: Float): Float {
+            return (decayOffset.absoluteValue - averageItemSize).coerceAtLeast(0.0f) *
+                decayOffset.sign
         }
 
-        return calculateFinalOffset(
-            currentVelocity,
-            lowerBoundOffset,
-            upperBoundOffset,
-        )
+        override fun calculateSnapOffset(velocity: Float): Float {
+            var lowerBoundOffset = Float.NEGATIVE_INFINITY
+            var upperBoundOffset = Float.POSITIVE_INFINITY
+
+            layoutInfo.visibleItemsInfo.fastForEach { item ->
+                val offset =
+                    calculateDistanceToDesiredSnapPosition(
+                        mainAxisViewPortSize = layoutInfo.singleAxisViewportSize,
+                        beforeContentPadding = layoutInfo.beforeContentPadding,
+                        afterContentPadding = layoutInfo.afterContentPadding,
+                        itemSize = item.size,
+                        itemOffset = item.offset,
+                        itemIndex = item.index,
+                        snapPosition = snapPosition,
+                        itemCount = layoutInfo.totalItemsCount,
+                    )
+
+                // Find item that is closest to the center
+                if (offset <= 0 && offset > lowerBoundOffset) {
+                    lowerBoundOffset = offset
+                }
+
+                // Find item that is closest to center, but after it
+                if (offset >= 0 && offset < upperBoundOffset) {
+                    upperBoundOffset = offset
+                }
+            }
+
+            return calculateFinalOffset(
+                with(density.value) { calculateFinalSnappingItem(velocity) },
+                lowerBoundOffset,
+                upperBoundOffset,
+            )
+        }
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
-    private fun calculateDistanceToDesiredSnapPosition(
-        mainAxisViewPortSize: Int,
-        beforeContentPadding: Int,
-        afterContentPadding: Int,
-        itemSize: Int,
-        itemOffset: Int,
-        itemIndex: Int,
-        snapPositionInLayout: SnapPositionInLayout,
-    ): Float {
-        val containerSize = mainAxisViewPortSize - beforeContentPadding - afterContentPadding
+@Composable
+private fun rememberLazyListSnapFlingBehavior(lazyListState: LazyListState): FlingBehavior {
+    // return rememberSnapFlingBehavior(lazyListState)
+    val density = rememberUpdatedState(LocalDensity.current)
+    val snappingLayout = remember(lazyListState) { lazyListSnapLayoutInfoProvider(lazyListState, density = density) }
+    return rememberSnapFlingBehavior(snappingLayout)
+}
 
-        val desiredDistance = with(snapPositionInLayout) {
-            position(containerSize, itemSize, beforeContentPadding, afterContentPadding, itemIndex)
-        }.toFloat()
+internal val LazyListLayoutInfo.singleAxisViewportSize: Int
+    get() = if (orientation == Orientation.Vertical) viewportSize.height else viewportSize.width
 
-        return itemOffset - desiredDistance
+@kotlin.jvm.JvmInline
+internal value class FinalSnappingItem
+internal constructor(@Suppress("unused") private val value: Int) {
+    companion object {
+
+        val ClosestItem: FinalSnappingItem = FinalSnappingItem(0)
+
+        val NextItem: FinalSnappingItem = FinalSnappingItem(1)
+
+        val PreviousItem: FinalSnappingItem = FinalSnappingItem(2)
+    }
+}
+
+internal fun Density.calculateFinalSnappingItem(velocity: Float): FinalSnappingItem {
+    return if (velocity.absoluteValue < 400.dp.toPx()) {
+        FinalSnappingItem.ClosestItem
+    } else {
+        if (velocity > 0) FinalSnappingItem.NextItem else FinalSnappingItem.PreviousItem
+    }
+}
+
+internal fun calculateFinalOffset(
+    snappingOffset: FinalSnappingItem,
+    lowerBound: Float,
+    upperBound: Float,
+): Float {
+    fun Float.isValidDistance(): Boolean {
+        return this != Float.POSITIVE_INFINITY && this != Float.NEGATIVE_INFINITY
     }
 
-    private fun calculateFinalOffset(
-        velocity: Float,
-        lowerBound: Float,
-        upperBound: Float,
-    ): Float {
-        fun Float.isValidDistance(): Boolean = this != Float.POSITIVE_INFINITY && this != Float.NEGATIVE_INFINITY
-
-        val finalDistance = when (sign(velocity)) {
-            0f -> {
+    val finalDistance =
+        when (snappingOffset) {
+            FinalSnappingItem.ClosestItem -> {
                 if (abs(upperBound) <= abs(lowerBound)) {
                     upperBound
                 } else {
                     lowerBound
                 }
             }
-
-            1f -> upperBound
-
-            -1f -> lowerBound
-
+            FinalSnappingItem.NextItem -> upperBound
+            FinalSnappingItem.PreviousItem -> lowerBound
             else -> 0f
         }
 
-        return if (finalDistance.isValidDistance()) {
-            finalDistance
-        } else {
-            0f
-        }
+    return if (finalDistance.isValidDistance()) {
+        finalDistance
+    } else {
+        0f
     }
 }
 
-@Composable
-private fun rememberLazyListSnapFlingBehavior(lazyListState: LazyListState): FlingBehavior {
-    val snappingLayout = remember(lazyListState) { lazyListSnapLayoutInfoProvider(lazyListState) }
-    return rememberSnapFlingBehavior(snappingLayout)
-}
+internal fun calculateDistanceToDesiredSnapPosition(
+    mainAxisViewPortSize: Int,
+    beforeContentPadding: Int,
+    afterContentPadding: Int,
+    itemSize: Int,
+    itemOffset: Int,
+    itemIndex: Int,
+    snapPosition: SnapPosition,
+    itemCount: Int,
+): Float {
+    val desiredDistance =
+        with(snapPosition) {
+                position(
+                    mainAxisViewPortSize,
+                    itemSize,
+                    beforeContentPadding,
+                    afterContentPadding,
+                    itemIndex,
+                    itemCount,
+                )
+            }
+            .toFloat()
 
-private val LazyListLayoutInfo.singleAxisViewportSize: Int
-    get() = if (orientation == Orientation.Vertical) viewportSize.height else viewportSize.width
+    return itemOffset - desiredDistance
+}

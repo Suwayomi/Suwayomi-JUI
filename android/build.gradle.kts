@@ -140,3 +140,7 @@ kotlin {
         languageVersion.set(JavaLanguageVersion.of(Config.androidJvmTarget.target))
     }
 }
+
+configurations.all {
+    exclude(group = "org.jetbrains.runtime", module = "jbr-api")
+}

@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.DropdownMenu
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +46,7 @@ fun DropdownIconButton(
             .clickable(
                 remember { MutableInteractionSource() },
                 role = Role.Button,
-                indication = rememberRipple(bounded = false, radius = 24.dp),
+                indication = ripple(bounded = false, radius = 24.dp),
             ) {
                 showMenu = true
             }

@@ -1,5 +1,4 @@
 import Config.preview
-import Config.previewCommit
 import Config.serverCode
 import Config.tachideskVersion
 import de.undercouch.gradle.tasks.download.Download
@@ -66,7 +65,7 @@ private fun isSigning(properties: Map<String, Any?>) = properties["compose.deskt
 
 private const val tmpPath = "tmp"
 private val apiUrl = if (preview) {
-    "https://api.github.com/repos/Suwayomi/Suwayomi-Server-preview/releases/tags/$previewCommit"
+    "https://api.github.com/repos/Suwayomi/Suwayomi-Server-preview/releases/tags/$tachideskVersion"
 } else {
     "https://api.github.com/repos/Suwayomi/Suwayomi-Server/releases/tags/$tachideskVersion"
 }
@@ -140,8 +139,8 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                         .forEach {
                             val tmpFile = macJarFolder / it.name
                             it.copyTo(tmpFile)
-                            exec {
-                                commandLine(
+                            Runtime.getRuntime().exec(
+                                arrayOf(
                                     "/usr/bin/codesign",
                                     "-vvvv",
                                     "--timestamp",
@@ -151,7 +150,7 @@ fun TaskContainerScope.registerTachideskTasks(project: Project) {
                                     "--sign", "Developer ID Application: ${getSigningIdentity()}",
                                     tmpFile.absolutePathString(),
                                 )
-                            }
+                            )
 
                             tmpFile.copyTo(it, overwrite = true)
                             tmpFile.deleteExisting()

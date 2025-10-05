@@ -1,6 +1,7 @@
 import Config.migrationCode
 import Config.serverCode
 import Config.tachideskVersion
+import com.google.devtools.ksp.gradle.KspAATask
 import org.gradle.jvm.tasks.Jar
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -230,4 +231,12 @@ buildConfig {
     // Tachidesk
     buildConfigField("String", "TACHIDESK_SP_VERSION", tachideskVersion.wrap())
     buildConfigField("int", "SERVER_CODE", serverCode.toString())
+}
+
+tasks.withType<KspAATask> {
+    mustRunAfter(
+        "generateBuildConfig",
+        "generateResourceAccessorsForMain",
+        "generateComposeResClass"
+    )
 }

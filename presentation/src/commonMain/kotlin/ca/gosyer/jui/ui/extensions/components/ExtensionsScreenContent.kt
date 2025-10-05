@@ -145,13 +145,13 @@ fun ExtensionsScreenContent(
                             is ExtensionUI.Header -> Text(
                                 it.header,
                                 style = MaterialTheme.typography.h6,
-                                modifier = Modifier.animateItemPlacement()
+                                modifier = Modifier.animateItem()
                                     .padding(16.dp, 16.dp, 16.dp, 4.dp),
                             )
 
                             is ExtensionUI.ExtensionItem -> Column {
                                 ExtensionItem(
-                                    Modifier.animateItemPlacement(),
+                                    Modifier.animateItem(),
                                     it,
                                     onInstallClicked = installExtension,
                                     onUpdateClicked = updateExtension,

@@ -1,3 +1,4 @@
+import com.google.devtools.ksp.gradle.KspAATask
 import org.jetbrains.compose.compose
 
 plugins {
@@ -156,4 +157,13 @@ buildkonfig {
 
 android {
     namespace = "ca.gosyer.jui.presentation"
+}
+
+tasks.withType<KspAATask> {
+    mustRunAfter(
+        "generateResourceAccessorsForDesktopMain",
+        "generateResourceAccessorsForJvmMain",
+        "generateResourceAccessorsForCommonMain",
+        "generateComposeResClass"
+    )
 }

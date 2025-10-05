@@ -116,7 +116,7 @@ fun DownloadsScreenContent(
             ) {
                 items(downloadQueue, key = { "${it.mangaId}-${it.chapterIndex}" }) {
                     DownloadsItem(
-                        modifier = Modifier.animateItemPlacement(),
+                        modifier = Modifier.animateItem(),
                         item = it,
                         onClickCover = { onMangaClick(it.mangaId) },
                         onClickCancel = stopDownload,

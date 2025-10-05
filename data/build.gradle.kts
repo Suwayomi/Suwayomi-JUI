@@ -1,3 +1,5 @@
+import com.google.devtools.ksp.gradle.KspAATask
+
 plugins {
     id(libs.plugins.kotlin.multiplatform.get().pluginId)
     id(libs.plugins.kotlin.serialization.get().pluginId)
@@ -140,4 +142,8 @@ apollo {
             schemaFile.set(file("src/main/graphql/schema.graphqls"))
         }
     }
+}
+
+tasks.withType<KspAATask> {
+    mustRunAfter("generateServiceApolloSources")
 }
