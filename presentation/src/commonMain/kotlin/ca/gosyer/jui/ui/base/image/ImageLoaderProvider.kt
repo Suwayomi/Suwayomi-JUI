@@ -75,7 +75,6 @@ class ImageLoaderProvider(
         override fun key(
             data: Any,
             options: Options,
-            type: Keyer.Type,
         ): String? {
             if (data !is Manga) return null
             return "${data.sourceId}-${data.thumbnailUrl}-${data.thumbnailUrlLastFetched}"
@@ -97,7 +96,6 @@ class ImageLoaderProvider(
         override fun key(
             data: Any,
             options: Options,
-            type: Keyer.Type,
         ): String? {
             if (data !is Extension) return null
             return data.iconUrl
@@ -119,7 +117,6 @@ class ImageLoaderProvider(
         override fun key(
             data: Any,
             options: Options,
-            type: Keyer.Type,
         ): String? {
             if (data !is Source) return null
             return data.iconUrl

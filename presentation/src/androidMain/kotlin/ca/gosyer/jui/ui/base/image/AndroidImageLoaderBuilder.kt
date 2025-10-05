@@ -7,10 +7,10 @@
 package ca.gosyer.jui.ui.base.image
 
 import android.os.Build
+import androidx.compose.ui.graphics.ImageBitmapConfig
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import com.seiko.imageloader.Bitmap
-import com.seiko.imageloader.BitmapConfig
 import com.seiko.imageloader.cache.disk.DiskCacheBuilder
 import com.seiko.imageloader.cache.memory.MemoryCacheBuilder
 import com.seiko.imageloader.cache.memory.MemoryKey
@@ -21,10 +21,10 @@ import com.seiko.imageloader.option.androidContext
 import okio.Path.Companion.toOkioPath
 
 actual fun OptionsBuilder.configure(contextWrapper: ContextWrapper) {
-    bitmapConfig = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-        BitmapConfig.ARGB_8888
+    imageBitmapConfig = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        ImageBitmapConfig.Argb8888
     } else {
-        BitmapConfig.HARDWARE
+        ImageBitmapConfig.Gpu
     }
     androidContext(contextWrapper)
 }
