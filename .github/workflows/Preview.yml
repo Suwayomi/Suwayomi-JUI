@@ -99,7 +99,7 @@ jobs:
           --stacktrace
 
       - name: Sign APK
-        uses: ilharp/sign-android-release@v1
+        uses: ilharp/sign-android-release@v2
         if: ${{ matrix.runtime == 'android' }}
         with:
           releaseDir: android/build/outputs/apk/release
