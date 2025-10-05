@@ -212,7 +212,7 @@ class SettingsBackupViewModel(
             ) {
                 onDownload { bytesSentTotal, contentLength ->
                     _creatingStatus.value = Status.InProgress(
-                        (bytesSentTotal.toFloat() / contentLength)
+                        (bytesSentTotal.toFloat() / (contentLength ?: Long.MAX_VALUE))
                             .coerceAtMost(0.99F),
                     )
                 }
