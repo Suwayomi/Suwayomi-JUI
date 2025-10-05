@@ -22,9 +22,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
 import me.tatarka.inject.annotations.Inject
 import org.lighthousegames.logging.logging
+import kotlin.time.Instant
 
 @Inject
 class AboutViewModel(

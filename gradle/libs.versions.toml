@@ -15,7 +15,7 @@ voyager = "1.1.0-beta03"
 accompanist = "0.30.1"
 googleAccompanist = "0.36.0"
 imageloader = "1.8.1"
-materialDialogs = "0.9.5"
+materialDialogs = "0.9.7"
 
 # Android
 androidGradle = "8.12.0"
@@ -56,7 +56,7 @@ multiplatformSettings = "1.2.0"
 # Utility
 desugarJdkLibs = "2.1.5"
 aboutLibraries = "11.6.3"
-dateTime = "0.6.1"
+dateTime = "0.7.1"
 immutableCollections = "0.4.0"
 korge = "5.4.0"
 gradleDownloadTask = "5.6.0"

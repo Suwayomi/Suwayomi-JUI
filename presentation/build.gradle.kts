@@ -57,6 +57,7 @@ kotlin {
         all {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
+                optIn("kotlin.time.ExperimentalTime")
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 optIn("androidx.compose.animation.ExperimentalAnimationApi")
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")

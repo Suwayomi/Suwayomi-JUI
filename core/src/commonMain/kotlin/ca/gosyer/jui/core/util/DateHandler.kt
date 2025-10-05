@@ -1,6 +1,6 @@
 package ca.gosyer.jui.core.util
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 @Suppress("NO_ACTUAL_FOR_EXPECT")
 expect class DateHandler {

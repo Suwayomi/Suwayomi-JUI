@@ -55,6 +55,7 @@ kotlin {
         all {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
+                optIn("kotlin.time.ExperimentalTime")
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")
                 optIn("androidx.compose.material.ExperimentalMaterialApi")
                 optIn("androidx.compose.ui.ExperimentalComposeUiApi")

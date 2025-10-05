@@ -81,7 +81,7 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 @Composable
 fun MangaScreenContent(
