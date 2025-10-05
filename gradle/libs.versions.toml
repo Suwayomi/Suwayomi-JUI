@@ -75,7 +75,7 @@ kotlinter = "4.4.1"
 versions = "0.53.0"
 
 # Optimizer
-proguard = "7.5.0"
+proguard = "7.7.0"
 
 [libraries]
 # Kotlin
