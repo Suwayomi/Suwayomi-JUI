@@ -113,7 +113,7 @@ class TachideskPageLoader(
         flow {
             val response = getChapterPages.asFlow(page.url) {
                 onDownload { bytesSentTotal, contentLength ->
-                    page.progress.value = (bytesSentTotal.toFloat() / contentLength).coerceAtMost(1.0F)
+                    page.progress.value = (bytesSentTotal.toFloat() / (contentLength ?: Long.MAX_VALUE)).coerceAtMost(1.0F)
                 }
             }
 

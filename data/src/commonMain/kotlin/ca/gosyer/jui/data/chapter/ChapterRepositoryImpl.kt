@@ -22,7 +22,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Optional
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
-import io.ktor.client.statement.readBytes
+import io.ktor.client.statement.readRawBytes
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -164,7 +164,7 @@ class ChapterRepositoryImpl(
     ): Flow<ByteArray> {
         val realUrl = Url("$serverUrl$url")
 
-        return flow { emit(http.get(realUrl, block).readBytes()) }
+        return flow { emit(http.get(realUrl, block).readRawBytes()) }
     }
 
     companion object {
