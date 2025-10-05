@@ -74,7 +74,7 @@ jobs:
         run: ${{ matrix.setupCl }}
 
       - name: Setup MacOS Keychain
-        uses: apple-actions/import-codesign-certs@v3
+        uses: apple-actions/import-codesign-certs@v5
         if: ${{ matrix.runtime == 'osx-x64' || matrix.runtime == 'osx-arm64' }}
         with:
           p12-file-base64: ${{ secrets.APPLE_CERT }}
