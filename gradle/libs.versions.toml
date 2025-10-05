@@ -15,7 +15,7 @@ voyager = "1.1.0-beta03"
 accompanist = "0.30.1"
 googleAccompanist = "0.36.0"
 imageloader = "1.8.1"
-materialDialogs = "0.9.5"
+materialDialogs = "0.9.7"
 
 # Android
 androidGradle = "8.12.0"
