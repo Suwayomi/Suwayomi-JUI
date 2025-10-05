@@ -38,8 +38,8 @@ kotlinInject = "0.7.2"
 
 # Network
 ktor = "3.3.0"
-apollo = "4.0.0"
-apolloKtor = "0.0.2"
+apollo = "4.3.3"
+apolloKtor = "0.1.1"
 
 # Logging
 slf4j = "2.0.17"
