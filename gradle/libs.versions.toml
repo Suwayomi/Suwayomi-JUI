@@ -55,7 +55,7 @@ multiplatformSettings = "1.3.0"
 
 # Utility
 desugarJdkLibs = "2.1.5"
-aboutLibraries = "11.6.3"
+aboutLibraries = "12.2.4"
 dateTime = "0.7.1"
 immutableCollections = "0.4.0"
 korge = "5.4.0"
