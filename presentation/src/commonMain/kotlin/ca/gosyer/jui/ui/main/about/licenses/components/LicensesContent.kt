@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -34,8 +33,7 @@ import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
 import com.mikepenz.aboutlibraries.Libs
-import com.mikepenz.aboutlibraries.ui.compose.Libraries
-import kotlinx.collections.immutable.toImmutableList
+import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 
 @Composable
 expect fun getLicenses(): Libs?
@@ -57,8 +55,8 @@ fun LicensesContent() {
             if (libs != null) {
                 val state = rememberLazyListState()
                 val uriHandler = LocalUriHandler.current
-                Libraries(
-                    libraries = remember(libs) { libs.libraries.toImmutableList() },
+                LibrariesContainer(
+                    libraries = libs,
                     lazyListState = state,
                     onLibraryClick = {
                         it.website?.let(uriHandler::openUri)
