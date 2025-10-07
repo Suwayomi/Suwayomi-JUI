@@ -76,7 +76,9 @@ class CategoryRepositoryImpl(
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
-                data.categories.nodes.map { it.categoryFragment.toCategory() }
+                data.categories.nodes
+                    .filterNot { it.categoryFragment.id == 0 && it.categoryFragment.mangas.totalCount == 0 }
+                    .map { it.categoryFragment.toCategory() }
             }
 
     override fun createCategory(name: String): Flow<Unit> =

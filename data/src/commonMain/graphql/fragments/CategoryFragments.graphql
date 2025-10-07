@@ -9,4 +9,7 @@ fragment CategoryFragment on CategoryType {
     key
     value
   }
+  mangas {
+    totalCount
+  }
 }

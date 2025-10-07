@@ -8,7 +8,6 @@ package ca.gosyer.jui.ui.reader
 
 import ca.gosyer.jui.core.lang.launchDefault
 import ca.gosyer.jui.core.prefs.getAsFlow
-import ca.gosyer.jui.domain.chapter.interactor.GetChapter
 import ca.gosyer.jui.domain.chapter.interactor.GetChapterPages
 import ca.gosyer.jui.domain.chapter.interactor.GetChapters
 import ca.gosyer.jui.domain.chapter.interactor.UpdateChapter
@@ -36,6 +35,7 @@ import ca.gosyer.jui.ui.reader.model.ReaderPageSeparator
 import ca.gosyer.jui.ui.reader.model.ViewerChapters
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import com.diamondedge.logging.logging
 import io.ktor.http.decodeURLQueryComponent
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -66,14 +66,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class ReaderMenuViewModel(
     private val readerPreferences: ReaderPreferences,
     private val getManga: GetManga,
     private val getChapters: GetChapters,
-    private val getChapter: GetChapter,
     private val getChapterPages: GetChapterPages,
     private val updateChapter: UpdateChapter,
     private val updateMangaMeta: UpdateMangaMeta,
