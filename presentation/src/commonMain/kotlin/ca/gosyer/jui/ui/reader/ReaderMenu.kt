@@ -168,7 +168,7 @@ fun ReaderMenu(
     ) {
         Crossfade(state to chapter) { (state, chapter) ->
             if (state is ReaderChapter.State.Loaded && chapter != null) {
-                if (pages.isNotEmpty()) {
+                if (pages.any { it is ReaderPage }) {
                     BoxWithConstraints {
                         if (maxWidth > 720.dp) {
                             WideReaderMenu(
