@@ -2,7 +2,11 @@ package ca.gosyer.jui.core.util
 
 import androidx.compose.ui.text.intl.Locale
 import ca.gosyer.jui.core.lang.toPlatform
+import kotlinx.datetime.toNSDate
 import me.tatarka.inject.annotations.Inject
+import platform.Foundation.NSDateFormatter
+import platform.Foundation.NSDateFormatterNoStyle
+import platform.Foundation.NSDateFormatterShortStyle
 import kotlin.time.Instant
 
 actual class DateHandler {
