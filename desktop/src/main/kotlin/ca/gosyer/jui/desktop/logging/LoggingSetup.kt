@@ -7,6 +7,7 @@
 package ca.gosyer.jui.desktop.logging
 
 import ca.gosyer.jui.desktop.build.BuildConfig
+import com.diamondedge.logging.KmLogging
 import com.diamondedge.logging.logging
 import com.github.weisj.darklaf.LafManager
 import okio.Path
@@ -15,7 +16,6 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
-import org.lighthousegames.logging.KmLogging
 import org.slf4j.bridge.SLF4JBridgeHandler
 import java.util.logging.LogManager as JLogManager
 

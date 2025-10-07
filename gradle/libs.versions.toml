@@ -44,7 +44,7 @@ apolloKtor = "0.1.1"
 # Logging
 slf4j = "2.0.17"
 log4j = "2.25.2"
-kmlogging = "2.0.3"
+kmlogging = "2.1.0"
 
 # Storage
 okio = "3.16.0"
@@ -138,7 +138,7 @@ logging-slf4j-jul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
 logging-log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 logging-log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 logging-log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
-logging-kmlogging = { module = "org.lighthousegames:logging", version.ref = "kmlogging" }
+logging-kmlogging = { module = "com.diamondedge:logging", version.ref = "kmlogging" }
 
 # Storage
 appDirs = { module = "ca.gosyer:kotlin-multiplatform-appdirs", version.ref = "appDirs" }
