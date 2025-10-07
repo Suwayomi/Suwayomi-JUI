@@ -126,8 +126,10 @@ tasks {
 
     registerTachideskTasks(project)
 
-    getByName("formatKotlinMain").dependsOn("kspKotlin")
-    getByName("formatKotlinTest").dependsOn("kspTestKotlin")
+    afterEvaluate {
+        getByName("formatKotlinMain").dependsOn("kspKotlin")
+        getByName("formatKotlinTest").dependsOn("kspTestKotlin")
+    }
 }
 
 kotlin {
