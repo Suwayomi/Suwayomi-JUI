@@ -244,13 +244,17 @@ class SourceRepositoryImpl(
                                             )
                                         }
 
-                                        else -> SourceFilter.Header(index, "")
+                                        else -> {
+                                            SourceFilter.Header(index, "")
+                                        }
                                     }
                                 },
                             )
                         }
 
-                        else -> SourceFilter.Header(index, "")
+                        else -> {
+                            SourceFilter.Header(index, "")
+                        }
                     }
                 }
             }
