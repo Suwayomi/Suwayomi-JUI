@@ -30,7 +30,7 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import io.ktor.client.plugins.auth.Auth as AuthPlugin

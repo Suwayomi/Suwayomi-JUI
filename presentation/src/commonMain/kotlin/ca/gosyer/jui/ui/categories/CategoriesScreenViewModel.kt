@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 @Inject
 class CategoriesScreenViewModel(

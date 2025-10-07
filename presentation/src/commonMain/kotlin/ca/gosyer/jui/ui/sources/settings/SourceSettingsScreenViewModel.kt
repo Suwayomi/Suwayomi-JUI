@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.supervisorScope
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 @Inject
 class SourceSettingsScreenViewModel(

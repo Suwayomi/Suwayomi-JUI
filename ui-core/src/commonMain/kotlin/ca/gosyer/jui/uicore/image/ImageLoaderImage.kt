@@ -40,7 +40,7 @@ import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberImageAction
 import com.seiko.imageloader.rememberImageActionPainter
 import com.seiko.imageloader.rememberImagePainter
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 private val log = logging()
 

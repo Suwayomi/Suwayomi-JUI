@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 @Inject
 class ServerListeners {

@@ -7,6 +7,7 @@
 package ca.gosyer.jui.desktop.logging
 
 import ca.gosyer.jui.desktop.build.BuildConfig
+import com.diamondedge.logging.logging
 import com.github.weisj.darklaf.LafManager
 import okio.Path
 import org.apache.logging.log4j.Level
@@ -15,7 +16,6 @@ import org.apache.logging.log4j.core.LoggerContext
 import org.apache.logging.log4j.core.appender.ConsoleAppender
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory
 import org.lighthousegames.logging.KmLogging
-import org.lighthousegames.logging.logging
 import org.slf4j.bridge.SLF4JBridgeHandler
 import java.util.logging.LogManager as JLogManager
 
@@ -103,7 +103,7 @@ fun initializeLogger(loggingLocation: Path) {
         addHandler(SLF4JBridgeHandler())
     }
 
-    KmLogging.setLogFactory(org.lighthousegames.logging.Slf4jLogFactory())
+    KmLogging.setLogFactory(com.diamondedge.logging.Slf4jLogFactory())
 
     val log = logging("UncaughtException")
     Thread.setDefaultUncaughtExceptionHandler { t, e ->

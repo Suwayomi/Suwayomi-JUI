@@ -49,7 +49,7 @@ import okio.BufferedSource
 import okio.FileSystem
 import okio.buffer
 import okio.use
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 class TachideskPageLoader(
     val chapter: ReaderChapter,

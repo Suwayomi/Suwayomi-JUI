@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Source
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 import kotlin.random.Random
 
 @Inject

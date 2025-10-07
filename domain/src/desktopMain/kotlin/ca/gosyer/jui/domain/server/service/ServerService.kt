@@ -27,7 +27,7 @@ import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
 import okio.source
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 import java.io.File.pathSeparatorChar
 import java.io.IOException
 import java.io.Reader

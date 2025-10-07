@@ -10,7 +10,7 @@ import ca.gosyer.jui.domain.extension.service.ExtensionRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 @Inject
 class GetExtensionList(

@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 class ChapterLoader(
     private val readerPreferences: ReaderPreferences,

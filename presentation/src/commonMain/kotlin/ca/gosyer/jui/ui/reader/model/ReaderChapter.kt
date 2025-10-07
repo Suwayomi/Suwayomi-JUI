@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 @Immutable
 data class ReaderChapter(

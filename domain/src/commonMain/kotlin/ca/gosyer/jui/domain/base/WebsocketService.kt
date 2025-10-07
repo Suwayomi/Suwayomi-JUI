@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.json.Json
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 @OptIn(DelicateCoroutinesApi::class)
 abstract class WebsocketService(

@@ -54,7 +54,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import me.tatarka.inject.annotations.Inject
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 import kotlin.time.Duration.Companion.seconds
 
 class SettingsAdvancedScreen : Screen {

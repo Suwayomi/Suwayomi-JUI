@@ -16,7 +16,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.asStateFlow
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 @Inject
 class LibraryUpdatesViewModel(

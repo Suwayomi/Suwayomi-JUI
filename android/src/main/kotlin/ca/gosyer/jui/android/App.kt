@@ -16,8 +16,8 @@ import ca.gosyer.jui.android.data.notification.Notifications
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.domain.ui.model.ThemeMode
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.launchIn
-import org.lighthousegames.logging.logging
 import java.util.Locale
 
 class App :
