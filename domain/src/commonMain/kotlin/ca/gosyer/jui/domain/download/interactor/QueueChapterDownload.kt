@@ -7,10 +7,10 @@
 package ca.gosyer.jui.domain.download.interactor
 
 import ca.gosyer.jui.domain.download.service.DownloadRepository
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class QueueChapterDownload(

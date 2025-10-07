@@ -7,10 +7,10 @@
 package ca.gosyer.jui.domain.extension.interactor
 
 import ca.gosyer.jui.domain.extension.service.ExtensionRepository
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class GetExtensionList(

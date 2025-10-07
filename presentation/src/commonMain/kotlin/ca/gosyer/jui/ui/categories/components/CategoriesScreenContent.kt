@@ -57,13 +57,13 @@ import ca.gosyer.jui.uicore.components.VerticalScrollbar
 import ca.gosyer.jui.uicore.components.rememberScrollbarAdapter
 import ca.gosyer.jui.uicore.components.scrollbarPadding
 import ca.gosyer.jui.uicore.resources.stringResource
+import com.diamondedge.logging.logging
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import com.diamondedge.logging.logging
 
 private val log = logging()
 

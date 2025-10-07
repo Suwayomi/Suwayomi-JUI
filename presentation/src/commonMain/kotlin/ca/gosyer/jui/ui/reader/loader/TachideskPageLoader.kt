@@ -19,6 +19,7 @@ import ca.gosyer.jui.ui.base.model.StableHolder
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
 import ca.gosyer.jui.ui.reader.model.ReaderPage
 import cafe.adriel.voyager.core.concurrent.AtomicInt32
+import com.diamondedge.logging.logging
 import com.seiko.imageloader.asImageBitmap
 import com.seiko.imageloader.cache.disk.DiskCache
 import com.seiko.imageloader.component.decoder.DecodeResult
@@ -49,7 +50,6 @@ import okio.BufferedSource
 import okio.FileSystem
 import okio.buffer
 import okio.use
-import com.diamondedge.logging.logging
 
 class TachideskPageLoader(
     val chapter: ReaderChapter,

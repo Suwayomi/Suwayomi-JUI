@@ -10,6 +10,7 @@ import ca.gosyer.jui.domain.build.BuildKonfig
 import ca.gosyer.jui.domain.server.model.Auth
 import ca.gosyer.jui.domain.server.model.Proxy
 import ca.gosyer.jui.domain.server.service.ServerPreferences
+import com.diamondedge.logging.logging
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngineConfig
@@ -30,7 +31,6 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import com.diamondedge.logging.logging
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import io.ktor.client.plugins.auth.Auth as AuthPlugin

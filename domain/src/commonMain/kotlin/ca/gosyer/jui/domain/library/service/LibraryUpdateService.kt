@@ -10,11 +10,11 @@ import ca.gosyer.jui.domain.base.WebsocketService
 import ca.gosyer.jui.domain.library.model.UpdateStatus
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.domain.server.service.ServerPreferences
+import com.diamondedge.logging.logging
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.flow.MutableStateFlow
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class LibraryUpdateService(

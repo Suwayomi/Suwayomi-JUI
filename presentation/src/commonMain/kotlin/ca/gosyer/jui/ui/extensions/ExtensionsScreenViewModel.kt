@@ -21,6 +21,7 @@ import ca.gosyer.jui.domain.extension.service.ExtensionPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import com.diamondedge.logging.logging
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
@@ -38,7 +39,6 @@ import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Source
-import com.diamondedge.logging.logging
 import kotlin.random.Random
 
 @Inject

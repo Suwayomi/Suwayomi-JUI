@@ -9,11 +9,11 @@ package ca.gosyer.jui.domain.manga.interactor
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.manga.service.MangaRepository
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.take
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class GetManga(

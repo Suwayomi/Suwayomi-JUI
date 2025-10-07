@@ -13,6 +13,7 @@ import ca.gosyer.jui.ui.base.image.BitmapDecoderFactory
 import ca.gosyer.jui.ui.reader.loader.PagesState
 import ca.gosyer.jui.ui.reader.loader.TachideskPageLoader
 import ca.gosyer.jui.ui.reader.model.ReaderChapter
+import com.diamondedge.logging.logging
 import com.seiko.imageloader.cache.disk.DiskCache
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.dropWhile
@@ -20,7 +21,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
-import com.diamondedge.logging.logging
 
 class ChapterLoader(
     private val readerPreferences: ReaderPreferences,

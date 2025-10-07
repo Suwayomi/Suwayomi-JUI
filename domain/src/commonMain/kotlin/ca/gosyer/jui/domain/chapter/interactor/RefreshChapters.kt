@@ -9,11 +9,11 @@ package ca.gosyer.jui.domain.chapter.interactor
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import ca.gosyer.jui.domain.manga.model.Manga
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class RefreshChapters(

@@ -10,10 +10,10 @@ import ca.gosyer.appdirs.AppDirs
 import ca.gosyer.jui.desktop.build.BuildConfig
 import ca.gosyer.jui.domain.migration.service.MigrationPreferences
 import ca.gosyer.jui.uicore.vm.ContextWrapper
+import com.diamondedge.logging.logging
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import com.diamondedge.logging.logging
 
 @Inject
 class AppMigrations(

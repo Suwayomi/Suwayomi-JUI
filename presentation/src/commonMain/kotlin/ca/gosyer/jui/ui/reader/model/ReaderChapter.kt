@@ -10,6 +10,7 @@ import androidx.compose.runtime.Immutable
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.ui.reader.loader.PageLoader
 import ca.gosyer.jui.ui.reader.loader.PagesState
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
-import com.diamondedge.logging.logging
 
 @Immutable
 data class ReaderChapter(

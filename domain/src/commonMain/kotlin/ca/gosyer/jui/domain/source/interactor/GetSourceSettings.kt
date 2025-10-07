@@ -8,10 +8,10 @@ package ca.gosyer.jui.domain.source.interactor
 
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.domain.source.service.SourceRepository
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class GetSourceSettings(

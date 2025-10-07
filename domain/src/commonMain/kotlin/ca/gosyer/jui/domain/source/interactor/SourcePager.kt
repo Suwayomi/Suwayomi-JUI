@@ -10,6 +10,7 @@ import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.manga.interactor.GetManga
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.source.model.MangaPage
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -27,7 +28,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 fun interface GetMangaPage {
     suspend fun get(page: Int): MangaPage?

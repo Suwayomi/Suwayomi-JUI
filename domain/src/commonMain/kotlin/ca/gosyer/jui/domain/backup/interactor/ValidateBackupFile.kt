@@ -7,13 +7,13 @@
 package ca.gosyer.jui.domain.backup.interactor
 
 import ca.gosyer.jui.domain.backup.service.BackupRepository
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Path
 import okio.SYSTEM
-import com.diamondedge.logging.logging
 
 @Inject
 class ValidateBackupFile(

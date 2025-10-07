@@ -65,6 +65,7 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import com.diamondedge.logging.logging
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.listItems
@@ -95,7 +96,6 @@ import okio.Path
 import okio.Sink
 import okio.Source
 import okio.buffer
-import com.diamondedge.logging.logging
 import kotlin.random.Random
 
 class SettingsBackupScreen : Screen {

@@ -7,10 +7,10 @@
 package ca.gosyer.jui.domain.category.interactor
 
 import ca.gosyer.jui.domain.category.service.CategoryRepository
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class ReorderCategory(

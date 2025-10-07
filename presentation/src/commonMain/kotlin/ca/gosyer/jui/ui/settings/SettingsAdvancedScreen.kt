@@ -47,6 +47,7 @@ import ca.gosyer.jui.uicore.vm.ViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
@@ -54,7 +55,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 import kotlin.time.Duration.Companion.seconds
 
 class SettingsAdvancedScreen : Screen {

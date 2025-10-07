@@ -9,13 +9,13 @@ package ca.gosyer.jui.domain.manga.interactor
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.manga.service.MangaRepository
+import com.diamondedge.logging.logging
 import io.ktor.http.decodeURLQueryComponent
 import io.ktor.http.encodeURLQueryComponent
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class UpdateMangaMeta(

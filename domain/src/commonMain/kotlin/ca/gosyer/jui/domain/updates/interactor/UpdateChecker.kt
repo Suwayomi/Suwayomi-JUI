@@ -10,6 +10,7 @@ import ca.gosyer.jui.domain.build.BuildKonfig
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.domain.updates.model.GithubRelease
 import ca.gosyer.jui.domain.updates.service.UpdatePreferences
+import com.diamondedge.logging.logging
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class UpdateChecker(

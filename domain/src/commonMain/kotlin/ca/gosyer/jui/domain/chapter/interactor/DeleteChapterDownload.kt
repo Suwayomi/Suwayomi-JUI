@@ -9,11 +9,11 @@ package ca.gosyer.jui.domain.chapter.interactor
 import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 import kotlin.jvm.JvmName
 
 @Inject

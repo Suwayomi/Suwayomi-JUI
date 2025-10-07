@@ -35,12 +35,12 @@ import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQ
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.uicore.components.LoadingScreen
+import com.diamondedge.logging.logging
 import com.seiko.imageloader.model.ImageAction
 import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.rememberImageAction
 import com.seiko.imageloader.rememberImageActionPainter
 import com.seiko.imageloader.rememberImagePainter
-import com.diamondedge.logging.logging
 
 private val log = logging()
 

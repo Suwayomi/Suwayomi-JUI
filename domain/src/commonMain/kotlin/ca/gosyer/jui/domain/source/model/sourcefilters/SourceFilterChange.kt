@@ -7,7 +7,6 @@
 package ca.gosyer.jui.domain.source.model.sourcefilters
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable

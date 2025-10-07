@@ -10,6 +10,7 @@ import ca.gosyer.jui.core.io.copyTo
 import ca.gosyer.jui.core.io.userDataDir
 import ca.gosyer.jui.core.lang.withIOContext
 import ca.gosyer.jui.domain.build.BuildKonfig
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,6 @@ import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
 import okio.source
-import com.diamondedge.logging.logging
 import java.io.File.pathSeparatorChar
 import java.io.IOException
 import java.io.Reader

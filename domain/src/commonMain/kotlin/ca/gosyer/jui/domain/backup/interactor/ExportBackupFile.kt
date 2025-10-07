@@ -7,11 +7,11 @@
 package ca.gosyer.jui.domain.backup.interactor
 
 import ca.gosyer.jui.domain.backup.service.BackupRepository
+import com.diamondedge.logging.logging
 import io.ktor.client.request.HttpRequestBuilder
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class ExportBackupFile(

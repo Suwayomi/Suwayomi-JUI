@@ -9,6 +9,7 @@ package ca.gosyer.jui.domain.base
 import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.domain.server.service.ServerPreferences
+import com.diamondedge.logging.logging
 import io.ktor.client.plugins.websocket.ws
 import io.ktor.http.URLProtocol
 import io.ktor.websocket.Frame
@@ -24,7 +25,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.json.Json
-import com.diamondedge.logging.logging
 
 @OptIn(DelicateCoroutinesApi::class)
 abstract class WebsocketService(

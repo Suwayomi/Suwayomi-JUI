@@ -7,13 +7,13 @@
 package ca.gosyer.jui.domain.extension.interactor
 
 import ca.gosyer.jui.domain.extension.service.ExtensionRepository
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Path
 import okio.SYSTEM
-import com.diamondedge.logging.logging
 
 @Inject
 class InstallExtensionFile(

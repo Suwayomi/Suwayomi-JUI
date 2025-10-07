@@ -15,6 +15,7 @@ import ca.gosyer.jui.domain.category.interactor.ReorderCategory
 import ca.gosyer.jui.domain.category.model.Category
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import com.diamondedge.logging.logging
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.minus
 import kotlinx.collections.immutable.persistentListOf
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class CategoriesScreenViewModel(

@@ -8,10 +8,10 @@ package ca.gosyer.jui.domain.settings.interactor
 
 import ca.gosyer.jui.domain.settings.model.SetSettingsInput
 import ca.gosyer.jui.domain.settings.service.SettingsRepository
+import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.singleOrNull
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Inject
 class SetSettings(

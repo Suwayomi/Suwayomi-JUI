@@ -27,6 +27,7 @@ import ca.gosyer.jui.ui.base.state.getStateFlow
 import ca.gosyer.jui.ui.util.lang.CollatorComparator
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import com.diamondedge.logging.logging
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -49,7 +50,6 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import com.diamondedge.logging.logging
 
 @Stable
 sealed class LibraryState {
