@@ -13,7 +13,7 @@ import okio.Path
 import okio.Path.Companion.toPath
 
 val userDataDir: Path by lazy {
-    AppDirs(BuildKonfig.NAME).getUserDataDir().toPath().also {
+    AppDirs { appName = BuildKonfig.NAME }.getUserDataDir().toPath().also {
         if (!FileSystem.SYSTEM.exists(it)) {
             FileSystem.SYSTEM.createDirectories(it)
         }
