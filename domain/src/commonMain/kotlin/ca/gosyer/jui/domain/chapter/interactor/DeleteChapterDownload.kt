@@ -23,8 +23,9 @@ class DeleteChapterDownload(
 ) {
     suspend fun await(
         chapterId: Long,
+        mangaId: Long?,
         onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(chapterId)
+    ) = asFlow(chapterId, mangaId)
         .catch {
             onError(it)
             log.warn(it) { "Failed to delete chapter download for $chapterId" }
@@ -44,8 +45,9 @@ class DeleteChapterDownload(
 
     suspend fun await(
         chapterIds: List<Long>,
+        mangaIds: List<Long>?,
         onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(chapterIds)
+    ) = asFlow(chapterIds, mangaIds)
         .catch {
             onError(it)
             log.warn(it) { "Failed to delete chapter download for $chapterIds" }
@@ -63,23 +65,23 @@ class DeleteChapterDownload(
         }
         .collect()
 
-    fun asFlow(chapterId: Long) =
+    fun asFlow(chapterId: Long, mangaId: Long?) =
         chapterRepository.deleteDownloadedChapter(chapterId)
-            .onEach { serverListeners.updateChapters(chapterId) }
+            .onEach { serverListeners.updateManga(mangaId ?: -1) }
 
     @JvmName("asFlowChapter")
     fun asFlow(chapter: Chapter) =
         chapterRepository.deleteDownloadedChapter(chapter.id)
-            .onEach { serverListeners.updateChapters(chapter.id) }
+            .onEach { serverListeners.updateManga(chapter.mangaId) }
 
-    fun asFlow(chapterIds: List<Long>) =
+    fun asFlow(chapterIds: List<Long>, mangaIds: List<Long>?) =
         chapterRepository.deleteDownloadedChapters(chapterIds)
-            .onEach { serverListeners.updateChapters(chapterIds) }
+            .onEach { serverListeners.updateManga(mangaIds.orEmpty()) }
 
     @JvmName("asFlowChapters")
     fun asFlow(chapter: List<Chapter>) =
         chapterRepository.deleteDownloadedChapters(chapter.map { it.id })
-            .onEach { serverListeners.updateChapters(chapter.map { it.id }) }
+            .onEach { serverListeners.updateManga(chapter.map { it.mangaId }) }
 
     companion object {
         private val log = logging()

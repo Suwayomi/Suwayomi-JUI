@@ -23,12 +23,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.LocalDate
@@ -96,20 +93,20 @@ class UpdatesPager(
 
     private val changedChapters = MutableStateFlow(emptyMap<Long, Chapter>())
 
-    init {
-        serverListeners.chapterIdsListener
-            .onEach { updatedChapterIds ->
-                val chapters = coroutineScope {
-                    updatedChapterIds.mapNotNull { id -> chapterIds.value.find { it == id } }.map {
-                        async {
-                            getChapter.await(it)
-                        }
-                    }.awaitAll().filterNotNull().associateBy { it.id }
-                }
-                changedChapters.update { it + chapters }
-            }
-            .launchIn(this)
-    }
+//    init {
+//        serverListeners.chapterIdsListener
+//            .onEach { updatedChapterIds ->
+//                val chapters = coroutineScope {
+//                    updatedChapterIds.mapNotNull { id -> chapterIds.value.find { it == id } }.map {
+//                        async {
+//                            getChapter.await(it)
+//                        }
+//                    }.awaitAll().filterNotNull().associateBy { it.id }
+//                }
+//                changedChapters.update { it + chapters }
+//            }
+//            .launchIn(this)
+//    }
 
     val updates = combine(
         foldedUpdates,

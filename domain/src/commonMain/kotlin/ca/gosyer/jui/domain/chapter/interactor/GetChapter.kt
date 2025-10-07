@@ -22,8 +22,9 @@ class GetChapter(
 ) {
     suspend fun await(
         chapterId: Long,
+        mangaId: Long?,
         onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(chapterId)
+    ) = asFlow(chapterId, mangaId)
         .take(1)
         .catch {
             onError(it)
@@ -42,16 +43,16 @@ class GetChapter(
         }
         .singleOrNull()
 
-    fun asFlow(chapterId: Long) =
-        serverListeners.combineChapters(
+    fun asFlow(chapterId: Long, mangaId: Long?) =
+        serverListeners.combineMangaUpdates(
             chapterRepository.getChapter(chapterId),
-            chapterIdPredate = { ids -> chapterId in ids },
+            predate = { ids -> mangaId in ids },
         )
 
     fun asFlow(chapter: Chapter) =
-        serverListeners.combineChapters(
+        serverListeners.combineMangaUpdates(
             chapterRepository.getChapter(chapter.id),
-            chapterIdPredate = { ids -> chapter.id in ids },
+            predate = { ids -> chapter.mangaId in ids },
         )
 
     companion object {

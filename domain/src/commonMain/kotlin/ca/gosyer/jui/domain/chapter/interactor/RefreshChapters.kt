@@ -40,13 +40,13 @@ class RefreshChapters(
         }
         .singleOrNull()
 
-    fun asFlow(mangaId: Long) =
+    fun asFlow(mangaId: Long, ) =
         chapterRepository.fetchChapters(mangaId)
-            .onEach { serverListeners.updateChapters(mangaId) }
+            .onEach { serverListeners.updateManga(mangaId) }
 
     fun asFlow(manga: Manga) =
         chapterRepository.fetchChapters(manga.id)
-            .onEach { serverListeners.updateChapters(manga.id) }
+            .onEach { serverListeners.updateManga(manga.id) }
 
     companion object {
         private val log = logging()

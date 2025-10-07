@@ -118,7 +118,9 @@ class UpdatesScreenViewModel(
         read: Boolean,
     ) {
         scope.launch {
-            updateChapter.await(chapterIds, read = read, onError = { toast(it.message.orEmpty()) })
+            val mangaIds = updates.value.filterIsInstance<UpdatesUI.Item>().filter { it.chapterDownloadItem.chapter.id in chapterIds }
+                .mapNotNull { it.chapterDownloadItem.manga?.id }
+            updateChapter.await(chapterIds, mangaIds, read = read, onError = { toast(it.message.orEmpty()) })
             selectedIds.value = persistentListOf()
         }
     }
@@ -132,7 +134,9 @@ class UpdatesScreenViewModel(
         bookmark: Boolean,
     ) {
         scope.launch {
-            updateChapter.await(chapterIds, bookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
+            val mangaIds = updates.value.filterIsInstance<UpdatesUI.Item>().filter { it.chapterDownloadItem.chapter.id in chapterIds }
+                .mapNotNull { it.chapterDownloadItem.manga?.id }
+            updateChapter.await(chapterIds, mangaIds, bookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
             selectedIds.value = persistentListOf()
         }
     }
@@ -157,7 +161,9 @@ class UpdatesScreenViewModel(
         scope.launchDefault {
             if (chapter == null) {
                 val selectedIds = selectedIds.value
-                deleteChapterDownload.await(selectedIds, onError = { toast(it.message.orEmpty()) })
+                val mangaIds = updates.value.filterIsInstance<UpdatesUI.Item>().filter { it.chapterDownloadItem.chapter.id in selectedIds }
+                    .mapNotNull { it.chapterDownloadItem.manga?.id }
+                deleteChapterDownload.await(selectedIds, mangaIds, onError = { toast(it.message.orEmpty()) })
                 selectedItems.value.forEach {
                     it.setNotDownloaded()
                 }

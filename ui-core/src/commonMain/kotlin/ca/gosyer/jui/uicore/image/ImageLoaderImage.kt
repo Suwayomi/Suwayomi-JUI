@@ -108,10 +108,6 @@ fun ImageLoaderImage(
                         progress.value = 1.0F
                         ImageLoaderImageState.Success
                     }
-
-                    else -> {
-                        ImageLoaderImageState.Loading
-                    }
                 }
             }
             Crossfade(state, animationSpec = animationSpec, modifier = modifier) {

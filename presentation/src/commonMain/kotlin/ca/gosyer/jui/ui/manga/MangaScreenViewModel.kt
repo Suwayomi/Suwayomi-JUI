@@ -291,7 +291,7 @@ class MangaScreenViewModel(
     ) {
         scope.launch {
             manga.value?.let {
-                updateChapter.await(chapterIds, read = read, onError = { toast(it.message.orEmpty()) })
+                updateChapter.await(chapterIds, listOf(params.mangaId), read = read, onError = { toast(it.message.orEmpty()) })
                 selectedIds.value = persistentListOf()
                 loadChapters()
             }
@@ -308,7 +308,7 @@ class MangaScreenViewModel(
     ) {
         scope.launch {
             manga.value?.let {
-                updateChapter.await(chapterIds, bookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
+                updateChapter.await(chapterIds, listOf(params.mangaId), bookmarked = bookmark, onError = { toast(it.message.orEmpty()) })
                 selectedIds.value = persistentListOf()
                 loadChapters()
             }
@@ -325,7 +325,7 @@ class MangaScreenViewModel(
                 val chapters = chapters.value
                     .sortedBy { it.chapter.index }
                     .subList(0, index).map { it.chapter.id } // todo test
-                updateChapter.await(chapters, read = true, onError = { toast(it.message.orEmpty()) })
+                updateChapter.await(chapters, listOf(params.mangaId), read = true, onError = { toast(it.message.orEmpty()) })
                 selectedIds.value = persistentListOf()
                 loadChapters()
             }
@@ -340,7 +340,7 @@ class MangaScreenViewModel(
         scope.launch {
             if (id == null) {
                 val chapterIds = selectedIds.value
-                deleteChapterDownload.await(chapterIds, onError = { toast(it.message.orEmpty()) })
+                deleteChapterDownload.await(chapterIds, listOf(params.mangaId), onError = { toast(it.message.orEmpty()) })
                 selectedItems.value.forEach {
                     it.setNotDownloaded()
                 }

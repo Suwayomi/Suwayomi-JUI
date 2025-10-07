@@ -23,11 +23,12 @@ class UpdateChapter(
 ) {
     suspend fun await(
         chapterId: Long,
+        mangaId: Long?,
         bookmarked: Boolean? = null,
         read: Boolean? = null,
         lastPageRead: Int? = null,
         onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(chapterId, bookmarked, read, lastPageRead)
+    ) = asFlow(chapterId, mangaId, bookmarked, read, lastPageRead)
         .catch {
             onError(it)
             log.warn(it) { "Failed to update chapter bookmark for chapter $chapterId" }
@@ -49,11 +50,12 @@ class UpdateChapter(
 
     suspend fun await(
         chapterIds: List<Long>,
+        mangaIds: List<Long>?,
         bookmarked: Boolean? = null,
         read: Boolean? = null,
         lastPageRead: Int? = null,
         onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(chapterIds, bookmarked, read, lastPageRead)
+    ) = asFlow(chapterIds, mangaIds, bookmarked, read, lastPageRead)
         .catch {
             onError(it)
             log.warn(it) { "Failed to update chapter bookmark for chapters $chapterIds" }
@@ -76,6 +78,7 @@ class UpdateChapter(
 
     fun asFlow(
         chapterId: Long,
+        mangaId: Long?,
         bookmarked: Boolean? = null,
         read: Boolean? = null,
         lastPageRead: Int? = null,
@@ -84,7 +87,7 @@ class UpdateChapter(
         bookmarked = bookmarked,
         read = read,
         lastPageRead = lastPageRead,
-    ).onEach { serverListeners.updateChapters(chapterId) }
+    ).onEach { serverListeners.updateManga(mangaId ?: -1) }
 
     fun asFlow(
         chapter: Chapter,
@@ -96,10 +99,11 @@ class UpdateChapter(
         bookmarked = bookmarked,
         read = read,
         lastPageRead = lastPageRead,
-    ).onEach { serverListeners.updateChapters(chapter.id) }
+    ).onEach { serverListeners.updateManga(chapter.mangaId) }
 
     fun asFlow(
         chapterIds: List<Long>,
+        mangaIds: List<Long>?,
         bookmarked: Boolean? = null,
         read: Boolean? = null,
         lastPageRead: Int? = null,
@@ -108,7 +112,7 @@ class UpdateChapter(
         bookmarked = bookmarked,
         read = read,
         lastPageRead = lastPageRead,
-    ).onEach { serverListeners.updateChapters(chapterIds) }
+    ).onEach { serverListeners.updateManga(mangaIds.orEmpty()) }
 
     @JvmName("asFlowChapters")
     fun asFlow(
@@ -121,7 +125,7 @@ class UpdateChapter(
         bookmarked = bookmarked,
         read = read,
         lastPageRead = lastPageRead,
-    ).onEach { serverListeners.updateChapters(chapters.map { it.id }) }
+    ).onEach { serverListeners.updateManga(chapters.map { it.mangaId }.distinct()) }
 
     companion object {
         private val log = logging()

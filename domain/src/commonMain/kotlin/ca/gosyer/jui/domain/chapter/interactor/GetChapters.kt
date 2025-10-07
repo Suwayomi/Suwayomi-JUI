@@ -43,15 +43,15 @@ class GetChapters(
         .singleOrNull()
 
     fun asFlow(mangaId: Long) =
-        serverListeners.combineChapters(
+        serverListeners.combineMangaUpdates(
             chapterRepository.getChapters(mangaId),
-            chapterIdPredate = { ids -> false }, // todo
+            predate = { ids -> mangaId in ids },
         )
 
     fun asFlow(manga: Manga) =
-        serverListeners.combineChapters(
+        serverListeners.combineMangaUpdates(
             chapterRepository.getChapters(manga.id),
-            chapterIdPredate = { ids -> false }, // todo
+            predate = { ids -> manga.id in ids },
         )
 
     companion object {

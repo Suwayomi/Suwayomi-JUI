@@ -93,6 +93,7 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -137,6 +138,7 @@ expect class SettingsServerHostViewModel : ViewModel
 @Composable
 expect fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostViewModel): LazyListScope.() -> Unit
 
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 private class ServerSettingMutableStateFlow<T>(
     parent: StateFlow<Settings>,
     getSetting: (Settings) -> T,

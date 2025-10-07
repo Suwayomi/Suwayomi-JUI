@@ -8,10 +8,12 @@ package ca.gosyer.jui.uicore.prefs
 
 import ca.gosyer.jui.core.prefs.Preference
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 class PreferenceMutableStateFlow<T>(
     private val preference: Preference<T>,
     scope: CoroutineScope,

@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
@@ -33,16 +32,6 @@ class ServerListeners {
         extraBufferCapacity = Channel.UNLIMITED,
     )
     val mangaListener = _mangaListener.asSharedFlow()
-
-    private val _chapterIdsListener = MutableSharedFlow<List<Long>>(
-        extraBufferCapacity = Channel.UNLIMITED,
-    )
-    val chapterIdsListener = _chapterIdsListener.asSharedFlow()
-
-    private val _mangaChapterIdsListener = MutableSharedFlow<List<Long>>(
-        extraBufferCapacity = Channel.UNLIMITED,
-    )
-    val mangaChapterIdsListener = _mangaChapterIdsListener.asSharedFlow()
 
     private val categoryMangaListener = MutableSharedFlow<Long>(
         extraBufferCapacity = Channel.UNLIMITED,
@@ -65,9 +54,23 @@ class ServerListeners {
         .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
         .flatMapLatest { flow }
 
-    fun updateManga(vararg ids: Long) {
+    fun updateManga(ids: List<Long>) {
+        val ids = ids.filter { id -> id >= 0 }
+        if (ids.isEmpty()) {
+            return
+        }
         scope.launch {
-            _mangaListener.emit(ids.toList())
+            _mangaListener.emit(ids)
+        }
+    }
+
+    fun updateManga(vararg ids: Long) {
+        val ids = ids.filter { id -> id >= 0 }
+        if (ids.isEmpty()) {
+            return
+        }
+        scope.launch {
+            _mangaListener.emit(ids)
         }
     }
 
@@ -85,36 +88,6 @@ class ServerListeners {
     fun updateCategoryManga(id: Long) {
         scope.launch {
             categoryMangaListener.emit(id)
-        }
-    }
-
-    fun <T> combineChapters(
-        flow: Flow<T>,
-        chapterIdPredate: (suspend (List<Long>) -> Boolean)? = null,
-        mangaIdPredate: (suspend (List<Long>) -> Boolean)? = null,
-    ): Flow<T> {
-        val idsListener = _chapterIdsListener
-            .filter { chapterIdPredate?.invoke(it) ?: false }
-            .startWith(Unit)
-            .combine(
-                _mangaChapterIdsListener.filter { mangaIdPredate?.invoke(it) ?: false }
-                    .startWith(Unit),
-            ) { _, _ -> }
-
-        return idsListener
-            .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-            .flatMapLatest { flow }
-    }
-
-    fun updateChapters(chapterIds: List<Long>) {
-        scope.launch {
-            _chapterIdsListener.emit(chapterIds)
-        }
-    }
-
-    fun updateChapters(vararg chapterIds: Long) {
-        scope.launch {
-            _chapterIdsListener.emit(chapterIds.toList())
         }
     }
 

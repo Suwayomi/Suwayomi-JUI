@@ -7,6 +7,7 @@
 package ca.gosyer.jui.ui.base.state
 
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.internal.SynchronizedObject
@@ -39,6 +40,7 @@ class SavedStateHandleDelegate<T>(
         }
 }
 
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 class SavedStateHandleStateFlow<T>(
     private val key: String,
     private val savedStateHandle: SavedStateHandle,

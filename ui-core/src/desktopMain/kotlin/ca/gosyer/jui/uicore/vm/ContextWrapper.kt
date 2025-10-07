@@ -10,6 +10,7 @@ import androidx.compose.runtime.Stable
 import ca.gosyer.jui.core.lang.launchDefault
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.format
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -26,6 +27,7 @@ actual class ContextWrapper {
         vararg args: Any,
     ): String = stringResource.format(*args).localized()
 
+    @OptIn(DelicateCoroutinesApi::class)
     actual fun toast(
         string: String,
         length: Length,

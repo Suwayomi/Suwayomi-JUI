@@ -6,7 +6,6 @@
 
 package ca.gosyer.jui.ui.library.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
@@ -119,7 +118,5 @@ private fun LibraryLoadedPage(
             showLanguage = showLanguage,
             showLocal = showLocal,
         )
-
-        else -> Box {}
     }
 }

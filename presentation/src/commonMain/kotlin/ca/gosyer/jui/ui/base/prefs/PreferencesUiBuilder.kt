@@ -13,8 +13,8 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -408,7 +408,7 @@ fun ExpandablePreference(
             targetState = !expanded
         }
     }
-    val transition = updateTransition(transitionState)
+    val transition = rememberTransition(transitionState)
     val elevation by transition.animateDp({
         tween(durationMillis = EXPAND_ANIMATION_DURATION)
     }) {

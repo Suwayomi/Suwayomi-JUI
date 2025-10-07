@@ -22,9 +22,10 @@ class UpdateChapterLastPageRead(
 ) {
     suspend fun await(
         chapterId: Long,
+        mangaId: Long?,
         lastPageRead: Int,
         onError: suspend (Throwable) -> Unit = {},
-    ) = asFlow(chapterId, lastPageRead)
+    ) = asFlow(chapterId, mangaId, lastPageRead)
         .catch {
             onError(it)
             log.warn(it) { "Failed to update chapter last page read for chapter $chapterId" }
@@ -44,11 +45,12 @@ class UpdateChapterLastPageRead(
 
     fun asFlow(
         chapterId: Long,
+        mangaId: Long?,
         lastPageRead: Int,
     ) = chapterRepository.updateChapter(
         chapterId = chapterId,
         lastPageRead = lastPageRead,
-    ).onEach { serverListeners.updateChapters(chapterId) }
+    ).onEach { serverListeners.updateManga(mangaId ?: -1) }
 
     fun asFlow(
         chapter: Chapter,
@@ -56,7 +58,7 @@ class UpdateChapterLastPageRead(
     ) = chapterRepository.updateChapter(
         chapterId = chapter.id,
         lastPageRead = lastPageRead,
-    ).onEach { serverListeners.updateChapters(chapter.id) }
+    ).onEach { serverListeners.updateManga(chapter.mangaId) }
 
     companion object {
         private val log = logging()

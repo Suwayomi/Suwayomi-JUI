@@ -41,7 +41,7 @@ class UpdateChapterMeta(
                 "juiPageOffset",
                 pageOffset.toString(),
             ).collect()
-            serverListeners.updateChapters(chapter.id)
+            serverListeners.updateManga(chapter.mangaId)
         }
         emit(Unit)
     }
