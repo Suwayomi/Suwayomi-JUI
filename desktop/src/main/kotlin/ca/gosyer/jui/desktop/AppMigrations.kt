@@ -13,7 +13,7 @@ import ca.gosyer.jui.uicore.vm.ContextWrapper
 import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 @Inject
 class AppMigrations(

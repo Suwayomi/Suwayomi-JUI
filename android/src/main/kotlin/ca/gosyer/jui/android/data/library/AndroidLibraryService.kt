@@ -28,6 +28,7 @@ import ca.gosyer.jui.domain.library.model.UpdateStatus
 import ca.gosyer.jui.domain.library.service.LibraryUpdateService
 import ca.gosyer.jui.domain.library.service.LibraryUpdateService.Companion.status
 import ca.gosyer.jui.i18n.MR
+import com.diamondedge.logging.logging
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
 import io.ktor.client.plugins.websocket.ws
@@ -51,7 +52,6 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.job
 import kotlinx.serialization.json.Json
-import org.lighthousegames.logging.logging
 
 class AndroidLibraryService : Service() {
     companion object {

@@ -63,7 +63,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 private val log = logging()
 

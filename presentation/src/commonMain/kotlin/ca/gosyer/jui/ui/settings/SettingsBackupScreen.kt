@@ -95,7 +95,7 @@ import okio.Path
 import okio.Sink
 import okio.Source
 import okio.buffer
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 import kotlin.random.Random
 
 class SettingsBackupScreen : Screen {

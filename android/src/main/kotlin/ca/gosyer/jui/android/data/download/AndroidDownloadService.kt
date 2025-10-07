@@ -27,6 +27,7 @@ import ca.gosyer.jui.domain.download.model.DownloadStatus
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.download.service.DownloadService.Companion.status
 import ca.gosyer.jui.i18n.MR
+import com.diamondedge.logging.logging
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
 import io.ktor.client.plugins.websocket.ws
@@ -50,7 +51,6 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.job
 import kotlinx.serialization.json.Json
-import org.lighthousegames.logging.logging
 import java.util.regex.Pattern
 
 class AndroidDownloadService : Service() {

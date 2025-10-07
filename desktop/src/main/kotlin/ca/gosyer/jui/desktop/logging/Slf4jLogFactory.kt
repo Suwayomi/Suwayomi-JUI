@@ -6,8 +6,8 @@
 
 package ca.gosyer.jui.desktop.logging
 
-import org.lighthousegames.logging.KmLog
-import org.lighthousegames.logging.LogFactory
+import com.diamondedge.logging.KmLog
+import com.diamondedge.logging.LogFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

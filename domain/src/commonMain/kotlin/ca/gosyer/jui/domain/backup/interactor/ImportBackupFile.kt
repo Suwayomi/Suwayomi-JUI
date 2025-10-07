@@ -13,7 +13,7 @@ import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Path
 import okio.SYSTEM
-import org.lighthousegames.logging.logging
+import com.diamondedge.logging.logging
 
 @Inject
 class ImportBackupFile(
