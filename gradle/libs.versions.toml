@@ -28,7 +28,7 @@ work = "2.10.5"
 lifecycle = "2.9.4"
 
 # Swing
-darklaf = "3.0.2"
+darklaf = "3.1.1"
 
 # Ksp
 ksp = "2.2.20-2.0.3"
