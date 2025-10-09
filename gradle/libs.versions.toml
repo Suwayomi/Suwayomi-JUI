@@ -18,7 +18,7 @@ imageloader = "1.10.0"
 materialDialogs = "0.9.7"
 
 # Android
-androidGradle = "8.12.0"
+androidGradle = "8.13.0"
 core = "1.17.0"
 appCompat = "1.7.1"
 activityCompose = "1.11.0"
