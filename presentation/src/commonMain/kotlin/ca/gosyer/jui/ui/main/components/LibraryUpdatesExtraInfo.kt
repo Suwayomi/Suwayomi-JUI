@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import ca.gosyer.jui.domain.base.WebsocketService
-import ca.gosyer.jui.domain.library.model.JobStatus
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.LocalViewModels
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -37,27 +36,18 @@ fun LibraryUpdatesExtraInfo() {
     val serviceStatus by vm.serviceStatus.collectAsState()
     val updateStatus by vm.updateStatus.collectAsState()
 
-    fun Map<JobStatus, List<*>>.getSize(jobStatus: JobStatus): Int = get(jobStatus)?.size ?: 0
     val current = remember(updateStatus) {
-        updateStatus.mangaStatusMap.run {
-            getSize(JobStatus.COMPLETE) + getSize(JobStatus.FAILED) + getSize(JobStatus.SKIPPED)
-        }
+        updateStatus.jobsInfo.finishedJobs
     }
     val total = remember(updateStatus) {
-        updateStatus.mangaStatusMap.run {
-            getSize(JobStatus.COMPLETE) +
-                getSize(JobStatus.FAILED) +
-                getSize(JobStatus.PENDING) +
-                getSize(JobStatus.RUNNING) +
-                getSize(JobStatus.SKIPPED)
-        }
+        updateStatus.jobsInfo.totalJobs
     }
 
     val text = when (serviceStatus) {
         WebsocketService.Status.STARTING -> stringResource(MR.strings.downloads_loading)
 
         WebsocketService.Status.RUNNING -> {
-            if (updateStatus.running) {
+            if (updateStatus.jobsInfo.isRunning) {
                 stringResource(MR.strings.notification_updating, current, total)
             } else {
                 null

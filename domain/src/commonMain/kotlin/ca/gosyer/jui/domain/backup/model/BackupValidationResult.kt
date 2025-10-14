@@ -6,9 +6,6 @@
 
 package ca.gosyer.jui.domain.backup.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class BackupValidationResult(
     val missingSources: List<String>,
     val missingTrackers: List<String>,

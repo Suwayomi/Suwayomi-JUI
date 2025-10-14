@@ -11,10 +11,8 @@ import androidx.compose.runtime.Stable
 import ca.gosyer.jui.domain.source.model.Source
 import ca.gosyer.jui.i18n.MR
 import dev.icerock.moko.resources.StringResource
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
-@Serializable
 @Immutable
 data class Manga(
     val id: Long,
@@ -46,7 +44,6 @@ data class Manga(
     val chaptersAge: Long?,
 )
 
-@Serializable
 @Immutable
 data class MangaMeta(
     val juiReaderMode: String = DEFAULT_READER_MODE,
@@ -56,7 +53,6 @@ data class MangaMeta(
     }
 }
 
-@Serializable
 @Stable
 enum class MangaStatus(
     @Transient val res: StringResource,
@@ -70,7 +66,6 @@ enum class MangaStatus(
     ON_HIATUS(MR.strings.status_on_hiatus),
 }
 
-@Serializable
 @Stable
 enum class UpdateStrategy {
     ALWAYS_UPDATE,

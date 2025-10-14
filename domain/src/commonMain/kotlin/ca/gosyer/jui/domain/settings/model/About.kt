@@ -8,9 +8,7 @@ package ca.gosyer.jui.domain.settings.model
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import kotlinx.serialization.Serializable
 
-@Serializable
 @Immutable
 data class About(
     val name: String,
@@ -21,7 +19,6 @@ data class About(
     val discord: String,
 )
 
-@Serializable
 @Stable
 enum class AboutBuildType {
     Preview,

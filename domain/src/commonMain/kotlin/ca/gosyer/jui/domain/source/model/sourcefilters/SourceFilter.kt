@@ -6,23 +6,6 @@
 
 package ca.gosyer.jui.domain.source.model.sourcefilters
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-
-@Serializable
-data class SourceFilterChangeOld(
-    val position: Int,
-    val state: String,
-) {
-    constructor(position: Int, state: Any) : this(
-        position,
-        if (state is SortFilterOld.Selection) {
-            Json.encodeToString(state)
-        } else {
-            state.toString()
-        },
-    )
-}
 
 sealed interface SourceFilter {
     val position: Int

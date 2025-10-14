@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.domain.category.interactor
 
+import ca.gosyer.jui.domain.ServerListeners
 import ca.gosyer.jui.domain.category.service.CategoryRepository
 import com.diamondedge.logging.logging
 import kotlinx.coroutines.flow.catch
@@ -16,6 +17,7 @@ import me.tatarka.inject.annotations.Inject
 @Inject
 class GetCategories(
     private val categoryRepository: CategoryRepository,
+    private val serverListeners: ServerListeners,
 ) {
     suspend fun await(
         dropDefault: Boolean = false,
@@ -27,15 +29,16 @@ class GetCategories(
         }
         .singleOrNull()
 
-    fun asFlow(dropDefault: Boolean = false) =
+    fun asFlow(dropDefault: Boolean = false) = serverListeners.combineCategoryManga(
         categoryRepository.getCategories()
-            .map { categories ->
-                if (dropDefault) {
-                    categories.filterNot { it.name.equals("default", true) }
-                } else {
-                    categories
-                }
-            }
+    ).map { categories ->
+        if (dropDefault) {
+            categories.filterNot { it.name.equals("default", true) }
+        } else {
+            categories
+        }
+    }
+
 
     companion object {
         private val log = logging()

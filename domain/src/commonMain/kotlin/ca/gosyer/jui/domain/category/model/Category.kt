@@ -7,9 +7,7 @@
 package ca.gosyer.jui.domain.category.model
 
 import androidx.compose.runtime.Immutable
-import kotlinx.serialization.Serializable
 
-@Serializable
 @Immutable
 data class Category(
     val id: Long,
@@ -17,10 +15,9 @@ data class Category(
     val name: String,
     val default: Boolean,
     val meta: CategoryMeta,
-)
-
-@Serializable
-@Immutable
-data class CategoryMeta(
-    val example: Int = 0,
-)
+) {
+    @Immutable
+    data class CategoryMeta(
+        val example: Int = 0,
+    )
+}

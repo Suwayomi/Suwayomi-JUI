@@ -6,8 +6,6 @@
 
 package ca.gosyer.jui.domain.backup.model
 
-import kotlinx.serialization.Serializable
-
 enum class RestoreState {
     IDLE,
     SUCCESS,
@@ -19,7 +17,6 @@ enum class RestoreState {
     UNKNOWN,
 }
 
-@Serializable
 data class RestoreStatus(
     val state: RestoreState,
     val completed: Int,

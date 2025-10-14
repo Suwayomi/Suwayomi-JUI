@@ -7,9 +7,7 @@
 package ca.gosyer.jui.domain.chapter.model
 
 import androidx.compose.runtime.Immutable
-import kotlinx.serialization.Serializable
 
-@Serializable
 @Immutable
 data class Chapter(
     val id: Long,
@@ -29,10 +27,10 @@ data class Chapter(
     val lastReadAt: Int?,
     val downloaded: Boolean,
     val meta: ChapterMeta,
-)
+) {
+    @Immutable
+    data class ChapterMeta(
+        val juiPageOffset: Int = 0,
+    )
+}
 
-@Serializable
-@Immutable
-data class ChapterMeta(
-    val juiPageOffset: Int = 0,
-)

@@ -9,9 +9,7 @@ package ca.gosyer.jui.domain.updates.model
 import androidx.compose.runtime.Immutable
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.manga.model.Manga
-import kotlinx.serialization.Serializable
 
-@Serializable
 @Immutable
 data class MangaAndChapter(
     val manga: Manga,

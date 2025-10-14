@@ -1,0 +1,23 @@
+fragment CategoryUpdateFragment on CategoryUpdateType {
+  category {
+    id
+    name
+  }
+  status
+}
+
+fragment UpdaterJobsInfoFragment on UpdaterJobsInfoType {
+  finishedJobs
+  isRunning
+  skippedCategoriesCount
+  skippedMangasCount
+  totalJobs
+}
+
+fragment MangaUpdateFragment on MangaUpdateType {
+  manga {
+    id
+    title
+  }
+  status
+}

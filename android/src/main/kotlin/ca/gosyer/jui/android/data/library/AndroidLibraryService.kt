@@ -23,18 +23,13 @@ import ca.gosyer.jui.core.lang.throwIfCancellation
 import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.domain.base.WebsocketService.Actions
 import ca.gosyer.jui.domain.base.WebsocketService.Status
-import ca.gosyer.jui.domain.library.model.JobStatus
-import ca.gosyer.jui.domain.library.model.UpdateStatus
+import ca.gosyer.jui.domain.library.model.MangaUpdate
 import ca.gosyer.jui.domain.library.service.LibraryUpdateService
 import ca.gosyer.jui.domain.library.service.LibraryUpdateService.Companion.status
 import ca.gosyer.jui.i18n.MR
 import com.diamondedge.logging.logging
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
-import io.ktor.client.plugins.websocket.ws
-import io.ktor.http.URLProtocol
-import io.ktor.websocket.Frame
-import io.ktor.websocket.readText
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,13 +38,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.job
 import kotlinx.serialization.json.Json
 
@@ -154,31 +145,12 @@ class AndroidLibraryService : Service() {
                         throw CancellationException()
                     }
                     runCatching {
-                        client.ws(
-                            host = serverUrl.host,
-                            port = serverUrl.port,
-                            path = serverUrl.encodedPath + "/api/v1/update",
-                            request = {
-                                if (serverUrl.protocol == URLProtocol.HTTPS) {
-                                    url.protocol = URLProtocol.WSS
-                                }
-                            },
-                        ) {
-                            errorConnectionCount = 0
-                            status.value = Status.RUNNING
-                            send(Frame.Text("STATUS"))
-
-                            incoming.receiveAsFlow()
-                                .filterIsInstance<Frame.Text>()
-                                .map { json.decodeFromString<UpdateStatus>(it.readText()) }
-                                .distinctUntilChanged()
-                                .drop(1)
-                                .mapLatest(::onReceived)
-                                .catch {
-                                    log.warn(it) { "Error running library update" }
-                                }
-                                .collect()
-                        }
+                        appComponent.libraryUpdateService
+                            .getSubscription()
+                            .onEach {
+                                onReceived()
+                            }
+                            .collect()
                     }.throwIfCancellation().isFailure.let {
                         status.value = Status.STARTING
                         if (it) errorConnectionCount++
@@ -193,20 +165,16 @@ class AndroidLibraryService : Service() {
             .launchIn(ioScope)
     }
 
-    private fun onReceived(status: UpdateStatus) {
-        LibraryUpdateService.updateStatus.value = status
+    private fun onReceived() {
+        val status = LibraryUpdateService.updateStatus.value
 
-        val complete = status.mangaStatusMap[JobStatus.COMPLETE]?.size ?: 0
-        val failed = status.mangaStatusMap[JobStatus.FAILED]?.size ?: 0
-        val running = status.mangaStatusMap[JobStatus.RUNNING]?.size ?: 0
-        val pending = status.mangaStatusMap[JobStatus.PENDING]?.size ?: 0
-        val skipped = status.mangaStatusMap[JobStatus.SKIPPED]?.size ?: 0
-        val total = complete + failed + running + pending + skipped
-        val current = complete + failed + skipped
+        val total = status.jobsInfo.totalJobs
+        val current = status.jobsInfo.finishedJobs
         if (current != total) {
             val notification = with(progressNotificationBuilder) {
-                val updatingText = status.mangaStatusMap[JobStatus.RUNNING]
-                    ?.joinToString("\n") { it.title.chop(40) }
+                val updatingText = status.mangaUpdates
+                    .filter { it.status == MangaUpdate.Status.RUNNING }
+                    .joinToString("\n") { it.manga.title.chop(40) }
                 setContentTitle(
                     MR.strings.notification_updating
                         .format(current, total)

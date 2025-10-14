@@ -15,7 +15,6 @@ import ca.gosyer.jui.data.graphql.fragment.ChapterWithMangaFragment
 import ca.gosyer.jui.data.graphql.type.UpdateChapterPatchInput
 import ca.gosyer.jui.data.manga.MangaRepositoryImpl.Companion.toManga
 import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.chapter.model.ChapterMeta
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
 import ca.gosyer.jui.domain.server.Http
 import ca.gosyer.jui.domain.updates.model.MangaAndChapter
@@ -190,7 +189,7 @@ class ChapterRepositoryImpl(
                 pageCount = pageCount,
                 lastReadAt = lastPageRead,
                 downloaded = isDownloaded,
-                meta = ChapterMeta(
+                meta = Chapter.ChapterMeta(
                     juiPageOffset = meta.find { it.key == "juiPageOffset" }?.value?.toIntOrNull() ?: 0,
                 ),
             )

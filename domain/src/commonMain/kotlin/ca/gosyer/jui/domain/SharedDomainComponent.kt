@@ -115,11 +115,6 @@ interface SharedDomainComponent : CoreComponent {
 
     @get:AppScope
     @get:Provides
-    val libraryUpdateServiceFactory: LibraryUpdateService
-        get() = LibraryUpdateService(serverPreferences, http)
-
-    @get:AppScope
-    @get:Provides
     val serverListenersFactory: ServerListeners
         get() = ServerListeners()
 

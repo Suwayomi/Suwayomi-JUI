@@ -8,9 +8,7 @@ package ca.gosyer.jui.domain.source.model
 
 import androidx.compose.runtime.Stable
 import ca.gosyer.jui.domain.manga.model.Manga
-import kotlinx.serialization.Serializable
 
-@Serializable
 @Stable
 data class MangaPage(
     val mangaList: List<Manga>,

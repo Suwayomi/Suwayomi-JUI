@@ -7,9 +7,7 @@
 package ca.gosyer.jui.domain.updates.model
 
 import androidx.compose.runtime.Immutable
-import kotlinx.serialization.Serializable
 
-@Serializable
 @Immutable
 data class Updates(
     val page: List<MangaAndChapter>,

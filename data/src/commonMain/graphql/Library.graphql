@@ -3,3 +3,43 @@ mutation SetMangaInLibrary($id: Int!, $inLibrary: Boolean!) {
     clientMutationId
   }
 }
+
+query LibraryUpdateStatus {
+  libraryUpdateStatus {
+    categoryUpdates {
+      ...CategoryUpdateFragment
+    }
+    jobsInfo {
+      ...UpdaterJobsInfoFragment
+    }
+    mangaUpdates {
+      ...MangaUpdateFragment
+    }
+  }
+}
+
+subscription LibraryUpdateStatusChanged($maxUpdates: Int = 30) {
+  libraryUpdateStatusChanged(input: {maxUpdates: $maxUpdates}) {
+    initial {
+      categoryUpdates {
+        ...CategoryUpdateFragment
+      }
+      jobsInfo {
+        ...UpdaterJobsInfoFragment
+      }
+      mangaUpdates {
+        ...MangaUpdateFragment
+      }
+    }
+    categoryUpdates {
+      ...CategoryUpdateFragment
+    }
+    mangaUpdates {
+      ...MangaUpdateFragment
+    }
+    jobsInfo {
+      ...UpdaterJobsInfoFragment
+    }
+    omittedUpdates
+  }
+}

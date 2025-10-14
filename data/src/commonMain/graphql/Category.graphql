@@ -57,10 +57,14 @@ mutation DeleteCategory($categoryId: Int!) {
   }
 }
 
-query GetCategoryManga($categoryId: [Int!]!) {
-  mangas(orderBy: ID, condition: {categoryIds: $categoryId}) {
-    nodes {
-      ...MangaFragment
+query GetCategoryManga($categoryId: Int!) {
+  category(id: $categoryId) {
+    id
+    mangas {
+      nodes {
+        ...LibraryMangaFragment
+      }
+      totalCount
     }
   }
 }

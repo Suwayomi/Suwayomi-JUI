@@ -20,7 +20,6 @@ import ca.gosyer.jui.data.graphql.SetCategoryMetaMutation
 import ca.gosyer.jui.data.graphql.fragment.CategoryFragment
 import ca.gosyer.jui.data.manga.MangaRepositoryImpl.Companion.toManga
 import ca.gosyer.jui.domain.category.model.Category
-import ca.gosyer.jui.domain.category.model.CategoryMeta
 import ca.gosyer.jui.domain.category.service.CategoryRepository
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.server.Http
@@ -133,12 +132,12 @@ class CategoryRepositoryImpl(
 
     override fun getMangaFromCategory(categoryId: Long): Flow<List<Manga>> =
         apolloClient.query(
-            GetCategoryMangaQuery(listOf(categoryId.toInt())),
+            GetCategoryMangaQuery(categoryId.toInt()),
         )
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
-                data.mangas.nodes.map { it.mangaFragment.toManga() }
+                data.category.mangas.nodes.map { it.libraryMangaFragment.toManga() }
             }
 
     override fun updateCategoryMeta(
@@ -162,7 +161,7 @@ class CategoryRepositoryImpl(
                 order = order,
                 name = name,
                 default = default,
-                meta = CategoryMeta(),
+                meta = Category.CategoryMeta(),
             )
     }
 }

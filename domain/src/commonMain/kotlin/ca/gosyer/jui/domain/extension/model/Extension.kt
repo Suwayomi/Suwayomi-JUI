@@ -7,9 +7,7 @@
 package ca.gosyer.jui.domain.extension.model
 
 import androidx.compose.runtime.Immutable
-import kotlinx.serialization.Serializable
 
-@Serializable
 @Immutable
 data class Extension(
     val name: String,

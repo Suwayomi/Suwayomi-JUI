@@ -9,11 +9,13 @@ package ca.gosyer.jui.ui.main.components
 import ca.gosyer.jui.domain.base.WebsocketService
 import ca.gosyer.jui.domain.library.service.LibraryUpdateService
 import ca.gosyer.jui.uicore.vm.ContextWrapper
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.launchIn
 
 internal actual fun startLibraryUpdatesService(
     contextWrapper: ContextWrapper,
     libraryUpdatesService: LibraryUpdateService,
     actions: WebsocketService.Actions,
 ) {
-    libraryUpdatesService.init()
+    libraryUpdatesService.getSubscription().launchIn(GlobalScope)
 }
