@@ -123,7 +123,7 @@ class MangaScreenViewModel(
         .map {
             dateHandler.getDateFormat(it)
         }
-        .asStateFlow(dateHandler.getDateFormat(uiPreferences.dateFormat().get()))
+        .stateIn(scope, SharingStarted.Eagerly, dateHandler.getDateFormat(uiPreferences.dateFormat().get()))
 
     init {
         DownloadService.registerWatch(params.mangaId)

@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -40,6 +39,12 @@ import me.tatarka.inject.annotations.Inject
 import okio.FileSystem
 import okio.Source
 import kotlin.random.Random
+
+data class ExtensionsState(
+    val extensionList: List<Extension>? = null,
+    val searchQuery: String? = null,
+    val workingExtensions: List<String> = emptyList()
+)
 
 @Inject
 class ExtensionsScreenViewModel(
@@ -51,31 +56,32 @@ class ExtensionsScreenViewModel(
     extensionPreferences: ExtensionPreferences,
     contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
-    private val extensionList = MutableStateFlow<List<Extension>?>(null)
+    private val _state = MutableStateFlow(ExtensionsState())
+    val state = _state.asStateFlow()
 
     private val _enabledLangs = extensionPreferences.languages().asStateFlow()
     val enabledLangs = _enabledLangs.map { it.toImmutableSet() }
         .stateIn(scope, SharingStarted.Eagerly, persistentSetOf())
 
-    private val _searchQuery = MutableStateFlow<String?>(null)
-    val searchQuery = _searchQuery.asStateFlow()
-
-    private val workingExtensions = MutableStateFlow<List<String>>(emptyList())
-
     val extensions = combine(
-        searchQuery,
-        extensionList,
-        enabledLangs,
-        workingExtensions,
-    ) { searchQuery, extensions, enabledLangs, workingExtensions ->
-        search(searchQuery, extensions, enabledLangs, workingExtensions)
+        _state,
+        enabledLangs
+    ) { state, enabledLangs ->
+        search(
+            state.searchQuery,
+            state.extensionList,
+            enabledLangs,
+            state.workingExtensions
+        )
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    val availableLangs = extensionList.filterNotNull().map { langs ->
-        langs.map { it.lang }.distinct().toImmutableList()
+    val availableLangs = _state.map { state ->
+        state.extensionList?.map { it.lang }.orEmpty().distinct().toImmutableList()
     }.stateIn(scope, SharingStarted.Eagerly, persistentListOf())
 
-    val isLoading = extensionList.map { it == null }.stateIn(scope, SharingStarted.Eagerly, true)
+    val isLoading = _state.map { state ->
+        state.extensionList == null
+    }.stateIn(scope, SharingStarted.Eagerly, true)
 
     init {
         scope.launch {
@@ -84,7 +90,10 @@ class ExtensionsScreenViewModel(
     }
 
     private suspend fun getExtensions() {
-        extensionList.value = getExtensionList.await(onError = { toast(it.message.orEmpty()) }).orEmpty()
+        val extensionList = getExtensionList.await(onError = { toast(it.message.orEmpty()) }).orEmpty()
+        _state.update { current ->
+            current.copy(extensionList = extensionList)
+        }
     }
 
     fun install(source: Source) {
@@ -99,7 +108,6 @@ class ExtensionsScreenViewModel(
                 installExtensionFile.await(file, onError = { toast(it.message.orEmpty()) })
             } catch (e: Exception) {
                 log.warn(e) { "Error creating apk file" }
-                // todo toast if error
                 e.throwIfCancellation()
             }
 
@@ -110,30 +118,42 @@ class ExtensionsScreenViewModel(
     fun install(extension: Extension) {
         log.info { "Install clicked" }
         scope.launch {
-            workingExtensions.update { it + extension.apkName }
+            _state.update { current ->
+                current.copy(workingExtensions = current.workingExtensions + extension.apkName)
+            }
             installExtension.await(extension, onError = { toast(it.message.orEmpty()) })
             getExtensions()
-            workingExtensions.update { it - extension.apkName }
+            _state.update { current ->
+                current.copy(workingExtensions = current.workingExtensions - extension.apkName)
+            }
         }
     }
 
     fun update(extension: Extension) {
         log.info { "Update clicked" }
         scope.launch {
-            workingExtensions.update { it + extension.apkName }
+            _state.update { current ->
+                current.copy(workingExtensions = current.workingExtensions + extension.apkName)
+            }
             updateExtension.await(extension, onError = { toast(it.message.orEmpty()) })
             getExtensions()
-            workingExtensions.update { it - extension.apkName }
+            _state.update { current ->
+                current.copy(workingExtensions = current.workingExtensions - extension.apkName)
+            }
         }
     }
 
     fun uninstall(extension: Extension) {
         log.info { "Uninstall clicked" }
         scope.launch {
-            workingExtensions.update { it + extension.apkName }
+            _state.update { current ->
+                current.copy(workingExtensions = current.workingExtensions + extension.apkName)
+            }
             uninstallExtension.await(extension, onError = { toast(it.message.orEmpty()) })
             getExtensions()
-            workingExtensions.update { it - extension.apkName }
+            _state.update { current ->
+                current.copy(workingExtensions = current.workingExtensions - extension.apkName)
+            }
         }
     }
 
@@ -142,7 +162,9 @@ class ExtensionsScreenViewModel(
     }
 
     fun setQuery(query: String) {
-        _searchQuery.value = query
+        _state.update { current ->
+            current.copy(searchQuery = query)
+        }
     }
 
     private fun search(

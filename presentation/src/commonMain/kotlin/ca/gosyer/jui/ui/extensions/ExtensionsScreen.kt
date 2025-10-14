@@ -8,6 +8,7 @@ package ca.gosyer.jui.ui.extensions
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import ca.gosyer.jui.ui.extensions.components.ExtensionsScreenContent
 import ca.gosyer.jui.ui.viewModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -20,11 +21,12 @@ class ExtensionsScreen : Screen {
     @Composable
     override fun Content() {
         val vm = viewModel { extensionsViewModel() }
+        val state by vm.state.collectAsState()
 
         ExtensionsScreenContent(
             extensions = vm.extensions.collectAsState().value,
             isLoading = vm.isLoading.collectAsState().value,
-            query = vm.searchQuery.collectAsState().value,
+            query = state.searchQuery,
             setQuery = vm::setQuery,
             enabledLangs = vm.enabledLangs.collectAsState().value,
             availableLangs = vm.availableLangs.collectAsState().value,
