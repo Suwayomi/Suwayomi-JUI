@@ -45,8 +45,8 @@ abstract class WebsocketService(
     fun init() {
         errorConnectionCount = 0
         job?.cancel()
-        job = serverUrl
-            .mapLatest { serverUrl ->
+        job = client
+            .mapLatest { client ->
                 status.value = Status.STARTING
                 while (true) {
                     if (errorConnectionCount > 3) {
@@ -54,6 +54,7 @@ abstract class WebsocketService(
                         throw CancellationException("Finish")
                     }
                     runCatching {
+                        val serverUrl = serverUrl.value
                         client.ws(
                             host = serverUrl.host,
                             port = serverUrl.port,

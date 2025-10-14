@@ -1,5 +1,6 @@
 package ca.gosyer.jui.data.chapter
 
+import ca.gosyer.jui.data.ApolloAppClient
 import ca.gosyer.jui.data.graphql.DeleteDownloadedChapterMutation
 import ca.gosyer.jui.data.graphql.DeleteDownloadedChaptersMutation
 import ca.gosyer.jui.data.graphql.FetchChapterPagesMutation
@@ -29,10 +30,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class ChapterRepositoryImpl(
-    private val apolloClient: ApolloClient,
+    private val apolloAppClient: ApolloAppClient,
     private val http: Http,
     private val serverUrl: Url,
 ) : ChapterRepository {
+    val apolloClient: ApolloClient
+        get() = apolloAppClient.value
+
     override fun getChapter(chapterId: Long): Flow<Chapter> =
         apolloClient.query(
             GetChapterQuery(chapterId.toInt()),
@@ -164,7 +168,7 @@ class ChapterRepositoryImpl(
     ): Flow<ByteArray> {
         val realUrl = Url("$serverUrl$url")
 
-        return flow { emit(http.get(realUrl, block).readRawBytes()) }
+        return flow { emit(http.value.get(realUrl, block).readRawBytes()) }
     }
 
     companion object {

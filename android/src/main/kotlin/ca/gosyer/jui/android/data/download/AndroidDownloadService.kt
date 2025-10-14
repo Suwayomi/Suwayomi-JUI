@@ -23,17 +23,12 @@ import ca.gosyer.jui.core.prefs.getAsFlow
 import ca.gosyer.jui.domain.base.WebsocketService.Actions
 import ca.gosyer.jui.domain.base.WebsocketService.Status
 import ca.gosyer.jui.domain.download.model.DownloadState
-import ca.gosyer.jui.domain.download.model.DownloadStatus
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.domain.download.service.DownloadService.Companion.status
 import ca.gosyer.jui.i18n.MR
 import com.diamondedge.logging.logging
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
-import io.ktor.client.plugins.websocket.ws
-import io.ktor.http.URLProtocol
-import io.ktor.websocket.Frame
-import io.ktor.websocket.readText
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,13 +37,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.job
 import kotlinx.serialization.json.Json
 import java.util.regex.Pattern
@@ -154,31 +145,12 @@ class AndroidDownloadService : Service() {
                         throw CancellationException()
                     }
                     runCatching {
-                        client.ws(
-                            host = serverUrl.host,
-                            port = serverUrl.port,
-                            path = serverUrl.encodedPath + "/api/v1/downloads",
-                            request = {
-                                if (serverUrl.protocol == URLProtocol.HTTPS) {
-                                    url.protocol = URLProtocol.WSS
-                                }
-                            },
-                        ) {
-                            errorConnectionCount = 0
-                            status.value = Status.RUNNING
-                            send(Frame.Text("STATUS"))
-
-                            incoming.receiveAsFlow()
-                                .filterIsInstance<Frame.Text>()
-                                .map { json.decodeFromString<DownloadStatus>(it.readText()) }
-                                .distinctUntilChanged()
-                                .drop(1)
-                                .mapLatest(::onReceived)
-                                .catch {
-                                    log.warn(it) { "Error running downloader" }
-                                }
-                                .collect()
-                        }
+                        appComponent.downloadService
+                            .getSubscription()
+                            .onEach {
+                                onReceived()
+                            }
+                            .collect()
                     }.throwIfCancellation().isFailure.let {
                         status.value = Status.STARTING
                         if (it) errorConnectionCount++
@@ -193,13 +165,11 @@ class AndroidDownloadService : Service() {
             .launchIn(ioScope)
     }
 
-    private fun onReceived(status: DownloadStatus) {
-        DownloadService.downloaderStatus.value = status.status
-        DownloadService.downloadQueue.value = status.queue
-        val downloadingChapter = status.queue.lastOrNull { it.state == DownloadState.Downloading }
+    private fun onReceived() {
+        val downloadingChapter = DownloadService.downloadQueue.value.lastOrNull { it.state == DownloadState.DOWNLOADING }
         if (downloadingChapter != null) {
             val notification = with(progressNotificationBuilder) {
-                val max = downloadingChapter.chapter.pageCount ?: 0
+                val max = downloadingChapter.chapter.pageCount
                 val current = (max * downloadingChapter.progress).toInt().coerceIn(0, max)
                 setProgress(max, current, false)
 

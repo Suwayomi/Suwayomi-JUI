@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.data.extension
 
+import ca.gosyer.jui.data.ApolloAppClient
 import ca.gosyer.jui.data.graphql.FetchExtensionsMutation
 import ca.gosyer.jui.data.graphql.InstallExtensionMutation
 import ca.gosyer.jui.data.graphql.InstallExternalExtensionMutation
@@ -23,10 +24,13 @@ import kotlinx.coroutines.flow.map
 import okio.Source
 
 class ExtensionRepositoryImpl(
-    private val apolloClient: ApolloClient,
+    private val apolloAppClient: ApolloAppClient,
     private val http: Http,
     private val serverUrl: Url,
 ) : ExtensionRepository {
+    val apolloClient: ApolloClient
+        get() = apolloAppClient.value
+
     override fun getExtensionList(): Flow<List<Extension>> =
         apolloClient.mutation(
             FetchExtensionsMutation(),

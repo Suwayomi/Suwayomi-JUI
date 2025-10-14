@@ -28,7 +28,7 @@ suspend fun imageFromUrl(
     url: String,
     block: HttpRequestBuilder.() -> Unit,
 ): ImageBitmap =
-    client.get(url) {
+    client.value.get(url) {
         expectSuccess = true
         block()
     }.toImageBitmap()

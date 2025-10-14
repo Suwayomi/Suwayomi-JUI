@@ -96,7 +96,7 @@ class UpdatesScreenViewModel(
             }
             .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
             .onEach { (mangaIds, queue) ->
-                val chapters = queue.filter { it.mangaId in mangaIds }
+                val chapters = queue.filter { it.manga.id in mangaIds }
                 updates.value.filterIsInstance<UpdatesUI.Item>().forEach {
                     it.chapterDownloadItem.updateFrom(chapters)
                 }

@@ -33,7 +33,7 @@ actual fun ComponentRegistryBuilder.register(
     contextWrapper: ContextWrapper,
     http: Http,
 ) {
-    setupDefaultComponents(contextWrapper, httpClient = { http })
+    setupDefaultComponents(contextWrapper, httpClient = { http.value })
 }
 
 actual fun DiskCacheBuilder.configure(

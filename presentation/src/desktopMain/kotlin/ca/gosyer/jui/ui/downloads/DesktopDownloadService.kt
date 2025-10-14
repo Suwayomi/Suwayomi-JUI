@@ -9,11 +9,13 @@ package ca.gosyer.jui.ui.downloads
 import ca.gosyer.jui.domain.base.WebsocketService
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.uicore.vm.ContextWrapper
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.launchIn
 
 internal actual fun startDownloadService(
     contextWrapper: ContextWrapper,
     downloadService: DownloadService,
     actions: WebsocketService.Actions,
 ) {
-    downloadService.init()
+    downloadService.getSubscription().launchIn(GlobalScope)
 }

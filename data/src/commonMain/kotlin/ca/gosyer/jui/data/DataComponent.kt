@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.data
 
+import ca.gosyer.jui.core.di.AppScope
 import ca.gosyer.jui.data.backup.BackupRepositoryImpl
 import ca.gosyer.jui.data.category.CategoryRepositoryImpl
 import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl
@@ -31,100 +32,125 @@ import ca.gosyer.jui.domain.settings.service.SettingsRepository
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.domain.updates.service.UpdatesRepository
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.network.ws.GraphQLWsProtocol
 import com.apollographql.ktor.ktorClient
+import io.ktor.client.HttpClient
 import io.ktor.http.URLBuilder
+import io.ktor.http.Url
 import io.ktor.http.appendPathSegments
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import me.tatarka.inject.annotations.Provides
 
-interface DataComponent : SharedDataComponent {
-    @Provides
-    fun apolloClient(
-        http: Http,
-        serverPreferences: ServerPreferences,
-    ) = ApolloClient.Builder()
-        .serverUrl(
-            URLBuilder(serverPreferences.serverUrl().get())
-                .appendPathSegments("api", "graphql")
-                .buildString(),
-        )
-        .ktorClient(http)
-        .wsProtocol(GraphQLWsProtocol.Factory())
+typealias ApolloAppClient = StateFlow<ApolloClient>
+
+private fun getApolloClient(
+    httpClient: HttpClient,
+    serverUrl: Url,
+): ApolloClient {
+    val url = URLBuilder(serverUrl)
+        .appendPathSegments("api", "graphql")
+        .buildString()
+    return ApolloClient.Builder()
+        .serverUrl(url)
+        .ktorClient(httpClient)
+        .wsProtocol(GraphQLWsProtocol.Factory(pingIntervalMillis = 30))
         .dispatcher(Dispatchers.IO)
         .build()
+}
+
+interface DataComponent : SharedDataComponent {
+    @OptIn(ApolloExperimental::class)
+    @Provides
+    @AppScope
+    fun apolloAppClient(
+        http: Http,
+        serverPreferences: ServerPreferences,
+    ): ApolloAppClient =
+        http
+            .map { getApolloClient(it, serverPreferences.serverUrl().get()) }
+            .stateIn(
+                GlobalScope,
+                SharingStarted.Eagerly,
+                getApolloClient(http.value, serverPreferences.serverUrl().get()),
+            )
 
     @Provides
-    fun settingsRepository(apolloClient: ApolloClient): SettingsRepository = SettingsRepositoryImpl(apolloClient)
+    fun settingsRepository(apolloAppClient: ApolloAppClient): SettingsRepository = SettingsRepositoryImpl(apolloAppClient)
 
     @Provides
     fun categoryRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): CategoryRepository = CategoryRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): CategoryRepository = CategoryRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 
     @Provides
     fun chapterRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): ChapterRepository = ChapterRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): ChapterRepository = ChapterRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 
     @Provides
     fun downloadRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): DownloadRepository = DownloadRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): DownloadRepository = DownloadRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 
     @Provides
     fun extensionRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): ExtensionRepository = ExtensionRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): ExtensionRepository = ExtensionRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 
     @Provides
     fun globalRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): GlobalRepository = GlobalRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): GlobalRepository = GlobalRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 
     @Provides
     fun libraryRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): LibraryRepository = LibraryRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): LibraryRepository = LibraryRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 
     @Provides
     fun mangaRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): MangaRepository = MangaRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): MangaRepository = MangaRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 
     @Provides
     fun sourceRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): SourceRepository = SourceRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): SourceRepository = SourceRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 
     @Provides
     fun updatesRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): UpdatesRepository = UpdatesRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): UpdatesRepository = UpdatesRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 
     @Provides
     fun backupRepository(
-        apolloClient: ApolloClient,
+        apolloAppClient: ApolloAppClient,
         http: Http,
         serverPreferences: ServerPreferences,
-    ): BackupRepository = BackupRepositoryImpl(apolloClient, http, serverPreferences.serverUrl().get())
+    ): BackupRepository = BackupRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
 }

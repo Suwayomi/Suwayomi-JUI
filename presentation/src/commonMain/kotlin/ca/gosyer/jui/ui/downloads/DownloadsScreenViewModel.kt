@@ -7,13 +7,13 @@
 package ca.gosyer.jui.ui.downloads
 
 import ca.gosyer.jui.domain.base.WebsocketService.Actions
-import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.interactor.ClearDownloadQueue
 import ca.gosyer.jui.domain.download.interactor.QueueChapterDownload
 import ca.gosyer.jui.domain.download.interactor.ReorderChapterDownload
 import ca.gosyer.jui.domain.download.interactor.StartDownloading
 import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
 import ca.gosyer.jui.domain.download.interactor.StopDownloading
+import ca.gosyer.jui.domain.download.model.DownloadChapter
 import ca.gosyer.jui.domain.download.service.DownloadService
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
@@ -69,35 +69,35 @@ class DownloadsScreenViewModel(
         scope.launch { clearDownloadQueue.await(onError = { toast(it.message.orEmpty()) }) }
     }
 
-    fun stopDownload(chapter: Chapter) {
+    fun stopDownload(chapter: DownloadChapter) {
         scope.launch { stopChapterDownload.await(chapter.id, onError = { toast(it.message.orEmpty()) }) }
     }
 
-    fun moveUp(chapter: Chapter) {
+    fun moveUp(chapter: DownloadChapter) {
         scope.launch {
             val index =
-                downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
+                downloadQueue.value.indexOfFirst { it.chapter.id == chapter.id }
             if (index == -1 || index <= 0) return@launch
             reorderChapterDownload.await(chapter.id, index - 1, onError = { toast(it.message.orEmpty()) })
         }
     }
 
-    fun moveDown(chapter: Chapter) {
+    fun moveDown(chapter: DownloadChapter) {
         scope.launch {
             val index =
-                downloadQueue.value.indexOfFirst { it.mangaId == chapter.mangaId && it.chapterIndex == chapter.index }
+                downloadQueue.value.indexOfFirst { it.chapter.id == chapter.id }
             if (index == -1 || index >= downloadQueue.value.lastIndex) return@launch
             reorderChapterDownload.await(chapter.id, index + 1, onError = { toast(it.message.orEmpty()) })
         }
     }
 
-    fun moveToTop(chapter: Chapter) {
+    fun moveToTop(chapter: DownloadChapter) {
         scope.launch {
             reorderChapterDownload.await(chapter.id, 0, onError = { toast(it.message.orEmpty()) })
         }
     }
 
-    fun moveToBottom(chapter: Chapter) {
+    fun moveToBottom(chapter: DownloadChapter) {
         scope.launch {
             reorderChapterDownload.await(
                 chapter.id,

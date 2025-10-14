@@ -1,5 +1,6 @@
 package ca.gosyer.jui.data.manga
 
+import ca.gosyer.jui.data.ApolloAppClient
 import ca.gosyer.jui.data.graphql.GetMangaLibraryQuery
 import ca.gosyer.jui.data.graphql.GetMangaQuery
 import ca.gosyer.jui.data.graphql.GetThumbnailUrlQuery
@@ -26,10 +27,13 @@ import ca.gosyer.jui.data.graphql.type.MangaStatus as GqlMangaStatus
 import ca.gosyer.jui.data.graphql.type.UpdateStrategy as GqlUpdateStrategy
 
 class MangaRepositoryImpl(
-    private val apolloClient: ApolloClient,
+    private val apolloAppClient: ApolloAppClient,
     private val http: Http,
     private val serverUrl: Url,
 ) : MangaRepository {
+    val apolloClient: ApolloClient
+        get() = apolloAppClient.value
+
     override fun getManga(mangaId: Long): Flow<Manga> =
         apolloClient.query(
             GetMangaQuery(mangaId.toInt()),
@@ -70,7 +74,7 @@ class MangaRepositoryImpl(
             .toFlow()
             .map {
                 val data = it.dataAssertNoErrors
-                http.get(data.manga.thumbnailUrl!!).bodyAsChannel()
+                http.value.get(data.manga.thumbnailUrl!!).bodyAsChannel()
             }
 
     override fun updateMangaMeta(

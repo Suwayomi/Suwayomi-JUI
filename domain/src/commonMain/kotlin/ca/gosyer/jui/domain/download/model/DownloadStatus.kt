@@ -6,12 +6,7 @@
 
 package ca.gosyer.jui.domain.download.model
 
-import androidx.compose.runtime.Immutable
-import kotlinx.serialization.Serializable
-
-@Serializable
-@Immutable
 data class DownloadStatus(
-    val status: DownloaderStatus,
-    val queue: List<DownloadChapter>,
+    val status: DownloaderState,
+    val queue: List<DownloadQueueItem>,
 )

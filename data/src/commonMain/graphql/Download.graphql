@@ -39,3 +39,29 @@ mutation EnqueueChapterDownloads($ids: [Int!]!) {
     clientMutationId
   }
 }
+
+subscription DownloadStatusChanged($maxUpdates: Int = 30) {
+  downloadStatusChanged(input: { maxUpdates: $maxUpdates }) {
+    initial {
+      ...DownloadFragment
+    }
+    updates {
+      type
+      download {
+        ...DownloadFragment
+      }
+    }
+    state
+    omittedUpdates
+  }
+}
+
+
+query DownloadStatus {
+  downloadStatus {
+    state
+    queue {
+      ...DownloadFragment
+    }
+  }
+}

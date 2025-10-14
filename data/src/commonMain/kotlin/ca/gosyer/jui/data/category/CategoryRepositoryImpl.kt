@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.data.category
 
+import ca.gosyer.jui.data.ApolloAppClient
 import ca.gosyer.jui.data.graphql.AddMangaToCategoriesMutation
 import ca.gosyer.jui.data.graphql.CreateCategoryMutation
 import ca.gosyer.jui.data.graphql.DeleteCategoryMutation
@@ -29,10 +30,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class CategoryRepositoryImpl(
-    private val apolloClient: ApolloClient,
+    private val apolloAppClient: ApolloAppClient,
     private val http: Http,
     private val serverUrl: Url,
 ) : CategoryRepository {
+    val apolloClient: ApolloClient
+        get() = apolloAppClient.value
+
     override fun getMangaCategories(mangaId: Long): Flow<List<Category>> =
         apolloClient.query(
             GetMangaCategoriesQuery(mangaId.toInt()),

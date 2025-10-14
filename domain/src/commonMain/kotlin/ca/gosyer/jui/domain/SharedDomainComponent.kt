@@ -120,11 +120,6 @@ interface SharedDomainComponent : CoreComponent {
 
     @get:AppScope
     @get:Provides
-    val downloadServiceFactory: DownloadService
-        get() = DownloadService(serverPreferences, http)
-
-    @get:AppScope
-    @get:Provides
     val serverListenersFactory: ServerListeners
         get() = ServerListeners()
 

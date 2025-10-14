@@ -29,49 +29,64 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
+import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import io.ktor.client.plugins.auth.Auth as AuthPlugin
 
-typealias Http = HttpClient
+typealias Http = StateFlow<HttpClient>
 
 expect val Engine: HttpClientEngineFactory<HttpClientEngineConfig>
 
 expect fun HttpClientConfig<HttpClientEngineConfig>.configurePlatform()
 
-fun httpClient(
-    serverPreferences: ServerPreferences,
-    json: Json,
-): Http =
-    HttpClient(Engine) {
+private fun getHttpClient(
+    serverUrl: Url,
+    proxy: Proxy,
+    proxyHttpHost: String,
+    proxyHttpPort: Int,
+    proxySocksHost: String,
+    proxySocksPort: Int,
+    auth: Auth,
+    authUsername: String,
+    authPassword: String,
+    json: Json
+): HttpClient {
+    return HttpClient(Engine) {
         configurePlatform()
 
         expectSuccess = true
 
         defaultRequest {
-            url(serverPreferences.serverUrl().get().toString())
+            url(serverUrl.toString())
         }
 
         engine {
-            proxy = when (serverPreferences.proxy().get()) {
+            this.proxy = when (proxy) {
                 Proxy.NO_PROXY -> null
 
                 Proxy.HTTP_PROXY -> ProxyBuilder.http(
                     URLBuilder(
-                        host = serverPreferences.proxyHttpHost().get(),
-                        port = serverPreferences.proxyHttpPort().get(),
+                        host = proxyHttpHost,
+                        port = proxyHttpPort,
                     ).build(),
                 )
 
                 Proxy.SOCKS_PROXY -> ProxyBuilder.socks(
-                    serverPreferences.proxySocksHost().get(),
-                    serverPreferences.proxySocksPort().get(),
+                    proxySocksHost,
+                    proxySocksPort,
                 )
             }
         }
-        when (serverPreferences.auth().get()) {
+        when (auth) {
             Auth.NONE -> Unit
 
             Auth.BASIC -> AuthPlugin {
@@ -81,8 +96,8 @@ fun httpClient(
                     }
                     credentials {
                         BasicAuthCredentials(
-                            serverPreferences.authUsername().get(),
-                            serverPreferences.authPassword().get(),
+                            authUsername,
+                            authPassword,
                         )
                     }
                 }
@@ -92,8 +107,8 @@ fun httpClient(
                 digest {
                     credentials {
                         DigestAuthCredentials(
-                            serverPreferences.authUsername().get(),
-                            serverPreferences.authPassword().get(),
+                            authUsername,
+                            authPassword,
                         )
                     }
                 }
@@ -123,3 +138,48 @@ fun httpClient(
             }
         }
     }
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+fun httpClient(
+    serverPreferences: ServerPreferences,
+    json: Json,
+): Http = combine(
+    serverPreferences.serverUrl().stateIn(GlobalScope),
+    serverPreferences.proxy().stateIn(GlobalScope),
+    serverPreferences.proxyHttpHost().stateIn(GlobalScope),
+    serverPreferences.proxyHttpPort().stateIn(GlobalScope),
+    serverPreferences.proxySocksHost().stateIn(GlobalScope),
+    serverPreferences.proxySocksPort().stateIn(GlobalScope),
+    serverPreferences.auth().stateIn(GlobalScope),
+    serverPreferences.authUsername().stateIn(GlobalScope),
+    serverPreferences.authPassword().stateIn(GlobalScope),
+) {
+    getHttpClient(
+        it[0] as Url,
+        it[1] as Proxy,
+        it[2] as String,
+        it[3] as Int,
+        it[4] as String,
+        it[5] as Int,
+        it[6] as Auth,
+        it[7] as String,
+        it[8] as String,
+        json,
+    )
+}.stateIn(
+    GlobalScope,
+    SharingStarted.Eagerly,
+    getHttpClient(
+        serverPreferences.serverUrl().get(),
+        serverPreferences.proxy().get(),
+        serverPreferences.proxyHttpHost().get(),
+        serverPreferences.proxyHttpPort().get(),
+        serverPreferences.proxySocksHost().get(),
+        serverPreferences.proxySocksPort().get(),
+        serverPreferences.auth().get(),
+        serverPreferences.authUsername().get(),
+        serverPreferences.authPassword().get(),
+        json,
+    )
+)

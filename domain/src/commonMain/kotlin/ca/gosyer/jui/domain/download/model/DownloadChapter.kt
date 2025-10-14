@@ -6,19 +6,24 @@
 
 package ca.gosyer.jui.domain.download.model
 
-import androidx.compose.runtime.Immutable
-import ca.gosyer.jui.domain.chapter.model.Chapter
-import ca.gosyer.jui.domain.manga.model.Manga
-import kotlinx.serialization.Serializable
+data class DownloadQueueItem(
+    val position: Int,
+    val progress: Float,
+    val state: DownloadState,
+    val tries: Int,
+    val chapter: DownloadChapter,
+    val manga: DownloadManga
+)
 
-@Serializable
-@Immutable
 data class DownloadChapter(
-    val chapterIndex: Int,
-    val mangaId: Long,
-    val chapter: Chapter,
-    val manga: Manga,
-    val state: DownloadState = DownloadState.Queued,
-    val progress: Float = 0f,
-    val tries: Int = 0,
+    val id: Long,
+    val name: String,
+    val pageCount: Int,
+)
+
+data class DownloadManga(
+    val id: Long,
+    val title: String,
+    val thumbnailUrl: String?,
+    val thumbnailUrlLastFetched: Long = 0,
 )

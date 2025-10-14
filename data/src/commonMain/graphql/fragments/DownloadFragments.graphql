@@ -1,0 +1,17 @@
+fragment DownloadFragment on DownloadType {
+  chapter {
+    id
+    name
+    pageCount
+  }
+  manga {
+    id
+    title
+    thumbnailUrl
+    thumbnailUrlLastFetched
+  }
+  position
+  progress
+  state
+  tries
+}

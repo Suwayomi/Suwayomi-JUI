@@ -1,5 +1,6 @@
 package ca.gosyer.jui.data.source
 
+import ca.gosyer.jui.data.ApolloAppClient
 import ca.gosyer.jui.data.graphql.FetchLatestMangaMutation
 import ca.gosyer.jui.data.graphql.FetchPopularMangaMutation
 import ca.gosyer.jui.data.graphql.FetchSearchMangaMutation
@@ -33,10 +34,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class SourceRepositoryImpl(
-    private val apolloClient: ApolloClient,
+    private val apolloAppClient: ApolloAppClient,
     private val http: Http,
     private val serverUrl: Url,
 ) : SourceRepository {
+    val apolloClient: ApolloClient
+        get() = apolloAppClient.value
+
     override fun getSourceList(): Flow<List<Source>> =
         apolloClient.query(
             GetSourceListQuery(),

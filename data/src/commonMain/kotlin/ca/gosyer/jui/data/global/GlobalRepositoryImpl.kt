@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.data.global
 
+import ca.gosyer.jui.data.ApolloAppClient
 import ca.gosyer.jui.data.graphql.GetGlobalMetaQuery
 import ca.gosyer.jui.data.graphql.SetGlobalMetaMutation
 import ca.gosyer.jui.domain.global.model.GlobalMeta
@@ -17,10 +18,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class GlobalRepositoryImpl(
-    private val apolloClient: ApolloClient,
+    private val apolloAppClient: ApolloAppClient,
     private val http: Http,
     private val serverUrl: Url,
 ) : GlobalRepository {
+    val apolloClient: ApolloClient
+        get() = apolloAppClient.value
+
     override fun getGlobalMeta(): Flow<GlobalMeta> =
         apolloClient.query(
             GetGlobalMetaQuery(),

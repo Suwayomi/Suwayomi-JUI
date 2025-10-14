@@ -48,9 +48,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.model.DownloadChapter
-import ca.gosyer.jui.domain.download.model.DownloaderStatus
+import ca.gosyer.jui.domain.download.model.DownloadQueueItem
+import ca.gosyer.jui.domain.download.model.DownloaderState
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.navigation.ActionItem
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -71,17 +71,17 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun DownloadsScreenContent(
-    downloadQueue: ImmutableList<DownloadChapter>,
-    downloadStatus: DownloaderStatus,
+    downloadQueue: ImmutableList<DownloadQueueItem>,
+    downloadStatus: DownloaderState,
     startDownloading: () -> Unit,
     pauseDownloading: () -> Unit,
     clearQueue: () -> Unit,
     onMangaClick: (Long) -> Unit,
-    stopDownload: (Chapter) -> Unit,
-    moveDownloadUp: (Chapter) -> Unit,
-    moveDownloadDown: (Chapter) -> Unit,
-    moveDownloadToTop: (Chapter) -> Unit,
-    moveDownloadToBottom: (Chapter) -> Unit,
+    stopDownload: (DownloadChapter) -> Unit,
+    moveDownloadUp: (DownloadChapter) -> Unit,
+    moveDownloadDown: (DownloadChapter) -> Unit,
+    moveDownloadToTop: (DownloadChapter) -> Unit,
+    moveDownloadToBottom: (DownloadChapter) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
@@ -114,11 +114,11 @@ fun DownloadsScreenContent(
                     ),
                 ).asPaddingValues(),
             ) {
-                items(downloadQueue, key = { "${it.mangaId}-${it.chapterIndex}" }) {
+                items(downloadQueue, key = { it.chapter.id }) {
                     DownloadsItem(
                         modifier = Modifier.animateItem(),
                         item = it,
-                        onClickCover = { onMangaClick(it.mangaId) },
+                        onClickCover = { onMangaClick(it.manga.id) },
                         onClickCancel = stopDownload,
                         onClickMoveUp = moveDownloadUp,
                         onClickMoveDown = moveDownloadDown,
@@ -147,13 +147,13 @@ fun DownloadsScreenContent(
 @Composable
 fun DownloadsItem(
     modifier: Modifier = Modifier,
-    item: DownloadChapter,
+    item: DownloadQueueItem,
     onClickCover: () -> Unit,
-    onClickCancel: (Chapter) -> Unit,
-    onClickMoveUp: (Chapter) -> Unit,
-    onClickMoveDown: (Chapter) -> Unit,
-    onClickMoveToTop: (Chapter) -> Unit,
-    onClickMoveToBottom: (Chapter) -> Unit,
+    onClickCancel: (DownloadChapter) -> Unit,
+    onClickMoveUp: (DownloadChapter) -> Unit,
+    onClickMoveDown: (DownloadChapter) -> Unit,
+    onClickMoveToTop: (DownloadChapter) -> Unit,
+    onClickMoveToBottom: (DownloadChapter) -> Unit,
 ) {
     MangaListItem(
         modifier = modifier
@@ -180,8 +180,8 @@ fun DownloadsItem(
                 text = item.manga.title,
                 fontWeight = FontWeight.SemiBold,
             )
-            val progress = if (item.chapter.pageCount != null && item.chapter.pageCount != -1) {
-                " - " + "${(item.chapter.pageCount!! * item.progress).toInt()}/${item.chapter.pageCount}"
+            val progress = if (item.chapter.pageCount > 0) {
+                " - " + "${(item.chapter.pageCount * item.progress).toInt()}/${item.chapter.pageCount}"
             } else {
                 ""
             }
@@ -200,7 +200,7 @@ fun DownloadsItem(
             )
         }
         DropdownIconButton(
-            item.mangaId to item.chapterIndex,
+            item.chapter.id,
             {
                 DropdownMenuItem(onClick = { onClickCancel(item.chapter) }) {
                     Text(stringResource(MR.strings.action_cancel))
@@ -231,13 +231,13 @@ fun DownloadsItem(
 @Stable
 @Composable
 private fun getActionItems(
-    downloadStatus: DownloaderStatus,
+    downloadStatus: DownloaderState,
     startDownloading: () -> Unit,
     pauseDownloading: () -> Unit,
     clearQueue: () -> Unit,
 ): ImmutableList<ActionItem> =
     listOf(
-        if (downloadStatus == DownloaderStatus.Started) {
+        if (downloadStatus == DownloaderState.STARTED) {
             ActionItem(
                 stringResource(MR.strings.action_pause),
                 Icons.Rounded.Pause,

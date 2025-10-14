@@ -6,6 +6,8 @@
 
 package ca.gosyer.jui.domain.download.service
 
+import ca.gosyer.jui.domain.download.model.DownloadStatus
+import ca.gosyer.jui.domain.download.model.DownloadUpdates
 import kotlinx.coroutines.flow.Flow
 
 interface DownloadRepository {
@@ -25,4 +27,8 @@ interface DownloadRepository {
     ): Flow<Unit>
 
     fun batchDownload(chapterIds: List<Long>): Flow<Unit>
+
+    fun downloadSubscription(): Flow<DownloadUpdates>
+
+    fun downloadStatus(): Flow<DownloadStatus>
 }

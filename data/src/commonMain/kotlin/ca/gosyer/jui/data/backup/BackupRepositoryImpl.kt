@@ -1,6 +1,7 @@
 package ca.gosyer.jui.data.backup
 
 import ca.gosyer.jui.core.io.toSource
+import ca.gosyer.jui.data.ApolloAppClient
 import ca.gosyer.jui.data.graphql.CreateBackupMutation
 import ca.gosyer.jui.data.graphql.RestoreBackupMutation
 import ca.gosyer.jui.data.graphql.RestoreStatusQuery
@@ -24,10 +25,13 @@ import okio.Source
 import okio.buffer
 
 class BackupRepositoryImpl(
-    private val apolloClient: ApolloClient,
+    private val apolloAppClient: ApolloAppClient,
     private val http: Http,
     private val serverUrl: Url,
 ) : BackupRepository {
+    val apolloClient: ApolloClient
+        get() = apolloAppClient.value
+
     override fun validateBackup(source: Source): Flow<BackupValidationResult> =
         apolloClient.query(
             ValidateBackupQuery(
@@ -89,7 +93,7 @@ class BackupRepositoryImpl(
             .toFlow()
             .map {
                 val url = it.dataAssertNoErrors.createBackup.url
-                val response = http.get(
+                val response = http.value.get(
                     Url("$serverUrl$url"),
                 )
                 val fileName = response.headers["content-disposition"]!!

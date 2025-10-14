@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.domain.chapter.interactor.DeleteChapterDownload
 import ca.gosyer.jui.domain.chapter.model.Chapter
 import ca.gosyer.jui.domain.download.interactor.StopChapterDownload
-import ca.gosyer.jui.domain.download.model.DownloadChapter
+import ca.gosyer.jui.domain.download.model.DownloadQueueItem
 import ca.gosyer.jui.domain.download.model.DownloadState
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.i18n.MR
@@ -61,12 +61,12 @@ data class ChapterDownloadItem(
     )
     val downloadState = _downloadState.asStateFlow()
 
-    private val _downloadChapterFlow: MutableStateFlow<DownloadChapter?> = MutableStateFlow(null)
+    private val _downloadChapterFlow: MutableStateFlow<DownloadQueueItem?> = MutableStateFlow(null)
     val downloadChapterFlow = _downloadChapterFlow.asStateFlow()
 
-    fun updateFrom(downloadingChapters: List<DownloadChapter>) {
+    fun updateFrom(downloadingChapters: List<DownloadQueueItem>) {
         val downloadingChapter = downloadingChapters.find {
-            it.chapterIndex == chapter.index && it.mangaId == chapter.mangaId
+            it.chapter.id == chapter.id
         }
         if (downloadingChapter != null && downloadState.value != ChapterDownloadState.Downloading) {
             _downloadState.value = ChapterDownloadState.Downloading
@@ -155,11 +155,11 @@ private fun DownloadIconButton(onClick: () -> Unit) {
 
 @Composable
 private fun DownloadingIconButton(
-    downloadChapter: DownloadChapter?,
+    downloadChapter: DownloadQueueItem?,
     onClick: () -> Unit,
 ) {
     DropdownIconButton(
-        downloadChapter?.mangaId to downloadChapter?.chapterIndex,
+        downloadChapter?.chapter?.id,
         {
             DropdownMenuItem(onClick = onClick) {
                 Text(stringResource(MR.strings.action_cancel))
@@ -167,7 +167,7 @@ private fun DownloadingIconButton(
         },
     ) {
         when (downloadChapter?.state) {
-            null, DownloadState.Queued -> CircularProgressIndicator(
+            null, DownloadState.QUEUED -> CircularProgressIndicator(
                 Modifier
                     .size(26.dp)
                     .padding(2.dp),
@@ -175,7 +175,7 @@ private fun DownloadingIconButton(
                 2.dp,
             )
 
-            DownloadState.Downloading -> if (downloadChapter.progress != 0.0F) {
+            DownloadState.DOWNLOADING -> if (downloadChapter.progress != 0.0F) {
                 val animatedProgress by animateFloatAsState(
                     targetValue = downloadChapter.progress,
                     animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
@@ -206,7 +206,7 @@ private fun DownloadingIconButton(
                 )
             }
 
-            DownloadState.Error -> Surface(shape = CircleShape, color = LocalContentColor.current) {
+            DownloadState.ERROR -> Surface(shape = CircleShape, color = LocalContentColor.current) {
                 Icon(
                     Icons.Rounded.Error,
                     null,
@@ -217,7 +217,7 @@ private fun DownloadingIconButton(
                 )
             }
 
-            DownloadState.Finished -> Surface(shape = CircleShape, color = LocalContentColor.current) {
+            DownloadState.FINISHED -> Surface(shape = CircleShape, color = LocalContentColor.current) {
                 Icon(
                     Icons.Rounded.Check,
                     null,

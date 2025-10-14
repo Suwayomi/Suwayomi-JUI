@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import ca.gosyer.jui.domain.base.WebsocketService
-import ca.gosyer.jui.domain.download.model.DownloaderStatus
+import ca.gosyer.jui.domain.download.model.DownloaderState
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.LocalViewModels
 import ca.gosyer.jui.uicore.resources.stringResource
@@ -43,7 +43,7 @@ fun DownloadsExtraInfo() {
         WebsocketService.Status.RUNNING -> {
             if (list.isNotEmpty()) {
                 val remainingDownloads = stringResource(MR.strings.downloads_remaining, list.size)
-                if (downloaderStatus == DownloaderStatus.Stopped) {
+                if (downloaderStatus == DownloaderState.STOPPED) {
                     stringResource(MR.strings.downloads_paused) + "  •  " + remainingDownloads
                 } else {
                     remainingDownloads

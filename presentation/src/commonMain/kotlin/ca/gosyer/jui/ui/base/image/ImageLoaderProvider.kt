@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.ui.base.image
 
+import ca.gosyer.jui.domain.download.model.DownloadManga
 import ca.gosyer.jui.domain.extension.model.Extension
 import ca.gosyer.jui.domain.manga.model.Manga
 import ca.gosyer.jui.domain.server.Http
@@ -42,10 +43,13 @@ class ImageLoaderProvider(
     fun get(imageCache: ImageCache): ImageLoader =
         ImageLoader {
             components {
+                add(KtorUrlFetcher.Factory { http.value })
                 register(context, http)
                 add(MokoResourceFetcher.Factory())
                 add(MangaCoverMapper())
                 add(MangaCoverKeyer())
+                add(DownloadMangaCoverMapper())
+                add(DownloadMangaCoverKeyer())
                 add(ExtensionIconMapper())
                 add(ExtensionIconKeyer())
                 add(SourceIconMapper())
@@ -77,7 +81,28 @@ class ImageLoaderProvider(
             options: Options,
         ): String? {
             if (data !is Manga) return null
-            return "${data.sourceId}-${data.thumbnailUrl}-${data.thumbnailUrlLastFetched}"
+            return "${data.id}-${data.thumbnailUrl}-${data.thumbnailUrlLastFetched}"
+        }
+    }
+
+    inner class DownloadMangaCoverMapper : Mapper<Url> {
+        override fun map(
+            data: Any,
+            options: Options,
+        ): Url? {
+            if (data !is DownloadManga) return null
+            if (data.thumbnailUrl.isNullOrBlank()) return null
+            return Url(serverUrl.value.toString() + data.thumbnailUrl)
+        }
+    }
+
+    class DownloadMangaCoverKeyer : Keyer {
+        override fun key(
+            data: Any,
+            options: Options,
+        ): String? {
+            if (data !is DownloadManga) return null
+            return "${data.id}-${data.thumbnailUrl}-${data.thumbnailUrlLastFetched}"
         }
     }
 

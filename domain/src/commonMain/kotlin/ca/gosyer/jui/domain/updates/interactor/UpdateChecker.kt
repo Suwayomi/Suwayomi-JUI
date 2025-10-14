@@ -39,7 +39,7 @@ class UpdateChecker(
     fun asFlow(manualFetch: Boolean) =
         flow {
             if (!manualFetch && !updatePreferences.enabled().get()) return@flow
-            val latestRelease = client.get(
+            val latestRelease = client.value.get(
                 "https://api.github.com/repos/$GITHUB_REPO/releases/latest",
             ).body<GithubRelease>()
 

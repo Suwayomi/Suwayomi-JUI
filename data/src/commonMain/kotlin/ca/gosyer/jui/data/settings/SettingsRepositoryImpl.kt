@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.data.settings
 
+import ca.gosyer.jui.data.ApolloAppClient
 import ca.gosyer.jui.data.graphql.AboutServerQuery
 import ca.gosyer.jui.data.graphql.AllSettingsQuery
 import ca.gosyer.jui.data.graphql.SetSettingsMutation
@@ -43,8 +44,11 @@ import ca.gosyer.jui.domain.settings.model.WebUIFlavor as DomainWebUIFlavor
 import ca.gosyer.jui.domain.settings.model.WebUIInterface as DomainWebUIInterface
 
 class SettingsRepositoryImpl(
-    private val apolloClient: ApolloClient,
+    private val apolloAppClient: ApolloAppClient,
 ) : SettingsRepository {
+    val apolloClient: ApolloClient
+        get() = apolloAppClient.value
+
     private fun SettingsTypeFragment.toSettings() =
         Settings(
             authMode = authMode.toDomain(),

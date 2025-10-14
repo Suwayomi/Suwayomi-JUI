@@ -6,6 +6,7 @@
 
 package ca.gosyer.jui.data.updates
 
+import ca.gosyer.jui.data.ApolloAppClient
 import ca.gosyer.jui.data.chapter.ChapterRepositoryImpl.Companion.toMangaAndChapter
 import ca.gosyer.jui.data.graphql.GetChapterUpdatesQuery
 import ca.gosyer.jui.data.graphql.UpdateCategoryMutation
@@ -19,10 +20,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class UpdatesRepositoryImpl(
-    private val apolloClient: ApolloClient,
+    private val apolloAppClient: ApolloAppClient,
     private val http: Http,
     private val serverUrl: Url,
 ) : UpdatesRepository {
+    val apolloClient: ApolloClient
+        get() = apolloAppClient.value
+
     override fun getRecentUpdates(pageNum: Int): Flow<Updates> =
         apolloClient.query(
             GetChapterUpdatesQuery(50, pageNum * 50),
