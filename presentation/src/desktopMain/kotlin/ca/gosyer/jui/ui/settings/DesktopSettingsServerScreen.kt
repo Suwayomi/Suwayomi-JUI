@@ -19,7 +19,9 @@ import ca.gosyer.jui.domain.server.model.Auth
 import ca.gosyer.jui.domain.server.service.ServerHostPreferences
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.server.service.ServerService
+import ca.gosyer.jui.domain.settings.model.AuthMode
 import ca.gosyer.jui.i18n.MR
+import ca.gosyer.jui.ui.base.prefs.ChoicePreference
 import ca.gosyer.jui.ui.base.prefs.EditTextPreference
 import ca.gosyer.jui.ui.base.prefs.PreferenceRow
 import ca.gosyer.jui.ui.base.prefs.SwitchPreference
@@ -29,6 +31,7 @@ import ca.gosyer.jui.uicore.prefs.asStringStateIn
 import ca.gosyer.jui.uicore.resources.stringResource
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import ca.gosyer.jui.uicore.vm.ViewModel
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -39,7 +42,7 @@ import me.tatarka.inject.annotations.Inject
 actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostViewModel): LazyListScope.() -> Unit {
     val serverVm = viewModel()
     val hostValue by serverVm.host.collectAsState()
-    val basicAuthEnabledValue by serverVm.basicAuthEnabled.collectAsState()
+    val authMode by serverVm.hostAuthMode.collectAsState()
 
     DisposableEffect(Unit) {
         onDispose {
@@ -50,7 +53,7 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
     return {
         ServerHostItems(
             hostValue = hostValue,
-            basicAuthEnabledValue = basicAuthEnabledValue,
+            authEnabledValue = authMode != AuthMode.NONE,
             serverSettingChanged = serverVm::serverSettingChanged,
             host = serverVm.host,
             ip = serverVm.ip,
@@ -59,9 +62,9 @@ actual fun getServerHostItems(viewModel: @Composable () -> SettingsServerHostVie
             downloadPath = serverVm.downloadPath,
             backupPath = serverVm.backupPath,
             localSourcePath = serverVm.localSourcePath,
-            basicAuthEnabled = serverVm.basicAuthEnabled,
-            basicAuthUsername = serverVm.basicAuthUsername,
-            basicAuthPassword = serverVm.basicAuthPassword,
+            authMode = serverVm.hostAuthMode,
+            authUsername = serverVm.hostAuthUsername,
+            authPassword = serverVm.hostAuthPassword,
         )
     }
 }
@@ -92,9 +95,9 @@ actual class SettingsServerHostViewModel(
     val localSourcePath = serverHostPreferences.localSourcePath().asStateIn(scope)
 
     // Authentication
-    val basicAuthEnabled = serverHostPreferences.basicAuthEnabled().asStateIn(scope)
-    val basicAuthUsername = serverHostPreferences.basicAuthUsername().asStateIn(scope)
-    val basicAuthPassword = serverHostPreferences.basicAuthPassword().asStateIn(scope)
+    val hostAuthMode = serverHostPreferences.authMode().asStateIn(scope)
+    val hostAuthUsername = serverHostPreferences.authUsername().asStateIn(scope)
+    val hostAuthPassword = serverHostPreferences.authPassword().asStateIn(scope)
 
     private val _serverSettingChanged = MutableStateFlow(false)
     val serverSettingChanged = _serverSettingChanged.asStateFlow()
@@ -115,16 +118,18 @@ actual class SettingsServerHostViewModel(
     val authPassword = serverPreferences.authPassword().asStateIn(scope)
 
     init {
-        combine(host, basicAuthEnabled, basicAuthUsername, basicAuthPassword) { host, enabled, username, password ->
+        combine(host, hostAuthMode, hostAuthUsername, hostAuthPassword) { host, mode, username, password ->
             if (host) {
-                if (enabled) {
-                    auth.value = Auth.BASIC
-                    authUsername.value = username
-                    authPassword.value = password
-                } else {
-                    auth.value = Auth.NONE
-                    authUsername.value = ""
-                    authPassword.value = ""
+                when (mode) {
+                    AuthMode.NONE -> auth.value = Auth.NONE
+                    AuthMode.BASIC_AUTH -> {
+                        auth.value = Auth.BASIC
+                        authUsername.value = username
+                        authPassword.value = password
+                    }
+                    AuthMode.SIMPLE_LOGIN -> auth.value = Auth.SIMPLE
+                    AuthMode.UI_LOGIN -> auth.value = Auth.UI
+                    AuthMode.UNKNOWN__ -> Unit
                 }
             }
         }.launchIn(scope)
@@ -133,7 +138,7 @@ actual class SettingsServerHostViewModel(
 
 fun LazyListScope.ServerHostItems(
     hostValue: Boolean,
-    basicAuthEnabledValue: Boolean,
+    authEnabledValue: Boolean,
     serverSettingChanged: () -> Unit,
     host: MutableStateFlow<Boolean>,
     ip: MutableStateFlow<String>,
@@ -142,9 +147,9 @@ fun LazyListScope.ServerHostItems(
     downloadPath: MutableStateFlow<String>,
     backupPath: MutableStateFlow<String>,
     localSourcePath: MutableStateFlow<String>,
-    basicAuthEnabled: MutableStateFlow<Boolean>,
-    basicAuthUsername: MutableStateFlow<String>,
-    basicAuthPassword: MutableStateFlow<String>,
+    authMode: MutableStateFlow<AuthMode>,
+    authUsername: MutableStateFlow<String>,
+    authPassword: MutableStateFlow<String>,
 ) {
     item {
         SwitchPreference(preference = host, title = stringResource(MR.strings.host_server))
@@ -260,28 +265,37 @@ fun LazyListScope.ServerHostItems(
             )
         }
         item {
-            SwitchPreference(
-                preference = basicAuthEnabled,
-                title = stringResource(MR.strings.basic_auth),
-                subtitle = stringResource(MR.strings.host_basic_auth_sub),
+            ChoicePreference(
+                preference = authMode,
+                title = stringResource(MR.strings.host_auth),
+                subtitle = stringResource(MR.strings.host_auth_sub),
+                choices = (AuthMode.entries - AuthMode.UNKNOWN__).associateWith {
+                    when (it) {
+                        AuthMode.NONE -> stringResource(MR.strings.no_auth)
+                        AuthMode.BASIC_AUTH -> stringResource(MR.strings.basic_auth)
+                        AuthMode.SIMPLE_LOGIN -> stringResource(MR.strings.simple_auth)
+                        AuthMode.UI_LOGIN -> stringResource(MR.strings.ui_login)
+                        AuthMode.UNKNOWN__ -> ""
+                    }
+                }.toImmutableMap(),
                 changeListener = serverSettingChanged,
             )
         }
         item {
             EditTextPreference(
-                preference = basicAuthUsername,
-                title = stringResource(MR.strings.host_basic_auth_username),
+                preference = authUsername,
+                title = stringResource(MR.strings.host_auth_username),
                 changeListener = serverSettingChanged,
-                enabled = basicAuthEnabledValue,
+                enabled = authEnabledValue,
             )
         }
         item {
             EditTextPreference(
-                preference = basicAuthPassword,
-                title = stringResource(MR.strings.host_basic_auth_password),
+                preference = authPassword,
+                title = stringResource(MR.strings.host_auth_password),
                 changeListener = serverSettingChanged,
                 visualTransformation = PasswordVisualTransformation(),
-                enabled = basicAuthEnabledValue,
+                enabled = authEnabledValue,
             )
         }
     }

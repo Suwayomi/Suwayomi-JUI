@@ -29,7 +29,7 @@ abstract class AppComponent(
     @get:AppScope
     @get:Provides
     protected val appMigrationsFactory: AppMigrations
-        get() = AppMigrations(migrationPreferences, contextWrapper)
+        get() = AppMigrations(migrationPreferences,  serverHostPreferences, contextWrapper)
 
     val bind: ViewModelComponent
         @Provides get() = this

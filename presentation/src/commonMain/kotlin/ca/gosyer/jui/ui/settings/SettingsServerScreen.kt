@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -35,6 +36,8 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Login
+import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Info
@@ -46,10 +49,15 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import ca.gosyer.jui.core.lang.launchIO
@@ -59,8 +67,13 @@ import ca.gosyer.jui.domain.server.service.ServerHostPreferences
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.settings.interactor.GetSettings
 import ca.gosyer.jui.domain.settings.interactor.SetSettings
+import ca.gosyer.jui.domain.settings.model.AuthMode
 import ca.gosyer.jui.domain.settings.model.SetSettingsInput
 import ca.gosyer.jui.domain.settings.model.Settings
+import ca.gosyer.jui.domain.user.interactor.UserLoginSimple
+import ca.gosyer.jui.domain.user.interactor.UserLoginUI
+import ca.gosyer.jui.domain.user.interactor.UserLogout
+import ca.gosyer.jui.domain.user.service.UserPreferences
 import ca.gosyer.jui.i18n.MR
 import ca.gosyer.jui.ui.base.dialog.getMaterialDialogProperties
 import ca.gosyer.jui.ui.base.navigation.Toolbar
@@ -95,10 +108,13 @@ import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.format.char
@@ -127,8 +143,12 @@ class SettingsServerScreen : Screen {
             authChoices = connectionVM.getAuthChoices(),
             authUsername = connectionVM.authUsername,
             authPassword = connectionVM.authPassword,
+            authUILoggedIn = connectionVM.authUILoggedIn.collectAsState().value,
+            authSimpleLoggedIn = connectionVM.authSimpleLoggedIn.collectAsState().value,
             serverSettings = connectionVM.serverSettings.collectAsState().value,
             hosted = connectionVM.host.collectAsState().value,
+            onLogin = connectionVM::onLogin,
+            onLogout = connectionVM::onLogout,
         )
     }
 }
@@ -194,18 +214,18 @@ class ServerSettings(
         getInput = { SetSettingsInput(backupTime = it) },
     )
 
-    //    val basicAuthEnabled = getServerFlow(
-//        getSetting = { it.basicAuthEnabled },
-//        getInput = { SetSettingsInput(basicAuthEnabled = it) },
-//    )
-//    val basicAuthPassword = getServerFlow(
-//        getSetting = { it.basicAuthPassword },
-//        getInput = { SetSettingsInput(basicAuthPassword = it) },
-//    )
-//    val basicAuthUsername = getServerFlow(
-//        getSetting = { it.basicAuthUsername },
-//        getInput = { SetSettingsInput(basicAuthUsername = it) },
-//    )
+    val authMode = getServerFlow(
+        getSetting = { it.authMode },
+        getInput = { SetSettingsInput(authMode = it) },
+    )
+    val authPassword = getServerFlow(
+        getSetting = { it.authPassword },
+        getInput = { SetSettingsInput(authPassword = it) },
+    )
+    val authUsername = getServerFlow(
+        getSetting = { it.authUsername },
+        getInput = { SetSettingsInput(authUsername = it) },
+    )
     val debugLogsEnabled = getServerFlow(
         getSetting = { it.debugLogsEnabled },
         getInput = { SetSettingsInput(debugLogsEnabled = it) },
@@ -370,6 +390,10 @@ class SettingsServerViewModel(
     private val setSettings: SetSettings,
     serverPreferences: ServerPreferences,
     serverHostPreferences: ServerHostPreferences,
+    userPreferences: UserPreferences,
+    private val userLoginSimple: UserLoginSimple,
+    private val userLoginUi: UserLoginUI,
+    private val userLogout: UserLogout,
     contextWrapper: ContextWrapper,
 ) : ViewModel(contextWrapper) {
     val serverUrl = serverPreferences.server().asStateIn(scope)
@@ -394,6 +418,12 @@ class SettingsServerViewModel(
     val socksPort = serverPreferences.proxySocksPort().asStringStateIn(scope)
 
     val auth = serverPreferences.auth().asStateIn(scope)
+    val authUILoggedIn = userPreferences.uiRefreshToken().changes()
+        .map { it.isNotBlank() }
+        .stateIn(scope, SharingStarted.Eagerly, userPreferences.uiRefreshToken().get().isNotBlank())
+    val authSimpleLoggedIn = userPreferences.simpleSession().changes()
+        .map { it.isNotBlank() }
+        .stateIn(scope, SharingStarted.Eagerly, userPreferences.simpleSession().get().isNotBlank())
 
     @Composable
     fun getAuthChoices(): ImmutableMap<Auth, String> =
@@ -401,10 +431,30 @@ class SettingsServerViewModel(
             Auth.NONE to stringResource(MR.strings.no_auth),
             Auth.BASIC to stringResource(MR.strings.basic_auth),
             Auth.DIGEST to stringResource(MR.strings.digest_auth),
+            Auth.SIMPLE to stringResource(MR.strings.simple_auth),
+            Auth.UI to stringResource(MR.strings.ui_login),
         )
 
     val authUsername = serverPreferences.authUsername().asStateIn(scope)
     val authPassword = serverPreferences.authPassword().asStateIn(scope)
+
+    fun onLogin(username: String, password: String) {
+        when (auth.value) {
+            Auth.SIMPLE -> {
+                userLoginSimple.asFlow(username, password)
+                    .launchIn(scope)
+            }
+            Auth.UI -> {
+                userLoginUi.asFlow(username, password)
+                    .launchIn(scope)
+            }
+            else -> Unit
+        }
+    }
+
+    fun onLogout() {
+        userLogout.asFlow().launchIn(scope)
+    }
 
     private val _serverSettings = MutableStateFlow<ServerSettings?>(null)
     val serverSettings = _serverSettings.asStateFlow()
@@ -443,8 +493,12 @@ fun SettingsServerScreenContent(
     authChoices: ImmutableMap<Auth, String>,
     authUsername: PreferenceMutableStateFlow<String>,
     authPassword: PreferenceMutableStateFlow<String>,
+    authUILoggedIn: Boolean,
+    authSimpleLoggedIn: Boolean,
     hosted: Boolean,
     serverSettings: ServerSettings?,
+    onLogin: (String, String) -> Unit,
+    onLogout: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.windowInsetsPadding(
@@ -540,18 +594,95 @@ fun SettingsServerScreenContent(
                 item {
                     ChoicePreference(auth, authChoices, stringResource(MR.strings.authentication))
                 }
-                if (authValue != Auth.NONE) {
-                    item {
-                        EditTextPreference(authUsername, stringResource(MR.strings.auth_username))
-                    }
-                    item {
-                        EditTextPreference(
-                            authPassword,
-                            stringResource(MR.strings.auth_password),
-                            visualTransformation = PasswordVisualTransformation(),
-                        )
+
+                when (authValue) {
+                    Auth.NONE -> Unit
+                    Auth.BASIC, Auth.DIGEST, Auth.UI, Auth.SIMPLE -> {
+                        item {
+                            EditTextPreference(authUsername, stringResource(MR.strings.auth_username))
+                        }
+                        item {
+                            EditTextPreference(
+                                authPassword,
+                                stringResource(MR.strings.auth_password),
+                                visualTransformation = PasswordVisualTransformation(),
+                            )
+                        }
                     }
                 }
+
+                if (authValue == Auth.UI || authValue == Auth.SIMPLE) {
+                    if ((authValue == Auth.SIMPLE && authSimpleLoggedIn) || (authValue == Auth.UI && authUILoggedIn)) {
+                        item {
+                            PreferenceRow(
+                                stringResource(MR.strings.logout),
+                                icon = Icons.AutoMirrored.Rounded.Logout,
+                                onClick = onLogout,
+                            )
+                        }
+                    } else {
+                        item {
+                            val loginDialogState = rememberMaterialDialogState()
+                            PreferenceRow(
+                                stringResource(MR.strings.login),
+                                icon = Icons.AutoMirrored.Rounded.Login,
+                                onClick = {
+                                    loginDialogState.show()
+                                },
+                            )
+                            var username by rememberSaveable { mutableStateOf("") }
+                            var password by rememberSaveable { mutableStateOf("") }
+
+                            MaterialDialog(
+                                dialogState = loginDialogState,
+                                properties = getMaterialDialogProperties(),
+                                buttons = {
+                                    negativeButton(stringResource(MR.strings.action_cancel))
+                                    positiveButton(
+                                        stringResource(MR.strings.login),
+                                        onClick = {
+                                            onLogin(username, password)
+                                        },
+                                    )
+                                },
+                            ) {
+                                OutlinedTextField(
+                                    value = username,
+                                    onValueChange = { username = it },
+                                    modifier = Modifier
+                                        .semantics { contentType = ContentType.Username }
+                                        .keyboardHandler(
+                                            singleLine = true,
+                                            enterAction = {
+                                                submit()
+                                            },
+                                        ),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Password,
+                                    ),
+                                )
+                                OutlinedTextField(
+                                    value = password,
+                                    onValueChange = { password = it },
+                                    modifier = Modifier
+                                        .semantics { contentType = ContentType.Password }
+                                        .keyboardHandler(
+                                            singleLine = true,
+                                            enterAction = {
+                                                submit()
+                                            },
+                                        ),
+                                    visualTransformation = PasswordVisualTransformation(),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Password,
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }
+
+
                 item {
                     Divider()
                 }
@@ -814,32 +945,41 @@ fun LazyListScope.ServerSettingsItems(
         )
     }
 
-//    item {
-//        SwitchPreference(
-//            preference = serverSettings.basicAuthEnabled,
-//            title = stringResource(MR.strings.basic_auth),
-//            subtitle = stringResource(MR.strings.host_basic_auth_sub),
-//            enabled = !hosted,
-//        )
-//    }
-//
-//    item {
-//        val basicAuthEnabledValue by serverSettings.basicAuthEnabled.collectAsState()
-//        EditTextPreference(
-//            preference = serverSettings.basicAuthUsername,
-//            title = stringResource(MR.strings.host_basic_auth_username),
-//            enabled = basicAuthEnabledValue && !hosted,
-//        )
-//    }
-//    item {
-//        val basicAuthEnabledValue by serverSettings.basicAuthEnabled.collectAsState()
-//        EditTextPreference(
-//            preference = serverSettings.basicAuthPassword,
-//            title = stringResource(MR.strings.host_basic_auth_password),
-//            visualTransformation = PasswordVisualTransformation(),
-//            enabled = basicAuthEnabledValue && !hosted,
-//        )
-//    }
+    item {
+        ChoicePreference(
+            preference = serverSettings.authMode,
+            title = stringResource(MR.strings.host_auth),
+            subtitle = stringResource(MR.strings.host_auth_sub),
+            choices = (AuthMode.entries - AuthMode.UNKNOWN__).associateWith {
+                when (it) {
+                    AuthMode.NONE -> stringResource(MR.strings.no_auth)
+                    AuthMode.BASIC_AUTH -> stringResource(MR.strings.basic_auth)
+                    AuthMode.SIMPLE_LOGIN -> stringResource(MR.strings.simple_auth)
+                    AuthMode.UI_LOGIN -> stringResource(MR.strings.ui_login)
+                    AuthMode.UNKNOWN__ -> ""
+                }
+            }.toImmutableMap(),
+           enabled = !hosted,
+        )
+    }
+
+    item {
+        val authModeValue by serverSettings.authMode.collectAsState()
+        EditTextPreference(
+            preference = serverSettings.authUsername,
+            title = stringResource(MR.strings.host_auth_username),
+            enabled = authModeValue != AuthMode.NONE && !hosted,
+        )
+    }
+    item {
+        val authModeValue by serverSettings.authMode.collectAsState()
+        EditTextPreference(
+            preference = serverSettings.authPassword,
+            title = stringResource(MR.strings.host_auth_password),
+            visualTransformation = PasswordVisualTransformation(),
+            enabled = authModeValue != AuthMode.NONE && !hosted,
+        )
+    }
     item {
         SwitchPreference(
             preference = serverSettings.flareSolverrEnabled,

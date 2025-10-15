@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 object Config {
-    const val migrationCode = 5
+    const val migrationCode = 6
 
     // Suwayomi-Server version
     const val tachideskVersion = "v2.1.1959"

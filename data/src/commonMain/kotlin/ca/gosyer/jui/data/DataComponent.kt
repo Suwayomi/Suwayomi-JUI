@@ -18,6 +18,7 @@ import ca.gosyer.jui.data.manga.MangaRepositoryImpl
 import ca.gosyer.jui.data.settings.SettingsRepositoryImpl
 import ca.gosyer.jui.data.source.SourceRepositoryImpl
 import ca.gosyer.jui.data.updates.UpdatesRepositoryImpl
+import ca.gosyer.jui.data.user.UserRepositoryImpl
 import ca.gosyer.jui.domain.backup.service.BackupRepository
 import ca.gosyer.jui.domain.category.service.CategoryRepository
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
@@ -27,12 +28,13 @@ import ca.gosyer.jui.domain.global.service.GlobalRepository
 import ca.gosyer.jui.domain.library.service.LibraryRepository
 import ca.gosyer.jui.domain.manga.service.MangaRepository
 import ca.gosyer.jui.domain.server.Http
+import ca.gosyer.jui.domain.server.HttpNoAuth
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.settings.service.SettingsRepository
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.domain.updates.service.UpdatesRepository
+import ca.gosyer.jui.domain.user.service.UserRepository
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.network.ws.GraphQLWsProtocol
 import com.apollographql.ktor.ktorClient
 import io.ktor.client.HttpClient
@@ -50,6 +52,8 @@ import me.tatarka.inject.annotations.Provides
 
 typealias ApolloAppClient = StateFlow<ApolloClient>
 
+typealias ApolloAppClientNoAuth = StateFlow<ApolloClient>
+
 private fun getApolloClient(
     httpClient: HttpClient,
     serverUrl: Url,
@@ -66,7 +70,7 @@ private fun getApolloClient(
 }
 
 interface DataComponent : SharedDataComponent {
-    @OptIn(ApolloExperimental::class)
+
     @Provides
     @AppScope
     fun apolloAppClient(
@@ -79,6 +83,20 @@ interface DataComponent : SharedDataComponent {
                 GlobalScope,
                 SharingStarted.Eagerly,
                 getApolloClient(http.value, serverPreferences.serverUrl().get()),
+            )
+
+    @Provides
+    @AppScope
+    fun apolloAppClientNoAuth(
+        httpNoAuth: HttpNoAuth,
+        serverPreferences: ServerPreferences,
+    ): ApolloAppClientNoAuth =
+        httpNoAuth
+            .map { getApolloClient(it, serverPreferences.serverUrl().get()) }
+            .stateIn(
+                GlobalScope,
+                SharingStarted.Eagerly,
+                getApolloClient(httpNoAuth.value, serverPreferences.serverUrl().get()),
             )
 
     @Provides
@@ -146,6 +164,15 @@ interface DataComponent : SharedDataComponent {
         http: Http,
         serverPreferences: ServerPreferences,
     ): UpdatesRepository = UpdatesRepositoryImpl(apolloAppClient, http, serverPreferences.serverUrl().get())
+
+    @Provides
+    fun userRepository(
+        apolloAppClient: ApolloAppClient,
+        apolloAppClientNoAuth: ApolloAppClientNoAuth,
+        http: Http,
+        httpNoAuth: HttpNoAuth,
+        serverPreferences: ServerPreferences,
+    ): UserRepository = UserRepositoryImpl(apolloAppClient, apolloAppClientNoAuth, http, httpNoAuth,serverPreferences.serverUrl().get())
 
     @Provides
     fun backupRepository(

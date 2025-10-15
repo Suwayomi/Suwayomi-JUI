@@ -16,13 +16,17 @@ import ca.gosyer.jui.domain.migration.interactor.RunMigrations
 import ca.gosyer.jui.domain.migration.service.MigrationPreferences
 import ca.gosyer.jui.domain.reader.service.ReaderPreferences
 import ca.gosyer.jui.domain.server.Http
+import ca.gosyer.jui.domain.server.HttpNoAuth
 import ca.gosyer.jui.domain.server.httpClient
+import ca.gosyer.jui.domain.server.httpClientNoAuth
 import ca.gosyer.jui.domain.server.service.ServerHostPreferences
 import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.source.service.CatalogPreferences
 import ca.gosyer.jui.domain.ui.service.UiPreferences
 import ca.gosyer.jui.domain.updates.interactor.UpdateChecker
 import ca.gosyer.jui.domain.updates.service.UpdatePreferences
+import ca.gosyer.jui.domain.user.interactor.UserRefreshUI
+import ca.gosyer.jui.domain.user.service.UserPreferences
 import kotlinx.serialization.json.Json
 import me.tatarka.inject.annotations.Provides
 
@@ -38,6 +42,8 @@ interface SharedDomainComponent : CoreComponent {
     val libraryUpdateService: LibraryUpdateService
 
     val http: Http
+
+    val httpNoAuth: HttpNoAuth
 
     val serverPreferences: ServerPreferences
 
@@ -59,12 +65,30 @@ interface SharedDomainComponent : CoreComponent {
 
     val json: Json
 
+    val userRefreshUI: UserRefreshUI
+
+    @get:AppScope
+    @get:Provides
+    val lazyUserRefreshUIFactory: Lazy<UserRefreshUI>
+        get() = lazy { userRefreshUI }
+
     @AppScope
     @Provides
     fun httpFactory(
         serverPreferences: ServerPreferences,
+        userPreferences: UserPreferences,
+        userRefreshUI: Lazy<UserRefreshUI>,
         json: Json,
-    ) = httpClient(serverPreferences, json)
+    ): Http = httpClient(serverPreferences, userPreferences, userRefreshUI, json)
+
+    @AppScope
+    @Provides
+    fun httpNoAuthFactory(
+        serverPreferences: ServerPreferences,
+        userPreferences: UserPreferences,
+        userRefreshUI: Lazy<UserRefreshUI>,
+        json: Json,
+    ): HttpNoAuth = httpClientNoAuth(serverPreferences, userPreferences, userRefreshUI, json)
 
     @get:AppScope
     @get:Provides
@@ -107,6 +131,11 @@ interface SharedDomainComponent : CoreComponent {
     @get:Provides
     val updatePreferencesFactory: UpdatePreferences
         get() = UpdatePreferences(preferenceFactory.create("update"))
+
+    @get:AppScope
+    @get:Provides
+    val userPreferencesFactory: UserPreferences
+        get() = UserPreferences(preferenceFactory.create("user"))
 
     @get:AppScope
     @get:Provides

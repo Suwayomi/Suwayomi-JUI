@@ -8,6 +8,8 @@ package ca.gosyer.jui.domain.server.service.host
 
 import ca.gosyer.jui.core.prefs.Preference
 import ca.gosyer.jui.core.prefs.PreferenceStore
+import ca.gosyer.jui.core.prefs.getEnum
+import ca.gosyer.jui.domain.settings.model.AuthMode as ServerAuthMode
 
 sealed class ServerHostPreference<T : Any> {
     protected abstract val propertyName: String
@@ -63,6 +65,16 @@ sealed class ServerHostPreference<T : Any> {
         override fun preference(): Preference<Boolean> = preferenceStore.getBoolean(propertyName, defaultValue)
     }
 
+    sealed class ObjectServerHostPreference<T : Any>(
+        override val preferenceStore: PreferenceStore,
+        override val propertyName: String,
+        override val defaultValue: T,
+        override val serverValue: T = defaultValue,
+        private val getObject: (String, T) -> Preference<T>,
+    ) : ServerHostPreference<T>() {
+        override fun preference(): Preference<T> = getObject(propertyName, defaultValue)
+    }
+
     // Root
     class RootPath(
         preferenceStore: PreferenceStore,
@@ -116,27 +128,43 @@ sealed class ServerHostPreference<T : Any> {
         )
 
     // Authentication
+    @Deprecated("UseAuthMode")
     class BasicAuthEnabled(
         preferenceStore: PreferenceStore,
-    ) : BooleanServerHostPreference(
-            preferenceStore,
-            "basicAuthEnabled",
-            false,
-        )
-
+    ) : BooleanServerHostPreference(preferenceStore, "basicAuthEnabled", false)
+    @Deprecated("UseAuthUsername")
     class BasicAuthUsername(
         preferenceStore: PreferenceStore,
-    ) : StringServerHostPreference(
-            preferenceStore,
-            "basicAuthUsername",
-            "",
-        )
-
+    ) : StringServerHostPreference(preferenceStore, "basicAuthUsername", "")
+    @Deprecated("UseAuthPassword")
     class BasicAuthPassword(
         preferenceStore: PreferenceStore,
+    ) : StringServerHostPreference(preferenceStore, "basicAuthPassword", "")
+
+    class AuthMode(
+        preferenceStore: PreferenceStore,
+    ) : ObjectServerHostPreference<ServerAuthMode>(
+        preferenceStore,
+        "authMode",
+        ServerAuthMode.NONE,
+        getObject = { propertyName, default ->
+            preferenceStore.getEnum(propertyName, default)
+        }
+    )
+
+    class AuthUsername(
+        preferenceStore: PreferenceStore,
     ) : StringServerHostPreference(
-            preferenceStore,
-            "basicAuthPassword",
-            "",
-        )
+        preferenceStore,
+        "authUsername",
+        "",
+    )
+
+    class AuthPassword(
+        preferenceStore: PreferenceStore,
+    ) : StringServerHostPreference(
+        preferenceStore,
+        "authPassword",
+        "",
+    )
 }

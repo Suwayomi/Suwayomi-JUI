@@ -15,4 +15,6 @@ enum class Auth {
     NONE,
     BASIC,
     DIGEST,
+    SIMPLE,
+    UI,
 }

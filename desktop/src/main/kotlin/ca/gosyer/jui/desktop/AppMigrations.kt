@@ -9,6 +9,8 @@ package ca.gosyer.jui.desktop
 import ca.gosyer.appdirs.AppDirs
 import ca.gosyer.jui.desktop.build.BuildConfig
 import ca.gosyer.jui.domain.migration.service.MigrationPreferences
+import ca.gosyer.jui.domain.server.service.ServerHostPreferences
+import ca.gosyer.jui.domain.settings.model.AuthMode
 import ca.gosyer.jui.uicore.vm.ContextWrapper
 import com.diamondedge.logging.logging
 import me.tatarka.inject.annotations.Inject
@@ -18,6 +20,7 @@ import okio.Path.Companion.toPath
 @Inject
 class AppMigrations(
     private val migrationPreferences: MigrationPreferences,
+    private val serverHostPreference: ServerHostPreferences,
     private val contextWrapper: ContextWrapper,
 ) {
     @Suppress("KotlinConstantConditions")
@@ -32,8 +35,8 @@ class AppMigrations(
             }
 
             if (oldVersion < 5) {
-                val oldDir = AppDirs("Tachidesk-JUI").getUserDataDir().toPath()
-                val newDir = AppDirs("Suwayomi-JUI").getUserDataDir().toPath()
+                val oldDir = AppDirs { appName = "Tachidesk-JUI" }.getUserDataDir().toPath()
+                val newDir = AppDirs { appName = "Suwayomi-JUI" }.getUserDataDir().toPath()
                 try {
                     FileSystem.SYSTEM.list(oldDir)
                         .filter { FileSystem.SYSTEM.metadata(it).isDirectory }
@@ -47,6 +50,14 @@ class AppMigrations(
                 } catch (e: Exception) {
                     log.e(e) { "Failed to run directory migration" }
                 }
+            }
+            if (oldVersion < 6) {
+                val basicAuthEnabled = serverHostPreference.basicAuthEnabled().get()
+                if (basicAuthEnabled) {
+                    serverHostPreference.authMode().set(AuthMode.BASIC_AUTH)
+                }
+                serverHostPreference.authUsername().set(serverHostPreference.basicAuthUsername().get())
+                serverHostPreference.authPassword().set(serverHostPreference.basicAuthPassword().get())
             }
 
             return true
