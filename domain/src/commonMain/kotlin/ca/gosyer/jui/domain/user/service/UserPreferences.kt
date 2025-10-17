@@ -8,7 +8,7 @@ class UserPreferences(
 ) {
     fun uiRefreshToken(): Preference<String> = preferenceStore.getString("ui_refresh_token", "")
 
-    fun uiAccessToken(): Preference<String> = preferenceStore.getString("ui_refresh_token", "")
+    fun uiAccessToken(): Preference<String> = preferenceStore.getString("ui_access_token", "")
 
     fun simpleSession(): Preference<String> = preferenceStore.getString("simple_session", "")
 }

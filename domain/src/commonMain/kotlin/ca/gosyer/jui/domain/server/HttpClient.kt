@@ -23,9 +23,7 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.api.Send
 import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
-import io.ktor.client.plugins.auth.providers.DigestAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
-import io.ktor.client.plugins.auth.providers.digest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -151,7 +149,7 @@ private fun getHttpClient(
             }
         }
         when (auth) {
-            Auth.NONE -> Unit
+            Auth.NONE, Auth.DIGEST -> Unit
 
             Auth.BASIC -> AuthPlugin {
                 basic {
@@ -167,16 +165,6 @@ private fun getHttpClient(
                 }
             }
 
-            Auth.DIGEST -> AuthPlugin {
-                digest {
-                    credentials {
-                        DigestAuthCredentials(
-                            authUsername,
-                            authPassword,
-                        )
-                    }
-                }
-            }
             Auth.SIMPLE -> install(SimpleAuthPlugin) {
                 this.simpleSessionPreference = simpleSessionPreference
             }

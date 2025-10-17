@@ -430,7 +430,6 @@ class SettingsServerViewModel(
         persistentMapOf(
             Auth.NONE to stringResource(MR.strings.no_auth),
             Auth.BASIC to stringResource(MR.strings.basic_auth),
-            Auth.DIGEST to stringResource(MR.strings.digest_auth),
             Auth.SIMPLE to stringResource(MR.strings.simple_auth),
             Auth.UI to stringResource(MR.strings.ui_login),
         )

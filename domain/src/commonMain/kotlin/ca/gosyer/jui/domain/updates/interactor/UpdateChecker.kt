@@ -7,7 +7,7 @@
 package ca.gosyer.jui.domain.updates.interactor
 
 import ca.gosyer.jui.domain.build.BuildKonfig
-import ca.gosyer.jui.domain.server.Http
+import ca.gosyer.jui.domain.server.HttpNoAuth
 import ca.gosyer.jui.domain.updates.model.GithubRelease
 import ca.gosyer.jui.domain.updates.service.UpdatePreferences
 import com.diamondedge.logging.logging
@@ -24,7 +24,7 @@ import me.tatarka.inject.annotations.Inject
 @Inject
 class UpdateChecker(
     private val updatePreferences: UpdatePreferences,
-    private val client: Http,
+    private val client: HttpNoAuth,
 ) {
     suspend fun await(
         manualFetch: Boolean,

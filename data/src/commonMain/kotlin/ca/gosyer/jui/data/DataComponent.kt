@@ -19,6 +19,8 @@ import ca.gosyer.jui.data.settings.SettingsRepositoryImpl
 import ca.gosyer.jui.data.source.SourceRepositoryImpl
 import ca.gosyer.jui.data.updates.UpdatesRepositoryImpl
 import ca.gosyer.jui.data.user.UserRepositoryImpl
+import ca.gosyer.jui.data.util.ApolloAuthInterceptor
+import ca.gosyer.jui.data.util.KtorWebSocketEngine
 import ca.gosyer.jui.domain.backup.service.BackupRepository
 import ca.gosyer.jui.domain.category.service.CategoryRepository
 import ca.gosyer.jui.domain.chapter.service.ChapterRepository
@@ -33,14 +35,18 @@ import ca.gosyer.jui.domain.server.service.ServerPreferences
 import ca.gosyer.jui.domain.settings.service.SettingsRepository
 import ca.gosyer.jui.domain.source.service.SourceRepository
 import ca.gosyer.jui.domain.updates.service.UpdatesRepository
+import ca.gosyer.jui.domain.user.interactor.UserRefreshUI
 import ca.gosyer.jui.domain.user.service.UserRepository
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.network.ws.GraphQLWsProtocol
-import com.apollographql.ktor.ktorClient
+import com.apollographql.apollo.annotations.ApolloExperimental
+import com.apollographql.apollo.network.websocket.GraphQLWsProtocol
+import com.apollographql.apollo.network.websocket.WebSocketNetworkTransport
+import com.apollographql.ktor.http.KtorHttpEngine
 import io.ktor.client.HttpClient
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.http.appendPathSegments
+import korlibs.time.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.IO
@@ -54,17 +60,31 @@ typealias ApolloAppClient = StateFlow<ApolloClient>
 
 typealias ApolloAppClientNoAuth = StateFlow<ApolloClient>
 
+@OptIn(ApolloExperimental::class)
 private fun getApolloClient(
     httpClient: HttpClient,
     serverUrl: Url,
+    authInterceptor: ApolloAuthInterceptor?,
 ): ApolloClient {
     val url = URLBuilder(serverUrl)
         .appendPathSegments("api", "graphql")
         .buildString()
     return ApolloClient.Builder()
         .serverUrl(url)
-        .ktorClient(httpClient)
-        .wsProtocol(GraphQLWsProtocol.Factory(pingIntervalMillis = 30))
+        .httpEngine(KtorHttpEngine(httpClient))
+        .apply {
+            if (authInterceptor != null) {
+                addInterceptor(authInterceptor)
+            }
+        }
+        .subscriptionNetworkTransport(
+            WebSocketNetworkTransport.Builder()
+                .serverUrl(url)
+                .pingInterval(30.seconds)
+                .webSocketEngine(KtorWebSocketEngine(httpClient))
+                .wsProtocol(GraphQLWsProtocol())
+                .build()
+        )
         .dispatcher(Dispatchers.IO)
         .build()
 }
@@ -74,15 +94,16 @@ interface DataComponent : SharedDataComponent {
     @Provides
     @AppScope
     fun apolloAppClient(
-        http: Http,
+        http: HttpNoAuth,
         serverPreferences: ServerPreferences,
+        apolloAuthInterceptor: ApolloAuthInterceptor,
     ): ApolloAppClient =
         http
-            .map { getApolloClient(it, serverPreferences.serverUrl().get()) }
+            .map { getApolloClient(it, serverPreferences.serverUrl().get(), apolloAuthInterceptor) }
             .stateIn(
                 GlobalScope,
                 SharingStarted.Eagerly,
-                getApolloClient(http.value, serverPreferences.serverUrl().get()),
+                getApolloClient(http.value, serverPreferences.serverUrl().get(), apolloAuthInterceptor),
             )
 
     @Provides
@@ -90,13 +111,14 @@ interface DataComponent : SharedDataComponent {
     fun apolloAppClientNoAuth(
         httpNoAuth: HttpNoAuth,
         serverPreferences: ServerPreferences,
+        userRefreshUI: Lazy<UserRefreshUI>,
     ): ApolloAppClientNoAuth =
         httpNoAuth
-            .map { getApolloClient(it, serverPreferences.serverUrl().get()) }
+            .map { getApolloClient(it, serverPreferences.serverUrl().get(), null) }
             .stateIn(
                 GlobalScope,
                 SharingStarted.Eagerly,
-                getApolloClient(httpNoAuth.value, serverPreferences.serverUrl().get()),
+                getApolloClient(httpNoAuth.value, serverPreferences.serverUrl().get(), null),
             )
 
     @Provides

@@ -14,6 +14,7 @@ import kotlinx.serialization.Serializable
 enum class Auth {
     NONE,
     BASIC,
+    @Deprecated("")
     DIGEST,
     SIMPLE,
     UI,
